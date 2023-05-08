@@ -1,0 +1,13 @@
+{
+  "name": "ehr-lite",
+  "private": true,
+  "workspaces": [
+    "marshaller",
+    "ehr"
+  ],
+  "scripts": {
+    "marshall": "yarn workspace marshaller start",
+    "tests": "yarn workspace ehr test",
+    "build": "yarn marshall && yarn workspace ehr build"
+  }
+}
