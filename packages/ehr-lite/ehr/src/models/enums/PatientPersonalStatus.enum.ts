@@ -1,0 +1,16 @@
+export enum PatientPersonalStatusEnum {
+  "single",
+  "in_couple",
+  "married",
+  "separated",
+  "divorced",
+  "divorcing",
+  "widowed",
+  "widower",
+  "complicated",
+  "unknown",
+  "contract",
+  "other",
+  "annulled",
+  "polygamous",
+}

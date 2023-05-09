@@ -1,0 +1,16 @@
+export enum ContactPointTelecomTypeEnum {
+  "mobile",
+  "phone",
+  "email",
+  "fax",
+  "skype",
+  "im",
+  "medibridge",
+  "ehealthbox",
+  "apicrypt",
+  "web",
+  "print",
+  "disk",
+  "other",
+  "pager",
+}
