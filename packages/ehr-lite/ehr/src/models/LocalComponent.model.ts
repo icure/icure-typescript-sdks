@@ -1,20 +1,29 @@
+import { Content } from '@icure/api'
+import { mapTo } from '../mappings/mapper'
+
+@mapTo(Content)
 export class LocalComponent {
-  stringValue?: string;
-  documentId?: string;
+    stringValue?: string
+    documentId?: string
 
-  static toJSON(instance: LocalComponent): any {
-    const pojo: any = {};
-    pojo["stringValue"] = instance.stringValue;
-    pojo["documentId"] = instance.documentId;
-    return pojo;
-  }
+    constructor(localComponent: ILocalComponent | any) {
+        this.stringValue = localComponent.stringValue
+        this.documentId = localComponent.documentId
+    }
 
-  static fromJSON(pojo: any): LocalComponent {
-    const instance = new LocalComponent();
-    if (pojo["stringValue"] === undefined) instance.stringValue = undefined;
-    instance.stringValue = pojo["stringValue"];
-    if (pojo["documentId"] === undefined) instance.documentId = undefined;
-    instance.documentId = pojo["documentId"];
-    return instance;
-  }
+    static toJSON(instance: LocalComponent): any {
+        const pojo: any = {}
+        pojo["stringValue"] = instance.stringValue
+        pojo["documentId"] = instance.documentId
+        return pojo
+    }
+
+    static fromJSON(pojo: any): LocalComponent {
+        return new LocalComponent({stringValue: pojo["stringValue"], documentId: pojo["documentId"]})
+    }
+}
+
+interface ILocalComponent {
+    stringValue?: string
+    documentId?: string
 }
