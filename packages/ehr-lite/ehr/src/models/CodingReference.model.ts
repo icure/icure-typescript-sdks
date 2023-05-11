@@ -6,7 +6,6 @@ export class CodingReference {
     id?: string
     type?: string
     code?: string
-    context?: string
     version?: string
     label?: Map<ISO639_1, string>
 
@@ -15,7 +14,6 @@ export class CodingReference {
         pojo["id"] = instance.id
         pojo["type"] = instance.type
         pojo["code"] = instance.code
-        pojo["context"] = instance.context
         pojo["version"] = instance.version
         pojo["label"] = !!instance.label ? Object.fromEntries([...instance.label.entries()].map(([k, v]) => [k, v])) : undefined
         return pojo
@@ -29,8 +27,6 @@ export class CodingReference {
         instance.type = pojo["type"]
         if (pojo["code"] === undefined) instance.code = undefined
         instance.code = pojo["code"]
-        if (pojo["context"] === undefined) instance.context = undefined
-        instance.context = pojo["context"]
         if (pojo["version"] === undefined) instance.version = undefined
         instance.version = pojo["version"]
         if (pojo["label"] === undefined) instance.label = undefined
