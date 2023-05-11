@@ -10,8 +10,14 @@ export const mapper = createMapper({
     namingConventions: {
         source: new CamelCaseNamingConvention(),
         destination: new CamelCaseNamingConvention(),
-    }
+    },
 })
+
+export function mapTo(targetClass: Function) {
+    return function (constructor: Function) {
+        Reflect.defineMetadata('mapTo', targetClass, constructor)
+    }
+}
 
 export const initializeMapper = () => {
     initializeAnnotationMapper()
