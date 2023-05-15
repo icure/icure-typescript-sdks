@@ -22,17 +22,13 @@ export class ClassBundle {
   }
 
   public computeDeserializer(
-    variableName: string,
-    instanceName: string
+    variableName: string
   ): string[] {
     return [...this.components.entries()].flatMap(
       ([propertyName, component]) => {
         return [
-          `if (pojo["${propertyName}"] === undefined) instance.${propertyName} = undefined`,
-          `${instanceName}.${propertyName} = ${component.computeDeserializer(
-            `${variableName}["${propertyName}"]`
-          )}`,
-        ];
+            `${propertyName}: ${component.computeDeserializer(`${variableName}["${propertyName}"]`)}`
+        ]
       }
     );
   }
