@@ -14,6 +14,18 @@ export class Annotation {
     confidential?: boolean
     encryptedSelf?: string
 
+    constructor(annotation: IAnnotation | any) {
+        this.id = annotation.id
+        this.tags = annotation.tags
+        this.author = annotation.author
+        this.created = annotation.created
+        this.modified = annotation.modified
+        this.markdown = annotation.markdown
+        this.target = annotation.target
+        this.confidential = annotation.confidential
+        this.encryptedSelf = annotation.encryptedSelf
+    }
+
     static toJSON(instance: Annotation): any {
         const pojo: any = {}
         pojo["id"] = instance.id
@@ -29,25 +41,18 @@ export class Annotation {
     }
 
     static fromJSON(pojo: any): Annotation {
-        const instance = new Annotation()
-        if (pojo["id"] === undefined) instance.id = undefined
-        instance.id = pojo["id"]
-        if (pojo["tags"] === undefined) instance.tags = undefined
-        instance.tags = pojo["tags"]?.map((item: any) => CodingReference.fromJSON(item))
-        if (pojo["author"] === undefined) instance.author = undefined
-        instance.author = pojo["author"]
-        if (pojo["created"] === undefined) instance.created = undefined
-        instance.created = pojo["created"]
-        if (pojo["modified"] === undefined) instance.modified = undefined
-        instance.modified = pojo["modified"]
-        if (pojo["markdown"] === undefined) instance.markdown = undefined
-        instance.markdown = pojo["markdown"] ? new Map(pojo["markdown"].map(([k, v]: [any, any]) => [k, v])) : undefined
-        if (pojo["target"] === undefined) instance.target = undefined
-        instance.target = pojo["target"]
-        if (pojo["confidential"] === undefined) instance.confidential = undefined
-        instance.confidential = pojo["confidential"]
-        if (pojo["encryptedSelf"] === undefined) instance.encryptedSelf = undefined
-        instance.encryptedSelf = pojo["encryptedSelf"]
-        return instance
+        return new Annotation({id: pojo["id"], tags: pojo["tags"]?.map((item: any) => CodingReference.fromJSON(item)), author: pojo["author"], created: pojo["created"], modified: pojo["modified"], markdown: pojo["markdown"] ? new Map(pojo["markdown"].map(([k, v]: [any, any]) => [k, v])) : undefined, target: pojo["target"], confidential: pojo["confidential"], encryptedSelf: pojo["encryptedSelf"]})
     }
+}
+
+interface IAnnotation {
+    id?: string
+    tags?: CodingReference[]
+    author?: string
+    created?: number
+    modified?: number
+    markdown?: Map<ISO639_1, string>
+    target?: string
+    confidential?: boolean
+    encryptedSelf?: string
 }
