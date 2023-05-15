@@ -1,9 +1,20 @@
 import { Observation } from '../models/Observation.model'
-import { Annotation as AnnotationEntity, CodeStub, Content, Identifier as IdentifierEntity, ISO639_1, Service } from '@icure/api'
+import { Annotation as AnnotationEntity, CodeStub, Content, Delegation as DelegationEntity, Identifier as IdentifierEntity, ISO639_1, Service } from '@icure/api'
 import { createMap, forMember, ignore, mapFrom, mapWith } from '@automapper/core'
 import { mapper } from './mapper'
 import { Identifier } from '../models/Identifier.model'
-import { exportCryptedForeignKeys, exportDelegations, exportEncryptedSelf, exportEncryptionKeys, exportSecretForeignKeys, exportSecurityMetadata } from '../models/utils/Metadata.utils'
+import {
+    convertMapOfDelegationsToObject,
+    convertNestedMapToObject,
+    convertObjectToMapOfDelegations,
+    convertObjectToNestedMap,
+    extractCryptedForeignKeys,
+    extractDelegations,
+    extractEncryptedSelf,
+    extractEncryptionKeys,
+    extractSecretForeignKeys,
+    extractSecurityMetadata,
+} from '../models/utils/Metadata.utils'
 import { Component } from '../models/Component.model'
 import { LocalComponent } from '../models/LocalComponent.model'
 import { Annotation } from '../models/Annotation.model'
@@ -11,6 +22,7 @@ import { CodingReference } from '../models/CodingReference.model'
 import { SystemMetaDataEncrypted } from '../models/SystemMetaDataEncrypted.model'
 import { SecurityMetadata as SecurityMetadataEntity } from '@icure/api/icc-api/model/SecurityMetadata'
 import { SecurityMetadata } from '../models/SecurityMetadata.model'
+import { Delegation } from '../models/Delegation.model'
 
 function forMember_Service_id() {
     return forMember<Observation, Service>(
@@ -62,28 +74,37 @@ function forMember_Service_formIds() {
 function forMember_Service_secretForeignKeys() {
     return forMember<Observation, Service>(
         (v) => v.secretForeignKeys,
-        mapFrom((v) => exportSecretForeignKeys(v.systemMetaData))
+        mapFrom((v) => extractSecretForeignKeys(v.systemMetaData))
     )
 }
 
 function forMember_Service_cryptedForeignKeys() {
     return forMember<Observation, Service>(
         (v) => v.cryptedForeignKeys,
-        mapFrom((v) => exportCryptedForeignKeys(v.systemMetaData))
+        mapFrom((v) => {
+            const cryptedForeignKeys = extractCryptedForeignKeys(v.systemMetaData)
+            return !!cryptedForeignKeys ? convertMapOfDelegationsToObject<Delegation, DelegationEntity>(cryptedForeignKeys, (arr) => mapper.mapArray(arr, Delegation, DelegationEntity)) : []
+        })
     )
 }
 
 function forMember_Service_delegations() {
     return forMember<Observation, Service>(
         (v) => v.delegations,
-        mapFrom((v) => exportDelegations(v.systemMetaData))
+        mapFrom((v) => {
+            const delegations = extractDelegations(v.systemMetaData)
+            return !!delegations ? convertMapOfDelegationsToObject<Delegation, DelegationEntity>(delegations, (arr) => mapper.mapArray(arr, Delegation, DelegationEntity)) : []
+        })
     )
 }
 
 function forMember_Service_encryptionKeys() {
     return forMember<Observation, Service>(
         (v) => v.encryptionKeys,
-        mapFrom((v) => exportEncryptionKeys(v.systemMetaData))
+        mapFrom((v) => {
+            const encryptionKeys = extractEncryptionKeys(v.systemMetaData)
+            return !!encryptionKeys ? convertMapOfDelegationsToObject<Delegation, DelegationEntity>(encryptionKeys, (arr) => mapper.mapArray(arr, Delegation, DelegationEntity)) : []
+        })
     )
 }
 
@@ -210,51 +231,35 @@ function forMember_Service_notes() {
 function forMember_Service_qualifiedLinks() {
     return forMember<Observation, Service>(
         (v) => v.qualifiedLinks,
-        mapFrom((v) =>
-            !!v.qualifiedLinks
-                ? Array.from(v.qualifiedLinks).reduce(
-                      (acc, [key, value]) => ({
-                          ...acc,
-                          [key]: Array.from(value).reduce(
-                              (innerAcc, [innerKey, innerValue]) => ({
-                                  ...innerAcc,
-                                  [innerKey]: innerValue,
-                              }),
-                              {}
-                          ),
-                      }),
-                      {}
-                  )
-                : undefined
-        )
+        mapFrom((v) => (!!v.qualifiedLinks ? convertNestedMapToObject(v.qualifiedLinks) : undefined))
     )
 }
 
 function forMember_Service_codes() {
     return forMember<Observation, Service>(
         (v) => v.codes,
-        mapWith(CodeStub, CodingReference, (v) => v.codes)
+        mapWith(CodeStub, CodingReference, (v) => (!!v.codes ? [...v.codes] : []))
     )
 }
 
 function forMember_Service_tags() {
     return forMember<Observation, Service>(
         (v) => v.tags,
-        mapWith(CodeStub, CodingReference, (v) => v.tags)
+        mapWith(CodeStub, CodingReference, (v) => (!!v.tags ? [...v.tags] : []))
     )
 }
 
 function forMember_Service_encryptedSelf() {
     return forMember<Observation, Service>(
         (v) => v.encryptedSelf,
-        mapFrom((v) => exportEncryptedSelf(v.systemMetaData))
+        mapFrom((v) => extractEncryptedSelf(v.systemMetaData))
     )
 }
 
 function forMember_Service_securityMetadata() {
     return forMember<Observation, Service>(
         (v) => v.securityMetadata,
-        mapFrom((v) => exportSecurityMetadata(v.systemMetaData))
+        mapWith(SecurityMetadataEntity, SecurityMetadata, (v) => extractSecurityMetadata(v.systemMetaData))
     )
 }
 
@@ -368,13 +373,11 @@ function forMember_Observation_localContent() {
         (v) => v.localContent,
         mapFrom((v) => {
             const localizedContent = Object.entries(v.content ?? {})?.filter(([key, value]) => key !== 'xx')
-            const mapperLocalContent = new Map(
+            return new Map(
                 localizedContent.map(([key, value]) => {
                     return [key, mapper.map(value, Content, LocalComponent)] as [ISO639_1, LocalComponent]
                 })
             )
-
-            return mapperLocalContent
         })
     )
 }
@@ -383,7 +386,7 @@ function forMember_Observation_qualifiedLinks() {
     return forMember<Service, Observation>(
         (v) => v.qualifiedLinks,
         mapFrom((v) => {
-            !!v.qualifiedLinks ? new Map(Object.entries(v.qualifiedLinks).map(([key, value]) => [key, new Map(Object.entries(value))])) : undefined
+            !!v.qualifiedLinks ? convertObjectToNestedMap(v.qualifiedLinks) : undefined
         })
     )
 }
@@ -409,6 +412,10 @@ function forMember_Observation_systemMetaData() {
             return new SystemMetaDataEncrypted({
                 encryptedSelf: v.encryptedSelf,
                 securityMetadata: mapper.map(v.securityMetadata, SecurityMetadataEntity, SecurityMetadata),
+                cryptedForeignKeys: !!v.cryptedForeignKeys ? convertObjectToMapOfDelegations<DelegationEntity, Delegation>(v.cryptedForeignKeys, (arr) => mapper.mapArray(arr, DelegationEntity, Delegation)) : undefined,
+                delegations: !!v.delegations ? convertObjectToMapOfDelegations<DelegationEntity, Delegation>(v.delegations, (arr) => mapper.mapArray(arr, DelegationEntity, Delegation)) : undefined,
+                encryptionKeys: !!v.encryptionKeys ? convertObjectToMapOfDelegations<DelegationEntity, Delegation>(v.encryptionKeys, (arr) => mapper.mapArray(arr, DelegationEntity, Delegation)) : undefined,
+                secretForeignKeys: v.secretForeignKeys,
             })
         })
     )

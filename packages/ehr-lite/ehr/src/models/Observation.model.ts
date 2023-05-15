@@ -26,8 +26,8 @@ export class Observation {
     performer?: string
     localContent?: Map<ISO639_1, LocalComponent>
     qualifiedLinks?: Map<string, Map<string, string>>
-    codes?: CodingReference[]
-    tags?: CodingReference[]
+    codes?: Set<CodingReference>
+    tags?: Set<CodingReference>
     systemMetaData?: SystemMetaDataEncrypted
     notes?: Annotation[]
 
@@ -74,15 +74,15 @@ export class Observation {
         pojo["performer"] = instance.performer
         pojo["localContent"] = !!instance.localContent ? Object.fromEntries([...instance.localContent.entries()].map(([k, v]) => [k, LocalComponent.toJSON(v)])) : undefined
         pojo["qualifiedLinks"] = !!instance.qualifiedLinks ? Object.fromEntries([...instance.qualifiedLinks.entries()].map(([k, v]) => [k, Object.fromEntries([...v.entries()].map(([k, v]) => [k, v]))])) : undefined
-        pojo["codes"] = instance.codes?.map(item => CodingReference.toJSON(item))
-        pojo["tags"] = instance.tags?.map(item => CodingReference.toJSON(item))
+        pojo["codes"] = Array.from([...instance.codes ?? []]?.map(item => CodingReference.toJSON(item)) ?? [])
+        pojo["tags"] = Array.from([...instance.tags ?? []]?.map(item => CodingReference.toJSON(item)) ?? [])
         pojo["systemMetaData"] = !!instance.systemMetaData ? SystemMetaDataEncrypted.toJSON(instance.systemMetaData) : undefined
         pojo["notes"] = instance.notes?.map(item => Annotation.toJSON(item))
         return pojo
     }
 
     static fromJSON(pojo: any): Observation {
-        return new Observation({id: pojo["id"], transactionId: pojo["transactionId"], identifiers: pojo["identifiers"]?.map((item: any) => Identifier.fromJSON(item)), batchId: pojo["batchId"], healthcareElementIds: pojo["healthcareElementIds"]?.map((item: any) => item), index: pojo["index"], component: !!pojo["component"] ? Component.fromJSON(pojo["component"]) : undefined, valueDate: pojo["valueDate"], openingDate: pojo["openingDate"], closingDate: pojo["closingDate"], created: pojo["created"], modified: pojo["modified"], endOfLife: pojo["endOfLife"], author: pojo["author"], performer: pojo["performer"], localContent: pojo["localContent"] ? new Map(pojo["localContent"].map(([k, v]: [any, any]) => [k, LocalComponent.fromJSON(v)])) : undefined, qualifiedLinks: pojo["qualifiedLinks"] ? new Map(pojo["qualifiedLinks"].map(([k, v]: [any, any]) => [k, new Map(v.map(([k, v]: [any, any]) => [k, v]))])) : undefined, codes: pojo["codes"]?.map((item: any) => CodingReference.fromJSON(item)), tags: pojo["tags"]?.map((item: any) => CodingReference.fromJSON(item)), systemMetaData: !!pojo["systemMetaData"] ? SystemMetaDataEncrypted.fromJSON(pojo["systemMetaData"]) : undefined, notes: pojo["notes"]?.map((item: any) => Annotation.fromJSON(item))})
+        return new Observation({id: pojo["id"], transactionId: pojo["transactionId"], identifiers: pojo["identifiers"]?.map((item: any) => Identifier.fromJSON(item)), batchId: pojo["batchId"], healthcareElementIds: pojo["healthcareElementIds"]?.map((item: any) => item), index: pojo["index"], component: !!pojo["component"] ? Component.fromJSON(pojo["component"]) : undefined, valueDate: pojo["valueDate"], openingDate: pojo["openingDate"], closingDate: pojo["closingDate"], created: pojo["created"], modified: pojo["modified"], endOfLife: pojo["endOfLife"], author: pojo["author"], performer: pojo["performer"], localContent: pojo["localContent"] ? new Map(pojo["localContent"].map(([k, v]: [any, any]) => [k, LocalComponent.fromJSON(v)])) : undefined, qualifiedLinks: pojo["qualifiedLinks"] ? new Map(pojo["qualifiedLinks"].map(([k, v]: [any, any]) => [k, new Map(v.map(([k, v]: [any, any]) => [k, v]))])) : undefined, codes: new Set(pojo["codes"]?.map((item: any) => CodingReference.fromJSON(item)) ?? []), tags: new Set(pojo["tags"]?.map((item: any) => CodingReference.fromJSON(item)) ?? []), systemMetaData: !!pojo["systemMetaData"] ? SystemMetaDataEncrypted.fromJSON(pojo["systemMetaData"]) : undefined, notes: pojo["notes"]?.map((item: any) => Annotation.fromJSON(item))})
     }
 }
 

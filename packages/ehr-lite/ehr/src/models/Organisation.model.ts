@@ -58,6 +58,7 @@ export class Organisation {
         pojo["deletionDate"] = instance.deletionDate
         pojo["name"] = instance.name
         pojo["parentId"] = instance.parentId
+        pojo["userId"] = instance.userId
         pojo["addresses"] = instance.addresses?.map(item => Location.toJSON(item))
         pojo["languages"] = instance.languages?.map(item => item)
         pojo["picture"] = !!instance.picture ? ua2b64(instance.picture) : undefined
@@ -68,7 +69,7 @@ export class Organisation {
     }
 
     static fromJSON(pojo: any): Organisation {
-        return new Organisation({id: pojo["id"], rev: pojo["rev"], created: pojo["created"], modified: pojo["modified"], identifiers: pojo["identifiers"]?.map((item: any) => Identifier.fromJSON(item)), tags: pojo["tags"]?.map((item: any) => CodingReference.fromJSON(item)), codes: pojo["codes"]?.map((item: any) => CodingReference.fromJSON(item)), deletionDate: pojo["deletionDate"], name: pojo["name"], parentId: pojo["parentId"], addresses: pojo["addresses"]?.map((item: any) => Location.fromJSON(item)), languages: pojo["languages"]?.map((item: any) => item), picture: !!pojo["picture"] ? b64_2ab(pojo["picture"]) : undefined, description: pojo["description"], properties: pojo["properties"]?.map((item: any) => Property.fromJSON(item)), systemMetaData: !!pojo["systemMetaData"] ? SystemMetaDataOwner.fromJSON(pojo["systemMetaData"]) : undefined})
+        return new Organisation({id: pojo["id"], rev: pojo["rev"], created: pojo["created"], modified: pojo["modified"], identifiers: pojo["identifiers"]?.map((item: any) => Identifier.fromJSON(item)), tags: pojo["tags"]?.map((item: any) => CodingReference.fromJSON(item)), codes: pojo["codes"]?.map((item: any) => CodingReference.fromJSON(item)), deletionDate: pojo["deletionDate"], name: pojo["name"], parentId: pojo["parentId"], userId: pojo["userId"], addresses: pojo["addresses"]?.map((item: any) => Location.fromJSON(item)), languages: pojo["languages"]?.map((item: any) => item), picture: !!pojo["picture"] ? b64_2ab(pojo["picture"]) : undefined, description: pojo["description"], properties: pojo["properties"]?.map((item: any) => Property.fromJSON(item)), systemMetaData: !!pojo["systemMetaData"] ? SystemMetaDataOwner.fromJSON(pojo["systemMetaData"]) : undefined})
     }
 }
 
