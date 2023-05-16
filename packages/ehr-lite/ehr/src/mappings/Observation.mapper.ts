@@ -4,9 +4,9 @@ import { createMap, forMember, ignore, mapFrom, mapWith } from '@automapper/core
 import { mapper } from './mapper'
 import { Identifier } from '../models/Identifier.model'
 import {
-    convertMapOfDelegationsToObject,
+    convertMapOfArrayOfGenericToObject,
     convertNestedMapToObject,
-    convertObjectToMapOfDelegations,
+    convertObjectToMapOfArrayOfGeneric,
     convertObjectToNestedMap,
     extractCryptedForeignKeys,
     extractDelegations,
@@ -83,7 +83,7 @@ function forMember_Service_cryptedForeignKeys() {
         (v) => v.cryptedForeignKeys,
         mapFrom((v) => {
             const cryptedForeignKeys = extractCryptedForeignKeys(v.systemMetaData)
-            return !!cryptedForeignKeys ? convertMapOfDelegationsToObject<Delegation, DelegationEntity>(cryptedForeignKeys, (arr) => mapper.mapArray(arr, Delegation, DelegationEntity)) : []
+            return !!cryptedForeignKeys ? convertMapOfArrayOfGenericToObject<Delegation, DelegationEntity>(cryptedForeignKeys, (arr) => mapper.mapArray(arr, Delegation, DelegationEntity)) : []
         })
     )
 }
@@ -93,7 +93,7 @@ function forMember_Service_delegations() {
         (v) => v.delegations,
         mapFrom((v) => {
             const delegations = extractDelegations(v.systemMetaData)
-            return !!delegations ? convertMapOfDelegationsToObject<Delegation, DelegationEntity>(delegations, (arr) => mapper.mapArray(arr, Delegation, DelegationEntity)) : []
+            return !!delegations ? convertMapOfArrayOfGenericToObject<Delegation, DelegationEntity>(delegations, (arr) => mapper.mapArray(arr, Delegation, DelegationEntity)) : []
         })
     )
 }
@@ -103,7 +103,7 @@ function forMember_Service_encryptionKeys() {
         (v) => v.encryptionKeys,
         mapFrom((v) => {
             const encryptionKeys = extractEncryptionKeys(v.systemMetaData)
-            return !!encryptionKeys ? convertMapOfDelegationsToObject<Delegation, DelegationEntity>(encryptionKeys, (arr) => mapper.mapArray(arr, Delegation, DelegationEntity)) : []
+            return !!encryptionKeys ? convertMapOfArrayOfGenericToObject<Delegation, DelegationEntity>(encryptionKeys, (arr) => mapper.mapArray(arr, Delegation, DelegationEntity)) : []
         })
     )
 }
@@ -412,9 +412,9 @@ function forMember_Observation_systemMetaData() {
             return new SystemMetaDataEncrypted({
                 encryptedSelf: v.encryptedSelf,
                 securityMetadata: mapper.map(v.securityMetadata, SecurityMetadataEntity, SecurityMetadata),
-                cryptedForeignKeys: !!v.cryptedForeignKeys ? convertObjectToMapOfDelegations<DelegationEntity, Delegation>(v.cryptedForeignKeys, (arr) => mapper.mapArray(arr, DelegationEntity, Delegation)) : undefined,
-                delegations: !!v.delegations ? convertObjectToMapOfDelegations<DelegationEntity, Delegation>(v.delegations, (arr) => mapper.mapArray(arr, DelegationEntity, Delegation)) : undefined,
-                encryptionKeys: !!v.encryptionKeys ? convertObjectToMapOfDelegations<DelegationEntity, Delegation>(v.encryptionKeys, (arr) => mapper.mapArray(arr, DelegationEntity, Delegation)) : undefined,
+                cryptedForeignKeys: !!v.cryptedForeignKeys ? convertObjectToMapOfArrayOfGeneric<DelegationEntity, Delegation>(v.cryptedForeignKeys, (arr) => mapper.mapArray(arr, DelegationEntity, Delegation)) : undefined,
+                delegations: !!v.delegations ? convertObjectToMapOfArrayOfGeneric<DelegationEntity, Delegation>(v.delegations, (arr) => mapper.mapArray(arr, DelegationEntity, Delegation)) : undefined,
+                encryptionKeys: !!v.encryptionKeys ? convertObjectToMapOfArrayOfGeneric<DelegationEntity, Delegation>(v.encryptionKeys, (arr) => mapper.mapArray(arr, DelegationEntity, Delegation)) : undefined,
                 secretForeignKeys: v.secretForeignKeys,
             })
         })

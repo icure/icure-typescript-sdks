@@ -87,13 +87,24 @@ export function convertObjectToDeepNestedMap(obj: { [key: string]: { [key: strin
     ]));
 }
 
-export function convertMapOfDelegationsToObject<T, U>(map: Map<string, T[]>, mapping: (t: T[]) => U[]) : { [key: string]: U[] } {
+export function convertMapOfArrayOfGenericToObject<T, U>(map: Map<string, T[]>, mapping: (t: T[]) => U[]) : { [key: string]: U[] } {
     return Array.from(map).reduce((obj, [key, value]) => {
         obj[key] = mapping(value);
         return obj;
     }, {} as { [key: string]: U[] });
 }
 
-export function convertObjectToMapOfDelegations<T, U>(obj: { [key: string]: U[] }, mapping: (u: U[]) => T[]) : Map<string, T[]> {
+export function convertObjectToMapOfArrayOfGeneric<T, U>(obj: { [key: string]: U[] }, mapping: (u: U[]) => T[]) : Map<string, T[]> {
+    return new Map(Object.entries(obj).map(([key, value]) => [key, mapping(value)]));
+}
+
+export function convertMapOfGenericToObject<T, U>(map: Map<string, T>, mapping: (t: T) => U) : { [key: string]: U } {
+    return Array.from(map).reduce((obj, [key, value]) => {
+        obj[key] = mapping(value);
+        return obj;
+    }, {} as { [key: string]: U });
+}
+
+export function convertObjectToMapOfGeneric<T, U>(obj: { [key: string]: U }, mapping: (u: U) => T) : Map<string, T> {
     return new Map(Object.entries(obj).map(([key, value]) => [key, mapping(value)]));
 }

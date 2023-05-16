@@ -6,7 +6,7 @@ import { CodingReference } from '../models/CodingReference.model'
 import { Annotation } from '../models/Annotation.model'
 import { Annotation as AnnotationEntity } from '@icure/api/icc-api/model/Annotation'
 import { Identifier } from '../models/Identifier.model'
-import { convertObjectToMapOfDelegations, extractCryptedForeignKeys, extractDelegations, extractEncryptedSelf, extractEncryptionKeys, extractSecretForeignKeys, extractSecurityMetadata } from './utils/Metadata.utils'
+import { convertObjectToMapOfArrayOfGeneric, extractCryptedForeignKeys, extractDelegations, extractEncryptedSelf, extractEncryptionKeys, extractSecretForeignKeys, extractSecurityMetadata } from './utils/Metadata.utils'
 import { Delegation } from '../models/Delegation.model'
 import { SecurityMetadata } from '../models/SecurityMetadata.model'
 import { SystemMetaDataEncrypted } from '../models/SystemMetaDataEncrypted.model'
@@ -436,7 +436,7 @@ function forMember_Condition_systemMetaData() {
                     secretForeignKeys: v.secretForeignKeys,
                     cryptedForeignKeys: !!v.cryptedForeignKeys ? new Map(Object.entries(v.cryptedForeignKeys).map(([k, v]) => [k, mapper.mapArray(v, Delegation, DelegationEntity)])) : undefined,
                     delegations: !!v.delegations ? new Map(Object.entries(v.delegations).map(([k, v]) => [k, mapper.mapArray(v, Delegation, DelegationEntity)])) : undefined,
-                    encryptionKeys: !!v.encryptionKeys ? convertObjectToMapOfDelegations<DelegationEntity, Delegation>(v.encryptionKeys, (arr) => mapper.mapArray(arr, DelegationEntity, Delegation)) : undefined,
+                    encryptionKeys: !!v.encryptionKeys ? convertObjectToMapOfArrayOfGeneric<DelegationEntity, Delegation>(v.encryptionKeys, (arr) => mapper.mapArray(arr, DelegationEntity, Delegation)) : undefined,
                     securityMetadata: mapper.map(v.securityMetadata, SecurityMetadataEntity, SecurityMetadata),
                 })
         )

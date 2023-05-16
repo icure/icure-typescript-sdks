@@ -12,12 +12,12 @@ import { RelatedPractitioner } from '../models/RelatedPractitioner.model'
 import { Property } from '../models/Property.model'
 import {
     convertDeepNestedMapToObject,
-    convertMapOfDelegationsToObject,
+    convertMapOfArrayOfGenericToObject,
     convertMapToObject,
     convertNestedMapToObject,
     convertObjectToDeepNestedMap,
     convertObjectToMap,
-    convertObjectToMapOfDelegations,
+    convertObjectToMapOfArrayOfGeneric,
     convertObjectToNestedMap,
     extractAesExchangeKeys,
     extractDelegations,
@@ -441,7 +441,7 @@ function forMember_PatientEntity_cryptedForeignKeys() {
         (v) => v.cryptedForeignKeys,
         mapFrom((p) => {
             const delegations = extractDelegations(p.systemMetaData)
-            return !!delegations ? convertMapOfDelegationsToObject<Delegation, DelegationEntity>(delegations, (arr) => mapper.mapArray(arr, Delegation, DelegationEntity)) : []
+            return !!delegations ? convertMapOfArrayOfGenericToObject<Delegation, DelegationEntity>(delegations, (arr) => mapper.mapArray(arr, Delegation, DelegationEntity)) : []
         })
     )
 }
@@ -451,7 +451,7 @@ function forMember_PatientEntity_delegations() {
         (v) => v.delegations,
         mapFrom((v) => {
             const delegations = extractDelegations(v.systemMetaData)
-            return !!delegations ? convertMapOfDelegationsToObject<Delegation, DelegationEntity>(delegations, (arr) => mapper.mapArray(arr, Delegation, DelegationEntity)) : []
+            return !!delegations ? convertMapOfArrayOfGenericToObject<Delegation, DelegationEntity>(delegations, (arr) => mapper.mapArray(arr, Delegation, DelegationEntity)) : []
         })
     )
 }
@@ -461,7 +461,7 @@ function forMember_PatientEntity_encryptionKeys() {
         (v) => v.encryptionKeys,
         mapFrom((v) => {
             const encryptionKeys = extractEncryptionKeys(v.systemMetaData)
-            return !!encryptionKeys ? convertMapOfDelegationsToObject<Delegation, DelegationEntity>(encryptionKeys, (arr) => mapper.mapArray(arr, Delegation, DelegationEntity)) : []
+            return !!encryptionKeys ? convertMapOfArrayOfGenericToObject<Delegation, DelegationEntity>(encryptionKeys, (arr) => mapper.mapArray(arr, Delegation, DelegationEntity)) : []
         })
     )
 }
@@ -808,9 +808,9 @@ function forMember_Patient_systemMetaData() {
             return new SystemMetaDataOwnerEncrypted({
                 encryptedSelf: p.encryptedSelf,
                 securityMetadata: mapper.map(p.securityMetadata, SecurityMetadataEntity, SecurityMetadata),
-                cryptedForeignKeys: !!p.cryptedForeignKeys ? convertObjectToMapOfDelegations<DelegationEntity, Delegation>(p.cryptedForeignKeys, (arr) => mapper.mapArray(arr, DelegationEntity, Delegation)) : undefined,
-                delegations: !!p.delegations ? convertObjectToMapOfDelegations<DelegationEntity, Delegation>(p.delegations, (arr) => mapper.mapArray(arr, DelegationEntity, Delegation)) : undefined,
-                encryptionKeys: !!p.encryptionKeys ? convertObjectToMapOfDelegations<DelegationEntity, Delegation>(p.encryptionKeys, (arr) => mapper.mapArray(arr, DelegationEntity, Delegation)) : undefined,
+                cryptedForeignKeys: !!p.cryptedForeignKeys ? convertObjectToMapOfArrayOfGeneric<DelegationEntity, Delegation>(p.cryptedForeignKeys, (arr) => mapper.mapArray(arr, DelegationEntity, Delegation)) : undefined,
+                delegations: !!p.delegations ? convertObjectToMapOfArrayOfGeneric<DelegationEntity, Delegation>(p.delegations, (arr) => mapper.mapArray(arr, DelegationEntity, Delegation)) : undefined,
+                encryptionKeys: !!p.encryptionKeys ? convertObjectToMapOfArrayOfGeneric<DelegationEntity, Delegation>(p.encryptionKeys, (arr) => mapper.mapArray(arr, DelegationEntity, Delegation)) : undefined,
                 secretForeignKeys: p.secretForeignKeys,
                 hcPartyKeys: !!p.hcPartyKeys ? new Map(Object.entries(p.hcPartyKeys)) : undefined,
                 publicKey: p.publicKey,
