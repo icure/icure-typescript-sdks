@@ -20,7 +20,7 @@ import {
     extractTransferKeys,
 } from './utils/Metadata.utils'
 import { SystemMetaDataOwner } from '../models/SystemMetaDataOwner.model'
-import {healthcareProfessionalIdentifiers} from "./utils/HealthProfessional.utils";
+import { healthcareProfessionalIdentifiers } from './utils/HealthProfessional.utils'
 
 function forMember_HealthcareParty_id() {
     return forMember<Organisation, HealthcareParty>(
