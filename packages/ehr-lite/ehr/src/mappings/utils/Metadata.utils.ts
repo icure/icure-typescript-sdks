@@ -94,7 +94,7 @@ export function convertMapOfArrayOfGenericToObject<T, U>(map: Map<string, T[]>, 
     }, {} as { [key: string]: U[] });
 }
 
-export function convertObjectToMapOfArrayOfGeneric<T, U>(obj: { [key: string]: U[] }, mapping: (u: U[]) => T[]) : Map<string, T[]> {
+export function convertObjectToMapOfArrayOfGeneric<U, T>(obj: { [key: string]: U[] }, mapping: (u: U[]) => T[]) : Map<string, T[]> {
     return new Map(Object.entries(obj).map(([key, value]) => [key, mapping(value)]));
 }
 
@@ -105,6 +105,6 @@ export function convertMapOfGenericToObject<T, U>(map: Map<string, T>, mapping: 
     }, {} as { [key: string]: U });
 }
 
-export function convertObjectToMapOfGeneric<T, U>(obj: { [key: string]: U }, mapping: (u: U) => T) : Map<string, T> {
+export function convertObjectToMapOfGeneric<U, T>(obj: { [key: string]: U }, mapping: (u: U) => T) : Map<string, T> {
     return new Map(Object.entries(obj).map(([key, value]) => [key, mapping(value)]));
 }
