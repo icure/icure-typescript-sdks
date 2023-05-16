@@ -1,27 +1,35 @@
-import { RelatedPersonStatusEnum } from "./enums/RelatedPersonStatus.enum";
-import { RelatedPersonTypeEnum } from "./enums/RelatedPersonType.enum";
+import { Partnership } from '@icure/api'
+import { mapTo } from '../mappings/mapper'
+import { RelatedPersonStatusEnum } from './enums/RelatedPersonStatus.enum'
+import { RelatedPersonTypeEnum } from './enums/RelatedPersonType.enum'
 
+@mapTo(Partnership)
 export class RelatedPerson {
-  type?: RelatedPersonTypeEnum;
-  status?: RelatedPersonStatusEnum;
-  personId?: string;
+    type?: RelatedPersonTypeEnum
+    status?: RelatedPersonStatusEnum
+    personId?: string
 
-  static toJSON(instance: RelatedPerson): any {
-    const pojo: any = {};
-    pojo["type"] = instance.type;
-    pojo["status"] = instance.status;
-    pojo["personId"] = instance.personId;
-    return pojo;
-  }
+    constructor(relatedPerson: IRelatedPerson | any) {
+        this.type = relatedPerson.type
+        this.status = relatedPerson.status
+        this.personId = relatedPerson.personId
+    }
 
-  static fromJSON(pojo: any): RelatedPerson {
-    const instance = new RelatedPerson();
-    if (pojo["type"] === undefined) instance.type = undefined;
-    instance.type = pojo["type"];
-    if (pojo["status"] === undefined) instance.status = undefined;
-    instance.status = pojo["status"];
-    if (pojo["personId"] === undefined) instance.personId = undefined;
-    instance.personId = pojo["personId"];
-    return instance;
-  }
+    static toJSON(instance: RelatedPerson): any {
+        const pojo: any = {}
+        pojo['type'] = instance.type
+        pojo['status'] = instance.status
+        pojo['personId'] = instance.personId
+        return pojo
+    }
+
+    static fromJSON(pojo: any): RelatedPerson {
+        return new RelatedPerson({ type: pojo['type'], status: pojo['status'], personId: pojo['personId'] })
+    }
+}
+
+interface IRelatedPerson {
+    type?: RelatedPersonTypeEnum
+    status?: RelatedPersonStatusEnum
+    personId?: string
 }
