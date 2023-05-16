@@ -1,4 +1,4 @@
-import { createMap, forMember, ignore, mapFrom, mapWith } from '@automapper/core'
+import { createMap, forMember, fromValue, ignore, mapFrom, mapWith } from '@automapper/core'
 import { mapper } from './mapper'
 import { CodeStub, Delegation as DelegationEntity, HealthElement, Identifier as IdentifierEntity, SecurityMetadata as SecurityMetadataEntity } from '@icure/api'
 import { Condition } from '../models/Condition.model'
@@ -262,7 +262,7 @@ function forMember_HealthElement_securityMetadata() {
 }
 
 function forMember_HealthElement__type() {
-    return forMember<Condition, HealthElement>((v) => v._type, ignore())
+    return forMember<Condition, HealthElement>((v) => v._type, fromValue('HealthElement'))
 }
 
 function forMember_Condition_id() {
