@@ -14,7 +14,7 @@ import {
     extractEncryptionKeys,
     extractSecretForeignKeys,
     extractSecurityMetadata,
-} from '../models/utils/Metadata.utils'
+} from './utils/Metadata.utils'
 import { Component } from '../models/Component.model'
 import { LocalComponent } from '../models/LocalComponent.model'
 import { Annotation } from '../models/Annotation.model'

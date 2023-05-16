@@ -1,6 +1,6 @@
-import {SystemMetaDataEncrypted} from "../SystemMetaDataEncrypted.model";
-import {SystemMetaDataOwnerEncrypted} from "../SystemMetaDataOwnerEncrypted.model";
-import {SystemMetaDataOwner} from "../SystemMetaDataOwner.model";
+import {SystemMetaDataEncrypted} from "../../models/SystemMetaDataEncrypted.model";
+import {SystemMetaDataOwnerEncrypted} from "../../models/SystemMetaDataOwnerEncrypted.model";
+import {SystemMetaDataOwner} from "../../models/SystemMetaDataOwner.model";
 import {Delegation as DelegationEntity} from "@icure/api";
 
 

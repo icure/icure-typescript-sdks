@@ -29,7 +29,7 @@ import {
     extractSecretForeignKeys,
     extractSecurityMetadata,
     extractTransferKeys,
-} from '../models/utils/Metadata.utils'
+} from './utils/Metadata.utils'
 import { Delegation } from '../models/Delegation.model'
 import { Delegation as DelegationEntity } from '@icure/api/icc-api/model/Delegation'
 import { SecurityMetadata } from '../models/SecurityMetadata.model'

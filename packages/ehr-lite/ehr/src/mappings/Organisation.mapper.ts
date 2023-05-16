@@ -18,8 +18,9 @@ import {
     extractPrivateKeyShamirPartitions,
     extractPublicKey,
     extractTransferKeys,
-} from '../models/utils/Metadata.utils'
+} from './utils/Metadata.utils'
 import { SystemMetaDataOwner } from '../models/SystemMetaDataOwner.model'
+import {healthcareProfessionalIdentifiers} from "./utils/HealthProfessional.utils";
 
 function forMember_HealthcareParty_id() {
     return forMember<Organisation, HealthcareParty>(
@@ -421,7 +422,7 @@ function forMember_Organisation_systemMetaData() {
 function forMember_Organisation_identifiers() {
     return forMember<HealthcareParty, Organisation>(
         (v) => v.identifiers,
-        mapWith(Identifier, IdentifierEntity, (v) => v.identifier)
+        mapWith(Identifier, IdentifierEntity, (h) => healthcareProfessionalIdentifiers(h))
     )
 }
 
