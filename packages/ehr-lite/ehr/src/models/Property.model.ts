@@ -16,6 +16,7 @@ export class Property {
         this.type = property.type
         this.typedValue = property.typedValue
         this.deleted = property.deleted
+        this.encryptedSelf = property.encryptedSelf
     }
 
     static toJSON(instance: Property): any {
