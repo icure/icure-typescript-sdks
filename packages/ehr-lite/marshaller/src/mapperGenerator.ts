@@ -82,25 +82,9 @@ export const mapperGenerator = (project: Project) => {
             .map((p) => p.getName())
             .map((p) => `forMember_${className}_${p}`)
 
-        mapperSourceFile.addFunction({
-            name: 'initialize' + mapperClassName + 'Mapper',
-            isExported: true,
-            statements: (writer) => {
-                writer
-                    .writeLine(
-                        `createMap(mapper, ${className}, ${iCureTargetClassName}, ${ehrClassToICureClassFunctions?.map(f => `${f}()`).join(', ')})`
-                    )
-                    .blankLine()
-                    .writeLine(
-                        `createMap(mapper, ${iCureTargetClassName}, ${className}, ${iCureClassToEhrClassFunctions?.map(f => `${f}()`).join(', ')})`
-                    )
-            },
-        })
-
         const mapperFileFunctions = mapperSourceFile.getFunctions()
-
-        const ehrClassToICureClassFunctionsToCreate = ehrClassToICureClassFunctions?.filter(f => !mapperFileFunctions.some(mff => mff.getName() === f))
-        const iCureClassToEhrClassFunctionsToCreate = iCureClassToEhrClassFunctions?.filter(f => !mapperFileFunctions.some(mff => mff.getName() === f))
+        const ehrClassToICureClassFunctionsToCreate = ehrClassToICureClassFunctions?.filter((f) => !mapperFileFunctions.some((mff) => mff.getName() === f))
+        const iCureClassToEhrClassFunctionsToCreate = iCureClassToEhrClassFunctions?.filter((f) => !mapperFileFunctions.some((mff) => mff.getName() === f))
 
         ehrClassToICureClassFunctionsToCreate?.forEach((f) => {
             mapperSourceFile.addFunction({
@@ -120,6 +104,16 @@ export const mapperGenerator = (project: Project) => {
             })
         })
 
+        mapperSourceFile.addFunction({
+            name: 'initialize' + mapperClassName + 'Mapper',
+            isExported: true,
+            statements: (writer) => {
+                writer
+                    .writeLine(`createMap(mapper, ${className}, ${iCureTargetClassName}, ${ehrClassToICureClassFunctions?.map((f) => `${f}()`).join(', ')})`)
+                    .blankLine()
+                    .writeLine(`createMap(mapper, ${iCureTargetClassName}, ${className}, ${iCureClassToEhrClassFunctions?.map((f) => `${f}()`).join(', ')})`)
+            },
+        })
     })
 
     const mapperSourceFile = project.getSourceFile('mapper.ts')
@@ -131,17 +125,21 @@ export const mapperGenerator = (project: Project) => {
             mapperFiles.forEach(([_mapperClassName, _mapperSourceFile, functionName]) => {
                 writer.writeLine(`${functionName}()`)
             })
-        }
+        },
     })
 
-    mapperSourceFile?.addImportDeclarations(mapperFiles.map(([mapperClassName, _msf, functionName]) => {
-        return {
-            moduleSpecifier: `./${mapperClassName}.mapper`,
-            namedImports: [{
-                name: functionName
-            }]
-        }
-    }))
+    mapperSourceFile?.addImportDeclarations(
+        mapperFiles.map(([mapperClassName, _msf, functionName]) => {
+            return {
+                moduleSpecifier: `./${mapperClassName}.mapper`,
+                namedImports: [
+                    {
+                        name: functionName,
+                    },
+                ],
+            }
+        })
+    )
 
     mapperSourceFile?.organizeImports()
 
