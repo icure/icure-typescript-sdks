@@ -1,5 +1,6 @@
 import { SecureDelegation as SecureDelegationEntity } from '@icure/api/icc-api/model/SecureDelegation'
 import { mapTo } from '../mappings/mapper'
+import {AccessLevelEnum} from "./enums/AccessLevel.enum";
 
 @mapTo(SecureDelegationEntity)
 export class SecureDelegation {
@@ -64,7 +65,7 @@ export class SecureDelegation {
      * require to modify the entity and the data owner has read-only permissions.
      * Delegations without any parents will always have full read-write permissions.
      */
-    permissions: SecureDelegation.AccessLevelEnum
+    permissions: AccessLevelEnum
 
     static toJSON(instance: SecureDelegation): any {
         const pojo: any = {}
@@ -95,14 +96,6 @@ export class SecureDelegation {
     }
 }
 
-export declare namespace SecureDelegation {
-    type AccessLevelEnum = 'READ' | 'WRITE'
-    const AccessLevelEnum: {
-        READ: AccessLevelEnum
-        WRITE: AccessLevelEnum
-    }
-}
-
 interface ISecureDelegation {
     delegator?: string
     delegate?: string
@@ -112,5 +105,5 @@ interface ISecureDelegation {
     parentDelegations?: string[]
     exchangeDataId?: string
     encryptedExchangeDataId?: Map<string, string>
-    permissions: SecureDelegation.AccessLevelEnum
+    permissions: AccessLevelEnum
 }
