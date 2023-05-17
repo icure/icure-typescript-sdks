@@ -47,14 +47,14 @@ export class SystemMetaDataOwnerEncrypted {
     static fromJSON(pojo: any): SystemMetaDataOwnerEncrypted {
         return new SystemMetaDataOwnerEncrypted({
             publicKey: pojo['publicKey'],
-            hcPartyKeys: pojo['hcPartyKeys'] ? new Map(pojo['hcPartyKeys'].map(([k, v]: [any, any]) => [k, v.map((item: any) => item)])) : undefined,
-            privateKeyShamirPartitions: pojo['privateKeyShamirPartitions'] ? new Map(pojo['privateKeyShamirPartitions'].map(([k, v]: [any, any]) => [k, v])) : undefined,
+            hcPartyKeys: pojo['hcPartyKeys'] ? new Map(Object.entries(pojo['hcPartyKeys']).map(([k, v]: [any, any]) => [k, v.map((item: any) => item)])) : undefined,
+            privateKeyShamirPartitions: pojo['privateKeyShamirPartitions'] ? new Map(Object.entries(pojo['privateKeyShamirPartitions']).map(([k, v]: [any, any]) => [k, v])) : undefined,
             secretForeignKeys: pojo['secretForeignKeys']?.map((item: any) => item),
-            cryptedForeignKeys: pojo['cryptedForeignKeys'] ? new Map(pojo['cryptedForeignKeys'].map(([k, v]: [any, any]) => [k, v.map((item: any) => Delegation.fromJSON(item))])) : undefined,
-            delegations: pojo['delegations'] ? new Map(pojo['delegations'].map(([k, v]: [any, any]) => [k, v.map((item: any) => Delegation.fromJSON(item))])) : undefined,
-            encryptionKeys: pojo['encryptionKeys'] ? new Map(pojo['encryptionKeys'].map(([k, v]: [any, any]) => [k, v.map((item: any) => Delegation.fromJSON(item))])) : undefined,
-            aesExchangeKeys: pojo['aesExchangeKeys'] ? new Map(pojo['aesExchangeKeys'].map(([k, v]: [any, any]) => [k, new Map(v.map(([k, v]: [any, any]) => [k, new Map(v.map(([k, v]: [any, any]) => [k, v]))]))])) : undefined,
-            transferKeys: pojo['transferKeys'] ? new Map(pojo['transferKeys'].map(([k, v]: [any, any]) => [k, new Map(v.map(([k, v]: [any, any]) => [k, v]))])) : undefined,
+            cryptedForeignKeys: pojo['cryptedForeignKeys'] ? new Map(Object.entries(pojo['cryptedForeignKeys']).map(([k, v]: [any, any]) => [k, v.map((item: any) => Delegation.fromJSON(item))])) : undefined,
+            delegations: pojo['delegations'] ? new Map(Object.entries(pojo['delegations']).map(([k, v]: [any, any]) => [k, v.map((item: any) => Delegation.fromJSON(item))])) : undefined,
+            encryptionKeys: pojo['encryptionKeys'] ? new Map(Object.entries(pojo['encryptionKeys']).map(([k, v]: [any, any]) => [k, v.map((item: any) => Delegation.fromJSON(item))])) : undefined,
+            aesExchangeKeys: pojo['aesExchangeKeys'] ? new Map(Object.entries(pojo['aesExchangeKeys']).map(([k, v]: [any, any]) => [k, new Map(Object.entries(v).map(([k, v]: [any, any]) => [k, new Map(Object.entries(v).map(([k, v]: [any, any]) => [k, v]))]))])) : undefined,
+            transferKeys: pojo['transferKeys'] ? new Map(Object.entries(pojo['transferKeys']).map(([k, v]: [any, any]) => [k, new Map(Object.entries(v).map(([k, v]: [any, any]) => [k, v]))])) : undefined,
             securityMetadata: !!pojo['securityMetadata'] ? SecurityMetadata.fromJSON(pojo['securityMetadata']) : undefined,
             encryptedSelf: pojo['encryptedSelf'],
         })

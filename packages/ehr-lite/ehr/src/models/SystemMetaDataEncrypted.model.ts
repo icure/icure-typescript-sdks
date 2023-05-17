@@ -32,9 +32,9 @@ export class SystemMetaDataEncrypted {
     static fromJSON(pojo: any): SystemMetaDataEncrypted {
         return new SystemMetaDataEncrypted({
             secretForeignKeys: pojo['secretForeignKeys']?.map((item: any) => item),
-            cryptedForeignKeys: pojo['cryptedForeignKeys'] ? new Map(pojo['cryptedForeignKeys'].map(([k, v]: [any, any]) => [k, v.map((item: any) => Delegation.fromJSON(item))])) : undefined,
-            delegations: pojo['delegations'] ? new Map(pojo['delegations'].map(([k, v]: [any, any]) => [k, v.map((item: any) => Delegation.fromJSON(item))])) : undefined,
-            encryptionKeys: pojo['encryptionKeys'] ? new Map(pojo['encryptionKeys'].map(([k, v]: [any, any]) => [k, v.map((item: any) => Delegation.fromJSON(item))])) : undefined,
+            cryptedForeignKeys: pojo['cryptedForeignKeys'] ? new Map(Object.entries(pojo['cryptedForeignKeys']).map(([k, v]: [any, any]) => [k, v.map((item: any) => Delegation.fromJSON(item))])) : undefined,
+            delegations: pojo['delegations'] ? new Map(Object.entries(pojo['delegations']).map(([k, v]: [any, any]) => [k, v.map((item: any) => Delegation.fromJSON(item))])) : undefined,
+            encryptionKeys: pojo['encryptionKeys'] ? new Map(Object.entries(pojo['encryptionKeys']).map(([k, v]: [any, any]) => [k, v.map((item: any) => Delegation.fromJSON(item))])) : undefined,
             securityMetadata: !!pojo['securityMetadata'] ? SecurityMetadata.fromJSON(pojo['securityMetadata']) : undefined,
             encryptedSelf: pojo['encryptedSelf'],
         })

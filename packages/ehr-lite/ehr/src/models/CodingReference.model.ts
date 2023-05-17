@@ -19,16 +19,16 @@ export class CodingReference {
 
     static toJSON(instance: CodingReference): any {
         const pojo: any = {}
-        pojo["id"] = instance.id
-        pojo["type"] = instance.type
-        pojo["code"] = instance.code
-        pojo["version"] = instance.version
-        pojo["label"] = !!instance.label ? Object.fromEntries([...instance.label.entries()].map(([k, v]) => [k, v])) : undefined
+        pojo['id'] = instance.id
+        pojo['type'] = instance.type
+        pojo['code'] = instance.code
+        pojo['version'] = instance.version
+        pojo['label'] = !!instance.label ? Object.fromEntries([...instance.label.entries()].map(([k, v]) => [k, v])) : undefined
         return pojo
     }
 
     static fromJSON(pojo: any): CodingReference {
-        return new CodingReference({id: pojo["id"], type: pojo["type"], code: pojo["code"], version: pojo["version"], label: pojo["label"] ? new Map(pojo["label"].map(([k, v]: [any, any]) => [k, v])) : undefined})
+        return new CodingReference({ id: pojo['id'], type: pojo['type'], code: pojo['code'], version: pojo['version'], label: pojo['label'] ? new Map(Object.entries(pojo['label']).map(([k, v]: [any, any]) => [k, v])) : undefined })
     }
 }
 

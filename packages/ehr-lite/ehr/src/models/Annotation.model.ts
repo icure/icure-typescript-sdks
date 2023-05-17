@@ -28,20 +28,30 @@ export class Annotation {
 
     static toJSON(instance: Annotation): any {
         const pojo: any = {}
-        pojo["id"] = instance.id
-        pojo["tags"] = instance.tags?.map(item => CodingReference.toJSON(item))
-        pojo["author"] = instance.author
-        pojo["created"] = instance.created
-        pojo["modified"] = instance.modified
-        pojo["markdown"] = !!instance.markdown ? Object.fromEntries([...instance.markdown.entries()].map(([k, v]) => [k, v])) : undefined
-        pojo["target"] = instance.target
-        pojo["confidential"] = instance.confidential
-        pojo["encryptedSelf"] = instance.encryptedSelf
+        pojo['id'] = instance.id
+        pojo['tags'] = instance.tags?.map((item) => CodingReference.toJSON(item))
+        pojo['author'] = instance.author
+        pojo['created'] = instance.created
+        pojo['modified'] = instance.modified
+        pojo['markdown'] = !!instance.markdown ? Object.fromEntries([...instance.markdown.entries()].map(([k, v]) => [k, v])) : undefined
+        pojo['target'] = instance.target
+        pojo['confidential'] = instance.confidential
+        pojo['encryptedSelf'] = instance.encryptedSelf
         return pojo
     }
 
     static fromJSON(pojo: any): Annotation {
-        return new Annotation({id: pojo["id"], tags: pojo["tags"]?.map((item: any) => CodingReference.fromJSON(item)), author: pojo["author"], created: pojo["created"], modified: pojo["modified"], markdown: pojo["markdown"] ? new Map(pojo["markdown"].map(([k, v]: [any, any]) => [k, v])) : undefined, target: pojo["target"], confidential: pojo["confidential"], encryptedSelf: pojo["encryptedSelf"]})
+        return new Annotation({
+            id: pojo['id'],
+            tags: pojo['tags']?.map((item: any) => CodingReference.fromJSON(item)),
+            author: pojo['author'],
+            created: pojo['created'],
+            modified: pojo['modified'],
+            markdown: pojo['markdown'] ? new Map(Object.entries(pojo['markdown']).map(([k, v]: [any, any]) => [k, v])) : undefined,
+            target: pojo['target'],
+            confidential: pojo['confidential'],
+            encryptedSelf: pojo['encryptedSelf'],
+        })
     }
 }
 
