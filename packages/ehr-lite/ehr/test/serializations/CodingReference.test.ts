@@ -1,6 +1,5 @@
 import { CodingReference } from '../../src/models/CodingReference.model'
 import { ISO639_1 } from '@icure/api'
-import { mapTo } from '../../src/mappings/mapper'
 
 describe('CodingReference', () => {
     let instance: CodingReference
