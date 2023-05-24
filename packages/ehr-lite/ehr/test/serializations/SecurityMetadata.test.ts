@@ -1,65 +1,48 @@
 import { SecurityMetadata } from '../../src/models/SecurityMetadata.model'
 import { SecureDelegation } from '../../src/models/SecureDelegation.model'
-import { AccessLevelEnum } from '../../src/models/enums/AccessLevel.enum'
 
 describe('SecurityMetadata', () => {
-    let instance: SecurityMetadata
-    let json: any
+    const secureDelegationData = {
+        delegator: 'delegator_test',
+        delegate: 'delegate_test',
+        secretIds: ['secret1', 'secret2'],
+        encryptionKeys: ['key1', 'key2'],
+        owningEntityIds: ['owning1', 'owning2'],
+        parentDelegations: ['parent1', 'parent2'],
+        exchangeDataId: 'exchangeDataId_test',
+        encryptedExchangeDataId: new Map([['key1', 'value1'], ['key2', 'value2']]),
+        permissions: 'READ'
+    };
 
-    beforeEach(() => {
-        instance = new SecurityMetadata({
-            secureDelegations: new Map([['key1', new SecureDelegation({
-                delegator: 'delegatorId',
-                delegate: 'delegateId',
-                secretIds: ['secret1', 'secret2'],
-                encryptionKeys: ['key1', 'key2'],
-                owningEntityIds: ['ownerId1', 'ownerId2'],
-                parentDelegations: ['parent1', 'parent2'],
-                exchangeDataId: 'exchangeId',
-                encryptedExchangeDataId: new Map([['key1', 'encryptedId']]),
-                permissions: AccessLevelEnum.READ
-            })]]),
-            keysEquivalences: new Map([['key1', 'value1']])
-        })
+    const securityMetadataData = {
+        secureDelegations: new Map([['hash1', new SecureDelegation(secureDelegationData)]]),
+        keysEquivalences: new Map([['hash2', 'value2']])
+    };
 
-        json = {
-            secureDelegations: {'key1': {
-                    delegator: 'delegatorId',
-                    delegate: 'delegateId',
-                    secretIds: ['secret1', 'secret2'],
-                    encryptionKeys: ['key1', 'key2'],
-                    owningEntityIds: ['ownerId1', 'ownerId2'],
-                    parentDelegations: ['parent1', 'parent2'],
-                    exchangeDataId: 'exchangeId',
-                    encryptedExchangeDataId: {'key1': 'encryptedId'},
-                    permissions: 'READ'
-                }},
-            keysEquivalences: {'key1': 'value1'}
-        }
-    })
+    const securityMetadataJSON = {
+        secureDelegations: { 'hash1': SecureDelegation.toJSON(new SecureDelegation(secureDelegationData)) },
+        keysEquivalences: { 'hash2': 'value2' }
+    };
 
-    describe('toJSON', () => {
-        it('should convert instance to JSON', () => {
-            const result = SecurityMetadata.toJSON(instance)
-            expect(result).toEqual(json)
-        })
-    })
+    test('should convert instance to JSON', () => {
+        const securityMetadata = new SecurityMetadata(securityMetadataData);
 
-    describe('fromJSON', () => {
-        it('should convert JSON to instance', () => {
-            const result = SecurityMetadata.fromJSON(json)
-            expect(result).toEqual(instance)
-        })
-    })
+        expect(SecurityMetadata.toJSON(securityMetadata)).toEqual(securityMetadataJSON);
+    });
 
-    it('should serialize and deserialize correctly', () => {
-        // Serialize the instance to JSON
-        const serialized = SecurityMetadata.toJSON(instance)
+    test('should convert JSON to instance', () => {
+        const securityMetadata = SecurityMetadata.fromJSON(securityMetadataJSON);
 
-        // Deserialize the JSON back to an instance
-        const deserialized = SecurityMetadata.fromJSON(serialized)
+        expect(securityMetadata).toEqual(new SecurityMetadata(securityMetadataData));
+    });
 
-        // Verify that the original instance and the new instance are equal
-        expect(deserialized).toEqual(instance)
-    })
-})
+    test('should serialize and deserialize correctly', () => {
+        const securityMetadata = new SecurityMetadata(securityMetadataData);
+        const serialized = SecurityMetadata.toJSON(securityMetadata);
+        const deserialized = SecurityMetadata.fromJSON(serialized);
+
+        expect(deserialized).toEqual(securityMetadata);
+    });
+});
+
+

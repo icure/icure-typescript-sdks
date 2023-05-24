@@ -1,53 +1,43 @@
 import { TimeSeries } from '../../src/models/TimeSeries.model'
 
 describe('TimeSeries', () => {
-    let instance: TimeSeries
-    let json: any
+    const timeSeriesData = {
+        fields: ['field1', 'field2'],
+        samples: [[1, 2], [3, 4]],
+        min: [1, 3],
+        max: [2, 4],
+        mean: [1.5, 3.5],
+        median: [1.5, 3.5],
+        variance: [0.25, 0.25]
+    };
 
-    beforeEach(() => {
-        instance = new TimeSeries({
-            fields: ["field1", "field2"],
-            samples: [[1,2], [3,4]],
-            min: [1, 2],
-            max: [3, 4],
-            mean: [2.5, 3.5],
-            median: [2, 3],
-            variance: [0.5, 0.5]
-        })
+    const timeSeriesJSON = {
+        fields: ['field1', 'field2'],
+        samples: [[1, 2], [3, 4]],
+        min: [1, 3],
+        max: [2, 4],
+        mean: [1.5, 3.5],
+        median: [1.5, 3.5],
+        variance: [0.25, 0.25]
+    };
 
-        json = {
-            fields: ["field1", "field2"],
-            samples: [[1,2], [3,4]],
-            min: [1, 2],
-            max: [3, 4],
-            mean: [2.5, 3.5],
-            median: [2, 3],
-            variance: [0.5, 0.5]
-        }
-    })
+    test('should convert instance to JSON', () => {
+        const timeSeries = new TimeSeries(timeSeriesData);
 
-    describe('toJSON', () => {
-        it('should convert instance to JSON', () => {
-            const result = TimeSeries.toJSON(instance)
-            expect(result).toEqual(json)
-        })
-    })
+        expect(TimeSeries.toJSON(timeSeries)).toEqual(timeSeriesJSON);
+    });
 
-    describe('fromJSON', () => {
-        it('should convert JSON to instance', () => {
-            const result = TimeSeries.fromJSON(json)
-            expect(result).toEqual(instance)
-        })
-    })
+    test('should convert JSON to instance', () => {
+        const timeSeries = TimeSeries.fromJSON(timeSeriesJSON);
 
-    it('should serialize and deserialize correctly', () => {
-        // Serialize the instance to JSON
-        const serialized = TimeSeries.toJSON(instance)
+        expect(timeSeries).toEqual(new TimeSeries(timeSeriesData));
+    });
 
-        // Deserialize the JSON back to an instance
-        const deserialized = TimeSeries.fromJSON(serialized)
+    test('should serialize and deserialize correctly', () => {
+        const timeSeries = new TimeSeries(timeSeriesData);
+        const serialized = TimeSeries.toJSON(timeSeries);
+        const deserialized = TimeSeries.fromJSON(serialized);
 
-        // Verify that the original instance and the new instance are equal
-        expect(deserialized).toEqual(instance)
-    })
-})
+        expect(deserialized).toEqual(timeSeries);
+    });
+});

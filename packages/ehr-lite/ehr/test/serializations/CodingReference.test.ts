@@ -1,52 +1,41 @@
 import { CodingReference } from '../../src/models/CodingReference.model'
-import { ISO639_1 } from '@icure/api'
 
 describe('CodingReference', () => {
-    let instance: CodingReference
-    let json: any
+    const labelData = new Map([['en', 'label_en'], ['fr', 'label_fr']]);
 
-    beforeEach(() => {
-        instance = new CodingReference({
-            id: 'id1',
-            type: 'type1',
-            code: 'code1',
-            version: 'v1',
-            label: new Map<ISO639_1, string>([['en', 'English']]),
-        })
+    const codingReferenceData = {
+        id: 'id_test',
+        type: 'type_test',
+        code: 'code_test',
+        version: 'version_test',
+        label: labelData
+    };
 
-        json = {
-            id: 'id1',
-            type: 'type1',
-            code: 'code1',
-            version: 'v1',
-            label: {
-                en: 'English',
-            },
-        }
-    })
+    const codingReferenceJSON = {
+        id: 'id_test',
+        type: 'type_test',
+        code: 'code_test',
+        version: 'version_test',
+        label: { 'en': 'label_en', 'fr': 'label_fr' }
+    };
 
-    describe('toJSON', () => {
-        it('should convert instance to JSON', () => {
-            const result = CodingReference.toJSON(instance)
-            expect(result).toEqual(json)
-        })
-    })
+    test('should convert instance to JSON', () => {
+        const codingReference = new CodingReference(codingReferenceData);
 
-    describe('fromJSON', () => {
-        it('should convert JSON to instance', () => {
-            const result = CodingReference.fromJSON(json)
-            expect(result).toEqual(instance)
-        })
-    })
+        expect(CodingReference.toJSON(codingReference)).toEqual(codingReferenceJSON);
+    });
 
-    it('should serialize and deserialize correctly', () => {
-        // Serialize the instance to JSON
-        const serialized = CodingReference.toJSON(instance)
+    test('should convert JSON to instance', () => {
+        const codingReference = CodingReference.fromJSON(codingReferenceJSON);
 
-        // Deserialize the JSON back to an instance
-        const deserialized = CodingReference.fromJSON(serialized)
+        expect(codingReference).toEqual(new CodingReference(codingReferenceData));
+    });
 
-        // Verify that the original instance and the new instance are equal
-        expect(deserialized).toEqual(instance)
-    })
-})
+    test('should serialize and deserialize correctly', () => {
+        const codingReference = new CodingReference(codingReferenceData);
+        const serialized = CodingReference.toJSON(codingReference);
+        const deserialized = CodingReference.fromJSON(serialized);
+
+        expect(deserialized).toEqual(codingReference);
+    });
+});

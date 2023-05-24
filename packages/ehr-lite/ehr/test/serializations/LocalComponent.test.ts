@@ -1,43 +1,34 @@
 import {LocalComponent} from "../../src/models/LocalComponent.model";
 
 describe('LocalComponent', () => {
-    let instance: LocalComponent
-    let json: any
+    const localComponentData = {
+        stringValue: 'string_value_test',
+        documentId: 'document_id_test'
+    };
 
-    beforeEach(() => {
-        instance = new LocalComponent({
-            stringValue: "test",
-            documentId: "1234"
-        })
+    const localComponentJSON = {
+        stringValue: 'string_value_test',
+        documentId: 'document_id_test'
+    };
 
-        json = {
-            stringValue: "test",
-            documentId: "1234"
-        }
-    })
+    test('should convert instance to JSON', () => {
+        const localComponent = new LocalComponent(localComponentData);
 
-    describe('toJSON', () => {
-        it('should convert instance to JSON', () => {
-            const result = LocalComponent.toJSON(instance)
-            expect(result).toEqual(json)
-        })
-    })
+        expect(LocalComponent.toJSON(localComponent)).toEqual(localComponentJSON);
+    });
 
-    describe('fromJSON', () => {
-        it('should convert JSON to instance', () => {
-            const result = LocalComponent.fromJSON(json)
-            expect(result).toEqual(instance)
-        })
-    })
+    test('should convert JSON to instance', () => {
+        const localComponent = LocalComponent.fromJSON(localComponentJSON);
 
-    it('should serialize and deserialize correctly', () => {
-        // Serialize the instance to JSON
-        const serialized = LocalComponent.toJSON(instance)
+        expect(localComponent).toEqual(new LocalComponent(localComponentData));
+    });
 
-        // Deserialize the JSON back to an instance
-        const deserialized = LocalComponent.fromJSON(serialized)
+    test('should serialize and deserialize correctly', () => {
+        const localComponent = new LocalComponent(localComponentData);
+        const serialized = LocalComponent.toJSON(localComponent);
+        const deserialized = LocalComponent.fromJSON(serialized);
 
-        // Verify that the original instance and the new instance are equal
-        expect(deserialized).toEqual(instance)
-    })
-})
+        expect(deserialized).toEqual(localComponent);
+    });
+});
+

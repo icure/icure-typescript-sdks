@@ -12,3 +12,4 @@ node_modules
 
 # Typescript
 dist
+/ehr/ts-jest.log

@@ -1,45 +1,35 @@
 import { Delegation } from '../../src/models/Delegation.model'
 
 describe('Delegation', () => {
-    let instance: Delegation
-    let json: any
+    const delegationData = {
+        owner: 'owner_test',
+        delegateTo: 'delegateTo_test',
+        key: 'key_test'
+    };
 
-    beforeEach(() => {
-        instance = new Delegation({
-            owner: 'owner1',
-            delegateTo: 'delegateTo1',
-            key: 'key1'
-        })
+    const delegationJSON = {
+        owner: 'owner_test',
+        delegateTo: 'delegateTo_test',
+        key: 'key_test'
+    };
 
-        json = {
-            owner: 'owner1',
-            delegateTo: 'delegateTo1',
-            key: 'key1'
-        }
-    })
+    test('should convert instance to JSON', () => {
+        const delegation = new Delegation(delegationData);
 
-    describe('toJSON', () => {
-        it('should convert instance to JSON', () => {
-            const result = Delegation.toJSON(instance)
-            expect(result).toEqual(json)
-        })
-    })
+        expect(Delegation.toJSON(delegation)).toEqual(delegationJSON);
+    });
 
-    describe('fromJSON', () => {
-        it('should convert JSON to instance', () => {
-            const result = Delegation.fromJSON(json)
-            expect(result).toEqual(instance)
-        })
-    })
+    test('should convert JSON to instance', () => {
+        const delegation = Delegation.fromJSON(delegationJSON);
 
-    it('should serialize and deserialize correctly', () => {
-        // Serialize the instance to JSON
-        const serialized = Delegation.toJSON(instance)
+        expect(delegation).toEqual(new Delegation(delegationData));
+    });
 
-        // Deserialize the JSON back to an instance
-        const deserialized = Delegation.fromJSON(serialized)
+    test('should serialize and deserialize correctly', () => {
+        const delegation = new Delegation(delegationData);
+        const serialized = Delegation.toJSON(delegation);
+        const deserialized = Delegation.fromJSON(serialized);
 
-        // Verify that the original instance and the new instance are equal
-        expect(deserialized).toEqual(instance)
-    })
-})
+        expect(deserialized).toEqual(delegation);
+    });
+});

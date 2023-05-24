@@ -1,73 +1,60 @@
 import { Measure } from '../../src/models/Measure.model'
+import {CodingReference} from "../../src/models/CodingReference.model";
 
 describe('Measure', () => {
-    let instance: Measure
-    let json: any
+    const codingReferenceData = {
+        id: 'id_test',
+        type: 'type_test',
+        code: 'code_test',
+        version: 'version_test',
+        label: new Map([['en', 'label_en'], ['fr', 'label_fr']])
+    };
 
-    beforeEach(() => {
-        instance = new Measure({
-            value: 10,
-            min: 5,
-            max: 15,
-            ref: 12,
-            severity: 2,
-            severityCode: 'S',
-            evolution: 1,
-            unit: 'kg',
-            unitCodes: [
-                {
-                    id: "1",
-                    type: "test_type",
-                    version: "v1"
-                }
-            ],
-            comment: 'test comment',
-            comparator: '='
-        })
+    const measureData = {
+        value: 10,
+        min: 5,
+        max: 15,
+        ref: 10,
+        severity: 3,
+        severityCode: 'code_test',
+        evolution: 2,
+        unit: 'unit_test',
+        unitCodes: [new CodingReference(codingReferenceData)],
+        comment: 'comment_test',
+        comparator: 'comparator_test'
+    };
 
-        json = {
-            value: 10,
-            min: 5,
-            max: 15,
-            ref: 12,
-            severity: 2,
-            severityCode: 'S',
-            evolution: 1,
-            unit: 'kg',
-            unitCodes: [
-                {
-                    id: "1",
-                    type: "test_type",
-                    version: "v1"
-                }
-            ],
-            comment: 'test comment',
-            comparator: '='
-        }
-    })
+    const measureJSON = {
+        value: 10,
+        min: 5,
+        max: 15,
+        ref: 10,
+        severity: 3,
+        severityCode: 'code_test',
+        evolution: 2,
+        unit: 'unit_test',
+        unitCodes: [CodingReference.toJSON(new CodingReference(codingReferenceData))],
+        comment: 'comment_test',
+        comparator: 'comparator_test'
+    };
 
-    describe('toJSON', () => {
-        it('should convert instance to JSON', () => {
-            const result = Measure.toJSON(instance)
-            expect(result).toEqual(json)
-        })
-    })
+    test('should convert instance to JSON', () => {
+        const measure = new Measure(measureData);
 
-    describe('fromJSON', () => {
-        it('should convert JSON to instance', () => {
-            const result = Measure.fromJSON(json)
-            expect(result).toEqual(instance)
-        })
-    })
+        expect(Measure.toJSON(measure)).toEqual(measureJSON);
+    });
 
-    it('should serialize and deserialize correctly', () => {
-        // Serialize the instance to JSON
-        const serialized = Measure.toJSON(instance)
+    test('should convert JSON to instance', () => {
+        const measure = Measure.fromJSON(measureJSON);
 
-        // Deserialize the JSON back to an instance
-        const deserialized = Measure.fromJSON(serialized)
+        expect(measure).toEqual(new Measure(measureData));
+    });
 
-        // Verify that the original instance and the new instance are equal
-        expect(deserialized).toEqual(instance)
-    })
-})
+    test('should serialize and deserialize correctly', () => {
+        const measure = new Measure(measureData);
+        const serialized = Measure.toJSON(measure);
+        const deserialized = Measure.fromJSON(serialized);
+
+        expect(deserialized).toEqual(measure);
+    });
+});
