@@ -1,12 +1,12 @@
-import { SecurityMetadata as SecurityMetadataEntity } from '@icure/api/icc-api/model/SecurityMetadata'
-import { mapTo } from '../mappings/mapper'
-import { SecureDelegation } from './SecureDelegation.model'
+import {SecurityMetadata as SecurityMetadataEntity} from '@icure/api/icc-api/model/SecurityMetadata'
+import {mapTo} from '../mappings/mapper'
+import {SecureDelegation} from './SecureDelegation.model'
 
 @mapTo(SecurityMetadataEntity)
 export class SecurityMetadata {
-    constructor(securityMetadata: ISecurityMetadata | any) {
-        this.secureDelegations = securityMetadata.secureDelegations
-        this.keysEquivalences = securityMetadata.keysEquivalences
+    constructor(securityMetadata?: ISecurityMetadata | any) {
+        this.secureDelegations = securityMetadata?.secureDelegations
+        this.keysEquivalences = securityMetadata?.keysEquivalences
     }
 
     /**

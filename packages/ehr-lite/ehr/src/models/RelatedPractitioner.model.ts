@@ -1,6 +1,6 @@
-import { PatientHealthCareParty } from '@icure/api'
-import { mapTo } from '../mappings/mapper'
-import { PractitionerTypeEnum } from './enums/PractitionerType.enum'
+import {PatientHealthCareParty} from '@icure/api'
+import {mapTo} from '../mappings/mapper'
+import {PractitionerTypeEnum} from './enums/PractitionerType.enum'
 
 @mapTo(PatientHealthCareParty)
 export class RelatedPractitioner {
@@ -8,10 +8,10 @@ export class RelatedPractitioner {
     healthcarePartyId?: string
     encryptedSelf?: string
 
-    constructor(relatedPractitioner: IRelatedPractitioner | any) {
-        this.type = relatedPractitioner.type
-        this.healthcarePartyId = relatedPractitioner.healthcarePartyId
-        this.encryptedSelf = relatedPractitioner.encryptedSelf
+    constructor(relatedPractitioner?: IRelatedPractitioner | any) {
+        this.type = relatedPractitioner?.type
+        this.healthcarePartyId = relatedPractitioner?.healthcarePartyId
+        this.encryptedSelf = relatedPractitioner?.encryptedSelf
     }
 
     static toJSON(instance: RelatedPractitioner): any {

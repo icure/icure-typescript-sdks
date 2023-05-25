@@ -1,6 +1,6 @@
-import { Measure as MeasureEntity } from '@icure/api'
-import { mapTo } from '../mappings/mapper'
-import { CodingReference } from './CodingReference.model'
+import {Measure as MeasureEntity} from '@icure/api'
+import {mapTo} from '../mappings/mapper'
+import {CodingReference} from './CodingReference.model'
 
 @mapTo(MeasureEntity)
 export class Measure {
@@ -16,18 +16,18 @@ export class Measure {
     comment?: string
     comparator?: string
 
-    constructor(measure: IMeasure | any) {
-        this.value = measure.value
-        this.min = measure.min
-        this.max = measure.max
-        this.ref = measure.ref
-        this.severity = measure.severity
-        this.severityCode = measure.severityCode
-        this.evolution = measure.evolution
-        this.unit = measure.unit
-        this.unitCodes = measure.unitCodes
-        this.comment = measure.comment
-        this.comparator = measure.comparator
+    constructor(measure?: IMeasure | any) {
+        this.value = measure?.value
+        this.min = measure?.min
+        this.max = measure?.max
+        this.ref = measure?.ref
+        this.severity = measure?.severity
+        this.severityCode = measure?.severityCode
+        this.evolution = measure?.evolution
+        this.unit = measure?.unit
+        this.unitCodes = measure?.unitCodes
+        this.comment = measure?.comment
+        this.comparator = measure?.comparator
     }
 
     static toJSON(instance: Measure): any {

@@ -15,19 +15,19 @@ export class SystemMetaDataOwnerEncrypted {
     publicKeysForOaepWithSha256?: Array<string>
     encryptedSelf?: string
 
-    constructor(systemMetaDataOwnerEncrypted: ISystemMetaDataOwnerEncrypted | any) {
-        this.publicKey = systemMetaDataOwnerEncrypted.publicKey
-        this.hcPartyKeys = systemMetaDataOwnerEncrypted.hcPartyKeys
-        this.privateKeyShamirPartitions = systemMetaDataOwnerEncrypted.privateKeyShamirPartitions
-        this.secretForeignKeys = systemMetaDataOwnerEncrypted.secretForeignKeys
-        this.cryptedForeignKeys = systemMetaDataOwnerEncrypted.cryptedForeignKeys
-        this.delegations = systemMetaDataOwnerEncrypted.delegations
-        this.encryptionKeys = systemMetaDataOwnerEncrypted.encryptionKeys
-        this.aesExchangeKeys = systemMetaDataOwnerEncrypted.aesExchangeKeys
-        this.transferKeys = systemMetaDataOwnerEncrypted.transferKeys
-        this.securityMetadata = systemMetaDataOwnerEncrypted.securityMetadata
-        this.encryptedSelf = systemMetaDataOwnerEncrypted.encryptedSelf
-        this.publicKeysForOaepWithSha256 = systemMetaDataOwnerEncrypted.publicKeysForOaepWithSha256
+    constructor(systemMetaDataOwnerEncrypted?: ISystemMetaDataOwnerEncrypted | any) {
+        this.publicKey = systemMetaDataOwnerEncrypted?.publicKey
+        this.hcPartyKeys = systemMetaDataOwnerEncrypted?.hcPartyKeys
+        this.privateKeyShamirPartitions = systemMetaDataOwnerEncrypted?.privateKeyShamirPartitions
+        this.secretForeignKeys = systemMetaDataOwnerEncrypted?.secretForeignKeys
+        this.cryptedForeignKeys = systemMetaDataOwnerEncrypted?.cryptedForeignKeys
+        this.delegations = systemMetaDataOwnerEncrypted?.delegations
+        this.encryptionKeys = systemMetaDataOwnerEncrypted?.encryptionKeys
+        this.aesExchangeKeys = systemMetaDataOwnerEncrypted?.aesExchangeKeys
+        this.transferKeys = systemMetaDataOwnerEncrypted?.transferKeys
+        this.securityMetadata = systemMetaDataOwnerEncrypted?.securityMetadata
+        this.encryptedSelf = systemMetaDataOwnerEncrypted?.encryptedSelf
+        this.publicKeysForOaepWithSha256 = systemMetaDataOwnerEncrypted?.publicKeysForOaepWithSha256
     }
 
     static toJSON(instance: SystemMetaDataOwnerEncrypted): any {

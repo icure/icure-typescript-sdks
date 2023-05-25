@@ -1,5 +1,5 @@
-import { Delegation } from './Delegation.model'
-import { SecurityMetadata } from './SecurityMetadata.model'
+import {Delegation} from './Delegation.model'
+import {SecurityMetadata} from './SecurityMetadata.model'
 
 export class SystemMetaDataEncrypted {
     secretForeignKeys?: string[]
@@ -9,13 +9,13 @@ export class SystemMetaDataEncrypted {
     securityMetadata?: SecurityMetadata
     encryptedSelf?: string
 
-    constructor(systemMetaDataEncrypted: ISystemMetaDataEncrypted) {
-        this.secretForeignKeys = systemMetaDataEncrypted.secretForeignKeys
-        this.cryptedForeignKeys = systemMetaDataEncrypted.cryptedForeignKeys
-        this.delegations = systemMetaDataEncrypted.delegations
-        this.encryptionKeys = systemMetaDataEncrypted.encryptionKeys
-        this.securityMetadata = systemMetaDataEncrypted.securityMetadata
-        this.encryptedSelf = systemMetaDataEncrypted.encryptedSelf
+    constructor(systemMetaDataEncrypted?: ISystemMetaDataEncrypted) {
+        this.secretForeignKeys = systemMetaDataEncrypted?.secretForeignKeys
+        this.cryptedForeignKeys = systemMetaDataEncrypted?.cryptedForeignKeys
+        this.delegations = systemMetaDataEncrypted?.delegations
+        this.encryptionKeys = systemMetaDataEncrypted?.encryptionKeys
+        this.securityMetadata = systemMetaDataEncrypted?.securityMetadata
+        this.encryptedSelf = systemMetaDataEncrypted?.encryptedSelf
     }
 
     static toJSON(instance: SystemMetaDataEncrypted): any {

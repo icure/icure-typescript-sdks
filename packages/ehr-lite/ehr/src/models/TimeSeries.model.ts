@@ -1,5 +1,5 @@
-import { TimeSeries as TimeSeriesEntity } from '@icure/api'
-import { mapTo } from '../mappings/mapper'
+import {TimeSeries as TimeSeriesEntity} from '@icure/api'
+import {mapTo} from '../mappings/mapper'
 
 @mapTo(TimeSeriesEntity)
 export class TimeSeries {
@@ -11,14 +11,14 @@ export class TimeSeries {
     median?: number[]
     variance?: number[]
 
-    constructor(timeSeries: ITimeSeries | any) {
-        this.fields = timeSeries.fields
-        this.samples = timeSeries.samples
-        this.min = timeSeries.min
-        this.max = timeSeries.max
-        this.mean = timeSeries.mean
-        this.median = timeSeries.median
-        this.variance = timeSeries.variance
+    constructor(timeSeries?: ITimeSeries | any) {
+        this.fields = timeSeries?.fields
+        this.samples = timeSeries?.samples
+        this.min = timeSeries?.min
+        this.max = timeSeries?.max
+        this.mean = timeSeries?.mean
+        this.median = timeSeries?.median
+        this.variance = timeSeries?.variance
     }
 
     static toJSON(instance: TimeSeries): any {

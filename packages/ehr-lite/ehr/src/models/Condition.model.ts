@@ -1,13 +1,13 @@
-import { HealthElement } from '@icure/api'
-import { mapTo } from '../mappings/mapper'
-import { Annotation } from './Annotation.model'
-import { CodingReference } from './CodingReference.model'
-import { Identifier } from './Identifier.model'
-import { SystemMetaDataEncrypted } from './SystemMetaDataEncrypted.model'
-import { CategoryEnum } from './enums/Category.enum'
-import { ClinicalStatusEnum } from './enums/ClinicalStatus.enum'
-import { SeverityEnum } from './enums/Severity.enum'
-import { VerificationStatusEnum } from './enums/VerificationStatus.enum'
+import {HealthElement} from '@icure/api'
+import {mapTo} from '../mappings/mapper'
+import {Annotation} from './Annotation.model'
+import {CodingReference} from './CodingReference.model'
+import {Identifier} from './Identifier.model'
+import {SystemMetaDataEncrypted} from './SystemMetaDataEncrypted.model'
+import {CategoryEnum} from './enums/Category.enum'
+import {ClinicalStatusEnum} from './enums/ClinicalStatus.enum'
+import {SeverityEnum} from './enums/Severity.enum'
+import {VerificationStatusEnum} from './enums/VerificationStatus.enum'
 
 @mapTo(HealthElement)
 export class Condition {
@@ -36,31 +36,31 @@ export class Condition {
     notes?: Annotation[]
     systemMetaData?: SystemMetaDataEncrypted
 
-    constructor(condition: ICondition | any) {
-        this.id = condition.id
-        this.identifiers = condition.identifiers
-        this.rev = condition.rev
-        this.created = condition.created
-        this.modified = condition.modified
-        this.author = condition.author
-        this.responsible = condition.responsible
-        this.medicalLocationId = condition.medicalLocationId
-        this.clinicalStatus = condition.clinicalStatus
-        this.verificationStatus = condition.verificationStatus
-        this.category = condition.category
-        this.severity = condition.severity
-        this.bodySite = condition.bodySite
-        this.tags = condition.tags
-        this.codes = condition.codes
-        this.endOfLife = condition.endOfLife
-        this.deletionDate = condition.deletionDate
-        this.healthcareElementId = condition.healthcareElementId
-        this.recordedDate = condition.recordedDate
-        this.openingDate = condition.openingDate
-        this.closingDate = condition.closingDate
-        this.description = condition.description
-        this.notes = condition.notes
-        this.systemMetaData = condition.systemMetaData
+    constructor(condition?: ICondition | any) {
+        this.id = condition?.id
+        this.identifiers = condition?.identifiers
+        this.rev = condition?.rev
+        this.created = condition?.created
+        this.modified = condition?.modified
+        this.author = condition?.author
+        this.responsible = condition?.responsible
+        this.medicalLocationId = condition?.medicalLocationId
+        this.clinicalStatus = condition?.clinicalStatus
+        this.verificationStatus = condition?.verificationStatus
+        this.category = condition?.category
+        this.severity = condition?.severity
+        this.bodySite = condition?.bodySite
+        this.tags = condition?.tags
+        this.codes = condition?.codes
+        this.endOfLife = condition?.endOfLife
+        this.deletionDate = condition?.deletionDate
+        this.healthcareElementId = condition?.healthcareElementId
+        this.recordedDate = condition?.recordedDate
+        this.openingDate = condition?.openingDate
+        this.closingDate = condition?.closingDate
+        this.description = condition?.description
+        this.notes = condition?.notes
+        this.systemMetaData = condition?.systemMetaData
     }
 
     static toJSON(instance: Condition): any {

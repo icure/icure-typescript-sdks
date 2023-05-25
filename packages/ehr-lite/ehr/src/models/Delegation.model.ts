@@ -1,5 +1,5 @@
-import { Delegation as DelegationEntity } from '@icure/api'
-import { mapTo } from '../mappings/mapper'
+import {Delegation as DelegationEntity} from '@icure/api'
+import {mapTo} from '../mappings/mapper'
 
 @mapTo(DelegationEntity)
 export class Delegation {
@@ -7,10 +7,10 @@ export class Delegation {
     delegateTo?: string
     key?: string
 
-    constructor(delegation: IDelegation | any) {
-        this.owner = delegation.owner
-        this.delegateTo = delegation.delegateTo
-        this.key = delegation.key
+    constructor(delegation?: IDelegation | any) {
+        this.owner = delegation?.owner
+        this.delegateTo = delegation?.delegateTo
+        this.key = delegation?.key
     }
 
     static toJSON(instance: Delegation): any {

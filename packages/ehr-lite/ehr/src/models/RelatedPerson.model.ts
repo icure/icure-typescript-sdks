@@ -1,7 +1,7 @@
-import { Partnership } from '@icure/api'
-import { mapTo } from '../mappings/mapper'
-import { RelatedPersonStatusEnum } from './enums/RelatedPersonStatus.enum'
-import { RelatedPersonTypeEnum } from './enums/RelatedPersonType.enum'
+import {Partnership} from '@icure/api'
+import {mapTo} from '../mappings/mapper'
+import {RelatedPersonStatusEnum} from './enums/RelatedPersonStatus.enum'
+import {RelatedPersonTypeEnum} from './enums/RelatedPersonType.enum'
 
 @mapTo(Partnership)
 export class RelatedPerson {
@@ -9,10 +9,10 @@ export class RelatedPerson {
     status?: RelatedPersonStatusEnum
     personId?: string
 
-    constructor(relatedPerson: IRelatedPerson | any) {
-        this.type = relatedPerson.type
-        this.status = relatedPerson.status
-        this.personId = relatedPerson.personId
+    constructor(relatedPerson?: IRelatedPerson | any) {
+        this.type = relatedPerson?.type
+        this.status = relatedPerson?.status
+        this.personId = relatedPerson?.personId
     }
 
     static toJSON(instance: RelatedPerson): any {

@@ -58,49 +58,49 @@ export class Patient {
     properties?: Property[]
     systemMetaData?: SystemMetaDataOwnerEncrypted
 
-    constructor(patient: IPatient | any) {
-        this.id = patient.id
-        this.rev = patient.rev
-        this.identifiers = patient.identifiers
-        this.created = patient.created
-        this.modified = patient.modified
-        this.author = patient.author
-        this.responsible = patient.responsible
-        this.tags = patient.tags
-        this.codes = patient.codes
-        this.endOfLife = patient.endOfLife
-        this.deletionDate = patient.deletionDate
-        this.names = patient.name
-        this.languages = patient.languages
-        this.addresses = patient.addresses
-        this.civility = patient.civility
-        this.gender = patient.gender
-        this.birthSex = patient.birthSex
-        this.mergeToPatientId = patient.mergeToPatientId
-        this.mergedIds = patient.mergedIds
-        this.active = patient.active
-        this.deactivationDate = patient.deactivationDate
-        this.deactivationReason = patient.deactivationReason
-        this.ssin = patient.ssin
-        this.personalStatus = patient.personalStatus
-        this.dateOfBirth = patient.dateOfBirth
-        this.dateOfDeath = patient.dateOfDeath
-        this.placeOfBirth = patient.placeOfBirth
-        this.placeOfDeath = patient.placeOfDeath
-        this.deceased = patient.deceased
-        this.education = patient.education
-        this.profession = patient.profession
-        this.notes = patient.notes
-        this.nationality = patient.nationality
-        this.race = patient.race
-        this.ethnicity = patient.ethnicity
-        this.picture = patient.picture
-        this.externalId = patient.externalId
-        this.relatives = patient.relatives
-        this.patientPractitioners = patient.patientPractioners
-        this.patientProfessions = patient.patientProfessions
-        this.properties = patient.properties
-        this.systemMetaData = patient.systemMetaData
+    constructor(patient?: IPatient | any) {
+        this.id = patient?.id
+        this.rev = patient?.rev
+        this.identifiers = patient?.identifiers
+        this.created = patient?.created
+        this.modified = patient?.modified
+        this.author = patient?.author
+        this.responsible = patient?.responsible
+        this.tags = patient?.tags
+        this.codes = patient?.codes
+        this.endOfLife = patient?.endOfLife
+        this.deletionDate = patient?.deletionDate
+        this.names = patient?.name
+        this.languages = patient?.languages
+        this.addresses = patient?.addresses
+        this.civility = patient?.civility
+        this.gender = patient?.gender
+        this.birthSex = patient?.birthSex
+        this.mergeToPatientId = patient?.mergeToPatientId
+        this.mergedIds = patient?.mergedIds
+        this.active = patient?.active
+        this.deactivationDate = patient?.deactivationDate
+        this.deactivationReason = patient?.deactivationReason
+        this.ssin = patient?.ssin
+        this.personalStatus = patient?.personalStatus
+        this.dateOfBirth = patient?.dateOfBirth
+        this.dateOfDeath = patient?.dateOfDeath
+        this.placeOfBirth = patient?.placeOfBirth
+        this.placeOfDeath = patient?.placeOfDeath
+        this.deceased = patient?.deceased
+        this.education = patient?.education
+        this.profession = patient?.profession
+        this.notes = patient?.notes
+        this.nationality = patient?.nationality
+        this.race = patient?.race
+        this.ethnicity = patient?.ethnicity
+        this.picture = patient?.picture
+        this.externalId = patient?.externalId
+        this.relatives = patient?.relatives
+        this.patientPractitioners = patient?.patientPractioners
+        this.patientProfessions = patient?.patientProfessions
+        this.properties = patient?.properties
+        this.systemMetaData = patient?.systemMetaData
     }
 
     static toJSON(instance: Patient): any {

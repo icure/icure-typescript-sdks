@@ -1,14 +1,14 @@
-import { Content } from '@icure/api'
-import { mapTo } from '../mappings/mapper'
+import {Content} from '@icure/api'
+import {mapTo} from '../mappings/mapper'
 
 @mapTo(Content)
 export class LocalComponent {
     stringValue?: string
     documentId?: string
 
-    constructor(localComponent: ILocalComponent | any) {
-        this.stringValue = localComponent.stringValue
-        this.documentId = localComponent.documentId
+    constructor(localComponent?: ILocalComponent | any) {
+        this.stringValue = localComponent?.stringValue
+        this.documentId = localComponent?.documentId
     }
 
     static toJSON(instance: LocalComponent): any {

@@ -1,11 +1,11 @@
-import { ISO639_1, Service } from '@icure/api'
-import { mapTo } from '../mappings/mapper'
-import { Annotation } from './Annotation.model'
-import { CodingReference } from './CodingReference.model'
-import { Component } from './Component.model'
-import { Identifier } from './Identifier.model'
-import { LocalComponent } from './LocalComponent.model'
-import { SystemMetaDataEncrypted } from './SystemMetaDataEncrypted.model'
+import {ISO639_1, Service} from '@icure/api'
+import {mapTo} from '../mappings/mapper'
+import {Annotation} from './Annotation.model'
+import {CodingReference} from './CodingReference.model'
+import {Component} from './Component.model'
+import {Identifier} from './Identifier.model'
+import {LocalComponent} from './LocalComponent.model'
+import {SystemMetaDataEncrypted} from './SystemMetaDataEncrypted.model'
 
 @mapTo(Service)
 export class Observation {
@@ -31,28 +31,28 @@ export class Observation {
     systemMetaData?: SystemMetaDataEncrypted
     notes?: Annotation[]
 
-    constructor(observation: IObservation | any) {
-        this.id = observation.id
-        this.transactionId = observation.transactionId
-        this.identifiers = observation.identifiers
-        this.batchId = observation.batchId
-        this.healthcareElementIds = observation.healthcareElementIds
-        this.index = observation.index
-        this.component = observation.component
-        this.valueDate = observation.valueDate
-        this.openingDate = observation.openingDate
-        this.closingDate = observation.closingDate
-        this.created = observation.created
-        this.modified = observation.modified
-        this.endOfLife = observation.endOfLife
-        this.author = observation.author
-        this.performer = observation.performer
-        this.localContent = observation.localContent
-        this.qualifiedLinks = observation.qualifiedLinks
-        this.codes = observation.codes
-        this.tags = observation.tags
-        this.systemMetaData = observation.systemMetaData
-        this.notes = observation.note
+    constructor(observation?: IObservation | any) {
+        this.id = observation?.id
+        this.transactionId = observation?.transactionId
+        this.identifiers = observation?.identifiers
+        this.batchId = observation?.batchId
+        this.healthcareElementIds = observation?.healthcareElementIds
+        this.index = observation?.index
+        this.component = observation?.component
+        this.valueDate = observation?.valueDate
+        this.openingDate = observation?.openingDate
+        this.closingDate = observation?.closingDate
+        this.created = observation?.created
+        this.modified = observation?.modified
+        this.endOfLife = observation?.endOfLife
+        this.author = observation?.author
+        this.performer = observation?.performer
+        this.localContent = observation?.localContent
+        this.qualifiedLinks = observation?.qualifiedLinks
+        this.codes = observation?.codes
+        this.tags = observation?.tags
+        this.systemMetaData = observation?.systemMetaData
+        this.notes = observation?.note
     }
 
     static toJSON(instance: Observation): any {

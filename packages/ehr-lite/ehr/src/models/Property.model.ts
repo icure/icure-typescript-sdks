@@ -1,7 +1,7 @@
-import { PropertyStub } from '@icure/api'
-import { mapTo } from '../mappings/mapper'
-import { PropertyType } from './PropertyType.model'
-import { TypedValueObject } from './TypedValueObject.model'
+import {PropertyStub} from '@icure/api'
+import {mapTo} from '../mappings/mapper'
+import {PropertyType} from './PropertyType.model'
+import {TypedValueObject} from './TypedValueObject.model'
 
 @mapTo(PropertyStub)
 export class Property {
@@ -11,12 +11,12 @@ export class Property {
     deleted?: number
     encryptedSelf?: string
 
-    constructor(property: IProperty | any) {
-        this.id = property.id
-        this.type = property.type
-        this.typedValue = property.typedValue
-        this.deleted = property.deleted
-        this.encryptedSelf = property.encryptedSelf
+    constructor(property?: IProperty | any) {
+        this.id = property?.id
+        this.type = property?.type
+        this.typedValue = property?.typedValue
+        this.deleted = property?.deleted
+        this.encryptedSelf = property?.encryptedSelf
     }
 
     static toJSON(instance: Property): any {

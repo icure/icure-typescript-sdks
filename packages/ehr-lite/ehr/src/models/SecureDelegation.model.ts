@@ -4,16 +4,16 @@ import {AccessLevelEnum} from './enums/AccessLevel.enum'
 
 @mapTo(SecureDelegationEntity)
 export class SecureDelegation {
-    constructor(secureDelegation: ISecureDelegation | any) {
-        this.delegator = secureDelegation.delegator
-        this.delegate = secureDelegation.delegate
-        this.secretIds = secureDelegation.secretIds
-        this.encryptionKeys = secureDelegation.encryptionKeys
-        this.owningEntityIds = secureDelegation.owningEntityIds
-        this.parentDelegations = secureDelegation.parentDelegations
-        this.exchangeDataId = secureDelegation.exchangeDataId
-        this.encryptedExchangeDataId = secureDelegation.encryptedExchangeDataId
-        this.permissions = secureDelegation.permissions
+    constructor(secureDelegation?: ISecureDelegation | any) {
+        this.delegator = secureDelegation?.delegator
+        this.delegate = secureDelegation?.delegate
+        this.secretIds = secureDelegation?.secretIds
+        this.encryptionKeys = secureDelegation?.encryptionKeys
+        this.owningEntityIds = secureDelegation?.owningEntityIds
+        this.parentDelegations = secureDelegation?.parentDelegations
+        this.exchangeDataId = secureDelegation?.exchangeDataId
+        this.encryptedExchangeDataId = secureDelegation?.encryptedExchangeDataId
+        this.permissions = secureDelegation?.permissions
     }
 
     /**

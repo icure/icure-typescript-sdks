@@ -1,12 +1,12 @@
-import { b64_2ab, HealthcareParty, ua2b64 } from '@icure/api'
-import { mapTo } from '../mappings/mapper'
-import { CodingReference } from './CodingReference.model'
-import { GenderEnum } from './enums/Gender.enum'
-import { HumanName } from './HumanName.model'
-import { Identifier } from "./Identifier.model"
-import { Location } from './Location.model'
-import { Property } from './Property.model'
-import { SystemMetaDataOwner } from './SystemMetaDataOwner.model'
+import {b64_2ab, HealthcareParty, ua2b64} from '@icure/api'
+import {mapTo} from '../mappings/mapper'
+import {CodingReference} from './CodingReference.model'
+import {GenderEnum} from './enums/Gender.enum'
+import {HumanName} from './HumanName.model'
+import {Identifier} from "./Identifier.model"
+import {Location} from './Location.model'
+import {Property} from './Property.model'
+import {SystemMetaDataOwner} from './SystemMetaDataOwner.model'
 
 @mapTo(HealthcareParty)
 export class Practitioner {
@@ -35,30 +35,30 @@ export class Practitioner {
     properties?: Property[]
     systemMetaData?: SystemMetaDataOwner
 
-    constructor(practitioner: IPractitioner | any) {
-        this.id = practitioner.id
-        this.rev = practitioner.rev
-        this.created = practitioner.created
-        this.modified = practitioner.modified
-        this.tags = practitioner.tags
-        this.codes = practitioner.codes
-        this.deletionDate = practitioner.deletionDate
-        this.name = practitioner.name
-        this.lastName = practitioner.lastName
-        this.firstName = practitioner.firstName
-        this.names = practitioner.names
-        this.gender = practitioner.gender
-        this.civility = practitioner.civility
-        this.speciality = practitioner.speciality
-        this.parentId = practitioner.parentId
-        this.userId = practitioner.userId
-        this.addresses = practitioner.addresses
-        this.languages = practitioner.languages
-        this.picture = practitioner.picture
-        this.specialityCodes = practitioner.specialityCodes
-        this.description = practitioner.description
-        this.properties = practitioner.properties
-        this.systemMetaData = practitioner.systemMetaData
+    constructor(practitioner?: IPractitioner | any) {
+        this.id = practitioner?.id
+        this.rev = practitioner?.rev
+        this.created = practitioner?.created
+        this.modified = practitioner?.modified
+        this.tags = practitioner?.tags
+        this.codes = practitioner?.codes
+        this.deletionDate = practitioner?.deletionDate
+        this.name = practitioner?.name
+        this.lastName = practitioner?.lastName
+        this.firstName = practitioner?.firstName
+        this.names = practitioner?.names
+        this.gender = practitioner?.gender
+        this.civility = practitioner?.civility
+        this.speciality = practitioner?.speciality
+        this.parentId = practitioner?.parentId
+        this.userId = practitioner?.userId
+        this.addresses = practitioner?.addresses
+        this.languages = practitioner?.languages
+        this.picture = practitioner?.picture
+        this.specialityCodes = practitioner?.specialityCodes
+        this.description = practitioner?.description
+        this.properties = practitioner?.properties
+        this.systemMetaData = practitioner?.systemMetaData
     }
 
     static toJSON(instance: Practitioner): any {

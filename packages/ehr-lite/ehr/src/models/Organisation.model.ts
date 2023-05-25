@@ -1,10 +1,10 @@
-import { b64_2ab, HealthcareParty, ua2b64 } from '@icure/api'
-import { mapTo } from '../mappings/mapper'
-import { CodingReference } from './CodingReference.model'
-import { Identifier } from "./Identifier.model"
-import { Location } from './Location.model'
-import { Property } from './Property.model'
-import { SystemMetaDataOwner } from './SystemMetaDataOwner.model'
+import {b64_2ab, HealthcareParty, ua2b64} from '@icure/api'
+import {mapTo} from '../mappings/mapper'
+import {CodingReference} from './CodingReference.model'
+import {Identifier} from "./Identifier.model"
+import {Location} from './Location.model'
+import {Property} from './Property.model'
+import {SystemMetaDataOwner} from './SystemMetaDataOwner.model'
 
 @mapTo(HealthcareParty)
 export class Organisation {
@@ -26,24 +26,24 @@ export class Organisation {
     properties?: Property[]
     systemMetaData?: SystemMetaDataOwner
 
-    constructor(organisation: IOrganisation | any) {
-        this.id = organisation.id
-        this.rev = organisation.rev
-        this.created = organisation.created
-        this.modified = organisation.modified
-        this.identifiers = organisation.identifiers
-        this.tags = organisation.tags
-        this.codes = organisation.codes
-        this.deletionDate = organisation.deletionDate
-        this.name = organisation.name
-        this.parentId = organisation.parentId
-        this.userId = organisation.userId
-        this.addresses = organisation.addresses
-        this.languages = organisation.languages
-        this.picture = organisation.picture
-        this.description = organisation.description
-        this.properties = organisation.properties
-        this.systemMetaData = organisation.systemMetaData
+    constructor(organisation?: IOrganisation | any) {
+        this.id = organisation?.id
+        this.rev = organisation?.rev
+        this.created = organisation?.created
+        this.modified = organisation?.modified
+        this.identifiers = organisation?.identifiers
+        this.tags = organisation?.tags
+        this.codes = organisation?.codes
+        this.deletionDate = organisation?.deletionDate
+        this.name = organisation?.name
+        this.parentId = organisation?.parentId
+        this.userId = organisation?.userId
+        this.addresses = organisation?.addresses
+        this.languages = organisation?.languages
+        this.picture = organisation?.picture
+        this.description = organisation?.description
+        this.properties = organisation?.properties
+        this.systemMetaData = organisation?.systemMetaData
     }
 
     static toJSON(instance: Organisation): any {

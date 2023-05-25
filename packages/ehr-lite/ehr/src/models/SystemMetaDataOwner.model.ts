@@ -6,13 +6,13 @@ export class SystemMetaDataOwner {
     transferKeys?: Map<string, Map<string, string>>
     publicKeysForOaepWithSha256?: Array<string>
 
-    constructor(systemMetaDataOwner: ISystemMetaDataOwner) {
-        this.publicKey = systemMetaDataOwner.publicKey
-        this.hcPartyKeys = systemMetaDataOwner.hcPartyKeys
-        this.privateKeyShamirPartitions = systemMetaDataOwner.privateKeyShamirPartitions
-        this.aesExchangeKeys = systemMetaDataOwner.aesExchangeKeys
-        this.transferKeys = systemMetaDataOwner.transferKeys
-        this.publicKeysForOaepWithSha256 = systemMetaDataOwner.publicKeysForOaepWithSha256
+    constructor(systemMetaDataOwner?: ISystemMetaDataOwner) {
+        this.publicKey = systemMetaDataOwner?.publicKey
+        this.hcPartyKeys = systemMetaDataOwner?.hcPartyKeys
+        this.privateKeyShamirPartitions = systemMetaDataOwner?.privateKeyShamirPartitions
+        this.aesExchangeKeys = systemMetaDataOwner?.aesExchangeKeys
+        this.transferKeys = systemMetaDataOwner?.transferKeys
+        this.publicKeysForOaepWithSha256 = systemMetaDataOwner?.publicKeysForOaepWithSha256
     }
 
     static toJSON(instance: SystemMetaDataOwner): any {

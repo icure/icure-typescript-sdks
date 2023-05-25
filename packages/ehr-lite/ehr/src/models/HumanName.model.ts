@@ -1,6 +1,6 @@
-import { PersonName } from '@icure/api'
-import { mapTo } from '../mappings/mapper'
-import { HumanNameUseEnum } from './enums/HumanNameUse.enum'
+import {PersonName} from '@icure/api'
+import {mapTo} from '../mappings/mapper'
+import {HumanNameUseEnum} from './enums/HumanNameUse.enum'
 
 @mapTo(PersonName)
 export class HumanName {
@@ -13,15 +13,15 @@ export class HumanName {
     text?: string
     use?: HumanNameUseEnum
 
-    constructor(humanName: IHumanName | any) {
-        this.lastName = humanName.lastName
-        this.firstNames = humanName.firstNames
-        this.start = humanName.start
-        this.end = humanName.end
-        this.prefix = humanName.prefix
-        this.suffix = humanName.suffix
-        this.text = humanName.text
-        this.use = humanName.use
+    constructor(humanName?: IHumanName | any) {
+        this.lastName = humanName?.lastName
+        this.firstNames = humanName?.firstNames
+        this.start = humanName?.start
+        this.end = humanName?.end
+        this.prefix = humanName?.prefix
+        this.suffix = humanName?.suffix
+        this.text = humanName?.text
+        this.use = humanName?.use
     }
 
     static toJSON(instance: HumanName): any {

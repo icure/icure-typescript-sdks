@@ -1,6 +1,6 @@
-import { Identifier as IdentifierEntity } from '@icure/api'
-import { mapTo } from '../mappings/mapper'
-import { CodingReference } from './CodingReference.model'
+import {Identifier as IdentifierEntity} from '@icure/api'
+import {mapTo} from '../mappings/mapper'
+import {CodingReference} from './CodingReference.model'
 
 @mapTo(IdentifierEntity)
 export class Identifier {
@@ -13,15 +13,15 @@ export class Identifier {
     use?: string
     value?: string
 
-    constructor(identifier: IIdentifier | any) {
-        this.assigner = identifier.assigner
-        this.end = identifier.end
-        this.id = identifier.id
-        this.start = identifier.start
-        this.system = identifier.system
-        this.type = identifier.type
-        this.use = identifier.use
-        this.value = identifier.value
+    constructor(identifier?: IIdentifier | any) {
+        this.assigner = identifier?.assigner
+        this.end = identifier?.end
+        this.id = identifier?.id
+        this.start = identifier?.start
+        this.system = identifier?.system
+        this.type = identifier?.type
+        this.use = identifier?.use
+        this.value = identifier?.value
     }
 
     static toJSON(instance: Identifier): any {

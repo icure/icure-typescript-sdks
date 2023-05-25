@@ -1,6 +1,6 @@
-import { TypedValueObject as TypedValueObjectEntity } from '@icure/api'
-import { mapTo } from '../mappings/mapper'
-import { TypeEnum } from './enums/Type.enum'
+import {TypedValueObject as TypedValueObjectEntity} from '@icure/api'
+import {mapTo} from '../mappings/mapper'
+import {TypeEnum} from './enums/Type.enum'
 
 @mapTo(TypedValueObjectEntity)
 export class TypedValueObject {
@@ -12,14 +12,14 @@ export class TypedValueObject {
     dateValue?: number
     encryptedSelf?: string
 
-    constructor(typedValueObject: ITypedValueObject | any) {
-        this.type = typedValueObject.type
-        this.booleanValue = typedValueObject.booleanValue
-        this.integerValue = typedValueObject.integerValue
-        this.doubleValue = typedValueObject.doubleValue
-        this.stringValue = typedValueObject.stringValue
-        this.dateValue = typedValueObject.dateValue
-        this.encryptedSelf = typedValueObject.encryptedSelf
+    constructor(typedValueObject?: ITypedValueObject | any) {
+        this.type = typedValueObject?.type
+        this.booleanValue = typedValueObject?.booleanValue
+        this.integerValue = typedValueObject?.integerValue
+        this.doubleValue = typedValueObject?.doubleValue
+        this.stringValue = typedValueObject?.stringValue
+        this.dateValue = typedValueObject?.dateValue
+        this.encryptedSelf = typedValueObject?.encryptedSelf
     }
 
     static toJSON(instance: TypedValueObject): any {

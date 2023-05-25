@@ -1,6 +1,6 @@
-import { Telecom } from '@icure/api'
-import { mapTo } from '../mappings/mapper'
-import { ContactPointTelecomTypeEnum } from './enums/ContactPointTelecomType.enum'
+import {Telecom} from '@icure/api'
+import {mapTo} from '../mappings/mapper'
+import {ContactPointTelecomTypeEnum} from './enums/ContactPointTelecomType.enum'
 
 @mapTo(Telecom)
 export class ContactPoint {
@@ -9,10 +9,10 @@ export class ContactPoint {
     description?: string
     encryptedSelf?: string;
 
-    constructor(contactPoint: IContactPoint | any) {
-        this.system = contactPoint.system
-        this.value = contactPoint.value
-        this.description = contactPoint.description
+    constructor(contactPoint?: IContactPoint | any) {
+        this.system = contactPoint?.system
+        this.value = contactPoint?.value
+        this.description = contactPoint?.description
     }
 
     static toJSON(instance: ContactPoint): any {
