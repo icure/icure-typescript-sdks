@@ -1,20 +1,5 @@
 import {CodingReference} from '../../src/models/CodingReference.model'
-import {ISO639_1} from '@icure/api'
-
-export function generateCodingReference(): CodingReference {
-    const codingReference = {
-        id: 'sampleId',
-        type: 'sampleType',
-        code: 'sampleCode',
-        version: 'sampleVersion',
-        label: new Map<ISO639_1, string>([
-            ['en', 'English Label'],
-            ['fr', 'French Label'],
-        ]),
-    }
-
-    return new CodingReference(codingReference)
-}
+import {generateCodingReference} from "../models/CodingReference.model";
 
 describe(`CodingReference serialization and deserialization`, () => {
     it('should correctly serialize and deserialize from instance to JSON and back', () => {

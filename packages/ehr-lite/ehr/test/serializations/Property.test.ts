@@ -1,18 +1,5 @@
 import {Property} from '../../src/models/Property.model'
-import {generatePropertyType} from './PropertyType.test'
-import {generateTypedValueObject} from './TypedValueObject.test'
-
-export function generateProperty(): Property {
-    const property = {
-        id: 'sampleId',
-        type: generatePropertyType(),
-        typedValue: generateTypedValueObject(),
-        deleted: 1621872000000, // Sample timestamp in milliseconds
-        encryptedSelf: 'sampleEncryptedSelf',
-    }
-
-    return new Property(property)
-}
+import {generateProperty} from "../models/Property.model";
 
 describe(`Property serialization and deserialization`, () => {
     it('should correctly serialize and deserialize from instance to JSON and back', () => {

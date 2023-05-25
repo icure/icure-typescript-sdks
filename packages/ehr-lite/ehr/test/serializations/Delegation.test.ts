@@ -1,14 +1,5 @@
 import {Delegation} from '../../src/models/Delegation.model'
-
-export function generateDelegation(): Delegation {
-    const delegation = {
-        owner: 'sampleOwner',
-        delegateTo: 'sampleDelegateTo',
-        key: 'sampleKey',
-    }
-
-    return new Delegation(delegation)
-}
+import {generateDelegation} from "../models/Delegation.model";
 
 describe(`Delegation serialization and deserialization`, () => {
     it('should correctly serialize and deserialize from instance to JSON and back', () => {

@@ -1,18 +1,5 @@
 import {TimeSeries} from '../../src/models/TimeSeries.model'
-
-import {generateRandomNumberArray, generateRandomNumberMatrix, generateRandomStringArray} from './utils'
-
-export function generateTimeSeries(): TimeSeries {
-    return new TimeSeries({
-        fields: generateRandomStringArray(),
-        samples: generateRandomNumberMatrix(),
-        min: generateRandomNumberArray(),
-        max: generateRandomNumberArray(),
-        mean: generateRandomNumberArray(),
-        median: generateRandomNumberArray(),
-        variance: generateRandomNumberArray(),
-    })
-}
+import {generateTimeSeries} from "../models/TimeSeries.model";
 
 describe(`TimeSeries serialization and deserialization`, () => {
     it('should correctly serialize and deserialize from instance to JSON and back', () => {
