@@ -1,35 +1,22 @@
-import { Delegation } from '../../src/models/Delegation.model'
+import {Delegation} from '../../src/models/Delegation.model'
 
-describe('Delegation', () => {
-    const delegationData = {
-        owner: 'owner_test',
-        delegateTo: 'delegateTo_test',
-        key: 'key_test'
-    };
+export function generateDelegation(): Delegation {
+    const delegation = {
+        owner: 'sampleOwner',
+        delegateTo: 'sampleDelegateTo',
+        key: 'sampleKey',
+    }
 
-    const delegationJSON = {
-        owner: 'owner_test',
-        delegateTo: 'delegateTo_test',
-        key: 'key_test'
-    };
+    return new Delegation(delegation)
+}
 
-    test('should convert instance to JSON', () => {
-        const delegation = new Delegation(delegationData);
+describe(`Delegation serialization and deserialization`, () => {
+    it('should correctly serialize and deserialize from instance to JSON and back', () => {
+        const instance = generateDelegation()
 
-        expect(Delegation.toJSON(delegation)).toEqual(delegationJSON);
-    });
+        const json = Delegation.toJSON(instance)
+        const newInstance = Delegation.fromJSON(json)
 
-    test('should convert JSON to instance', () => {
-        const delegation = Delegation.fromJSON(delegationJSON);
-
-        expect(delegation).toEqual(new Delegation(delegationData));
-    });
-
-    test('should serialize and deserialize correctly', () => {
-        const delegation = new Delegation(delegationData);
-        const serialized = Delegation.toJSON(delegation);
-        const deserialized = Delegation.fromJSON(serialized);
-
-        expect(deserialized).toEqual(delegation);
-    });
-});
+        expect(newInstance).toEqual(instance)
+    })
+})

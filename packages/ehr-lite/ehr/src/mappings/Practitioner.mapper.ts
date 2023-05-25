@@ -1,12 +1,12 @@
-import { Practitioner } from '../models/Practitioner.model'
-import { Address, CodeStub, HealthcareParty, Identifier as IdentifierEntity, PersonName, PropertyStub } from '@icure/api'
-import { createMap, forMember, ignore, mapFrom, mapWith } from '@automapper/core'
-import { mapper } from './mapper'
-import { Identifier } from '../models/Identifier.model'
-import { CodingReference } from '../models/CodingReference.model'
-import { HumanName } from '../models/HumanName.model'
-import { Location } from '../models/Location.model'
-import { Property } from '../models/Property.model'
+import {Practitioner} from '../models/Practitioner.model'
+import {Address, CodeStub, HealthcareParty, Identifier as IdentifierEntity, PersonName, PropertyStub} from '@icure/api'
+import {createMap, forMember, ignore, mapFrom, mapWith} from '@automapper/core'
+import {mapper} from './mapper'
+import {Identifier} from '../models/Identifier.model'
+import {CodingReference} from '../models/CodingReference.model'
+import {HumanName} from '../models/HumanName.model'
+import {Location} from '../models/Location.model'
+import {Property} from '../models/Property.model'
 import {
     convertDeepNestedMapToObject,
     convertMapToObject,
@@ -18,10 +18,11 @@ import {
     extractHcPartyKeys,
     extractPrivateKeyShamirPartitions,
     extractPublicKey,
+    extractPublicKeysForOaepWithSha256,
     extractTransferKeys,
 } from './utils/Metadata.utils'
-import { SystemMetaDataOwner } from '../models/SystemMetaDataOwner.model'
-import { healthcareProfessionalIdentifiers } from './utils/HealthProfessional.utils'
+import {SystemMetaDataOwner} from '../models/SystemMetaDataOwner.model'
+import {healthcareProfessionalIdentifiers} from './utils/HealthProfessional.utils'
 
 function forMember_HealthcareParty_id() {
     return forMember<Practitioner, HealthcareParty>(
@@ -485,6 +486,7 @@ function forMember_Practitioner_systemMetaData() {
                 aesExchangeKeys: !!h.aesExchangeKeys ? convertObjectToDeepNestedMap(h.aesExchangeKeys) : undefined,
                 transferKeys: !!h.transferKeys ? convertObjectToNestedMap(h.transferKeys) : undefined,
                 privateKeyShamirPartitions: !!h.privateKeyShamirPartitions ? convertObjectToMap(h.privateKeyShamirPartitions) : undefined,
+                publicKeysForOaepWithSha256: h.publicKeysForOaepWithSha256,
             })
         })
     )
@@ -503,6 +505,13 @@ function forMember_Practitioner_userId() {
     return forMember<HealthcareParty, Practitioner>(
         (v) => v.userId,
         mapFrom((h) => h.userId)
+    )
+}
+
+function forMember_HealthcareParty_publicKeysForOaepWithSha256() {
+    return forMember<Practitioner, HealthcareParty>(
+        (v) => v.publicKeysForOaepWithSha256,
+        mapFrom((h) => extractPublicKeysForOaepWithSha256(h.systemMetaData))
     )
 }
 
@@ -563,7 +572,8 @@ export function initializePractitionerMapper() {
         forMember_HealthcareParty_aesExchangeKeys(),
         forMember_HealthcareParty_transferKeys(),
         forMember_HealthcareParty_privateKeyShamirPartitions(),
-        forMember_HealthcareParty_publicKey()
+        forMember_HealthcareParty_publicKey(),
+        forMember_HealthcareParty_publicKeysForOaepWithSha256()
     )
 
     createMap(

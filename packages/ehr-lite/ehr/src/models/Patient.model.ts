@@ -1,17 +1,17 @@
-import { Patient as PatientEntity, b64_2ab, ua2b64 } from '@icure/api'
-import { mapTo } from '../mappings/mapper'
-import { Annotation } from './Annotation.model'
-import { CodingReference } from './CodingReference.model'
-import { HumanName } from './HumanName.model'
-import { Identifier } from './Identifier.model'
-import { Location } from './Location.model'
-import { Property } from './Property.model'
-import { RelatedPerson } from './RelatedPerson.model'
-import { RelatedPractitioner } from './RelatedPractitioner.model'
-import { SystemMetaDataOwnerEncrypted } from './SystemMetaDataOwnerEncrypted.model'
-import { GenderEnum } from './enums/Gender.enum'
-import { PatientDeactivationReasonEnum } from './enums/PatientDeactivationReason.enum'
-import { PatientPersonalStatusEnum } from './enums/PatientPersonalStatus.enum'
+import {b64_2ab, Patient as PatientEntity, ua2b64} from '@icure/api'
+import {mapTo} from '../mappings/mapper'
+import {Annotation} from './Annotation.model'
+import {CodingReference} from './CodingReference.model'
+import {HumanName} from './HumanName.model'
+import {Identifier} from './Identifier.model'
+import {Location} from './Location.model'
+import {Property} from './Property.model'
+import {RelatedPerson} from './RelatedPerson.model'
+import {RelatedPractitioner} from './RelatedPractitioner.model'
+import {SystemMetaDataOwnerEncrypted} from './SystemMetaDataOwnerEncrypted.model'
+import {GenderEnum} from './enums/Gender.enum'
+import {PatientDeactivationReasonEnum} from './enums/PatientDeactivationReason.enum'
+import {PatientPersonalStatusEnum} from './enums/PatientPersonalStatus.enum'
 
 @mapTo(PatientEntity)
 export class Patient {
@@ -53,7 +53,7 @@ export class Patient {
     picture?: ArrayBuffer
     externalId?: string
     relatives?: RelatedPerson[]
-    patientPractioners?: RelatedPractitioner[]
+    patientPractitioners?: RelatedPractitioner[]
     patientProfessions?: CodingReference[]
     properties?: Property[]
     systemMetaData?: SystemMetaDataOwnerEncrypted
@@ -97,7 +97,7 @@ export class Patient {
         this.picture = patient.picture
         this.externalId = patient.externalId
         this.relatives = patient.relatives
-        this.patientPractioners = patient.patientPractioners
+        this.patientPractitioners = patient.patientPractioners
         this.patientProfessions = patient.patientProfessions
         this.properties = patient.properties
         this.systemMetaData = patient.systemMetaData
@@ -143,7 +143,7 @@ export class Patient {
         pojo['picture'] = !!instance.picture ? ua2b64(instance.picture) : undefined
         pojo['externalId'] = instance.externalId
         pojo['relatives'] = instance.relatives?.map((item) => RelatedPerson.toJSON(item))
-        pojo['patientPractioners'] = instance.patientPractioners?.map((item) => RelatedPractitioner.toJSON(item))
+        pojo['patientPractitioners'] = instance.patientPractitioners?.map((item) => RelatedPractitioner.toJSON(item))
         pojo['patientProfessions'] = instance.patientProfessions?.map((item) => CodingReference.toJSON(item))
         pojo['properties'] = instance.properties?.map((item) => Property.toJSON(item))
         pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataOwnerEncrypted.toJSON(instance.systemMetaData) : undefined
@@ -190,7 +190,7 @@ export class Patient {
             picture: !!pojo['picture'] ? b64_2ab(pojo['picture']) : undefined,
             externalId: pojo['externalId'],
             relatives: pojo['relatives']?.map((item: any) => RelatedPerson.fromJSON(item)),
-            patientPractioners: pojo['patientPractioners']?.map((item: any) => RelatedPractitioner.fromJSON(item)),
+            patientPractitioners: pojo['patientPractitioners']?.map((item: any) => RelatedPractitioner.fromJSON(item)),
             patientProfessions: pojo['patientProfessions']?.map((item: any) => CodingReference.fromJSON(item)),
             properties: pojo['properties']?.map((item: any) => Property.fromJSON(item)),
             systemMetaData: !!pojo['systemMetaData'] ? SystemMetaDataOwnerEncrypted.fromJSON(pojo['systemMetaData']) : undefined,

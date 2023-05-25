@@ -1,48 +1,32 @@
-import { SecurityMetadata } from '../../src/models/SecurityMetadata.model'
-import { SecureDelegation } from '../../src/models/SecureDelegation.model'
+import {SecurityMetadata} from '../../src/models/SecurityMetadata.model'
+import {SecureDelegation} from '../../src/models/SecureDelegation.model'
+import {generateSecureDelegation} from './SecureDelegation.test'
 
-describe('SecurityMetadata', () => {
-    const secureDelegationData = {
-        delegator: 'delegator_test',
-        delegate: 'delegate_test',
-        secretIds: ['secret1', 'secret2'],
-        encryptionKeys: ['key1', 'key2'],
-        owningEntityIds: ['owning1', 'owning2'],
-        parentDelegations: ['parent1', 'parent2'],
-        exchangeDataId: 'exchangeDataId_test',
-        encryptedExchangeDataId: new Map([['key1', 'value1'], ['key2', 'value2']]),
-        permissions: 'READ'
-    };
+export function generateSecurityMetadata(): SecurityMetadata {
+    const secureDelegation1: SecureDelegation = generateSecureDelegation()
+    const secureDelegation2: SecureDelegation = generateSecureDelegation()
 
-    const securityMetadataData = {
-        secureDelegations: new Map([['hash1', new SecureDelegation(secureDelegationData)]]),
-        keysEquivalences: new Map([['hash2', 'value2']])
-    };
+    const securityMetadata = {
+        secureDelegations: new Map([
+            ['publicKeyHash1', secureDelegation1],
+            ['publicKeyHash2', secureDelegation2],
+        ]),
+        keysEquivalences: new Map([
+            ['publicKeyHash1', 'equivalence1'],
+            ['publicKeyHash2', 'equivalence2'],
+        ]),
+    }
 
-    const securityMetadataJSON = {
-        secureDelegations: { 'hash1': SecureDelegation.toJSON(new SecureDelegation(secureDelegationData)) },
-        keysEquivalences: { 'hash2': 'value2' }
-    };
+    return new SecurityMetadata(securityMetadata)
+}
 
-    test('should convert instance to JSON', () => {
-        const securityMetadata = new SecurityMetadata(securityMetadataData);
+describe(`SecurityMetadata serialization and deserialization`, () => {
+    it('should correctly serialize and deserialize from instance to JSON and back', () => {
+        const instance = generateSecurityMetadata()
 
-        expect(SecurityMetadata.toJSON(securityMetadata)).toEqual(securityMetadataJSON);
-    });
+        const json = SecurityMetadata.toJSON(instance)
+        const newInstance = SecurityMetadata.fromJSON(json)
 
-    test('should convert JSON to instance', () => {
-        const securityMetadata = SecurityMetadata.fromJSON(securityMetadataJSON);
-
-        expect(securityMetadata).toEqual(new SecurityMetadata(securityMetadataData));
-    });
-
-    test('should serialize and deserialize correctly', () => {
-        const securityMetadata = new SecurityMetadata(securityMetadataData);
-        const serialized = SecurityMetadata.toJSON(securityMetadata);
-        const deserialized = SecurityMetadata.fromJSON(serialized);
-
-        expect(deserialized).toEqual(securityMetadata);
-    });
-});
-
-
+        expect(newInstance).toEqual(instance)
+    })
+})

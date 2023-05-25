@@ -1,53 +1,28 @@
-import {CodingReference} from "../../src/models/CodingReference.model";
-import {Identifier} from "../../src/models/Identifier.model";
+import {Identifier} from '../../src/models/Identifier.model'
+import {generateCodingReference} from './CodingReference.test'
 
-describe('Identifier', () => {
-    const codingReferenceData = {
-        system: 'system_test',
-        code: 'code_test',
-        display: 'display_test'
-    };
+export function generateIdentifier(): Identifier {
+    const identifier = {
+        assigner: 'sampleAssigner',
+        end: '2023-05-24',
+        id: 'sampleId',
+        start: '2023-01-01',
+        system: 'sampleSystem',
+        type: generateCodingReference(),
+        use: 'official',
+        value: 'sampleValue',
+    }
 
-    const identifierData = {
-        assigner: 'assigner_test',
-        end: 'end_test',
-        id: 'id_test',
-        start: 'start_test',
-        system: 'system_test',
-        type: new CodingReference(codingReferenceData),
-        use: 'use_test',
-        value: 'value_test'
-    };
+    return new Identifier(identifier)
+}
 
-    const identifierJSON = {
-        assigner: 'assigner_test',
-        end: 'end_test',
-        id: 'id_test',
-        start: 'start_test',
-        system: 'system_test',
-        type: CodingReference.toJSON(new CodingReference(codingReferenceData)),
-        use: 'use_test',
-        value: 'value_test'
-    };
+describe(`Identifier serialization and deserialization`, () => {
+    it('should correctly serialize and deserialize from instance to JSON and back', () => {
+        const instance = generateIdentifier()
 
-    test('should convert instance to JSON', () => {
-        const identifier = new Identifier(identifierData);
+        const json = Identifier.toJSON(instance)
+        const newInstance = Identifier.fromJSON(json)
 
-        expect(Identifier.toJSON(identifier)).toEqual(identifierJSON);
-    });
-
-    test('should convert JSON to instance', () => {
-        const identifier = Identifier.fromJSON(identifierJSON);
-
-        expect(identifier).toEqual(new Identifier(identifierData));
-    });
-
-    test('should serialize and deserialize correctly', () => {
-        const identifier = new Identifier(identifierData);
-        const serialized = Identifier.toJSON(identifier);
-        const deserialized = Identifier.fromJSON(serialized);
-
-        expect(deserialized).toEqual(identifier);
-    });
-});
-
+        expect(newInstance).toEqual(instance)
+    })
+})

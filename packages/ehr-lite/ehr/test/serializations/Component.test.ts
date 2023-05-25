@@ -1,97 +1,30 @@
-import {Component} from "../../src/models/Component.model";
-import {Measure} from "../../src/models/Measure.model";
-import {TimeSeries} from "../../src/models/TimeSeries.model";
-import {Observation} from "../../src/models/Observation.model";
+import {Component} from '../../src/models/Component.model'
+import {generateMeasure} from './Measure.test'
+import {generateTimeSeries} from './TimeSeries.test'
 
-describe('Component', () => {
-    const measureData: Measure = {
-        value: 10,
-        min: 5,
-        max: 15,
-        unit: 'cm',
-        comment: 'Measurement of length'
-    };
+export function generateComponent(): Component {
+    const component = {
+        numberValue: 10,
+        booleanValue: true,
+        instantValue: 1621845600, // Exemple de timestamp UNIX
+        fuzzyDateValue: 1621845600, // Exemple de timestamp UNIX
+        measureValue: generateMeasure(),
+        timeSeries: generateTimeSeries(),
+        compoundValue: [], // Exemple avec deux observations
+        ratio: [generateMeasure(), generateMeasure()], // Exemple avec deux mesures
+        range: [generateMeasure(), generateMeasure()], // Exemple avec deux mesures
+    }
 
-    const timeSeriesData: TimeSeries = {
-        fields: ['time', 'value'],
-        samples: [
-            [1, 10],
-            [2, 12],
-            [3, 15]
-        ],
-        min: [1, 10],
-        max: [3, 15],
-        mean: [2, 12.3],
-        median: [2, 12],
-        variance: [1, 4.67]
-    };
+    return new Component(component)
+}
 
-    const observationData: Observation = {
-        id: 'obs_123',
-        component: {
-            numberValue: 10,
-            booleanValue: true,
-            instantValue: 1641532200,
-            fuzzyDateValue: 202201,
-            measureValue: measureData,
-            timeSeries: timeSeriesData,
-            compoundValue: [
-                { stringValue: 'Compound value 1' },
-                { stringValue: 'Compound value 2' }
-            ],
-            ratio: [
-                { value: 0.5, unit: 'mg' },
-                { value: 1.5, unit: 'mg' }
-            ],
-            range: [
-                { min: 5, max: 15, unit: 'cm' },
-                { min: 2, max: 8, unit: 'cm' }
-            ]
-        }
-    };
+describe(`Component serialization and deserialization`, () => {
+    it('should correctly serialize and deserialize from instance to JSON and back', () => {
+        const instance = generateComponent()
 
-    const observationJSON = {
-        id: 'obs_123',
-        component: {
-            numberValue: 10,
-            booleanValue: true,
-            instantValue: 1641532200,
-            fuzzyDateValue: 202201,
-            measureValue: measureData,
-            timeSeries: timeSeriesData,
-            compoundValue: [
-                { stringValue: 'Compound value 1' },
-                { stringValue: 'Compound value 2' }
-            ],
-            ratio: [
-                { value: 0.5, unit: 'mg' },
-                { value: 1.5, unit: 'mg' }
-            ],
-            range: [
-                { min: 5, max: 15, unit: 'cm' },
-                { min: 2, max: 8, unit: 'cm' }
-            ]
-        }
-    };
+        const json = Component.toJSON(instance)
+        const newInstance = Component.fromJSON(json)
 
-    test('should convert instance to JSON', () => {
-        const component = new Component(observationData.component);
-
-        expect(Component.toJSON(component)).toEqual(observationJSON.component);
-    });
-
-    test('should convert JSON to instance', () => {
-        const component = Component.fromJSON(observationJSON.component);
-
-        expect(component).toEqual(new Component(observationData.component));
-    });
-
-    test('should serialize and deserialize correctly', () => {
-        const component = new Component(observationData.component);
-        const serialized = Component.toJSON(component);
-        const deserialized = Component.fromJSON(serialized);
-
-        expect(deserialized).toEqual(component);
-    });
-});
-
+        expect(newInstance).toEqual(instance)
+    })
+})

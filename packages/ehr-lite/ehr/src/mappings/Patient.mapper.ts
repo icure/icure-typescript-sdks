@@ -1,15 +1,26 @@
-import { Patient } from '../models/Patient.model'
-import { Patient as PatientEntity, Identifier as IdentifierEntity, CodeStub, PersonName, Address, Annotation as AnnotationEntity, Partnership, PatientHealthCareParty, PropertyStub, SecurityMetadata as SecurityMetadataEntity } from '@icure/api'
-import { createMap, forMember, fromValue, ignore, mapFrom, mapWith } from '@automapper/core'
-import { mapper } from './mapper'
-import { Identifier } from '../models/Identifier.model'
-import { CodingReference } from '../models/CodingReference.model'
-import { HumanName } from '../models/HumanName.model'
-import { Location } from '../models/Location.model'
-import { Annotation } from '../models/Annotation.model'
-import { RelatedPerson } from '../models/RelatedPerson.model'
-import { RelatedPractitioner } from '../models/RelatedPractitioner.model'
-import { Property } from '../models/Property.model'
+import {Patient} from '../models/Patient.model'
+import {
+    Address,
+    Annotation as AnnotationEntity,
+    CodeStub,
+    Identifier as IdentifierEntity,
+    Partnership,
+    Patient as PatientEntity,
+    PatientHealthCareParty,
+    PersonName,
+    PropertyStub,
+    SecurityMetadata as SecurityMetadataEntity
+} from '@icure/api'
+import {createMap, forMember, fromValue, ignore, mapFrom, mapWith} from '@automapper/core'
+import {mapper} from './mapper'
+import {Identifier} from '../models/Identifier.model'
+import {CodingReference} from '../models/CodingReference.model'
+import {HumanName} from '../models/HumanName.model'
+import {Location} from '../models/Location.model'
+import {Annotation} from '../models/Annotation.model'
+import {RelatedPerson} from '../models/RelatedPerson.model'
+import {RelatedPractitioner} from '../models/RelatedPractitioner.model'
+import {Property} from '../models/Property.model'
 import {
     convertDeepNestedMapToObject,
     convertMapOfArrayOfGenericToObject,
@@ -26,14 +37,15 @@ import {
     extractHcPartyKeys,
     extractPrivateKeyShamirPartitions,
     extractPublicKey,
+    extractPublicKeysForOaepWithSha256,
     extractSecretForeignKeys,
     extractSecurityMetadata,
     extractTransferKeys,
 } from './utils/Metadata.utils'
-import { Delegation } from '../models/Delegation.model'
-import { Delegation as DelegationEntity } from '@icure/api/icc-api/model/Delegation'
-import { SecurityMetadata } from '../models/SecurityMetadata.model'
-import { SystemMetaDataOwnerEncrypted } from '../models/SystemMetaDataOwnerEncrypted.model'
+import {Delegation} from '../models/Delegation.model'
+import {Delegation as DelegationEntity} from '@icure/api/icc-api/model/Delegation'
+import {SecurityMetadata} from '../models/SecurityMetadata.model'
+import {SystemMetaDataOwnerEncrypted} from '../models/SystemMetaDataOwnerEncrypted.model'
 
 function forMember_PatientEntity_id() {
     return forMember<Patient, PatientEntity>(
@@ -352,7 +364,7 @@ function forMember_PatientEntity_partnerships() {
 function forMember_PatientEntity_patientHealthCareParties() {
     return forMember<Patient, PatientEntity>(
         (v) => v.patientHealthCareParties,
-        mapWith(PatientHealthCareParty, RelatedPractitioner, (p) => p.patientPractioners)
+        mapWith(PatientHealthCareParty, RelatedPractitioner, (p) => p.patientPractitioners)
     )
 }
 
@@ -605,13 +617,6 @@ function forMember_Patient_deletionDate() {
     )
 }
 
-function forMember_Patient_name() {
-    return forMember<PatientEntity, Patient>(
-        (v) => v.names,
-        mapWith(HumanName, PersonName, (p) => p.names)
-    )
-}
-
 function forMember_Patient_languages() {
     return forMember<PatientEntity, Patient>(
         (v) => v.languages,
@@ -782,7 +787,7 @@ function forMember_Patient_relatives() {
 
 function forMember_Patient_patientPractioners() {
     return forMember<PatientEntity, Patient>(
-        (v) => v.patientPractioners,
+        (v) => v.patientPractitioners,
         mapWith(RelatedPractitioner, PatientHealthCareParty, (p) => p.patientHealthCareParties)
     )
 }
@@ -817,6 +822,7 @@ function forMember_Patient_systemMetaData() {
                 aesExchangeKeys: !!p.aesExchangeKeys ? convertObjectToDeepNestedMap(p.aesExchangeKeys) : undefined,
                 transferKeys: !!p.transferKeys ? convertObjectToNestedMap(p.transferKeys) : undefined,
                 privateKeyShamirPartitions: !!p.privateKeyShamirPartitions ? convertObjectToMap(p.privateKeyShamirPartitions) : undefined,
+                publicKeysForOaepWithSha256: p.publicKeysForOaepWithSha256,
             })
         })
     )
@@ -845,6 +851,20 @@ function forMember_Patient_ssin() {
 
 function forMember_PatientEntity__type() {
     return forMember<Patient, PatientEntity>((v) => v._type, fromValue('Patient'))
+}
+
+function forMember_PatientEntity_publicKeysForOaepWithSha256() {
+    return forMember<Patient, PatientEntity>(
+        (v) => v.publicKeysForOaepWithSha256,
+        mapFrom((v) => extractPublicKeysForOaepWithSha256(v.systemMetaData))
+    )
+}
+
+function forMember_Patient_patientPractitioners() {
+    return forMember<PatientEntity, Patient>(
+        (v) => v.patientPractitioners,
+        mapWith(RelatedPractitioner, PatientHealthCareParty, (p) => p.patientHealthCareParties)
+    )
 }
 
 export function initializePatientMapper() {
@@ -913,6 +933,7 @@ export function initializePatientMapper() {
         forMember_PatientEntity_transferKeys(),
         forMember_PatientEntity_privateKeyShamirPartitions(),
         forMember_PatientEntity_publicKey(),
+        forMember_PatientEntity_publicKeysForOaepWithSha256(),
         forMember_PatientEntity_secretForeignKeys(),
         forMember_PatientEntity_cryptedForeignKeys(),
         forMember_PatientEntity_delegations(),
@@ -976,7 +997,7 @@ export function initializePatientMapper() {
         forMember_Patient_picture(),
         forMember_Patient_externalId(),
         forMember_Patient_relatives(),
-        forMember_Patient_patientPractioners(),
+        forMember_Patient_patientPractitioners(),
         forMember_Patient_patientProfessions(),
         forMember_Patient_properties(),
         forMember_Patient_systemMetaData()

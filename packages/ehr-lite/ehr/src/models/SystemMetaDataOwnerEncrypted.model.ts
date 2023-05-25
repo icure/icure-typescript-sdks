@@ -1,5 +1,5 @@
-import { Delegation } from './Delegation.model'
-import { SecurityMetadata } from './SecurityMetadata.model'
+import {Delegation} from './Delegation.model'
+import {SecurityMetadata} from './SecurityMetadata.model'
 
 export class SystemMetaDataOwnerEncrypted {
     publicKey?: string
@@ -12,6 +12,7 @@ export class SystemMetaDataOwnerEncrypted {
     aesExchangeKeys?: Map<string, Map<string, Map<string, string>>>
     transferKeys?: Map<string, Map<string, string>>
     securityMetadata?: SecurityMetadata
+    publicKeysForOaepWithSha256?: Array<string>
     encryptedSelf?: string
 
     constructor(systemMetaDataOwnerEncrypted: ISystemMetaDataOwnerEncrypted | any) {
@@ -26,6 +27,7 @@ export class SystemMetaDataOwnerEncrypted {
         this.transferKeys = systemMetaDataOwnerEncrypted.transferKeys
         this.securityMetadata = systemMetaDataOwnerEncrypted.securityMetadata
         this.encryptedSelf = systemMetaDataOwnerEncrypted.encryptedSelf
+        this.publicKeysForOaepWithSha256 = systemMetaDataOwnerEncrypted.publicKeysForOaepWithSha256
     }
 
     static toJSON(instance: SystemMetaDataOwnerEncrypted): any {
@@ -40,6 +42,7 @@ export class SystemMetaDataOwnerEncrypted {
         pojo['aesExchangeKeys'] = !!instance.aesExchangeKeys ? Object.fromEntries([...instance.aesExchangeKeys.entries()].map(([k, v]) => [k, Object.fromEntries([...v.entries()].map(([k, v]) => [k, Object.fromEntries([...v.entries()].map(([k, v]) => [k, v]))]))])) : undefined
         pojo['transferKeys'] = !!instance.transferKeys ? Object.fromEntries([...instance.transferKeys.entries()].map(([k, v]) => [k, Object.fromEntries([...v.entries()].map(([k, v]) => [k, v]))])) : undefined
         pojo['securityMetadata'] = !!instance.securityMetadata ? SecurityMetadata.toJSON(instance.securityMetadata) : undefined
+        pojo['publicKeysForOaepWithSha256'] = instance.publicKeysForOaepWithSha256?.map((item) => item)
         pojo['encryptedSelf'] = instance.encryptedSelf
         return pojo
     }
@@ -56,6 +59,7 @@ export class SystemMetaDataOwnerEncrypted {
             aesExchangeKeys: pojo['aesExchangeKeys'] ? new Map(Object.entries(pojo['aesExchangeKeys']).map(([k, v]: [any, any]) => [k, new Map(Object.entries(v).map(([k, v]: [any, any]) => [k, new Map(Object.entries(v).map(([k, v]: [any, any]) => [k, v]))]))])) : undefined,
             transferKeys: pojo['transferKeys'] ? new Map(Object.entries(pojo['transferKeys']).map(([k, v]: [any, any]) => [k, new Map(Object.entries(v).map(([k, v]: [any, any]) => [k, v]))])) : undefined,
             securityMetadata: !!pojo['securityMetadata'] ? SecurityMetadata.fromJSON(pojo['securityMetadata']) : undefined,
+            publicKeysForOaepWithSha256: pojo['publicKeysForOaepWithSha256']?.map((item: any) => item),
             encryptedSelf: pojo['encryptedSelf'],
         })
     }
@@ -72,5 +76,6 @@ interface ISystemMetaDataOwnerEncrypted {
     aesExchangeKeys?: Map<string, Map<string, Map<string, string>>>
     transferKeys?: Map<string, Map<string, string>>
     securityMetadata?: SecurityMetadata
+    publicKeysForOaepWithSha256?: Array<string>
     encryptedSelf?: string
 }

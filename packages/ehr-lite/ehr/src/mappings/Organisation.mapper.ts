@@ -1,11 +1,11 @@
-import { Organisation } from '../models/Organisation.model'
-import { Address, CodeStub, HealthcareParty, Identifier as IdentifierEntity, PropertyStub } from '@icure/api'
-import { createMap, forMember, ignore, mapFrom, mapWith } from '@automapper/core'
-import { mapper } from './mapper'
-import { Identifier } from '../models/Identifier.model'
-import { CodingReference } from '../models/CodingReference.model'
-import { Location } from '../models/Location.model'
-import { Property } from '../models/Property.model'
+import {Organisation} from '../models/Organisation.model'
+import {Address, CodeStub, HealthcareParty, Identifier as IdentifierEntity, PropertyStub} from '@icure/api'
+import {createMap, forMember, ignore, mapFrom, mapWith} from '@automapper/core'
+import {mapper} from './mapper'
+import {Identifier} from '../models/Identifier.model'
+import {CodingReference} from '../models/CodingReference.model'
+import {Location} from '../models/Location.model'
+import {Property} from '../models/Property.model'
 import {
     convertDeepNestedMapToObject,
     convertMapToObject,
@@ -17,10 +17,11 @@ import {
     extractHcPartyKeys,
     extractPrivateKeyShamirPartitions,
     extractPublicKey,
+    extractPublicKeysForOaepWithSha256,
     extractTransferKeys,
 } from './utils/Metadata.utils'
-import { SystemMetaDataOwner } from '../models/SystemMetaDataOwner.model'
-import { healthcareProfessionalIdentifiers } from './utils/HealthProfessional.utils'
+import {SystemMetaDataOwner} from '../models/SystemMetaDataOwner.model'
+import {healthcareProfessionalIdentifiers} from './utils/HealthProfessional.utils'
 
 function forMember_HealthcareParty_id() {
     return forMember<Organisation, HealthcareParty>(
@@ -414,6 +415,7 @@ function forMember_Organisation_systemMetaData() {
                 aesExchangeKeys: !!v.aesExchangeKeys ? convertObjectToDeepNestedMap(v.aesExchangeKeys) : undefined,
                 transferKeys: !!v.transferKeys ? convertObjectToNestedMap(v.transferKeys) : undefined,
                 privateKeyShamirPartitions: !!v.privateKeyShamirPartitions ? convertObjectToMap(v.privateKeyShamirPartitions) : undefined,
+                publicKeysForOaepWithSha256: v.publicKeysForOaepWithSha256,
             })
         })
     )
@@ -430,6 +432,13 @@ function forMember_Organisation_userId() {
     return forMember<HealthcareParty, Organisation>(
         (v) => v.userId,
         mapFrom((v) => v.userId)
+    )
+}
+
+function forMember_HealthcareParty_publicKeysForOaepWithSha256() {
+    return forMember<Organisation, HealthcareParty>(
+        (v) => v.publicKeysForOaepWithSha256,
+        mapFrom((o) => extractPublicKeysForOaepWithSha256(o.systemMetaData))
     )
 }
 
@@ -490,7 +499,8 @@ export function initializeOrganisationMapper() {
         forMember_HealthcareParty_aesExchangeKeys(),
         forMember_HealthcareParty_transferKeys(),
         forMember_HealthcareParty_privateKeyShamirPartitions(),
-        forMember_HealthcareParty_publicKey()
+        forMember_HealthcareParty_publicKey(),
+        forMember_HealthcareParty_publicKeysForOaepWithSha256()
     )
 
     createMap(

@@ -1,75 +1,33 @@
-import { ISO639_1 } from '@icure/api'
-import { CodingReference } from '../../src/models/CodingReference.model'
-import { Annotation } from '../../src/models/Annotation.model'
+import {ISO639_1} from '@icure/api'
+import {Annotation} from '../../src/models/Annotation.model'
+import {generateCodingReference} from './CodingReference.test'
 
-describe('Annotation', () => {
-    let instance: Annotation
-    let json: any
+export function generateAnnotation(): Annotation {
+    const annotation = {
+        id: 'sampleId',
+        tags: [generateCodingReference(), generateCodingReference()],
+        author: 'sampleAuthor',
+        created: 1234567890,
+        modified: 1234567890,
+        markdown: new Map<ISO639_1, string>([
+            ['en', 'English Markdown'],
+            ['fr', 'French Markdown'],
+        ]),
+        target: 'sampleTarget',
+        confidential: true,
+        encryptedSelf: 'sampleEncryptedSelf',
+    }
 
-    beforeEach(() => {
-        instance = new Annotation({
-            id: 'id1',
-            tags: [
-                new CodingReference({
-                    id: 'id1',
-                    type: 'type1',
-                    code: 'code1',
-                    version: 'v1',
-                    label: new Map<ISO639_1, string>([['en', 'English']]),
-                }),
-            ],
-            author: 'author1',
-            created: 1234567890,
-            modified: 1234567890,
-            markdown: new Map<ISO639_1, string>([['en', 'Markdown text']]),
-            target: 'target1',
-            confidential: true,
-            encryptedSelf: 'encryptedSelf1',
-        })
+    return new Annotation(annotation)
+}
 
-        json = {
-            id: 'id1',
-            tags: [
-                {
-                    id: 'id1',
-                    type: 'type1',
-                    code: 'code1',
-                    version: 'v1',
-                    label: { en: 'English' },
-                },
-            ],
-            author: 'author1',
-            created: 1234567890,
-            modified: 1234567890,
-            markdown: { en: 'Markdown text' },
-            target: 'target1',
-            confidential: true,
-            encryptedSelf: 'encryptedSelf1',
-        }
-    })
+describe(`Annotation serialization and deserialization`, () => {
+    it('should correctly serialize and deserialize from instance to JSON and back', () => {
+        const instance = generateAnnotation()
 
-    describe('toJSON', () => {
-        it('should convert instance to JSON', () => {
-            const result = Annotation.toJSON(instance)
-            expect(result).toEqual(json)
-        })
-    })
+        const json = Annotation.toJSON(instance)
+        const newInstance = Annotation.fromJSON(json)
 
-    describe('fromJSON', () => {
-        it('should convert JSON to instance', () => {
-            const result = Annotation.fromJSON(json)
-            expect(result).toEqual(instance)
-        })
-    })
-
-    it('should serialize and deserialize correctly', () => {
-        // Serialize the instance to JSON
-        const serialized = Annotation.toJSON(instance)
-
-        // Deserialize the JSON back to an instance
-        const deserialized = Annotation.fromJSON(serialized)
-
-        // Verify that the original instance and the new instance are equal
-        expect(deserialized).toEqual(instance)
+        expect(newInstance).toEqual(instance)
     })
 })
