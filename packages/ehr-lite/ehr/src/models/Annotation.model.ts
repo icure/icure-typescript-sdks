@@ -1,6 +1,6 @@
-import { Annotation as AnnotationEntity, ISO639_1 } from '@icure/api'
-import { mapTo } from '../mappings/mapper'
-import { CodingReference } from './CodingReference.model'
+import {Annotation as AnnotationEntity, ISO639_1} from '@icure/api'
+import {mapTo} from '../mappings/mapper'
+import {CodingReference} from './CodingReference.model'
 
 @mapTo(AnnotationEntity)
 export class Annotation {
@@ -14,16 +14,16 @@ export class Annotation {
     confidential?: boolean
     encryptedSelf?: string
 
-    constructor(annotation: IAnnotation | any) {
-        this.id = annotation.id
-        this.tags = annotation.tags
-        this.author = annotation.author
-        this.created = annotation.created
-        this.modified = annotation.modified
-        this.markdown = annotation.markdown
-        this.target = annotation.target
-        this.confidential = annotation.confidential
-        this.encryptedSelf = annotation.encryptedSelf
+    constructor(annotation?: IAnnotation | any) {
+        this.id = annotation?.id
+        this.tags = annotation?.tags
+        this.author = annotation?.author
+        this.created = annotation?.created
+        this.modified = annotation?.modified
+        this.markdown = annotation?.markdown
+        this.target = annotation?.target
+        this.confidential = annotation?.confidential
+        this.encryptedSelf = annotation?.encryptedSelf
     }
 
     static toJSON(instance: Annotation): any {

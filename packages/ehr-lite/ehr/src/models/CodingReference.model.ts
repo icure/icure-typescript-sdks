@@ -1,5 +1,5 @@
-import { CodeStub, ISO639_1 } from '@icure/api'
-import { mapTo } from '../mappings/mapper'
+import {CodeStub, ISO639_1} from '@icure/api'
+import {mapTo} from '../mappings/mapper'
 
 @mapTo(CodeStub)
 export class CodingReference {
@@ -9,12 +9,12 @@ export class CodingReference {
     version?: string
     label?: Map<ISO639_1, string>
 
-    constructor(codingReference: ICodingReference | any) {
-        this.id = codingReference.id
-        this.type = codingReference.type
-        this.code = codingReference.code
-        this.version = codingReference.version
-        this.label = codingReference.label
+    constructor(codingReference?: ICodingReference | any) {
+        this.id = codingReference?.id
+        this.type = codingReference?.type
+        this.code = codingReference?.code
+        this.version = codingReference?.version
+        this.label = codingReference?.label
     }
 
     static toJSON(instance: CodingReference): any {

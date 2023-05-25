@@ -1,9 +1,9 @@
-import { createMap, forMember, ignore, mapFrom, mapWith } from '@automapper/core'
-import { mapper } from './mapper'
-import { Annotation as AnnotationEntity } from '@icure/api/icc-api/model/Annotation'
-import { Annotation } from '../models/Annotation.model'
-import { CodingReference } from '../models/CodingReference.model'
-import { CodeStub } from '@icure/api'
+import {createMap, forMember, ignore, mapFrom, mapWith} from '@automapper/core'
+import {mapper} from './mapper'
+import {Annotation as AnnotationEntity} from '@icure/api/icc-api/model/Annotation'
+import {Annotation} from '../models/Annotation.model'
+import {CodingReference} from '../models/CodingReference.model'
+import {CodeStub} from '@icure/api'
 
 function forMember_AnnotationEntity_id() {
     return forMember<Annotation, AnnotationEntity>(
@@ -40,7 +40,7 @@ function forMember_AnnotationEntity_text() {
 function forMember_AnnotationEntity_markdown() {
     return forMember<Annotation, AnnotationEntity>(
         (v) => v.markdown,
-        mapFrom((a) => (!!a.markdown ? a.markdown.entries() : undefined))
+        mapFrom((a) => (!!a.markdown ? Object.fromEntries(a.markdown) : undefined))
     )
 }
 
@@ -54,7 +54,7 @@ function forMember_AnnotationEntity_confidential() {
 function forMember_AnnotationEntity_tags() {
     return forMember<Annotation, AnnotationEntity>(
         (v) => v.tags,
-        mapWith(CodingReference, CodeStub, (a) => a.tags)
+        mapWith(CodeStub, CodingReference, (a) => a.tags)
     )
 }
 
@@ -82,7 +82,7 @@ function forMember_Annotation_id() {
 function forMember_Annotation_tags() {
     return forMember<AnnotationEntity, Annotation>(
         (v) => v.tags,
-        mapWith(CodeStub, CodingReference, (a) => a.tags)
+        mapWith(CodingReference, CodeStub, (a) => a.tags)
     )
 }
 
