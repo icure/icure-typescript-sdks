@@ -1,9 +1,9 @@
 export enum ClinicalStatusEnum {
-    "active" ,
-    "recurrence",
-    "relapse",
-    "inactive",
-    "remission",
-    "resolved",
-    "unknown",
+    ACTIVE = "active" ,
+    RECURRENCE = "recurrence",
+    RELAPSE = "relapse",
+    INACTIVE = "inactive",
+    REMISSION = "remission",
+    RESOLVED = "resolved",
+    UNKNOWN = "unknown",
 }

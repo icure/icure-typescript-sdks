@@ -10,7 +10,7 @@ export function generateHumanName(): HumanName {
         prefix: ['Mr.'],
         suffix: ['Jr.'],
         text: 'John Doe',
-        use: HumanNameUseEnum.official,
+        use: HumanNameUseEnum.OFFICIAL,
     }
 
     return new HumanName(humanName)

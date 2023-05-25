@@ -21,7 +21,7 @@ export function generatePractitioner(): Practitioner {
         lastName: 'dummyLastName',
         firstName: 'dummyFirstName',
         names: [generateHumanName()],
-        gender: GenderEnum.unknown,
+        gender: GenderEnum.UNKNOWN,
         civility: 'Mr.',
         speciality: 'dummySpeciality',
         parentId: 'dummyParentId',

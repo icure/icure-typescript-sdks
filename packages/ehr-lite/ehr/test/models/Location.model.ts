@@ -5,7 +5,7 @@ import {generateContactPoint} from "./ContactPoint.model";
 
 export function generateLocation(): Location {
     const location = {
-        addressType: LocationAddressTypeEnum.home,
+        addressType: LocationAddressTypeEnum.HOME,
         description: 'Sample location description',
         street: 'Sample street',
         houseNumber: '123',

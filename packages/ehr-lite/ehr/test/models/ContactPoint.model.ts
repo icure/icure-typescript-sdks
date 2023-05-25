@@ -3,7 +3,7 @@ import {ContactPointTelecomTypeEnum} from "../../src/models/enums/ContactPointTe
 
 export function generateContactPoint(): ContactPoint {
     const contactPoint = {
-        system: ContactPointTelecomTypeEnum.phone,
+        system: ContactPointTelecomTypeEnum.PHONE,
         value: 'sample@example.com',
         description: 'Sample contact point description',
         encryptedSelf: 'sampleEncryptedSelf',

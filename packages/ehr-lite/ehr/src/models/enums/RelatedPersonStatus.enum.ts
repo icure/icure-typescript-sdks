@@ -1,5 +1,5 @@
 export enum RelatedPersonStatusEnum {
-  "active",
-  "complicated",
-  "past",
+  ACTIVE = "active",
+  COMPLICATED = "complicated",
+  PAST = "past",
 }

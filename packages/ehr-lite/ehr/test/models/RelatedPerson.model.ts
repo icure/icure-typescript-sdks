@@ -4,8 +4,8 @@ import {RelatedPersonStatusEnum} from "../../src/models/enums/RelatedPersonStatu
 
 export function generateRelatedPerson(): RelatedPerson {
     const relatedPerson = {
-        type: RelatedPersonTypeEnum.family,
-        status: RelatedPersonStatusEnum.active,
+        type: RelatedPersonTypeEnum.FAMILY,
+        status: RelatedPersonStatusEnum.ACTIVE,
         personId: 'samplePersonId',
     }
 

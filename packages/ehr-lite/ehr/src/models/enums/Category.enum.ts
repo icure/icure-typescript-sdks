@@ -1,4 +1,4 @@
 export enum CategoryEnum {
-    "problem-list-item",
-    "encounter-diagnosis",
+    PROBLEM_LIST_ITEM = "problem-list-item",
+    ENCOUNTER_DIAGNOSIS = "encounter-diagnosis",
 }

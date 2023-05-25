@@ -1,8 +1,8 @@
 export enum VerificationStatusEnum {
-    "unconfirmed",
-    "provisional",
-    "differential",
-    "confirmed",
-    "refuted",
-    "entered-in-error",
+    UNCONFIRMED = "unconfirmed",
+    PROVISIONAL = "provisional",
+    DIFFERENTIAL = "differential",
+    CONFIRMED = "confirmed",
+    REFUTED = "refuted",
+    ENTERED_IN_ERROR = "entered-in-error",
 }

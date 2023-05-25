@@ -3,7 +3,7 @@ import {PractitionerTypeEnum} from "../../src/models/enums/PractitionerType.enum
 
 export function generateRelatedPractitioner(): RelatedPractitioner {
     const relatedPractitioner = {
-        type: PractitionerTypeEnum.referringphysician,
+        type: PractitionerTypeEnum.REFERRING_PHYSICIAN,
         healthcarePartyId: 'sampleHealthcarePartyId',
         encryptedSelf: 'sampleEncryptedSelf',
     }

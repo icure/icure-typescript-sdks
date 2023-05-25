@@ -1,9 +1,9 @@
 export enum PatientDeactivationReasonEnum {
-  "deceased",
-  "moved",
-  "other_doctor",
-  "retired",
-  "no_contact",
-  "unknown",
-  "none",
+  DECEASED = "deceased",
+  MOVED = "moved",
+  OTHER_DOCTOR = "other_doctor",
+  RETIRED = "retired",
+  NO_CONTACT = "no_contact",
+  UNKNWON = "unknown",
+  NONDE = "none",
 }
