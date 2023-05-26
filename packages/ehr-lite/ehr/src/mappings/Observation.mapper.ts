@@ -385,23 +385,39 @@ function forMember_Observation_localContent() {
 function forMember_Observation_qualifiedLinks() {
     return forMember<Service, Observation>(
         (v) => v.qualifiedLinks,
-        mapFrom((v) => {
-            !!v.qualifiedLinks ? convertObjectToNestedMap(v.qualifiedLinks) : undefined
-        })
+        mapFrom((v) =>
+             !!v.qualifiedLinks ? convertObjectToNestedMap(v.qualifiedLinks) : undefined
+        )
     )
 }
 
 function forMember_Observation_codes() {
     return forMember<Service, Observation>(
         (v) => v.codes,
-        mapWith(CodingReference, CodeStub, (v) => v.codes)
+        mapFrom((v) => {
+            const codes = v.codes
+
+            if (!codes) {
+                return undefined
+            }
+
+            return new Set(mapper.mapArray(codes, CodeStub, CodingReference))
+        })
     )
 }
 
 function forMember_Observation_tags() {
     return forMember<Service, Observation>(
         (v) => v.tags,
-        mapWith(CodingReference, CodeStub, (v) => v.tags)
+        mapFrom((v) => {
+            const tags = v.tags
+
+            if (!tags) {
+                return undefined
+            }
+
+            return new Set(mapper.mapArray(tags, CodeStub, CodingReference))
+        })
     )
 }
 
