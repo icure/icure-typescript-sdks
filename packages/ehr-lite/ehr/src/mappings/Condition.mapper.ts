@@ -1,4 +1,4 @@
-import { createMap, forMember, fromValue, ignore, mapFrom, mapWith } from '@automapper/core'
+import { afterMap, constructUsing, createMap, forMember, fromValue, ignore, mapFrom, mapWith } from '@automapper/core'
 import { mapper } from './mapper'
 import { CodeStub, Delegation as DelegationEntity, HealthElement, Identifier as IdentifierEntity, SecurityMetadata as SecurityMetadataEntity } from '@icure/api'
 import { Condition } from '../models/Condition.model'
@@ -21,7 +21,7 @@ function forMember_HealthElement_id() {
 function forMember_HealthElement_identifiers() {
     return forMember<Condition, HealthElement>(
         (v) => v.identifiers,
-        mapWith(Identifier, IdentifierEntity, (v) => v.identifiers)
+        mapWith(IdentifierEntity, Identifier, (v) => [...(v.identifiers ?? [])])
     )
 }
 
@@ -85,9 +85,29 @@ function forMember_HealthElement_tags() {
                 })
             })
 
+            const clinicalStatus = new CodeStub({
+                code: v.clinicalStatus,
+                context: 'clinicalStatus',
+            })
+
+            const verificationStatus = new CodeStub({
+                code: v.verificationStatus,
+                context: 'verificationStatus',
+            })
+
+            const severity = new CodeStub({
+                code: v.severity,
+                context: 'severity',
+            })
+
+            const category = new CodeStub({
+                code: v.category,
+                context: 'category',
+            })
+
             const tagsCodeStubs = mapper.mapArray(tags, CodingReference, CodeStub)
 
-            return [...tagsCodeStubs, ...bodySiteCodeStubs]
+            return [...tagsCodeStubs, ...bodySiteCodeStubs, clinicalStatus, severity, verificationStatus, category]
         })
     )
 }
@@ -95,7 +115,7 @@ function forMember_HealthElement_tags() {
 function forMember_HealthElement_codes() {
     return forMember<Condition, HealthElement>(
         (v) => v.codes,
-        mapWith(CodingReference, CodeStub, (v) => (!!v.codes ? [...v.codes] : undefined))
+        mapWith(CodeStub, CodingReference, (v) => (!!v.codes ? [...v.codes] : undefined))
     )
 }
 
@@ -155,7 +175,7 @@ function forMember_HealthElement_note() {
 function forMember_HealthElement_notes() {
     return forMember<Condition, HealthElement>(
         (v) => v.notes,
-        mapWith(Annotation, AnnotationEntity, (v) => v.notes)
+        mapWith(AnnotationEntity, Annotation, (v) => v.notes)
     )
 }
 
@@ -212,7 +232,7 @@ function forMember_HealthElement_cryptedForeignKeys() {
                 return undefined
             }
 
-            return new Map([...cryptedForeignKeys].map(([key, value]) => [key, mapper.mapArray(value, Delegation, DelegationEntity)]))
+            return Object.fromEntries([...cryptedForeignKeys].map(([key, value]) => [key, mapper.mapArray(value, Delegation, DelegationEntity)]))
         })
     )
 }
@@ -227,7 +247,7 @@ function forMember_HealthElement_delegations() {
                 return undefined
             }
 
-            return new Map([...delegations].map(([key, value]) => [key, mapper.mapArray(value, Delegation, DelegationEntity)]))
+            return Object.fromEntries([...delegations].map(([key, value]) => [key, mapper.mapArray(value, Delegation, DelegationEntity)]))
         })
     )
 }
@@ -242,7 +262,7 @@ function forMember_HealthElement_encryptionKeys() {
                 return undefined
             }
 
-            return new Map([...encryptionKeys].map(([key, value]) => [key, mapper.mapArray(value, Delegation, DelegationEntity)]))
+            return Object.fromEntries([...encryptionKeys].map(([key, value]) => [key, mapper.mapArray(value, Delegation, DelegationEntity)]))
         })
     )
 }
@@ -257,7 +277,7 @@ function forMember_HealthElement_encryptedSelf() {
 function forMember_HealthElement_securityMetadata() {
     return forMember<Condition, HealthElement>(
         (v) => v.securityMetadata,
-        mapWith(SecurityMetadata, SecurityMetadataEntity, (v) => extractSecurityMetadata(v.systemMetaData))
+        mapWith(SecurityMetadataEntity, SecurityMetadata, (v) => extractSecurityMetadata(v.systemMetaData))
     )
 }
 
@@ -275,7 +295,14 @@ function forMember_Condition_id() {
 function forMember_Condition_identifiers() {
     return forMember<HealthElement, Condition>(
         (v) => v.identifiers,
-        mapWith(Identifier, IdentifierEntity, (v) => v.identifiers)
+        mapFrom((v) => {
+            const identifiers = v.identifiers
+            if (!identifiers) {
+                return undefined
+            }
+
+            return new Set(mapper.mapArray(identifiers, IdentifierEntity, Identifier))
+        })
     )
 }
 
@@ -324,49 +351,74 @@ function forMember_Condition_medicalLocationId() {
 function forMember_Condition_clinicalStatus() {
     return forMember<HealthElement, Condition>(
         (v) => v.clinicalStatus,
-        mapFrom((v) => v.tags?.find((v) => v.context === 'clinicalStatus')?.type)
+        mapFrom((v) => v.tags?.find((v) => v.context === 'clinicalStatus')?.code)
     )
 }
 
 function forMember_Condition_verificationStatus() {
     return forMember<HealthElement, Condition>(
         (v) => v.verificationStatus,
-        mapFrom((v) => v.tags?.find((v) => v.context === 'verificationStatus')?.type)
+        mapFrom((v) => v.tags?.find((v) => v.context === 'verificationStatus')?.code)
     )
 }
 
 function forMember_Condition_category() {
     return forMember<HealthElement, Condition>(
         (v) => v.category,
-        mapFrom((v) => v.tags?.find((v) => v.context === 'category')?.type)
+        mapFrom((v) => v.tags?.find((v) => v.context === 'category')?.code)
     )
 }
 
 function forMember_Condition_severity() {
     return forMember<HealthElement, Condition>(
         (v) => v.severity,
-        mapFrom((v) => v.tags?.find((v) => v.context === 'severity')?.type)
+        mapFrom((v) => v.tags?.find((v) => v.context === 'severity')?.code)
     )
 }
 
 function forMember_Condition_bodySite() {
     return forMember<HealthElement, Condition>(
         (v) => v.bodySite,
-        mapWith(CodingReference, CodeStub, (v) => v.tags?.filter((v) => v.context === 'bodySite'))
+        mapFrom((v) => {
+            const bodySites = v.tags?.filter((v) => v.context === 'bodySite')
+
+            if (!bodySites) {
+                return undefined
+            }
+
+            return new Set(mapper.mapArray(bodySites, CodeStub, CodingReference))
+        })
     )
 }
 
 function forMember_Condition_tags() {
     return forMember<HealthElement, Condition>(
         (v) => v.tags,
-        mapWith(CodingReference, CodeStub, (v) => v.tags?.filter((v) => (!!v.context ? ['clinicalStatus', 'verificationStatus', 'category', 'severity', 'bodySite'].includes(v.context) : undefined)))
+        mapFrom((v) => {
+            const contexts = ['clinicalStatus', 'verificationStatus', 'category', 'severity', 'bodySite']
+            const tags = v.tags?.filter((v) => (!!v.context ? !contexts.includes(v.context) : true))
+
+            if (!tags) {
+                return undefined
+            }
+
+            return new Set(mapper.mapArray(tags, CodeStub, CodingReference))
+        })
     )
 }
 
 function forMember_Condition_codes() {
     return forMember<HealthElement, Condition>(
         (v) => v.codes,
-        mapWith(CodingReference, CodeStub, (v) => v.codes)
+        mapFrom((v) => {
+            const codes = v.codes
+
+            if (!codes) {
+                return undefined
+            }
+
+            return new Set(mapper.mapArray(codes, CodeStub, CodingReference))
+        })
     )
 }
 
