@@ -16,16 +16,16 @@ export class Component {
     ratio?: Measure[]
     range?: Measure[]
 
-    constructor(component: IComponent | any) {
-        this.numberValue = component.numberValue
-        this.booleanValue = component.booleanValue
-        this.instantValue = component.instantValue
-        this.fuzzyDateValue = component.fuzzyDateValue
-        this.measureValue = component.measureValue
-        this.timeSeries = component.timeSeries
-        this.compoundValue = component.compoundValue
-        this.ratio = component.ratio
-        this.range = component.range
+    constructor(component?: IComponent | any) {
+        this.numberValue = component?.numberValue
+        this.booleanValue = component?.booleanValue
+        this.instantValue = component?.instantValue
+        this.fuzzyDateValue = component?.fuzzyDateValue
+        this.measureValue = component?.measureValue
+        this.timeSeries = component?.timeSeries
+        this.compoundValue = component?.compoundValue
+        this.ratio = component?.ratio
+        this.range = component?.range
     }
 
     static toJSON(instance: Component): any {

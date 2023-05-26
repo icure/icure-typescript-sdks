@@ -987,10 +987,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@icure/api@^8.0.0-beta.3":
-  version "8.0.0-beta.3"
-  resolved "http://localhost:4873/@icure/api/-/api-8.0.0-beta.3.tgz#b4a3e6816e1247755df3982d262334d9d5f725f2"
-  integrity sha512-1DQwlstnId6IHPASo6k3Nj22qw9aVHpOEUe+GqMAKkrdvRGusaWBcFJNwQRDQhRRGAF5szg7B3bwfDKL4ymRNA==
+"@icure/api@^8.0.0-beta.4":
+  version "8.0.0-beta.4"
+  resolved "http://localhost:4873/@icure/api/-/api-8.0.0-beta.4.tgz#b4df21cd45bfc5162a1627f34f2bf6dc22b3edd4"
+  integrity sha512-QFTizB92E2Gf5+AYKUvjKyTr8SvjcsEAfmck//x5/OmC4YbpncRI8fy0ll2vMX//xKbhR/PVorEMl1WIn/j22w==
   dependencies:
     date-fns "^2.23.0"
     libphonenumber-js "^1.7.18"
