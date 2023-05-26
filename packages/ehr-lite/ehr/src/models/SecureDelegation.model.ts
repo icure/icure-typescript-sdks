@@ -1,6 +1,6 @@
-import {SecureDelegation as SecureDelegationEntity} from '@icure/api/icc-api/model/SecureDelegation'
-import {mapTo} from '../mappings/mapper'
-import {AccessLevelEnum} from './enums/AccessLevel.enum'
+import { SecureDelegation as SecureDelegationEntity } from '@icure/api/icc-api/model/SecureDelegation'
+import { mapTo } from '../mappings/mapper'
+import { AccessLevelEnum } from './enums/AccessLevel.enum'
 
 @mapTo(SecureDelegationEntity)
 export class SecureDelegation {

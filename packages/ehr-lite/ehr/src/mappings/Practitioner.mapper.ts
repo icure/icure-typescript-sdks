@@ -1,12 +1,12 @@
-import {Practitioner} from '../models/Practitioner.model'
-import {Address, CodeStub, HealthcareParty, Identifier as IdentifierEntity, PersonName, PropertyStub} from '@icure/api'
-import {createMap, forMember, ignore, mapFrom, mapWith} from '@automapper/core'
-import {mapper} from './mapper'
-import {Identifier} from '../models/Identifier.model'
-import {CodingReference} from '../models/CodingReference.model'
-import {HumanName} from '../models/HumanName.model'
-import {Location} from '../models/Location.model'
-import {Property} from '../models/Property.model'
+import { Practitioner } from '../models/Practitioner.model'
+import { Address, CodeStub, HealthcareParty, Identifier as IdentifierEntity, PersonName, PropertyStub } from '@icure/api'
+import { createMap, forMember, ignore, mapFrom, mapWith } from '@automapper/core'
+import { mapper } from './mapper'
+import { Identifier } from '../models/Identifier.model'
+import { CodingReference } from '../models/CodingReference.model'
+import { HumanName } from '../models/HumanName.model'
+import { Location } from '../models/Location.model'
+import { Property } from '../models/Property.model'
 import {
     convertDeepNestedMapToObject,
     convertMapToObject,
@@ -21,8 +21,8 @@ import {
     extractPublicKeysForOaepWithSha256,
     extractTransferKeys,
 } from './utils/Metadata.utils'
-import {SystemMetaDataOwner} from '../models/SystemMetaDataOwner.model'
-import {healthcareProfessionalIdentifiers} from './utils/HealthProfessional.utils'
+import { SystemMetaDataOwner } from '../models/SystemMetaDataOwner.model'
+import { healthcareProfessionalIdentifiers } from './utils/HealthProfessional.utils'
 
 function forMember_HealthcareParty_id() {
     return forMember<Practitioner, HealthcareParty>(

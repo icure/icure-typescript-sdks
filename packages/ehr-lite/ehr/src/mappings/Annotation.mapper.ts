@@ -1,9 +1,9 @@
-import {createMap, forMember, ignore, mapFrom, mapWith} from '@automapper/core'
-import {mapper} from './mapper'
-import {Annotation as AnnotationEntity} from '@icure/api/icc-api/model/Annotation'
-import {Annotation} from '../models/Annotation.model'
-import {CodingReference} from '../models/CodingReference.model'
-import {CodeStub} from '@icure/api'
+import { createMap, forMember, ignore, mapFrom, mapWith } from '@automapper/core'
+import { mapper } from './mapper'
+import { Annotation as AnnotationEntity } from '@icure/api/icc-api/model/Annotation'
+import { Annotation } from '../models/Annotation.model'
+import { CodingReference } from '../models/CodingReference.model'
+import { CodeStub } from '@icure/api'
 
 function forMember_AnnotationEntity_id() {
     return forMember<Annotation, AnnotationEntity>(

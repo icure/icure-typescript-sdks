@@ -1,7 +1,7 @@
-import {PropertyStub} from '@icure/api'
-import {mapTo} from '../mappings/mapper'
-import {PropertyType} from './PropertyType.model'
-import {TypedValueObject} from './TypedValueObject.model'
+import { PropertyStub } from '@icure/api'
+import { mapTo } from '../mappings/mapper'
+import { PropertyType } from './PropertyType.model'
+import { TypedValueObject } from './TypedValueObject.model'
 
 @mapTo(PropertyStub)
 export class Property {

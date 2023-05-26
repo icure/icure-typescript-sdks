@@ -1,7 +1,7 @@
-import {Partnership} from '@icure/api'
-import {mapTo} from '../mappings/mapper'
-import {RelatedPersonStatusEnum} from './enums/RelatedPersonStatus.enum'
-import {RelatedPersonTypeEnum} from './enums/RelatedPersonType.enum'
+import { Partnership } from '@icure/api'
+import { mapTo } from '../mappings/mapper'
+import { RelatedPersonStatusEnum } from './enums/RelatedPersonStatus.enum'
+import { RelatedPersonTypeEnum } from './enums/RelatedPersonType.enum'
 
 @mapTo(Partnership)
 export class RelatedPerson {

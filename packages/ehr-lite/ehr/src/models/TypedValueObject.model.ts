@@ -1,6 +1,6 @@
-import {TypedValueObject as TypedValueObjectEntity} from '@icure/api'
-import {mapTo} from '../mappings/mapper'
-import {TypeEnum} from './enums/Type.enum'
+import { TypedValueObject as TypedValueObjectEntity } from '@icure/api'
+import { mapTo } from '../mappings/mapper'
+import { TypeEnum } from './enums/Type.enum'
 
 @mapTo(TypedValueObjectEntity)
 export class TypedValueObject {

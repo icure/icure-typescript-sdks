@@ -1,26 +1,15 @@
-import {Patient} from '../models/Patient.model'
-import {
-    Address,
-    Annotation as AnnotationEntity,
-    CodeStub,
-    Identifier as IdentifierEntity,
-    Partnership,
-    Patient as PatientEntity,
-    PatientHealthCareParty,
-    PersonName,
-    PropertyStub,
-    SecurityMetadata as SecurityMetadataEntity
-} from '@icure/api'
-import {createMap, forMember, fromValue, ignore, mapFrom, mapWith} from '@automapper/core'
-import {mapper} from './mapper'
-import {Identifier} from '../models/Identifier.model'
-import {CodingReference} from '../models/CodingReference.model'
-import {HumanName} from '../models/HumanName.model'
-import {Location} from '../models/Location.model'
-import {Annotation} from '../models/Annotation.model'
-import {RelatedPerson} from '../models/RelatedPerson.model'
-import {RelatedPractitioner} from '../models/RelatedPractitioner.model'
-import {Property} from '../models/Property.model'
+import { Patient } from '../models/Patient.model'
+import { Address, Annotation as AnnotationEntity, CodeStub, Identifier as IdentifierEntity, Partnership, Patient as PatientEntity, PatientHealthCareParty, PersonName, PropertyStub, SecurityMetadata as SecurityMetadataEntity } from '@icure/api'
+import { createMap, forMember, fromValue, ignore, mapFrom, mapWith } from '@automapper/core'
+import { mapper } from './mapper'
+import { Identifier } from '../models/Identifier.model'
+import { CodingReference } from '../models/CodingReference.model'
+import { HumanName } from '../models/HumanName.model'
+import { Location } from '../models/Location.model'
+import { Annotation } from '../models/Annotation.model'
+import { RelatedPerson } from '../models/RelatedPerson.model'
+import { RelatedPractitioner } from '../models/RelatedPractitioner.model'
+import { Property } from '../models/Property.model'
 import {
     convertDeepNestedMapToObject,
     convertMapOfArrayOfGenericToObject,
@@ -42,10 +31,10 @@ import {
     extractSecurityMetadata,
     extractTransferKeys,
 } from './utils/Metadata.utils'
-import {Delegation} from '../models/Delegation.model'
-import {Delegation as DelegationEntity} from '@icure/api/icc-api/model/Delegation'
-import {SecurityMetadata} from '../models/SecurityMetadata.model'
-import {SystemMetaDataOwnerEncrypted} from '../models/SystemMetaDataOwnerEncrypted.model'
+import { Delegation } from '../models/Delegation.model'
+import { Delegation as DelegationEntity } from '@icure/api/icc-api/model/Delegation'
+import { SecurityMetadata } from '../models/SecurityMetadata.model'
+import { SystemMetaDataOwnerEncrypted } from '../models/SystemMetaDataOwnerEncrypted.model'
 
 function forMember_PatientEntity_id() {
     return forMember<Patient, PatientEntity>(

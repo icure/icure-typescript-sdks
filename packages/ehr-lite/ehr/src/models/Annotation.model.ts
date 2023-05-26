@@ -1,6 +1,6 @@
-import {Annotation as AnnotationEntity, ISO639_1} from '@icure/api'
-import {mapTo} from '../mappings/mapper'
-import {CodingReference} from './CodingReference.model'
+import { Annotation as AnnotationEntity, ISO639_1 } from '@icure/api'
+import { mapTo } from '../mappings/mapper'
+import { CodingReference } from './CodingReference.model'
 
 @mapTo(AnnotationEntity)
 export class Annotation {

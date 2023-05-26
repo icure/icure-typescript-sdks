@@ -1,5 +1,5 @@
-import {Delegation} from './Delegation.model'
-import {SecurityMetadata} from './SecurityMetadata.model'
+import { Delegation } from './Delegation.model'
+import { SecurityMetadata } from './SecurityMetadata.model'
 
 export class SystemMetaDataEncrypted {
     secretForeignKeys?: string[]

@@ -1,5 +1,5 @@
-import {TimeSeries as TimeSeriesEntity} from '@icure/api'
-import {mapTo} from '../mappings/mapper'
+import { TimeSeries as TimeSeriesEntity } from '@icure/api'
+import { mapTo } from '../mappings/mapper'
 
 @mapTo(TimeSeriesEntity)
 export class TimeSeries {

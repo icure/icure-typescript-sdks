@@ -1,6 +1,6 @@
-import {PropertyTypeStub} from '@icure/api'
-import {mapTo} from '../mappings/mapper'
-import {TypeEnum} from './enums/Type.enum'
+import { PropertyTypeStub } from '@icure/api'
+import { mapTo } from '../mappings/mapper'
+import { TypeEnum } from './enums/Type.enum'
 
 @mapTo(PropertyTypeStub)
 export class PropertyType {

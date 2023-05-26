@@ -1,6 +1,6 @@
-import {PatientHealthCareParty} from '@icure/api'
-import {mapTo} from '../mappings/mapper'
-import {PractitionerTypeEnum} from './enums/PractitionerType.enum'
+import { PatientHealthCareParty } from '@icure/api'
+import { mapTo } from '../mappings/mapper'
+import { PractitionerTypeEnum } from './enums/PractitionerType.enum'
 
 @mapTo(PatientHealthCareParty)
 export class RelatedPractitioner {

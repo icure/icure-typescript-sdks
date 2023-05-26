@@ -1,5 +1,5 @@
-import {CodeStub, ISO639_1} from '@icure/api'
-import {mapTo} from '../mappings/mapper'
+import { CodeStub, ISO639_1 } from '@icure/api'
+import { mapTo } from '../mappings/mapper'
 
 @mapTo(CodeStub)
 export class CodingReference {

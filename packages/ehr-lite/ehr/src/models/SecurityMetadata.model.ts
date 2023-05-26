@@ -1,6 +1,6 @@
-import {SecurityMetadata as SecurityMetadataEntity} from '@icure/api/icc-api/model/SecurityMetadata'
-import {mapTo} from '../mappings/mapper'
-import {SecureDelegation} from './SecureDelegation.model'
+import { SecurityMetadata as SecurityMetadataEntity } from '@icure/api/icc-api/model/SecurityMetadata'
+import { mapTo } from '../mappings/mapper'
+import { SecureDelegation } from './SecureDelegation.model'
 
 @mapTo(SecurityMetadataEntity)
 export class SecurityMetadata {

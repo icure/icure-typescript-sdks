@@ -1,11 +1,11 @@
-import {ISO639_1, Service} from '@icure/api'
-import {mapTo} from '../mappings/mapper'
-import {Annotation} from './Annotation.model'
-import {CodingReference} from './CodingReference.model'
-import {Component} from './Component.model'
-import {Identifier} from './Identifier.model'
-import {LocalComponent} from './LocalComponent.model'
-import {SystemMetaDataEncrypted} from './SystemMetaDataEncrypted.model'
+import { ISO639_1, Service } from '@icure/api'
+import { mapTo } from '../mappings/mapper'
+import { Annotation } from './Annotation.model'
+import { CodingReference } from './CodingReference.model'
+import { Component } from './Component.model'
+import { Identifier } from './Identifier.model'
+import { LocalComponent } from './LocalComponent.model'
+import { SystemMetaDataEncrypted } from './SystemMetaDataEncrypted.model'
 
 @mapTo(Service)
 export class Observation {

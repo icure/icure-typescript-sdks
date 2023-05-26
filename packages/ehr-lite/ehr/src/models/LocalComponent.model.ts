@@ -1,5 +1,5 @@
-import {Content} from '@icure/api'
-import {mapTo} from '../mappings/mapper'
+import { Content } from '@icure/api'
+import { mapTo } from '../mappings/mapper'
 
 @mapTo(Content)
 export class LocalComponent {
@@ -13,13 +13,13 @@ export class LocalComponent {
 
     static toJSON(instance: LocalComponent): any {
         const pojo: any = {}
-        pojo["stringValue"] = instance.stringValue
-        pojo["documentId"] = instance.documentId
+        pojo['stringValue'] = instance.stringValue
+        pojo['documentId'] = instance.documentId
         return pojo
     }
 
     static fromJSON(pojo: any): LocalComponent {
-        return new LocalComponent({stringValue: pojo["stringValue"], documentId: pojo["documentId"]})
+        return new LocalComponent({ stringValue: pojo['stringValue'], documentId: pojo['documentId'] })
     }
 }
 
