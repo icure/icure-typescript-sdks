@@ -20,6 +20,7 @@ import {
     convertObjectToMapOfArrayOfGeneric,
     convertObjectToNestedMap,
     extractAesExchangeKeys,
+    extractCryptedForeignKeys,
     extractDelegations,
     extractEncryptedSelf,
     extractEncryptionKeys,
@@ -46,7 +47,7 @@ function forMember_PatientEntity_id() {
 function forMember_PatientEntity_rev() {
     return forMember<Patient, PatientEntity>(
         (v) => v.rev,
-        mapFrom((p) => p.id)
+        mapFrom((p) => p.rev)
     )
 }
 
@@ -388,7 +389,7 @@ function forMember_PatientEntity_hcPartyKeys() {
         (v) => v.hcPartyKeys,
         mapFrom((p) => {
             const hcPartyKeys = extractHcPartyKeys(p.systemMetaData)
-            return !Object.fromEntries(hcPartyKeys?.entries() ?? [])
+            return Object.fromEntries(hcPartyKeys?.entries() ?? [])
         })
     )
 }
@@ -441,7 +442,7 @@ function forMember_PatientEntity_cryptedForeignKeys() {
     return forMember<Patient, PatientEntity>(
         (v) => v.cryptedForeignKeys,
         mapFrom((p) => {
-            const delegations = extractDelegations(p.systemMetaData)
+            const delegations = extractCryptedForeignKeys(p.systemMetaData)
             return !!delegations ? convertMapOfArrayOfGenericToObject<Delegation, DelegationEntity>(delegations, (arr) => mapper.mapArray(arr, Delegation, DelegationEntity)) : []
         })
     )
