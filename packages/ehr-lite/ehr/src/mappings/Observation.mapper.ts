@@ -385,9 +385,7 @@ function forMember_Observation_localContent() {
 function forMember_Observation_qualifiedLinks() {
     return forMember<Service, Observation>(
         (v) => v.qualifiedLinks,
-        mapFrom((v) =>
-             !!v.qualifiedLinks ? convertObjectToNestedMap(v.qualifiedLinks) : undefined
-        )
+        mapFrom((v) => (!!v.qualifiedLinks ? convertObjectToNestedMap(v.qualifiedLinks) : undefined))
     )
 }
 
