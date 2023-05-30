@@ -40,6 +40,7 @@ export class Practitioner {
         this.rev = practitioner?.rev
         this.created = practitioner?.created
         this.modified = practitioner?.modified
+        this.identifiers = practitioner?.identifiers
         this.tags = practitioner?.tags
         this.codes = practitioner?.codes
         this.deletionDate = practitioner?.deletionDate
