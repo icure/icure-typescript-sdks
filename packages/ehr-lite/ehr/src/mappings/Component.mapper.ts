@@ -180,6 +180,6 @@ export function initializeComponentMapper() {
         forMember_Component_timeSeries(),
         forMember_Component_compoundValue(),
         forMember_Component_ratio(),
-        forMember_Component_range(),
+        forMember_Component_range()
     )
 }
