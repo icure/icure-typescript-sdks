@@ -1,0 +1,17 @@
+{
+  "name": "hephaestus",
+  "version": "1.0.0",
+  "description": "Automate code mappings for efficient data transformation and communication.",
+  "main": "./dist/index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.2.5",
+    "ts-morph": "^18.0.0",
+    "typescript": "^5.0.4"
+  },
+  "scripts": {
+    "build": "tsc",
+    "exec": "node ./dist/index.js",
+    "start": "yarn run build && yarn run exec"
+  }
+}
