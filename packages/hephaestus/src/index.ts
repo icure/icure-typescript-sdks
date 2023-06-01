@@ -18,6 +18,7 @@ enum Arg {
     modelRegex = '--model-regex',
     mapperRegex = '--mapper-regex',
     mapperGenerator = '--mapper-generator',
+    mapperLocation = '--mapper-location',
     marshallerGenerator = '--marshaller-generator',
 }
 
@@ -35,8 +36,13 @@ export const modelRegex = args.includes(Arg.modelRegex) ? new RegExp(getArg(Arg.
 export const mapperRegex = args.includes(Arg.mapperRegex) ? new RegExp(getArg(Arg.mapperRegex)!) : /^(.*[\\/])?([\w-]+)\.mapper\.ts$/
 
 if (args.includes(Arg.mapperGenerator)) {
+
+    if (!args.includes(Arg.mapperLocation)) {
+        throw new Error('No mapper location specified')
+    }
+
     console.log('Generating mappers...')
-    mapperGenerator(project)
+    mapperGenerator(project, getArg(Arg.mapperLocation)!)
 }
 
 if (args.includes(Arg.marshallerGenerator)) {

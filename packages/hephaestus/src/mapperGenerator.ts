@@ -7,7 +7,7 @@ type Mapper = {
     modelClass: ClassDeclaration
 }
 
-export const mapperGenerator = (project: Project) => {
+export const mapperGenerator = (project: Project, mapperLocation: string) => {
     const modelClassesWithMapToDecorator = project
         .getSourceFiles()
         .flatMap((sourceFile) => sourceFile.getClasses())
@@ -33,7 +33,7 @@ export const mapperGenerator = (project: Project) => {
             })
         })
         .map((modelClass) => {
-            return [modelClass, `../ehr/src/mappings/${modelClass.getName()}.mapper.ts`]
+            return [modelClass, `${mapperLocation}/${modelClass.getName()}.mapper.ts`]
         })
 
     mapperFilesToCreate.map(([modelClass, mapperFilePath]: [ClassDeclaration, string]) => {
