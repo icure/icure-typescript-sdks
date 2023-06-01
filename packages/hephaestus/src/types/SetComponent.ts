@@ -16,9 +16,9 @@ export class SetComponent extends ClassComponent {
     return this.nullable
       ? `Array.from([...${value} ?? []]?.map(item => ${this.children![0].computeSerializer(
           "item"
-        )}) ?? [])`
+        )}) ?? []))`
       : `Array.from([...${value}].map(item => ${this.children![0].computeSerializer(
           "item"
-        )})`;
+        )}))`;
   }
 }
