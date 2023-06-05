@@ -1,0 +1,17 @@
+{
+  "name": "ehr-lite",
+  "private": true,
+  "workspaces": [
+    "marshaller",
+    "ehr"
+  ],
+  "scripts": {
+    "marshall": "yarn workspace marshaller start && yarn pretty-quick",
+    "tests": "yarn workspace ehr test",
+    "build": "yarn marshall && yarn workspace ehr build"
+  },
+  "devDependencies": {
+    "prettier": "^2.8.8",
+    "pretty-quick": "^3.1.3"
+  }
+}
