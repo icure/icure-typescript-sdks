@@ -1,0 +1,20 @@
+{
+  "name": "@icure/typescript-common",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "author": "iCure",
+  "license": "MIT",
+  "dependencies": {
+    "@icure/api": "^8.0.0-beta.6",
+    "reflect-metadata": "^0.1.13",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/uuid": "^9.0.1"
+  },
+  "scripts": {
+    "marshall": "nx run hephaestus:start --tsconfig ../common/tsconfig.json --model-regex '^.*/models/.*.ts$' --mapper-location ../common/src/mappers --marshaller-generator --mapper-generator",
+    "build": "tsc"
+  }
+}
