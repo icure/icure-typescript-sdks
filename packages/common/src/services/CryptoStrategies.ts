@@ -1,7 +1,6 @@
 import { CryptoPrimitives } from '@icure/api/icc-x-api/crypto/CryptoPrimitives'
 import { KeyPair } from '@icure/api/icc-x-api/crypto/RSA'
 import { DataOwnerWithType } from '../models/DataOwner'
-import {DataOwnerTypeEnum} from "@icure/api/icc-api/model/DataOwnerTypeEnum";
 
 /**
  * Allows to customise the behaviour of the med tech api to better suit your needs.

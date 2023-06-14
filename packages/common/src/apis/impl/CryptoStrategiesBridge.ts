@@ -8,7 +8,8 @@ import KeyVerificationBehaviour = CommonCryptoStrategies.KeyVerificationBehaviou
 import {CryptoStrategies} from "@icure/api/icc-x-api/crypto/CryptoStrategies";
 import {Mapper} from "../Mapper";
 import {DataOwnerWithType} from "../../models/DataOwner";
-export abstract class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithType> implements CryptoStrategies {
+
+export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithType> implements CryptoStrategies {
     constructor(
         private readonly strategies: CommonCryptoStrategies<DSDataOwnerWithType>,
         private readonly dataOwnerMapper: Mapper<DSDataOwnerWithType, DataOwnerWithTypeDto>,

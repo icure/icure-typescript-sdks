@@ -5,7 +5,7 @@ export interface Mapper<DSEntity, DTO> {
     toDto(domain: DSEntity): DTO
 }
 
-type DomainLikes = {
+/*type DomainLikes = {
     [key: string]: any
 }
 
@@ -56,11 +56,11 @@ class SomeApiOrFilterImpl<
     _functionReturningHcp(): HealthcarePartyDto {
         throw "TODO"
     }
-}
+}*/
 
 // ----- EHR Impl
 
-class EhrOrganization {
+/*class EhrOrganization {
     someOrgMethod() {}
 }
 
@@ -90,7 +90,7 @@ class EhrTypeMappers implements TypeMappers<EhrTypes> {
 
 interface OrganizationApi extends SomeApiOrFilter<EhrTypes, 'organization'> {
 
-}
+}*/
 
 
 /*

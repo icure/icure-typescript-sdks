@@ -1,7 +1,8 @@
 import { CryptoStrategies } from '../CryptoStrategies'
 import { KeyPair } from '@icure/api/icc-x-api/crypto/RSA'
 import { CryptoPrimitives } from '@icure/api/icc-x-api/crypto/CryptoPrimitives'
-import { DataOwnerTypeEnum, DataOwnerWithType } from '../../models/DataOwner'
+import { DataOwnerWithType } from '../../models/DataOwner'
+import {DataOwnerTypeEnum} from "@icure/api/icc-api/model/DataOwnerTypeEnum";
 
 /**
  * Implementation of med-tech crypto strategies which uses pre-loaded keys for initialisation and puts full trust on the
@@ -12,7 +13,7 @@ import { DataOwnerTypeEnum, DataOwnerWithType } from '../../models/DataOwner'
  * were stored at standard entries, nor keys recovered from transfer keys and/or shamir splits, as these will be
  * automatically loaded by the initialisation procedure.
  */
-export class SimpleMedTechCryptoStrategies implements CryptoStrategies {
+export class SimpleCryptoStrategies<DSDataOwnerWithType extends DataOwnerWithType> implements CryptoStrategies<DSDataOwnerWithType> {
   /**
    * If a new key pair was initialised during api initialisation this will return the generated keypair.
    */
@@ -29,17 +30,17 @@ export class SimpleMedTechCryptoStrategies implements CryptoStrategies {
    */
   constructor(private readonly availableKeys: KeyPair<string>[], private readonly anonymousDataOwnerTypes: Set<DataOwnerTypeEnum>) {}
 
-  allowNewKeyPairGeneration(self: DataOwnerWithType): Promise<boolean> {
+  allowNewKeyPairGeneration(self: DSDataOwnerWithType): Promise<boolean> {
     return Promise.resolve(true)
   }
 
   recoverAndVerifyKeys(
-    self: DataOwnerWithType,
+    self: DSDataOwnerWithType,
     missingKeys: string[],
     unverifiedKeys: string[]
   ): Promise<{
     recoveredKeyPairs: KeyPair<string>[]
-    verifiedKeys: { [p: string]: MedTechCryptoStrategies.KeyVerificationBehaviour }
+    verifiedKeys: { [p: string]: CryptoStrategies.KeyVerificationBehaviour }
   }> {
     const availableKeysByPublic = Object.fromEntries(this.availableKeys.map((keyPair) => [keyPair.publicKey, keyPair] as [string, KeyPair<string>]))
     const recoveredKeyPairs = missingKeys.flatMap((missingKey) => {
@@ -55,9 +56,9 @@ export class SimpleMedTechCryptoStrategies implements CryptoStrategies {
             [
               unverifiedKey,
               !!availableKeysByPublic[unverifiedKey]
-                ? MedTechCryptoStrategies.KeyVerificationBehaviour.MARK_VERIFIED
-                : MedTechCryptoStrategies.KeyVerificationBehaviour.TEMPORARILY_UNVERIFIED,
-            ] as [string, MedTechCryptoStrategies.KeyVerificationBehaviour]
+                ? CryptoStrategies.KeyVerificationBehaviour.MARK_VERIFIED
+                : CryptoStrategies.KeyVerificationBehaviour.TEMPORARILY_UNVERIFIED,
+            ] as [string, CryptoStrategies.KeyVerificationBehaviour]
         )
     )
     return Promise.resolve({ recoveredKeyPairs, verifiedKeys })

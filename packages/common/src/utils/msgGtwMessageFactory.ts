@@ -1,7 +1,6 @@
-import { HealthcareProfessional } from '../models/HealthcareProfessional'
-import { Patient } from '../models/Patient'
 import { User } from '../models/User'
 import { filteredContactsFromAddresses } from './addressUtils'
+import {HealthcareParty, Patient} from "@icure/api";
 
 export type SMSMessage = { message: string }
 export type EmailMessage = { from: string; html: string; subject: string }
@@ -17,7 +16,7 @@ export type AuthenticationProcessBody = {
 }
 
 export interface MsgGtwMessageFactory<T extends SMSMessage | EmailMessage> {
-  dataOwner: HealthcareProfessional | Patient
+  dataOwner: HealthcareParty | Patient
   link: string
   patient: Patient
 
@@ -29,17 +28,17 @@ export interface EmailMessageFactory extends MsgGtwMessageFactory<EmailMessage> 
 export interface SMSMessageFactory extends MsgGtwMessageFactory<SMSMessage> {}
 
 export class ICureRegistrationEmail implements EmailMessageFactory {
-  dataOwner: HealthcareProfessional | Patient
+  dataOwner: HealthcareParty | Patient
   hcpEmail: string
   link: string
   solutionName: string
   patient: Patient
 
-  constructor(dataOwner: HealthcareProfessional | Patient, link: string, solutionName: string, patient: Patient) {
+  constructor(dataOwner: HealthcareParty | Patient, link: string, solutionName: string, patient: Patient) {
     this.dataOwner = dataOwner
     this.link = link
     this.solutionName = solutionName
-    const availableHcpEmail = filteredContactsFromAddresses(this.dataOwner.addresses, 'email')
+    const availableHcpEmail = filteredContactsFromAddresses(this.dataOwner.addresses ?? [], 'email')
     if (!availableHcpEmail || !availableHcpEmail.telecomNumber) throw new Error('HCP does not have a valid email!')
     this.hcpEmail = availableHcpEmail.telecomNumber
     this.patient = patient
@@ -55,12 +54,12 @@ export class ICureRegistrationEmail implements EmailMessageFactory {
 }
 
 export class ICureRegistrationSMS implements SMSMessageFactory {
-  dataOwner: HealthcareProfessional | Patient
+  dataOwner: HealthcareParty | Patient
   link: string
   solutionName: string
   patient: Patient
 
-  constructor(dataOwner: HealthcareProfessional | Patient, link: string, solutionName: string, patient: Patient) {
+  constructor(dataOwner: HealthcareParty | Patient, link: string, solutionName: string, patient: Patient) {
     this.dataOwner = dataOwner
     this.link = link
     this.solutionName = solutionName

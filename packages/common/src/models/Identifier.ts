@@ -31,13 +31,6 @@ export class Identifier {
   "use"?: string;
   "value"?: string;
 
-  marshal(): IIdentifier {
-    return {
-      ...this,
-      type: this.type?.marshal(),
-    };
-  }
-
     static toJSON(instance: Identifier): any {
         const pojo: any = {}
         pojo["id"] = instance.id
