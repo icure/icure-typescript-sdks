@@ -1,6 +1,6 @@
 import {Filter} from "../../filter/Filter";
 import {PaginatedList} from "../../models/PaginatedList";
-import {CodeLikeApi} from "../CodingApi";
+import {CodeLikeApi} from "../CodeLikeApi";
 import {Mapper} from "../Mapper";
 import {Code, IccCodeXApi} from "@icure/api";
 import {ErrorHandler} from "../../services/ErrorHandler";

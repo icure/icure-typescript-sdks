@@ -9,7 +9,7 @@ import {MessageGatewayApi} from "../MessageGatewayApi";
 import { KeyPair } from '@icure/api/icc-x-api/crypto/RSA'
 
 
-abstract class AuthenticationApiImpl<DSApi> implements AuthenticationApi<DSApi> {
+export abstract class AuthenticationApiImpl<DSApi> implements AuthenticationApi<DSApi> {
 
     protected constructor(
         private readonly messageGatewayApi: MessageGatewayApi,

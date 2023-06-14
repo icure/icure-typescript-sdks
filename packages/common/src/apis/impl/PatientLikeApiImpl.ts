@@ -2,13 +2,13 @@ import {Filter} from "../../filter/Filter";
 import {PaginatedList} from "../../models/PaginatedList";
 import {SharingResult, SharingStatus} from "../../utils/interfaces";
 import {Connection} from "../../models/Connection";
-import {PatientApi} from "../PatientApi";
+import {PatientLikeApi} from "../PatientLikeApi";
 import {IccPatientXApi, IccUserXApi, Patient as PatientDto} from "@icure/api";
 import {ErrorHandler} from "../../services/ErrorHandler";
 import {Mapper} from "../Mapper";
 import {IccDataOwnerXApi} from "@icure/api/icc-x-api/icc-data-owner-x-api";
 
-class PatientLikeApiImpl<DSPatient> implements PatientApi<DSPatient> {
+class PatientLikeApiImpl<DSPatient> implements PatientLikeApi<DSPatient> {
 
     constructor(
         private readonly mapper: Mapper<DSPatient, PatientDto>,

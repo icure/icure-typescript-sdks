@@ -3,15 +3,15 @@ import {Filter} from "../../filter/Filter";
 import {PaginatedList} from "../../models/PaginatedList";
 import {SharedDataType} from "../../models/User";
 import {Connection} from "../../models/Connection";
-import {UserApi} from "../UserApi";
+import {UserLikeApi} from "../UserLikeApi";
 import {ErrorHandler} from "../../services/ErrorHandler";
 import {IccUserXApi, User} from "@icure/api";
 import {Mapper} from "../Mapper";
 import {MessageGatewayApi} from "../MessageGatewayApi";
-import {forceUuid} from "../../utils/utils";
 import {Sanitizer} from "../../services/Sanitizer";
+import {forceUuid} from "../../utils/uuidUtils";
 
-class UserLikeApiImpl<DSUser, DSPatient> implements UserApi<DSUser, DSPatient> {
+class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, DSPatient> {
 
     constructor(
         private readonly mapper: Mapper<DSUser, User>,

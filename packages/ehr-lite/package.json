@@ -1,17 +1,28 @@
 {
-  "name": "ehr-lite",
-  "private": true,
-  "workspaces": [
-    "marshaller",
-    "ehr"
-  ],
-  "scripts": {
-    "marshall": "yarn workspace marshaller start && yarn pretty-quick",
-    "tests": "yarn workspace ehr test",
-    "build": "yarn marshall && yarn workspace ehr build"
-  },
-  "devDependencies": {
-    "prettier": "^2.8.8",
-    "pretty-quick": "^3.1.3"
-  }
+    "name": "@icure/ehr-lite-sdk",
+    "version": "1.0.0",
+    "devDependencies": {
+        "@babel/core": "^7.21.8",
+        "@babel/plugin-proposal-decorators": "^7.21.0",
+        "@babel/preset-env": "^7.21.5",
+        "@babel/preset-typescript": "^7.21.5",
+        "@types/jest": "^29.5.1",
+        "babel-jest": "^29.5.0",
+        "jest": "^29.5.0",
+        "ts-jest": "^29.1.0",
+        "ttypescript": "^1.5.15"
+    },
+    "main": "dist/index.js",
+    "typings": "dist/index.d.ts",
+    "dependencies": {
+        "@automapper/classes": "^8.7.7",
+        "@automapper/core": "^8.7.7",
+        "@icure/api": "^8.0.0-beta.6",
+        "reflect-metadata": "^0.1.13",
+        "@icure/typescript-common": "*"
+    },
+    "scripts": {
+        "build": "tsc",
+        "test": "yarn run build && jest --no-cache test"
+    }
 }

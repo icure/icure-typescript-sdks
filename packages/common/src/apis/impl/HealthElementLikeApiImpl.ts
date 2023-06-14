@@ -1,15 +1,15 @@
 import {Filter} from "../../filter/Filter";
 import {PaginatedList} from "../../models/PaginatedList";
 import {Connection} from "../../models/Connection";
-import {HealthElementApi} from "../HealthElementApi";
+import {HealthElementLikeApi} from "../HealthElementLikeApi";
 import {HealthElement, IccCryptoXApi, IccHelementXApi, IccPatientXApi, IccUserXApi, Patient, User} from "@icure/api";
 import {Mapper} from "../Mapper";
 import {ErrorHandler} from "../../services/ErrorHandler";
-import {forceUuid} from "../../utils/utils";
 import {firstOrNull} from "../../utils/functionalUtils";
 import {IccDataOwnerXApi} from "@icure/api/icc-x-api/icc-data-owner-x-api";
+import {forceUuid} from "../../utils/uuidUtils";
 
-class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements HealthElementApi<DSHealthElement, DSPatient> {
+class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements HealthElementLikeApi<DSHealthElement, DSPatient> {
 
     constructor(
         private readonly mapper: Mapper<DSHealthElement, HealthElement>,

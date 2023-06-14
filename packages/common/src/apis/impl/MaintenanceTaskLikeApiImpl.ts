@@ -2,7 +2,7 @@ import {Filter} from "../../filter/Filter";
 import {PaginatedList} from "../../models/PaginatedList";
 import {Connection} from "../../models/Connection";
 import {IccUserXApi, MaintenanceTask, SecureDelegation, User} from "@icure/api";
-import {MaintenanceTaskApi} from "../MaintenanceTaskApi";
+import {MaintenanceTaskLikeApi} from "../MaintenanceTaskLikeApi";
 import {Mapper} from "../Mapper";
 import {ErrorHandler} from "../../services/ErrorHandler";
 import {IccMaintenanceTaskXApi} from "@icure/api/icc-x-api/icc-maintenance-task-x-api";
@@ -10,7 +10,7 @@ import {deepEquality} from "../../utils/equality";
 import AccessLevelEnum = SecureDelegation.AccessLevelEnum;
 import {IccDataOwnerXApi} from "@icure/api/icc-x-api/icc-data-owner-x-api";
 
-class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements MaintenanceTaskApi<DSMaintenanceTask> {
+class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements MaintenanceTaskLikeApi<DSMaintenanceTask> {
 
     constructor(
         private readonly mapper: Mapper<DSMaintenanceTask, MaintenanceTask>,

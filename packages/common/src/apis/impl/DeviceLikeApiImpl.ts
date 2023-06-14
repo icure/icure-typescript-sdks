@@ -1,11 +1,12 @@
 import {Filter} from "../../filter/Filter";
 import {PaginatedList} from "../../models/PaginatedList";
-import {DeviceLikeApi} from "../DeviceApi";
+import {DeviceLikeApi} from "../DeviceLikeApi";
 import {ErrorHandler} from "../../services/ErrorHandler";
 import {Device, IccDeviceApi, ListOfIds} from "@icure/api";
 import {Mapper} from "../Mapper";
 import {firstOrNull} from "../../utils/functionalUtils";
-import {forceUuid} from "../../utils/utils";
+
+import {forceUuid} from "../../utils/uuidUtils";
 
 class DeviceLikeApiImpl<DSDevice> implements DeviceLikeApi<DSDevice> {
 

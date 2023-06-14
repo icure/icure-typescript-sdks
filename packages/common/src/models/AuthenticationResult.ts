@@ -1,6 +1,5 @@
 import {ignoreSerialization} from "../utils/decorators";
-
-export type KeyPair = { privateKey: string; publicKey: string }
+import {KeyPair} from "./KeyPair";
 
 @ignoreSerialization
 export class AuthenticationResult<DSApi> {
