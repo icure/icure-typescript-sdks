@@ -1,6 +1,5 @@
-import { Document } from '../models/Document'
-import { Filter } from '../filter/Filter'
-import { Connection } from '../models/Connection'
+import {Filter} from '../filter/Filter'
+import {Connection} from '../models/Connection'
 import {PaginatedList} from "../models/PaginatedList";
 
 /**
@@ -21,15 +20,7 @@ export interface ServiceLikeApi<DSService, DSPatient, DSDocument> {
    * @param patientId
    * @param service
    */
-  createOrModifyManyFor(patientId: string, service: Array<DSService>): Promise<Array<DSService>>
-
-  /**
-   * Deletes an attachment, using its corresponding documentId
-   * Delete an attachment of a Service
-   * @param id
-   * @param documentId
-   */
-  deleteAttachment(id: string, documentId: string): Promise<string>
+  createOrModifyManyFor(patientId: string, services: Array<DSService>): Promise<Array<DSService>>
 
   /**
    * Deletes the data sample identified by the provided unique [id].
@@ -41,9 +32,9 @@ export interface ServiceLikeApi<DSService, DSPatient, DSDocument> {
   /**
    * Deletes the batch of data samples identified by the provided [ids]. The data samples to delete need to be part of the same batch
    * Delete a batch of [Data Samples]
-   * @param requestBody
+   * @param ids
    */
-  deleteMany(requestBody: Array<string>): Promise<Array<string>>
+  deleteMany(ids: Array<string>): Promise<Array<string>>
 
   /**
    * Filters are complex selectors that are built by combining basic building blocks. Examples of filters available for [Service] are :
@@ -70,47 +61,11 @@ export interface ServiceLikeApi<DSService, DSPatient, DSDocument> {
   get(id: string): Promise<DSService>
 
   /**
-   * Data Samples may contain attachments such as prescriptions, reports, ... Use this method to get the content of an attachment
-   * Get attachment content of a Service
-   * @param id
-   * @param documentId
-   * @param attachmentId
-   */
-  getAttachmentContent(id: string, documentId: string, attachmentId: string): Promise<ArrayBuffer>
-
-  /**
-   * Data Samples may contain attachments such as prescriptions, reports, ... Use this method to get the document metadata information of an attachment
-   * Get document metadata of a Service attachment
-   * @param id
-   * @param documentId
-   */
-  getAttachmentDocument(id: string, documentId: string): Promise<Document>
-
-  /**
    * Filters are complex selectors that are built by combining basic building blocks. Examples of filters available for [Service] are AllServicesFilter and ServicesByIdsFilter. This method returns a paginated list of data samples (with a cursor that lets you query the following items).
    * Find data samples ids using the provided Filter.
    * @param filter The Filter object that describes which condition(s) the elements whose the ids should be returned must fulfill
    */
   matchBy(filter: Filter<DSService>): Promise<Array<string>>
-
-  /**
-   * Link an attachment or update the attachment of a data sample
-   * Add or update the attachment of a Service
-   * @param id
-   * @param body
-   * @param documentName
-   * @param documentVersion
-   * @param documentExternalUuid
-   * @param documentLanguage
-   */
-  setAttachment(
-    id: string,
-    body: ArrayBuffer,
-    documentName?: string,
-    documentVersion?: string,
-    documentExternalUuid?: string,
-    documentLanguage?: string
-  ): Promise<Document>
 
   /**
    * Service where current user gives access to the data sample information to another dataOwner (HCP, patient or device).
@@ -150,4 +105,49 @@ export interface ServiceLikeApi<DSService, DSPatient, DSDocument> {
   ): Promise<Connection>
 
   extractPatientId(service: DSService): Promise<string | undefined>
+
+  // /**
+  //  * Data Samples may contain attachments such as prescriptions, reports, ... Use this method to get the content of an attachment
+  //  * Get attachment content of a Service
+  //  * @param id
+  //  * @param documentId
+  //  * @param attachmentId
+  //  */
+  // getAttachmentContent(id: string, documentId: string, attachmentId: string): Promise<ArrayBuffer>
+  //
+  // /**
+  //  * Data Samples may contain attachments such as prescriptions, reports, ... Use this method to get the document metadata information of an attachment
+  //  * Get document metadata of a Service attachment
+  //  * @param id
+  //  * @param documentId
+  //  */
+  // getAttachmentDocument(id: string, documentId: string): Promise<Document>
+    //
+  // /**
+  //  * Deletes an attachment, using its corresponding documentId
+  //  * Delete an attachment of a Service
+  //  * @param id
+  //  * @param documentId
+  //  */
+  // deleteAttachment(id: string, documentId: string): Promise<string>
+  //
+  // /**
+  //  * Link an attachment or update the attachment of a data sample
+  //  * Add or update the attachment of a Service
+  //  * @param id
+  //  * @param body
+  //  * @param documentName
+  //  * @param documentVersion
+  //  * @param documentExternalUuid
+  //  * @param documentLanguage
+  //  */
+  // setAttachment(
+  //   id: string,
+  //   body: ArrayBuffer,
+  //   documentName?: string,
+  //   documentVersion?: string,
+  //   documentExternalUuid?: string,
+  //   documentLanguage?: string
+  // ): Promise<Document>
 }
+

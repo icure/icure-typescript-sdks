@@ -8,6 +8,7 @@ export * from './impl/HealthElementLikeApiImpl'
 export * from './impl/MaintenanceTaskLikeApiImpl'
 export * from './impl/MessageGatewayApiImpl'
 export * from './impl/PatientLikeApiImpl'
+export * from './impl/ServiceLikeApiImpl'
 export * from './impl/UserLikeApiImpl'
 
 export * from './AuthenticationApi'
@@ -22,3 +23,4 @@ export * from './MessageGatewayApi'
 export * from './PatientLikeApi'
 export * from './ServiceLikeApi'
 export * from './UserLikeApi'
+export {ServiceLikeApiImpl} from "./impl/ServiceLikeApiImpl";
