@@ -6,7 +6,7 @@ import {HealthcareParty, IccHcpartyXApi} from "@icure/api";
 import {Mapper} from "../Mapper";
 import {firstOrNull} from "../../utils/functionalUtils";
 
-class HealthcarePartyLikeApiImpl<DSHealthcareParty> implements HealthcarePartyLikeApi<DSHealthcareParty> {
+export class HealthcarePartyLikeApiImpl<DSHealthcareParty> implements HealthcarePartyLikeApi<DSHealthcareParty> {
 
     constructor(
         private readonly mapper: Mapper<DSHealthcareParty, HealthcareParty>,

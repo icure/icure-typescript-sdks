@@ -8,7 +8,7 @@ import {firstOrNull} from "../../utils/functionalUtils";
 
 import {forceUuid} from "../../utils/uuidUtils";
 
-class DeviceLikeApiImpl<DSDevice> implements DeviceLikeApi<DSDevice> {
+export class DeviceLikeApiImpl<DSDevice> implements DeviceLikeApi<DSDevice> {
 
     constructor(
         private readonly mapper: Mapper<DSDevice, Device>,

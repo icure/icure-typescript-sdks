@@ -8,7 +8,7 @@ import {ErrorHandler} from "../../services/ErrorHandler";
 import {Mapper} from "../Mapper";
 import {IccDataOwnerXApi} from "@icure/api/icc-x-api/icc-data-owner-x-api";
 
-class PatientLikeApiImpl<DSPatient> implements PatientLikeApi<DSPatient> {
+export class PatientLikeApiImpl<DSPatient> implements PatientLikeApi<DSPatient> {
 
     constructor(
         private readonly mapper: Mapper<DSPatient, PatientDto>,

@@ -10,7 +10,7 @@ import {deepEquality} from "../../utils/equality";
 import AccessLevelEnum = SecureDelegation.AccessLevelEnum;
 import {IccDataOwnerXApi} from "@icure/api/icc-x-api/icc-data-owner-x-api";
 
-class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements MaintenanceTaskLikeApi<DSMaintenanceTask> {
+export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements MaintenanceTaskLikeApi<DSMaintenanceTask> {
 
     constructor(
         private readonly mapper: Mapper<DSMaintenanceTask, MaintenanceTask>,

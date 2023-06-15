@@ -1,6 +1,5 @@
 import {Filter} from "../../filter/Filter";
 import {PaginatedList} from "../../models/PaginatedList";
-import {Document} from "../../models/Document";
 import {Connection} from "../../models/Connection";
 import {ServiceLikeApi} from "../ServiceLikeApi";
 import {Mapper} from "../Mapper";
@@ -9,12 +8,13 @@ import {
     Service as ServiceDto,
     User as UserDto,
     Patient as PatientDto,
+    Document as DocumentDto,
     IccContactXApi,
     IccPatientXApi,
     IccUserXApi,
     ListOfIds,
     ServiceLink,
-    SubContact, IccHelementXApi, Contact, IccCryptoXApi
+    SubContact, IccHelementXApi, IccCryptoXApi,
 } from "@icure/api";
 import {ErrorHandler} from "../../services/ErrorHandler";
 import {any, distinctBy, firstOrNull, isNotEmpty, sumOf} from "../../utils/functionalUtils";
@@ -26,7 +26,9 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
     private readonly contactsCache: CachedMap<ContactDto> = new CachedMap<ContactDto>(5 * 60, 10000)
 
     constructor(
-        private readonly mapper: Mapper<DSService, ServiceDto>,
+        private readonly serviceMapper: Mapper<DSService, ServiceDto>,
+        private readonly patientMapper: Mapper<DSPatient, PatientDto>,
+        private readonly documentMapper: Mapper<DSDocument, DocumentDto>,
         private readonly errorHandler: ErrorHandler,
         private readonly userApi: IccUserXApi,
         private readonly contactApi: IccContactXApi,
@@ -55,7 +57,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
             return Promise.resolve([])
         }
 
-        const mappedServices = services.map((service) => this.mapper.toDto(service))
+        const mappedServices = services.map((service) => this.serviceMapper.toDto(service))
 
         if (distinctBy(mappedServices, (ds) => ds.contactId).size > 1) {
             throw this.errorHandler.createErrorWithMessage('Only data samples of a same batch (with the same batchId) can be processed together')
@@ -129,7 +131,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
 
                     const subContacts = createdOrModifiedContact.subContacts?.filter((subContact) => subContact.services?.find((s) => s.serviceId == service.id) != undefined)
 
-                    return this.mapper.toDomain({
+                    return this.serviceMapper.toDomain({
                         ...this.enrichWithContactMetadata(service, createdOrModifiedContact),
                         subContactIds: subContacts?.map((subContact) => subContact.id!),
                         healthElementsIds: service.healthElementsIds ?? subContacts?.filter((subContact) => subContact.healthElementId)?.map((subContact) => subContact.healthElementId!),
@@ -391,7 +393,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
     }
 
     async extractPatientId(service: DSService): Promise<string | undefined> {
-        return (await this.cryptoApi.xapi.owningEntityIdsOf({ entity: this.mapper.toDto(service)!, type: 'Contact' }, undefined))[0]
+        return (await this.cryptoApi.xapi.owningEntityIdsOf({ entity: this.serviceMapper.toDto(service)!, type: 'Contact' }, undefined))[0]
     }
 
     filterBy(filter: Filter<DSService>, nextServiceId?: string, limit?: number): Promise<PaginatedList<DSService>> {
@@ -399,7 +401,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
     }
 
     async get(id: string): Promise<DSService> {
-        return Promise.resolve(this.mapper.toDomain(await this._getServiceFromICure(id))!)
+        return Promise.resolve(this.serviceMapper.toDomain(await this._getServiceFromICure(id))!)
     }
 
     private async _getServiceFromICure(serviceId: string): Promise<ServiceDto> {
@@ -419,7 +421,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         const currentUser = await this.userApi.getCurrentUser().catch((e) => {
             throw this.errorHandler.createErrorFromAny(e)
         })
-        const mappedService = this.mapper.toDto(service)
+        const mappedService = this.serviceMapper.toDto(service)
         const dataOwnerId = this.dataOwnerApi.getDataOwnerIdOf(currentUser)
         const contactOfDataSample = (await this._getContactOfService(currentUser, mappedService))[1]
 
@@ -436,7 +438,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
 
         const subContacts = updatedContact.subContacts?.filter((subContact) => subContact.services?.find((s) => s.serviceId == mappedService.id) != undefined)
 
-        return this.mapper.toDomain({
+        return this.serviceMapper.toDomain({
             ...this.enrichWithContactMetadata(updatedContact.services.find((service) => service.id == service.id)!, updatedContact),
             subContactIds: subContacts?.map((subContact) => subContact.id!),
             healthElementsIds: mappedService.healthElementsIds ?? subContacts?.filter((subContact) => subContact.healthElementId)?.map((subContact) => subContact.healthElementId!),

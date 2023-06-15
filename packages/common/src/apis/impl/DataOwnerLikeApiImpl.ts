@@ -9,7 +9,7 @@ import {IccIcureMaintenanceXApi} from "@icure/api/icc-x-api/icc-icure-maintenanc
 import {hexPublicKeysWithSha1Of, hexPublicKeysWithSha256Of} from "@icure/api/icc-x-api/crypto/utils";
 import {DataOwnerTypeEnum} from "@icure/api/icc-api/model/DataOwnerTypeEnum";
 
-class DataOwnerApiImpl<DSDataOwnerWithType extends DataOwnerWithType, DSDataOwnerType, DSPatient, DSUser> implements DataOwnerLikeApi<DSDataOwnerWithType, DSUser> {
+export class DataOwnerApiImpl<DSDataOwnerWithType extends DataOwnerWithType, DSDataOwnerType, DSPatient, DSUser> implements DataOwnerLikeApi<DSDataOwnerWithType, DSUser> {
 
     constructor(
         private readonly dataOwnerWithTypeMapper: Mapper<DSDataOwnerWithType, DataOwnerWithType>,

@@ -9,10 +9,11 @@ import {firstOrNull} from "../../utils/functionalUtils";
 import {IccDataOwnerXApi} from "@icure/api/icc-x-api/icc-data-owner-x-api";
 import {forceUuid} from "../../utils/uuidUtils";
 
-class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements HealthElementLikeApi<DSHealthElement, DSPatient> {
+export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements HealthElementLikeApi<DSHealthElement, DSPatient> {
 
     constructor(
-        private readonly mapper: Mapper<DSHealthElement, HealthElement>,
+        private readonly healthElementMapper: Mapper<DSHealthElement, HealthElement>,
+        private readonly patientMapper: Mapper<DSPatient, Patient>,
         private readonly errorHandler: ErrorHandler,
         private readonly heApi: IccHelementXApi,
         private readonly userApi: IccUserXApi,
@@ -31,7 +32,7 @@ class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements HealthElem
     }
 
     async createOrModifyMany(healthElement: Array<DSHealthElement>, patientId?: string): Promise<Array<DSHealthElement>> {
-        const mappedHealthElements = healthElement.map((he) => this.mapper.toDto(he))
+        const mappedHealthElements = healthElement.map((he) => this.healthElementMapper.toDto(he))
 
         const heToCreate = mappedHealthElements.filter((he) => !he.rev)
         const heToUpdate = mappedHealthElements.filter((he) => !!he.rev)
@@ -70,7 +71,7 @@ class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements HealthElem
                 throw this.errorHandler.createErrorFromAny(e)
             })
 
-        return [...hesCreated, ...hesUpdated].map((he) => this.mapper.toDomain(he))
+        return [...hesCreated, ...hesUpdated].map((he) => this.healthElementMapper.toDomain(he))
     }
 
     async delete(id: string): Promise<string> {
@@ -93,7 +94,7 @@ class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements HealthElem
         const currentUser = (await this.userApi.getCurrentUser().catch((e) => {
             throw this.errorHandler.createErrorFromAny(e)
         }))
-        return this.mapper.toDomain(
+        return this.healthElementMapper.toDomain(
             (await this.heApi.getHealthElementWithUser(currentUser, id).catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
             }))
@@ -121,8 +122,8 @@ class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements HealthElem
     }
 
     async giveAccessTo(healthElement: DSHealthElement, delegatedTo: string): Promise<DSHealthElement> {
-        const shared = await this.heApi.shareWith(delegatedTo, this.mapper.toDto(healthElement))
-        return this.mapper.toDomain(shared)
+        const shared = await this.heApi.shareWith(delegatedTo, this.healthElementMapper.toDto(healthElement))
+        return this.healthElementMapper.toDomain(shared)
     }
 
     matchBy(filter: Filter<DSHealthElement>): Promise<Array<string>> {

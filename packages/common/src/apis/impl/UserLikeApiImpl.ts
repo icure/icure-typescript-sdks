@@ -11,7 +11,7 @@ import {MessageGatewayApi} from "../MessageGatewayApi";
 import {Sanitizer} from "../../services/Sanitizer";
 import {forceUuid} from "../../utils/uuidUtils";
 
-class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, DSPatient> {
+export class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, DSPatient> {
 
     constructor(
         private readonly mapper: Mapper<DSUser, User>,

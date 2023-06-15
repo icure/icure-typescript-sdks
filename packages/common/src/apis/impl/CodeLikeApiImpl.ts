@@ -6,7 +6,7 @@ import {Code, IccCodeXApi} from "@icure/api";
 import {ErrorHandler} from "../../services/ErrorHandler";
 import {firstOrNull} from "../../utils/functionalUtils";
 
-class CodeLikeApiImpl<DSCode> implements CodeLikeApi<DSCode> {
+export class CodeLikeApiImpl<DSCode> implements CodeLikeApi<DSCode> {
 
     constructor(
         private readonly mapper: Mapper<DSCode, Code>,

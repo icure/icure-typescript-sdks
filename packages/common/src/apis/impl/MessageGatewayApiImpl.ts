@@ -6,7 +6,7 @@ import {ErrorHandler} from "../../services/ErrorHandler";
 import Header = XHR.Header;
 import { v4 as uuid } from 'uuid'
 
-class MessageGatewayApiImpl implements MessageGatewayApi {
+export class MessageGatewayApiImpl implements MessageGatewayApi {
     private readonly authHeader: XHR.Header | null
     private readonly headers: Header[]
 
