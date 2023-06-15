@@ -178,40 +178,15 @@ function forMember_Location_encryptedSelf() {
 }
 
 export function initializeLocationMapper() {
-    createMap(
-        mapper,
-        Location,
-        Address,
-        forMember_Address_addressType(),
-        forMember_Address_descr(),
-        forMember_Address_street(),
-        forMember_Address_houseNumber(),
-        forMember_Address_postboxNumber(),
-        forMember_Address_postalCode(),
-        forMember_Address_city(),
-        forMember_Address_state(),
-        forMember_Address_country(),
-        forMember_Address_note(),
-        forMember_Address_notes(),
-        forMember_Address_telecoms(),
-        forMember_Address_encryptedSelf()
-    )
+    createMap(mapper, Location, Address, forMember_Address_addressType(), forMember_Address_descr(), forMember_Address_street(), forMember_Address_houseNumber(), forMember_Address_postboxNumber(), forMember_Address_postalCode(), forMember_Address_city(), forMember_Address_state(), forMember_Address_country(), forMember_Address_note(), forMember_Address_notes(), forMember_Address_telecoms(), forMember_Address_encryptedSelf())
 
-    createMap(
-        mapper,
-        Address,
-        Location,
-        forMember_Location_addressType(),
-        forMember_Location_description(),
-        forMember_Location_street(),
-        forMember_Location_houseNumber(),
-        forMember_Location_postboxNumber(),
-        forMember_Location_postalCode(),
-        forMember_Location_city(),
-        forMember_Location_state(),
-        forMember_Location_country(),
-        forMember_Location_notes(),
-        forMember_Location_telecoms(),
-        forMember_Location_encryptedSelf()
-    )
+    createMap(mapper, Address, Location, forMember_Location_addressType(), forMember_Location_description(), forMember_Location_street(), forMember_Location_houseNumber(), forMember_Location_postboxNumber(), forMember_Location_postalCode(), forMember_Location_city(), forMember_Location_state(), forMember_Location_country(), forMember_Location_notes(), forMember_Location_telecoms(), forMember_Location_encryptedSelf())
+}
+
+export function mapAddressToLocation(entity: Address): Location {
+    return mapper.map(entity, Address, Location)
+}
+
+export function mapLocationToAddress(model: Location): Address {
+    return mapper.map(model, Location, Address)
 }

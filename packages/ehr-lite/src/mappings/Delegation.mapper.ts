@@ -54,3 +54,11 @@ export function initializeDelegationMapper() {
 
     createMap(mapper, DelegationEntity, Delegation, forMember_Delegation_owner(), forMember_Delegation_delegatedTo(), forMember_Delegation_key())
 }
+
+export function mapDelegationEntityToDelegation(entity: DelegationEntity): Delegation {
+    return mapper.map(entity, DelegationEntity, Delegation)
+}
+
+export function mapDelegationToDelegationEntity(model: Delegation): DelegationEntity {
+    return mapper.map(model, Delegation, DelegationEntity)
+}

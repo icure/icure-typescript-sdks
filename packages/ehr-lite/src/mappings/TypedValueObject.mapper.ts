@@ -102,29 +102,15 @@ function forMember_TypedValueObject_encryptedSelf() {
 }
 
 export function initializeTypedValueObjectMapper() {
-    createMap(
-        mapper,
-        TypedValueObject,
-        TypedValueObjectEntity,
-        forMember_TypedValueObjectEntity_type(),
-        forMember_TypedValueObjectEntity_booleanValue(),
-        forMember_TypedValueObjectEntity_integerValue(),
-        forMember_TypedValueObjectEntity_doubleValue(),
-        forMember_TypedValueObjectEntity_stringValue(),
-        forMember_TypedValueObjectEntity_dateValue(),
-        forMember_TypedValueObjectEntity_encryptedSelf()
-    )
+    createMap(mapper, TypedValueObject, TypedValueObjectEntity, forMember_TypedValueObjectEntity_type(), forMember_TypedValueObjectEntity_booleanValue(), forMember_TypedValueObjectEntity_integerValue(), forMember_TypedValueObjectEntity_doubleValue(), forMember_TypedValueObjectEntity_stringValue(), forMember_TypedValueObjectEntity_dateValue(), forMember_TypedValueObjectEntity_encryptedSelf())
 
-    createMap(
-        mapper,
-        TypedValueObjectEntity,
-        TypedValueObject,
-        forMember_TypedValueObject_type(),
-        forMember_TypedValueObject_booleanValue(),
-        forMember_TypedValueObject_integerValue(),
-        forMember_TypedValueObject_doubleValue(),
-        forMember_TypedValueObject_stringValue(),
-        forMember_TypedValueObject_dateValue(),
-        forMember_TypedValueObject_encryptedSelf()
-    )
+    createMap(mapper, TypedValueObjectEntity, TypedValueObject, forMember_TypedValueObject_type(), forMember_TypedValueObject_booleanValue(), forMember_TypedValueObject_integerValue(), forMember_TypedValueObject_doubleValue(), forMember_TypedValueObject_stringValue(), forMember_TypedValueObject_dateValue(), forMember_TypedValueObject_encryptedSelf())
+}
+
+export function mapTypedValueObjectEntityToTypedValueObject(entity: TypedValueObjectEntity): TypedValueObject {
+    return mapper.map(entity, TypedValueObjectEntity, TypedValueObject)
+}
+
+export function mapTypedValueObjectToTypedValueObjectEntity(model: TypedValueObject): TypedValueObjectEntity {
+    return mapper.map(model, TypedValueObject, TypedValueObjectEntity)
 }

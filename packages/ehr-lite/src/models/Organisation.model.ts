@@ -1,5 +1,5 @@
 import { b64_2ab, HealthcareParty, ua2b64 } from '@icure/api'
-import {mapTo} from "@icure/typescript-common"
+import { mapTo } from "@icure/typescript-common"
 import { CodingReference } from './CodingReference.model'
 import { Identifier } from './Identifier.model'
 import { Location } from './Location.model'
@@ -48,46 +48,28 @@ export class Organisation {
 
     static toJSON(instance: Organisation): any {
         const pojo: any = {}
-        pojo['id'] = instance.id
-        pojo['rev'] = instance.rev
-        pojo['created'] = instance.created
-        pojo['modified'] = instance.modified
-        pojo['identifiers'] = instance.identifiers?.map((item) => Identifier.toJSON(item))
-        pojo['tags'] = instance.tags?.map((item) => CodingReference.toJSON(item))
-        pojo['codes'] = instance.codes?.map((item) => CodingReference.toJSON(item))
-        pojo['deletionDate'] = instance.deletionDate
-        pojo['name'] = instance.name
-        pojo['parentId'] = instance.parentId
-        pojo['userId'] = instance.userId
-        pojo['addresses'] = instance.addresses?.map((item) => Location.toJSON(item))
-        pojo['languages'] = instance.languages?.map((item) => item)
-        pojo['picture'] = !!instance.picture ? ua2b64(instance.picture) : undefined
-        pojo['description'] = instance.description
-        pojo['properties'] = instance.properties?.map((item) => Property.toJSON(item))
-        pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataOwner.toJSON(instance.systemMetaData) : undefined
+        pojo["id"] = instance.id
+        pojo["rev"] = instance.rev
+        pojo["created"] = instance.created
+        pojo["modified"] = instance.modified
+        pojo["identifiers"] = instance.identifiers?.map(item => Identifier.toJSON(item))
+        pojo["tags"] = instance.tags?.map(item => CodingReference.toJSON(item))
+        pojo["codes"] = instance.codes?.map(item => CodingReference.toJSON(item))
+        pojo["deletionDate"] = instance.deletionDate
+        pojo["name"] = instance.name
+        pojo["parentId"] = instance.parentId
+        pojo["userId"] = instance.userId
+        pojo["addresses"] = instance.addresses?.map(item => Location.toJSON(item))
+        pojo["languages"] = instance.languages?.map(item => item)
+        pojo["picture"] = !!instance.picture ? ua2b64(instance.picture) : undefined
+        pojo["description"] = instance.description
+        pojo["properties"] = instance.properties?.map(item => Property.toJSON(item))
+        pojo["systemMetaData"] = !!instance.systemMetaData ? SystemMetaDataOwner.toJSON(instance.systemMetaData) : undefined
         return pojo
     }
 
     static fromJSON(pojo: any): Organisation {
-        return new Organisation({
-            id: pojo['id'],
-            rev: pojo['rev'],
-            created: pojo['created'],
-            modified: pojo['modified'],
-            identifiers: pojo['identifiers']?.map((item: any) => Identifier.fromJSON(item)),
-            tags: pojo['tags']?.map((item: any) => CodingReference.fromJSON(item)),
-            codes: pojo['codes']?.map((item: any) => CodingReference.fromJSON(item)),
-            deletionDate: pojo['deletionDate'],
-            name: pojo['name'],
-            parentId: pojo['parentId'],
-            userId: pojo['userId'],
-            addresses: pojo['addresses']?.map((item: any) => Location.fromJSON(item)),
-            languages: pojo['languages']?.map((item: any) => item),
-            picture: !!pojo['picture'] ? b64_2ab(pojo['picture']) : undefined,
-            description: pojo['description'],
-            properties: pojo['properties']?.map((item: any) => Property.fromJSON(item)),
-            systemMetaData: !!pojo['systemMetaData'] ? SystemMetaDataOwner.fromJSON(pojo['systemMetaData']) : undefined,
-        })
+        return new Organisation({id: pojo["id"], rev: pojo["rev"], created: pojo["created"], modified: pojo["modified"], identifiers: pojo["identifiers"]?.map((item: any) => Identifier.fromJSON(item)), tags: pojo["tags"]?.map((item: any) => CodingReference.fromJSON(item)), codes: pojo["codes"]?.map((item: any) => CodingReference.fromJSON(item)), deletionDate: pojo["deletionDate"], name: pojo["name"], parentId: pojo["parentId"], userId: pojo["userId"], addresses: pojo["addresses"]?.map((item: any) => Location.fromJSON(item)), languages: pojo["languages"]?.map((item: any) => item), picture: !!pojo["picture"] ? b64_2ab(pojo["picture"]) : undefined, description: pojo["description"], properties: pojo["properties"]?.map((item: any) => Property.fromJSON(item)), systemMetaData: !!pojo["systemMetaData"] ? SystemMetaDataOwner.fromJSON(pojo["systemMetaData"]) : undefined})
     }
 }
 

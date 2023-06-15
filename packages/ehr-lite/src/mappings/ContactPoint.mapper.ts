@@ -64,3 +64,11 @@ export function initializeContactPointMapper() {
 
     createMap(mapper, Telecom, ContactPoint, forMember_ContactPoint_system(), forMember_ContactPoint_value(), forMember_ContactPoint_description(), forMember_ContactPoint_encryptedSelf())
 }
+
+export function mapTelecomToContactPoint(entity: Telecom): ContactPoint {
+    return mapper.map(entity, Telecom, ContactPoint)
+}
+
+export function mapContactPointToTelecom(model: ContactPoint): Telecom {
+    return mapper.map(model, ContactPoint, Telecom)
+}

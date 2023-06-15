@@ -85,3 +85,11 @@ export function initializeCodingReferenceMapper() {
 
     createMap(mapper, CodeStub, CodingReference, forMember_CodingReference_id(), forMember_CodingReference_type(), forMember_CodingReference_code(), forMember_CodingReference_version(), forMember_CodingReference_label())
 }
+
+export function mapCodeStubToCodingReference(entity: CodeStub): CodingReference {
+    return mapper.map(entity, CodeStub, CodingReference)
+}
+
+export function mapCodingReferenceToCodeStub(model: CodingReference): CodeStub {
+    return mapper.map(model, CodingReference, CodeStub)
+}

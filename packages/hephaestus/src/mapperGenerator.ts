@@ -41,7 +41,7 @@ export const mapperGenerator = (project: Project, mapperLocation: string) => {
         const mapToDecoratorArg = mapToDecorator.getArguments()[0].asKind(SyntaxKind.Identifier)!
         const iCureTargetClassName = mapToDecoratorArg.getText()
         const className = modelClass.getName()!
-        const isSameName = iCureTargetClassName === className + 'Entity'
+        const isSameName = iCureTargetClassName === className + 'Entity' || iCureTargetClassName === className + 'Dto' || iCureTargetClassName === className
 
         return project.createSourceFile(mapperFilePath, (writer) => {
             writer
@@ -75,11 +75,11 @@ export const mapperGenerator = (project: Project, mapperLocation: string) => {
 
         const ehrClassToICureClassFunctions = iCureTargetClassDeclaration
             ?.getProperties()
-            .map((p) => p.getName())
+            .map((p) => p.getName().replace(/['"]/gi, ""))
             .map((p) => `forMember_${iCureTargetClassName}_${p}`)
         const iCureClassToEhrClassFunctions = modelClass
             ?.getProperties()
-            .map((p) => p.getName())
+            .map((p) => p.getName().replace(/['"]/gi, ""))
             .map((p) => `forMember_${className}_${p}`)
 
         const mapperFileFunctions = mapperSourceFile.getFunctions()
@@ -113,6 +113,44 @@ export const mapperGenerator = (project: Project, mapperLocation: string) => {
                     .blankLine()
                     .writeLine(`createMap(mapper, ${iCureTargetClassName}, ${className}, ${iCureClassToEhrClassFunctions?.map((f) => `${f}()`).join(', ')})`)
             },
+        })
+
+        const toDomainName = `map${iCureTargetClassName}To${className}`
+        const toDtoName = `map${className}To${iCureTargetClassName}`
+
+        mapperSourceFile.getFunction('toDomain')?.remove()
+        mapperSourceFile.getFunction(toDomainName)?.remove()
+        mapperSourceFile.addFunction({
+            name: toDomainName,
+            isExported: true,
+            parameters: [
+                {
+                    name: 'entity',
+                    type: iCureTargetClassName,
+                }
+            ],
+            returnType: className,
+            statements: (writer) => {
+                writer.writeLine(`return mapper.map(entity, ${iCureTargetClassName}, ${className})`)
+            }
+        })
+
+        mapperSourceFile.getFunction('toDto')?.remove()
+        mapperSourceFile.getFunction(toDtoName)?.remove()
+        mapperSourceFile.addFunction({
+            name: toDtoName,
+            isExported: true,
+            parameters: [
+                {
+                    name: 'model',
+                    type: className,
+                }
+            ],
+            returnType: iCureTargetClassName,
+            statements: (writer) => {
+                writer.writeLine(`return mapper.map(model, ${className}, ${iCureTargetClassName})`)
+
+            }
         })
     })
 

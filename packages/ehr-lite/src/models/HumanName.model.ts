@@ -1,5 +1,5 @@
 import { PersonName } from '@icure/api'
-import {mapTo} from "@icure/typescript-common"
+import { mapTo } from "@icure/typescript-common"
 import { HumanNameUseEnum } from './enums/HumanNameUse.enum'
 
 @mapTo(PersonName)
@@ -26,28 +26,19 @@ export class HumanName {
 
     static toJSON(instance: HumanName): any {
         const pojo: any = {}
-        pojo['lastName'] = instance.lastName
-        pojo['firstNames'] = instance.firstNames?.map((item) => item)
-        pojo['start'] = instance.start
-        pojo['end'] = instance.end
-        pojo['prefix'] = instance.prefix?.map((item) => item)
-        pojo['suffix'] = instance.suffix?.map((item) => item)
-        pojo['text'] = instance.text
-        pojo['use'] = instance.use
+        pojo["lastName"] = instance.lastName
+        pojo["firstNames"] = instance.firstNames?.map(item => item)
+        pojo["start"] = instance.start
+        pojo["end"] = instance.end
+        pojo["prefix"] = instance.prefix?.map(item => item)
+        pojo["suffix"] = instance.suffix?.map(item => item)
+        pojo["text"] = instance.text
+        pojo["use"] = instance.use
         return pojo
     }
 
     static fromJSON(pojo: any): HumanName {
-        return new HumanName({
-            lastName: pojo['lastName'],
-            firstNames: pojo['firstNames']?.map((item: any) => item),
-            start: pojo['start'],
-            end: pojo['end'],
-            prefix: pojo['prefix']?.map((item: any) => item),
-            suffix: pojo['suffix']?.map((item: any) => item),
-            text: pojo['text'],
-            use: pojo['use'],
-        })
+        return new HumanName({lastName: pojo["lastName"], firstNames: pojo["firstNames"]?.map((item: any) => item), start: pojo["start"], end: pojo["end"], prefix: pojo["prefix"]?.map((item: any) => item), suffix: pojo["suffix"]?.map((item: any) => item), text: pojo["text"], use: pojo["use"]})
     }
 }
 

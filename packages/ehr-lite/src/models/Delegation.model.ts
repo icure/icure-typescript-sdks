@@ -1,5 +1,5 @@
 import { Delegation as DelegationEntity } from '@icure/api'
-import {mapTo} from "@icure/typescript-common"
+import { mapTo } from "@icure/typescript-common"
 
 
 @mapTo(DelegationEntity)
@@ -16,14 +16,14 @@ export class Delegation {
 
     static toJSON(instance: Delegation): any {
         const pojo: any = {}
-        pojo['owner'] = instance.owner
-        pojo['delegatedTo'] = instance.delegatedTo
-        pojo['key'] = instance.key
+        pojo["owner"] = instance.owner
+        pojo["delegatedTo"] = instance.delegatedTo
+        pojo["key"] = instance.key
         return pojo
     }
 
     static fromJSON(pojo: any): Delegation {
-        return new Delegation({ owner: pojo['owner'], delegatedTo: pojo['delegatedTo'], key: pojo['key'] })
+        return new Delegation({owner: pojo["owner"], delegatedTo: pojo["delegatedTo"], key: pojo["key"]})
     }
 }
 

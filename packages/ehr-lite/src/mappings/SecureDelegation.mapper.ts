@@ -2,7 +2,7 @@ import { SecureDelegation } from '../models/SecureDelegation.model'
 import { SecureDelegation as SecureDelegationEntity } from '@icure/api'
 import { createMap, forMember, mapFrom } from '@automapper/core'
 import { mapper } from './mapper'
-import { convertMapToObject, convertObjectToMap } from './utils/Metadata.utils'
+import { convertMapToObject, convertObjectToMap } from '../../../common/src/utils/Metadata.utils'
 
 function forMember_SecureDelegationEntity_delegator() {
     return forMember<SecureDelegation, SecureDelegationEntity>(
@@ -131,33 +131,15 @@ function forMember_SecureDelegation_permissions() {
 }
 
 export function initializeSecureDelegationMapper() {
-    createMap(
-        mapper,
-        SecureDelegation,
-        SecureDelegationEntity,
-        forMember_SecureDelegationEntity_delegator(),
-        forMember_SecureDelegationEntity_delegate(),
-        forMember_SecureDelegationEntity_secretIds(),
-        forMember_SecureDelegationEntity_encryptionKeys(),
-        forMember_SecureDelegationEntity_owningEntityIds(),
-        forMember_SecureDelegationEntity_parentDelegations(),
-        forMember_SecureDelegationEntity_exchangeDataId(),
-        forMember_SecureDelegationEntity_encryptedExchangeDataId(),
-        forMember_SecureDelegationEntity_permissions()
-    )
+    createMap(mapper, SecureDelegation, SecureDelegationEntity, forMember_SecureDelegationEntity_delegator(), forMember_SecureDelegationEntity_delegate(), forMember_SecureDelegationEntity_secretIds(), forMember_SecureDelegationEntity_encryptionKeys(), forMember_SecureDelegationEntity_owningEntityIds(), forMember_SecureDelegationEntity_parentDelegations(), forMember_SecureDelegationEntity_exchangeDataId(), forMember_SecureDelegationEntity_permissions())
 
-    createMap(
-        mapper,
-        SecureDelegationEntity,
-        SecureDelegation,
-        forMember_SecureDelegation_delegator(),
-        forMember_SecureDelegation_delegate(),
-        forMember_SecureDelegation_secretIds(),
-        forMember_SecureDelegation_encryptionKeys(),
-        forMember_SecureDelegation_owningEntityIds(),
-        forMember_SecureDelegation_parentDelegations(),
-        forMember_SecureDelegation_exchangeDataId(),
-        forMember_SecureDelegation_encryptedExchangeDataId(),
-        forMember_SecureDelegation_permissions()
-    )
+    createMap(mapper, SecureDelegationEntity, SecureDelegation, forMember_SecureDelegation_delegator(), forMember_SecureDelegation_delegate(), forMember_SecureDelegation_secretIds(), forMember_SecureDelegation_encryptionKeys(), forMember_SecureDelegation_owningEntityIds(), forMember_SecureDelegation_parentDelegations(), forMember_SecureDelegation_exchangeDataId(), forMember_SecureDelegation_encryptedExchangeDataId(), forMember_SecureDelegation_permissions())
+}
+
+export function mapSecureDelegationEntityToSecureDelegation(entity: SecureDelegationEntity): SecureDelegation {
+    return mapper.map(entity, SecureDelegationEntity, SecureDelegation)
+}
+
+export function mapSecureDelegationToSecureDelegationEntity(model: SecureDelegation): SecureDelegationEntity {
+    return mapper.map(model, SecureDelegation, SecureDelegationEntity)
 }

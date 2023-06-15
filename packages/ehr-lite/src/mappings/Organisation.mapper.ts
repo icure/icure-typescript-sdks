@@ -19,7 +19,7 @@ import {
     extractPublicKey,
     extractPublicKeysForOaepWithSha256,
     extractTransferKeys,
-} from './utils/Metadata.utils'
+} from '../../../common/src/utils/Metadata.utils'
 import { SystemMetaDataOwner } from '../models/SystemMetaDataOwner.model'
 import { healthcareProfessionalIdentifiers } from './utils/HealthProfessional.utils'
 
@@ -442,94 +442,23 @@ function forMember_HealthcareParty_publicKeysForOaepWithSha256() {
     )
 }
 
-export function initializeOrganisationMapper() {
-    createMap(
-        mapper,
-        Organisation,
-        HealthcareParty,
-        forMember_HealthcareParty_id(),
-        forMember_HealthcareParty_rev(),
-        forMember_HealthcareParty_created(),
-        forMember_HealthcareParty_modified(),
-        forMember_HealthcareParty_deletionDate(),
-        forMember_HealthcareParty_identifier(),
-        forMember_HealthcareParty_tags(),
-        forMember_HealthcareParty_codes(),
-        forMember_HealthcareParty_name(),
-        forMember_HealthcareParty_lastName(),
-        forMember_HealthcareParty_firstName(),
-        forMember_HealthcareParty_names(),
-        forMember_HealthcareParty_gender(),
-        forMember_HealthcareParty_civility(),
-        forMember_HealthcareParty_companyName(),
-        forMember_HealthcareParty_speciality(),
-        forMember_HealthcareParty_bankAccount(),
-        forMember_HealthcareParty_bic(),
-        forMember_HealthcareParty_proxyBankAccount(),
-        forMember_HealthcareParty_proxyBic(),
-        forMember_HealthcareParty_invoiceHeader(),
-        forMember_HealthcareParty_cbe(),
-        forMember_HealthcareParty_ehp(),
-        forMember_HealthcareParty_userId(),
-        forMember_HealthcareParty_parentId(),
-        forMember_HealthcareParty_convention(),
-        forMember_HealthcareParty_nihii(),
-        forMember_HealthcareParty_nihiiSpecCode(),
-        forMember_HealthcareParty_ssin(),
-        forMember_HealthcareParty_addresses(),
-        forMember_HealthcareParty_languages(),
-        forMember_HealthcareParty_picture(),
-        forMember_HealthcareParty_statuses(),
-        forMember_HealthcareParty_statusHistory(),
-        forMember_HealthcareParty_specialityCodes(),
-        forMember_HealthcareParty_sendFormats(),
-        forMember_HealthcareParty_notes(),
-        forMember_HealthcareParty_financialInstitutionInformation(),
-        forMember_HealthcareParty_descr(),
-        forMember_HealthcareParty_billingType(),
-        forMember_HealthcareParty_type(),
-        forMember_HealthcareParty_contactPerson(),
-        forMember_HealthcareParty_contactPersonHcpId(),
-        forMember_HealthcareParty_supervisorId(),
-        forMember_HealthcareParty_flatRateTarifications(),
-        forMember_HealthcareParty_importedData(),
-        forMember_HealthcareParty_options(),
-        forMember_HealthcareParty_properties(),
-        forMember_HealthcareParty_hcPartyKeys(),
-        forMember_HealthcareParty_aesExchangeKeys(),
-        forMember_HealthcareParty_transferKeys(),
-        forMember_HealthcareParty_privateKeyShamirPartitions(),
-        forMember_HealthcareParty_publicKey(),
-        forMember_HealthcareParty_publicKeysForOaepWithSha256()
-    )
-
-    createMap(
-        mapper,
-        HealthcareParty,
-        Organisation,
-        forMember_Organisation_id(),
-        forMember_Organisation_rev(),
-        forMember_Organisation_created(),
-        forMember_Organisation_modified(),
-        forMember_Organisation_identifiers(),
-        forMember_Organisation_tags(),
-        forMember_Organisation_codes(),
-        forMember_Organisation_deletionDate(),
-        forMember_Organisation_name(),
-        forMember_Organisation_parentId(),
-        forMember_Organisation_userId(),
-        forMember_Organisation_addresses(),
-        forMember_Organisation_languages(),
-        forMember_Organisation_picture(),
-        forMember_Organisation_description(),
-        forMember_Organisation_properties(),
-        forMember_Organisation_systemMetaData()
-    )
-}
-
 export const organisationMapper = {
     toDto: (organisation: Organisation): HealthcareParty => mapper.map(organisation, Organisation, HealthcareParty),
     toDomain: (healthcareParty: HealthcareParty): Organisation => {
         return mapper.map(healthcareParty, HealthcareParty, Organisation);
     },
+}
+
+export function initializeOrganisationMapper() {
+    createMap(mapper, Organisation, HealthcareParty, forMember_HealthcareParty_id(), forMember_HealthcareParty_rev(), forMember_HealthcareParty_created(), forMember_HealthcareParty_modified(), forMember_HealthcareParty_deletionDate(), forMember_HealthcareParty_identifier(), forMember_HealthcareParty_tags(), forMember_HealthcareParty_codes(), forMember_HealthcareParty_name(), forMember_HealthcareParty_lastName(), forMember_HealthcareParty_firstName(), forMember_HealthcareParty_names(), forMember_HealthcareParty_gender(), forMember_HealthcareParty_civility(), forMember_HealthcareParty_companyName(), forMember_HealthcareParty_speciality(), forMember_HealthcareParty_bankAccount(), forMember_HealthcareParty_bic(), forMember_HealthcareParty_proxyBankAccount(), forMember_HealthcareParty_proxyBic(), forMember_HealthcareParty_invoiceHeader(), forMember_HealthcareParty_cbe(), forMember_HealthcareParty_ehp(), forMember_HealthcareParty_userId(), forMember_HealthcareParty_parentId(), forMember_HealthcareParty_convention(), forMember_HealthcareParty_nihii(), forMember_HealthcareParty_nihiiSpecCode(), forMember_HealthcareParty_ssin(), forMember_HealthcareParty_addresses(), forMember_HealthcareParty_languages(), forMember_HealthcareParty_picture(), forMember_HealthcareParty_statuses(), forMember_HealthcareParty_statusHistory(), forMember_HealthcareParty_specialityCodes(), forMember_HealthcareParty_sendFormats(), forMember_HealthcareParty_notes(), forMember_HealthcareParty_financialInstitutionInformation(), forMember_HealthcareParty_descr(), forMember_HealthcareParty_billingType(), forMember_HealthcareParty_type(), forMember_HealthcareParty_contactPerson(), forMember_HealthcareParty_contactPersonHcpId(), forMember_HealthcareParty_supervisorId(), forMember_HealthcareParty_flatRateTarifications(), forMember_HealthcareParty_importedData(), forMember_HealthcareParty_options(), forMember_HealthcareParty_properties(), forMember_HealthcareParty_hcPartyKeys(), forMember_HealthcareParty_aesExchangeKeys(), forMember_HealthcareParty_transferKeys(), forMember_HealthcareParty_privateKeyShamirPartitions(), forMember_HealthcareParty_publicKey(), forMember_HealthcareParty_publicKeysForOaepWithSha256())
+
+    createMap(mapper, HealthcareParty, Organisation, forMember_Organisation_id(), forMember_Organisation_rev(), forMember_Organisation_created(), forMember_Organisation_modified(), forMember_Organisation_identifiers(), forMember_Organisation_tags(), forMember_Organisation_codes(), forMember_Organisation_deletionDate(), forMember_Organisation_name(), forMember_Organisation_parentId(), forMember_Organisation_userId(), forMember_Organisation_addresses(), forMember_Organisation_languages(), forMember_Organisation_picture(), forMember_Organisation_description(), forMember_Organisation_properties(), forMember_Organisation_systemMetaData())
+}
+
+export function mapHealthcarePartyToOrganisation(entity: HealthcareParty): Organisation {
+    return mapper.map(entity, HealthcareParty, Organisation)
+}
+
+export function mapOrganisationToHealthcareParty(model: Organisation): HealthcareParty {
+    return mapper.map(model, Organisation, HealthcareParty)
 }

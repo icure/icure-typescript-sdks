@@ -74,3 +74,11 @@ export function initializeIdentifierMapper() {
 
     createMap(mapper, IdentifierEntity, Identifier, forMember_Identifier_assigner(), forMember_Identifier_end(), forMember_Identifier_id(), forMember_Identifier_start(), forMember_Identifier_system(), forMember_Identifier_type(), forMember_Identifier_use(), forMember_Identifier_value())
 }
+
+export function mapIdentifierEntityToIdentifier(entity: IdentifierEntity): Identifier {
+    return mapper.map(entity, IdentifierEntity, Identifier)
+}
+
+export function mapIdentifierToIdentifierEntity(model: Identifier): IdentifierEntity {
+    return mapper.map(model, Identifier, IdentifierEntity)
+}

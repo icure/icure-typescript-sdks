@@ -14,7 +14,7 @@ import {
     extractEncryptionKeys,
     extractSecretForeignKeys,
     extractSecurityMetadata,
-} from './utils/Metadata.utils'
+} from '../../../common/src/utils/Metadata.utils'
 import { Component } from '../models/Component.model'
 import { LocalComponent } from '../models/LocalComponent.model'
 import { Annotation } from '../models/Annotation.model'
@@ -443,73 +443,15 @@ function forMember_Observation_notes() {
 }
 
 export function initializeObservationMapper() {
-    createMap(
-        mapper,
-        Observation,
-        Service,
-        forMember_Service_id(),
-        forMember_Service_transactionId(),
-        forMember_Service_identifier(),
-        forMember_Service_contactId(),
-        forMember_Service_subContactIds(),
-        forMember_Service_plansOfActionIds(),
-        forMember_Service_healthElementsIds(),
-        forMember_Service_formIds(),
-        forMember_Service_secretForeignKeys(),
-        forMember_Service_cryptedForeignKeys(),
-        forMember_Service_delegations(),
-        forMember_Service_encryptionKeys(),
-        forMember_Service_label(),
-        forMember_Service_dataClassName(),
-        forMember_Service_index(),
-        forMember_Service_content(),
-        forMember_Service_encryptedContent(),
-        forMember_Service_textIndexes(),
-        forMember_Service_valueDate(),
-        forMember_Service_openingDate(),
-        forMember_Service_closingDate(),
-        forMember_Service_formId(),
-        forMember_Service_created(),
-        forMember_Service_modified(),
-        forMember_Service_endOfLife(),
-        forMember_Service_author(),
-        forMember_Service_responsible(),
-        forMember_Service_medicalLocationId(),
-        forMember_Service_comment(),
-        forMember_Service_status(),
-        forMember_Service_invoicingCodes(),
-        forMember_Service_notes(),
-        forMember_Service_qualifiedLinks(),
-        forMember_Service_codes(),
-        forMember_Service_tags(),
-        forMember_Service_encryptedSelf(),
-        forMember_Service_securityMetadata()
-    )
+    createMap(mapper, Observation, Service, forMember_Service_id(), forMember_Service_transactionId(), forMember_Service_identifier(), forMember_Service_contactId(), forMember_Service_subContactIds(), forMember_Service_plansOfActionIds(), forMember_Service_healthElementsIds(), forMember_Service_formIds(), forMember_Service_secretForeignKeys(), forMember_Service_cryptedForeignKeys(), forMember_Service_delegations(), forMember_Service_encryptionKeys(), forMember_Service_label(), forMember_Service_dataClassName(), forMember_Service_index(), forMember_Service_content(), forMember_Service_encryptedContent(), forMember_Service_textIndexes(), forMember_Service_valueDate(), forMember_Service_openingDate(), forMember_Service_closingDate(), forMember_Service_formId(), forMember_Service_created(), forMember_Service_modified(), forMember_Service_endOfLife(), forMember_Service_author(), forMember_Service_responsible(), forMember_Service_medicalLocationId(), forMember_Service_comment(), forMember_Service_status(), forMember_Service_invoicingCodes(), forMember_Service_notes(), forMember_Service_qualifiedLinks(), forMember_Service_codes(), forMember_Service_tags(), forMember_Service_encryptedSelf(), forMember_Service_securityMetadata())
 
-    createMap(
-        mapper,
-        Service,
-        Observation,
-        forMember_Observation_id(),
-        forMember_Observation_transactionId(),
-        forMember_Observation_identifiers(),
-        forMember_Observation_batchId(),
-        forMember_Observation_healthcareElementIds(),
-        forMember_Observation_index(),
-        forMember_Observation_component(),
-        forMember_Observation_valueDate(),
-        forMember_Observation_openingDate(),
-        forMember_Observation_closingDate(),
-        forMember_Observation_created(),
-        forMember_Observation_modified(),
-        forMember_Observation_endOfLife(),
-        forMember_Observation_author(),
-        forMember_Observation_performer(),
-        forMember_Observation_localContent(),
-        forMember_Observation_qualifiedLinks(),
-        forMember_Observation_codes(),
-        forMember_Observation_tags(),
-        forMember_Observation_systemMetaData(),
-        forMember_Observation_notes()
-    )
+    createMap(mapper, Service, Observation, forMember_Observation_id(), forMember_Observation_transactionId(), forMember_Observation_identifiers(), forMember_Observation_batchId(), forMember_Observation_healthcareElementIds(), forMember_Observation_index(), forMember_Observation_component(), forMember_Observation_valueDate(), forMember_Observation_openingDate(), forMember_Observation_closingDate(), forMember_Observation_created(), forMember_Observation_modified(), forMember_Observation_endOfLife(), forMember_Observation_author(), forMember_Observation_performer(), forMember_Observation_localContent(), forMember_Observation_qualifiedLinks(), forMember_Observation_codes(), forMember_Observation_tags(), forMember_Observation_systemMetaData(), forMember_Observation_notes())
+}
+
+export function mapServiceToObservation(entity: Service): Observation {
+    return mapper.map(entity, Service, Observation)
+}
+
+export function mapObservationToService(model: Observation): Service {
+    return mapper.map(model, Observation, Service)
 }

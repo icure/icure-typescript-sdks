@@ -1,5 +1,5 @@
 import { Content } from '@icure/api'
-import {mapTo} from "@icure/typescript-common"
+import { mapTo } from "@icure/typescript-common"
 import { Measure } from './Measure.model'
 import { Observation } from './Observation.model'
 import { TimeSeries } from './TimeSeries.model'

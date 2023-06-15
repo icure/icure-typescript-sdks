@@ -72,3 +72,11 @@ export function initializeHumanNameMapper() {
 
     createMap(mapper, PersonName, HumanName, forMember_HumanName_lastName(), forMember_HumanName_firstNames(), forMember_HumanName_start(), forMember_HumanName_end(), forMember_HumanName_prefix(), forMember_HumanName_suffix(), forMember_HumanName_text(), forMember_HumanName_use())
 }
+
+export function mapPersonNameToHumanName(entity: PersonName): HumanName {
+    return mapper.map(entity, PersonName, HumanName)
+}
+
+export function mapHumanNameToPersonName(model: HumanName): PersonName {
+    return mapper.map(model, HumanName, PersonName)
+}

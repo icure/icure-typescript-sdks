@@ -24,3 +24,11 @@ export function initializePropertyTypeMapper() {
 
     createMap(mapper, PropertyTypeStub, PropertyType, forMember_PropertyType_identifier(), forMember_PropertyType_type())
 }
+
+export function mapPropertyTypeStubToPropertyType(entity: PropertyTypeStub): PropertyType {
+    return mapper.map(entity, PropertyTypeStub, PropertyType)
+}
+
+export function mapPropertyTypeToPropertyTypeStub(model: PropertyType): PropertyTypeStub {
+    return mapper.map(model, PropertyType, PropertyTypeStub)
+}

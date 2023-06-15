@@ -12,7 +12,7 @@ export function marshallerGenerator(project: Project) {
     })
 
     for (const sourceFile of sourceFiles) {
-        const classes = sourceFile.getClasses()
+        const classes = sourceFile.getClasses().filter((classDeclaration) => !classDeclaration.getDecorators().find((d) => d.getName() === 'ignoreSerialization')!)
         for (const classDeclaration of classes) {
             console.log('Marshalling ', classDeclaration.getName())
 

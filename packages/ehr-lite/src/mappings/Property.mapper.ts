@@ -80,3 +80,11 @@ export function initializePropertyMapper() {
 
     createMap(mapper, PropertyStub, Property, forMember_Property_id(), forMember_Property_type(), forMember_Property_typedValue(), forMember_Property_deleted(), forMember_Property_encryptedSelf())
 }
+
+export function mapPropertyStubToProperty(entity: PropertyStub): Property {
+    return mapper.map(entity, PropertyStub, Property)
+}
+
+export function mapPropertyToPropertyStub(model: Property): PropertyStub {
+    return mapper.map(model, Property, PropertyStub)
+}

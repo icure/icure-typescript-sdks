@@ -100,3 +100,11 @@ export function initializeMeasureMapper() {
 
     createMap(mapper, MeasureEntity, Measure, forMember_Measure_value(), forMember_Measure_min(), forMember_Measure_max(), forMember_Measure_ref(), forMember_Measure_severity(), forMember_Measure_severityCode(), forMember_Measure_evolution(), forMember_Measure_unit(), forMember_Measure_unitCodes(), forMember_Measure_comment(), forMember_Measure_comparator())
 }
+
+export function mapMeasureEntityToMeasure(entity: MeasureEntity): Measure {
+    return mapper.map(entity, MeasureEntity, Measure)
+}
+
+export function mapMeasureToMeasureEntity(model: Measure): MeasureEntity {
+    return mapper.map(model, Measure, MeasureEntity)
+}

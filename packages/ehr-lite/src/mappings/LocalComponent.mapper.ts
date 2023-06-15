@@ -68,3 +68,11 @@ export function initializeLocalComponentMapper() {
 
     createMap(mapper, Content, LocalComponent, forMember_LocalComponent_stringValue(), forMember_LocalComponent_documentId())
 }
+
+export function mapContentToLocalComponent(entity: Content): LocalComponent {
+    return mapper.map(entity, Content, LocalComponent)
+}
+
+export function mapLocalComponentToContent(model: LocalComponent): Content {
+    return mapper.map(model, LocalComponent, Content)
+}

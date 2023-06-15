@@ -20,7 +20,7 @@ import {
     extractPublicKey,
     extractPublicKeysForOaepWithSha256,
     extractTransferKeys,
-} from './utils/Metadata.utils'
+} from '../../../common/src/utils/Metadata.utils'
 import { SystemMetaDataOwner } from '../models/SystemMetaDataOwner.model'
 import { healthcareProfessionalIdentifiers } from './utils/HealthProfessional.utils'
 
@@ -516,93 +516,15 @@ function forMember_HealthcareParty_publicKeysForOaepWithSha256() {
 }
 
 export function initializePractitionerMapper() {
-    createMap(
-        mapper,
-        Practitioner,
-        HealthcareParty,
-        forMember_HealthcareParty_id(),
-        forMember_HealthcareParty_rev(),
-        forMember_HealthcareParty_created(),
-        forMember_HealthcareParty_modified(),
-        forMember_HealthcareParty_deletionDate(),
-        forMember_HealthcareParty_identifier(),
-        forMember_HealthcareParty_tags(),
-        forMember_HealthcareParty_codes(),
-        forMember_HealthcareParty_name(),
-        forMember_HealthcareParty_lastName(),
-        forMember_HealthcareParty_firstName(),
-        forMember_HealthcareParty_names(),
-        forMember_HealthcareParty_gender(),
-        forMember_HealthcareParty_civility(),
-        forMember_HealthcareParty_companyName(),
-        forMember_HealthcareParty_speciality(),
-        forMember_HealthcareParty_bankAccount(),
-        forMember_HealthcareParty_bic(),
-        forMember_HealthcareParty_proxyBankAccount(),
-        forMember_HealthcareParty_proxyBic(),
-        forMember_HealthcareParty_invoiceHeader(),
-        forMember_HealthcareParty_cbe(),
-        forMember_HealthcareParty_ehp(),
-        forMember_HealthcareParty_userId(),
-        forMember_HealthcareParty_parentId(),
-        forMember_HealthcareParty_convention(),
-        forMember_HealthcareParty_nihii(),
-        forMember_HealthcareParty_nihiiSpecCode(),
-        forMember_HealthcareParty_ssin(),
-        forMember_HealthcareParty_addresses(),
-        forMember_HealthcareParty_languages(),
-        forMember_HealthcareParty_picture(),
-        forMember_HealthcareParty_statuses(),
-        forMember_HealthcareParty_statusHistory(),
-        forMember_HealthcareParty_specialityCodes(),
-        forMember_HealthcareParty_sendFormats(),
-        forMember_HealthcareParty_notes(),
-        forMember_HealthcareParty_financialInstitutionInformation(),
-        forMember_HealthcareParty_descr(),
-        forMember_HealthcareParty_billingType(),
-        forMember_HealthcareParty_type(),
-        forMember_HealthcareParty_contactPerson(),
-        forMember_HealthcareParty_contactPersonHcpId(),
-        forMember_HealthcareParty_supervisorId(),
-        forMember_HealthcareParty_flatRateTarifications(),
-        forMember_HealthcareParty_importedData(),
-        forMember_HealthcareParty_options(),
-        forMember_HealthcareParty_properties(),
-        forMember_HealthcareParty_hcPartyKeys(),
-        forMember_HealthcareParty_aesExchangeKeys(),
-        forMember_HealthcareParty_transferKeys(),
-        forMember_HealthcareParty_privateKeyShamirPartitions(),
-        forMember_HealthcareParty_publicKey(),
-        forMember_HealthcareParty_publicKeysForOaepWithSha256()
-    )
+    createMap(mapper, Practitioner, HealthcareParty, forMember_HealthcareParty_id(), forMember_HealthcareParty_rev(), forMember_HealthcareParty_created(), forMember_HealthcareParty_modified(), forMember_HealthcareParty_deletionDate(), forMember_HealthcareParty_identifier(), forMember_HealthcareParty_tags(), forMember_HealthcareParty_codes(), forMember_HealthcareParty_name(), forMember_HealthcareParty_lastName(), forMember_HealthcareParty_firstName(), forMember_HealthcareParty_names(), forMember_HealthcareParty_gender(), forMember_HealthcareParty_civility(), forMember_HealthcareParty_companyName(), forMember_HealthcareParty_speciality(), forMember_HealthcareParty_bankAccount(), forMember_HealthcareParty_bic(), forMember_HealthcareParty_proxyBankAccount(), forMember_HealthcareParty_proxyBic(), forMember_HealthcareParty_invoiceHeader(), forMember_HealthcareParty_cbe(), forMember_HealthcareParty_ehp(), forMember_HealthcareParty_userId(), forMember_HealthcareParty_parentId(), forMember_HealthcareParty_convention(), forMember_HealthcareParty_nihii(), forMember_HealthcareParty_nihiiSpecCode(), forMember_HealthcareParty_ssin(), forMember_HealthcareParty_addresses(), forMember_HealthcareParty_languages(), forMember_HealthcareParty_picture(), forMember_HealthcareParty_statuses(), forMember_HealthcareParty_statusHistory(), forMember_HealthcareParty_specialityCodes(), forMember_HealthcareParty_sendFormats(), forMember_HealthcareParty_notes(), forMember_HealthcareParty_financialInstitutionInformation(), forMember_HealthcareParty_descr(), forMember_HealthcareParty_billingType(), forMember_HealthcareParty_type(), forMember_HealthcareParty_contactPerson(), forMember_HealthcareParty_contactPersonHcpId(), forMember_HealthcareParty_supervisorId(), forMember_HealthcareParty_flatRateTarifications(), forMember_HealthcareParty_importedData(), forMember_HealthcareParty_options(), forMember_HealthcareParty_properties(), forMember_HealthcareParty_hcPartyKeys(), forMember_HealthcareParty_aesExchangeKeys(), forMember_HealthcareParty_transferKeys(), forMember_HealthcareParty_privateKeyShamirPartitions(), forMember_HealthcareParty_publicKey(), forMember_HealthcareParty_publicKeysForOaepWithSha256())
 
-    createMap(
-        mapper,
-        HealthcareParty,
-        Practitioner,
-        forMember_Practitioner_id(),
-        forMember_Practitioner_rev(),
-        forMember_Practitioner_created(),
-        forMember_Practitioner_modified(),
-        forMember_Practitioner_identifiers(),
-        forMember_Practitioner_tags(),
-        forMember_Practitioner_codes(),
-        forMember_Practitioner_deletionDate(),
-        forMember_Practitioner_name(),
-        forMember_Practitioner_lastName(),
-        forMember_Practitioner_firstName(),
-        forMember_Practitioner_names(),
-        forMember_Practitioner_gender(),
-        forMember_Practitioner_civility(),
-        forMember_Practitioner_speciality(),
-        forMember_Practitioner_parentId(),
-        forMember_Practitioner_userId(),
-        forMember_Practitioner_addresses(),
-        forMember_Practitioner_languages(),
-        forMember_Practitioner_picture(),
-        forMember_Practitioner_specialityCodes(),
-        forMember_Practitioner_description(),
-        forMember_Practitioner_properties(),
-        forMember_Practitioner_systemMetaData()
-    )
+    createMap(mapper, HealthcareParty, Practitioner, forMember_Practitioner_id(), forMember_Practitioner_rev(), forMember_Practitioner_created(), forMember_Practitioner_modified(), forMember_Practitioner_identifiers(), forMember_Practitioner_tags(), forMember_Practitioner_codes(), forMember_Practitioner_deletionDate(), forMember_Practitioner_name(), forMember_Practitioner_lastName(), forMember_Practitioner_firstName(), forMember_Practitioner_names(), forMember_Practitioner_gender(), forMember_Practitioner_civility(), forMember_Practitioner_speciality(), forMember_Practitioner_parentId(), forMember_Practitioner_userId(), forMember_Practitioner_addresses(), forMember_Practitioner_languages(), forMember_Practitioner_picture(), forMember_Practitioner_specialityCodes(), forMember_Practitioner_description(), forMember_Practitioner_properties(), forMember_Practitioner_systemMetaData())
+}
+
+export function mapHealthcarePartyToPractitioner(entity: HealthcareParty): Practitioner {
+    return mapper.map(entity, HealthcareParty, Practitioner)
+}
+
+export function mapPractitionerToHealthcareParty(model: Practitioner): HealthcareParty {
+    return mapper.map(model, Practitioner, HealthcareParty)
 }

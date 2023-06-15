@@ -1,5 +1,5 @@
 import { TimeSeries as TimeSeriesEntity } from '@icure/api'
-import {mapTo} from "@icure/typescript-common"
+import { mapTo } from "@icure/typescript-common"
 
 @mapTo(TimeSeriesEntity)
 export class TimeSeries {
@@ -23,26 +23,18 @@ export class TimeSeries {
 
     static toJSON(instance: TimeSeries): any {
         const pojo: any = {}
-        pojo['fields'] = instance.fields?.map((item) => item)
-        pojo['samples'] = instance.samples?.map((item) => item.map((item) => item))
-        pojo['min'] = instance.min?.map((item) => item)
-        pojo['max'] = instance.max?.map((item) => item)
-        pojo['mean'] = instance.mean?.map((item) => item)
-        pojo['median'] = instance.median?.map((item) => item)
-        pojo['variance'] = instance.variance?.map((item) => item)
+        pojo["fields"] = instance.fields?.map(item => item)
+        pojo["samples"] = instance.samples?.map(item => item.map(item => item))
+        pojo["min"] = instance.min?.map(item => item)
+        pojo["max"] = instance.max?.map(item => item)
+        pojo["mean"] = instance.mean?.map(item => item)
+        pojo["median"] = instance.median?.map(item => item)
+        pojo["variance"] = instance.variance?.map(item => item)
         return pojo
     }
 
     static fromJSON(pojo: any): TimeSeries {
-        return new TimeSeries({
-            fields: pojo['fields']?.map((item: any) => item),
-            samples: pojo['samples']?.map((item: any) => item.map((item: any) => item)),
-            min: pojo['min']?.map((item: any) => item),
-            max: pojo['max']?.map((item: any) => item),
-            mean: pojo['mean']?.map((item: any) => item),
-            median: pojo['median']?.map((item: any) => item),
-            variance: pojo['variance']?.map((item: any) => item),
-        })
+        return new TimeSeries({fields: pojo["fields"]?.map((item: any) => item), samples: pojo["samples"]?.map((item: any) => item.map((item: any) => item)), min: pojo["min"]?.map((item: any) => item), max: pojo["max"]?.map((item: any) => item), mean: pojo["mean"]?.map((item: any) => item), median: pojo["median"]?.map((item: any) => item), variance: pojo["variance"]?.map((item: any) => item)})
     }
 }
 

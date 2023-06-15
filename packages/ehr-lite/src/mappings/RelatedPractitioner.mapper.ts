@@ -58,17 +58,15 @@ function forMember_RelatedPractitioner_encryptedSelf() {
 }
 
 export function initializeRelatedPractitionerMapper() {
-    createMap(
-        mapper,
-        RelatedPractitioner,
-        PatientHealthCareParty,
-        forMember_PatientHealthCareParty_type(),
-        forMember_PatientHealthCareParty_healthcarePartyId(),
-        forMember_PatientHealthCareParty_sendFormats(),
-        forMember_PatientHealthCareParty_referralPeriods(),
-        forMember_PatientHealthCareParty_referral(),
-        forMember_PatientHealthCareParty_encryptedSelf()
-    )
+    createMap(mapper, RelatedPractitioner, PatientHealthCareParty, forMember_PatientHealthCareParty_type(), forMember_PatientHealthCareParty_healthcarePartyId(), forMember_PatientHealthCareParty_sendFormats(), forMember_PatientHealthCareParty_referralPeriods(), forMember_PatientHealthCareParty_referral(), forMember_PatientHealthCareParty_encryptedSelf())
 
     createMap(mapper, PatientHealthCareParty, RelatedPractitioner, forMember_RelatedPractitioner_type(), forMember_RelatedPractitioner_healthcarePartyId(), forMember_RelatedPractitioner_encryptedSelf())
+}
+
+export function mapPatientHealthCarePartyToRelatedPractitioner(entity: PatientHealthCareParty): RelatedPractitioner {
+    return mapper.map(entity, PatientHealthCareParty, RelatedPractitioner)
+}
+
+export function mapRelatedPractitionerToPatientHealthCareParty(model: RelatedPractitioner): PatientHealthCareParty {
+    return mapper.map(model, RelatedPractitioner, PatientHealthCareParty)
 }

@@ -149,37 +149,15 @@ function forMember_Component_range() {
 }
 
 export function initializeComponentMapper() {
-    createMap(
-        mapper,
-        Component,
-        Content,
-        forMember_Content_stringValue(),
-        forMember_Content_numberValue(),
-        forMember_Content_booleanValue(),
-        forMember_Content_instantValue(),
-        forMember_Content_fuzzyDateValue(),
-        forMember_Content_binaryValue(),
-        forMember_Content_documentId(),
-        forMember_Content_measureValue(),
-        forMember_Content_medicationValue(),
-        forMember_Content_timeSeries(),
-        forMember_Content_compoundValue(),
-        forMember_Content_ratio(),
-        forMember_Content_range()
-    )
+    createMap(mapper, Component, Content, forMember_Content_stringValue(), forMember_Content_numberValue(), forMember_Content_booleanValue(), forMember_Content_instantValue(), forMember_Content_fuzzyDateValue(), forMember_Content_binaryValue(), forMember_Content_documentId(), forMember_Content_measureValue(), forMember_Content_medicationValue(), forMember_Content_timeSeries(), forMember_Content_compoundValue(), forMember_Content_ratio(), forMember_Content_range())
 
-    createMap(
-        mapper,
-        Content,
-        Component,
-        forMember_Component_numberValue(),
-        forMember_Component_booleanValue(),
-        forMember_Component_instantValue(),
-        forMember_Component_fuzzyDateValue(),
-        forMember_Component_measureValue(),
-        forMember_Component_timeSeries(),
-        forMember_Component_compoundValue(),
-        forMember_Component_ratio(),
-        forMember_Component_range()
-    )
+    createMap(mapper, Content, Component, forMember_Component_numberValue(), forMember_Component_booleanValue(), forMember_Component_instantValue(), forMember_Component_fuzzyDateValue(), forMember_Component_measureValue(), forMember_Component_timeSeries(), forMember_Component_compoundValue(), forMember_Component_ratio(), forMember_Component_range())
+}
+
+export function mapContentToComponent(entity: Content): Component {
+    return mapper.map(entity, Content, Component)
+}
+
+export function mapComponentToContent(model: Component): Content {
+    return mapper.map(model, Component, Content)
 }

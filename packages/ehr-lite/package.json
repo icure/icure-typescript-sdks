@@ -17,12 +17,13 @@
     "dependencies": {
         "@automapper/classes": "^8.7.7",
         "@automapper/core": "^8.7.7",
-        "@icure/api": "^8.0.0-beta.6",
+        "@icure/api": "^8.0.0-beta.7",
         "reflect-metadata": "^0.1.13",
         "@icure/typescript-common": "*"
     },
     "scripts": {
         "build": "tsc",
-        "test": "yarn run build && jest --no-cache test"
+        "test": "yarn run build && jest --no-cache test",
+        "marshall": "nx run hephaestus:start --tsconfig ../ehr-lite/tsconfig.json --model-regex '^.*/models/.*.model.ts$' --mapper-location ../ehr-lite/src/mappings --marshaller-generator --mapper-generator"
     }
 }

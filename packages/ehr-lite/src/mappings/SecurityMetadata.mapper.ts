@@ -7,7 +7,7 @@ import {
     convertMapOfGenericToObject,
     convertMapToObject, convertObjectToMap,
     convertObjectToMapOfGeneric
-} from './utils/Metadata.utils'
+} from '../../../common/src/utils/Metadata.utils'
 import { SecureDelegation } from '../models/SecureDelegation.model'
 
 function forMember_SecurityMetadataEntity_secureDelegations() {
@@ -45,4 +45,12 @@ export function initializeSecurityMetadataMapper() {
     createMap(mapper, SecurityMetadata, SecurityMetadataEntity, forMember_SecurityMetadataEntity_secureDelegations(), forMember_SecurityMetadataEntity_keysEquivalences())
 
     createMap(mapper, SecurityMetadataEntity, SecurityMetadata, forMember_SecurityMetadata_secureDelegations(), forMember_SecurityMetadata_keysEquivalences())
+}
+
+export function mapSecurityMetadataEntityToSecurityMetadata(entity: SecurityMetadataEntity): SecurityMetadata {
+    return mapper.map(entity, SecurityMetadataEntity, SecurityMetadata)
+}
+
+export function mapSecurityMetadataToSecurityMetadataEntity(model: SecurityMetadata): SecurityMetadataEntity {
+    return mapper.map(model, SecurityMetadata, SecurityMetadataEntity)
 }

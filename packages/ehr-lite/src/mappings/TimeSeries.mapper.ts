@@ -102,18 +102,15 @@ function forMember_TimeSeries_variance() {
 }
 
 export function initializeTimeSeriesMapper() {
-    createMap(
-        mapper,
-        TimeSeries,
-        TimeSeriesEntity,
-        forMember_TimeSeriesEntity_fields(),
-        forMember_TimeSeriesEntity_samples(),
-        forMember_TimeSeriesEntity_min(),
-        forMember_TimeSeriesEntity_max(),
-        forMember_TimeSeriesEntity_mean(),
-        forMember_TimeSeriesEntity_median(),
-        forMember_TimeSeriesEntity_variance()
-    )
+    createMap(mapper, TimeSeries, TimeSeriesEntity, forMember_TimeSeriesEntity_fields(), forMember_TimeSeriesEntity_samples(), forMember_TimeSeriesEntity_min(), forMember_TimeSeriesEntity_max(), forMember_TimeSeriesEntity_mean(), forMember_TimeSeriesEntity_median(), forMember_TimeSeriesEntity_variance())
 
     createMap(mapper, TimeSeriesEntity, TimeSeries, forMember_TimeSeries_fields(), forMember_TimeSeries_samples(), forMember_TimeSeries_min(), forMember_TimeSeries_max(), forMember_TimeSeries_mean(), forMember_TimeSeries_median(), forMember_TimeSeries_variance())
+}
+
+export function mapTimeSeriesEntityToTimeSeries(entity: TimeSeriesEntity): TimeSeries {
+    return mapper.map(entity, TimeSeriesEntity, TimeSeries)
+}
+
+export function mapTimeSeriesToTimeSeriesEntity(model: TimeSeries): TimeSeriesEntity {
+    return mapper.map(model, TimeSeries, TimeSeriesEntity)
 }

@@ -1,5 +1,5 @@
 import { TypedValueObject as TypedValueObjectEntity } from '@icure/api'
-import {mapTo} from "@icure/typescript-common"
+import { mapTo } from "@icure/typescript-common"
 import { TypeEnum } from './enums/Type.enum'
 
 @mapTo(TypedValueObjectEntity)
@@ -24,18 +24,18 @@ export class TypedValueObject {
 
     static toJSON(instance: TypedValueObject): any {
         const pojo: any = {}
-        pojo['type'] = instance.type
-        pojo['booleanValue'] = instance.booleanValue
-        pojo['integerValue'] = instance.integerValue
-        pojo['doubleValue'] = instance.doubleValue
-        pojo['stringValue'] = instance.stringValue
-        pojo['dateValue'] = instance.dateValue
-        pojo['encryptedSelf'] = instance.encryptedSelf
+        pojo["type"] = instance.type
+        pojo["booleanValue"] = instance.booleanValue
+        pojo["integerValue"] = instance.integerValue
+        pojo["doubleValue"] = instance.doubleValue
+        pojo["stringValue"] = instance.stringValue
+        pojo["dateValue"] = instance.dateValue
+        pojo["encryptedSelf"] = instance.encryptedSelf
         return pojo
     }
 
     static fromJSON(pojo: any): TypedValueObject {
-        return new TypedValueObject({ type: pojo['type'], booleanValue: pojo['booleanValue'], integerValue: pojo['integerValue'], doubleValue: pojo['doubleValue'], stringValue: pojo['stringValue'], dateValue: pojo['dateValue'], encryptedSelf: pojo['encryptedSelf'] })
+        return new TypedValueObject({type: pojo["type"], booleanValue: pojo["booleanValue"], integerValue: pojo["integerValue"], doubleValue: pojo["doubleValue"], stringValue: pojo["stringValue"], dateValue: pojo["dateValue"], encryptedSelf: pojo["encryptedSelf"]})
     }
 }
 

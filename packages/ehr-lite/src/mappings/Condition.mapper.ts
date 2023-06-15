@@ -6,7 +6,7 @@ import { CodingReference } from '../models/CodingReference.model'
 import { Annotation } from '../models/Annotation.model'
 import { Annotation as AnnotationEntity } from '@icure/api/icc-api/model/Annotation'
 import { Identifier } from '../models/Identifier.model'
-import { convertObjectToMapOfArrayOfGeneric, extractCryptedForeignKeys, extractDelegations, extractEncryptedSelf, extractEncryptionKeys, extractSecretForeignKeys, extractSecurityMetadata } from './utils/Metadata.utils'
+import { convertObjectToMapOfArrayOfGeneric, extractCryptedForeignKeys, extractDelegations, extractEncryptedSelf, extractEncryptionKeys, extractSecretForeignKeys, extractSecurityMetadata } from '../../../common/src/utils/Metadata.utils'
 import { Delegation } from '../models/Delegation.model'
 import { SecurityMetadata } from '../models/SecurityMetadata.model'
 import { SystemMetaDataEncrypted } from '../models/SystemMetaDataEncrypted.model'
@@ -496,74 +496,15 @@ function forMember_Condition_systemMetaData() {
 }
 
 export function initializeConditionMapper() {
-    createMap(
-        mapper,
-        Condition,
-        HealthElement,
-        forMember_HealthElement_id(),
-        forMember_HealthElement_identifiers(),
-        forMember_HealthElement_rev(),
-        forMember_HealthElement_created(),
-        forMember_HealthElement_modified(),
-        forMember_HealthElement_author(),
-        forMember_HealthElement_responsible(),
-        forMember_HealthElement_medicalLocationId(),
-        forMember_HealthElement_tags(),
-        forMember_HealthElement_codes(),
-        forMember_HealthElement_endOfLife(),
-        forMember_HealthElement_deletionDate(),
-        forMember_HealthElement_healthElementId(),
-        forMember_HealthElement_valueDate(),
-        forMember_HealthElement_openingDate(),
-        forMember_HealthElement_closingDate(),
-        forMember_HealthElement_descr(),
-        forMember_HealthElement_note(),
-        forMember_HealthElement_notes(),
-        forMember_HealthElement_relevant(),
-        forMember_HealthElement_idOpeningContact(),
-        forMember_HealthElement_idClosingContact(),
-        forMember_HealthElement_idService(),
-        forMember_HealthElement_status(),
-        forMember_HealthElement_laterality(),
-        forMember_HealthElement_plansOfAction(),
-        forMember_HealthElement_episodes(),
-        forMember_HealthElement_careTeam(),
-        forMember_HealthElement_secretForeignKeys(),
-        forMember_HealthElement_cryptedForeignKeys(),
-        forMember_HealthElement_delegations(),
-        forMember_HealthElement_encryptionKeys(),
-        forMember_HealthElement_encryptedSelf(),
-        forMember_HealthElement_securityMetadata(),
-        forMember_HealthElement__type()
-    )
+    createMap(mapper, Condition, HealthElement, forMember_HealthElement_id(), forMember_HealthElement_identifiers(), forMember_HealthElement_rev(), forMember_HealthElement_created(), forMember_HealthElement_modified(), forMember_HealthElement_author(), forMember_HealthElement_responsible(), forMember_HealthElement_medicalLocationId(), forMember_HealthElement_tags(), forMember_HealthElement_codes(), forMember_HealthElement_endOfLife(), forMember_HealthElement_deletionDate(), forMember_HealthElement_healthElementId(), forMember_HealthElement_valueDate(), forMember_HealthElement_openingDate(), forMember_HealthElement_closingDate(), forMember_HealthElement_descr(), forMember_HealthElement_note(), forMember_HealthElement_notes(), forMember_HealthElement_relevant(), forMember_HealthElement_idOpeningContact(), forMember_HealthElement_idClosingContact(), forMember_HealthElement_idService(), forMember_HealthElement_status(), forMember_HealthElement_laterality(), forMember_HealthElement_plansOfAction(), forMember_HealthElement_episodes(), forMember_HealthElement_careTeam(), forMember_HealthElement_secretForeignKeys(), forMember_HealthElement_cryptedForeignKeys(), forMember_HealthElement_delegations(), forMember_HealthElement_encryptionKeys(), forMember_HealthElement_encryptedSelf(), forMember_HealthElement_securityMetadata(), forMember_HealthElement__type())
 
-    createMap(
-        mapper,
-        HealthElement,
-        Condition,
-        forMember_Condition_id(),
-        forMember_Condition_identifiers(),
-        forMember_Condition_rev(),
-        forMember_Condition_created(),
-        forMember_Condition_modified(),
-        forMember_Condition_author(),
-        forMember_Condition_responsible(),
-        forMember_Condition_medicalLocationId(),
-        forMember_Condition_clinicalStatus(),
-        forMember_Condition_verificationStatus(),
-        forMember_Condition_category(),
-        forMember_Condition_severity(),
-        forMember_Condition_bodySite(),
-        forMember_Condition_tags(),
-        forMember_Condition_codes(),
-        forMember_Condition_endOfLife(),
-        forMember_Condition_deletionDate(),
-        forMember_Condition_healthcareElementId(),
-        forMember_Condition_recordedDate(),
-        forMember_Condition_openingDate(),
-        forMember_Condition_closingDate(),
-        forMember_Condition_description(),
-        forMember_Condition_notes(),
-        forMember_Condition_systemMetaData()
-    )
+    createMap(mapper, HealthElement, Condition, forMember_Condition_id(), forMember_Condition_identifiers(), forMember_Condition_rev(), forMember_Condition_created(), forMember_Condition_modified(), forMember_Condition_author(), forMember_Condition_responsible(), forMember_Condition_medicalLocationId(), forMember_Condition_clinicalStatus(), forMember_Condition_verificationStatus(), forMember_Condition_category(), forMember_Condition_severity(), forMember_Condition_bodySite(), forMember_Condition_tags(), forMember_Condition_codes(), forMember_Condition_endOfLife(), forMember_Condition_deletionDate(), forMember_Condition_healthcareElementId(), forMember_Condition_recordedDate(), forMember_Condition_openingDate(), forMember_Condition_closingDate(), forMember_Condition_description(), forMember_Condition_notes(), forMember_Condition_systemMetaData())
+}
+
+export function mapHealthElementToCondition(entity: HealthElement): Condition {
+    return mapper.map(entity, HealthElement, Condition)
+}
+
+export function mapConditionToHealthElement(model: Condition): HealthElement {
+    return mapper.map(model, Condition, HealthElement)
 }

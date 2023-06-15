@@ -1,5 +1,5 @@
 import { Telecom } from '@icure/api'
-import {mapTo} from "@icure/typescript-common"
+import { mapTo } from "@icure/typescript-common"
 import { ContactPointTelecomTypeEnum } from './enums/ContactPointTelecomType.enum'
 
 @mapTo(Telecom)
@@ -17,15 +17,15 @@ export class ContactPoint {
 
     static toJSON(instance: ContactPoint): any {
         const pojo: any = {}
-        pojo['system'] = instance.system
-        pojo['value'] = instance.value
-        pojo['description'] = instance.description
-        pojo['encryptedSelf'] = instance.encryptedSelf
+        pojo["system"] = instance.system
+        pojo["value"] = instance.value
+        pojo["description"] = instance.description
+        pojo["encryptedSelf"] = instance.encryptedSelf
         return pojo
     }
 
     static fromJSON(pojo: any): ContactPoint {
-        return new ContactPoint({ system: pojo['system'], value: pojo['value'], description: pojo['description'], encryptedSelf: pojo['encryptedSelf'] })
+        return new ContactPoint({system: pojo["system"], value: pojo["value"], description: pojo["description"], encryptedSelf: pojo["encryptedSelf"]})
     }
 }
 

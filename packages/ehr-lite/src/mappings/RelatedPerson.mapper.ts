@@ -58,3 +58,11 @@ export function initializeRelatedPersonMapper() {
 
     createMap(mapper, Partnership, RelatedPerson, forMember_RelatedPerson_type(), forMember_RelatedPerson_status(), forMember_RelatedPerson_personId())
 }
+
+export function mapPartnershipToRelatedPerson(entity: Partnership): RelatedPerson {
+    return mapper.map(entity, Partnership, RelatedPerson)
+}
+
+export function mapRelatedPersonToPartnership(model: RelatedPerson): Partnership {
+    return mapper.map(model, RelatedPerson, Partnership)
+}

@@ -136,34 +136,15 @@ function forMember_Annotation_encryptedSelf() {
 }
 
 export function initializeAnnotationMapper() {
-    createMap(
-        mapper,
-        Annotation,
-        AnnotationEntity,
-        forMember_AnnotationEntity_id(),
-        forMember_AnnotationEntity_author(),
-        forMember_AnnotationEntity_created(),
-        forMember_AnnotationEntity_modified(),
-        forMember_AnnotationEntity_text(),
-        forMember_AnnotationEntity_markdown(),
-        forMember_AnnotationEntity_confidential(),
-        forMember_AnnotationEntity_tags(),
-        forMember_AnnotationEntity_location(),
-        forMember_AnnotationEntity_encryptedSelf()
-    )
+    createMap(mapper, Annotation, AnnotationEntity, forMember_AnnotationEntity_id(), forMember_AnnotationEntity_author(), forMember_AnnotationEntity_created(), forMember_AnnotationEntity_modified(), forMember_AnnotationEntity_text(), forMember_AnnotationEntity_markdown(), forMember_AnnotationEntity_confidential(), forMember_AnnotationEntity_tags(), forMember_AnnotationEntity_location(), forMember_AnnotationEntity_encryptedSelf())
 
-    createMap(
-        mapper,
-        AnnotationEntity,
-        Annotation,
-        forMember_Annotation_id(),
-        forMember_Annotation_tags(),
-        forMember_Annotation_author(),
-        forMember_Annotation_created(),
-        forMember_Annotation_modified(),
-        forMember_Annotation_markdown(),
-        forMember_Annotation_target(),
-        forMember_Annotation_confidential(),
-        forMember_Annotation_encryptedSelf()
-    )
+    createMap(mapper, AnnotationEntity, Annotation, forMember_Annotation_id(), forMember_Annotation_tags(), forMember_Annotation_author(), forMember_Annotation_created(), forMember_Annotation_modified(), forMember_Annotation_markdown(), forMember_Annotation_target(), forMember_Annotation_confidential(), forMember_Annotation_encryptedSelf())
+}
+
+export function mapAnnotationEntityToAnnotation(entity: AnnotationEntity): Annotation {
+    return mapper.map(entity, AnnotationEntity, Annotation)
+}
+
+export function mapAnnotationToAnnotationEntity(model: Annotation): AnnotationEntity {
+    return mapper.map(model, Annotation, AnnotationEntity)
 }
