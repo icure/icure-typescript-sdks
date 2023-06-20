@@ -1,5 +1,5 @@
 import { ClassDeclaration, Project, SourceFile, SyntaxKind } from 'ts-morph'
-import { mapperRegex } from './index'
+import {mapperRegex, modelRegex} from './index'
 
 type Mapper = {
     className: string
@@ -10,6 +10,7 @@ type Mapper = {
 export const mapperGenerator = (project: Project, mapperLocation: string) => {
     const modelClassesWithMapToDecorator = project
         .getSourceFiles()
+        .filter((sourceFile) => sourceFile.getFilePath().match(modelRegex) !== null)
         .flatMap((sourceFile) => sourceFile.getClasses())
         .filter((classDeclaration) => classDeclaration.getDecorators().some((d) => d.getName() === 'mapTo'))
 
