@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "test": "yarn nx run-many -t test --parallel=5 --verbose",
-    "marshall": "yarn nx run-many -t marshall --parallel=5 --verbose",
+    "test": "yarn nx run-many -t build -t test --verbose",
+    "marshall": "yarn nx run-many -t marshall --verbose",
     "build": "yarn nx run-many -t build --parallel=5 --verbose"
   },
   "private": true,

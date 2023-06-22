@@ -1,3 +1,7 @@
-import { initializeMapper } from './mappings/mapper'
+import 'reflect-metadata'
 
-initializeMapper()
+import {initializeMapper, mapper} from './mappers/mapper'
+import {initializeMapper as commonInitializeMapper} from '@icure/typescript-common'
+
+initializeMapper(mapper)
+commonInitializeMapper(mapper)

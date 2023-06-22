@@ -24,7 +24,17 @@
     "outDir": "./dist",
     "lib": ["es2017", "es6", "es5", "dom"]
   },
-  "include": ["index.ts", "src/**/*", "test/**/*"],
-  "exclude": ["dist", "node_modules"],
-  "filesGlob": ["./**/*.ts"]
+  "include": ["./index.ts", "./src/**/*"],
+  "exclude": [
+    "packages/common/dist", "node_modules", "test/**/*"],
+  "filesGlob": ["./**/*.ts"],
+  "plugins": [
+    {
+      "transform": "@automapper/classes/transformer-plugin",
+      "after": true,
+      "modelFileNameSuffix": [
+        ".model.ts"
+      ]
+    }
+  ]
 }

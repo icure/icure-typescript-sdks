@@ -1,6 +1,6 @@
 import {Filter} from '../filter/Filter'
-import {Connection} from '../models/Connection'
-import {PaginatedList} from "../models/PaginatedList";
+import {Connection} from '../models/Connection.model'
+import {PaginatedList} from "../models/PaginatedList.model";
 
 /**
  * The ServiceApi interface provides methods to manage data samples.

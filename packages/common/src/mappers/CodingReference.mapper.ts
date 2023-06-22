@@ -1,5 +1,4 @@
-import { createMap, forMember, ignore, mapFrom } from '@automapper/core'
-import { mapper } from './mapper'
+import {createMap, forMember, ignore, mapFrom, Mapper} from '@automapper/core'
 import { CodeStub } from '@icure/api'
 import { CodingReference } from '../models/CodingReference.model'
 
@@ -80,16 +79,8 @@ function forMember_CodingReference_label() {
     )
 }
 
-export function initializeCodingReferenceMapper() {
+export function initializeCodingReferenceMapper(mapper: Mapper) {
     createMap(mapper, CodingReference, CodeStub, forMember_CodeStub_id(), forMember_CodeStub_context(), forMember_CodeStub_type(), forMember_CodeStub_code(), forMember_CodeStub_version(), forMember_CodeStub_label())
 
     createMap(mapper, CodeStub, CodingReference, forMember_CodingReference_id(), forMember_CodingReference_type(), forMember_CodingReference_code(), forMember_CodingReference_version(), forMember_CodingReference_label())
-}
-
-export function mapCodeStubToCodingReference(entity: CodeStub): CodingReference {
-    return mapper.map(entity, CodeStub, CodingReference)
-}
-
-export function mapCodingReferenceToCodeStub(model: CodingReference): CodeStub {
-    return mapper.map(model, CodingReference, CodeStub)
 }

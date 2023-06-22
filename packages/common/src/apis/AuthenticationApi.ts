@@ -1,6 +1,7 @@
-import {AuthenticationProcess} from '../models/AuthenticationProcess'
-import {AuthenticationResult} from '../models/AuthenticationResult'
-import {RecaptchaType} from '../models/RecaptchaType'
+import {RecaptchaType} from "../models/RecaptchaType.model";
+import {AuthenticationProcess} from "../models/AuthenticationProcess.model";
+import {AuthenticationResult} from "../models/AuthenticationResult.model";
+
 
 /**
  * The AuthenticationApi interface provides methods to authenticate and register users.
@@ -58,7 +59,7 @@ export interface AuthenticationApi<DSApi> {
    * Completes the authentication process of a user created from a Patient.
    * - It creates the private and public key for the user
    * - It creates a long-lived authentication token
-   * - Send a Notification to all the delegated HCP to ask for access to the data of the Patient
+   * - Send a NotificationModel to all the delegated HCP to ask for access to the data of the Patient
    * @param userLogin The login of the user
    * @param shortLivedToken The short-lived authentication token created by the HCP
    *

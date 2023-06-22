@@ -1,7 +1,7 @@
 import {ErrorHandler, PatientLikeApiImpl} from "@icure/typescript-common";
-import {Patient as PatientModel} from "../models/Patient.model";
-import {IccPatientXApi, IccUserXApi, Patient} from "@icure/api";
-import {mapper} from "../mappings/mapper";
+import {Patient} from "../models/Patient.model";
+import {IccPatientXApi, IccUserXApi, Patient as PatientDto} from "@icure/api";
+import {mapper} from "../mappers/mapper";
 import {IccDataOwnerXApi} from "@icure/api/icc-x-api/icc-data-owner-x-api";
 
 export const patientApi = (
@@ -9,13 +9,13 @@ export const patientApi = (
     patientApi: IccPatientXApi,
     userApi: IccUserXApi,
     dataOwnerApi: IccDataOwnerXApi,
-) => new PatientLikeApiImpl<PatientModel>(
+) => new PatientLikeApiImpl<Patient>(
     {
-        toDomain(dto: Patient): PatientModel {
-            return mapper.map(dto, Patient, PatientModel)
+        toDomain(dto: PatientDto): Patient {
+            return mapper.map(dto, PatientDto, Patient)
         },
-        toDto(domain: PatientModel): Patient {
-            return mapper.map(domain, PatientModel, Patient)
+        toDto(domain: Patient): PatientDto {
+            return mapper.map(domain, Patient, PatientDto)
         }
     },
     errorHandler,

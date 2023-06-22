@@ -10,7 +10,7 @@
     "ts-morph": "^18.0.0"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "rm -rf ./dist && tsc",
     "exec": "node ./dist/index.js",
     "start": "yarn run build && yarn run exec"
   }

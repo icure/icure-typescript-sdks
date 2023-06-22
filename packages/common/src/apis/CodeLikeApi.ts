@@ -1,5 +1,5 @@
 import {Filter} from '../filter/Filter'
-import {PaginatedList} from "../models/PaginatedList";
+import {PaginatedList} from "../models/PaginatedList.model";
 
 /**
  * The CodeApi interface provides methods to manage code and terminologies (like ATC, ICD-10, LOINC, SNOMED-CT,… ).

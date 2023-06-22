@@ -1,8 +1,6 @@
 import { Content } from '@icure/api'
-import { mapTo } from "@icure/typescript-common"
-import { Measure } from './Measure.model'
+import { mapTo, Measure, TimeSeries } from "@icure/typescript-common"
 import { Observation } from './Observation.model'
-import { TimeSeries } from './TimeSeries.model'
 
 @mapTo(Content)
 export class Component {

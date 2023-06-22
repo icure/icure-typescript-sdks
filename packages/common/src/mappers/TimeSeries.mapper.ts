@@ -1,7 +1,6 @@
-import { TimeSeries } from '../models/TimeSeries.model'
 import { TimeSeries as TimeSeriesDto } from '@icure/api'
-import { createMap, forMember, mapFrom } from '@automapper/core'
-import { mapper } from './mapper'
+import { createMap, forMember, mapFrom, Mapper } from '@automapper/core'
+import {TimeSeries} from "../models/TimeSeries.model";
 
 function forMember_TimeSeriesDto_fields() {
     return forMember<TimeSeries, TimeSeriesDto>(
@@ -101,16 +100,8 @@ function forMember_TimeSeries_variance() {
     )
 }
 
-export function initializeTimeSeriesMapper() {
+export function initializeTimeSeriesMapper(mapper: Mapper) {
     createMap(mapper, TimeSeries, TimeSeriesDto, forMember_TimeSeriesDto_fields(), forMember_TimeSeriesDto_samples(), forMember_TimeSeriesDto_min(), forMember_TimeSeriesDto_max(), forMember_TimeSeriesDto_mean(), forMember_TimeSeriesDto_median(), forMember_TimeSeriesDto_variance())
 
     createMap(mapper, TimeSeriesDto, TimeSeries, forMember_TimeSeries_fields(), forMember_TimeSeries_samples(), forMember_TimeSeries_min(), forMember_TimeSeries_max(), forMember_TimeSeries_mean(), forMember_TimeSeries_median(), forMember_TimeSeries_variance())
-}
-
-export function mapTimeSeriesDtoToTimeSeries(entity: TimeSeriesDto): TimeSeries {
-    return mapper.map(entity, TimeSeriesDto, TimeSeries)
-}
-
-export function mapTimeSeriesToTimeSeriesDto(model: TimeSeries): TimeSeriesDto {
-    return mapper.map(model, TimeSeries, TimeSeriesDto)
 }

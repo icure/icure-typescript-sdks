@@ -1,11 +1,11 @@
 import {Practitioner} from "../../src/models/Practitioner.model";
-import {generateIdentifier} from "./Identifier.model";
-import {generateCodingReference} from "./CodingReference.model";
+import {generateIdentifier} from "../../../common/test/models/Identifier.model";
+import {generateCodingReference} from "../../../common/test/models/CodingReference.model";
 import {generateHumanName} from "./HumanName.model";
 import {GenderEnum} from "../../src/models/enums/Gender.enum";
 import {generateLocation} from "./Location.model";
-import {generateProperty} from "./Property.model";
-import {generateSystemMetaDataOwner} from "./SystemMetaDataOwner.model";
+import {generateProperty} from "../../../common/test/models/Property.model";
+import {generateSystemMetaDataOwner} from "../../../common/test/models/SystemMetaDataOwner.model";
 
 export function generatePractitioner(): Practitioner {
     const practitioner = {
@@ -14,6 +14,7 @@ export function generatePractitioner(): Practitioner {
         created: Date.now(),
         modified: Date.now(),
         identifiers: [generateIdentifier()],
+        // identifiers: [],
         tags: [generateCodingReference()],
         codes: [generateCodingReference()],
         deletionDate: null,

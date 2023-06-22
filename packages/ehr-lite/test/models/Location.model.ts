@@ -1,6 +1,6 @@
 import {Location} from "../../src/models/Location.model";
 import {LocationAddressTypeEnum} from "../../src/models/enums/LocationAddressType.enum";
-import {generateAnnotation} from "./Annotation.model";
+import {generateAnnotation} from "../../../common/test/models/Annotation.model";
 import {generateContactPoint} from "./ContactPoint.model";
 
 export function generateLocation(): Location {

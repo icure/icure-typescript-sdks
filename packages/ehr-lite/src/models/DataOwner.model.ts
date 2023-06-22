@@ -1,21 +1,19 @@
 import {Practitioner} from "./Practitioner.model";
 import {Patient} from "./Patient.model";
 import {Organisation} from "./Organisation.model";
-import {DataOwnerLikeApi} from "../../../common/src/apis/DataOwnerLikeApi";
-import {User} from "@icure/api";
-
-export enum DataOwnerType {
-    PRACTITIONER = 'Practitioner',
-    ORGANISATION = 'Organisation',
-    PATIENT = 'Patient'
-}
 
 export type DataOwner = Practitioner | Organisation | Patient
 
+export enum DataOwnerTypeEnum {
+    PATIENT = 'Patient',
+    PRACTITIONER = 'Practitioner',
+    ORGANISATION = 'Organisation',
+}
+
 export type DataOwnerWithType =
-    | { type: DataOwnerType.PRACTITIONER, dataOwner: Practitioner }
-    | { type: DataOwnerType.ORGANISATION, dataOwner: Organisation }
-    | { type: DataOwnerType.PATIENT, dataOwner: Patient }
+    | { type: DataOwnerTypeEnum.PRACTITIONER, dataOwner: Practitioner }
+    | { type: DataOwnerTypeEnum.ORGANISATION, dataOwner: Organisation }
+    | { type: DataOwnerTypeEnum.PATIENT, dataOwner: Patient }
 
 /*
 class UseDataOwner implements DataOwnerLikeApi<DataOwnerWithType, DataOwnerType> {

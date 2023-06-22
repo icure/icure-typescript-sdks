@@ -1,10 +1,10 @@
 import {Observation} from "../../src/models/Observation.model";
-import {generateIdentifier} from "./Identifier.model";
+import {generateIdentifier} from "../../../common/test/models/Identifier.model";
 import {generateComponent} from "./Component.model";
 import {generateLocalComponent} from "./LocalComponent.model";
-import {generateCodingReference} from "./CodingReference.model";
-import {generateAnnotation} from "./Annotation.model";
-import {generateSystemMetaDataEncrypted} from "./SystemMetaDataEncrypted.model";
+import {generateCodingReference} from "../../../common/test/models/CodingReference.model";
+import {generateAnnotation} from "../../../common/test/models/Annotation.model";
+import {generateSystemMetaDataEncrypted} from "../../../common/test/models/SystemMetaDataEncrypted.model";
 
 export function generateObservation(): Observation {
     const observation = {

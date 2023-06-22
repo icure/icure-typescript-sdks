@@ -1,5 +1,4 @@
-import {User} from '../models/User'
-import {DataOwnerWithType} from '../models/DataOwner'
+import {DataOwnerWithType} from "../models/DataOwner.model";
 
 export interface DataOwnerLikeApi<DSDataOwnerWithType extends DataOwnerWithType, DSUser> {
   /**

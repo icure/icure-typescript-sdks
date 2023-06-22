@@ -3,17 +3,17 @@ import {CryptoPrimitives} from '@icure/api/icc-x-api/crypto/CryptoPrimitives'
 import {KeyPair, ShaVersion} from '@icure/api/icc-x-api/crypto/RSA'
 import {fingerprintV1, hexPublicKeysWithSha1Of, hexPublicKeysWithSha256Of} from '@icure/api/icc-x-api/crypto/utils'
 import {CryptoActorStubWithType} from '@icure/api/icc-api/model/CryptoActorStub'
-import {CryptoStrategies as CommonCryptoStrategies} from "../../services/CryptoStrategies";
-import KeyVerificationBehaviour = CommonCryptoStrategies.KeyVerificationBehaviour;
-import {CryptoStrategies} from "@icure/api/icc-x-api/crypto/CryptoStrategies";
+import {CryptoStrategies} from "../../services/CryptoStrategies";
+import KeyVerificationBehaviour = CryptoStrategies.KeyVerificationBehaviour;
+import {CryptoStrategies as BaseCryptoStrategies} from "@icure/api/icc-x-api/crypto/CryptoStrategies";
 import {Mapper} from "../Mapper";
-import {DataOwnerWithType} from "../../models/DataOwner";
+import {DataOwnerWithType} from "../../models/DataOwner.model";
 
-export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithType> implements CryptoStrategies {
+export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithType> implements BaseCryptoStrategies {
     constructor(
-        private readonly strategies: CommonCryptoStrategies<DSDataOwnerWithType>,
+        private readonly strategies: CryptoStrategies<DSDataOwnerWithType>,
         private readonly dataOwnerMapper: Mapper<DSDataOwnerWithType, DataOwnerWithTypeDto>,
-        private readonly dataOwnerTypeMapper: Mapper<DSDataOwnerWithType['type'], CryptoActorStubWithType>,
+        private readonly cryptoActorStubToDomainTypeMapper: (stub: CryptoActorStubWithType) => DSDataOwnerWithType['type']
     ) {
     }
 
@@ -119,6 +119,6 @@ export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithTyp
     }
 
     dataOwnerRequiresAnonymousDelegation(dataOwner: CryptoActorStubWithType): boolean {
-        return this.strategies.dataOwnerRequiresAnonymousDelegation(dataOwner.stub.id, this.dataOwnerTypeMapper.toDomain(dataOwner).type)
+        return this.strategies.dataOwnerRequiresAnonymousDelegation(dataOwner.stub.id, this.cryptoActorStubToDomainTypeMapper(dataOwner))
     }
 }

@@ -1,7 +1,7 @@
 import {HealthElement, IccCryptoXApi, IccHelementXApi, IccPatientXApi, IccUserXApi, Patient} from "@icure/api";
 import {Condition} from "../models/Condition.model";
 import {ErrorHandler, HealthElementLikeApiImpl} from "@icure/typescript-common";
-import {mapper} from "../mappings/mapper";
+import {mapper} from "../mappers/mapper";
 import {Patient as PatientModel} from "../models/Patient.model";
 import {IccDataOwnerXApi} from "@icure/api/icc-x-api/icc-data-owner-x-api";
 

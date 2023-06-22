@@ -1,10 +1,6 @@
-import { b64_2ab, HealthcareParty, ua2b64 } from '@icure/api'
-import { mapTo } from "@icure/typescript-common"
-import { CodingReference } from './CodingReference.model'
-import { Identifier } from './Identifier.model'
-import { Location } from './Location.model'
-import { Property } from './Property.model'
-import { SystemMetaDataOwner } from './SystemMetaDataOwner.model'
+import { b64_2ab, HealthcareParty, ua2b64 } from '@icure/api';
+import { CodingReference, Identifier, mapTo, Property, SystemMetaDataOwner } from "@icure/typescript-common";
+import { Location } from './Location.model';
 
 @mapTo(HealthcareParty)
 export class Organisation {

@@ -1,18 +1,18 @@
-import {DataOwnerWithType} from "../../models/DataOwner";
-import {User} from "../../models/User";
 import {DataOwnerLikeApi} from "../DataOwnerLikeApi";
 import {Mapper} from "../Mapper";
-import {IccPatientXApi} from "@icure/api";
+import {DataOwnerWithType as DataOwnerWithTypeDto, IccPatientXApi, User} from "@icure/api";
 import {ErrorHandler} from "../../services/ErrorHandler";
 import {IccDataOwnerXApi} from "@icure/api/icc-x-api/icc-data-owner-x-api";
 import {IccIcureMaintenanceXApi} from "@icure/api/icc-x-api/icc-icure-maintenance-x-api";
 import {hexPublicKeysWithSha1Of, hexPublicKeysWithSha256Of} from "@icure/api/icc-x-api/crypto/utils";
 import {DataOwnerTypeEnum} from "@icure/api/icc-api/model/DataOwnerTypeEnum";
+import {DataOwnerWithType} from "../../models/DataOwner.model";
+
 
 export class DataOwnerApiImpl<DSDataOwnerWithType extends DataOwnerWithType, DSDataOwnerType, DSPatient, DSUser> implements DataOwnerLikeApi<DSDataOwnerWithType, DSUser> {
 
     constructor(
-        private readonly dataOwnerWithTypeMapper: Mapper<DSDataOwnerWithType, DataOwnerWithType>,
+        private readonly dataOwnerWithTypeMapper: Mapper<DSDataOwnerWithType, DataOwnerWithTypeDto>,
         private readonly userMapper: Mapper<DSUser, User>,
         private readonly errorHandler: ErrorHandler,
         private readonly dataOwnerApi: IccDataOwnerXApi,

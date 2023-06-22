@@ -1,5 +1,5 @@
 import {Filter} from "../../filter/Filter";
-import {PaginatedList} from "../../models/PaginatedList";
+import {PaginatedList} from "../../models/PaginatedList.model";
 import {DeviceLikeApi} from "../DeviceLikeApi";
 import {ErrorHandler} from "../../services/ErrorHandler";
 import {Device, IccDeviceApi, ListOfIds} from "@icure/api";

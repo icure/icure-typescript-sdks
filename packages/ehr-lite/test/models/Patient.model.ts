@@ -1,16 +1,16 @@
 import {Patient} from "../../src/models/Patient.model";
-import {generateIdentifier} from "./Identifier.model";
-import {generateCodingReference} from "./CodingReference.model";
+import {generateIdentifier} from "../../../common/test/models/Identifier.model";
+import {generateCodingReference} from "../../../common/test/models/CodingReference.model";
 import {generateHumanName} from "./HumanName.model";
 import {generateLocation} from "./Location.model";
 import {GenderEnum} from "../../src/models/enums/Gender.enum";
 import {PatientDeactivationReasonEnum} from "../../src/models/enums/PatientDeactivationReason.enum";
 import {PatientPersonalStatusEnum} from "../../src/models/enums/PatientPersonalStatus.enum";
-import {generateAnnotation} from "./Annotation.model";
-import {generateProperty} from "./Property.model";
+import {generateAnnotation} from "../../../common/test/models/Annotation.model";
+import {generateProperty} from "../../../common/test/models/Property.model";
 import {generateRelatedPerson} from "./RelatedPerson.model";
 import {generateRelatedPractitioner} from "./RelatedPractitioner.model";
-import {generateSystemMetaDataOwnerEncrypted} from "./SystemMetaDataOwnerEncrypted.model";
+import {generateSystemMetaDataOwnerEncrypted} from "../../../common/test/models/SystemMetaDataOwnerEncrypted.model";
 
 export function generatePatient(): Patient {
     const patient = {

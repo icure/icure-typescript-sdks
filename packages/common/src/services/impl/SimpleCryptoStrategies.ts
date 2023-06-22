@@ -1,8 +1,8 @@
 import { CryptoStrategies } from '../CryptoStrategies'
 import { KeyPair } from '@icure/api/icc-x-api/crypto/RSA'
 import { CryptoPrimitives } from '@icure/api/icc-x-api/crypto/CryptoPrimitives'
-import { DataOwnerWithType } from '../../models/DataOwner'
 import {DataOwnerTypeEnum} from "@icure/api/icc-api/model/DataOwnerTypeEnum";
+import {DataOwnerWithType} from "../../models/DataOwner.model";
 
 /**
  * Implementation of med-tech crypto strategies which uses pre-loaded keys for initialisation and puts full trust on the

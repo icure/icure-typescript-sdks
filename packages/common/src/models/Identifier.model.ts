@@ -20,9 +20,7 @@ import { CodingReference } from "./CodingReference.model";
 @mapTo(IdentifierDto)
 export class Identifier {
   constructor(json: IIdentifier) {
-    const { type, ...simpleProperties } = json;
-    Object.assign(this as Identifier, simpleProperties as IIdentifier);
-    this.type = type && new CodingReference(type);
+    Object.assign(this as Identifier, json as IIdentifier);
   }
 
   "id"?: string;

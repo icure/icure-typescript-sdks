@@ -1,6 +1,6 @@
 import {Filter} from "../../filter/Filter";
-import {PaginatedList} from "../../models/PaginatedList";
-import {Connection} from "../../models/Connection";
+import {PaginatedList} from "../../models/PaginatedList.model";
+import {Connection} from "../../models/Connection.model";
 import {IccUserXApi, MaintenanceTask, SecureDelegation, User} from "@icure/api";
 import {MaintenanceTaskLikeApi} from "../MaintenanceTaskLikeApi";
 import {Mapper} from "../Mapper";
@@ -115,7 +115,7 @@ export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements Maintenanc
 
         if (!maintenanceTask.id) throw this.errorHandler.createErrorWithMessage('Invalid maintenanceTask')
         const existingMaintenanceTask = await this.get(maintenanceTask.id)
-        if (!existingMaintenanceTask) throw this.errorHandler.createErrorWithMessage('Cannot modify a non-existing Notification')
+        if (!existingMaintenanceTask) throw this.errorHandler.createErrorWithMessage('Cannot modify a non-existing NotificationModel')
 
         const existingMappedMaintenanceTask = this.mapper.toDto(existingMaintenanceTask)
 
@@ -143,7 +143,7 @@ export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements Maintenanc
     private async _createNotification(maintenanceTask: MaintenanceTask, user: User, delegate?: string): Promise<any> {
         if (!delegate)
             throw this.errorHandler.createErrorWithMessage(
-                'No delegate provided for Notification creation. You must provide a delegate to create a Notification. The delegate is the id of the data owner you want to notify.'
+                'No delegate provided for NotificationModel creation. You must provide a delegate to create a NotificationModel. The delegate is the id of the data owner you want to notify.'
             )
         return this.maintenanceTaskApi
             .newInstance(user, maintenanceTask, { additionalDelegates: { [delegate]: AccessLevelEnum.WRITE } })

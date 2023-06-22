@@ -1,6 +1,6 @@
 import {Component} from "../../src/models/Component.model";
-import {generateMeasure} from "./Measure.model";
-import {generateTimeSeries} from "./TimeSeries.model";
+import {generateMeasure} from "../../../common/test/models/Measure.model";
+import {generateTimeSeries} from "../../../common/test/models/TimeSeries.model";
 
 export function generateComponent(): Component {
     const component = {

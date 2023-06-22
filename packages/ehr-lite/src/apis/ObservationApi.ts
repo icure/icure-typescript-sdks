@@ -11,7 +11,7 @@ import {
     Patient,
     Service
 } from "@icure/api";
-import {mapper} from "../mappings/mapper";
+import {mapper} from "../mappers/mapper";
 import {IccDataOwnerXApi} from "@icure/api/icc-x-api/icc-data-owner-x-api";
 
 export const observationApi = (

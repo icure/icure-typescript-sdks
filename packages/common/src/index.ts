@@ -1,4 +1,5 @@
 import 'reflect-metadata'
+import {initializeMapper, mapper} from "./mappers/mapper";
 
 export * from './services/services'
 export * from './models/models'
@@ -16,3 +17,8 @@ export {mapSet} from "./utils/mapUtils";
 export {mapReduce} from "./utils/mapUtils";
 export {toMap} from "./utils/mapUtils";
 export {forceUuid} from "./utils/uuidUtils";
+
+initializeMapper(mapper)
+
+export const ICURE_CLOUD_URL = 'https://kraken.icure.cloud'
+export const MSG_GW_CLOUD_URL = 'https://msg-gw.icure.cloud'

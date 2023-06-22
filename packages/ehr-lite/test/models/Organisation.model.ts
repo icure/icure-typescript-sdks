@@ -1,9 +1,9 @@
 import {Organisation} from "../../src/models/Organisation.model";
-import {generateIdentifier} from "./Identifier.model";
-import {generateCodingReference} from "./CodingReference.model";
+import {generateIdentifier} from "../../../common/test/models/Identifier.model";
+import {generateCodingReference} from "../../../common/test/models/CodingReference.model";
 import {generateLocation} from "./Location.model";
-import {generateProperty} from "./Property.model";
-import {generateSystemMetaDataOwner} from "./SystemMetaDataOwner.model";
+import {generateProperty} from "../../../common/test/models/Property.model";
+import {generateSystemMetaDataOwner} from "../../../common/test/models/SystemMetaDataOwner.model";
 
 export function generateOrganisation(): Organisation {
     const org = new Organisation({

@@ -1,12 +1,8 @@
 import { b64_2ab, HealthcareParty, ua2b64 } from '@icure/api'
-import { mapTo } from "@icure/typescript-common"
-import { CodingReference } from './CodingReference.model'
+import { CodingReference, Identifier, mapTo, Property, SystemMetaDataOwner } from "@icure/typescript-common"
 import { GenderEnum } from './enums/Gender.enum'
 import { HumanName } from './HumanName.model'
-import { Identifier } from './Identifier.model'
 import { Location } from './Location.model'
-import { Property } from './Property.model'
-import { SystemMetaDataOwner } from './SystemMetaDataOwner.model'
 
 @mapTo(HealthcareParty)
 export class Practitioner {

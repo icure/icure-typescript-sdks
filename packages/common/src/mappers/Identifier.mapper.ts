@@ -1,5 +1,4 @@
-import { createMap, forMember, mapFrom, mapWith } from '@automapper/core'
-import { mapper } from './mapper'
+import { createMap, forMember, mapFrom, mapWith, Mapper } from '@automapper/core'
 import { Identifier as IdentifierDto } from '@icure/api/icc-api/model/Identifier'
 import { Identifier } from '../models/Identifier.model'
 import { CodeStub } from '@icure/api'
@@ -69,16 +68,8 @@ function forMember_Identifier_value() {
     return forMember<IdentifierDto, Identifier>(v => v.value, mapFrom(v => v.value))
 }
 
-export function initializeIdentifierMapper() {
+export function initializeIdentifierMapper(mapper: Mapper) {
     createMap(mapper, Identifier, IdentifierDto, forMember_IdentifierDto_id(), forMember_IdentifierDto_assigner(), forMember_IdentifierDto_start(), forMember_IdentifierDto_end(), forMember_IdentifierDto_system(), forMember_IdentifierDto_type(), forMember_IdentifierDto_use(), forMember_IdentifierDto_value())
 
-    createMap(mapper, IdentifierDto, Identifier, forMember_Identifier_assigner(), forMember_Identifier_end(), forMember_Identifier_id(), forMember_Identifier_start(), forMember_Identifier_system(), forMember_Identifier_type(), forMember_Identifier_use(), forMember_Identifier_value())
-}
-
-export function mapIdentifierDtoToIdentifier(entity: IdentifierDto): Identifier {
-    return mapper.map(entity, IdentifierDto, Identifier)
-}
-
-export function mapIdentifierToIdentifierDto(model: Identifier): IdentifierDto {
-    return mapper.map(model, Identifier, IdentifierDto)
+    createMap(mapper, IdentifierDto, Identifier, forMember_Identifier_id(), forMember_Identifier_assigner(), forMember_Identifier_start(), forMember_Identifier_end(), forMember_Identifier_system(), forMember_Identifier_type(), forMember_Identifier_use(), forMember_Identifier_value())
 }

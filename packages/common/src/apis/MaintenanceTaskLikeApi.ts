@@ -1,7 +1,7 @@
 import {Filter} from '../filter/Filter'
-import {Connection} from '../models/Connection'
+import {Connection} from '../models/Connection.model'
 import {MaintenanceTask} from "@icure/api";
-import {PaginatedList} from "../models/PaginatedList";
+import {PaginatedList} from "../models/PaginatedList.model";
 
 /**
  * The MaintenanceTaskApi interface provides methods to subscribe to notifications.

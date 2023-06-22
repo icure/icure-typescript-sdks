@@ -1,6 +1,6 @@
 import { CryptoPrimitives } from '@icure/api/icc-x-api/crypto/CryptoPrimitives'
 import { KeyPair } from '@icure/api/icc-x-api/crypto/RSA'
-import { DataOwnerWithType } from '../models/DataOwner'
+import {DataOwnerWithType} from "../models/DataOwner.model";
 
 /**
  * Allows to customise the behaviour of the med tech api to better suit your needs.

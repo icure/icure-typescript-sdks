@@ -1,9 +1,9 @@
-export function mapTo(targetClass: Function) {
-    return function (constructor: Function) {
-        Reflect.defineMetadata('mapTo', targetClass, constructor)
+export function mapTo(_targetClass: Function) {
+    return function (_constructor: Function) {
+
     }
 }
 
-export function ignoreSerialization(target: Function) {
+export function ignoreSerialization(_target: Function) {
 
 }

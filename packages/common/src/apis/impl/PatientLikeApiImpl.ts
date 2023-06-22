@@ -1,7 +1,7 @@
 import {Filter} from "../../filter/Filter";
-import {PaginatedList} from "../../models/PaginatedList";
+import {PaginatedList} from "../../models/PaginatedList.model";
 import {SharingResult, SharingStatus} from "../../utils/interfaces";
-import {Connection} from "../../models/Connection";
+import {Connection} from "../../models/Connection.model";
 import {PatientLikeApi} from "../PatientLikeApi";
 import {IccPatientXApi, IccUserXApi, Patient as PatientDto} from "@icure/api";
 import {ErrorHandler} from "../../services/ErrorHandler";

@@ -1,6 +1,6 @@
 import {Filter} from "../../filter/Filter";
-import {PaginatedList} from "../../models/PaginatedList";
-import {Connection} from "../../models/Connection";
+import {PaginatedList} from "../../models/PaginatedList.model";
+import {Connection} from "../../models/Connection.model";
 import {ServiceLikeApi} from "../ServiceLikeApi";
 import {Mapper} from "../Mapper";
 import {

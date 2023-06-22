@@ -1,6 +1,6 @@
 import {Filter} from "../../filter/Filter";
-import {PaginatedList} from "../../models/PaginatedList";
-import {Connection} from "../../models/Connection";
+import {PaginatedList} from "../../models/PaginatedList.model";
+import {Connection} from "../../models/Connection.model";
 import {HealthElementLikeApi} from "../HealthElementLikeApi";
 import {HealthElement, IccCryptoXApi, IccHelementXApi, IccPatientXApi, IccUserXApi, Patient, User} from "@icure/api";
 import {Mapper} from "../Mapper";

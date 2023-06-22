@@ -1,9 +1,5 @@
 import { HealthElement } from '@icure/api'
-import { mapTo } from "@icure/typescript-common"
-import { Annotation } from './Annotation.model'
-import { CodingReference } from './CodingReference.model'
-import { Identifier } from './Identifier.model'
-import { SystemMetaDataEncrypted } from './SystemMetaDataEncrypted.model'
+import { Annotation, CodingReference, Identifier, SystemMetaDataEncrypted, mapTo } from "@icure/typescript-common"
 import { CategoryEnum } from './enums/Category.enum'
 import { ClinicalStatusEnum } from './enums/ClinicalStatus.enum'
 import { SeverityEnum } from './enums/Severity.enum'

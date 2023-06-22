@@ -1,7 +1,7 @@
 import { Filter } from '../filter/Filter'
-import { Connection } from '../models/Connection'
 import { SharingResult } from '../utils/interfaces'
-import {PaginatedList} from "../models/PaginatedList";
+import {PaginatedList} from "../models/PaginatedList.model";
+import {Connection} from "../models/Connection.model";
 
 /**
  * The PatientApi interface provides methods to manage patients.

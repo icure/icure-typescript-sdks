@@ -1,6 +1,5 @@
 import { Address } from '@icure/api'
-import { mapTo } from "@icure/typescript-common"
-import { Annotation } from './Annotation.model'
+import { Annotation, mapTo } from "@icure/typescript-common"
 import { ContactPoint } from './ContactPoint.model'
 import { LocationAddressTypeEnum } from './enums/LocationAddressType.enum'
 

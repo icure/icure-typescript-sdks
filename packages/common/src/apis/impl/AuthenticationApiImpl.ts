@@ -1,21 +1,22 @@
-import {AuthenticationResult} from "../../models/AuthenticationResult";
-import {AuthenticationProcess} from "../../models/AuthenticationProcess";
-import {RecaptchaType} from "../../models/RecaptchaType";
+
 import {AuthenticationApi} from "../AuthenticationApi";
 import {IccCryptoXApi, IccPatientXApi, IccUserXApi, retry, ua2hex, User} from "@icure/api";
 import {Sanitizer} from "../../services/Sanitizer";
 import {ErrorHandler} from "../../services/ErrorHandler";
 import {MessageGatewayApi} from "../MessageGatewayApi";
 import { KeyPair } from '@icure/api/icc-x-api/crypto/RSA'
+import {AuthenticationResult} from "../../models/AuthenticationResult.model";
+import {AuthenticationProcess} from "../../models/AuthenticationProcess.model";
+import {RecaptchaType} from "../../models/RecaptchaType.model";
 
 
 export abstract class AuthenticationApiImpl<DSApi> implements AuthenticationApi<DSApi> {
 
     protected constructor(
         private readonly messageGatewayApi: MessageGatewayApi,
-        private readonly errorHandler: ErrorHandler,
+        protected readonly errorHandler: ErrorHandler,
         private readonly sanitizer: Sanitizer,
-        private readonly iCureBasePath: string,
+        protected readonly iCureBasePath: string,
         private readonly authProcessByEmailId: string | undefined,
         private readonly authProcessBySmsId: string | undefined,
     ) {
@@ -100,7 +101,7 @@ export abstract class AuthenticationApiImpl<DSApi> implements AuthenticationApi<
 
     abstract authenticateAndAskAccessToItsExistingData(userLogin: string, shortLivedToken: string): Promise<AuthenticationResult<DSApi>>
 
-    private async _initUserAuthTokenAndCrypto(login: string, token: string): Promise<AuthenticationResult<DSApi>> {
+    protected async _initUserAuthTokenAndCrypto(login: string, token: string): Promise<AuthenticationResult<DSApi>> {
         const { authenticatedApi, user, cryptoApi, password } = await retry(() => this._generateAndAssignAuthenticationToken(login, token))
 
         const userKeyPairs: KeyPair<string>[] = []

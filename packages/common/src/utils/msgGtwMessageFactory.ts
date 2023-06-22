@@ -1,4 +1,4 @@
-import { User } from '../models/User'
+import { User } from '../models/User.model'
 import { filteredContactsFromAddresses } from './addressUtils'
 import {HealthcareParty, Patient} from "@icure/api";
 

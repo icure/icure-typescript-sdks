@@ -1,7 +1,7 @@
 import {ErrorHandler, HealthcarePartyLikeApiImpl} from "@icure/typescript-common";
 import {HealthcareParty, IccHcpartyXApi} from "@icure/api";
 import {Organisation} from "../models/Organisation.model";
-import {mapper} from "../mappings/mapper";
+import {mapper} from "../mappers/mapper";
 
 export const organisationApi = (
     errorHandler: ErrorHandler,

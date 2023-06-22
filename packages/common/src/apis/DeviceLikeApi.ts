@@ -1,5 +1,5 @@
 import {Filter} from '../filter/Filter';
-import {PaginatedList} from "../models/PaginatedList";
+import {PaginatedList} from "../models/PaginatedList.model";
 
 /**
  * The DeviceApi interface provides methods to manage medical devices.

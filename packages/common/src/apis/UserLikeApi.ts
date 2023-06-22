@@ -1,8 +1,8 @@
 import {Filter} from '../filter/Filter'
-import {SharedDataType} from '../models/User'
-import {Connection} from '../models/Connection'
+import {SharedDataType} from '../models/User.model'
+import {Connection} from '../models/Connection.model'
 import {EmailMessageFactory, SMSMessageFactory} from '../utils/msgGtwMessageFactory'
-import {PaginatedList} from "../models/PaginatedList";
+import {PaginatedList} from "../models/PaginatedList.model";
 
 /**
  * The UserApi interface provides methods to manage users.

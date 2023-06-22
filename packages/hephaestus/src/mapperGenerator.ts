@@ -49,8 +49,7 @@ export const mapperGenerator = (project: Project, mapperLocation: string) => {
                 .writeLine(`import { ${className} } from "../models/${className}.model"`)
                 .conditionalWriteLine(!isSameName, `import { ${iCureTargetClassName} } from "@icure/api"`)
                 .conditionalWriteLine(isSameName, `import { ${className} as ${iCureTargetClassName} } from "@icure/api"`)
-                .writeLine(`import { createMap, forMember } from "@automapper/core"`)
-                .writeLine('import { mapper } from "./mapper"')
+                .writeLine(`import { createMap, forMember, Mapper } from "@automapper/core"`)
                 .blankLine()
         })
     })
@@ -107,6 +106,12 @@ export const mapperGenerator = (project: Project, mapperLocation: string) => {
 
         mapperSourceFile.addFunction({
             name: 'initialize' + mapperClassName + 'Mapper',
+            parameters: [
+                {
+                    name: 'mapper',
+                    type: 'Mapper',
+                }
+            ],
             isExported: true,
             statements: (writer) => {
                 writer
@@ -121,54 +126,60 @@ export const mapperGenerator = (project: Project, mapperLocation: string) => {
 
         mapperSourceFile.getFunction('toDomain')?.remove()
         mapperSourceFile.getFunction(toDomainName)?.remove()
-        mapperSourceFile.addFunction({
-            name: toDomainName,
-            isExported: true,
-            parameters: [
-                {
-                    name: 'entity',
-                    type: iCureTargetClassName,
-                }
-            ],
-            returnType: className,
-            statements: (writer) => {
-                writer.writeLine(`return mapper.map(entity, ${iCureTargetClassName}, ${className})`)
-            }
-        })
+        // mapperSourceFile.addFunction({
+        //     name: toDomainName,
+        //     isExported: true,
+        //     parameters: [
+        //         {
+        //             name: 'entity',
+        //             type: iCureTargetClassName,
+        //         }
+        //     ],
+        //     returnType: className,
+        //     statements: (writer) => {
+        //         writer.writeLine(`return mapper.map(entity, ${iCureTargetClassName}, ${className})`)
+        //     }
+        // })
 
         mapperSourceFile.getFunction('toDto')?.remove()
         mapperSourceFile.getFunction(toDtoName)?.remove()
-        mapperSourceFile.addFunction({
-            name: toDtoName,
-            isExported: true,
-            parameters: [
-                {
-                    name: 'model',
-                    type: className,
-                }
-            ],
-            returnType: iCureTargetClassName,
-            statements: (writer) => {
-                writer.writeLine(`return mapper.map(model, ${className}, ${iCureTargetClassName})`)
-
-            }
-        })
+        // mapperSourceFile.addFunction({
+        //     name: toDtoName,
+        //     isExported: true,
+        //     parameters: [
+        //         {
+        //             name: 'model',
+        //             type: className,
+        //         }
+        //     ],
+        //     returnType: iCureTargetClassName,
+        //     statements: (writer) => {
+        //         writer.writeLine(`return mapper.map(model, ${className}, ${iCureTargetClassName})`)
+        //
+        //     }
+        // })
     })
 
     const mapperSourceFile = project.getSourceFile('mapper.ts')
     mapperSourceFile?.getFunction('initializeMapper')?.remove()
     mapperSourceFile?.addFunction({
         name: 'initializeMapper',
+        parameters: [
+            {
+                name: 'mapper',
+                type: 'Mapper',
+            }
+        ],
         isExported: true,
         statements: (writer) => {
             mapperFiles.forEach(([_mapperClassName, _mapperSourceFile, functionName]) => {
-                writer.writeLine(`${functionName}()`)
+                writer.writeLine(`${functionName}(mapper)`)
             })
         },
     })
 
     mapperSourceFile?.addImportDeclarations(
-        mapperFiles.map(([mapperClassName, _msf, functionName]) => {
+        [...mapperFiles.map(([mapperClassName, _msf, functionName]) => {
             return {
                 moduleSpecifier: `./${mapperClassName}.mapper`,
                 namedImports: [
@@ -177,7 +188,14 @@ export const mapperGenerator = (project: Project, mapperLocation: string) => {
                     },
                 ],
             }
-        })
+        }), {
+            moduleSpecifier: `@automapper/core`,
+            namedImports: [
+                {
+                    name: 'Mapper',
+                },
+            ],
+        }]
     )
 
     mapperSourceFile?.organizeImports()

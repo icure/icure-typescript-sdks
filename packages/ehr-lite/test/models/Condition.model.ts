@@ -3,10 +3,10 @@ import {ClinicalStatusEnum} from "../../src/models/enums/ClinicalStatus.enum";
 import {VerificationStatusEnum} from "../../src/models/enums/VerificationStatus.enum";
 import {CategoryEnum} from "../../src/models/enums/Category.enum";
 import {SeverityEnum} from "../../src/models/enums/Severity.enum";
-import {generateCodingReference} from "./CodingReference.model";
-import {generateAnnotation} from "./Annotation.model";
-import {generateIdentifier} from "./Identifier.model";
-import {generateSystemMetaDataEncrypted} from "./SystemMetaDataEncrypted.model";
+import {generateCodingReference} from "../../../common/test/models/CodingReference.model";
+import {generateAnnotation} from "../../../common/test/models/Annotation.model";
+import {generateIdentifier} from "../../../common/test/models/Identifier.model";
+import {generateSystemMetaDataEncrypted} from "../../../common/test/models/SystemMetaDataEncrypted.model";
 
 export function generateCondition(): Condition {
     const condition = {

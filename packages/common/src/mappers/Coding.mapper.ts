@@ -1,7 +1,6 @@
 import { Coding } from "../models/Coding.model"
 import { Code } from "@icure/api"
-import {createMap, forMember, ignore, mapFrom} from "@automapper/core"
-import { mapper } from "./mapper"
+import {createMap, forMember, ignore, mapFrom, Mapper} from "@automapper/core"
 import {convertMapOfArrayOfGenericToObject, convertObjectToMapOfArrayOfGeneric} from "../utils/Metadata.utils";
 
 function forMember_Code_id() {
@@ -116,16 +115,8 @@ function forMember_Coding_searchTerms() {
     return forMember<Code, Coding>(v => v.searchTerms, mapFrom(c => !!c.searchTerms ? Object.fromEntries([...Object.entries(c.searchTerms)].map(([k, v]) => [k, new Set(v)])) : undefined))
 }
 
-export function initializeCodingMapper() {
+export function initializeCodingMapper(mapper: Mapper) {
     createMap(mapper, Coding, Code, forMember_Code_id(), forMember_Code_rev(), forMember_Code_deletionDate(), forMember_Code_context(), forMember_Code_type(), forMember_Code_code(), forMember_Code_version(), forMember_Code_label(), forMember_Code_author(), forMember_Code_regions(), forMember_Code_periodicity(), forMember_Code_level(), forMember_Code_links(), forMember_Code_qualifiedLinks(), forMember_Code_flags(), forMember_Code_searchTerms(), forMember_Code_data(), forMember_Code_appendices(), forMember_Code_disabled())
 
     createMap(mapper, Code, Coding, forMember_Coding_id(), forMember_Coding_rev(), forMember_Coding_type(), forMember_Coding_code(), forMember_Coding_version(), forMember_Coding_regions(), forMember_Coding_description(), forMember_Coding_qualifiedLinks(), forMember_Coding_searchTerms())
-}
-
-export function mapCodeToCoding(entity: Code): Coding {
-    return mapper.map(entity, Code, Coding)
-}
-
-export function mapCodingToCode(model: Coding): Code {
-    return mapper.map(model, Coding, Code)
 }

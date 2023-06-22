@@ -1,11 +1,11 @@
 import {EmailMessageFactory, SMSMessageFactory} from "../../utils/msgGtwMessageFactory";
 import {Filter} from "../../filter/Filter";
-import {PaginatedList} from "../../models/PaginatedList";
-import {SharedDataType} from "../../models/User";
-import {Connection} from "../../models/Connection";
+import {PaginatedList} from "../../models/PaginatedList.model";
+import {SharedDataType} from "../../models/User.model";
+import {Connection} from "../../models/Connection.model";
 import {UserLikeApi} from "../UserLikeApi";
 import {ErrorHandler} from "../../services/ErrorHandler";
-import {IccUserXApi, User} from "@icure/api";
+import {IccUserXApi, Patient as PatientDto, User as UserDto} from "@icure/api";
 import {Mapper} from "../Mapper";
 import {MessageGatewayApi} from "../MessageGatewayApi";
 import {Sanitizer} from "../../services/Sanitizer";
@@ -14,7 +14,8 @@ import {forceUuid} from "../../utils/uuidUtils";
 export class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, DSPatient> {
 
     constructor(
-        private readonly mapper: Mapper<DSUser, User>,
+        private readonly userMapper: Mapper<DSUser, UserDto>,
+        private readonly patientMapper: Mapper<DSPatient, PatientDto>,
         private readonly errorHandler: ErrorHandler,
         private readonly sanitizer: Sanitizer,
         private readonly userApi: IccUserXApi,
@@ -33,13 +34,13 @@ export class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, D
     }
 
     async createOrModify(user: DSUser): Promise<DSUser> {
-        const mappedUser = this.mapper.toDto(user)
+        const mappedUser = this.userMapper.toDto(user)
         if (!mappedUser.rev) {
             const createdUser = await this.userApi.createUser(mappedUser).catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
             })
             if (createdUser != undefined) {
-                return this.mapper.toDomain(createdUser)
+                return this.userMapper.toDomain(createdUser)
             }
             throw this.errorHandler.createErrorWithMessage("Couldn't create user")
         }
@@ -48,7 +49,7 @@ export class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, D
             throw this.errorHandler.createErrorFromAny(e)
         })
         if (updatedUser != undefined) {
-            return this.mapper.toDomain(updatedUser)
+            return this.userMapper.toDomain(updatedUser)
         }
         throw this.errorHandler.createErrorWithMessage("Couldn't update user")
     }
@@ -72,7 +73,7 @@ export class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, D
     }
 
     async get(id: string): Promise<DSUser> {
-        return this.mapper.toDomain(
+        return this.userMapper.toDomain(
             await this.userApi.getCurrentUser().catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
             })
@@ -80,7 +81,7 @@ export class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, D
     }
 
     async getByEmail(email: string): Promise<DSUser> {
-        return this.mapper.toDomain(
+        return this.userMapper.toDomain(
             await this.userApi.getUserByEmail(this.sanitizer.validateEmail(email)).catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
             })
@@ -88,7 +89,7 @@ export class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, D
     }
 
     async getLogged(): Promise<DSUser> {
-        return this.mapper.toDomain(
+        return this.userMapper.toDomain(
             await this.userApi.getCurrentUser().catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
             })
@@ -119,7 +120,7 @@ export class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, D
                     return { ...accumulator, [key]: [...new Set(Array.of(...values, ...(type === key ? delegationsToAdd : [])))] }
                 }, {})
             } else {
-                return this.mapper.toDomain(user)!!
+                return this.userMapper.toDomain(user)!!
             }
         } else {
             newDataSharing = {
@@ -140,7 +141,7 @@ export class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, D
             })
 
         if (updatedUserDto != undefined) {
-            return this.mapper.toDomain(updatedUserDto)!
+            return this.userMapper.toDomain(updatedUserDto)!
         }
 
         throw this.errorHandler.createErrorWithMessage("Couldn't add data sharing to user")
@@ -160,7 +161,7 @@ export class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, D
         const delegationsToRemove = user.autoDelegations?.[type ?? 'all']?.filter((item) => dataOwnerIds.indexOf(item) >= 0)
 
         if (delegationsToRemove === undefined || delegationsToRemove.length === 0) {
-            return this.mapper.toDomain(user)!!
+            return this.userMapper.toDomain(user)!!
         }
 
         const newDataSharing = Object.entries(user.autoDelegations ?? {}).reduce((accumulator, [key, values]) => {
@@ -180,7 +181,7 @@ export class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, D
             })
 
         if (updatedUserDto != undefined) {
-            return this.mapper.toDomain(updatedUserDto)!
+            return this.userMapper.toDomain(updatedUserDto)!
         }
         throw this.errorHandler.createErrorWithMessage("Couldn't remove data sharing of user")
     }

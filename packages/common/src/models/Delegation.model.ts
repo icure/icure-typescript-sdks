@@ -9,20 +9,21 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { Delegation as DelegationDto } from "@icure/api";
+import { mapTo } from "../utils/decorators";
 
+@mapTo(DelegationDto)
 export class Delegation {
   constructor(json: IDelegation) {
     Object.assign(this as Delegation, json);
   }
 
-  "tags": Array<string>;
   "owner"?: string;
   "delegatedTo"?: string;
   "key"?: string;
 
     static toJSON(instance: Delegation): any {
         const pojo: any = {}
-        pojo["tags"] = instance.tags.map(item => item)
         pojo["owner"] = instance.owner
         pojo["delegatedTo"] = instance.delegatedTo
         pojo["key"] = instance.key
@@ -30,12 +31,11 @@ export class Delegation {
     }
 
     static fromJSON(pojo: any): Delegation {
-        return new Delegation({tags: pojo["tags"].map((item: any) => item), owner: pojo["owner"], delegatedTo: pojo["delegatedTo"], key: pojo["key"]})
+        return new Delegation({owner: pojo["owner"], delegatedTo: pojo["delegatedTo"], key: pojo["key"]})
     }
 }
 
 interface IDelegation {
-  tags?: Array<string>;
   owner?: string;
   delegatedTo?: string;
   key?: string;

@@ -1,10 +1,10 @@
 import {Filter} from "../../filter/Filter";
-import {PaginatedList} from "../../models/PaginatedList";
 import {CodeLikeApi} from "../CodeLikeApi";
 import {Mapper} from "../Mapper";
 import {Code, IccCodeXApi} from "@icure/api";
 import {ErrorHandler} from "../../services/ErrorHandler";
 import {firstOrNull} from "../../utils/functionalUtils";
+import {PaginatedList} from "../../models/PaginatedList.model";
 
 export class CodeLikeApiImpl<DSCode> implements CodeLikeApi<DSCode> {
 

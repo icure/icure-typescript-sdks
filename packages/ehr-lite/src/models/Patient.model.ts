@@ -1,19 +1,14 @@
-import { b64_2ab, Patient as PatientEntity, ua2b64 } from '@icure/api'
-import { mapTo } from "@icure/typescript-common"
-import { Annotation } from './Annotation.model'
-import { CodingReference } from './CodingReference.model'
+import { b64_2ab, Patient as PatientDto, ua2b64 } from '@icure/api'
+import { Annotation, CodingReference, Identifier, mapTo, Property, SystemMetaDataOwnerEncrypted } from "@icure/typescript-common"
 import { GenderEnum } from './enums/Gender.enum'
 import { PatientDeactivationReasonEnum } from './enums/PatientDeactivationReason.enum'
 import { PatientPersonalStatusEnum } from './enums/PatientPersonalStatus.enum'
 import { HumanName } from './HumanName.model'
-import { Identifier } from './Identifier.model'
 import { Location } from './Location.model'
-import { Property } from './Property.model'
 import { RelatedPerson } from './RelatedPerson.model'
 import { RelatedPractitioner } from './RelatedPractitioner.model'
-import { SystemMetaDataOwnerEncrypted } from './SystemMetaDataOwnerEncrypted.model'
 
-@mapTo(PatientEntity)
+@mapTo(PatientDto)
 export class Patient {
     id?: string
     rev?: string

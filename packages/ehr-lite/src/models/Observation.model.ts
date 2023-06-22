@@ -1,11 +1,7 @@
 import { ISO639_1, Service } from '@icure/api'
-import { mapTo } from "@icure/typescript-common"
-import { Annotation } from './Annotation.model'
-import { CodingReference } from './CodingReference.model'
+import { Annotation, CodingReference, Identifier, SystemMetaDataEncrypted, mapTo } from '@icure/typescript-common'
 import { Component } from './Component.model'
-import { Identifier } from './Identifier.model'
 import { LocalComponent } from './LocalComponent.model'
-import { SystemMetaDataEncrypted } from './SystemMetaDataEncrypted.model'
 
 @mapTo(Service)
 export class Observation {
