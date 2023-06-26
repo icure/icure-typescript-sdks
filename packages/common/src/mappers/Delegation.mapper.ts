@@ -1,55 +1,47 @@
 import { Delegation as DelegationDto } from '@icure/api'
-import {createMap, forMember, ignore, mapFrom, Mapper} from '@automapper/core'
 import {Delegation} from "../models/Delegation.model";
 
-function forMember_DelegationDto_owner() {
-    return forMember<Delegation, DelegationDto>(
-        (v) => v.owner,
-        mapFrom((v) => v.owner)
-    )
+function toDelegationDtoOwner(domain: Delegation): string | undefined {
+    return domain.owner
 }
 
-function forMember_DelegationDto_delegatedTo() {
-    return forMember<Delegation, DelegationDto>(
-        (v) => v.delegatedTo,
-        mapFrom((v) => v.delegatedTo)
-    )
+function toDelegationDtoDelegatedTo(domain: Delegation): string | undefined {
+    return domain.delegatedTo
 }
 
-function forMember_DelegationDto_key() {
-    return forMember<Delegation, DelegationDto>(
-        (v) => v.key,
-        mapFrom((v) => v.key)
-    )
+function toDelegationDtoKey(domain: Delegation): string | undefined {
+    return domain.key
 }
 
-function forMember_DelegationDto_tags() {
-    return forMember<Delegation, DelegationDto>((v) => v.tags, ignore())
+function toDelegationDtoTags(domain: Delegation): string[] | undefined {
+    return undefined
 }
 
-function forMember_Delegation_owner() {
-    return forMember<DelegationDto, Delegation>(
-        (v) => v.owner,
-        mapFrom((v) => v.owner)
-    )
+function toDelegationOwner(dto: DelegationDto): string | undefined {
+    return dto.owner
 }
 
-function forMember_Delegation_delegatedTo() {
-    return forMember<DelegationDto, Delegation>(
-        (v) => v.delegatedTo,
-        mapFrom((v) => v.delegatedTo)
-    )
+function toDelegationDelegatedTo(dto: DelegationDto): string | undefined {
+    return dto.delegatedTo
 }
 
-function forMember_Delegation_key() {
-    return forMember<DelegationDto, Delegation>(
-        (v) => v.key,
-        mapFrom((v) => v.key)
-    )
+function toDelegationKey(dto: DelegationDto): string | undefined {
+    return dto.key
 }
 
-export function initializeDelegationMapper(mapper: Mapper) {
-    createMap(mapper, Delegation, DelegationDto, forMember_DelegationDto_owner(), forMember_DelegationDto_delegatedTo(), forMember_DelegationDto_key(), forMember_DelegationDto_tags())
+export function mapDelegationDtoToDelegation(dto: DelegationDto): Delegation {
+    return new Delegation({
+    owner: toDelegationOwner(dto),
+    delegatedTo: toDelegationDelegatedTo(dto),
+    key: toDelegationKey(dto),
+    })
+}
 
-    createMap(mapper, DelegationDto, Delegation, forMember_Delegation_owner(), forMember_Delegation_delegatedTo(), forMember_Delegation_key())
+export function mapDelegationToDelegationDto(domain: Delegation): DelegationDto {
+    return new DelegationDto({
+    owner: toDelegationDtoOwner(domain),
+    delegatedTo: toDelegationDtoDelegatedTo(domain),
+    key: toDelegationDtoKey(domain),
+    tags: toDelegationDtoTags(domain),
+    })
 }

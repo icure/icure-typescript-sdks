@@ -1,5 +1,4 @@
 import 'reflect-metadata'
-import {initializeMapper, mapper} from "./mappers/mapper";
 
 export * from './services/services'
 export * from './models/models'
@@ -7,6 +6,8 @@ export * from './mappers/mapper'
 // export * from './filters/filters'
 export * from './utils/utils'
 export * from './apis/apis'
+export { StorageFacade, KeyStorageFacade, LocalStorageImpl, KeyStorageImpl } from '@icure/api'
+
 export {toMapSet} from "./utils/mapUtils";
 export {toMapSetTransform} from "./utils/mapUtils";
 export {toMapArrayTransform} from "./utils/mapUtils";
@@ -18,7 +19,6 @@ export {mapReduce} from "./utils/mapUtils";
 export {toMap} from "./utils/mapUtils";
 export {forceUuid} from "./utils/uuidUtils";
 
-initializeMapper(mapper)
 
 export const ICURE_CLOUD_URL = 'https://kraken.icure.cloud'
 export const MSG_GW_CLOUD_URL = 'https://msg-gw.icure.cloud'

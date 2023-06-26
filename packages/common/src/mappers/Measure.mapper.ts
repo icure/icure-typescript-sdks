@@ -1,101 +1,129 @@
-import { Measure } from "../models/Measure.model"
-import { Measure as MeasureDto } from "@icure/api"
-import {createMap, forMember, ignore, mapFrom, Mapper} from "@automapper/core"
+import {Measure} from "../models/Measure.model"
+import {CodeStub, Measure as MeasureDto} from "@icure/api"
+import {mapCodeStubToCodingReference, mapCodingReferenceToCodeStub} from "./CodingReference.mapper";
+import {CodingReference} from "../models/CodingReference.model";
 
-function forMember_MeasureDto_value() {
-    return forMember<Measure, MeasureDto>(v => v.value, mapFrom(v => v.value))
+function toMeasureDtoValue(domain: Measure): number | undefined {
+    return domain.value
 }
 
-function forMember_MeasureDto_min() {
-    return forMember<Measure, MeasureDto>(v => v.min, mapFrom(v => v.min))
+function toMeasureDtoMin(domain: Measure): number | undefined {
+    return domain.min
 }
 
-function forMember_MeasureDto_max() {
-    return forMember<Measure, MeasureDto>(v => v.max, mapFrom(v => v.max))
+function toMeasureDtoMax(domain: Measure): number | undefined {
+    return domain.max
 }
 
-function forMember_MeasureDto_ref() {
-    return forMember<Measure, MeasureDto>(v => v.ref, mapFrom(v => v.ref))
+function toMeasureDtoRef(domain: Measure): number | undefined {
+    return domain.ref
 }
 
-function forMember_MeasureDto_severity() {
-    return forMember<Measure, MeasureDto>(v => v.severity, mapFrom(v => v.severity))
+function toMeasureDtoSeverity(domain: Measure): number | undefined {
+    return domain.severity
 }
 
-function forMember_MeasureDto_severityCode() {
-    return forMember<Measure, MeasureDto>(v => v.severityCode, mapFrom(v => v.severityCode))
+function toMeasureDtoSeverityCode(domain: Measure): string | undefined {
+    return domain.severityCode
 }
 
-function forMember_MeasureDto_evolution() {
-    return forMember<Measure, MeasureDto>(v => v.evolution, mapFrom(v => v.evolution))
+function toMeasureDtoEvolution(domain: Measure): number | undefined {
+    return domain.evolution
 }
 
-function forMember_MeasureDto_unit() {
-    return forMember<Measure, MeasureDto>(v => v.unit, mapFrom(v => v.unit))
+function toMeasureDtoUnit(domain: Measure): string | undefined {
+    return domain.unit
 }
 
-function forMember_MeasureDto_sign() {
-    return forMember<Measure, MeasureDto>(v => v.sign, ignore())
+function toMeasureDtoSign(domain: Measure): string | undefined {
+    return undefined
 }
 
-function forMember_MeasureDto_unitCodes() {
-    return forMember<Measure, MeasureDto>(v => v.unitCodes, mapFrom(v => v.unitCodes))
+function toMeasureDtoUnitCodes(domain: Measure): CodeStub[] | undefined {
+    return !!domain.unitCodes ? domain.unitCodes.map(mapCodingReferenceToCodeStub) : undefined
 }
 
-function forMember_MeasureDto_comment() {
-    return forMember<Measure, MeasureDto>(v => v.comment, mapFrom(v => v.comment))
+function toMeasureDtoComment(domain: Measure): string | undefined {
+    return domain.comment
 }
 
-function forMember_MeasureDto_comparator() {
-    return forMember<Measure, MeasureDto>(v => v.comparator, mapFrom(v => v.comparator))
+function toMeasureDtoComparator(domain: Measure): string | undefined {
+    return domain.comparator
 }
 
-function forMember_Measure_value() {
-    return forMember<MeasureDto, Measure>(v => v.value, mapFrom(v => v.value))
+function toMeasureValue(dto: MeasureDto): number | undefined {
+    return dto.value
 }
 
-function forMember_Measure_min() {
-    return forMember<MeasureDto, Measure>(v => v.min, mapFrom(v => v.min))
+function toMeasureMin(dto: MeasureDto): number | undefined {
+    return dto.min
 }
 
-function forMember_Measure_max() {
-    return forMember<MeasureDto, Measure>(v => v.max, mapFrom(v => v.max))
+function toMeasureMax(dto: MeasureDto): number | undefined {
+    return dto.max
 }
 
-function forMember_Measure_ref() {
-    return forMember<MeasureDto, Measure>(v => v.ref, mapFrom(v => v.ref))
+function toMeasureRef(dto: MeasureDto): number | undefined {
+    return dto.ref
 }
 
-function forMember_Measure_severity() {
-    return forMember<MeasureDto, Measure>(v => v.severity, mapFrom(v => v.severity))
+function toMeasureSeverity(dto: MeasureDto): number | undefined {
+    return dto.severity
 }
 
-function forMember_Measure_severityCode() {
-    return forMember<MeasureDto, Measure>(v => v.severityCode, mapFrom(v => v.severityCode))
+function toMeasureSeverityCode(dto: MeasureDto): string | undefined {
+    return dto.severityCode
 }
 
-function forMember_Measure_evolution() {
-    return forMember<MeasureDto, Measure>(v => v.evolution, mapFrom(v => v.evolution))
+function toMeasureEvolution(dto: MeasureDto): number | undefined {
+    return dto.evolution
 }
 
-function forMember_Measure_unit() {
-    return forMember<MeasureDto, Measure>(v => v.unit, mapFrom(v => v.unit))
+function toMeasureUnit(dto: MeasureDto): string | undefined {
+    return dto.unit
 }
 
-function forMember_Measure_unitCodes() {
-    return forMember<MeasureDto, Measure>(v => v.unitCodes, mapFrom(v => v.unitCodes))
+function toMeasureUnitCodes(dto: MeasureDto): CodingReference[] | undefined {
+    return !!dto.unitCodes ? dto.unitCodes.map(mapCodeStubToCodingReference) : undefined
 }
 
-function forMember_Measure_comment() {
-    return forMember<MeasureDto, Measure>(v => v.comment, mapFrom(v => v.comment))
+function toMeasureComment(dto: MeasureDto): string | undefined {
+    return dto.comment
 }
 
-function forMember_Measure_comparator() {
-    return forMember<MeasureDto, Measure>(v => v.comparator, mapFrom(v => v.comparator))
+function toMeasureComparator(dto: MeasureDto): string | undefined {
+    return dto.comparator
 }
 
-export function initializeMeasureMapper(mapper: Mapper) {
-    createMap(mapper, Measure, MeasureDto, forMember_MeasureDto_value(), forMember_MeasureDto_min(), forMember_MeasureDto_max(), forMember_MeasureDto_ref(), forMember_MeasureDto_severity(), forMember_MeasureDto_severityCode(), forMember_MeasureDto_evolution(), forMember_MeasureDto_unit(), forMember_MeasureDto_sign(), forMember_MeasureDto_unitCodes(), forMember_MeasureDto_comment(), forMember_MeasureDto_comparator())
+export function mapMeasureDtoToMeasure(dto: MeasureDto): Measure {
+    return new Measure({
+        value: toMeasureValue(dto),
+        min: toMeasureMin(dto),
+        max: toMeasureMax(dto),
+        ref: toMeasureRef(dto),
+        severity: toMeasureSeverity(dto),
+        severityCode: toMeasureSeverityCode(dto),
+        evolution: toMeasureEvolution(dto),
+        unit: toMeasureUnit(dto),
+        unitCodes: toMeasureUnitCodes(dto),
+        comment: toMeasureComment(dto),
+        comparator: toMeasureComparator(dto),
+    })
+}
 
-    createMap(mapper, MeasureDto, Measure, forMember_Measure_value(), forMember_Measure_min(), forMember_Measure_max(), forMember_Measure_ref(), forMember_Measure_severity(), forMember_Measure_severityCode(), forMember_Measure_evolution(), forMember_Measure_unit(), forMember_Measure_unitCodes(), forMember_Measure_comment(), forMember_Measure_comparator())
+export function mapMeasureToMeasureDto(domain: Measure): MeasureDto {
+    return new MeasureDto({
+        value: toMeasureDtoValue(domain),
+        min: toMeasureDtoMin(domain),
+        max: toMeasureDtoMax(domain),
+        ref: toMeasureDtoRef(domain),
+        severity: toMeasureDtoSeverity(domain),
+        severityCode: toMeasureDtoSeverityCode(domain),
+        evolution: toMeasureDtoEvolution(domain),
+        unit: toMeasureDtoUnit(domain),
+        sign: toMeasureDtoSign(domain),
+        unitCodes: toMeasureDtoUnitCodes(domain),
+        comment: toMeasureDtoComment(domain),
+        comparator: toMeasureDtoComparator(domain),
+    })
 }

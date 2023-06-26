@@ -15,26 +15,27 @@
     "noUnusedParameters": false /* Report errors on unused parameters. */, // TODO: set to true again
     "noImplicitReturns": true /* Report error when not all code paths in function return a value. */,
     "noFallthroughCasesInSwitch": true /* Report errors for fallthrough cases in switch statement. */,
-
+    "sourceRoot": "./src",
     "allowSyntheticDefaultImports": true,
     "preserveConstEnums": true,
     "removeComments": true,
     "sourceMap": true,
     "inlineSources": true,
     "outDir": "./dist",
-    "lib": ["es2017", "es6", "es5", "dom"]
+    "lib": ["es2017", "es6", "es5", "dom"],
+    "skipLibCheck": true,
+    "plugins": [
+      {
+        "transform": "@automapper/classes/transformer-plugin",
+        "after": true,
+        "modelFileNameSuffix": [
+          ".model.ts"
+        ]
+      }
+    ]
   },
   "include": ["./index.ts", "./src/**/*"],
   "exclude": [
-    "packages/common/dist", "node_modules", "test/**/*"],
+    "dist", "node_modules", "test"],
   "filesGlob": ["./**/*.ts"],
-  "plugins": [
-    {
-      "transform": "@automapper/classes/transformer-plugin",
-      "after": true,
-      "modelFileNameSuffix": [
-        ".model.ts"
-      ]
-    }
-  ]
 }

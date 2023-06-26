@@ -1,107 +1,83 @@
-import { TypedValueObject as TypedValueObjectDto } from '@icure/api'
-import { createMap, forMember, mapFrom, Mapper } from '@automapper/core'
+import {TypedValueObject as TypedValueObjectDto} from '@icure/api'
 import {TypedValueObject} from "../models/TypedValueObject.model";
+import {TypeEnum} from "../models/enums/Type.enum";
 
-function forMember_TypedValueObjectDto_type() {
-    return forMember<TypedValueObject, TypedValueObjectDto>(
-        (v) => v.type,
-        mapFrom((t) => t.type)
-    )
+function toTypedValueObjectDtoType(domain: TypedValueObject): TypedValueObjectDto.TypeEnum | undefined {
+    return domain.type
 }
 
-function forMember_TypedValueObjectDto_booleanValue() {
-    return forMember<TypedValueObject, TypedValueObjectDto>(
-        (v) => v.booleanValue,
-        mapFrom((t) => t.booleanValue)
-    )
+function toTypedValueObjectDtoBooleanValue(domain: TypedValueObject): boolean | undefined {
+    return domain.booleanValue
 }
 
-function forMember_TypedValueObjectDto_integerValue() {
-    return forMember<TypedValueObject, TypedValueObjectDto>(
-        (v) => v.integerValue,
-        mapFrom((t) => t.integerValue)
-    )
+function toTypedValueObjectDtoIntegerValue(domain: TypedValueObject): number | undefined {
+    return domain.integerValue
 }
 
-function forMember_TypedValueObjectDto_doubleValue() {
-    return forMember<TypedValueObject, TypedValueObjectDto>(
-        (v) => v.doubleValue,
-        mapFrom((t) => t.doubleValue)
-    )
+function toTypedValueObjectDtoDoubleValue(domain: TypedValueObject): number | undefined {
+    return domain.doubleValue
 }
 
-function forMember_TypedValueObjectDto_stringValue() {
-    return forMember<TypedValueObject, TypedValueObjectDto>(
-        (v) => v.stringValue,
-        mapFrom((t) => t.stringValue)
-    )
+function toTypedValueObjectDtoStringValue(domain: TypedValueObject): string | undefined {
+    return domain.stringValue
 }
 
-function forMember_TypedValueObjectDto_dateValue() {
-    return forMember<TypedValueObject, TypedValueObjectDto>(
-        (v) => v.dateValue,
-        mapFrom((t) => t.dateValue)
-    )
+function toTypedValueObjectDtoDateValue(domain: TypedValueObject): number | undefined {
+    return domain.dateValue
 }
 
-function forMember_TypedValueObjectDto_encryptedSelf() {
-    return forMember<TypedValueObject, TypedValueObjectDto>(
-        (v) => v.encryptedSelf,
-        mapFrom((t) => t.encryptedSelf)
-    )
+function toTypedValueObjectDtoEncryptedSelf(domain: TypedValueObject): string | undefined {
+    return domain.encryptedSelf
 }
 
-function forMember_TypedValueObject_type() {
-    return forMember<TypedValueObjectDto, TypedValueObject>(
-        (v) => v.type,
-        mapFrom((t) => t.type)
-    )
+function toTypedValueObjectType(dto: TypedValueObjectDto): TypeEnum | undefined {
+    return dto.type as TypeEnum
 }
 
-function forMember_TypedValueObject_booleanValue() {
-    return forMember<TypedValueObjectDto, TypedValueObject>(
-        (v) => v.booleanValue,
-        mapFrom((t) => t.booleanValue)
-    )
+function toTypedValueObjectBooleanValue(dto: TypedValueObjectDto): boolean | undefined {
+    return dto.booleanValue
 }
 
-function forMember_TypedValueObject_integerValue() {
-    return forMember<TypedValueObjectDto, TypedValueObject>(
-        (v) => v.integerValue,
-        mapFrom((t) => t.integerValue)
-    )
+function toTypedValueObjectIntegerValue(dto: TypedValueObjectDto): number | undefined {
+    return dto.integerValue
 }
 
-function forMember_TypedValueObject_doubleValue() {
-    return forMember<TypedValueObjectDto, TypedValueObject>(
-        (v) => v.doubleValue,
-        mapFrom((t) => t.doubleValue)
-    )
+function toTypedValueObjectDoubleValue(dto: TypedValueObjectDto): number | undefined {
+    return dto.doubleValue
 }
 
-function forMember_TypedValueObject_stringValue() {
-    return forMember<TypedValueObjectDto, TypedValueObject>(
-        (v) => v.stringValue,
-        mapFrom((t) => t.stringValue)
-    )
+function toTypedValueObjectStringValue(dto: TypedValueObjectDto): string | undefined {
+    return dto.stringValue
 }
 
-function forMember_TypedValueObject_dateValue() {
-    return forMember<TypedValueObjectDto, TypedValueObject>(
-        (v) => v.dateValue,
-        mapFrom((t) => t.dateValue)
-    )
+function toTypedValueObjectDateValue(dto: TypedValueObjectDto): number | undefined {
+    return dto.dateValue
 }
 
-function forMember_TypedValueObject_encryptedSelf() {
-    return forMember<TypedValueObjectDto, TypedValueObject>(
-        (v) => v.encryptedSelf,
-        mapFrom((t) => t.encryptedSelf)
-    )
+function toTypedValueObjectEncryptedSelf(dto: TypedValueObjectDto): string | undefined {
+    return dto.encryptedSelf
 }
 
-export function initializeTypedValueObjectMapper(mapper: Mapper) {
-    createMap(mapper, TypedValueObject, TypedValueObjectDto, forMember_TypedValueObjectDto_type(), forMember_TypedValueObjectDto_booleanValue(), forMember_TypedValueObjectDto_integerValue(), forMember_TypedValueObjectDto_doubleValue(), forMember_TypedValueObjectDto_stringValue(), forMember_TypedValueObjectDto_dateValue(), forMember_TypedValueObjectDto_encryptedSelf())
+export function mapTypedValueObjectDtoToTypedValueObject(dto: TypedValueObjectDto): TypedValueObject {
+    return new TypedValueObject({
+        type: toTypedValueObjectType(dto),
+        booleanValue: toTypedValueObjectBooleanValue(dto),
+        integerValue: toTypedValueObjectIntegerValue(dto),
+        doubleValue: toTypedValueObjectDoubleValue(dto),
+        stringValue: toTypedValueObjectStringValue(dto),
+        dateValue: toTypedValueObjectDateValue(dto),
+        encryptedSelf: toTypedValueObjectEncryptedSelf(dto),
+    })
+}
 
-    createMap(mapper, TypedValueObjectDto, TypedValueObject, forMember_TypedValueObject_type(), forMember_TypedValueObject_booleanValue(), forMember_TypedValueObject_integerValue(), forMember_TypedValueObject_doubleValue(), forMember_TypedValueObject_stringValue(), forMember_TypedValueObject_dateValue(), forMember_TypedValueObject_encryptedSelf())
+export function mapTypedValueObjectToTypedValueObjectDto(domain: TypedValueObject): TypedValueObjectDto {
+    return new TypedValueObjectDto({
+        type: toTypedValueObjectDtoType(domain),
+        booleanValue: toTypedValueObjectDtoBooleanValue(domain),
+        integerValue: toTypedValueObjectDtoIntegerValue(domain),
+        doubleValue: toTypedValueObjectDtoDoubleValue(domain),
+        stringValue: toTypedValueObjectDtoStringValue(domain),
+        dateValue: toTypedValueObjectDtoDateValue(domain),
+        encryptedSelf: toTypedValueObjectDtoEncryptedSelf(domain),
+    })
 }

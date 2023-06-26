@@ -1,107 +1,82 @@
-import { TimeSeries as TimeSeriesDto } from '@icure/api'
-import { createMap, forMember, mapFrom, Mapper } from '@automapper/core'
+import {TimeSeries as TimeSeriesDto} from '@icure/api'
 import {TimeSeries} from "../models/TimeSeries.model";
 
-function forMember_TimeSeriesDto_fields() {
-    return forMember<TimeSeries, TimeSeriesDto>(
-        (v) => v.fields,
-        mapFrom((t) => t.fields)
-    )
+function toTimeSeriesDtoFields(domain: TimeSeries): string[] | undefined {
+    return domain.fields
 }
 
-function forMember_TimeSeriesDto_samples() {
-    return forMember<TimeSeries, TimeSeriesDto>(
-        (v) => v.samples,
-        mapFrom((t) => t.samples)
-    )
+function toTimeSeriesDtoSamples(domain: TimeSeries): number[][] | undefined {
+    return domain.samples
 }
 
-function forMember_TimeSeriesDto_min() {
-    return forMember<TimeSeries, TimeSeriesDto>(
-        (v) => v.min,
-        mapFrom((t) => t.min)
-    )
+function toTimeSeriesDtoMin(domain: TimeSeries): number[] | undefined {
+    return domain.min
 }
 
-function forMember_TimeSeriesDto_max() {
-    return forMember<TimeSeries, TimeSeriesDto>(
-        (v) => v.max,
-        mapFrom((t) => t.max)
-    )
+function toTimeSeriesDtoMax(domain: TimeSeries): number[] | undefined {
+    return domain.max
 }
 
-function forMember_TimeSeriesDto_mean() {
-    return forMember<TimeSeries, TimeSeriesDto>(
-        (v) => v.mean,
-        mapFrom((t) => t.mean)
-    )
+function toTimeSeriesDtoMean(domain: TimeSeries): number[] | undefined {
+    return domain.mean
 }
 
-function forMember_TimeSeriesDto_median() {
-    return forMember<TimeSeries, TimeSeriesDto>(
-        (v) => v.median,
-        mapFrom((t) => t.median)
-    )
+function toTimeSeriesDtoMedian(domain: TimeSeries): number[] | undefined {
+    return domain.median
 }
 
-function forMember_TimeSeriesDto_variance() {
-    return forMember<TimeSeries, TimeSeriesDto>(
-        (v) => v.variance,
-        mapFrom((t) => t.variance)
-    )
+function toTimeSeriesDtoVariance(domain: TimeSeries): number[] | undefined {
+    return domain.variance
 }
 
-function forMember_TimeSeries_fields() {
-    return forMember<TimeSeriesDto, TimeSeries>(
-        (v) => v.fields,
-        mapFrom((t) => t.fields)
-    )
+function toTimeSeriesFields(dto: TimeSeriesDto): string[] {
+    return dto.fields ?? []
 }
 
-function forMember_TimeSeries_samples() {
-    return forMember<TimeSeriesDto, TimeSeries>(
-        (v) => v.samples,
-        mapFrom((t) => t.samples)
-    )
+function toTimeSeriesSamples(dto: TimeSeriesDto): number[][] {
+    return dto.samples ?? []
 }
 
-function forMember_TimeSeries_min() {
-    return forMember<TimeSeriesDto, TimeSeries>(
-        (v) => v.min,
-        mapFrom((t) => t.min)
-    )
+function toTimeSeriesMin(dto: TimeSeriesDto): number[] {
+    return dto.min ?? []
 }
 
-function forMember_TimeSeries_max() {
-    return forMember<TimeSeriesDto, TimeSeries>(
-        (v) => v.max,
-        mapFrom((t) => t.max)
-    )
+function toTimeSeriesMax(dto: TimeSeriesDto): number[] {
+    return dto.max ?? []
 }
 
-function forMember_TimeSeries_mean() {
-    return forMember<TimeSeriesDto, TimeSeries>(
-        (v) => v.mean,
-        mapFrom((t) => t.mean)
-    )
+function toTimeSeriesMean(dto: TimeSeriesDto): number[] {
+    return dto.mean ?? []
 }
 
-function forMember_TimeSeries_median() {
-    return forMember<TimeSeriesDto, TimeSeries>(
-        (v) => v.median,
-        mapFrom((t) => t.median)
-    )
+function toTimeSeriesMedian(dto: TimeSeriesDto): number[] {
+    return dto.median ?? []
 }
 
-function forMember_TimeSeries_variance() {
-    return forMember<TimeSeriesDto, TimeSeries>(
-        (v) => v.variance,
-        mapFrom((t) => t.variance)
-    )
+function toTimeSeriesVariance(dto: TimeSeriesDto): number[] {
+    return dto.variance ?? []
 }
 
-export function initializeTimeSeriesMapper(mapper: Mapper) {
-    createMap(mapper, TimeSeries, TimeSeriesDto, forMember_TimeSeriesDto_fields(), forMember_TimeSeriesDto_samples(), forMember_TimeSeriesDto_min(), forMember_TimeSeriesDto_max(), forMember_TimeSeriesDto_mean(), forMember_TimeSeriesDto_median(), forMember_TimeSeriesDto_variance())
+export function mapTimeSeriesDtoToTimeSeries(dto: TimeSeriesDto): TimeSeries {
+    return new TimeSeries({
+        fields: toTimeSeriesFields(dto),
+        samples: toTimeSeriesSamples(dto),
+        min: toTimeSeriesMin(dto),
+        max: toTimeSeriesMax(dto),
+        mean: toTimeSeriesMean(dto),
+        median: toTimeSeriesMedian(dto),
+        variance: toTimeSeriesVariance(dto),
+    })
+}
 
-    createMap(mapper, TimeSeriesDto, TimeSeries, forMember_TimeSeries_fields(), forMember_TimeSeries_samples(), forMember_TimeSeries_min(), forMember_TimeSeries_max(), forMember_TimeSeries_mean(), forMember_TimeSeries_median(), forMember_TimeSeries_variance())
+export function mapTimeSeriesToTimeSeriesDto(domain: TimeSeries): TimeSeriesDto {
+    return new TimeSeriesDto({
+        fields: toTimeSeriesDtoFields(domain),
+        samples: toTimeSeriesDtoSamples(domain),
+        min: toTimeSeriesDtoMin(domain),
+        max: toTimeSeriesDtoMax(domain),
+        mean: toTimeSeriesDtoMean(domain),
+        median: toTimeSeriesDtoMedian(domain),
+        variance: toTimeSeriesDtoVariance(domain),
+    })
 }

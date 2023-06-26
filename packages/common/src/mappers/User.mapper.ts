@@ -1,185 +1,257 @@
-import { User } from "../models/User.model"
-import { User as UserDto } from "@icure/api"
-import {createMap, forMember, ignore, mapFrom, Mapper} from "@automapper/core"
+import {SharedDataType, User} from "../models/User.model"
+import {Permission as PermissionDto, PropertyStub as PropertyStubDto, User as UserDto} from "@icure/api"
+import {mapPropertyStubToProperty, mapPropertyToPropertyStub} from "./Property.mapper";
+import {Property} from "../models/Property.model";
+import {AuthenticationToken} from "../models/AuthenticationToken.model";
 
-function forMember_UserDto_id() {
-    return forMember<User, UserDto>(v => v.id, mapFrom(u => u.id))
+export function toUserDtoId(domain: User): string | undefined {
+    return domain.id
 }
 
-function forMember_UserDto_rev() {
-    return forMember<User, UserDto>(v => v.rev, mapFrom(u => u.rev))
+export function toUserDtoRev(domain: User): string | undefined {
+    return domain.rev
 }
 
-function forMember_UserDto_deletionDate() {
-    return forMember<User, UserDto>(v => v.deletionDate, mapFrom(u => u.deletionDate))
+export function toUserDtoDeletionDate(domain: User): number | undefined {
+    return domain.deletionDate
 }
 
-function forMember_UserDto_created() {
-    return forMember<User, UserDto>(v => v.created, mapFrom(u => u.created))
+export function toUserDtoCreated(domain: User): number | undefined {
+    return domain.created
 }
 
-function forMember_UserDto_name() {
-    return forMember<User, UserDto>(v => v.name, mapFrom(u => u.name))
+export function toUserDtoName(domain: User): string | undefined {
+    return domain.name
 }
 
-function forMember_UserDto_properties() {
-    return forMember<User, UserDto>(v => v.properties, mapFrom(u => [...u.properties]))
+export function toUserDtoProperties(domain: User): PropertyStubDto[] | undefined {
+    return [...domain.properties].map(mapPropertyToPropertyStub)
 }
 
-function forMember_UserDto_permissions() {
-    return forMember<User, UserDto>(v => v.permissions, ignore())
+export function toUserDtoPermissions(domain: User): PermissionDto[] | undefined {
+    return undefined
 }
 
-function forMember_UserDto_roles() {
-    return forMember<User, UserDto>(v => v.roles, mapFrom(u => [...u.roles]))
+export function toUserDtoRoles(domain: User): string[] | undefined {
+    return [...domain.roles]
 }
 
-function forMember_UserDto_type() {
-    return forMember<User, UserDto>(v => v.type, ignore())
+export function toUserDtoType(domain: User): UserDto.TypeEnum | undefined {
+    return undefined
 }
 
-function forMember_UserDto_status() {
-    return forMember<User, UserDto>(v => v.status, ignore())
+export function toUserDtoStatus(domain: User): UserDto.StatusEnum | undefined {
+    return undefined
 }
 
-function forMember_UserDto_login() {
-    return forMember<User, UserDto>(v => v.login, mapFrom(u => u.login))
+export function toUserDtoLogin(domain: User): string | undefined {
+    return domain.login
 }
 
-function forMember_UserDto_passwordHash() {
-    return forMember<User, UserDto>(v => v.passwordHash, mapFrom(u => u.passwordHash))
+export function toUserDtoPasswordHash(domain: User): string | undefined {
+    return domain.passwordHash
 }
 
-function forMember_UserDto_secret() {
-    return forMember<User, UserDto>(v => v.secret, mapFrom(u => u.secret))
+export function toUserDtoSecret(domain: User): string | undefined {
+    return domain.secret
 }
 
-function forMember_UserDto_use2fa() {
-    return forMember<User, UserDto>(v => v.use2fa, mapFrom(u => u.use2fa))
+export function toUserDtoUse2fa(domain: User): boolean | undefined {
+    return domain.use2fa
 }
 
-function forMember_UserDto_groupId() {
-    return forMember<User, UserDto>(v => v.groupId, mapFrom(u => u.groupId))
+export function toUserDtoGroupId(domain: User): string | undefined {
+    return domain.groupId
 }
 
-function forMember_UserDto_healthcarePartyId() {
-    return forMember<User, UserDto>(v => v.healthcarePartyId, mapFrom(u => u.healthcarePartyId))
+export function toUserDtoHealthcarePartyId(domain: User): string | undefined {
+    return domain.healthcarePartyId
 }
 
-function forMember_UserDto_patientId() {
-    return forMember<User, UserDto>(v => v.patientId, mapFrom(u => u.patientId))
+export function toUserDtoPatientId(domain: User): string | undefined {
+    return domain.patientId
 }
 
-function forMember_UserDto_deviceId() {
-    return forMember<User, UserDto>(v => v.deviceId, mapFrom(u => u.deviceId))
+export function toUserDtoDeviceId(domain: User): string | undefined {
+    return domain.deviceId
 }
 
-function forMember_UserDto_autoDelegations() {
-    return forMember<User, UserDto>(v => v.autoDelegations, mapFrom(u => Object.fromEntries([...u.sharingDataWith.entries()].map(([k, v]) => [k, [...v]]))))
+export function toUserDtoAutoDelegations(domain: User): {
+    all?: string[] | undefined;
+    administrativeData?: string[] | undefined;
+    generalInformation?: string[] | undefined;
+    financialInformation?: string[] | undefined;
+    medicalInformation?: string[] | undefined;
+    sensitiveInformation?: string[] | undefined;
+    confidentialInformation?: string[] | undefined;
+    cdItemRisk?: string[] | undefined;
+    cdItemFamilyRisk?: string[] | undefined;
+    cdItemHealthcareelement?: string[] | undefined;
+    cdItemHealthcareapproach?: string[] | undefined;
+    cdItemAllergy?: string[] | undefined;
+    cdItemDiagnosis?: string[] | undefined;
+    cdItemLab?: string[] | undefined;
+    cdItemResult?: string[] | undefined;
+    cdItemParameter?: string[] | undefined;
+    cdItemMedication?: string[] | undefined;
+    cdItemTreatment?: string[] | undefined;
+    cdItemVaccine?: string[] | undefined;
+} | undefined {
+    return Object.fromEntries([...domain.sharingDataWith.entries()].map(([k, v]) => [k, [...v]]))
 }
 
-function forMember_UserDto_createdDate() {
-    return forMember<User, UserDto>(v => v.createdDate, ignore())
+export function toUserDtoCreatedDate(domain: User): number | undefined {
+    return undefined
 }
 
-function forMember_UserDto_termsOfUseDate() {
-    return forMember<User, UserDto>(v => v.termsOfUseDate, ignore())
+export function toUserDtoTermsOfUseDate(domain: User): number | undefined {
+    return undefined
 }
 
-function forMember_UserDto_email() {
-    return forMember<User, UserDto>(v => v.email, mapFrom(u => u.email))
+export function toUserDtoEmail(domain: User): string | undefined {
+    return domain.email
 }
 
-function forMember_UserDto_mobilePhone() {
-    return forMember<User, UserDto>(v => v.mobilePhone, mapFrom(u => u.mobilePhone))
+export function toUserDtoMobilePhone(domain: User): string | undefined {
+    return domain.mobilePhone
 }
 
-function forMember_UserDto_applicationTokens() {
-    return forMember<User, UserDto>(v => v.applicationTokens, ignore())
+export function toUserDtoApplicationTokens(domain: User): { [key: string]: string; } | undefined {
+    return undefined
 }
 
-function forMember_UserDto_authenticationTokens() {
-    return forMember<User, UserDto>(v => v.authenticationTokens, mapFrom(u => Object.fromEntries([...u.authenticationTokens.entries()])))
+export function toUserDtoAuthenticationTokens(domain: User): {
+    [key: string]: AuthenticationToken;
+} | undefined {
+    return Object.fromEntries([...domain.authenticationTokens.entries()])
 }
 
-function forMember_User_id() {
-    return forMember<UserDto, User>(v => v.id, mapFrom(u => u.id))
+export function toUserId(dto: UserDto): string | undefined {
+    return dto.id
 }
 
-function forMember_User_rev() {
-    return forMember<UserDto, User>(v => v.rev, mapFrom(u => u.rev))
+export function toUserRev(dto: UserDto): string | undefined {
+    return dto.rev
 }
 
-function forMember_User_deletionDate() {
-    return forMember<UserDto, User>(v => v.deletionDate, mapFrom(u => u.deletionDate))
+export function toUserDeletionDate(dto: UserDto): number | undefined {
+    return dto.deletionDate
 }
 
-function forMember_User_created() {
-    return forMember<UserDto, User>(v => v.created, mapFrom(u => u.created))
+export function toUserCreated(dto: UserDto): number | undefined {
+    return dto.created
 }
 
-function forMember_User_name() {
-    return forMember<UserDto, User>(v => v.name, mapFrom(u => u.name))
+export function toUserName(dto: UserDto): string | undefined {
+    return dto.name
 }
 
-function forMember_User_properties() {
-    return forMember<UserDto, User>(v => v.properties, mapFrom(u => u.properties))
+export function toUserProperties(dto: UserDto): Set<Property> {
+    return !!dto.properties ? new Set([...dto.properties].map(mapPropertyStubToProperty)) : new Set()
 }
 
-function forMember_User_roles() {
-    return forMember<UserDto, User>(v => v.roles, mapFrom(u => new Set(u.roles)))
+export function toUserRoles(dto: UserDto): Set<string> {
+    return new Set(dto.roles)
 }
 
-function forMember_User_login() {
-    return forMember<UserDto, User>(v => v.login, mapFrom(u => u.login))
+export function toUserLogin(dto: UserDto): string | undefined {
+    return dto.login
 }
 
-function forMember_User_passwordHash() {
-    return forMember<UserDto, User>(v => v.passwordHash, mapFrom(u => u.passwordHash))
+export function toUserPasswordHash(dto: UserDto): string | undefined {
+    return dto.passwordHash
 }
 
-function forMember_User_secret() {
-    return forMember<UserDto, User>(v => v.secret, mapFrom(u => u.secret))
+export function toUserSecret(dto: UserDto): string | undefined {
+    return dto.secret
 }
 
-function forMember_User_use2fa() {
-    return forMember<UserDto, User>(v => v.use2fa, mapFrom(u => u.use2fa))
+export function toUserUse2fa(dto: UserDto): boolean | undefined {
+    return dto.use2fa
 }
 
-function forMember_User_groupId() {
-    return forMember<UserDto, User>(v => v.groupId, mapFrom(u => u.groupId))
+export function toUserGroupId(dto: UserDto): string | undefined {
+    return dto.groupId
 }
 
-function forMember_User_healthcarePartyId() {
-    return forMember<UserDto, User>(v => v.healthcarePartyId, mapFrom(u => u.healthcarePartyId))
+export function toUserHealthcarePartyId(dto: UserDto): string | undefined {
+    return dto.healthcarePartyId
 }
 
-function forMember_User_patientId() {
-    return forMember<UserDto, User>(v => v.patientId, mapFrom(u => u.patientId))
+export function toUserPatientId(dto: UserDto): string | undefined {
+    return dto.patientId
 }
 
-function forMember_User_deviceId() {
-    return forMember<UserDto, User>(v => v.deviceId, mapFrom(u => u.deviceId))
+export function toUserDeviceId(dto: UserDto): string | undefined {
+    return dto.deviceId
 }
 
-function forMember_User_sharingDataWith() {
-    return forMember<UserDto, User>(v => v.sharingDataWith, mapFrom(u => new Map(Object.entries(u.autoDelegations ?? {}).map(([k, v]) => [k, new Set(v)]))))
+export function toUserSharingDataWith(dto: UserDto): Map<SharedDataType, Set<string>> {
+    return new Map(Object.entries(dto.autoDelegations ?? {}).map(([k, v]) => [k, new Set(v)])) as Map<SharedDataType, Set<string>>
 }
 
-function forMember_User_email() {
-    return forMember<UserDto, User>(v => v.email, mapFrom(u => u.email))
+export function toUserEmail(dto: UserDto): string | undefined {
+    return dto.email
 }
 
-function forMember_User_mobilePhone() {
-    return forMember<UserDto, User>(v => v.mobilePhone, mapFrom(u => u.mobilePhone))
+export function toUserMobilePhone(dto: UserDto): string | undefined {
+    return dto.mobilePhone
 }
 
-function forMember_User_authenticationTokens() {
-    return forMember<UserDto, User>(v => v.authenticationTokens, mapFrom(u => u.authenticationTokens))
+export function toUserAuthenticationTokens(dto: UserDto): Map<string, AuthenticationToken> {
+    return !!dto.authenticationTokens ? new Map(Object.entries(dto.authenticationTokens)) : new Map()
 }
 
-export function initializeUserMapper(mapper: Mapper) {
-    createMap(mapper, User, UserDto, forMember_UserDto_id(), forMember_UserDto_rev(), forMember_UserDto_deletionDate(), forMember_UserDto_created(), forMember_UserDto_name(), forMember_UserDto_properties(), forMember_UserDto_permissions(), forMember_UserDto_roles(), forMember_UserDto_type(), forMember_UserDto_status(), forMember_UserDto_login(), forMember_UserDto_passwordHash(), forMember_UserDto_secret(), forMember_UserDto_use2fa(), forMember_UserDto_groupId(), forMember_UserDto_healthcarePartyId(), forMember_UserDto_patientId(), forMember_UserDto_deviceId(), forMember_UserDto_autoDelegations(), forMember_UserDto_createdDate(), forMember_UserDto_termsOfUseDate(), forMember_UserDto_email(), forMember_UserDto_mobilePhone(), forMember_UserDto_applicationTokens(), forMember_UserDto_authenticationTokens())
+export function mapUserDtoToUser(dto: UserDto): User {
+    return new User({
+        id: toUserId(dto),
+        rev: toUserRev(dto),
+        deletionDate: toUserDeletionDate(dto),
+        created: toUserCreated(dto),
+        name: toUserName(dto),
+        properties: toUserProperties(dto),
+        roles: toUserRoles(dto),
+        login: toUserLogin(dto),
+        passwordHash: toUserPasswordHash(dto),
+        secret: toUserSecret(dto),
+        use2fa: toUserUse2fa(dto),
+        groupId: toUserGroupId(dto),
+        healthcarePartyId: toUserHealthcarePartyId(dto),
+        patientId: toUserPatientId(dto),
+        deviceId: toUserDeviceId(dto),
+        sharingDataWith: toUserSharingDataWith(dto),
+        email: toUserEmail(dto),
+        mobilePhone: toUserMobilePhone(dto),
+        authenticationTokens: toUserAuthenticationTokens(dto),
+    })
+}
 
-    createMap(mapper, UserDto, User, forMember_User_id(), forMember_User_rev(), forMember_User_deletionDate(), forMember_User_created(), forMember_User_name(), forMember_User_properties(), forMember_User_roles(), forMember_User_login(), forMember_User_passwordHash(), forMember_User_secret(), forMember_User_use2fa(), forMember_User_groupId(), forMember_User_healthcarePartyId(), forMember_User_patientId(), forMember_User_deviceId(), forMember_User_sharingDataWith(), forMember_User_email(), forMember_User_mobilePhone(), forMember_User_authenticationTokens())
+export function mapUserToUserDto(domain: User): UserDto {
+    return new UserDto({
+        id: toUserDtoId(domain),
+        rev: toUserDtoRev(domain),
+        deletionDate: toUserDtoDeletionDate(domain),
+        created: toUserDtoCreated(domain),
+        name: toUserDtoName(domain),
+        properties: toUserDtoProperties(domain),
+        permissions: toUserDtoPermissions(domain),
+        roles: toUserDtoRoles(domain),
+        type: toUserDtoType(domain),
+        status: toUserDtoStatus(domain),
+        login: toUserDtoLogin(domain),
+        passwordHash: toUserDtoPasswordHash(domain),
+        secret: toUserDtoSecret(domain),
+        use2fa: toUserDtoUse2fa(domain),
+        groupId: toUserDtoGroupId(domain),
+        healthcarePartyId: toUserDtoHealthcarePartyId(domain),
+        patientId: toUserDtoPatientId(domain),
+        deviceId: toUserDtoDeviceId(domain),
+        autoDelegations: toUserDtoAutoDelegations(domain),
+        createdDate: toUserDtoCreatedDate(domain),
+        termsOfUseDate: toUserDtoTermsOfUseDate(domain),
+        email: toUserDtoEmail(domain),
+        mobilePhone: toUserDtoMobilePhone(domain),
+        applicationTokens: toUserDtoApplicationTokens(domain),
+        authenticationTokens: toUserDtoAuthenticationTokens(domain),
+    })
 }

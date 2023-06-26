@@ -1,25 +1,33 @@
-import { PropertyTypeStub } from "@icure/api"
-import {createMap, forMember, mapFrom, Mapper} from "@automapper/core"
+import {PropertyTypeStub} from "@icure/api"
 import {PropertyType} from "../models/PropertyType.model";
+import {TypeEnum} from "../models/enums/Type.enum";
 
-function forMember_PropertyTypeStub_identifier() {
-    return forMember<PropertyType, PropertyTypeStub>(v => v.identifier, mapFrom(pt => pt.identifier))
+function toPropertyTypeStubIdentifier(domain: PropertyType): string | undefined {
+    return domain.identifier
 }
 
-function forMember_PropertyTypeStub_type() {
-    return forMember<PropertyType, PropertyTypeStub>(v => v.type, mapFrom(pt => pt.type))
+function toPropertyTypeStubType(domain: PropertyType): PropertyTypeStub.TypeEnum | undefined {
+    return domain.type
 }
 
-function forMember_PropertyType_identifier() {
-    return forMember<PropertyTypeStub, PropertyType>(v => v.identifier, mapFrom(pt => pt.identifier))
+function toPropertyTypeIdentifier(dto: PropertyTypeStub): string | undefined {
+    return dto.identifier
 }
 
-function forMember_PropertyType_type() {
-    return forMember<PropertyTypeStub, PropertyType>(v => v.type, mapFrom(pt => pt.type))
+function toPropertyTypeType(dto: PropertyTypeStub): TypeEnum | undefined {
+    return dto.type as TypeEnum
 }
 
-export function initializePropertyTypeMapper(mapper: Mapper) {
-    createMap(mapper, PropertyType, PropertyTypeStub, forMember_PropertyTypeStub_identifier(), forMember_PropertyTypeStub_type())
+export function mapPropertyTypeStubToPropertyType(dto: PropertyTypeStub): PropertyType {
+    return new PropertyType({
+        identifier: toPropertyTypeIdentifier(dto),
+        type: toPropertyTypeType(dto),
+    })
+}
 
-    createMap(mapper, PropertyTypeStub, PropertyType, forMember_PropertyType_identifier(), forMember_PropertyType_type())
+export function mapPropertyTypeToPropertyTypeStub(domain: PropertyType): PropertyTypeStub {
+    return new PropertyTypeStub({
+        identifier: toPropertyTypeStubIdentifier(domain),
+        type: toPropertyTypeStubType(domain),
+    })
 }

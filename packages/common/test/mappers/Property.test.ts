@@ -1,17 +1,11 @@
-import {initializeMapper, mapper} from "../../src";
 import {generateProperty} from "../models/Property.model";
-import {Property} from "../../src/models/Property.model";
-import {PropertyStub} from "@icure/api";
+import {mapPropertyStubToProperty, mapPropertyToPropertyStub, Property} from "../../src";
 
 describe('Property', function () {
-    beforeAll(() => {
-        initializeMapper(mapper)
-    })
-
     it('should correctly map to PropertyStub and back to Property', () => {
         const instance = generateProperty()
-        const iCureInstance = mapper.map(instance, Property, PropertyStub)
-        const newInstance = mapper.map(iCureInstance, PropertyStub, Property)
+        const iCureInstance = mapPropertyToPropertyStub(instance)
+        const newInstance = mapPropertyStubToProperty(iCureInstance)
 
         expect(newInstance).toEqual(instance)
     })

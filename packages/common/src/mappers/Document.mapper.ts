@@ -1,226 +1,294 @@
-import { Document } from "../models/Document.model"
-import { Document as DocumentDto } from "@icure/api"
-import {createMap, forMember, ignore, mapFrom, fromValue, Mapper} from "@automapper/core"
-import {forceUuid} from "../utils/uuidUtils";
+import {Document} from "../models/Document.model"
+import {
+    CodeStub,
+    DataAttachment,
+    DeletedAttachment,
+    Document as DocumentDto,
+    DocumentTemplate,
+    SecurityMetadata
+} from "@icure/api"
+import {EntityWithDelegationTypeName} from "@icure/api/icc-x-api/utils/EntityWithDelegationTypeName";
+import {Delegation} from "../models/Delegation.model";
+import DocumentLocationEnum = DocumentDto.DocumentLocationEnum;
+import DocumentTypeEnum = DocumentTemplate.DocumentTypeEnum;
+import DocumentStatusEnum = DocumentDto.DocumentStatusEnum;
 
-function forMember_DocumentDto_id() {
-    return forMember<Document, DocumentDto>(v => v.id, mapFrom(d => forceUuid(d.id)))
+function toDocumentDtoId(domain: Document): string | undefined {
+    return domain.id
 }
 
-function forMember_DocumentDto_rev() {
-    return forMember<Document, DocumentDto>(v => v.rev, mapFrom(d => d.rev))
+function toDocumentDtoRev(domain: Document): string | undefined {
+    return domain.rev
 }
 
-function forMember_DocumentDto_created() {
-    return forMember<Document, DocumentDto>(v => v.created, mapFrom(d => d.created))
+function toDocumentDtoCreated(domain: Document): number | undefined {
+    return domain.created
 }
 
-function forMember_DocumentDto_modified() {
-    return forMember<Document, DocumentDto>(v => v.modified, mapFrom(d => d.modified))
+function toDocumentDtoModified(domain: Document): number | undefined {
+    return domain.modified
 }
 
-function forMember_DocumentDto_author() {
-    return forMember<Document, DocumentDto>(v => v.author, mapFrom(d => d.author))
+function toDocumentDtoAuthor(domain: Document): string | undefined {
+    return domain.author
 }
 
-function forMember_DocumentDto_responsible() {
-    return forMember<Document, DocumentDto>(v => v.responsible, mapFrom(d => d.responsible))
+function toDocumentDtoResponsible(domain: Document): string | undefined {
+    return domain.responsible
 }
 
-function forMember_DocumentDto_medicalLocationId() {
-    return forMember<Document, DocumentDto>(v => v.medicalLocationId, mapFrom(d => d.medicalLocationId))
+function toDocumentDtoMedicalLocationId(domain: Document): string | undefined {
+    return domain.medicalLocationId
 }
 
-function forMember_DocumentDto_tags() {
-    return forMember<Document, DocumentDto>(v => v.tags, ignore())
+function toDocumentDtoTags(domain: Document): CodeStub[] | undefined {
+    return undefined
 }
 
-function forMember_DocumentDto_codes() {
-    return forMember<Document, DocumentDto>(v => v.codes, ignore())
+function toDocumentDtoCodes(domain: Document): CodeStub[] | undefined {
+    return undefined
 }
 
-function forMember_DocumentDto_endOfLife() {
-    return forMember<Document, DocumentDto>(v => v.endOfLife, ignore())
+function toDocumentDtoEndOfLife(domain: Document): number | undefined {
+    return undefined
 }
 
-function forMember_DocumentDto_deletionDate() {
-    return forMember<Document, DocumentDto>(v => v.deletionDate, mapFrom(d => d.deletionDate))
+function toDocumentDtoDeletionDate(domain: Document): number | undefined {
+    return domain.deletionDate
 }
 
-function forMember_DocumentDto_documentLocation() {
-    return forMember<Document, DocumentDto>(v => v.documentLocation, ignore())
+function toDocumentDtoDocumentLocation(domain: Document): DocumentLocationEnum | undefined {
+    return undefined
 }
 
-function forMember_DocumentDto_documentType() {
-    return forMember<Document, DocumentDto>(v => v.documentType, ignore())
+function toDocumentDtoDocumentType(domain: Document): DocumentTypeEnum | undefined {
+    return undefined
 }
 
-function forMember_DocumentDto_documentStatus() {
-    return forMember<Document, DocumentDto>(v => v.documentStatus, ignore())
+function toDocumentDtoDocumentStatus(domain: Document): DocumentStatusEnum | undefined {
+    return undefined
 }
 
-function forMember_DocumentDto_externalUri() {
-    return forMember<Document, DocumentDto>(v => v.externalUri, ignore())
+function toDocumentDtoExternalUri(domain: Document): string | undefined {
+    return undefined
 }
 
-function forMember_DocumentDto_name() {
-    return forMember<Document, DocumentDto>(v => v.name, mapFrom(d => d.name))
+function toDocumentDtoName(domain: Document): string | undefined {
+    return domain.name
 }
 
-function forMember_DocumentDto_version() {
-    return forMember<Document, DocumentDto>(v => v.version, mapFrom(d => d.version))
+function toDocumentDtoVersion(domain: Document): string | undefined {
+    return domain.version
 }
 
-function forMember_DocumentDto_storedICureDocumentId() {
-    return forMember<Document, DocumentDto>(v => v.storedICureDocumentId, ignore())
+function toDocumentDtoStoredICureDocumentId(domain: Document): string | undefined {
+    return undefined
 }
 
-function forMember_DocumentDto_externalUuid() {
-    return forMember<Document, DocumentDto>(v => v.externalUuid, mapFrom(d => d.externalUuid))
+function toDocumentDtoExternalUuid(domain: Document): string | undefined {
+    return domain.externalUuid
 }
 
-function forMember_DocumentDto_size() {
-    return forMember<Document, DocumentDto>(v => v.size, mapFrom(d => d.size))
+function toDocumentDtoSize(domain: Document): number | undefined {
+    return domain.size
 }
 
-function forMember_DocumentDto_hash() {
-    return forMember<Document, DocumentDto>(v => v.hash, mapFrom(d => d.hash))
+function toDocumentDtoHash(domain: Document): string | undefined {
+    return domain.hash
 }
 
-function forMember_DocumentDto_openingContactId() {
-    return forMember<Document, DocumentDto>(v => v.openingContactId, ignore())
+function toDocumentDtoOpeningContactId(domain: Document): string | undefined {
+    return undefined
 }
 
-function forMember_DocumentDto_attachmentId() {
-    return forMember<Document, DocumentDto>(v => v.attachmentId, mapFrom(d => d.attachmentId))
+function toDocumentDtoAttachmentId(domain: Document): string | undefined {
+    return domain.attachmentId
 }
 
-function forMember_DocumentDto_objectStoreReference() {
-    return forMember<Document, DocumentDto>(v => v.objectStoreReference, mapFrom(d => d.objectStoreReference))
+function toDocumentDtoObjectStoreReference(domain: Document): string | undefined {
+    return domain.objectStoreReference
 }
 
-function forMember_DocumentDto_mainUti() {
-    return forMember<Document, DocumentDto>(v => v.mainUti, mapFrom(d => d.mainUti))
+function toDocumentDtoMainUti(domain: Document): string | undefined {
+    return undefined
 }
 
-function forMember_DocumentDto_otherUtis() {
-    return forMember<Document, DocumentDto>(v => v.otherUtis, ignore())
+function toDocumentDtoOtherUtis(domain: Document): string[] | undefined {
+    return undefined
 }
 
-function forMember_DocumentDto_secondaryAttachments() {
-    return forMember<Document, DocumentDto>(v => v.secondaryAttachments, ignore())
+function toDocumentDtoSecondaryAttachments(domain: Document): { [key: string]: DataAttachment; } | undefined {
+    return undefined
 }
 
-function forMember_DocumentDto_deletedAttachments() {
-    return forMember<Document, DocumentDto>(v => v.deletedAttachments, ignore())
+function toDocumentDtoDeletedAttachments(domain: Document): DeletedAttachment[] | undefined {
+    return undefined
 }
 
-function forMember_DocumentDto_encryptedAttachment() {
-    return forMember<Document, DocumentDto>(v => v.encryptedAttachment, ignore())
+function toDocumentDtoEncryptedAttachment(domain: Document): ArrayBuffer | undefined {
+    return undefined
 }
 
-function forMember_DocumentDto_decryptedAttachment() {
-    return forMember<Document, DocumentDto>(v => v.decryptedAttachment, ignore())
+function toDocumentDtoDecryptedAttachment(domain: Document): ArrayBuffer | undefined {
+    return undefined
 }
 
-function forMember_DocumentDto_secretForeignKeys() {
-    return forMember<Document, DocumentDto>(v => v.secretForeignKeys, ignore())
+function toDocumentDtoSecretForeignKeys(domain: Document): string[] | undefined {
+    return undefined
 }
 
-function forMember_DocumentDto_cryptedForeignKeys() {
-    return forMember<Document, DocumentDto>(v => v.cryptedForeignKeys, ignore())
+function toDocumentDtoCryptedForeignKeys(domain: Document): { [key: string]: Delegation[]; } | undefined {
+    return undefined
 }
 
-function forMember_DocumentDto_delegations() {
-    return forMember<Document, DocumentDto>(v => v.delegations, ignore())
+function toDocumentDtoDelegations(domain: Document): { [key: string]: Delegation[]; } | undefined {
+    return undefined
 }
 
-function forMember_DocumentDto_encryptionKeys() {
-    return forMember<Document, DocumentDto>(v => v.encryptionKeys, ignore())
+function toDocumentDtoEncryptionKeys(domain: Document): { [key: string]: Delegation[]; } | undefined {
+    return undefined
 }
 
-function forMember_DocumentDto_encryptedSelf() {
-    return forMember<Document, DocumentDto>(v => v.encryptedSelf, ignore())
+function toDocumentDtoEncryptedSelf(domain: Document): string | undefined {
+    return undefined
 }
 
-function forMember_DocumentDto_securityMetadata() {
-    return forMember<Document, DocumentDto>(v => v.securityMetadata, ignore())
+function toDocumentDtoSecurityMetadata(domain: Document): SecurityMetadata | undefined {
+    return undefined
 }
 
-function forMember_Document_id() {
-    return forMember<DocumentDto, Document>(v => v.id, mapFrom(d => d.id))
+function toDocumentDto_type(domain: Document): EntityWithDelegationTypeName | undefined {
+    return "Document"
 }
 
-function forMember_Document_rev() {
-    return forMember<DocumentDto, Document>(v => v.rev, mapFrom(d => d.rev))
+function toDocumentId(dto: DocumentDto): string | undefined {
+    return dto.id
 }
 
-function forMember_Document_created() {
-    return forMember<DocumentDto, Document>(v => v.created, mapFrom(d => d.created))
+function toDocumentRev(dto: DocumentDto): string | undefined {
+    return dto.rev
 }
 
-function forMember_Document_modified() {
-    return forMember<DocumentDto, Document>(v => v.modified, mapFrom(d => d.modified))
+function toDocumentCreated(dto: DocumentDto): number | undefined {
+    return dto.created
 }
 
-function forMember_Document_author() {
-    return forMember<DocumentDto, Document>(v => v.author, mapFrom(d => d.author))
+function toDocumentModified(dto: DocumentDto): number | undefined {
+    return dto.modified
 }
 
-function forMember_Document_responsible() {
-    return forMember<DocumentDto, Document>(v => v.responsible, mapFrom(d => d.responsible))
+function toDocumentAuthor(dto: DocumentDto): string | undefined {
+    return dto.author
 }
 
-function forMember_Document_medicalLocationId() {
-    return forMember<DocumentDto, Document>(v => v.medicalLocationId, mapFrom(d => d.medicalLocationId))
+function toDocumentResponsible(dto: DocumentDto): string | undefined {
+    return dto.responsible
 }
 
-function forMember_Document_deletionDate() {
-    return forMember<DocumentDto, Document>(v => v.deletionDate, mapFrom(d => d.deletionDate))
+function toDocumentMedicalLocationId(dto: DocumentDto): string | undefined {
+    return dto.medicalLocationId
 }
 
-function forMember_Document_objectStoreReference() {
-    return forMember<DocumentDto, Document>(v => v.objectStoreReference, mapFrom(d => d.objectStoreReference))
+function toDocumentDeletionDate(dto: DocumentDto): number | undefined {
+    return dto.deletionDate
 }
 
-function forMember_Document_mainUti() {
-    return forMember<DocumentDto, Document>(v => v.mainUti, mapFrom(d => d.mainUti))
+function toDocumentObjectStoreReference(dto: DocumentDto): string | undefined {
+    return dto.objectStoreReference
 }
 
-function forMember_Document_name() {
-    return forMember<DocumentDto, Document>(v => v.name, mapFrom(d => d.name))
+function toDocumentMainUti(dto: DocumentDto): string | undefined {
+    return dto.mainUti
 }
 
-function forMember_Document_version() {
-    return forMember<DocumentDto, Document>(v => v.version, mapFrom(d => d.version))
+function toDocumentName(dto: DocumentDto): string | undefined {
+    return dto.name
 }
 
-function forMember_Document_otherUtis() {
-    return forMember<DocumentDto, Document>(v => v.otherUtis, mapFrom(d => d.otherUtis))
+function toDocumentVersion(dto: DocumentDto): string | undefined {
+    return dto.version
 }
 
-function forMember_Document_externalUuid() {
-    return forMember<DocumentDto, Document>(v => v.externalUuid, mapFrom(d => d.externalUuid))
+function toDocumentOtherUtis(dto: DocumentDto): Set<string> {
+    return new Set(dto.otherUtis)
 }
 
-function forMember_Document_size() {
-    return forMember<DocumentDto, Document>(v => v.size, mapFrom(d => d.size))
+function toDocumentExternalUuid(dto: DocumentDto): string | undefined {
+    return dto.externalUuid
 }
 
-function forMember_Document_hash() {
-    return forMember<DocumentDto, Document>(v => v.hash, mapFrom(d => d.hash))
+function toDocumentSize(dto: DocumentDto): number | undefined {
+    return dto.size
 }
 
-function forMember_Document_attachmentId() {
-    return forMember<DocumentDto, Document>(v => v.attachmentId, mapFrom(d => d.attachmentId))
+function toDocumentHash(dto: DocumentDto): string | undefined {
+    return dto.hash
 }
 
-function forMember_DocumentDto__type() {
-    return forMember<Document, DocumentDto>(v => v._type, fromValue("Document"))
+function toDocumentAttachmentId(dto: DocumentDto): string | undefined {
+    return dto.attachmentId
 }
 
-export function initializeDocumentMapper(mapper: Mapper) {
-    createMap(mapper, Document, DocumentDto, forMember_DocumentDto_id(), forMember_DocumentDto_rev(), forMember_DocumentDto_created(), forMember_DocumentDto_modified(), forMember_DocumentDto_author(), forMember_DocumentDto_responsible(), forMember_DocumentDto_medicalLocationId(), forMember_DocumentDto_tags(), forMember_DocumentDto_codes(), forMember_DocumentDto_endOfLife(), forMember_DocumentDto_deletionDate(), forMember_DocumentDto_documentLocation(), forMember_DocumentDto_documentType(), forMember_DocumentDto_documentStatus(), forMember_DocumentDto_externalUri(), forMember_DocumentDto_name(), forMember_DocumentDto_version(), forMember_DocumentDto_storedICureDocumentId(), forMember_DocumentDto_externalUuid(), forMember_DocumentDto_size(), forMember_DocumentDto_hash(), forMember_DocumentDto_openingContactId(), forMember_DocumentDto_attachmentId(), forMember_DocumentDto_objectStoreReference(), forMember_DocumentDto_mainUti(), forMember_DocumentDto_otherUtis(), forMember_DocumentDto_secondaryAttachments(), forMember_DocumentDto_deletedAttachments(), forMember_DocumentDto_encryptedAttachment(), forMember_DocumentDto_decryptedAttachment(), forMember_DocumentDto_secretForeignKeys(), forMember_DocumentDto_cryptedForeignKeys(), forMember_DocumentDto_delegations(), forMember_DocumentDto_encryptionKeys(), forMember_DocumentDto_encryptedSelf(), forMember_DocumentDto_securityMetadata(), forMember_DocumentDto__type())
+export function mapDocumentDtoToDocument(dto: DocumentDto): Document {
+    return new Document({
+        id: toDocumentId(dto),
+        rev: toDocumentRev(dto),
+        created: toDocumentCreated(dto),
+        modified: toDocumentModified(dto),
+        author: toDocumentAuthor(dto),
+        responsible: toDocumentResponsible(dto),
+        medicalLocationId: toDocumentMedicalLocationId(dto),
+        deletionDate: toDocumentDeletionDate(dto),
+        objectStoreReference: toDocumentObjectStoreReference(dto),
+        mainUti: toDocumentMainUti(dto),
+        name: toDocumentName(dto),
+        version: toDocumentVersion(dto),
+        otherUtis: toDocumentOtherUtis(dto),
+        externalUuid: toDocumentExternalUuid(dto),
+        size: toDocumentSize(dto),
+        hash: toDocumentHash(dto),
+        attachmentId: toDocumentAttachmentId(dto),
+    })
+}
 
-    createMap(mapper, DocumentDto, Document, forMember_Document_id(), forMember_Document_rev(), forMember_Document_created(), forMember_Document_modified(), forMember_Document_author(), forMember_Document_responsible(), forMember_Document_medicalLocationId(), forMember_Document_deletionDate(), forMember_Document_objectStoreReference(), forMember_Document_mainUti(), forMember_Document_name(), forMember_Document_version(), forMember_Document_otherUtis(), forMember_Document_externalUuid(), forMember_Document_size(), forMember_Document_hash(), forMember_Document_attachmentId())
+export function mapDocumentToDocumentDto(domain: Document): DocumentDto {
+    return new DocumentDto({
+        id: toDocumentDtoId(domain),
+        rev: toDocumentDtoRev(domain),
+        created: toDocumentDtoCreated(domain),
+        modified: toDocumentDtoModified(domain),
+        author: toDocumentDtoAuthor(domain),
+        responsible: toDocumentDtoResponsible(domain),
+        medicalLocationId: toDocumentDtoMedicalLocationId(domain),
+        tags: toDocumentDtoTags(domain),
+        codes: toDocumentDtoCodes(domain),
+        endOfLife: toDocumentDtoEndOfLife(domain),
+        deletionDate: toDocumentDtoDeletionDate(domain),
+        documentLocation: toDocumentDtoDocumentLocation(domain),
+        documentType: toDocumentDtoDocumentType(domain),
+        documentStatus: toDocumentDtoDocumentStatus(domain),
+        externalUri: toDocumentDtoExternalUri(domain),
+        name: toDocumentDtoName(domain),
+        version: toDocumentDtoVersion(domain),
+        storedICureDocumentId: toDocumentDtoStoredICureDocumentId(domain),
+        externalUuid: toDocumentDtoExternalUuid(domain),
+        size: toDocumentDtoSize(domain),
+        hash: toDocumentDtoHash(domain),
+        openingContactId: toDocumentDtoOpeningContactId(domain),
+        attachmentId: toDocumentDtoAttachmentId(domain),
+        objectStoreReference: toDocumentDtoObjectStoreReference(domain),
+        mainUti: toDocumentDtoMainUti(domain),
+        otherUtis: toDocumentDtoOtherUtis(domain),
+        secondaryAttachments: toDocumentDtoSecondaryAttachments(domain),
+        deletedAttachments: toDocumentDtoDeletedAttachments(domain),
+        encryptedAttachment: toDocumentDtoEncryptedAttachment(domain),
+        decryptedAttachment: toDocumentDtoDecryptedAttachment(domain),
+        secretForeignKeys: toDocumentDtoSecretForeignKeys(domain),
+        cryptedForeignKeys: toDocumentDtoCryptedForeignKeys(domain),
+        delegations: toDocumentDtoDelegations(domain),
+        encryptionKeys: toDocumentDtoEncryptionKeys(domain),
+        encryptedSelf: toDocumentDtoEncryptedSelf(domain),
+        securityMetadata: toDocumentDtoSecurityMetadata(domain),
+        _type: toDocumentDto_type(domain),
+    })
 }

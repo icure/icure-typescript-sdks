@@ -1,82 +1,67 @@
-import { PropertyStub, PropertyTypeStub, TypedValueObject as TypedValueObjectDto } from '@icure/api'
-import { createMap, forMember, mapFrom, mapWith, Mapper } from '@automapper/core'
+import {PropertyStub, PropertyTypeStub, TypedValueObject as TypedValueObjectDto} from '@icure/api'
+import {forMember, mapFrom, mapWith} from '@automapper/core'
 import {Property} from "../models/Property.model";
 import {PropertyType} from "../models/PropertyType.model";
 import {TypedValueObject} from "../models/TypedValueObject.model";
+import {mapPropertyTypeStubToPropertyType} from "./PropertyType.mapper";
+import {mapTypedValueObjectDtoToTypedValueObject} from "./TypedValueObject.mapper";
 
-
-function forMember_PropertyStub_id() {
-    return forMember<Property, PropertyStub>(
-        (v) => v.id,
-        mapFrom((p) => p.id)
-    )
+function toPropertyStubId(domain: Property): string | undefined {
+    return domain.id
 }
 
-function forMember_PropertyStub_type() {
-    return forMember<Property, PropertyStub>(
-        (v) => v.type,
-        mapWith(PropertyTypeStub, PropertyType, (p) => p.type)
-    )
+function toPropertyStubType(domain: Property): PropertyTypeStub | undefined {
+    return !!domain.type ? mapPropertyTypeStubToPropertyType(domain.type) : undefined
 }
 
-function forMember_PropertyStub_typedValue() {
-    return forMember<Property, PropertyStub>(
-        (v) => v.typedValue,
-        mapWith(TypedValueObjectDto, TypedValueObject, (p) => p.typedValue)
-    )
+function toPropertyStubTypedValue(domain: Property): TypedValueObject | undefined {
+    return !!domain.typedValue ? mapTypedValueObjectDtoToTypedValueObject(domain.typedValue) : undefined
 }
 
-function forMember_PropertyStub_deletionDate() {
-    return forMember<Property, PropertyStub>(
-        (v) => v.deletionDate,
-        mapFrom((p) => p.deleted)
-    )
+function toPropertyStubDeletionDate(domain: Property): number | undefined {
+    return domain.deleted
 }
 
-function forMember_PropertyStub_encryptedSelf() {
-    return forMember<Property, PropertyStub>(
-        (v) => v.encryptedSelf,
-        mapFrom((p) => p.encryptedSelf)
-    )
+function toPropertyStubEncryptedSelf(domain: Property): string | undefined {
+    return domain.encryptedSelf
 }
 
-function forMember_Property_id() {
-    return forMember<PropertyStub, Property>(
-        (v) => v.id,
-        mapFrom((p) => p.id)
-    )
+function toPropertyId(dto: PropertyStub): string | undefined {
+    return dto.id
 }
 
-function forMember_Property_type() {
-    return forMember<PropertyStub, Property>(
-        (v) => v.type,
-        mapWith(PropertyType, PropertyTypeStub, (p) => p.type)
-    )
+function toPropertyType(dto: PropertyStub): PropertyType | undefined {
+    return !!dto.type ? mapPropertyTypeStubToPropertyType(dto.type) : undefined
 }
 
-function forMember_Property_typedValue() {
-    return forMember<PropertyStub, Property>(
-        (v) => v.typedValue,
-        mapWith(TypedValueObject, TypedValueObjectDto, (p) => p.typedValue)
-    )
+function toPropertyTypedValue(dto: PropertyStub): TypedValueObject | undefined {
+    return !!dto.typedValue ? mapTypedValueObjectDtoToTypedValueObject(dto.typedValue) : undefined
 }
 
-function forMember_Property_deleted() {
-    return forMember<PropertyStub, Property>(
-        (v) => v.deleted,
-        mapFrom((p) => p.deletionDate)
-    )
+function toPropertyDeleted(dto: PropertyStub): number | undefined {
+    return dto.deletionDate
 }
 
-function forMember_Property_encryptedSelf() {
-    return forMember<PropertyStub, Property>(
-        (v) => v.encryptedSelf,
-        mapFrom((p) => p.encryptedSelf)
-    )
+function toPropertyEncryptedSelf(dto: PropertyStub): string | undefined {
+    return dto.encryptedSelf
 }
 
-export function initializePropertyMapper(mapper: Mapper) {
-    createMap(mapper, Property, PropertyStub, forMember_PropertyStub_id(), forMember_PropertyStub_type(), forMember_PropertyStub_typedValue(), forMember_PropertyStub_deletionDate(), forMember_PropertyStub_encryptedSelf())
+export function mapPropertyStubToProperty(dto: PropertyStub): Property {
+    return new Property({
+        id: toPropertyId(dto),
+        type: toPropertyType(dto),
+        typedValue: toPropertyTypedValue(dto),
+        deleted: toPropertyDeleted(dto),
+        encryptedSelf: toPropertyEncryptedSelf(dto),
+    })
+}
 
-    createMap(mapper, PropertyStub, Property, forMember_Property_id(), forMember_Property_type(), forMember_Property_typedValue(), forMember_Property_deleted(), forMember_Property_encryptedSelf())
+export function mapPropertyToPropertyStub(domain: Property): PropertyStub {
+    return new PropertyStub({
+        id: toPropertyStubId(domain),
+        type: toPropertyStubType(domain),
+        typedValue: toPropertyStubTypedValue(domain),
+        deletionDate: toPropertyStubDeletionDate(domain),
+        encryptedSelf: toPropertyStubEncryptedSelf(domain),
+    })
 }

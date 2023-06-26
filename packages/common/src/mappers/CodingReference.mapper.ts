@@ -1,86 +1,67 @@
-import {createMap, forMember, ignore, mapFrom, Mapper} from '@automapper/core'
-import { CodeStub } from '@icure/api'
-import { CodingReference } from '../models/CodingReference.model'
+import {CodeStub, ISO639_1} from '@icure/api'
+import {CodingReference} from '../models/CodingReference.model'
 
-function forMember_CodeStub_id() {
-    return forMember<CodingReference, CodeStub>(
-        (v) => v.id,
-        mapFrom((v) => `${v.type ?? null}|${v.code ?? null}|${v.version ?? null}`)
-    )
+function toCodeStubId(domain: CodingReference): string | undefined {
+    return `${domain.type ?? null}|${domain.code ?? null}|${domain.version ?? null}`
 }
 
-function forMember_CodeStub_context() {
-    return forMember<CodingReference, CodeStub>(
-        (v) => v.context,
-        ignore()
-    )
+function toCodeStubContext(domain: CodingReference): string | undefined {
+    return undefined
 }
 
-function forMember_CodeStub_type() {
-    return forMember<CodingReference, CodeStub>(
-        (v) => v.type,
-        mapFrom((v) => v.type)
-    )
+function toCodeStubType(domain: CodingReference): string | undefined {
+    return domain.type
 }
 
-function forMember_CodeStub_code() {
-    return forMember<CodingReference, CodeStub>(
-        (v) => v.code,
-        mapFrom((v) => v.code)
-    )
+function toCodeStubCode(domain: CodingReference): string | undefined {
+    return domain.code
 }
 
-function forMember_CodeStub_version() {
-    return forMember<CodingReference, CodeStub>(
-        (v) => v.version,
-        mapFrom((v) => v.version)
-    )
+function toCodeStubVersion(domain: CodingReference): string | undefined {
+    return domain.version
 }
 
-function forMember_CodeStub_label() {
-    return forMember<CodingReference, CodeStub>(
-        (v) => v.label,
-        mapFrom((v) => (!!v.label ? Object.fromEntries(v.label.entries()) : undefined))
-    )
+function toCodeStubLabel(domain: CodingReference): { [key: string]: string; } | undefined {
+    return domain.label ? Object.fromEntries(domain.label.entries()) : undefined
 }
 
-function forMember_CodingReference_id() {
-    return forMember<CodeStub, CodingReference>(
-        (v) => v.id,
-        mapFrom((v) => `${v.type ?? null}|${v.code ?? null}|${v.version ?? null}`)
-    )
+function toCodingReferenceId(dto: CodeStub): string | undefined {
+    return `${dto.type ?? null}|${dto.code ?? null}|${dto.version ?? null}`
 }
 
-function forMember_CodingReference_type() {
-    return forMember<CodeStub, CodingReference>(
-        (v) => v.type,
-        mapFrom((v) => v.type)
-    )
+function toCodingReferenceType(dto: CodeStub): string | undefined {
+    return dto.type
 }
 
-function forMember_CodingReference_code() {
-    return forMember<CodeStub, CodingReference>(
-        (v) => v.code,
-        mapFrom((v) => v.code)
-    )
+function toCodingReferenceCode(dto: CodeStub): string | undefined {
+    return dto.code
 }
 
-function forMember_CodingReference_version() {
-    return forMember<CodeStub, CodingReference>(
-        (v) => v.version,
-        mapFrom((v) => v.version)
-    )
+function toCodingReferenceVersion(dto: CodeStub): string | undefined {
+    return dto.version
 }
 
-function forMember_CodingReference_label() {
-    return forMember<CodeStub, CodingReference>(
-        (v) => v.label,
-        mapFrom((v) => (!!v.label ? new Map(Object.entries(v.label)) : undefined))
-    )
+function toCodingReferenceLabel(dto: CodeStub): Map<ISO639_1, string> | undefined {
+    return !!dto.label ? new Map(Object.entries(dto.label)) as Map<ISO639_1, string> : undefined
 }
 
-export function initializeCodingReferenceMapper(mapper: Mapper) {
-    createMap(mapper, CodingReference, CodeStub, forMember_CodeStub_id(), forMember_CodeStub_context(), forMember_CodeStub_type(), forMember_CodeStub_code(), forMember_CodeStub_version(), forMember_CodeStub_label())
+export function mapCodeStubToCodingReference(dto: CodeStub): CodingReference {
+    return new CodingReference({
+        id: toCodingReferenceId(dto),
+        type: toCodingReferenceType(dto),
+        code: toCodingReferenceCode(dto),
+        version: toCodingReferenceVersion(dto),
+        label: toCodingReferenceLabel(dto),
+    })
+}
 
-    createMap(mapper, CodeStub, CodingReference, forMember_CodingReference_id(), forMember_CodingReference_type(), forMember_CodingReference_code(), forMember_CodingReference_version(), forMember_CodingReference_label())
+export function mapCodingReferenceToCodeStub(domain: CodingReference): CodeStub {
+    return new CodeStub({
+        id: toCodeStubId(domain),
+        context: toCodeStubContext(domain),
+        type: toCodeStubType(domain),
+        code: toCodeStubCode(domain),
+        version: toCodeStubVersion(domain),
+        label: toCodeStubLabel(domain),
+    })
 }

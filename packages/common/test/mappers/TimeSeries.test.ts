@@ -1,17 +1,11 @@
-import {initializeMapper, mapper} from "../../src";
 import {generateTimeSeries} from "../models/TimeSeries.model";
-import {TimeSeries} from "../../src/models/TimeSeries.model";
-import {TimeSeries as TimeSeriesEntity} from "@icure/api";
+import {mapTimeSeriesDtoToTimeSeries, mapTimeSeriesToTimeSeriesDto, TimeSeries} from "../../src";
 
 describe('TimeSeries', function () {
-    beforeAll(() => {
-        initializeMapper(mapper)
-    })
-
     it('should correctly map to TimeSeriesEntity and back to TimeSeries', () => {
         const instance = generateTimeSeries()
-        const iCureInstance = mapper.map(instance, TimeSeries, TimeSeriesEntity)
-        const newInstance = mapper.map(iCureInstance, TimeSeriesEntity, TimeSeries)
+        const iCureInstance = mapTimeSeriesToTimeSeriesDto(instance)
+        const newInstance = mapTimeSeriesDtoToTimeSeries(iCureInstance)
 
         expect(newInstance).toEqual(instance)
     })

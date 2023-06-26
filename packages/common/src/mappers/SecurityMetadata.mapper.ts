@@ -1,51 +1,44 @@
 import {SecurityMetadata} from '../models/SecurityMetadata.model'
 import {SecureDelegation as SecureDelegationDto, SecurityMetadata as SecurityMetadataDto} from '@icure/api'
-import {createMap, forMember, mapFrom, Mapper} from '@automapper/core'
-import {mapper} from "./mapper";
+import {mapSecureDelegationDtoToSecureDelegation, mapSecureDelegationToSecureDelegationDto} from "./mapper";
 import {
     convertMapOfGenericToObject,
-    convertMapToObject, convertObjectToMap,
+    convertMapToObject,
+    convertObjectToMap,
     convertObjectToMapOfGeneric
 } from '../utils/Metadata.utils'
 import {SecureDelegation} from '../models/SecureDelegation.model'
 
-function forMember_SecurityMetadataDto_secureDelegations() {
-    return forMember<SecurityMetadata, SecurityMetadataDto>(
-        (v) => v.secureDelegations,
-        mapFrom((s) => (!!s.secureDelegations ? convertMapOfGenericToObject<SecureDelegation, SecureDelegationDto>(s.secureDelegations, (arr) => mapper.map(arr, SecureDelegation, SecureDelegationDto)) : undefined))
-    )
+function toSecurityMetadataDtoSecureDelegations(domain: SecurityMetadata): {
+    [hash: string]: SecureDelegationDto;
+} | undefined {
+    return !!domain.secureDelegations ? convertMapOfGenericToObject<SecureDelegation, SecureDelegationDto>(domain.secureDelegations, (value) => mapSecureDelegationToSecureDelegationDto(value)) : undefined
 }
 
-function forMember_SecurityMetadataDto_keysEquivalences() {
-    return forMember<SecurityMetadata, SecurityMetadataDto>(
-        (v) => v.keysEquivalences,
-        mapFrom((s) => {
-            return !!s.keysEquivalences ? convertMapToObject(s.keysEquivalences) : undefined
-        })
-    )
+function toSecurityMetadataDtoKeysEquivalences(domain: SecurityMetadata): {
+    [hash: string]: string;
+} | undefined {
+    return !!domain.keysEquivalences ? convertMapToObject(domain.keysEquivalences) : undefined
 }
 
-function forMember_SecurityMetadata_secureDelegations() {
-    return forMember<SecurityMetadataDto, SecurityMetadata>(
-        (v) => v.secureDelegations,
-        mapFrom((s) => !!s.secureDelegations
-            ? convertObjectToMapOfGeneric<SecureDelegationDto, SecureDelegation>(s.secureDelegations, (arr) => mapper.map(arr, SecureDelegationDto, SecureDelegation))
-            : undefined
-        )
-    )
+function toSecurityMetadataSecureDelegations(dto: SecurityMetadataDto): Map<string, SecureDelegation> | undefined {
+    return !!dto.secureDelegations ? convertObjectToMapOfGeneric<SecureDelegationDto, SecureDelegation>(dto.secureDelegations, (value) => mapSecureDelegationDtoToSecureDelegation(value)) : undefined
 }
 
-function forMember_SecurityMetadata_keysEquivalences() {
-    return forMember<SecurityMetadataDto, SecurityMetadata>(
-        (v) => v.keysEquivalences,
-        mapFrom((s) => {
-            return !!s.keysEquivalences ? convertObjectToMap(s.keysEquivalences) : undefined
-        })
-    )
+function toSecurityMetadataKeysEquivalences(dto: SecurityMetadataDto): Map<string, string> | undefined {
+    return !!dto.keysEquivalences ? convertObjectToMap(dto.keysEquivalences) : undefined
 }
 
-export function initializeSecurityMetadataMapper(mapper: Mapper) {
-    createMap(mapper, SecurityMetadata, SecurityMetadataDto, forMember_SecurityMetadataDto_secureDelegations(), forMember_SecurityMetadataDto_keysEquivalences())
+export function mapSecurityMetadataDtoToSecurityMetadata(dto: SecurityMetadataDto): SecurityMetadata {
+    return new SecurityMetadata({
+        secureDelegations: toSecurityMetadataSecureDelegations(dto),
+        keysEquivalences: toSecurityMetadataKeysEquivalences(dto),
+    })
+}
 
-    createMap(mapper, SecurityMetadataDto, SecurityMetadata, forMember_SecurityMetadata_secureDelegations(), forMember_SecurityMetadata_keysEquivalences())
+export function mapSecurityMetadataToSecurityMetadataDto(domain: SecurityMetadata): SecurityMetadataDto {
+    return new SecurityMetadataDto({
+        secureDelegations: toSecurityMetadataDtoSecureDelegations(domain),
+        keysEquivalences: toSecurityMetadataDtoKeysEquivalences(domain),
+    })
 }

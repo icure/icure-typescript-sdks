@@ -1,75 +1,95 @@
-import { createMap, forMember, mapFrom, mapWith, Mapper } from '@automapper/core'
-import { Identifier as IdentifierDto } from '@icure/api/icc-api/model/Identifier'
-import { Identifier } from '../models/Identifier.model'
-import { CodeStub } from '@icure/api'
-import { CodingReference } from '../models/CodingReference.model'
+import {Identifier as IdentifierDto} from '@icure/api/icc-api/model/Identifier'
+import {Identifier} from '../models/Identifier.model'
+import {CodeStub} from '@icure/api'
+import {CodingReference} from '../models/CodingReference.model'
+import {mapCodeStubToCodingReference, mapCodingReferenceToCodeStub} from "./CodingReference.mapper";
 
-function forMember_IdentifierDto_id() {
-    return forMember<Identifier, IdentifierDto>(v => v.id, mapFrom(v => v.id))
+function toIdentifierDtoId(domain: Identifier): string | undefined {
+    return domain.id
 }
 
-function forMember_IdentifierDto_assigner() {
-    return forMember<Identifier, IdentifierDto>(v => v.assigner, mapFrom(v => v.assigner))
+function toIdentifierDtoAssigner(domain: Identifier): string | undefined {
+    return domain.assigner
 }
 
-function forMember_IdentifierDto_start() {
-    return forMember<Identifier, IdentifierDto>(v => v.start, mapFrom(v => v.start))
+function toIdentifierDtoStart(domain: Identifier): string | undefined {
+    return domain.start
 }
 
-function forMember_IdentifierDto_end() {
-    return forMember<Identifier, IdentifierDto>(v => v.end, mapFrom(v => v.end))
+function toIdentifierDtoEnd(domain: Identifier): string | undefined {
+    return domain.end
 }
 
-function forMember_IdentifierDto_system() {
-    return forMember<Identifier, IdentifierDto>(v => v.system, mapFrom(v => v.system))
+function toIdentifierDtoSystem(domain: Identifier): string | undefined {
+    return domain.system
 }
 
-function forMember_IdentifierDto_type() {
-    return forMember<Identifier, IdentifierDto>(v => v.type, mapWith(CodeStub, CodingReference, v => v.type))
+function toIdentifierDtoType(domain: Identifier): CodeStub | undefined {
+    return domain.type ? mapCodingReferenceToCodeStub(domain.type) : undefined
 }
 
-function forMember_IdentifierDto_use() {
-    return forMember<Identifier, IdentifierDto>(v => v.use, mapFrom(v => v.use))
+function toIdentifierDtoUse(domain: Identifier): string | undefined {
+    return domain.use
 }
 
-function forMember_IdentifierDto_value() {
-    return forMember<Identifier, IdentifierDto>(v => v.value, mapFrom(v => v.value))
+function toIdentifierDtoValue(domain: Identifier): string | undefined {
+    return domain.value
 }
 
-function forMember_Identifier_assigner() {
-    return forMember<IdentifierDto, Identifier>(v => v.assigner, mapFrom(v => v.assigner))
+function toIdentifierId(dto: IdentifierDto): string | undefined {
+    return dto.id
 }
 
-function forMember_Identifier_end() {
-    return forMember<IdentifierDto, Identifier>(v => v.end, mapFrom(v => v.end))
+function toIdentifierAssigner(dto: IdentifierDto): string | undefined {
+    return dto.assigner
 }
 
-function forMember_Identifier_id() {
-    return forMember<IdentifierDto, Identifier>(v => v.id, mapFrom(v => v.id))
+function toIdentifierStart(dto: IdentifierDto): string | undefined {
+    return dto.start
 }
 
-function forMember_Identifier_start() {
-    return forMember<IdentifierDto, Identifier>(v => v.start, mapFrom(v => v.start))
+function toIdentifierEnd(dto: IdentifierDto): string | undefined {
+    return dto.end
 }
 
-function forMember_Identifier_system() {
-    return forMember<IdentifierDto, Identifier>(v => v.system, mapFrom(v => v.system))
+function toIdentifierSystem(dto: IdentifierDto): string | undefined {
+    return dto.system
 }
 
-function forMember_Identifier_type() {
-    return forMember<IdentifierDto, Identifier>(v => v.type, mapWith(CodingReference, CodeStub, v => v.type))
+function toIdentifierType(dto: IdentifierDto): CodingReference | undefined {
+    return dto.type ? mapCodeStubToCodingReference(dto.type) : undefined
 }
 
-function forMember_Identifier_use() {
-    return forMember<IdentifierDto, Identifier>(v => v.use, mapFrom(v => v.use))
+function toIdentifierUse(dto: IdentifierDto): string | undefined {
+    return dto.use
 }
 
-function forMember_Identifier_value() {
-    return forMember<IdentifierDto, Identifier>(v => v.value, mapFrom(v => v.value))
+function toIdentifierValue(dto: IdentifierDto): string | undefined {
+    return dto.value
 }
 
-export function initializeIdentifierMapper(mapper: Mapper) {
-    createMap(mapper, Identifier, IdentifierDto, forMember_IdentifierDto_id(), forMember_IdentifierDto_assigner(), forMember_IdentifierDto_start(), forMember_IdentifierDto_end(), forMember_IdentifierDto_system(), forMember_IdentifierDto_type(), forMember_IdentifierDto_use(), forMember_IdentifierDto_value())
+export function mapIdentifierDtoToIdentifier(dto: IdentifierDto): Identifier {
+    return new Identifier({
+        id: toIdentifierId(dto),
+        assigner: toIdentifierAssigner(dto),
+        start: toIdentifierStart(dto),
+        end: toIdentifierEnd(dto),
+        system: toIdentifierSystem(dto),
+        type: toIdentifierType(dto),
+        use: toIdentifierUse(dto),
+        value: toIdentifierValue(dto),
+    })
+}
 
-    createMap(mapper, IdentifierDto, Identifier, forMember_Identifier_id(), forMember_Identifier_assigner(), forMember_Identifier_start(), forMember_Identifier_end(), forMember_Identifier_system(), forMember_Identifier_type(), forMember_Identifier_use(), forMember_Identifier_value())
+export function mapIdentifierToIdentifierDto(domain: Identifier): IdentifierDto {
+    return new IdentifierDto({
+        id: toIdentifierDtoId(domain),
+        assigner: toIdentifierDtoAssigner(domain),
+        start: toIdentifierDtoStart(domain),
+        end: toIdentifierDtoEnd(domain),
+        system: toIdentifierDtoSystem(domain),
+        type: toIdentifierDtoType(domain),
+        use: toIdentifierDtoUse(domain),
+        value: toIdentifierDtoValue(domain),
+    })
 }

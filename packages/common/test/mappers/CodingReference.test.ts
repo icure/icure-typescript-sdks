@@ -1,17 +1,12 @@
-import { CodeStub } from '@icure/api'
-import { CodingReference } from '../../src/models/CodingReference.model'
-import {initializeMapper, mapper} from "../../src";
+import { CodingReference } from '../../src'
 import {generateCodingReference} from "../models/CodingReference.model";
+import {mapCodeStubToCodingReference, mapCodingReferenceToCodeStub} from "../../src";
 
 describe('CodingReference', function () {
-    beforeAll(() => {
-        initializeMapper(mapper)
-    })
-
     it('should correctly map to CodeStub and back to CodingReference', () => {
         const instance = generateCodingReference()
-        const iCureInstance = mapper.map(instance, CodingReference, CodeStub)
-        const newInstance = mapper.map(iCureInstance, CodeStub, CodingReference)
+        const iCureInstance = mapCodingReferenceToCodeStub(instance)
+        const newInstance = mapCodeStubToCodingReference(iCureInstance)
 
         expect(newInstance).toEqual(instance)
     })

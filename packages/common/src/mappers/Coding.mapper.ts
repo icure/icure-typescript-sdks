@@ -1,122 +1,153 @@
-import { Coding } from "../models/Coding.model"
-import { Code } from "@icure/api"
-import {createMap, forMember, ignore, mapFrom, Mapper} from "@automapper/core"
+import {Coding} from "../models/Coding.model"
+import {Code, Periodicity} from "@icure/api"
 import {convertMapOfArrayOfGenericToObject, convertObjectToMapOfArrayOfGeneric} from "../utils/Metadata.utils";
 
-function forMember_Code_id() {
-    return forMember<Coding, Code>(v => v.id, mapFrom(c => `${c.type}|${c.code}|${c.version}`))
+function toCodeId(domain: Coding): string | undefined {
+    return `${domain.type}|${domain.code}|${domain.version}`
 }
 
-function forMember_Code_rev() {
-    return forMember<Coding, Code>(v => v.rev, mapFrom(c => c.rev))
+function toCodeRev(domain: Coding): string | undefined {
+    return domain.rev
 }
 
-function forMember_Code_deletionDate() {
-    return forMember<Coding, Code>(v => v.deletionDate, ignore())
+function toCodeDeletionDate(domain: Coding): number | undefined {
+    return undefined
 }
 
-function forMember_Code_context() {
-    return forMember<Coding, Code>(v => v.context, ignore())
+function toCodeContext(domain: Coding): string | undefined {
+    return undefined
 }
 
-function forMember_Code_type() {
-    return forMember<Coding, Code>(v => v.type, mapFrom(c => c.type))
+function toCodeType(domain: Coding): string | undefined {
+    return domain.type
 }
 
-function forMember_Code_code() {
-    return forMember<Coding, Code>(v => v.code, mapFrom(c => c.code))
+function toCodeCode(domain: Coding): string | undefined {
+    return domain.code
 }
 
-function forMember_Code_version() {
-    return forMember<Coding, Code>(v => v.version, mapFrom(c => c.version))
+function toCodeVersion(domain: Coding): string | undefined {
+    return domain.version
 }
 
-function forMember_Code_label() {
-    return forMember<Coding, Code>(v => v.label, mapFrom(c => c.description))
+function toCodeLabel(domain: Coding): { [key: string]: string; } | undefined {
+    return !!domain.description ? Object.fromEntries(domain.description.entries()) : undefined
 }
 
-function forMember_Code_author() {
-    return forMember<Coding, Code>(v => v.author, ignore())
+function toCodeAuthor(domain: Coding): string | undefined {
+    return undefined
 }
 
-function forMember_Code_regions() {
-    return forMember<Coding, Code>(v => v.regions, mapFrom(c => c.regions))
+function toCodeRegions(domain: Coding): string[] | undefined {
+    return domain.regions
 }
 
-function forMember_Code_periodicity() {
-    return forMember<Coding, Code>(v => v.periodicity, ignore())
+function toCodePeriodicity(domain: Coding): Periodicity[] | undefined {
+    return undefined
 }
 
-function forMember_Code_level() {
-    return forMember<Coding, Code>(v => v.level, ignore())
+function toCodeLevel(domain: Coding): number | undefined {
+    return undefined
 }
 
-function forMember_Code_links() {
-    return forMember<Coding, Code>(v => v.links, ignore())
+function toCodeLinks(domain: Coding): string[] | undefined {
+    return undefined
 }
 
-function forMember_Code_qualifiedLinks() {
-    return forMember<Coding, Code>(v => v.qualifiedLinks, mapFrom(c => convertMapOfArrayOfGenericToObject(c.qualifiedLinks, (t)=> t)))
+function toCodeQualifiedLinks(domain: Coding): { [key: string]: string[]; } | undefined {
+    return !!domain.qualifiedLinks ? convertMapOfArrayOfGenericToObject(domain.qualifiedLinks, (t) => t) : undefined
 }
 
-function forMember_Code_flags() {
-    return forMember<Coding, Code>(v => v.flags, ignore())
+function toCodeFlags(domain: Coding): Code.FlagsEnum[] | undefined {
+    return undefined
 }
 
-function forMember_Code_searchTerms() {
-    return forMember<Coding, Code>(v => v.searchTerms, mapFrom(c => Object.fromEntries([...c.searchTerms.entries()].map(([k, v]) => [k, Array.from(v)]))))
+function toCodeSearchTerms(domain: Coding): { [key: string]: string[]; } | undefined {
+    return Object.fromEntries([...domain.searchTerms.entries()].map(([k, v]) => [k, Array.from(v)]))
 }
 
-function forMember_Code_data() {
-    return forMember<Coding, Code>(v => v.data, ignore())
+function toCodeData(domain: Coding): string | undefined {
+    return undefined
 }
 
-function forMember_Code_appendices() {
-    return forMember<Coding, Code>(v => v.appendices, ignore())
+function toCodeAppendices(domain: Coding): { [key: string]: string; } | undefined {
+    return undefined
 }
 
-function forMember_Code_disabled() {
-    return forMember<Coding, Code>(v => v.disabled, ignore())
+function toCodeDisabled(domain: Coding): boolean | undefined {
+    return undefined
 }
 
-function forMember_Coding_id() {
-    return forMember<Code, Coding>(v => v.id, mapFrom(c => `${c.type}|${c.code}|${c.version}`))
+function toCodingId(dto: Code): string | undefined {
+    return dto.id
 }
 
-function forMember_Coding_rev() {
-    return forMember<Code, Coding>(v => v.rev, mapFrom(c => c.rev))
+function toCodingRev(dto: Code): string | undefined {
+    return dto.rev
 }
 
-function forMember_Coding_type() {
-    return forMember<Code, Coding>(v => v.type, mapFrom(c => c.type))
+function toCodingType(dto: Code): string | undefined {
+    return dto.type
 }
 
-function forMember_Coding_code() {
-    return forMember<Code, Coding>(v => v.code, mapFrom(c => c.code))
+function toCodingCode(dto: Code): string | undefined {
+    return dto.code
 }
 
-function forMember_Coding_version() {
-    return forMember<Code, Coding>(v => v.version, mapFrom(c => c.version))
+function toCodingVersion(dto: Code): string | undefined {
+    return dto.version
 }
 
-function forMember_Coding_regions() {
-    return forMember<Code, Coding>(v => v.regions, mapFrom(c => c.regions))
+function toCodingRegions(dto: Code): string[] | undefined {
+    return dto.regions
 }
 
-function forMember_Coding_description() {
-    return forMember<Code, Coding>(v => v.description, mapFrom(c => c.label))
+function toCodingDescription(dto: Code): Map<string, string> | undefined {
+    return !!dto.label ? new Map(Object.entries(dto.label)) : undefined
 }
 
-function forMember_Coding_qualifiedLinks() {
-    return forMember<Code, Coding>(v => v.qualifiedLinks, mapFrom(c => !!c.qualifiedLinks ? convertObjectToMapOfArrayOfGeneric(c.qualifiedLinks, (t)=> t) : undefined))
+function toCodingQualifiedLinks(dto: Code): Map<string, string[]> {
+    return !!dto.qualifiedLinks ? convertObjectToMapOfArrayOfGeneric(dto.qualifiedLinks, (t) => t) : new Map()
 }
 
-function forMember_Coding_searchTerms() {
-    return forMember<Code, Coding>(v => v.searchTerms, mapFrom(c => !!c.searchTerms ? Object.fromEntries([...Object.entries(c.searchTerms)].map(([k, v]) => [k, new Set(v)])) : undefined))
+function toCodingSearchTerms(dto: Code): Map<string, Set<string>> {
+    return !!dto.searchTerms ? new Map([...Object.entries(dto.searchTerms)].map(([k, v]) => [k, new Set(...v)])) : new Map() as Map<string, Set<string>>
 }
 
-export function initializeCodingMapper(mapper: Mapper) {
-    createMap(mapper, Coding, Code, forMember_Code_id(), forMember_Code_rev(), forMember_Code_deletionDate(), forMember_Code_context(), forMember_Code_type(), forMember_Code_code(), forMember_Code_version(), forMember_Code_label(), forMember_Code_author(), forMember_Code_regions(), forMember_Code_periodicity(), forMember_Code_level(), forMember_Code_links(), forMember_Code_qualifiedLinks(), forMember_Code_flags(), forMember_Code_searchTerms(), forMember_Code_data(), forMember_Code_appendices(), forMember_Code_disabled())
+export function mapCodeToCoding(dto: Code): Coding {
+    return new Coding({
+        id: toCodingId(dto),
+        rev: toCodingRev(dto),
+        type: toCodingType(dto),
+        code: toCodingCode(dto),
+        version: toCodingVersion(dto),
+        regions: toCodingRegions(dto),
+        description: toCodingDescription(dto),
+        qualifiedLinks: toCodingQualifiedLinks(dto),
+        searchTerms: toCodingSearchTerms(dto),
+    })
+}
 
-    createMap(mapper, Code, Coding, forMember_Coding_id(), forMember_Coding_rev(), forMember_Coding_type(), forMember_Coding_code(), forMember_Coding_version(), forMember_Coding_regions(), forMember_Coding_description(), forMember_Coding_qualifiedLinks(), forMember_Coding_searchTerms())
+export function mapCodingToCode(domain: Coding): Code {
+    return new Code({
+        id: toCodeId(domain),
+        rev: toCodeRev(domain),
+        deletionDate: toCodeDeletionDate(domain),
+        context: toCodeContext(domain),
+        type: toCodeType(domain),
+        code: toCodeCode(domain),
+        version: toCodeVersion(domain),
+        label: toCodeLabel(domain),
+        author: toCodeAuthor(domain),
+        regions: toCodeRegions(domain),
+        periodicity: toCodePeriodicity(domain),
+        level: toCodeLevel(domain),
+        links: toCodeLinks(domain),
+        qualifiedLinks: toCodeQualifiedLinks(domain),
+        flags: toCodeFlags(domain),
+        searchTerms: toCodeSearchTerms(domain),
+        data: toCodeData(domain),
+        appendices: toCodeAppendices(domain),
+        disabled: toCodeDisabled(domain),
+    })
 }
