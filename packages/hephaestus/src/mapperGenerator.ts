@@ -1,4 +1,4 @@
-import { ClassDeclaration, Project, SourceFile, SyntaxKind } from 'ts-morph'
+import {ClassDeclaration, Project, SourceFile, SyntaxKind} from 'ts-morph'
 import {mapperRegex, modelRegex} from './index'
 
 type Mapper = {
@@ -49,7 +49,6 @@ export const mapperGenerator = (project: Project, mapperLocation: string) => {
                 .writeLine(`import { ${className} } from "../models/${className}.model"`)
                 .conditionalWriteLine(!isSameName, `import { ${iCureTargetClassName} } from "@icure/api"`)
                 .conditionalWriteLine(isSameName, `import { ${className} as ${iCureTargetClassName} } from "@icure/api"`)
-                .writeLine(`import { createMap, forMember, Mapper } from "@automapper/core"`)
                 .blankLine()
         })
     })
@@ -68,135 +67,143 @@ export const mapperGenerator = (project: Project, mapperLocation: string) => {
         const iCureTargetClassName = mapToDecoratorArg.getText()
         const className = modelClass!.getName()!
 
+        // Remove initialize${mapperClassName}Mapper function
         mapperSourceFile
             .getFunctions()
             .find((f) => f.getName() === functionName)
             ?.remove()
 
-        const ehrClassToICureClassFunctions = iCureTargetClassDeclaration
+        const toDtoFunctions = iCureTargetClassDeclaration
             ?.getProperties()
-            .map((p) => p.getName().replace(/['"]/gi, ""))
-            .map((p) => `forMember_${iCureTargetClassName}_${p}`)
-        const iCureClassToEhrClassFunctions = modelClass
+            .map((p) => {
+                return {
+                    name: p.getName().replace(/['"]/gi, ""),
+                    type: p.getType().getText().replace(/(import\(.*\)\.)?(.*)/, "$2"),
+                }
+            })
+            .map(({name, type}) => {
+                return {
+                    functionName: `to${iCureTargetClassName}${name.slice(0, 1).toUpperCase()}${name.slice(1)}`,
+                    propertyName: name,
+                    type,
+                }
+            })
+        const toDomainFunctions = modelClass
             ?.getProperties()
-            .map((p) => p.getName().replace(/['"]/gi, ""))
-            .map((p) => `forMember_${className}_${p}`)
+            .map((p) => {
+                return {
+                    name: p.getName().replace(/['"]/gi, ""),
+                    type: p.getType().getText().match(/(import\(.*\)\.)?(.*)/)![2],
+                }
+            })
+            .map(({name, type}) => {
+                return {
+                    functionName: `to${className}${name.slice(0, 1).toUpperCase()}${name.slice(1)}`,
+                    propertyName: name,
+                    type,
+                }
+            })
+
+        // Temporary remove functions
+/*        toDomainFunctions?.forEach(({functionName, propertyName, type}) => {
+            mapperSourceFile.getFunctions().find((f) => f.getName() === functionName)?.remove()
+        })
+
+        toDtoFunctions?.forEach(({functionName, propertyName, type}) => {
+            mapperSourceFile.getFunctions().find((f) => f.getName() === functionName)?.remove()
+        })*/
+        // End of temporary remove functions
 
         const mapperFileFunctions = mapperSourceFile.getFunctions()
-        const ehrClassToICureClassFunctionsToCreate = ehrClassToICureClassFunctions?.filter((f) => !mapperFileFunctions.some((mff) => mff.getName() === f))
-        const iCureClassToEhrClassFunctionsToCreate = iCureClassToEhrClassFunctions?.filter((f) => !mapperFileFunctions.some((mff) => mff.getName() === f))
+        const toDtoFunctionsToCreate = toDtoFunctions?.filter(({functionName}) => !mapperFileFunctions.some((mff) => mff.getName() === functionName))
+        const toDomainFunctionsToCreate = toDomainFunctions?.filter(({functionName}) => !mapperFileFunctions.some((mff) => mff.getName() === functionName))
 
-        ehrClassToICureClassFunctionsToCreate?.forEach((f) => {
+        toDtoFunctionsToCreate?.forEach(({functionName, type}) => {
             mapperSourceFile.addFunction({
-                name: f,
+                name: functionName,
+                parameters: [
+                    {
+                        name: 'domain',
+                        type: className,
+                    }
+                ],
+                returnType: type,
                 statements: (writer) => {
-                    writer.writeLine(`return forMember<${className}, ${iCureTargetClassName}>(v => v.${f.split('_')[2]}, throw new Error('Not implemented'))`)
+                    writer.writeLine(`throw new Error('Not implemented')`)
                 },
             })
         })
 
-        iCureClassToEhrClassFunctionsToCreate?.forEach((f) => {
+        toDomainFunctionsToCreate?.forEach(({functionName, type}) => {
             mapperSourceFile.addFunction({
-                name: f,
+                name: functionName,
+                parameters: [
+                    {
+                        name: 'dto',
+                        type: iCureTargetClassName,
+                    }
+                ],
+                returnType: type,
                 statements: (writer) => {
-                    writer.writeLine(`return forMember<${iCureTargetClassName}, ${className}>(v => v.${f.split('_')[2]}, throw new Error('Not implemented'))`)
+                    writer.writeLine(`throw new Error('Not implemented')`)
                 },
             })
-        })
-
-        mapperSourceFile.addFunction({
-            name: 'initialize' + mapperClassName + 'Mapper',
-            parameters: [
-                {
-                    name: 'mapper',
-                    type: 'Mapper',
-                }
-            ],
-            isExported: true,
-            statements: (writer) => {
-                writer
-                    .writeLine(`createMap(mapper, ${className}, ${iCureTargetClassName}, ${ehrClassToICureClassFunctions?.map((f) => `${f}()`).join(', ')})`)
-                    .blankLine()
-                    .writeLine(`createMap(mapper, ${iCureTargetClassName}, ${className}, ${iCureClassToEhrClassFunctions?.map((f) => `${f}()`).join(', ')})`)
-            },
         })
 
         const toDomainName = `map${iCureTargetClassName}To${className}`
         const toDtoName = `map${className}To${iCureTargetClassName}`
 
-        mapperSourceFile.getFunction('toDomain')?.remove()
         mapperSourceFile.getFunction(toDomainName)?.remove()
-        // mapperSourceFile.addFunction({
-        //     name: toDomainName,
-        //     isExported: true,
-        //     parameters: [
-        //         {
-        //             name: 'entity',
-        //             type: iCureTargetClassName,
-        //         }
-        //     ],
-        //     returnType: className,
-        //     statements: (writer) => {
-        //         writer.writeLine(`return mapper.map(entity, ${iCureTargetClassName}, ${className})`)
-        //     }
-        // })
+        mapperSourceFile.addFunction({
+            name: toDomainName,
+            isExported: true,
+            parameters: [
+                {
+                    name: 'dto',
+                    type: iCureTargetClassName,
+                }
+            ],
+            returnType: className,
+            statements: (writer) => {
+                writer
+                    .writeLine(`return new ${className}({`)
 
-        mapperSourceFile.getFunction('toDto')?.remove()
+                toDomainFunctions?.forEach(({propertyName, functionName}) => {
+                    writer.writeLine(`${propertyName}: ${functionName}(dto),`)
+                })
+
+                writer
+                    .writeLine(`})`)
+            }
+        })
+
         mapperSourceFile.getFunction(toDtoName)?.remove()
-        // mapperSourceFile.addFunction({
-        //     name: toDtoName,
-        //     isExported: true,
-        //     parameters: [
-        //         {
-        //             name: 'model',
-        //             type: className,
-        //         }
-        //     ],
-        //     returnType: iCureTargetClassName,
-        //     statements: (writer) => {
-        //         writer.writeLine(`return mapper.map(model, ${className}, ${iCureTargetClassName})`)
-        //
-        //     }
-        // })
+        mapperSourceFile.addFunction({
+            name: toDtoName,
+            isExported: true,
+            parameters: [
+                {
+                    name: 'domain',
+                    type: className,
+                }
+            ],
+            returnType: iCureTargetClassName,
+            statements: (writer) => {
+                writer
+                    .writeLine(`return new ${iCureTargetClassName}({`)
+
+                toDtoFunctions?.forEach(({propertyName, functionName}) => {
+                    writer.writeLine(`${propertyName}: ${functionName}(domain),`)
+                })
+
+                writer
+                    .writeLine(`})`)
+            }
+        })
     })
 
     const mapperSourceFile = project.getSourceFile('mapper.ts')
     mapperSourceFile?.getFunction('initializeMapper')?.remove()
-    mapperSourceFile?.addFunction({
-        name: 'initializeMapper',
-        parameters: [
-            {
-                name: 'mapper',
-                type: 'Mapper',
-            }
-        ],
-        isExported: true,
-        statements: (writer) => {
-            mapperFiles.forEach(([_mapperClassName, _mapperSourceFile, functionName]) => {
-                writer.writeLine(`${functionName}(mapper)`)
-            })
-        },
-    })
-
-    mapperSourceFile?.addImportDeclarations(
-        [...mapperFiles.map(([mapperClassName, _msf, functionName]) => {
-            return {
-                moduleSpecifier: `./${mapperClassName}.mapper`,
-                namedImports: [
-                    {
-                        name: functionName,
-                    },
-                ],
-            }
-        }), {
-            moduleSpecifier: `@automapper/core`,
-            namedImports: [
-                {
-                    name: 'Mapper',
-                },
-            ],
-        }]
-    )
 
     mapperSourceFile?.organizeImports()
 
