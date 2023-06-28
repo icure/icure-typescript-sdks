@@ -15,23 +15,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@automapper/classes@npm:^8.7.7":
-  version: 8.7.7
-  resolution: "@automapper/classes@npm:8.7.7"
-  peerDependencies:
-    "@automapper/core": 8.7.7
-    reflect-metadata: ~0.1.13
-  checksum: ce33a2b8fe2c5f585e5a3d0d3e7b2fb7c0e753047c5a31f2bd34f0cafc97730eaf81da1948e69de5fcf97718b5b5d18c10012f3e72f0addbb94fac59e4f9113c
-  languageName: node
-  linkType: hard
-
-"@automapper/core@npm:^8.7.7":
-  version: 8.7.7
-  resolution: "@automapper/core@npm:8.7.7"
-  checksum: fe815c672746397facc18252fea389b8042cee5c26f0e65bdeb109b68f3ca7a2fe031156d279c589e4cb708d930ccf59853034c2a035b2cae67876c0e2eca1d8
-  languageName: node
-  linkType: hard
-
 "@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.12.13, @babel/code-frame@npm:^7.22.5":
   version: 7.22.5
   resolution: "@babel/code-frame@npm:7.22.5"
@@ -1467,8 +1450,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@icure/ehr-lite-sdk@workspace:packages/ehr-lite"
   dependencies:
-    "@automapper/classes": ^8.7.7
-    "@automapper/core": ^8.7.7
     "@babel/core": ^7.22.5
     "@babel/plugin-proposal-decorators": ^7.22.5
     "@babel/preset-env": ^7.22.5
@@ -1488,8 +1469,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@icure/typescript-common@workspace:packages/common"
   dependencies:
-    "@automapper/classes": ^8.7.7
-    "@automapper/core": ^8.7.7
     "@babel/core": ^7.22.5
     "@babel/plugin-proposal-decorators": ^7.22.5
     "@babel/preset-env": ^7.22.5
