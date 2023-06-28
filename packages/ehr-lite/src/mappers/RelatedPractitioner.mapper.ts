@@ -1,63 +1,58 @@
 import { RelatedPractitioner } from '../models/RelatedPractitioner.model'
-import { PatientHealthCareParty } from '@icure/api'
-import { createMap, forMember, ignore, mapFrom, Mapper } from '@automapper/core'
+import { PatientHealthCareParty, ReferralPeriod } from '@icure/api'
+import { PractitionerTypeEnum } from '../models/enums/PractitionerType.enum'
 
-function forMember_PatientHealthCareParty_type() {
-    return forMember<RelatedPractitioner, PatientHealthCareParty>(
-        (v) => v.type,
-        mapFrom((v) => v.type)
-    )
+function toPatientHealthCarePartyType(domain: RelatedPractitioner): PatientHealthCareParty.TypeEnum | undefined {
+    return domain.type
 }
 
-function forMember_PatientHealthCareParty_healthcarePartyId() {
-    return forMember<RelatedPractitioner, PatientHealthCareParty>(
-        (v) => v.healthcarePartyId,
-        mapFrom((v) => v.healthcarePartyId)
-    )
+function toPatientHealthCarePartyHealthcarePartyId(domain: RelatedPractitioner): string | undefined {
+    return domain.healthcarePartyId
 }
 
-function forMember_PatientHealthCareParty_sendFormats() {
-    return forMember<RelatedPractitioner, PatientHealthCareParty>((v) => v.sendFormats, ignore())
+function toPatientHealthCarePartySendFormats(domain: RelatedPractitioner): { [key: string]: string } | undefined {
+    return undefined
 }
 
-function forMember_PatientHealthCareParty_referralPeriods() {
-    return forMember<RelatedPractitioner, PatientHealthCareParty>((v) => v.referralPeriods, ignore())
+function toPatientHealthCarePartyReferralPeriods(domain: RelatedPractitioner): ReferralPeriod[] | undefined {
+    return undefined
 }
 
-function forMember_PatientHealthCareParty_referral() {
-    return forMember<RelatedPractitioner, PatientHealthCareParty>((v) => v.referral, ignore())
+function toPatientHealthCarePartyReferral(domain: RelatedPractitioner): boolean | undefined {
+    return undefined
 }
 
-function forMember_PatientHealthCareParty_encryptedSelf() {
-    return forMember<RelatedPractitioner, PatientHealthCareParty>(
-        (v) => v.encryptedSelf,
-        mapFrom((v) => v.encryptedSelf)
-    )
+function toPatientHealthCarePartyEncryptedSelf(domain: RelatedPractitioner): string | undefined {
+    return domain.encryptedSelf
 }
 
-function forMember_RelatedPractitioner_type() {
-    return forMember<PatientHealthCareParty, RelatedPractitioner>(
-        (v) => v.type,
-        mapFrom((v) => v.type)
-    )
+function toRelatedPractitionerType(dto: PatientHealthCareParty): PractitionerTypeEnum | undefined {
+    return dto.type as PractitionerTypeEnum | undefined
 }
 
-function forMember_RelatedPractitioner_healthcarePartyId() {
-    return forMember<PatientHealthCareParty, RelatedPractitioner>(
-        (v) => v.healthcarePartyId,
-        mapFrom((v) => v.healthcarePartyId)
-    )
+function toRelatedPractitionerHealthcarePartyId(dto: PatientHealthCareParty): string | undefined {
+    return dto.healthcarePartyId as string | undefined
 }
 
-function forMember_RelatedPractitioner_encryptedSelf() {
-    return forMember<PatientHealthCareParty, RelatedPractitioner>(
-        (v) => v.encryptedSelf,
-        mapFrom((v) => v.encryptedSelf)
-    )
+function toRelatedPractitionerEncryptedSelf(dto: PatientHealthCareParty): string | undefined {
+    return dto.encryptedSelf as string | undefined
 }
 
-export function initializeRelatedPractitionerMapper(mapper: Mapper) {
-    createMap(mapper, RelatedPractitioner, PatientHealthCareParty, forMember_PatientHealthCareParty_type(), forMember_PatientHealthCareParty_healthcarePartyId(), forMember_PatientHealthCareParty_sendFormats(), forMember_PatientHealthCareParty_referralPeriods(), forMember_PatientHealthCareParty_referral(), forMember_PatientHealthCareParty_encryptedSelf())
+export function mapPatientHealthCarePartyToRelatedPractitioner(dto: PatientHealthCareParty): RelatedPractitioner {
+    return new RelatedPractitioner({
+        type: toRelatedPractitionerType(dto),
+        healthcarePartyId: toRelatedPractitionerHealthcarePartyId(dto),
+        encryptedSelf: toRelatedPractitionerEncryptedSelf(dto),
+    })
+}
 
-    createMap(mapper, PatientHealthCareParty, RelatedPractitioner, forMember_RelatedPractitioner_type(), forMember_RelatedPractitioner_healthcarePartyId(), forMember_RelatedPractitioner_encryptedSelf())
+export function mapRelatedPractitionerToPatientHealthCareParty(domain: RelatedPractitioner): PatientHealthCareParty {
+    return new PatientHealthCareParty({
+        type: toPatientHealthCarePartyType(domain),
+        healthcarePartyId: toPatientHealthCarePartyHealthcarePartyId(domain),
+        sendFormats: toPatientHealthCarePartySendFormats(domain),
+        referralPeriods: toPatientHealthCarePartyReferralPeriods(domain),
+        referral: toPatientHealthCarePartyReferral(domain),
+        encryptedSelf: toPatientHealthCarePartyEncryptedSelf(domain),
+    })
 }

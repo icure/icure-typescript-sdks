@@ -1,7 +1,7 @@
 import 'reflect-metadata'
 
-import {initializeMapper, mapper} from './mappers/mapper'
-import {initializeMapper as commonInitializeMapper} from '@icure/typescript-common'
+export * from './models/models'
+export * from './apis/apis'
 
-initializeMapper(mapper)
-commonInitializeMapper(mapper)
+// @ts-ignore
+export * from '@icure/typescript-common'

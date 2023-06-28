@@ -1,65 +1,53 @@
 import { ContactPoint } from '../models/ContactPoint.model'
 import { Telecom } from '@icure/api'
-import { createMap, forMember, mapFrom, Mapper } from '@automapper/core'
+import { ContactPointTelecomTypeEnum } from '../models/enums/ContactPointTelecomType.enum'
 
-function forMember_Telecom_telecomType() {
-    return forMember<ContactPoint, Telecom>(
-        (v) => v.telecomType,
-        mapFrom((v) => v.system)
-    )
+function toTelecomTelecomType(domain: ContactPoint): Telecom.TelecomTypeEnum | undefined {
+    return domain.system
 }
 
-function forMember_Telecom_telecomNumber() {
-    return forMember<ContactPoint, Telecom>(
-        (v) => v.telecomNumber,
-        mapFrom((v) => v.value)
-    )
+function toTelecomTelecomNumber(domain: ContactPoint): string | undefined {
+    return domain.value
 }
 
-function forMember_Telecom_telecomDescription() {
-    return forMember<ContactPoint, Telecom>(
-        (v) => v.telecomDescription,
-        mapFrom((v) => v.description)
-    )
+function toTelecomTelecomDescription(domain: ContactPoint): string | undefined {
+    return domain.description
 }
 
-function forMember_Telecom_encryptedSelf() {
-    return forMember<ContactPoint, Telecom>(
-        (v) => v.encryptedSelf,
-        mapFrom((v) => v.encryptedSelf)
-    )
+function toTelecomEncryptedSelf(domain: ContactPoint): string | undefined {
+    return domain.encryptedSelf
 }
 
-function forMember_ContactPoint_system() {
-    return forMember<Telecom, ContactPoint>(
-        (v) => v.system,
-        mapFrom((v) => v.telecomType)
-    )
+function toContactPointSystem(dto: Telecom): ContactPointTelecomTypeEnum | undefined {
+    return dto.telecomType as ContactPointTelecomTypeEnum | undefined
 }
 
-function forMember_ContactPoint_value() {
-    return forMember<Telecom, ContactPoint>(
-        (v) => v.value,
-        mapFrom((v) => v.telecomNumber)
-    )
+function toContactPointValue(dto: Telecom): string | undefined {
+    return dto.telecomNumber
 }
 
-function forMember_ContactPoint_description() {
-    return forMember<Telecom, ContactPoint>(
-        (v) => v.description,
-        mapFrom((v) => v.telecomDescription)
-    )
+function toContactPointDescription(dto: Telecom): string | undefined {
+    return dto.telecomDescription
 }
 
-function forMember_ContactPoint_encryptedSelf() {
-    return forMember<Telecom, ContactPoint>(
-        (v) => v.encryptedSelf,
-        mapFrom((v) => v.encryptedSelf)
-    )
+function toContactPointEncryptedSelf(dto: Telecom): string | undefined {
+    return dto.encryptedSelf
 }
 
-export function initializeContactPointMapper(mapper: Mapper) {
-    createMap(mapper, ContactPoint, Telecom, forMember_Telecom_telecomType(), forMember_Telecom_telecomNumber(), forMember_Telecom_telecomDescription(), forMember_Telecom_encryptedSelf())
+export function mapTelecomToContactPoint(dto: Telecom): ContactPoint {
+    return new ContactPoint({
+        system: toContactPointSystem(dto),
+        value: toContactPointValue(dto),
+        description: toContactPointDescription(dto),
+        encryptedSelf: toContactPointEncryptedSelf(dto),
+    })
+}
 
-    createMap(mapper, Telecom, ContactPoint, forMember_ContactPoint_system(), forMember_ContactPoint_value(), forMember_ContactPoint_description(), forMember_ContactPoint_encryptedSelf())
+export function mapContactPointToTelecom(domain: ContactPoint): Telecom {
+    return new Telecom({
+        telecomType: toTelecomTelecomType(domain),
+        telecomNumber: toTelecomTelecomNumber(domain),
+        telecomDescription: toTelecomTelecomDescription(domain),
+        encryptedSelf: toTelecomEncryptedSelf(domain),
+    })
 }

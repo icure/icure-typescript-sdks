@@ -1,517 +1,424 @@
-import { createMap, forMember, fromValue, ignore, mapFrom, mapWith, Mapper } from '@automapper/core'
-import { mapper } from './mapper'
-import {
-    CodeStub,
-    Delegation as DelegationDto,
-    HealthElement,
-    Identifier as IdentifierDto,
-    SecurityMetadata as SecurityMetadataDto
-} from '@icure/api'
+import { CareTeamMember, CodeStub, Delegation as DelegationDto, Episode, HealthElement, Identifier as IdentifierDto, PlanOfAction, SecurityMetadata as SecurityMetadataDto } from '@icure/api'
 import { Condition } from '../models/Condition.model'
-import {Annotation, CodingReference, Identifier} from '@icure/typescript-common'
-import { Annotation as AnnotationDto } from '@icure/api/icc-api/model/Annotation'
 import {
-    convertObjectToMapOfArrayOfGeneric, Delegation,
+    Annotation,
+    CodingReference,
+    convertObjectToMapOfArrayOfGeneric,
+    Delegation,
     extractCryptedForeignKeys,
     extractDelegations,
     extractEncryptedSelf,
     extractEncryptionKeys,
     extractSecretForeignKeys,
     extractSecurityMetadata,
+    Identifier,
+    mapAnnotationDtoToAnnotation,
+    mapAnnotationToAnnotationDto,
+    mapCodeStubToCodingReference,
+    mapCodingReferenceToCodeStub,
+    mapDelegationDtoToDelegation,
+    mapDelegationToDelegationDto,
+    mapIdentifierDtoToIdentifier,
+    mapIdentifierToIdentifierDto,
+    mapSecurityMetadataDtoToSecurityMetadata,
+    mapSecurityMetadataToSecurityMetadataDto,
     SystemMetaDataEncrypted,
-    SecurityMetadata
 } from '@icure/typescript-common'
+import { Annotation as AnnotationDto } from '@icure/api/icc-api/model/Annotation'
+import { EntityWithDelegationTypeName } from '@icure/api/icc-x-api/utils/EntityWithDelegationTypeName'
+import { ClinicalStatusEnum } from '../models/enums/ClinicalStatus.enum'
+import { VerificationStatusEnum } from '../models/enums/VerificationStatus.enum'
+import { CategoryEnum } from '../models/enums/Category.enum'
+import { SeverityEnum } from '../models/enums/Severity.enum'
 
-function forMember_HealthElement_id() {
-    return forMember<Condition, HealthElement>(
-        (v) => v.id,
-        mapFrom((v) => v.id)
-    )
+function toHealthElementId(domain: Condition): string | undefined {
+    return domain.id
 }
 
-function forMember_HealthElement_identifiers() {
-    return forMember<Condition, HealthElement>(
-        (v) => v.identifiers,
-        mapWith(IdentifierDto, Identifier, (v) => [...(v.identifiers ?? [])])
-    )
+function toHealthElementIdentifiers(domain: Condition): IdentifierDto[] | undefined {
+    return !!domain.identifiers ? [...domain.identifiers].map(mapIdentifierToIdentifierDto) : undefined
 }
 
-function forMember_HealthElement_rev() {
-    return forMember<Condition, HealthElement>(
-        (v) => v.rev,
-        mapFrom((v) => v.rev)
-    )
+function toHealthElementRev(domain: Condition): string | undefined {
+    return domain.rev
 }
 
-function forMember_HealthElement_created() {
-    return forMember<Condition, HealthElement>(
-        (v) => v.created,
-        mapFrom((v) => v.created)
-    )
+function toHealthElementCreated(domain: Condition): number | undefined {
+    return domain.created
 }
 
-function forMember_HealthElement_modified() {
-    return forMember<Condition, HealthElement>(
-        (v) => v.modified,
-        mapFrom((v) => v.modified)
-    )
+function toHealthElementModified(domain: Condition): number | undefined {
+    return domain.modified
 }
 
-function forMember_HealthElement_author() {
-    return forMember<Condition, HealthElement>(
-        (v) => v.author,
-        mapFrom((v) => v.author)
-    )
+function toHealthElementAuthor(domain: Condition): string | undefined {
+    return domain.author
 }
 
-function forMember_HealthElement_responsible() {
-    return forMember<Condition, HealthElement>(
-        (v) => v.responsible,
-        mapFrom((v) => v.responsible)
-    )
+function toHealthElementResponsible(domain: Condition): string | undefined {
+    return domain.responsible
 }
 
-function forMember_HealthElement_medicalLocationId() {
-    return forMember<Condition, HealthElement>(
-        (v) => v.medicalLocationId,
-        mapFrom((v) => v.medicalLocationId)
-    )
+function toHealthElementMedicalLocationId(domain: Condition): string | undefined {
+    return domain.medicalLocationId
 }
 
-function forMember_HealthElement_tags() {
-    return forMember<Condition, HealthElement>(
-        (v) => v.tags,
-        mapFrom((v) => {
-            if (!v.tags) {
-                return undefined
-            }
+function toHealthElementTags(domain: Condition): CodeStub[] | undefined {
+    if (!domain.tags) {
+        return undefined
+    }
 
-            const tags = [...(v.tags ?? [])]
-            const bodySite = [...(v.bodySite ?? [])]
+    const tags = [...(domain.tags ?? [])]
+    const bodySite = [...(domain.bodySite ?? [])]
 
-            const bodySiteCodeStubs = mapper.mapArray(bodySite, CodingReference, CodeStub).map((c) => {
-                return new CodeStub({
-                    ...c,
-                    context: 'bodySite',
-                })
-            })
-
-            const clinicalStatus = new CodeStub({
-                code: v.clinicalStatus,
-                context: 'clinicalStatus',
-            })
-
-            const verificationStatus = new CodeStub({
-                code: v.verificationStatus,
-                context: 'verificationStatus',
-            })
-
-            const severity = new CodeStub({
-                code: v.severity,
-                context: 'severity',
-            })
-
-            const category = new CodeStub({
-                code: v.category,
-                context: 'category',
-            })
-
-            const tagsCodeStubs = mapper.mapArray(tags, CodingReference, CodeStub)
-
-            return [...tagsCodeStubs, ...bodySiteCodeStubs, clinicalStatus, severity, verificationStatus, category]
+    const bodySiteCodeStubs = bodySite.map(mapCodingReferenceToCodeStub).map((c) => {
+        return new CodeStub({
+            ...c,
+            context: 'bodySite',
         })
-    )
+    })
+
+    const clinicalStatus = new CodeStub({
+        code: domain.clinicalStatus,
+        context: 'clinicalStatus',
+    })
+
+    const verificationStatus = new CodeStub({
+        code: domain.verificationStatus,
+        context: 'verificationStatus',
+    })
+
+    const severity = new CodeStub({
+        code: domain.severity,
+        context: 'severity',
+    })
+
+    const category = new CodeStub({
+        code: domain.category,
+        context: 'category',
+    })
+
+    const tagsCodeStubs = tags.map(mapCodingReferenceToCodeStub)
+
+    return [...tagsCodeStubs, ...bodySiteCodeStubs, clinicalStatus, severity, verificationStatus, category]
 }
 
-function forMember_HealthElement_codes() {
-    return forMember<Condition, HealthElement>(
-        (v) => v.codes,
-        mapWith(CodeStub, CodingReference, (v) => (!!v.codes ? [...v.codes] : undefined))
-    )
+function toHealthElementCodes(domain: Condition): CodeStub[] | undefined {
+    return !!domain.codes ? [...domain.codes].map(mapCodingReferenceToCodeStub) : undefined
 }
 
-function forMember_HealthElement_endOfLife() {
-    return forMember<Condition, HealthElement>(
-        (v) => v.endOfLife,
-        mapFrom((v) => v.endOfLife)
-    )
+function toHealthElementEndOfLife(domain: Condition): number | undefined {
+    return domain.endOfLife
 }
 
-function forMember_HealthElement_deletionDate() {
-    return forMember<Condition, HealthElement>(
-        (v) => v.deletionDate,
-        mapFrom((v) => v.deletionDate)
-    )
+function toHealthElementDeletionDate(domain: Condition): number | undefined {
+    return domain.deletionDate
 }
 
-function forMember_HealthElement_healthElementId() {
-    return forMember<Condition, HealthElement>(
-        (v) => v.healthElementId,
-        mapFrom((v) => v.healthcareElementId)
-    )
+function toHealthElementHealthElementId(domain: Condition): string | undefined {
+    return domain.healthcareElementId
 }
 
-function forMember_HealthElement_valueDate() {
-    return forMember<Condition, HealthElement>(
-        (v) => v.valueDate,
-        mapFrom((v) => v.recordedDate)
-    )
+function toHealthElementValueDate(domain: Condition): number | undefined {
+    return domain.recordedDate
 }
 
-function forMember_HealthElement_openingDate() {
-    return forMember<Condition, HealthElement>(
-        (v) => v.openingDate,
-        mapFrom((v) => v.openingDate)
-    )
+function toHealthElementOpeningDate(domain: Condition): number | undefined {
+    return domain.openingDate
 }
 
-function forMember_HealthElement_closingDate() {
-    return forMember<Condition, HealthElement>(
-        (v) => v.closingDate,
-        mapFrom((v) => v.closingDate)
-    )
+function toHealthElementClosingDate(domain: Condition): number | undefined {
+    return domain.closingDate
 }
 
-function forMember_HealthElement_descr() {
-    return forMember<Condition, HealthElement>(
-        (v) => v.descr,
-        mapFrom((v) => v.description)
-    )
+function toHealthElementDescr(domain: Condition): string | undefined {
+    return domain.description
 }
 
-function forMember_HealthElement_note() {
-    return forMember<Condition, HealthElement>((v) => v.note, ignore())
+function toHealthElementNote(domain: Condition): string | undefined {
+    return undefined
 }
 
-function forMember_HealthElement_notes() {
-    return forMember<Condition, HealthElement>(
-        (v) => v.notes,
-        mapWith(AnnotationDto, Annotation, (v) => v.notes)
-    )
+function toHealthElementNotes(domain: Condition): AnnotationDto[] | undefined {
+    return !!domain.notes ? [...domain.notes].map(mapAnnotationToAnnotationDto) : undefined
 }
 
-function forMember_HealthElement_relevant() {
-    return forMember<Condition, HealthElement>((v) => v.relevant, ignore())
+function toHealthElementRelevant(domain: Condition): boolean | undefined {
+    return undefined
 }
 
-function forMember_HealthElement_idOpeningContact() {
-    return forMember<Condition, HealthElement>((v) => v.idOpeningContact, ignore())
+function toHealthElementIdOpeningContact(domain: Condition): string | undefined {
+    return undefined
 }
 
-function forMember_HealthElement_idClosingContact() {
-    return forMember<Condition, HealthElement>((v) => v.idClosingContact, ignore())
+function toHealthElementIdClosingContact(domain: Condition): string | undefined {
+    return undefined
 }
 
-function forMember_HealthElement_idService() {
-    return forMember<Condition, HealthElement>((v) => v.idService, ignore())
+function toHealthElementIdService(domain: Condition): string | undefined {
+    return undefined
 }
 
-function forMember_HealthElement_status() {
-    return forMember<Condition, HealthElement>((v) => v.status, ignore())
+function toHealthElementStatus(domain: Condition): number | undefined {
+    return undefined
 }
 
-function forMember_HealthElement_laterality() {
-    return forMember<Condition, HealthElement>((v) => v.laterality, ignore())
+function toHealthElementLaterality(domain: Condition): HealthElement.LateralityEnum | undefined {
+    return undefined
 }
 
-function forMember_HealthElement_plansOfAction() {
-    return forMember<Condition, HealthElement>((v) => v.plansOfAction, ignore())
+function toHealthElementPlansOfAction(domain: Condition): PlanOfAction[] | undefined {
+    return undefined
 }
 
-function forMember_HealthElement_episodes() {
-    return forMember<Condition, HealthElement>((v) => v.episodes, ignore())
+function toHealthElementEpisodes(domain: Condition): Episode[] | undefined {
+    return undefined
 }
 
-function forMember_HealthElement_careTeam() {
-    return forMember<Condition, HealthElement>((v) => v.careTeam, ignore())
+function toHealthElementCareTeam(domain: Condition): CareTeamMember[] | undefined {
+    return undefined
 }
 
-function forMember_HealthElement_secretForeignKeys() {
-    return forMember<Condition, HealthElement>(
-        (v) => v.secretForeignKeys,
-        mapFrom((v) => extractSecretForeignKeys(v.systemMetaData))
-    )
+function toHealthElementSecretForeignKeys(domain: Condition): string[] | undefined {
+    return extractSecretForeignKeys(domain.systemMetaData)
 }
 
-function forMember_HealthElement_cryptedForeignKeys() {
-    return forMember<Condition, HealthElement>(
-        (v) => v.cryptedForeignKeys,
-        mapFrom((v) => {
-            const cryptedForeignKeys = extractCryptedForeignKeys(v.systemMetaData)
+function toHealthElementCryptedForeignKeys(domain: Condition):
+    | {
+          [key: string]: DelegationDto[]
+      }
+    | undefined {
+    const cryptedForeignKeys = extractCryptedForeignKeys(domain.systemMetaData)
 
-            if (!cryptedForeignKeys) {
-                return undefined
-            }
+    if (!cryptedForeignKeys) {
+        return undefined
+    }
 
-            return Object.fromEntries([...cryptedForeignKeys].map(([key, value]) => [key, mapper.mapArray(value, Delegation, DelegationDto)]))
-        })
-    )
+    return Object.fromEntries([...cryptedForeignKeys].map(([key, value]) => [key, value.map(mapDelegationToDelegationDto)]))
 }
 
-function forMember_HealthElement_delegations() {
-    return forMember<Condition, HealthElement>(
-        (v) => v.delegations,
-        mapFrom((v) => {
-            const delegations = extractDelegations(v.systemMetaData)
+function toHealthElementDelegations(domain: Condition):
+    | {
+          [key: string]: DelegationDto[]
+      }
+    | undefined {
+    const delegations = extractDelegations(domain.systemMetaData)
 
-            if (!delegations) {
-                return undefined
-            }
+    if (!delegations) {
+        return undefined
+    }
 
-            return Object.fromEntries([...delegations].map(([key, value]) => [key, mapper.mapArray(value, Delegation, DelegationDto)]))
-        })
-    )
+    return Object.fromEntries([...delegations].map(([key, value]) => [key, value.map(mapDelegationToDelegationDto)]))
 }
 
-function forMember_HealthElement_encryptionKeys() {
-    return forMember<Condition, HealthElement>(
-        (v) => v.encryptionKeys,
-        mapFrom((v) => {
-            const encryptionKeys = extractEncryptionKeys(v.systemMetaData)
+function toHealthElementEncryptionKeys(domain: Condition):
+    | {
+          [key: string]: DelegationDto[]
+      }
+    | undefined {
+    const encryptionKeys = extractEncryptionKeys(domain.systemMetaData)
 
-            if (!encryptionKeys) {
-                return undefined
-            }
+    if (!encryptionKeys) {
+        return undefined
+    }
 
-            return Object.fromEntries([...encryptionKeys].map(([key, value]) => [key, mapper.mapArray(value, Delegation, DelegationDto)]))
-        })
-    )
+    return Object.fromEntries([...encryptionKeys].map(([key, value]) => [key, value.map(mapDelegationToDelegationDto)]))
 }
 
-function forMember_HealthElement_encryptedSelf() {
-    return forMember<Condition, HealthElement>(
-        (v) => v.encryptedSelf,
-        mapFrom((v) => extractEncryptedSelf(v.systemMetaData))
-    )
+function toHealthElementEncryptedSelf(domain: Condition): string | undefined {
+    return extractEncryptedSelf(domain.systemMetaData)
 }
 
-function forMember_HealthElement_securityMetadata() {
-    return forMember<Condition, HealthElement>(
-        (v) => v.securityMetadata,
-        mapFrom((v) => {
-            const securityMetadata = extractSecurityMetadata(v.systemMetaData)
-            return mapper.map(securityMetadata, SecurityMetadata, SecurityMetadataDto)
-        })
-    )
+function toHealthElementSecurityMetadata(domain: Condition): SecurityMetadataDto | undefined {
+    const securityMetadata = extractSecurityMetadata(domain.systemMetaData)
+    return securityMetadata ? mapSecurityMetadataToSecurityMetadataDto(securityMetadata) : undefined
 }
 
-function forMember_HealthElement__type() {
-    return forMember<Condition, HealthElement>((v) => v._type, fromValue('HealthElement'))
+function toHealthElement_type(domain: Condition): EntityWithDelegationTypeName | undefined {
+    return 'HealthElement'
 }
 
-function forMember_Condition_id() {
-    return forMember<HealthElement, Condition>(
-        (v) => v.id,
-        mapFrom((v) => v.id)
-    )
+function toConditionId(dto: HealthElement): string | undefined {
+    return dto.id
 }
 
-function forMember_Condition_identifiers() {
-    return forMember<HealthElement, Condition>(
-        (v) => v.identifiers,
-        mapFrom((v) => {
-            const identifiers = v.identifiers
-            if (!identifiers) {
-                return undefined
-            }
-
-            return new Set(mapper.mapArray(identifiers, IdentifierDto, Identifier))
-        })
-    )
+function toConditionIdentifiers(dto: HealthElement): Set<Identifier> | undefined {
+    return !!dto.identifiers ? new Set([...dto.identifiers].map(mapIdentifierDtoToIdentifier)) : undefined
 }
 
-function forMember_Condition_rev() {
-    return forMember<HealthElement, Condition>(
-        (v) => v.rev,
-        mapFrom((v) => v.rev)
-    )
+function toConditionRev(dto: HealthElement): string | undefined {
+    return dto.rev
 }
 
-function forMember_Condition_created() {
-    return forMember<HealthElement, Condition>(
-        (v) => v.created,
-        mapFrom((v) => v.created)
-    )
+function toConditionCreated(dto: HealthElement): number | undefined {
+    return dto.created
 }
 
-function forMember_Condition_modified() {
-    return forMember<HealthElement, Condition>(
-        (v) => v.modified,
-        mapFrom((v) => v.modified)
-    )
+function toConditionModified(dto: HealthElement): number | undefined {
+    return dto.modified
 }
 
-function forMember_Condition_author() {
-    return forMember<HealthElement, Condition>(
-        (v) => v.author,
-        mapFrom((v) => v.author)
-    )
+function toConditionAuthor(dto: HealthElement): string | undefined {
+    return dto.author
 }
 
-function forMember_Condition_responsible() {
-    return forMember<HealthElement, Condition>(
-        (v) => v.responsible,
-        mapFrom((v) => v.responsible)
-    )
+function toConditionResponsible(dto: HealthElement): string | undefined {
+    return dto.responsible
 }
 
-function forMember_Condition_medicalLocationId() {
-    return forMember<HealthElement, Condition>(
-        (v) => v.medicalLocationId,
-        mapFrom((v) => v.medicalLocationId)
-    )
+function toConditionMedicalLocationId(dto: HealthElement): string | undefined {
+    return dto.medicalLocationId
 }
 
-function forMember_Condition_clinicalStatus() {
-    return forMember<HealthElement, Condition>(
-        (v) => v.clinicalStatus,
-        mapFrom((v) => v.tags?.find((v) => v.context === 'clinicalStatus')?.code)
-    )
+function toConditionClinicalStatus(dto: HealthElement): ClinicalStatusEnum | undefined {
+    return dto.tags?.find((v) => v.context === 'clinicalStatus')?.code as ClinicalStatusEnum | undefined
 }
 
-function forMember_Condition_verificationStatus() {
-    return forMember<HealthElement, Condition>(
-        (v) => v.verificationStatus,
-        mapFrom((v) => v.tags?.find((v) => v.context === 'verificationStatus')?.code)
-    )
+function toConditionVerificationStatus(dto: HealthElement): VerificationStatusEnum | undefined {
+    return dto.tags?.find((v) => v.context === 'verificationStatus')?.code as VerificationStatusEnum | undefined
 }
 
-function forMember_Condition_category() {
-    return forMember<HealthElement, Condition>(
-        (v) => v.category,
-        mapFrom((v) => v.tags?.find((v) => v.context === 'category')?.code)
-    )
+function toConditionCategory(dto: HealthElement): CategoryEnum | undefined {
+    return dto.tags?.find((v) => v.context === 'category')?.code as CategoryEnum | undefined
 }
 
-function forMember_Condition_severity() {
-    return forMember<HealthElement, Condition>(
-        (v) => v.severity,
-        mapFrom((v) => v.tags?.find((v) => v.context === 'severity')?.code)
-    )
+function toConditionSeverity(dto: HealthElement): SeverityEnum | undefined {
+    return dto.tags?.find((v) => v.context === 'severity')?.code as SeverityEnum | undefined
 }
 
-function forMember_Condition_bodySite() {
-    return forMember<HealthElement, Condition>(
-        (v) => v.bodySite,
-        mapFrom((v) => {
-            const bodySites = v.tags?.filter((v) => v.context === 'bodySite')
+function toConditionBodySite(dto: HealthElement): Set<CodingReference> | undefined {
+    const bodySites = dto.tags?.filter((v) => v.context === 'bodySite')
 
-            if (!bodySites) {
-                return undefined
-            }
+    if (!bodySites) {
+        return undefined
+    }
 
-            return new Set(mapper.mapArray(bodySites, CodeStub, CodingReference))
-        })
-    )
+    return new Set(bodySites.map(mapCodeStubToCodingReference))
 }
 
-function forMember_Condition_tags() {
-    return forMember<HealthElement, Condition>(
-        (v) => v.tags,
-        mapFrom((v) => {
-            const contexts = ['clinicalStatus', 'verificationStatus', 'category', 'severity', 'bodySite']
-            const tags = v.tags?.filter((v) => (!!v.context ? !contexts.includes(v.context) : true))
+function toConditionTags(dto: HealthElement): Set<CodingReference> | undefined {
+    const contexts = ['clinicalStatus', 'verificationStatus', 'category', 'severity', 'bodySite']
+    const tags = dto.tags?.filter((v) => (!!v.context ? !contexts.includes(v.context) : true))
 
-            if (!tags) {
-                return undefined
-            }
+    if (!tags) {
+        return undefined
+    }
 
-            return new Set(mapper.mapArray(tags, CodeStub, CodingReference))
-        })
-    )
+    return new Set([...tags].map(mapCodeStubToCodingReference))
 }
 
-function forMember_Condition_codes() {
-    return forMember<HealthElement, Condition>(
-        (v) => v.codes,
-        mapFrom((v) => {
-            const codes = v.codes
-
-            if (!codes) {
-                return undefined
-            }
-
-            return new Set(mapper.mapArray(codes, CodeStub, CodingReference))
-        })
-    )
+function toConditionCodes(dto: HealthElement): Set<CodingReference> | undefined {
+    return dto.codes ? new Set([...dto.codes].map(mapCodeStubToCodingReference)) : undefined
 }
 
-function forMember_Condition_endOfLife() {
-    return forMember<HealthElement, Condition>(
-        (v) => v.endOfLife,
-        mapFrom((v) => v.endOfLife)
-    )
+function toConditionEndOfLife(dto: HealthElement): number | undefined {
+    return dto.endOfLife
 }
 
-function forMember_Condition_deletionDate() {
-    return forMember<HealthElement, Condition>(
-        (v) => v.deletionDate,
-        mapFrom((v) => v.deletionDate)
-    )
+function toConditionDeletionDate(dto: HealthElement): number | undefined {
+    return dto.deletionDate
 }
 
-function forMember_Condition_healthcareElementId() {
-    return forMember<HealthElement, Condition>(
-        (v) => v.healthcareElementId,
-        mapFrom((v) => v.healthElementId)
-    )
+function toConditionHealthcareElementId(dto: HealthElement): string | undefined {
+    return dto.healthElementId
 }
 
-function forMember_Condition_recordedDate() {
-    return forMember<HealthElement, Condition>(
-        (v) => v.recordedDate,
-        mapFrom((v) => v.valueDate)
-    )
+function toConditionRecordedDate(dto: HealthElement): number | undefined {
+    return dto.valueDate
 }
 
-function forMember_Condition_openingDate() {
-    return forMember<HealthElement, Condition>(
-        (v) => v.openingDate,
-        mapFrom((v) => v.openingDate)
-    )
+function toConditionOpeningDate(dto: HealthElement): number | undefined {
+    return dto.openingDate
 }
 
-function forMember_Condition_closingDate() {
-    return forMember<HealthElement, Condition>(
-        (v) => v.closingDate,
-        mapFrom((v) => v.closingDate)
-    )
+function toConditionClosingDate(dto: HealthElement): number | undefined {
+    return dto.closingDate
 }
 
-function forMember_Condition_description() {
-    return forMember<HealthElement, Condition>(
-        (v) => v.description,
-        mapFrom((v) => v.descr)
-    )
+function toConditionDescription(dto: HealthElement): string | undefined {
+    return dto.descr
 }
 
-function forMember_Condition_notes() {
-    return forMember<HealthElement, Condition>(
-        (v) => v.notes,
-        mapWith(Annotation, AnnotationDto, (v) => v.notes)
-    )
+function toConditionNotes(dto: HealthElement): Annotation[] | undefined {
+    return dto.notes ? [...dto.notes].map(mapAnnotationDtoToAnnotation) : undefined
 }
 
-function forMember_Condition_systemMetaData() {
-    return forMember<HealthElement, Condition>(
-        (v) => v.systemMetaData,
-        mapFrom(
-            (v) => {
-                return new SystemMetaDataEncrypted({
-                    encryptedSelf: v.encryptedSelf,
-                    secretForeignKeys: v.secretForeignKeys,
-                    cryptedForeignKeys: !!v.cryptedForeignKeys ? new Map(Object.entries(v.cryptedForeignKeys).map(([k, v]) => [k, mapper.mapArray(v, DelegationDto, Delegation)])) : undefined,
-                    delegations: !!v.delegations ? new Map(Object.entries(v.delegations).map(([k, v]) => [k, mapper.mapArray(v, DelegationDto, Delegation)])) : undefined,
-                    encryptionKeys: !!v.encryptionKeys ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(v.encryptionKeys, (arr) => mapper.mapArray(arr, DelegationDto, Delegation)) : undefined,
-                    securityMetadata: !!v.securityMetadata ? mapper.map(v.securityMetadata, SecurityMetadataDto, SecurityMetadata) : undefined,
-                })
-            }
-        )
-    )
+function toConditionSystemMetaData(dto: HealthElement): SystemMetaDataEncrypted | undefined {
+    return new SystemMetaDataEncrypted({
+        encryptedSelf: dto.encryptedSelf,
+        secretForeignKeys: dto.secretForeignKeys,
+        cryptedForeignKeys: !!dto.cryptedForeignKeys ? new Map(Object.entries(dto.cryptedForeignKeys).map(([k, v]) => [k, v.map(mapDelegationDtoToDelegation)])) : undefined,
+        delegations: !!dto.delegations ? new Map(Object.entries(dto.delegations).map(([k, v]) => [k, v.map(mapDelegationDtoToDelegation)])) : undefined,
+        encryptionKeys: !!dto.encryptionKeys ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.encryptionKeys, (arr) => arr.map(mapDelegationDtoToDelegation)) : undefined,
+        securityMetadata: !!dto.securityMetadata ? mapSecurityMetadataDtoToSecurityMetadata(dto.securityMetadata) : undefined,
+    })
 }
 
-export function initializeConditionMapper(mapper: Mapper) {
-    createMap(mapper, Condition, HealthElement, forMember_HealthElement_id(), forMember_HealthElement_identifiers(), forMember_HealthElement_rev(), forMember_HealthElement_created(), forMember_HealthElement_modified(), forMember_HealthElement_author(), forMember_HealthElement_responsible(), forMember_HealthElement_medicalLocationId(), forMember_HealthElement_tags(), forMember_HealthElement_codes(), forMember_HealthElement_endOfLife(), forMember_HealthElement_deletionDate(), forMember_HealthElement_healthElementId(), forMember_HealthElement_valueDate(), forMember_HealthElement_openingDate(), forMember_HealthElement_closingDate(), forMember_HealthElement_descr(), forMember_HealthElement_note(), forMember_HealthElement_notes(), forMember_HealthElement_relevant(), forMember_HealthElement_idOpeningContact(), forMember_HealthElement_idClosingContact(), forMember_HealthElement_idService(), forMember_HealthElement_status(), forMember_HealthElement_laterality(), forMember_HealthElement_plansOfAction(), forMember_HealthElement_episodes(), forMember_HealthElement_careTeam(), forMember_HealthElement_secretForeignKeys(), forMember_HealthElement_cryptedForeignKeys(), forMember_HealthElement_delegations(), forMember_HealthElement_encryptionKeys(), forMember_HealthElement_encryptedSelf(), forMember_HealthElement_securityMetadata(), forMember_HealthElement__type())
+export function mapHealthElementToCondition(dto: HealthElement): Condition {
+    return new Condition({
+        id: toConditionId(dto),
+        identifiers: toConditionIdentifiers(dto),
+        rev: toConditionRev(dto),
+        created: toConditionCreated(dto),
+        modified: toConditionModified(dto),
+        author: toConditionAuthor(dto),
+        responsible: toConditionResponsible(dto),
+        medicalLocationId: toConditionMedicalLocationId(dto),
+        clinicalStatus: toConditionClinicalStatus(dto),
+        verificationStatus: toConditionVerificationStatus(dto),
+        category: toConditionCategory(dto),
+        severity: toConditionSeverity(dto),
+        bodySite: toConditionBodySite(dto),
+        tags: toConditionTags(dto),
+        codes: toConditionCodes(dto),
+        endOfLife: toConditionEndOfLife(dto),
+        deletionDate: toConditionDeletionDate(dto),
+        healthcareElementId: toConditionHealthcareElementId(dto),
+        recordedDate: toConditionRecordedDate(dto),
+        openingDate: toConditionOpeningDate(dto),
+        closingDate: toConditionClosingDate(dto),
+        description: toConditionDescription(dto),
+        notes: toConditionNotes(dto),
+        systemMetaData: toConditionSystemMetaData(dto),
+    })
+}
 
-    createMap(mapper, HealthElement, Condition, forMember_Condition_id(), forMember_Condition_identifiers(), forMember_Condition_rev(), forMember_Condition_created(), forMember_Condition_modified(), forMember_Condition_author(), forMember_Condition_responsible(), forMember_Condition_medicalLocationId(), forMember_Condition_clinicalStatus(), forMember_Condition_verificationStatus(), forMember_Condition_category(), forMember_Condition_severity(), forMember_Condition_bodySite(), forMember_Condition_tags(), forMember_Condition_codes(), forMember_Condition_endOfLife(), forMember_Condition_deletionDate(), forMember_Condition_healthcareElementId(), forMember_Condition_recordedDate(), forMember_Condition_openingDate(), forMember_Condition_closingDate(), forMember_Condition_description(), forMember_Condition_notes(), forMember_Condition_systemMetaData())
+export function mapConditionToHealthElement(domain: Condition): HealthElement {
+    return new HealthElement({
+        id: toHealthElementId(domain),
+        identifiers: toHealthElementIdentifiers(domain),
+        rev: toHealthElementRev(domain),
+        created: toHealthElementCreated(domain),
+        modified: toHealthElementModified(domain),
+        author: toHealthElementAuthor(domain),
+        responsible: toHealthElementResponsible(domain),
+        medicalLocationId: toHealthElementMedicalLocationId(domain),
+        tags: toHealthElementTags(domain),
+        codes: toHealthElementCodes(domain),
+        endOfLife: toHealthElementEndOfLife(domain),
+        deletionDate: toHealthElementDeletionDate(domain),
+        healthElementId: toHealthElementHealthElementId(domain),
+        valueDate: toHealthElementValueDate(domain),
+        openingDate: toHealthElementOpeningDate(domain),
+        closingDate: toHealthElementClosingDate(domain),
+        descr: toHealthElementDescr(domain),
+        note: toHealthElementNote(domain),
+        notes: toHealthElementNotes(domain),
+        relevant: toHealthElementRelevant(domain),
+        idOpeningContact: toHealthElementIdOpeningContact(domain),
+        idClosingContact: toHealthElementIdClosingContact(domain),
+        idService: toHealthElementIdService(domain),
+        status: toHealthElementStatus(domain),
+        laterality: toHealthElementLaterality(domain),
+        plansOfAction: toHealthElementPlansOfAction(domain),
+        episodes: toHealthElementEpisodes(domain),
+        careTeam: toHealthElementCareTeam(domain),
+        secretForeignKeys: toHealthElementSecretForeignKeys(domain),
+        cryptedForeignKeys: toHealthElementCryptedForeignKeys(domain),
+        delegations: toHealthElementDelegations(domain),
+        encryptionKeys: toHealthElementEncryptionKeys(domain),
+        encryptedSelf: toHealthElementEncryptedSelf(domain),
+        securityMetadata: toHealthElementSecurityMetadata(domain),
+        _type: toHealthElement_type(domain),
+    })
 }

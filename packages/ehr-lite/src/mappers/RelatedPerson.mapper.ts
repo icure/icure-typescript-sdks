@@ -1,59 +1,54 @@
 import { RelatedPerson } from '../models/RelatedPerson.model'
 import { Partnership } from '@icure/api'
-import { createMap, forMember, ignore, mapFrom, Mapper } from '@automapper/core'
+import { RelatedPersonTypeEnum } from '../models/enums/RelatedPersonType.enum'
+import { RelatedPersonStatusEnum } from '../models/enums/RelatedPersonStatus.enum'
 
-function forMember_Partnership_type() {
-    return forMember<RelatedPerson, Partnership>(
-        (v) => v.type,
-        mapFrom((v) => v.type)
-    )
+function toPartnershipType(domain: RelatedPerson): Partnership.TypeEnum | undefined {
+    return domain.type
 }
 
-function forMember_Partnership_status() {
-    return forMember<RelatedPerson, Partnership>(
-        (v) => v.status,
-        mapFrom((v) => v.status)
-    )
+function toPartnershipStatus(domain: RelatedPerson): Partnership.StatusEnum | undefined {
+    return domain.status
 }
 
-function forMember_Partnership_partnerId() {
-    return forMember<RelatedPerson, Partnership>(
-        (v) => v.partnerId,
-        mapFrom((v) => v.personId)
-    )
+function toPartnershipPartnerId(domain: RelatedPerson): string | undefined {
+    return domain.personId
 }
 
-function forMember_Partnership_meToOtherRelationshipDescription() {
-    return forMember<RelatedPerson, Partnership>((v) => v.meToOtherRelationshipDescription, ignore())
+function toPartnershipMeToOtherRelationshipDescription(domain: RelatedPerson): string | undefined {
+    return undefined
 }
 
-function forMember_Partnership_otherToMeRelationshipDescription() {
-    return forMember<RelatedPerson, Partnership>((v) => v.otherToMeRelationshipDescription, ignore())
+function toPartnershipOtherToMeRelationshipDescription(domain: RelatedPerson): string | undefined {
+    return undefined
 }
 
-function forMember_RelatedPerson_type() {
-    return forMember<Partnership, RelatedPerson>(
-        (v) => v.type,
-        mapFrom((v) => v.type)
-    )
+function toRelatedPersonType(dto: Partnership): RelatedPersonTypeEnum | undefined {
+    return dto.type as RelatedPersonTypeEnum | undefined
 }
 
-function forMember_RelatedPerson_status() {
-    return forMember<Partnership, RelatedPerson>(
-        (v) => v.status,
-        mapFrom((v) => v.status)
-    )
+function toRelatedPersonStatus(dto: Partnership): RelatedPersonStatusEnum | undefined {
+    return dto.status as RelatedPersonStatusEnum | undefined
 }
 
-function forMember_RelatedPerson_personId() {
-    return forMember<Partnership, RelatedPerson>(
-        (v) => v.personId,
-        mapFrom((v) => v.partnerId)
-    )
+function toRelatedPersonPersonId(dto: Partnership): string | undefined {
+    return dto.partnerId
 }
 
-export function initializeRelatedPersonMapper(mapper: Mapper) {
-    createMap(mapper, RelatedPerson, Partnership, forMember_Partnership_type(), forMember_Partnership_status(), forMember_Partnership_partnerId(), forMember_Partnership_meToOtherRelationshipDescription(), forMember_Partnership_otherToMeRelationshipDescription())
+export function mapPartnershipToRelatedPerson(dto: Partnership): RelatedPerson {
+    return new RelatedPerson({
+        type: toRelatedPersonType(dto),
+        status: toRelatedPersonStatus(dto),
+        personId: toRelatedPersonPersonId(dto),
+    })
+}
 
-    createMap(mapper, Partnership, RelatedPerson, forMember_RelatedPerson_type(), forMember_RelatedPerson_status(), forMember_RelatedPerson_personId())
+export function mapRelatedPersonToPartnership(domain: RelatedPerson): Partnership {
+    return new Partnership({
+        type: toPartnershipType(domain),
+        status: toPartnershipStatus(domain),
+        partnerId: toPartnershipPartnerId(domain),
+        meToOtherRelationshipDescription: toPartnershipMeToOtherRelationshipDescription(domain),
+        otherToMeRelationshipDescription: toPartnershipOtherToMeRelationshipDescription(domain),
+    })
 }

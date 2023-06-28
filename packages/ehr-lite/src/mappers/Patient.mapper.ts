@@ -1,13 +1,26 @@
 import { Patient } from '../models/Patient.model'
-import { Address, Annotation as AnnotationDto, CodeStub, Identifier as IdentifierDto, Partnership, Patient as PatientDto, PatientHealthCareParty, PersonName, PropertyStub, SecurityMetadata as SecurityMetadataDto } from '@icure/api'
-import { createMap, forMember, fromValue, ignore, mapFrom, mapWith, Mapper } from '@automapper/core'
-import { mapper } from './mapper'
+import {
+    Address,
+    Annotation as AnnotationDto,
+    CodeStub,
+    EmploymentInfo,
+    FinancialInstitutionInformation,
+    Identifier as IdentifierDto,
+    Insurability,
+    MedicalHouseContract,
+    Partnership,
+    Patient as PatientDto,
+    PatientHealthCareParty,
+    PersonName,
+    PropertyStub,
+    SchoolingInfo,
+    SecurityMetadata as SecurityMetadataDto,
+} from '@icure/api'
 import { HumanName } from '../models/HumanName.model'
 import { Location } from '../models/Location.model'
-import { Annotation } from '@icure/typescript-common'
-import { RelatedPerson } from '../models/RelatedPerson.model'
-import { RelatedPractitioner } from '../models/RelatedPractitioner.model'
 import {
+    Annotation,
+    CodingReference,
     convertDeepNestedMapToObject,
     convertMapOfArrayOfGenericToObject,
     convertMapToObject,
@@ -16,6 +29,7 @@ import {
     convertObjectToMap,
     convertObjectToMapOfArrayOfGeneric,
     convertObjectToNestedMap,
+    Delegation,
     extractAesExchangeKeys,
     extractCryptedForeignKeys,
     extractDelegations,
@@ -28,835 +42,680 @@ import {
     extractSecretForeignKeys,
     extractSecurityMetadata,
     extractTransferKeys,
-    SecurityMetadata,
+    Identifier,
+    mapAnnotationDtoToAnnotation,
+    mapAnnotationToAnnotationDto,
+    mapCodeStubToCodingReference,
+    mapCodingReferenceToCodeStub,
+    mapDelegationDtoToDelegation,
+    mapDelegationToDelegationDto,
+    mapIdentifierDtoToIdentifier,
+    mapIdentifierToIdentifierDto,
+    mapPropertyStubToProperty,
+    mapPropertyToPropertyStub,
+    mapSecurityMetadataDtoToSecurityMetadata,
+    mapSecurityMetadataToSecurityMetadataDto,
+    Property,
     SystemMetaDataOwnerEncrypted,
-    Delegation,
-    Property, Identifier, CodingReference
 } from '@icure/typescript-common'
+import { RelatedPerson } from '../models/RelatedPerson.model'
+import { RelatedPractitioner } from '../models/RelatedPractitioner.model'
 import { Delegation as DelegationDto } from '@icure/api/icc-api/model/Delegation'
+import { mapHumanNameToPersonName, mapPersonNameToHumanName } from './HumanName.mapper'
+import { mapPartnershipToRelatedPerson, mapRelatedPersonToPartnership } from './RelatedPerson.mapper'
+import { mapPatientHealthCarePartyToRelatedPractitioner, mapRelatedPractitionerToPatientHealthCareParty } from './RelatedPractitioner.mapper'
+import { EntityWithDelegationTypeName } from '@icure/api/icc-x-api/utils/EntityWithDelegationTypeName'
+import { mapAddressToLocation, mapLocationToAddress } from './Location.mapper'
+import { GenderEnum } from '../models/enums/Gender.enum'
+import { PatientDeactivationReasonEnum } from '../models/enums/PatientDeactivationReason.enum'
+import { PatientPersonalStatusEnum } from '../models/enums/PatientPersonalStatus.enum'
 
-function forMember_PatientDto_id() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.id,
-        mapFrom((p) => p.id)
-    )
+function toPatientDtoId(domain: Patient): string | undefined {
+    return domain.id
 }
 
-function forMember_PatientDto_rev() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.rev,
-        mapFrom((p) => p.rev)
-    )
+function toPatientDtoRev(domain: Patient): string | undefined {
+    return domain.rev
 }
 
-function forMember_PatientDto_identifier() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.identifier,
-        mapWith(IdentifierDto, Identifier, (p) => p.identifiers)
-    )
+function toPatientDtoIdentifier(domain: Patient): IdentifierDto[] | undefined {
+    return !!domain.identifiers ? domain.identifiers.map(mapIdentifierToIdentifierDto) : undefined
 }
 
-function forMember_PatientDto_created() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.created,
-        mapFrom((p) => p.created)
-    )
+function toPatientDtoCreated(domain: Patient): number | undefined {
+    return domain.created
 }
 
-function forMember_PatientDto_modified() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.modified,
-        mapFrom((p) => p.modified)
-    )
+function toPatientDtoModified(domain: Patient): number | undefined {
+    return domain.modified
 }
 
-function forMember_PatientDto_author() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.author,
-        mapFrom((p) => p.author)
-    )
+function toPatientDtoAuthor(domain: Patient): string | undefined {
+    return domain.author
 }
 
-function forMember_PatientDto_responsible() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.responsible,
-        mapFrom((p) => p.responsible)
-    )
+function toPatientDtoResponsible(domain: Patient): string | undefined {
+    return domain.responsible
 }
 
-function forMember_PatientDto_tags() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.tags,
-        mapWith(CodeStub, CodingReference, (p) => p.tags)
-    )
+function toPatientDtoTags(domain: Patient): CodeStub[] | undefined {
+    return !!domain.tags ? domain.tags.map(mapCodingReferenceToCodeStub) : undefined
 }
 
-function forMember_PatientDto_codes() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.codes,
-        mapWith(CodeStub, CodingReference, (p) => p.codes)
-    )
+function toPatientDtoCodes(domain: Patient): CodeStub[] | undefined {
+    return !!domain.codes ? domain.codes.map(mapCodingReferenceToCodeStub) : undefined
 }
 
-function forMember_PatientDto_endOfLife() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.endOfLife,
-        mapFrom((p) => p.endOfLife)
-    )
+function toPatientDtoEndOfLife(domain: Patient): number | undefined {
+    return domain.endOfLife
 }
 
-function forMember_PatientDto_deletionDate() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.deletionDate,
-        mapFrom((p) => p.deletionDate)
-    )
+function toPatientDtoDeletionDate(domain: Patient): number | undefined {
+    return domain.deletionDate
 }
 
-function forMember_PatientDto_firstName() {
-    return forMember<Patient, PatientDto>((v) => v.firstName, ignore())
+function toPatientDtoFirstName(domain: Patient): string | undefined {
+    return undefined
 }
 
-function forMember_PatientDto_lastName() {
-    return forMember<Patient, PatientDto>((v) => v.lastName, ignore())
+function toPatientDtoLastName(domain: Patient): string | undefined {
+    return undefined
 }
 
-function forMember_PatientDto_names() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.names,
-        mapWith(PersonName, HumanName, (p) => p.names)
-    )
+function toPatientDtoNames(domain: Patient): PersonName[] | undefined {
+    return !!domain.names ? domain.names.map(mapHumanNameToPersonName) : undefined
 }
 
-function forMember_PatientDto_companyName() {
-    return forMember<Patient, PatientDto>((v) => v.companyName, ignore())
+function toPatientDtoCompanyName(domain: Patient): string | undefined {
+    return undefined
 }
 
-function forMember_PatientDto_languages() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.languages,
-        mapFrom((p) => p.languages)
-    )
+function toPatientDtoLanguages(domain: Patient): string[] | undefined {
+    return domain.languages
 }
 
-function forMember_PatientDto_addresses() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.addresses,
-        mapWith(Address, Location, (p) => p.addresses)
-    )
+function toPatientDtoAddresses(domain: Patient): Address[] | undefined {
+    return !!domain.addresses ? domain.addresses.map(mapLocationToAddress) : undefined
 }
 
-function forMember_PatientDto_civility() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.civility,
-        mapFrom((p) => p.civility)
-    )
+function toPatientDtoCivility(domain: Patient): string | undefined {
+    return domain.civility
 }
 
-function forMember_PatientDto_gender() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.gender,
-        mapFrom((p) => p.gender)
-    )
+function toPatientDtoGender(domain: Patient): PatientDto.GenderEnum | undefined {
+    return domain.gender
 }
 
-function forMember_PatientDto_birthSex() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.birthSex,
-        mapFrom((p) => p.birthSex)
-    )
+function toPatientDtoBirthSex(domain: Patient): PatientDto.BirthSexEnum | undefined {
+    return domain.birthSex
 }
 
-function forMember_PatientDto_mergeToPatientId() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.mergeToPatientId,
-        mapFrom((p) => p.mergeToPatientId)
-    )
+function toPatientDtoMergeToPatientId(domain: Patient): string | undefined {
+    return domain.mergeToPatientId
 }
 
-function forMember_PatientDto_mergedIds() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.mergedIds,
-        mapFrom((p) => p.mergedIds)
-    )
+function toPatientDtoMergedIds(domain: Patient): string[] | undefined {
+    return domain.mergedIds
 }
 
-function forMember_PatientDto_alias() {
-    return forMember<Patient, PatientDto>((v) => v.alias, ignore())
+function toPatientDtoAlias(domain: Patient): string | undefined {
+    return undefined
 }
 
-function forMember_PatientDto_active() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.active,
-        mapFrom((p) => p.active)
-    )
+function toPatientDtoActive(domain: Patient): boolean | undefined {
+    return domain.active
 }
 
-function forMember_PatientDto_deactivationReason() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.deactivationReason,
-        mapFrom((p) => p.deactivationReason)
-    )
+function toPatientDtoDeactivationReason(domain: Patient): PatientDto.DeactivationReasonEnum | undefined {
+    return domain.deactivationReason
 }
 
-function forMember_PatientDto_deactivationDate() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.deactivationDate,
-        mapFrom((p) => p.deactivationDate)
-    )
+function toPatientDtoDeactivationDate(domain: Patient): number | undefined {
+    return domain.deactivationDate
 }
 
-function forMember_PatientDto_ssin() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.ssin,
-        mapFrom((p) => p.ssin)
-    )
+function toPatientDtoSsin(domain: Patient): string | undefined {
+    return domain.ssin
 }
 
-function forMember_PatientDto_maidenName() {
-    return forMember<Patient, PatientDto>((v) => v.maidenName, ignore())
+function toPatientDtoMaidenName(domain: Patient): string | undefined {
+    return undefined
 }
 
-function forMember_PatientDto_spouseName() {
-    return forMember<Patient, PatientDto>((v) => v.spouseName, ignore())
+function toPatientDtoSpouseName(domain: Patient): string | undefined {
+    return undefined
 }
 
-function forMember_PatientDto_partnerName() {
-    return forMember<Patient, PatientDto>((v) => v.partnerName, ignore())
+function toPatientDtoPartnerName(domain: Patient): string | undefined {
+    return undefined
 }
 
-function forMember_PatientDto_personalStatus() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.personalStatus,
-        mapFrom((p) => p.personalStatus)
-    )
+function toPatientDtoPersonalStatus(domain: Patient): PatientDto.PersonalStatusEnum | undefined {
+    return domain.personalStatus
 }
 
-function forMember_PatientDto_dateOfBirth() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.dateOfBirth,
-        mapFrom((p) => p.dateOfBirth)
-    )
+function toPatientDtoDateOfBirth(domain: Patient): number | undefined {
+    return domain.dateOfBirth
 }
 
-function forMember_PatientDto_dateOfDeath() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.dateOfDeath,
-        mapFrom((p) => p.dateOfDeath)
-    )
+function toPatientDtoDateOfDeath(domain: Patient): number | undefined {
+    return domain.dateOfDeath
 }
 
-function forMember_PatientDto_timestampOfLatestEidReading() {
-    return forMember<Patient, PatientDto>((v) => v.timestampOfLatestEidReading, ignore())
+function toPatientDtoTimestampOfLatestEidReading(domain: Patient): number | undefined {
+    return undefined
 }
 
-function forMember_PatientDto_placeOfBirth() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.placeOfBirth,
-        mapFrom((p) => p.placeOfBirth)
-    )
+function toPatientDtoPlaceOfBirth(domain: Patient): string | undefined {
+    return domain.placeOfBirth
 }
 
-function forMember_PatientDto_placeOfDeath() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.placeOfDeath,
-        mapFrom((p) => p.placeOfDeath)
-    )
+function toPatientDtoPlaceOfDeath(domain: Patient): string | undefined {
+    return domain.placeOfDeath
 }
 
-function forMember_PatientDto_deceased() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.deceased,
-        mapFrom((p) => p.deceased)
-    )
+function toPatientDtoDeceased(domain: Patient): boolean | undefined {
+    return domain.deceased
 }
 
-function forMember_PatientDto_education() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.education,
-        mapFrom((p) => p.education)
-    )
+function toPatientDtoEducation(domain: Patient): string | undefined {
+    return domain.education
 }
 
-function forMember_PatientDto_profession() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.profession,
-        mapFrom((p) => p.profession)
-    )
+function toPatientDtoProfession(domain: Patient): string | undefined {
+    return domain.profession
 }
 
-function forMember_PatientDto_note() {
-    return forMember<Patient, PatientDto>((v) => v.note, ignore())
+function toPatientDtoNote(domain: Patient): string | undefined {
+    return undefined
 }
 
-function forMember_PatientDto_administrativeNote() {
-    return forMember<Patient, PatientDto>((v) => v.administrativeNote, ignore())
+function toPatientDtoAdministrativeNote(domain: Patient): string | undefined {
+    return undefined
 }
 
-function forMember_PatientDto_notes() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.notes,
-        mapWith(AnnotationDto, Annotation, (p) => p.notes)
-    )
+function toPatientDtoNotes(domain: Patient): AnnotationDto[] | undefined {
+    return !!domain.notes ? domain.notes.map(mapAnnotationToAnnotationDto) : undefined
 }
 
-function forMember_PatientDto_nationality() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.nationality,
-        mapFrom((p) => p.nationality)
-    )
+function toPatientDtoNationality(domain: Patient): string | undefined {
+    return domain.nationality
 }
 
-function forMember_PatientDto_race() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.race,
-        mapFrom((p) => p.race)
-    )
+function toPatientDtoRace(domain: Patient): string | undefined {
+    return domain.race
 }
 
-function forMember_PatientDto_ethnicity() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.ethnicity,
-        mapFrom((p) => p.ethnicity)
-    )
+function toPatientDtoEthnicity(domain: Patient): string | undefined {
+    return domain.ethnicity
 }
 
-function forMember_PatientDto_preferredUserId() {
-    return forMember<Patient, PatientDto>((v) => v.preferredUserId, ignore())
+function toPatientDtoPreferredUserId(domain: Patient): string | undefined {
+    return undefined
 }
 
-function forMember_PatientDto_picture() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.picture,
-        mapFrom((p) => p.picture)
-    )
+function toPatientDtoPicture(domain: Patient): ArrayBuffer | undefined {
+    return domain.picture
 }
 
-function forMember_PatientDto_externalId() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.externalId,
-        mapFrom((p) => p.externalId)
-    )
+function toPatientDtoExternalId(domain: Patient): string | undefined {
+    return domain.externalId
 }
 
-function forMember_PatientDto_insurabilities() {
-    return forMember<Patient, PatientDto>((v) => v.insurabilities, ignore())
+function toPatientDtoInsurabilities(domain: Patient): Insurability[] | undefined {
+    return undefined
 }
 
-function forMember_PatientDto_partnerships() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.partnerships,
-        mapWith(Partnership, RelatedPerson, (p) => p.relatives)
-    )
+function toPatientDtoPartnerships(domain: Patient): Partnership[] | undefined {
+    return !!domain.relatives ? domain.relatives.map(mapRelatedPersonToPartnership) : undefined
 }
 
-function forMember_PatientDto_patientHealthCareParties() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.patientHealthCareParties,
-        mapWith(PatientHealthCareParty, RelatedPractitioner, (p) => p.patientPractitioners)
-    )
+function toPatientDtoPatientHealthCareParties(domain: Patient): PatientHealthCareParty[] | undefined {
+    return !!domain.patientPractitioners ? domain.patientPractitioners.map(mapRelatedPractitionerToPatientHealthCareParty) : undefined
 }
 
-function forMember_PatientDto_financialInstitutionInformation() {
-    return forMember<Patient, PatientDto>((v) => v.financialInstitutionInformation, ignore())
+function toPatientDtoFinancialInstitutionInformation(domain: Patient): FinancialInstitutionInformation[] | undefined {
+    return undefined
 }
 
-function forMember_PatientDto_medicalHouseContracts() {
-    return forMember<Patient, PatientDto>((v) => v.medicalHouseContracts, ignore())
+function toPatientDtoMedicalHouseContracts(domain: Patient): MedicalHouseContract[] | undefined {
+    return undefined
 }
 
-function forMember_PatientDto_patientProfessions() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.patientProfessions,
-        mapWith(CodeStub, CodingReference, (p) => p.patientProfessions)
-    )
+function toPatientDtoPatientProfessions(domain: Patient): CodeStub[] | undefined {
+    return !!domain.patientProfessions ? domain.patientProfessions.map(mapCodingReferenceToCodeStub) : undefined
 }
 
-function forMember_PatientDto_parameters() {
-    return forMember<Patient, PatientDto>((v) => v.parameters, ignore())
+function toPatientDtoParameters(domain: Patient): { [key: string]: string[] } | undefined {
+    return undefined
 }
 
-function forMember_PatientDto_properties() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.properties,
-        mapWith(PropertyStub, Property, (p) => p.properties)
-    )
+function toPatientDtoProperties(domain: Patient): PropertyStub[] | undefined {
+    return !!domain.properties ? domain.properties.map(mapPropertyToPropertyStub) : undefined
 }
 
-function forMember_PatientDto_hcPartyKeys() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.hcPartyKeys,
-        mapFrom((p) => {
-            const hcPartyKeys = extractHcPartyKeys(p.systemMetaData)
-            return Object.fromEntries(hcPartyKeys?.entries() ?? [])
-        })
-    )
+function toPatientDtoHcPartyKeys(domain: Patient): { [key: string]: string[] } | undefined {
+    const hcPartyKeys = extractHcPartyKeys(domain.systemMetaData)
+    return !!hcPartyKeys ? Object.fromEntries(hcPartyKeys.entries()) : undefined
 }
 
-function forMember_PatientDto_aesExchangeKeys() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.aesExchangeKeys,
-        mapFrom((p) => {
-            const aesExchangeKeys = extractAesExchangeKeys(p.systemMetaData)
-            return !!aesExchangeKeys ? convertDeepNestedMapToObject(aesExchangeKeys) : undefined
-        })
-    )
+function toPatientDtoAesExchangeKeys(domain: Patient):
+    | {
+          [key: string]: { [key: string]: { [key: string]: string } }
+      }
+    | undefined {
+    const aesExchangeKeys = extractAesExchangeKeys(domain.systemMetaData)
+    return !!aesExchangeKeys ? convertDeepNestedMapToObject(aesExchangeKeys) : undefined
 }
 
-function forMember_PatientDto_transferKeys() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.transferKeys,
-        mapFrom((p) => {
-            const transferKeys = extractTransferKeys(p.systemMetaData)
-            return !!transferKeys ? convertNestedMapToObject(transferKeys) : undefined
-        })
-    )
+function toPatientDtoTransferKeys(domain: Patient): { [key: string]: { [key: string]: string } } | undefined {
+    const transferKeys = extractTransferKeys(domain.systemMetaData)
+    return !!transferKeys ? convertNestedMapToObject(transferKeys) : undefined
 }
 
-function forMember_PatientDto_privateKeyShamirPartitions() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.privateKeyShamirPartitions,
-        mapFrom((p) => {
-            const privateKeyShamirPartitions = extractPrivateKeyShamirPartitions(p.systemMetaData)
-            return !!privateKeyShamirPartitions ? convertMapToObject(privateKeyShamirPartitions) : undefined
-        })
-    )
+function toPatientDtoPrivateKeyShamirPartitions(domain: Patient): { [key: string]: string } | undefined {
+    const privateKeyShamirPartitions = extractPrivateKeyShamirPartitions(domain.systemMetaData)
+    return !!privateKeyShamirPartitions ? convertMapToObject(privateKeyShamirPartitions) : undefined
 }
 
-function forMember_PatientDto_publicKey() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.publicKey,
-        mapFrom((p) => extractPublicKey(p.systemMetaData))
-    )
+function toPatientDtoPublicKey(domain: Patient): string | undefined {
+    return extractPublicKey(domain.systemMetaData)
 }
 
-function forMember_PatientDto_secretForeignKeys() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.secretForeignKeys,
-        mapFrom((v) => extractSecretForeignKeys(v.systemMetaData))
-    )
+function toPatientDtoPublicKeysForOaepWithSha256(domain: Patient): string[] | undefined {
+    return extractPublicKeysForOaepWithSha256(domain.systemMetaData)
 }
 
-function forMember_PatientDto_cryptedForeignKeys() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.cryptedForeignKeys,
-        mapFrom((p) => {
-            const delegations = extractCryptedForeignKeys(p.systemMetaData)
-            return !!delegations ? convertMapOfArrayOfGenericToObject<Delegation, DelegationDto>(delegations, (arr) => mapper.mapArray(arr, Delegation, DelegationDto)) : []
-        })
-    )
+function toPatientDtoSecretForeignKeys(domain: Patient): string[] | undefined {
+    return extractSecretForeignKeys(domain.systemMetaData)
 }
 
-function forMember_PatientDto_delegations() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.delegations,
-        mapFrom((v) => {
-            const delegations = extractDelegations(v.systemMetaData)
-            return !!delegations ? convertMapOfArrayOfGenericToObject<Delegation, DelegationDto>(delegations, (arr) => mapper.mapArray(arr, Delegation, DelegationDto)) : []
-        })
-    )
+function toPatientDtoCryptedForeignKeys(domain: Patient): { [key: string]: DelegationDto[] } | undefined {
+    const delegations = extractCryptedForeignKeys(domain.systemMetaData)
+    return !!delegations ? convertMapOfArrayOfGenericToObject<Delegation, DelegationDto>(delegations, (arr) => arr.map(mapDelegationToDelegationDto)) : undefined
 }
 
-function forMember_PatientDto_encryptionKeys() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.encryptionKeys,
-        mapFrom((v) => {
-            const encryptionKeys = extractEncryptionKeys(v.systemMetaData)
-            return !!encryptionKeys ? convertMapOfArrayOfGenericToObject<Delegation, DelegationDto>(encryptionKeys, (arr) => mapper.mapArray(arr, Delegation, DelegationDto)) : []
-        })
-    )
+function toPatientDtoDelegations(domain: Patient): { [key: string]: DelegationDto[] } | undefined {
+    const delegations = extractDelegations(domain.systemMetaData)
+    return !!delegations ? convertMapOfArrayOfGenericToObject<Delegation, DelegationDto>(delegations, (arr) => arr.map(mapDelegationToDelegationDto)) : undefined
 }
 
-function forMember_PatientDto_encryptedSelf() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.encryptedSelf,
-        mapFrom((v) => extractEncryptedSelf(v.systemMetaData))
-    )
+function toPatientDtoEncryptionKeys(domain: Patient): { [key: string]: DelegationDto[] } | undefined {
+    const delegations = extractEncryptionKeys(domain.systemMetaData)
+    return !!delegations ? convertMapOfArrayOfGenericToObject<Delegation, DelegationDto>(delegations, (arr) => arr.map(mapDelegationToDelegationDto)) : undefined
 }
 
-function forMember_PatientDto_medicalLocationId() {
-    return forMember<Patient, PatientDto>((v) => v.medicalLocationId, ignore())
+function toPatientDtoEncryptedSelf(domain: Patient): string | undefined {
+    return extractEncryptedSelf(domain.systemMetaData)
 }
 
-function forMember_PatientDto_nonDuplicateIds() {
-    return forMember<Patient, PatientDto>((v) => v.nonDuplicateIds, ignore())
+function toPatientDtoMedicalLocationId(domain: Patient): string | undefined {
+    return undefined
 }
 
-function forMember_PatientDto_encryptedAdministrativesDocuments() {
-    return forMember<Patient, PatientDto>((v) => v.encryptedAdministrativesDocuments, ignore())
+function toPatientDtoNonDuplicateIds(domain: Patient): string[] | undefined {
+    return undefined
 }
 
-function forMember_PatientDto_comment() {
-    return forMember<Patient, PatientDto>((v) => v.comment, ignore())
+function toPatientDtoEncryptedAdministrativesDocuments(domain: Patient): string[] | undefined {
+    return undefined
 }
 
-function forMember_PatientDto_warning() {
-    return forMember<Patient, PatientDto>((v) => v.warning, ignore())
+function toPatientDtoComment(domain: Patient): string | undefined {
+    return undefined
 }
 
-function forMember_PatientDto_fatherBirthCountry() {
-    return forMember<Patient, PatientDto>((v) => v.fatherBirthCountry, ignore())
+function toPatientDtoWarning(domain: Patient): string | undefined {
+    return undefined
 }
 
-function forMember_PatientDto_birthCountry() {
-    return forMember<Patient, PatientDto>((v) => v.birthCountry, ignore())
+function toPatientDtoFatherBirthCountry(domain: Patient): CodeStub | undefined {
+    return undefined
 }
 
-function forMember_PatientDto_nativeCountry() {
-    return forMember<Patient, PatientDto>((v) => v.nativeCountry, ignore())
+function toPatientDtoBirthCountry(domain: Patient): CodeStub | undefined {
+    return undefined
 }
 
-function forMember_PatientDto_socialStatus() {
-    return forMember<Patient, PatientDto>((v) => v.socialStatus, ignore())
+function toPatientDtoNativeCountry(domain: Patient): CodeStub | undefined {
+    return undefined
 }
 
-function forMember_PatientDto_mainSourceOfIncome() {
-    return forMember<Patient, PatientDto>((v) => v.mainSourceOfIncome, ignore())
+function toPatientDtoSocialStatus(domain: Patient): CodeStub | undefined {
+    return undefined
 }
 
-function forMember_PatientDto_schoolingInfos() {
-    return forMember<Patient, PatientDto>((v) => v.schoolingInfos, ignore())
+function toPatientDtoMainSourceOfIncome(domain: Patient): CodeStub | undefined {
+    return undefined
 }
 
-function forMember_PatientDto_employementInfos() {
-    return forMember<Patient, PatientDto>((v) => v.employementInfos, ignore())
+function toPatientDtoSchoolingInfos(domain: Patient): SchoolingInfo[] | undefined {
+    return undefined
 }
 
-function forMember_PatientDto_securityMetadata() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.securityMetadata,
-        mapWith(SecurityMetadataDto, SecurityMetadata, (p) => extractSecurityMetadata(p.systemMetaData))
-    )
+function toPatientDtoEmployementInfos(domain: Patient): EmploymentInfo[] | undefined {
+    return undefined
 }
 
-function forMember_Patient_id() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.id,
-        mapFrom((p) => p.id)
-    )
+function toPatientDtoSecurityMetadata(domain: Patient): SecurityMetadataDto | undefined {
+    const sm = extractSecurityMetadata(domain.systemMetaData)
+    return !!sm ? mapSecurityMetadataToSecurityMetadataDto(sm) : undefined
 }
 
-function forMember_Patient_rev() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.rev,
-        mapFrom((p) => p.rev)
-    )
+function toPatientDto_type(domain: Patient): EntityWithDelegationTypeName | undefined {
+    return 'Patient'
 }
 
-function forMember_Patient_identifiers() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.identifiers,
-        mapWith(Identifier, IdentifierDto, (p) => p.identifier)
-    )
+function toPatientId(dto: PatientDto): string | undefined {
+    return dto.id
 }
 
-function forMember_Patient_created() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.created,
-        mapFrom((p) => p.created)
-    )
+function toPatientRev(dto: PatientDto): string | undefined {
+    return dto.rev
 }
 
-function forMember_Patient_modified() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.modified,
-        mapFrom((p) => p.modified)
-    )
+function toPatientIdentifiers(dto: PatientDto): Identifier[] | undefined {
+    return !!dto.identifier ? dto.identifier.map(mapIdentifierDtoToIdentifier) : undefined
 }
 
-function forMember_Patient_author() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.author,
-        mapFrom((p) => p.author)
-    )
+function toPatientCreated(dto: PatientDto): number | undefined {
+    return dto.created
 }
 
-function forMember_Patient_responsible() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.responsible,
-        mapFrom((p) => p.responsible)
-    )
+function toPatientModified(dto: PatientDto): number | undefined {
+    return dto.modified
 }
 
-function forMember_Patient_tags() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.tags,
-        mapWith(CodingReference, CodeStub, (p) => p.tags)
-    )
+function toPatientAuthor(dto: PatientDto): string | undefined {
+    return dto.author
 }
 
-function forMember_Patient_codes() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.codes,
-        mapWith(CodingReference, CodeStub, (p) => p.codes)
-    )
+function toPatientResponsible(dto: PatientDto): string | undefined {
+    return dto.responsible
 }
 
-function forMember_Patient_endOfLife() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.endOfLife,
-        mapFrom((p) => p.endOfLife)
-    )
+function toPatientTags(dto: PatientDto): CodingReference[] | undefined {
+    return !!dto.tags ? dto.tags.map(mapCodeStubToCodingReference) : undefined
 }
 
-function forMember_Patient_deletionDate() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.deletionDate,
-        mapFrom((p) => p.deletionDate)
-    )
+function toPatientCodes(dto: PatientDto): CodingReference[] | undefined {
+    return !!dto.codes ? dto.codes.map(mapCodeStubToCodingReference) : undefined
 }
 
-function forMember_Patient_languages() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.languages,
-        mapFrom((p) => p.languages)
-    )
+function toPatientEndOfLife(dto: PatientDto): number | undefined {
+    return dto.endOfLife
 }
 
-function forMember_Patient_addresses() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.addresses,
-        mapWith(Location, Address, (p) => p.addresses)
-    )
+function toPatientDeletionDate(dto: PatientDto): number | undefined {
+    return dto.deletionDate
 }
 
-function forMember_Patient_civility() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.civility,
-        mapFrom((p) => p.civility)
-    )
+function toPatientNames(dto: PatientDto): HumanName[] | undefined {
+    return !!dto.names ? dto.names.map(mapPersonNameToHumanName) : undefined
 }
 
-function forMember_Patient_gender() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.gender,
-        mapFrom((p) => p.gender)
-    )
+function toPatientLanguages(dto: PatientDto): string[] | undefined {
+    return dto.languages
 }
 
-function forMember_Patient_birthSex() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.birthSex,
-        mapFrom((p) => p.birthSex)
-    )
+function toPatientAddresses(dto: PatientDto): Location[] | undefined {
+    return !!dto.addresses ? dto.addresses.map(mapAddressToLocation) : undefined
 }
 
-function forMember_Patient_mergeToPatientId() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.mergeToPatientId,
-        mapFrom((p) => p.mergeToPatientId)
-    )
+function toPatientCivility(dto: PatientDto): string | undefined {
+    return dto.civility
 }
 
-function forMember_Patient_mergedIds() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.mergedIds,
-        mapFrom((p) => p.mergedIds)
-    )
+function toPatientGender(dto: PatientDto): GenderEnum | undefined {
+    return dto.gender as GenderEnum | undefined
 }
 
-function forMember_Patient_active() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.active,
-        mapFrom((p) => p.active)
-    )
+function toPatientBirthSex(dto: PatientDto): GenderEnum | undefined {
+    return dto.birthSex as GenderEnum | undefined
 }
 
-function forMember_Patient_deactivationReason() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.deactivationReason,
-        mapFrom((p) => p.deactivationReason)
-    )
+function toPatientMergeToPatientId(dto: PatientDto): string | undefined {
+    return dto.mergeToPatientId
 }
 
-function forMember_Patient_personalStatus() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.personalStatus,
-        mapFrom((p) => p.personalStatus)
-    )
+function toPatientMergedIds(dto: PatientDto): string[] | undefined {
+    return dto.mergedIds
 }
 
-function forMember_Patient_dateOfBirth() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.dateOfBirth,
-        mapFrom((p) => p.dateOfBirth)
-    )
+function toPatientActive(dto: PatientDto): boolean | undefined {
+    return dto.active
 }
 
-function forMember_Patient_dateOfDeath() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.dateOfDeath,
-        mapFrom((p) => p.dateOfDeath)
-    )
+function toPatientDeactivationDate(dto: PatientDto): number | undefined {
+    return dto.deactivationDate
 }
 
-function forMember_Patient_placeOfBirth() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.placeOfBirth,
-        mapFrom((p) => p.placeOfBirth)
-    )
+function toPatientDeactivationReason(dto: PatientDto): PatientDeactivationReasonEnum | undefined {
+    return dto.deactivationReason as PatientDeactivationReasonEnum | undefined
 }
 
-function forMember_Patient_placeOfDeath() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.placeOfDeath,
-        mapFrom((p) => p.placeOfDeath)
-    )
+function toPatientSsin(dto: PatientDto): string | undefined {
+    return dto.ssin
 }
 
-function forMember_Patient_deceased() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.deceased,
-        mapFrom((p) => p.deceased)
-    )
+function toPatientPersonalStatus(dto: PatientDto): PatientPersonalStatusEnum | undefined {
+    return dto.personalStatus as PatientPersonalStatusEnum | undefined
 }
 
-function forMember_Patient_education() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.education,
-        mapFrom((p) => p.education)
-    )
+function toPatientDateOfBirth(dto: PatientDto): number | undefined {
+    return dto.dateOfBirth
 }
 
-function forMember_Patient_profession() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.profession,
-        mapFrom((p) => p.profession)
-    )
+function toPatientDateOfDeath(dto: PatientDto): number | undefined {
+    return dto.dateOfDeath
 }
 
-function forMember_Patient_notes() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.notes,
-        mapWith(Annotation, AnnotationDto, (p) => p.notes)
-    )
+function toPatientPlaceOfBirth(dto: PatientDto): string | undefined {
+    return dto.placeOfBirth
 }
 
-function forMember_Patient_nationality() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.nationality,
-        mapFrom((p) => p.nationality)
-    )
+function toPatientPlaceOfDeath(dto: PatientDto): string | undefined {
+    return dto.placeOfDeath
 }
 
-function forMember_Patient_race() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.race,
-        mapFrom((p) => p.race)
-    )
+function toPatientDeceased(dto: PatientDto): boolean | undefined {
+    return dto.deceased
 }
 
-function forMember_Patient_ethnicity() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.ethnicity,
-        mapFrom((p) => p.ethnicity)
-    )
+function toPatientEducation(dto: PatientDto): string | undefined {
+    return dto.education
 }
 
-function forMember_Patient_picture() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.picture,
-        mapFrom((p) => p.picture)
-    )
+function toPatientProfession(dto: PatientDto): string | undefined {
+    return dto.profession
 }
 
-function forMember_Patient_externalId() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.externalId,
-        mapFrom((p) => p.externalId)
-    )
+function toPatientNotes(dto: PatientDto): Annotation[] | undefined {
+    return !!dto.notes ? dto.notes.map(mapAnnotationDtoToAnnotation) : undefined
 }
 
-function forMember_Patient_relatives() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.relatives,
-        mapWith(RelatedPerson, Partnership, (p) => p.partnerships)
-    )
+function toPatientNationality(dto: PatientDto): string | undefined {
+    return dto.nationality
 }
 
-function forMember_Patient_patientPractioners() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.patientPractitioners,
-        mapWith(RelatedPractitioner, PatientHealthCareParty, (p) => p.patientHealthCareParties)
-    )
+function toPatientRace(dto: PatientDto): string | undefined {
+    return dto.race
 }
 
-function forMember_Patient_patientProfessions() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.patientProfessions,
-        mapWith(CodingReference, CodeStub, (p) => p.patientProfessions)
-    )
+function toPatientEthnicity(dto: PatientDto): string | undefined {
+    return dto.ethnicity
 }
 
-function forMember_Patient_properties() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.properties,
-        mapWith(Property, PropertyStub, (p) => p.properties)
-    )
+function toPatientPicture(dto: PatientDto): ArrayBuffer | undefined {
+    return dto.picture
 }
 
-function forMember_Patient_systemMetaData() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.systemMetaData,
-        mapFrom((p) => {
-            return new SystemMetaDataOwnerEncrypted({
-                encryptedSelf: p.encryptedSelf,
-                securityMetadata: mapper.map(p.securityMetadata, SecurityMetadataDto, SecurityMetadata),
-                cryptedForeignKeys: !!p.cryptedForeignKeys ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(p.cryptedForeignKeys, (arr) => mapper.mapArray(arr, DelegationDto, Delegation)) : undefined,
-                delegations: !!p.delegations ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(p.delegations, (arr) => mapper.mapArray(arr, DelegationDto, Delegation)) : undefined,
-                encryptionKeys: !!p.encryptionKeys ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(p.encryptionKeys, (arr) => mapper.mapArray(arr, DelegationDto, Delegation)) : undefined,
-                secretForeignKeys: p.secretForeignKeys,
-                hcPartyKeys: !!p.hcPartyKeys ? new Map(Object.entries(p.hcPartyKeys)) : undefined,
-                publicKey: p.publicKey,
-                aesExchangeKeys: !!p.aesExchangeKeys ? convertObjectToDeepNestedMap(p.aesExchangeKeys) : undefined,
-                transferKeys: !!p.transferKeys ? convertObjectToNestedMap(p.transferKeys) : undefined,
-                privateKeyShamirPartitions: !!p.privateKeyShamirPartitions ? convertObjectToMap(p.privateKeyShamirPartitions) : undefined,
-                publicKeysForOaepWithSha256: p.publicKeysForOaepWithSha256,
-            })
-        })
-    )
+function toPatientExternalId(dto: PatientDto): string | undefined {
+    return dto.externalId
 }
 
-function forMember_Patient_names() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.names,
-        mapWith(HumanName, PersonName, (p) => p.names)
-    )
+function toPatientRelatives(dto: PatientDto): RelatedPerson[] | undefined {
+    return !!dto.partnerships ? dto.partnerships.map(mapPartnershipToRelatedPerson) : undefined
 }
 
-function forMember_Patient_deactivationDate() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.deactivationDate,
-        mapFrom((p) => p.deactivationDate)
-    )
+function toPatientPatientPractitioners(dto: PatientDto): RelatedPractitioner[] | undefined {
+    return !!dto.patientHealthCareParties ? dto.patientHealthCareParties.map(mapPatientHealthCarePartyToRelatedPractitioner) : undefined
 }
 
-function forMember_Patient_ssin() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.ssin,
-        mapFrom((p) => p.ssin)
-    )
+function toPatientPatientProfessions(dto: PatientDto): CodingReference[] | undefined {
+    return !!dto.patientProfessions ? dto.patientProfessions.map(mapCodeStubToCodingReference) : undefined
 }
 
-function forMember_PatientDto__type() {
-    return forMember<Patient, PatientDto>((v) => v._type, fromValue('Patient'))
+function toPatientProperties(dto: PatientDto): Property[] | undefined {
+    return !!dto.properties ? dto.properties.map(mapPropertyStubToProperty) : undefined
 }
 
-function forMember_PatientDto_publicKeysForOaepWithSha256() {
-    return forMember<Patient, PatientDto>(
-        (v) => v.publicKeysForOaepWithSha256,
-        mapFrom((v) => extractPublicKeysForOaepWithSha256(v.systemMetaData))
-    )
+function toPatientSystemMetaData(dto: PatientDto): SystemMetaDataOwnerEncrypted | undefined {
+    return new SystemMetaDataOwnerEncrypted({
+        encryptedSelf: dto.encryptedSelf,
+        securityMetadata: !!dto.securityMetadata ? mapSecurityMetadataDtoToSecurityMetadata(dto.securityMetadata) : undefined,
+        cryptedForeignKeys: !!dto.cryptedForeignKeys ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.cryptedForeignKeys, (arr) => arr.map(mapDelegationDtoToDelegation)) : undefined,
+        delegations: !!dto.delegations ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.delegations, (arr) => arr.map(mapDelegationDtoToDelegation)) : undefined,
+        encryptionKeys: !!dto.encryptionKeys ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.encryptionKeys, (arr) => arr.map(mapDelegationDtoToDelegation)) : undefined,
+        secretForeignKeys: dto.secretForeignKeys,
+        hcPartyKeys: !!dto.hcPartyKeys ? new Map(Object.entries(dto.hcPartyKeys)) : undefined,
+        publicKey: dto.publicKey,
+        aesExchangeKeys: !!dto.aesExchangeKeys ? convertObjectToDeepNestedMap(dto.aesExchangeKeys) : undefined,
+        transferKeys: !!dto.transferKeys ? convertObjectToNestedMap(dto.transferKeys) : undefined,
+        privateKeyShamirPartitions: !!dto.privateKeyShamirPartitions ? convertObjectToMap(dto.privateKeyShamirPartitions) : undefined,
+        publicKeysForOaepWithSha256: dto.publicKeysForOaepWithSha256,
+    })
 }
 
-function forMember_Patient_patientPractitioners() {
-    return forMember<PatientDto, Patient>(
-        (v) => v.patientPractitioners,
-        mapWith(RelatedPractitioner, PatientHealthCareParty, (p) => p.patientHealthCareParties)
-    )
+export function mapPatientDtoToPatient(dto: PatientDto): Patient {
+    return new Patient({
+        id: toPatientId(dto),
+        rev: toPatientRev(dto),
+        identifiers: toPatientIdentifiers(dto),
+        created: toPatientCreated(dto),
+        modified: toPatientModified(dto),
+        author: toPatientAuthor(dto),
+        responsible: toPatientResponsible(dto),
+        tags: toPatientTags(dto),
+        codes: toPatientCodes(dto),
+        endOfLife: toPatientEndOfLife(dto),
+        deletionDate: toPatientDeletionDate(dto),
+        names: toPatientNames(dto),
+        languages: toPatientLanguages(dto),
+        addresses: toPatientAddresses(dto),
+        civility: toPatientCivility(dto),
+        gender: toPatientGender(dto),
+        birthSex: toPatientBirthSex(dto),
+        mergeToPatientId: toPatientMergeToPatientId(dto),
+        mergedIds: toPatientMergedIds(dto),
+        active: toPatientActive(dto),
+        deactivationDate: toPatientDeactivationDate(dto),
+        deactivationReason: toPatientDeactivationReason(dto),
+        ssin: toPatientSsin(dto),
+        personalStatus: toPatientPersonalStatus(dto),
+        dateOfBirth: toPatientDateOfBirth(dto),
+        dateOfDeath: toPatientDateOfDeath(dto),
+        placeOfBirth: toPatientPlaceOfBirth(dto),
+        placeOfDeath: toPatientPlaceOfDeath(dto),
+        deceased: toPatientDeceased(dto),
+        education: toPatientEducation(dto),
+        profession: toPatientProfession(dto),
+        notes: toPatientNotes(dto),
+        nationality: toPatientNationality(dto),
+        race: toPatientRace(dto),
+        ethnicity: toPatientEthnicity(dto),
+        picture: toPatientPicture(dto),
+        externalId: toPatientExternalId(dto),
+        relatives: toPatientRelatives(dto),
+        patientPractitioners: toPatientPatientPractitioners(dto),
+        patientProfessions: toPatientPatientProfessions(dto),
+        properties: toPatientProperties(dto),
+        systemMetaData: toPatientSystemMetaData(dto),
+    })
 }
 
-export function initializePatientMapper(mapper: Mapper) {
-    createMap(mapper, Patient, PatientDto, forMember_PatientDto_id(), forMember_PatientDto_rev(), forMember_PatientDto_identifier(), forMember_PatientDto_created(), forMember_PatientDto_modified(), forMember_PatientDto_author(), forMember_PatientDto_responsible(), forMember_PatientDto_tags(), forMember_PatientDto_codes(), forMember_PatientDto_endOfLife(), forMember_PatientDto_deletionDate(), forMember_PatientDto_firstName(), forMember_PatientDto_lastName(), forMember_PatientDto_names(), forMember_PatientDto_companyName(), forMember_PatientDto_languages(), forMember_PatientDto_addresses(), forMember_PatientDto_civility(), forMember_PatientDto_gender(), forMember_PatientDto_birthSex(), forMember_PatientDto_mergeToPatientId(), forMember_PatientDto_mergedIds(), forMember_PatientDto_alias(), forMember_PatientDto_active(), forMember_PatientDto_deactivationReason(), forMember_PatientDto_deactivationDate(), forMember_PatientDto_ssin(), forMember_PatientDto_maidenName(), forMember_PatientDto_spouseName(), forMember_PatientDto_partnerName(), forMember_PatientDto_personalStatus(), forMember_PatientDto_dateOfBirth(), forMember_PatientDto_dateOfDeath(), forMember_PatientDto_timestampOfLatestEidReading(), forMember_PatientDto_placeOfBirth(), forMember_PatientDto_placeOfDeath(), forMember_PatientDto_deceased(), forMember_PatientDto_education(), forMember_PatientDto_profession(), forMember_PatientDto_note(), forMember_PatientDto_administrativeNote(), forMember_PatientDto_notes(), forMember_PatientDto_nationality(), forMember_PatientDto_race(), forMember_PatientDto_ethnicity(), forMember_PatientDto_preferredUserId(), forMember_PatientDto_picture(), forMember_PatientDto_externalId(), forMember_PatientDto_insurabilities(), forMember_PatientDto_partnerships(), forMember_PatientDto_patientHealthCareParties(), forMember_PatientDto_financialInstitutionInformation(), forMember_PatientDto_medicalHouseContracts(), forMember_PatientDto_patientProfessions(), forMember_PatientDto_parameters(), forMember_PatientDto_properties(), forMember_PatientDto_hcPartyKeys(), forMember_PatientDto_aesExchangeKeys(), forMember_PatientDto_transferKeys(), forMember_PatientDto_privateKeyShamirPartitions(), forMember_PatientDto_publicKey(), forMember_PatientDto_publicKeysForOaepWithSha256(), forMember_PatientDto_secretForeignKeys(), forMember_PatientDto_cryptedForeignKeys(), forMember_PatientDto_delegations(), forMember_PatientDto_encryptionKeys(), forMember_PatientDto_encryptedSelf(), forMember_PatientDto_medicalLocationId(), forMember_PatientDto_nonDuplicateIds(), forMember_PatientDto_encryptedAdministrativesDocuments(), forMember_PatientDto_comment(), forMember_PatientDto_warning(), forMember_PatientDto_fatherBirthCountry(), forMember_PatientDto_birthCountry(), forMember_PatientDto_nativeCountry(), forMember_PatientDto_socialStatus(), forMember_PatientDto_mainSourceOfIncome(), forMember_PatientDto_schoolingInfos(), forMember_PatientDto_employementInfos(), forMember_PatientDto_securityMetadata(), forMember_PatientDto__type())
-
-    createMap(mapper, PatientDto, Patient, forMember_Patient_id(), forMember_Patient_rev(), forMember_Patient_identifiers(), forMember_Patient_created(), forMember_Patient_modified(), forMember_Patient_author(), forMember_Patient_responsible(), forMember_Patient_tags(), forMember_Patient_codes(), forMember_Patient_endOfLife(), forMember_Patient_deletionDate(), forMember_Patient_names(), forMember_Patient_languages(), forMember_Patient_addresses(), forMember_Patient_civility(), forMember_Patient_gender(), forMember_Patient_birthSex(), forMember_Patient_mergeToPatientId(), forMember_Patient_mergedIds(), forMember_Patient_active(), forMember_Patient_deactivationDate(), forMember_Patient_deactivationReason(), forMember_Patient_ssin(), forMember_Patient_personalStatus(), forMember_Patient_dateOfBirth(), forMember_Patient_dateOfDeath(), forMember_Patient_placeOfBirth(), forMember_Patient_placeOfDeath(), forMember_Patient_deceased(), forMember_Patient_education(), forMember_Patient_profession(), forMember_Patient_notes(), forMember_Patient_nationality(), forMember_Patient_race(), forMember_Patient_ethnicity(), forMember_Patient_picture(), forMember_Patient_externalId(), forMember_Patient_relatives(), forMember_Patient_patientPractitioners(), forMember_Patient_patientProfessions(), forMember_Patient_properties(), forMember_Patient_systemMetaData())
+export function mapPatientToPatientDto(domain: Patient): PatientDto {
+    return new PatientDto({
+        id: toPatientDtoId(domain),
+        rev: toPatientDtoRev(domain),
+        identifier: toPatientDtoIdentifier(domain),
+        created: toPatientDtoCreated(domain),
+        modified: toPatientDtoModified(domain),
+        author: toPatientDtoAuthor(domain),
+        responsible: toPatientDtoResponsible(domain),
+        tags: toPatientDtoTags(domain),
+        codes: toPatientDtoCodes(domain),
+        endOfLife: toPatientDtoEndOfLife(domain),
+        deletionDate: toPatientDtoDeletionDate(domain),
+        firstName: toPatientDtoFirstName(domain),
+        lastName: toPatientDtoLastName(domain),
+        names: toPatientDtoNames(domain),
+        companyName: toPatientDtoCompanyName(domain),
+        languages: toPatientDtoLanguages(domain),
+        addresses: toPatientDtoAddresses(domain),
+        civility: toPatientDtoCivility(domain),
+        gender: toPatientDtoGender(domain),
+        birthSex: toPatientDtoBirthSex(domain),
+        mergeToPatientId: toPatientDtoMergeToPatientId(domain),
+        mergedIds: toPatientDtoMergedIds(domain),
+        alias: toPatientDtoAlias(domain),
+        active: toPatientDtoActive(domain),
+        deactivationReason: toPatientDtoDeactivationReason(domain),
+        deactivationDate: toPatientDtoDeactivationDate(domain),
+        ssin: toPatientDtoSsin(domain),
+        maidenName: toPatientDtoMaidenName(domain),
+        spouseName: toPatientDtoSpouseName(domain),
+        partnerName: toPatientDtoPartnerName(domain),
+        personalStatus: toPatientDtoPersonalStatus(domain),
+        dateOfBirth: toPatientDtoDateOfBirth(domain),
+        dateOfDeath: toPatientDtoDateOfDeath(domain),
+        timestampOfLatestEidReading: toPatientDtoTimestampOfLatestEidReading(domain),
+        placeOfBirth: toPatientDtoPlaceOfBirth(domain),
+        placeOfDeath: toPatientDtoPlaceOfDeath(domain),
+        deceased: toPatientDtoDeceased(domain),
+        education: toPatientDtoEducation(domain),
+        profession: toPatientDtoProfession(domain),
+        note: toPatientDtoNote(domain),
+        administrativeNote: toPatientDtoAdministrativeNote(domain),
+        notes: toPatientDtoNotes(domain),
+        nationality: toPatientDtoNationality(domain),
+        race: toPatientDtoRace(domain),
+        ethnicity: toPatientDtoEthnicity(domain),
+        preferredUserId: toPatientDtoPreferredUserId(domain),
+        picture: toPatientDtoPicture(domain),
+        externalId: toPatientDtoExternalId(domain),
+        insurabilities: toPatientDtoInsurabilities(domain),
+        partnerships: toPatientDtoPartnerships(domain),
+        patientHealthCareParties: toPatientDtoPatientHealthCareParties(domain),
+        financialInstitutionInformation: toPatientDtoFinancialInstitutionInformation(domain),
+        medicalHouseContracts: toPatientDtoMedicalHouseContracts(domain),
+        patientProfessions: toPatientDtoPatientProfessions(domain),
+        parameters: toPatientDtoParameters(domain),
+        properties: toPatientDtoProperties(domain),
+        hcPartyKeys: toPatientDtoHcPartyKeys(domain),
+        aesExchangeKeys: toPatientDtoAesExchangeKeys(domain),
+        transferKeys: toPatientDtoTransferKeys(domain),
+        privateKeyShamirPartitions: toPatientDtoPrivateKeyShamirPartitions(domain),
+        publicKey: toPatientDtoPublicKey(domain),
+        publicKeysForOaepWithSha256: toPatientDtoPublicKeysForOaepWithSha256(domain),
+        secretForeignKeys: toPatientDtoSecretForeignKeys(domain),
+        cryptedForeignKeys: toPatientDtoCryptedForeignKeys(domain),
+        delegations: toPatientDtoDelegations(domain),
+        encryptionKeys: toPatientDtoEncryptionKeys(domain),
+        encryptedSelf: toPatientDtoEncryptedSelf(domain),
+        medicalLocationId: toPatientDtoMedicalLocationId(domain),
+        nonDuplicateIds: toPatientDtoNonDuplicateIds(domain),
+        encryptedAdministrativesDocuments: toPatientDtoEncryptedAdministrativesDocuments(domain),
+        comment: toPatientDtoComment(domain),
+        warning: toPatientDtoWarning(domain),
+        fatherBirthCountry: toPatientDtoFatherBirthCountry(domain),
+        birthCountry: toPatientDtoBirthCountry(domain),
+        nativeCountry: toPatientDtoNativeCountry(domain),
+        socialStatus: toPatientDtoSocialStatus(domain),
+        mainSourceOfIncome: toPatientDtoMainSourceOfIncome(domain),
+        schoolingInfos: toPatientDtoSchoolingInfos(domain),
+        employementInfos: toPatientDtoEmployementInfos(domain),
+        securityMetadata: toPatientDtoSecurityMetadata(domain),
+        _type: toPatientDto_type(domain),
+    })
 }

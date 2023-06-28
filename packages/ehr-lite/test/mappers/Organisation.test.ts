@@ -1,19 +1,12 @@
-import { initializeMapper, mapper } from '../../src/mappers/mapper'
 import { generateOrganisation } from '../models/Organisation.model'
 import { Organisation } from '../../src/models/Organisation.model'
-import { HealthcareParty } from '@icure/api'
-import {initializeMapper as commonInitializeMapper} from "@icure/typescript-common";
+import { mapHealthcarePartyToOrganisation, mapOrganisationToHealthcareParty } from '../../src/mappers/Organisation.mapper'
 
 describe('Organisation', function () {
-    beforeAll(() => {
-        commonInitializeMapper(mapper)
-        initializeMapper(mapper)
-    })
-
     it('should correctly map to HealthcareParty and back to Organisation', () => {
         const instance = generateOrganisation()
-        const iCureInstance = mapper.map(instance, Organisation, HealthcareParty)
-        const newInstance = mapper.map(iCureInstance, HealthcareParty, Organisation)
+        const iCureInstance = mapOrganisationToHealthcareParty(instance)
+        const newInstance = mapHealthcarePartyToOrganisation(iCureInstance)
 
         expect(newInstance).toEqual(instance)
     })

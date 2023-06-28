@@ -1,447 +1,365 @@
 import { Observation } from '../models/Observation.model'
 import { Annotation as AnnotationDto, CodeStub, Content, Delegation as DelegationDto, Identifier as IdentifierDto, ISO639_1, Service } from '@icure/api'
-import { createMap, forMember, ignore, mapFrom, mapWith, Mapper } from '@automapper/core'
-import { mapper } from './mapper'
 import {
+    Annotation,
     CodingReference,
     convertMapOfArrayOfGenericToObject,
     convertNestedMapToObject,
     convertObjectToMapOfArrayOfGeneric,
-    convertObjectToNestedMap, Delegation,
+    convertObjectToNestedMap,
+    Delegation,
     extractCryptedForeignKeys,
     extractDelegations,
     extractEncryptedSelf,
     extractEncryptionKeys,
     extractSecretForeignKeys,
-    extractSecurityMetadata, Identifier,
+    extractSecurityMetadata,
+    Identifier,
+    mapAnnotationDtoToAnnotation,
+    mapAnnotationToAnnotationDto,
+    mapCodeStubToCodingReference,
+    mapCodingReferenceToCodeStub,
+    mapDelegationDtoToDelegation,
+    mapDelegationToDelegationDto,
+    mapIdentifierDtoToIdentifier,
+    mapIdentifierToIdentifierDto,
+    mapSecurityMetadataDtoToSecurityMetadata,
+    mapSecurityMetadataToSecurityMetadataDto,
+    SystemMetaDataEncrypted,
 } from '@icure/typescript-common'
 import { Component } from '../models/Component.model'
 import { LocalComponent } from '../models/LocalComponent.model'
-import { Annotation } from '@icure/typescript-common'
-import { SystemMetaDataEncrypted } from '@icure/typescript-common'
 import { SecurityMetadata as SecurityMetadataDto } from '@icure/api/icc-api/model/SecurityMetadata'
-import { SecurityMetadata } from '@icure/typescript-common'
+import { mapContentToLocalComponent, mapLocalComponentToContent } from './LocalComponent.mapper'
+import { mapComponentToContent, mapContentToComponent } from './Component.mapper'
 
-function forMember_Service_id() {
-    return forMember<Observation, Service>(
-        (v) => v.id,
-        mapFrom((v) => v.id)
-    )
+function toServiceId(domain: Observation): string | undefined {
+    return domain.id
 }
 
-function forMember_Service_transactionId() {
-    return forMember<Observation, Service>(
-        (v) => v.transactionId,
-        mapFrom((v) => v.transactionId)
-    )
+function toServiceTransactionId(domain: Observation): string | undefined {
+    return domain.transactionId
 }
 
-function forMember_Service_identifier() {
-    return forMember<Observation, Service>(
-        (v) => v.identifier,
-        mapWith(IdentifierDto, Identifier, (v) => v.identifiers)
-    )
+function toServiceIdentifier(domain: Observation): IdentifierDto[] | undefined {
+    return !!domain.identifiers ? domain.identifiers.map(mapIdentifierToIdentifierDto) : undefined
 }
 
-function forMember_Service_contactId() {
-    return forMember<Observation, Service>(
-        (v) => v.contactId,
-        mapFrom((v) => v.batchId)
-    )
+function toServiceContactId(domain: Observation): string | undefined {
+    return domain.batchId
 }
 
-function forMember_Service_subContactIds() {
-    return forMember<Observation, Service>((v) => v.subContactIds, ignore())
+function toServiceSubContactIds(domain: Observation): string[] | undefined {
+    return undefined
 }
 
-function forMember_Service_plansOfActionIds() {
-    return forMember<Observation, Service>((v) => v.plansOfActionIds, ignore())
+function toServicePlansOfActionIds(domain: Observation): string[] | undefined {
+    return undefined
 }
 
-function forMember_Service_healthElementsIds() {
-    return forMember<Observation, Service>(
-        (v) => v.healthElementsIds,
-        mapFrom((v) => v.healthcareElementIds)
-    )
+function toServiceHealthElementsIds(domain: Observation): string[] | undefined {
+    return domain.healthcareElementIds
 }
 
-function forMember_Service_formIds() {
-    return forMember<Observation, Service>((v) => v.formIds, ignore())
+function toServiceFormIds(domain: Observation): string[] | undefined {
+    return undefined
 }
 
-function forMember_Service_secretForeignKeys() {
-    return forMember<Observation, Service>(
-        (v) => v.secretForeignKeys,
-        mapFrom((v) => extractSecretForeignKeys(v.systemMetaData))
-    )
+function toServiceSecretForeignKeys(domain: Observation): string[] | undefined {
+    return extractSecretForeignKeys(domain.systemMetaData)
 }
 
-function forMember_Service_cryptedForeignKeys() {
-    return forMember<Observation, Service>(
-        (v) => v.cryptedForeignKeys,
-        mapFrom((v) => {
-            const cryptedForeignKeys = extractCryptedForeignKeys(v.systemMetaData)
-            return !!cryptedForeignKeys ? convertMapOfArrayOfGenericToObject<Delegation, DelegationDto>(cryptedForeignKeys, (arr) => mapper.mapArray(arr, Delegation, DelegationDto)) : []
+function toServiceCryptedForeignKeys(domain: Observation): { [key: string]: DelegationDto[] } | undefined {
+    const cryptedForeignKeys = extractCryptedForeignKeys(domain.systemMetaData)
+    return !!cryptedForeignKeys ? convertMapOfArrayOfGenericToObject<Delegation, DelegationDto>(cryptedForeignKeys, (arr) => arr.map(mapDelegationToDelegationDto)) : undefined
+}
+
+function toServiceDelegations(domain: Observation): { [key: string]: DelegationDto[] } | undefined {
+    const delegations = extractDelegations(domain.systemMetaData)
+    return !!delegations ? convertMapOfArrayOfGenericToObject<Delegation, DelegationDto>(delegations, (arr) => arr.map(mapDelegationToDelegationDto)) : undefined
+}
+
+function toServiceEncryptionKeys(domain: Observation): { [key: string]: DelegationDto[] } | undefined {
+    const encryptionKeys = extractEncryptionKeys(domain.systemMetaData)
+    return !!encryptionKeys ? convertMapOfArrayOfGenericToObject<Delegation, DelegationDto>(encryptionKeys, (arr) => arr.map(mapDelegationToDelegationDto)) : undefined
+}
+
+function toServiceLabel(domain: Observation): string | undefined {
+    return undefined
+}
+
+function toServiceDataClassName(domain: Observation): string | undefined {
+    return undefined
+}
+
+function toServiceIndex(domain: Observation): number | undefined {
+    return domain.index
+}
+
+function toServiceContent(domain: Observation):
+    | {
+          [key: string]: Content
+      }
+    | undefined {
+    const nonLocalizedContent = !!domain.component ? mapComponentToContent(domain.component) : undefined
+    const localizedContentEntries: [ISO639_1, Content][] = [...(domain.localContent?.entries() ?? [])]?.map(([key, value]) => {
+        return [key, mapLocalComponentToContent(value)]
+    })
+
+    if (!nonLocalizedContent && localizedContentEntries.length === 0) {
+        return undefined
+    }
+
+    const nonLocalizedContentEntry = !!nonLocalizedContent ? [['xx', nonLocalizedContent]] : []
+    return Object.fromEntries([...localizedContentEntries, ...nonLocalizedContentEntry])
+}
+
+function toServiceEncryptedContent(domain: Observation): string | undefined {
+    return undefined
+}
+
+function toServiceTextIndexes(domain: Observation): { [key: string]: string } | undefined {
+    return undefined
+}
+
+function toServiceValueDate(domain: Observation): number | undefined {
+    return domain.valueDate
+}
+
+function toServiceOpeningDate(domain: Observation): number | undefined {
+    return domain.openingDate
+}
+
+function toServiceClosingDate(domain: Observation): number | undefined {
+    return domain.closingDate
+}
+
+function toServiceFormId(domain: Observation): string | undefined {
+    return undefined
+}
+
+function toServiceCreated(domain: Observation): number | undefined {
+    return domain.created
+}
+
+function toServiceModified(domain: Observation): number | undefined {
+    return domain.modified
+}
+
+function toServiceEndOfLife(domain: Observation): number | undefined {
+    return domain.endOfLife
+}
+
+function toServiceAuthor(domain: Observation): string | undefined {
+    return domain.author
+}
+
+function toServiceResponsible(domain: Observation): string | undefined {
+    return domain.performer
+}
+
+function toServiceMedicalLocationId(domain: Observation): string | undefined {
+    return undefined
+}
+
+function toServiceComment(domain: Observation): string | undefined {
+    return undefined
+}
+
+function toServiceStatus(domain: Observation): number | undefined {
+    return undefined
+}
+
+function toServiceInvoicingCodes(domain: Observation): string[] | undefined {
+    return undefined
+}
+
+function toServiceNotes(domain: Observation): AnnotationDto[] | undefined {
+    return !!domain.notes ? domain.notes.map(mapAnnotationToAnnotationDto) : undefined
+}
+
+function toServiceQualifiedLinks(domain: Observation): { [key: string]: { [key: string]: string } } | undefined {
+    return !!domain.qualifiedLinks ? convertNestedMapToObject(domain.qualifiedLinks) : undefined
+}
+
+function toServiceCodes(domain: Observation): CodeStub[] | undefined {
+    return !!domain.codes ? [...domain.codes].map(mapCodingReferenceToCodeStub) : undefined
+}
+
+function toServiceTags(domain: Observation): CodeStub[] | undefined {
+    return !!domain.tags ? [...domain.tags].map(mapCodingReferenceToCodeStub) : undefined
+}
+
+function toServiceEncryptedSelf(domain: Observation): string | undefined {
+    return extractEncryptedSelf(domain.systemMetaData)
+}
+
+function toServiceSecurityMetadata(domain: Observation): SecurityMetadataDto | undefined {
+    const sm = extractSecurityMetadata(domain.systemMetaData)
+    return !!sm ? mapSecurityMetadataToSecurityMetadataDto(sm) : undefined
+}
+
+function toObservationId(dto: Service): string | undefined {
+    return dto.id
+}
+
+function toObservationTransactionId(dto: Service): string | undefined {
+    return dto.transactionId
+}
+
+function toObservationIdentifiers(dto: Service): Identifier[] | undefined {
+    return !!dto.identifier ? dto.identifier.map(mapIdentifierDtoToIdentifier) : undefined
+}
+
+function toObservationBatchId(dto: Service): string | undefined {
+    return dto.contactId
+}
+
+function toObservationHealthcareElementIds(dto: Service): string[] | undefined {
+    return dto.healthElementsIds
+}
+
+function toObservationIndex(dto: Service): number | undefined {
+    return dto.index
+}
+
+function toObservationComponent(dto: Service): Component | undefined {
+    const content = Object.entries(dto.content ?? {})?.find(([key]) => key === 'xx')?.[1]
+    return !!content ? mapContentToComponent(content) : undefined
+}
+
+function toObservationValueDate(dto: Service): number | undefined {
+    return dto.valueDate
+}
+
+function toObservationOpeningDate(dto: Service): number | undefined {
+    return dto.openingDate
+}
+
+function toObservationClosingDate(dto: Service): number | undefined {
+    return dto.closingDate
+}
+
+function toObservationCreated(dto: Service): number | undefined {
+    return dto.created
+}
+
+function toObservationModified(dto: Service): number | undefined {
+    return dto.modified
+}
+
+function toObservationEndOfLife(dto: Service): number | undefined {
+    return dto.endOfLife
+}
+
+function toObservationAuthor(dto: Service): string | undefined {
+    return dto.author
+}
+
+function toObservationPerformer(dto: Service): string | undefined {
+    return dto.responsible
+}
+
+function toObservationLocalContent(dto: Service): Map<ISO639_1, LocalComponent> | undefined {
+    const localizedContent = Object.entries(dto.content ?? {})?.filter(([key]) => key !== 'xx')
+    return new Map(
+        localizedContent.map(([key, value]) => {
+            return [key, mapContentToLocalComponent(value)] as [ISO639_1, LocalComponent]
         })
     )
 }
 
-function forMember_Service_delegations() {
-    return forMember<Observation, Service>(
-        (v) => v.delegations,
-        mapFrom((v) => {
-            const delegations = extractDelegations(v.systemMetaData)
-            return !!delegations ? convertMapOfArrayOfGenericToObject<Delegation, DelegationDto>(delegations, (arr) => mapper.mapArray(arr, Delegation, DelegationDto)) : []
-        })
-    )
+function toObservationQualifiedLinks(dto: Service): Map<string, Map<string, string>> | undefined {
+    return !!dto.qualifiedLinks ? convertObjectToNestedMap(dto.qualifiedLinks) : undefined
 }
 
-function forMember_Service_encryptionKeys() {
-    return forMember<Observation, Service>(
-        (v) => v.encryptionKeys,
-        mapFrom((v) => {
-            const encryptionKeys = extractEncryptionKeys(v.systemMetaData)
-            return !!encryptionKeys ? convertMapOfArrayOfGenericToObject<Delegation, DelegationDto>(encryptionKeys, (arr) => mapper.mapArray(arr, Delegation, DelegationDto)) : []
-        })
-    )
+function toObservationCodes(dto: Service): Set<CodingReference> | undefined {
+    return !!dto.codes ? new Set(dto.codes.map(mapCodeStubToCodingReference)) : undefined
 }
 
-function forMember_Service_label() {
-    return forMember<Observation, Service>((v) => v.label, ignore())
+function toObservationTags(dto: Service): Set<CodingReference> | undefined {
+    return !!dto.tags ? new Set(dto.tags.map(mapCodeStubToCodingReference)) : undefined
 }
 
-function forMember_Service_dataClassName() {
-    return forMember<Observation, Service>((v) => v.dataClassName, ignore())
+function toObservationSystemMetaData(dto: Service): SystemMetaDataEncrypted | undefined {
+    return new SystemMetaDataEncrypted({
+        encryptedSelf: dto.encryptedSelf,
+        securityMetadata: dto.securityMetadata ? mapSecurityMetadataDtoToSecurityMetadata(dto.securityMetadata) : undefined,
+        cryptedForeignKeys: !!dto.cryptedForeignKeys ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.cryptedForeignKeys, (arr) => arr.map(mapDelegationDtoToDelegation)) : undefined,
+        delegations: !!dto.delegations ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.delegations, (arr) => arr.map(mapDelegationDtoToDelegation)) : undefined,
+        encryptionKeys: !!dto.encryptionKeys ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.encryptionKeys, (arr) => arr.map(mapDelegationDtoToDelegation)) : undefined,
+        secretForeignKeys: dto.secretForeignKeys,
+    })
 }
 
-function forMember_Service_index() {
-    return forMember<Observation, Service>(
-        (v) => v.index,
-        mapFrom((v) => v.index)
-    )
+function toObservationNotes(dto: Service): Annotation[] | undefined {
+    return !!dto.notes ? dto.notes.map(mapAnnotationDtoToAnnotation) : undefined
 }
 
-function forMember_Service_content() {
-    return forMember<Observation, Service>(
-        (v) => v.content,
-        mapFrom((v) => {
-            const nonLocalizedContent = mapper.map(v.component, Component, Content)
-            const localizedContents: [ISO639_1, Content][] = [...(v.localContent?.entries() ?? [])]?.map(([key, value]) => {
-                return [key, mapper.map(value, LocalComponent, Content)]
-            })
-
-            return Object.fromEntries([...localizedContents, ['xx', nonLocalizedContent]])
-        })
-    )
+export function mapServiceToObservation(dto: Service): Observation {
+    return new Observation({
+        id: toObservationId(dto),
+        transactionId: toObservationTransactionId(dto),
+        identifiers: toObservationIdentifiers(dto),
+        batchId: toObservationBatchId(dto),
+        healthcareElementIds: toObservationHealthcareElementIds(dto),
+        index: toObservationIndex(dto),
+        component: toObservationComponent(dto),
+        valueDate: toObservationValueDate(dto),
+        openingDate: toObservationOpeningDate(dto),
+        closingDate: toObservationClosingDate(dto),
+        created: toObservationCreated(dto),
+        modified: toObservationModified(dto),
+        endOfLife: toObservationEndOfLife(dto),
+        author: toObservationAuthor(dto),
+        performer: toObservationPerformer(dto),
+        localContent: toObservationLocalContent(dto),
+        qualifiedLinks: toObservationQualifiedLinks(dto),
+        codes: toObservationCodes(dto),
+        tags: toObservationTags(dto),
+        systemMetaData: toObservationSystemMetaData(dto),
+        notes: toObservationNotes(dto),
+    })
 }
 
-function forMember_Service_encryptedContent() {
-    return forMember<Observation, Service>((v) => v.encryptedContent, ignore())
-}
-
-function forMember_Service_textIndexes() {
-    return forMember<Observation, Service>((v) => v.textIndexes, ignore())
-}
-
-function forMember_Service_valueDate() {
-    return forMember<Observation, Service>(
-        (v) => v.valueDate,
-        mapFrom((v) => v.valueDate)
-    )
-}
-
-function forMember_Service_openingDate() {
-    return forMember<Observation, Service>(
-        (v) => v.openingDate,
-        mapFrom((v) => v.openingDate)
-    )
-}
-
-function forMember_Service_closingDate() {
-    return forMember<Observation, Service>(
-        (v) => v.closingDate,
-        mapFrom((v) => v.closingDate)
-    )
-}
-
-function forMember_Service_formId() {
-    return forMember<Observation, Service>((v) => v.formId, ignore())
-}
-
-function forMember_Service_created() {
-    return forMember<Observation, Service>(
-        (v) => v.created,
-        mapFrom((v) => v.created)
-    )
-}
-
-function forMember_Service_modified() {
-    return forMember<Observation, Service>(
-        (v) => v.modified,
-        mapFrom((v) => v.modified)
-    )
-}
-
-function forMember_Service_endOfLife() {
-    return forMember<Observation, Service>(
-        (v) => v.endOfLife,
-        mapFrom((v) => v.endOfLife)
-    )
-}
-
-function forMember_Service_author() {
-    return forMember<Observation, Service>(
-        (v) => v.author,
-        mapFrom((v) => v.author)
-    )
-}
-
-function forMember_Service_responsible() {
-    return forMember<Observation, Service>(
-        (v) => v.responsible,
-        mapFrom((v) => v.performer)
-    )
-}
-
-function forMember_Service_medicalLocationId() {
-    return forMember<Observation, Service>((v) => v.medicalLocationId, ignore())
-}
-
-function forMember_Service_comment() {
-    return forMember<Observation, Service>((v) => v.comment, ignore())
-}
-
-function forMember_Service_status() {
-    return forMember<Observation, Service>((v) => v.status, ignore())
-}
-
-function forMember_Service_invoicingCodes() {
-    return forMember<Observation, Service>((v) => v.invoicingCodes, ignore())
-}
-
-function forMember_Service_notes() {
-    return forMember<Observation, Service>(
-        (v) => v.notes,
-        mapWith(AnnotationDto, Annotation, (v) => v.notes)
-    )
-}
-
-function forMember_Service_qualifiedLinks() {
-    return forMember<Observation, Service>(
-        (v) => v.qualifiedLinks,
-        mapFrom((v) => (!!v.qualifiedLinks ? convertNestedMapToObject(v.qualifiedLinks) : undefined))
-    )
-}
-
-function forMember_Service_codes() {
-    return forMember<Observation, Service>(
-        (v) => v.codes,
-        mapWith(CodeStub, CodingReference, (v) => (!!v.codes ? [...v.codes] : []))
-    )
-}
-
-function forMember_Service_tags() {
-    return forMember<Observation, Service>(
-        (v) => v.tags,
-        mapWith(CodeStub, CodingReference, (v) => (!!v.tags ? [...v.tags] : []))
-    )
-}
-
-function forMember_Service_encryptedSelf() {
-    return forMember<Observation, Service>(
-        (v) => v.encryptedSelf,
-        mapFrom((v) => extractEncryptedSelf(v.systemMetaData))
-    )
-}
-
-function forMember_Service_securityMetadata() {
-    return forMember<Observation, Service>(
-        (v) => v.securityMetadata,
-        mapWith(SecurityMetadataDto, SecurityMetadata, (v) => extractSecurityMetadata(v.systemMetaData))
-    )
-}
-
-function forMember_Observation_id() {
-    return forMember<Service, Observation>(
-        (v) => v.id,
-        mapFrom((v) => v.id)
-    )
-}
-
-function forMember_Observation_transactionId() {
-    return forMember<Service, Observation>(
-        (v) => v.transactionId,
-        mapFrom((v) => v.transactionId)
-    )
-}
-
-function forMember_Observation_identifiers() {
-    return forMember<Service, Observation>(
-        (v) => v.identifiers,
-        mapWith(Identifier, IdentifierDto, (v) => v.identifier)
-    )
-}
-
-function forMember_Observation_batchId() {
-    return forMember<Service, Observation>(
-        (v) => v.batchId,
-        mapFrom((v) => v.contactId)
-    )
-}
-
-function forMember_Observation_healthcareElementIds() {
-    return forMember<Service, Observation>(
-        (v) => v.healthcareElementIds,
-        mapFrom((v) => v.healthElementsIds)
-    )
-}
-
-function forMember_Observation_index() {
-    return forMember<Service, Observation>(
-        (v) => v.index,
-        mapFrom((v) => v.index)
-    )
-}
-
-function forMember_Observation_component() {
-    return forMember<Service, Observation>(
-        (v) => v.component,
-        mapWith(Component, Content, (v) => Object.entries(v.content ?? {})?.find(([key]) => key === 'xx')?.[1])
-    )
-}
-
-function forMember_Observation_valueDate() {
-    return forMember<Service, Observation>(
-        (v) => v.valueDate,
-        mapFrom((v) => v.valueDate)
-    )
-}
-
-function forMember_Observation_openingDate() {
-    return forMember<Service, Observation>(
-        (v) => v.openingDate,
-        mapFrom((v) => v.openingDate)
-    )
-}
-
-function forMember_Observation_closingDate() {
-    return forMember<Service, Observation>(
-        (v) => v.closingDate,
-        mapFrom((v) => v.closingDate)
-    )
-}
-
-function forMember_Observation_created() {
-    return forMember<Service, Observation>(
-        (v) => v.created,
-        mapFrom((v) => v.created)
-    )
-}
-
-function forMember_Observation_modified() {
-    return forMember<Service, Observation>(
-        (v) => v.modified,
-        mapFrom((v) => v.modified)
-    )
-}
-
-function forMember_Observation_endOfLife() {
-    return forMember<Service, Observation>(
-        (v) => v.endOfLife,
-        mapFrom((v) => v.endOfLife)
-    )
-}
-
-function forMember_Observation_author() {
-    return forMember<Service, Observation>(
-        (v) => v.author,
-        mapFrom((v) => v.author)
-    )
-}
-
-function forMember_Observation_performer() {
-    return forMember<Service, Observation>(
-        (v) => v.performer,
-        mapFrom((v) => v.responsible)
-    )
-}
-
-function forMember_Observation_localContent() {
-    return forMember<Service, Observation>(
-        (v) => v.localContent,
-        mapFrom((v) => {
-            const localizedContent = Object.entries(v.content ?? {})?.filter(([key]) => key !== 'xx')
-            return new Map(
-                localizedContent.map(([key, value]) => {
-                    return [key, mapper.map(value, Content, LocalComponent)] as [ISO639_1, LocalComponent]
-                })
-            )
-        })
-    )
-}
-
-function forMember_Observation_qualifiedLinks() {
-    return forMember<Service, Observation>(
-        (v) => v.qualifiedLinks,
-        mapFrom((v) => (!!v.qualifiedLinks ? convertObjectToNestedMap(v.qualifiedLinks) : undefined))
-    )
-}
-
-function forMember_Observation_codes() {
-    return forMember<Service, Observation>(
-        (v) => v.codes,
-        mapFrom((v) => {
-            const codes = v.codes
-
-            if (!codes) {
-                return undefined
-            }
-
-            return new Set(mapper.mapArray(codes, CodeStub, CodingReference))
-        })
-    )
-}
-
-function forMember_Observation_tags() {
-    return forMember<Service, Observation>(
-        (v) => v.tags,
-        mapFrom((v) => {
-            const tags = v.tags
-
-            if (!tags) {
-                return undefined
-            }
-
-            return new Set(mapper.mapArray(tags, CodeStub, CodingReference))
-        })
-    )
-}
-
-function forMember_Observation_systemMetaData() {
-    return forMember<Service, Observation>(
-        (v) => v.systemMetaData,
-        mapFrom((v) => {
-            return new SystemMetaDataEncrypted({
-                encryptedSelf: v.encryptedSelf,
-                securityMetadata: mapper.map(v.securityMetadata, SecurityMetadataDto, SecurityMetadata),
-                cryptedForeignKeys: !!v.cryptedForeignKeys ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(v.cryptedForeignKeys, (arr) => mapper.mapArray(arr, DelegationDto, Delegation)) : undefined,
-                delegations: !!v.delegations ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(v.delegations, (arr) => mapper.mapArray(arr, DelegationDto, Delegation)) : undefined,
-                encryptionKeys: !!v.encryptionKeys ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(v.encryptionKeys, (arr) => mapper.mapArray(arr, DelegationDto, Delegation)) : undefined,
-                secretForeignKeys: v.secretForeignKeys,
-            })
-        })
-    )
-}
-
-function forMember_Observation_notes() {
-    return forMember<Service, Observation>(
-        (v) => v.notes,
-        mapWith(Annotation, AnnotationDto, (v) => v.notes)
-    )
-}
-
-export function initializeObservationMapper(mapper: Mapper) {
-    createMap(mapper, Observation, Service, forMember_Service_id(), forMember_Service_transactionId(), forMember_Service_identifier(), forMember_Service_contactId(), forMember_Service_subContactIds(), forMember_Service_plansOfActionIds(), forMember_Service_healthElementsIds(), forMember_Service_formIds(), forMember_Service_secretForeignKeys(), forMember_Service_cryptedForeignKeys(), forMember_Service_delegations(), forMember_Service_encryptionKeys(), forMember_Service_label(), forMember_Service_dataClassName(), forMember_Service_index(), forMember_Service_content(), forMember_Service_encryptedContent(), forMember_Service_textIndexes(), forMember_Service_valueDate(), forMember_Service_openingDate(), forMember_Service_closingDate(), forMember_Service_formId(), forMember_Service_created(), forMember_Service_modified(), forMember_Service_endOfLife(), forMember_Service_author(), forMember_Service_responsible(), forMember_Service_medicalLocationId(), forMember_Service_comment(), forMember_Service_status(), forMember_Service_invoicingCodes(), forMember_Service_notes(), forMember_Service_qualifiedLinks(), forMember_Service_codes(), forMember_Service_tags(), forMember_Service_encryptedSelf(), forMember_Service_securityMetadata())
-
-    createMap(mapper, Service, Observation, forMember_Observation_id(), forMember_Observation_transactionId(), forMember_Observation_identifiers(), forMember_Observation_batchId(), forMember_Observation_healthcareElementIds(), forMember_Observation_index(), forMember_Observation_component(), forMember_Observation_valueDate(), forMember_Observation_openingDate(), forMember_Observation_closingDate(), forMember_Observation_created(), forMember_Observation_modified(), forMember_Observation_endOfLife(), forMember_Observation_author(), forMember_Observation_performer(), forMember_Observation_localContent(), forMember_Observation_qualifiedLinks(), forMember_Observation_codes(), forMember_Observation_tags(), forMember_Observation_systemMetaData(), forMember_Observation_notes())
+export function mapObservationToService(domain: Observation): Service {
+    return new Service({
+        id: toServiceId(domain),
+        transactionId: toServiceTransactionId(domain),
+        identifier: toServiceIdentifier(domain),
+        contactId: toServiceContactId(domain),
+        subContactIds: toServiceSubContactIds(domain),
+        plansOfActionIds: toServicePlansOfActionIds(domain),
+        healthElementsIds: toServiceHealthElementsIds(domain),
+        formIds: toServiceFormIds(domain),
+        secretForeignKeys: toServiceSecretForeignKeys(domain),
+        cryptedForeignKeys: toServiceCryptedForeignKeys(domain),
+        delegations: toServiceDelegations(domain),
+        encryptionKeys: toServiceEncryptionKeys(domain),
+        label: toServiceLabel(domain),
+        dataClassName: toServiceDataClassName(domain),
+        index: toServiceIndex(domain),
+        content: toServiceContent(domain),
+        encryptedContent: toServiceEncryptedContent(domain),
+        textIndexes: toServiceTextIndexes(domain),
+        valueDate: toServiceValueDate(domain),
+        openingDate: toServiceOpeningDate(domain),
+        closingDate: toServiceClosingDate(domain),
+        formId: toServiceFormId(domain),
+        created: toServiceCreated(domain),
+        modified: toServiceModified(domain),
+        endOfLife: toServiceEndOfLife(domain),
+        author: toServiceAuthor(domain),
+        responsible: toServiceResponsible(domain),
+        medicalLocationId: toServiceMedicalLocationId(domain),
+        comment: toServiceComment(domain),
+        status: toServiceStatus(domain),
+        invoicingCodes: toServiceInvoicingCodes(domain),
+        notes: toServiceNotes(domain),
+        qualifiedLinks: toServiceQualifiedLinks(domain),
+        codes: toServiceCodes(domain),
+        tags: toServiceTags(domain),
+        encryptedSelf: toServiceEncryptedSelf(domain),
+        securityMetadata: toServiceSecurityMetadata(domain),
+    })
 }

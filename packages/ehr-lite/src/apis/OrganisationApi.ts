@@ -1,20 +1,18 @@
-import {ErrorHandler, HealthcarePartyLikeApiImpl} from "@icure/typescript-common";
-import {HealthcareParty, IccHcpartyXApi} from "@icure/api";
-import {Organisation} from "../models/Organisation.model";
-import {mapper} from "../mappers/mapper";
+import { ErrorHandler, HealthcarePartyLikeApiImpl } from '@icure/typescript-common'
+import { HealthcareParty, IccHcpartyXApi } from '@icure/api'
+import { Organisation } from '../models/Organisation.model'
+import { mapHealthcarePartyToOrganisation, mapOrganisationToHealthcareParty } from '../mappers/Organisation.mapper'
 
-export const organisationApi = (
-    errorHandler: ErrorHandler,
-    healthcarePartyApi: IccHcpartyXApi,
-) => new HealthcarePartyLikeApiImpl<Organisation>(
-    {
-        toDomain(dto: HealthcareParty): Organisation {
-            return mapper.map(dto, HealthcareParty, Organisation )
+export const organisationApi = (errorHandler: ErrorHandler, healthcarePartyApi: IccHcpartyXApi) =>
+    new HealthcarePartyLikeApiImpl<Organisation>(
+        {
+            toDomain(dto: HealthcareParty): Organisation {
+                return mapHealthcarePartyToOrganisation(dto)
+            },
+            toDto(domain: Organisation): HealthcareParty {
+                return mapOrganisationToHealthcareParty(domain)
+            },
         },
-        toDto(domain: Organisation): HealthcareParty {
-            return mapper.map(domain, Organisation, HealthcareParty)
-        }
-    },
-    errorHandler,
-    healthcarePartyApi,
-)
+        errorHandler,
+        healthcarePartyApi
+    )

@@ -1,183 +1,141 @@
 import { Location } from '../models/Location.model'
-import { Address, Annotation as AnnotationEntity, Telecom } from '@icure/api'
-import { createMap, forMember, ignore, mapFrom, mapWith, Mapper } from '@automapper/core'
-import { Annotation } from '@icure/typescript-common'
+import { Address, Annotation as AnnotationDto, Telecom } from '@icure/api'
+import { Annotation, mapAnnotationDtoToAnnotation, mapAnnotationToAnnotationDto } from '@icure/typescript-common'
 import { ContactPoint } from '../models/ContactPoint.model'
+import { mapContactPointToTelecom, mapTelecomToContactPoint } from './ContactPoint.mapper'
+import { LocationAddressTypeEnum } from '../models/enums/LocationAddressType.enum'
 
-function forMember_Address_addressType() {
-    return forMember<Location, Address>(
-        (v) => v.addressType,
-        mapFrom((v) => v.addressType)
-    )
+function toAddressAddressType(domain: Location): Address.AddressTypeEnum | undefined {
+    return domain.addressType
 }
 
-function forMember_Address_descr() {
-    return forMember<Location, Address>(
-        (v) => v.descr,
-        mapFrom((v) => v.description)
-    )
+function toAddressDescr(domain: Location): string | undefined {
+    return domain.description
 }
 
-function forMember_Address_street() {
-    return forMember<Location, Address>(
-        (v) => v.street,
-        mapFrom((v) => v.street)
-    )
+function toAddressStreet(domain: Location): string | undefined {
+    return domain.street
 }
 
-function forMember_Address_houseNumber() {
-    return forMember<Location, Address>(
-        (v) => v.houseNumber,
-        mapFrom((v) => v.houseNumber)
-    )
+function toAddressHouseNumber(domain: Location): string | undefined {
+    return domain.houseNumber
 }
 
-function forMember_Address_postboxNumber() {
-    return forMember<Location, Address>(
-        (v) => v.postboxNumber,
-        mapFrom((v) => v.postboxNumber)
-    )
+function toAddressPostboxNumber(domain: Location): string | undefined {
+    return domain.postboxNumber
 }
 
-function forMember_Address_postalCode() {
-    return forMember<Location, Address>(
-        (v) => v.postalCode,
-        mapFrom((v) => v.postalCode)
-    )
+function toAddressPostalCode(domain: Location): string | undefined {
+    return domain.postalCode
 }
 
-function forMember_Address_city() {
-    return forMember<Location, Address>(
-        (v) => v.city,
-        mapFrom((v) => v.city)
-    )
+function toAddressCity(domain: Location): string | undefined {
+    return domain.city
 }
 
-function forMember_Address_state() {
-    return forMember<Location, Address>(
-        (v) => v.state,
-        mapFrom((v) => v.state)
-    )
+function toAddressState(domain: Location): string | undefined {
+    return domain.state
 }
 
-function forMember_Address_country() {
-    return forMember<Location, Address>(
-        (v) => v.country,
-        mapFrom((v) => v.country)
-    )
+function toAddressCountry(domain: Location): string | undefined {
+    return domain.country
 }
 
-function forMember_Address_note() {
-    return forMember<Location, Address>((v) => v.note, ignore())
+function toAddressNote(domain: Location): string | undefined {
+    return undefined
 }
 
-function forMember_Address_notes() {
-    return forMember<Location, Address>(
-        (v) => v.notes,
-        mapWith(AnnotationEntity, Annotation, (v) => v.notes)
-    )
+function toAddressNotes(domain: Location): AnnotationDto[] | undefined {
+    return !!domain.notes ? domain.notes.map(mapAnnotationToAnnotationDto) : undefined
 }
 
-function forMember_Address_telecoms() {
-    return forMember<Location, Address>(
-        (v) => v.telecoms,
-        mapWith(Telecom, ContactPoint, (v) => v.telecoms)
-    )
+function toAddressTelecoms(domain: Location): Telecom[] | undefined {
+    return !!domain.telecoms ? domain.telecoms.map(mapContactPointToTelecom) : undefined
 }
 
-function forMember_Address_encryptedSelf() {
-    return forMember<Location, Address>(
-        (v) => v.encryptedSelf,
-        mapFrom((v) => v.encryptedSelf)
-    )
+function toAddressEncryptedSelf(domain: Location): string | undefined {
+    return domain.encryptedSelf
 }
 
-function forMember_Location_addressType() {
-    return forMember<Address, Location>(
-        (v) => v.addressType,
-        mapFrom((v) => v.addressType)
-    )
+function toLocationAddressType(dto: Address): LocationAddressTypeEnum | undefined {
+    return dto.addressType as LocationAddressTypeEnum | undefined
 }
 
-function forMember_Location_description() {
-    return forMember<Address, Location>(
-        (v) => v.description,
-        mapFrom((v) => v.descr)
-    )
+function toLocationDescription(dto: Address): string | undefined {
+    return dto.descr
 }
 
-function forMember_Location_street() {
-    return forMember<Address, Location>(
-        (v) => v.street,
-        mapFrom((v) => v.street)
-    )
+function toLocationStreet(dto: Address): string | undefined {
+    return dto.street
 }
 
-function forMember_Location_houseNumber() {
-    return forMember<Address, Location>(
-        (v) => v.houseNumber,
-        mapFrom((v) => v.houseNumber)
-    )
+function toLocationHouseNumber(dto: Address): string | undefined {
+    return dto.houseNumber
 }
 
-function forMember_Location_postboxNumber() {
-    return forMember<Address, Location>(
-        (v) => v.postboxNumber,
-        mapFrom((v) => v.postboxNumber)
-    )
+function toLocationPostboxNumber(dto: Address): string | undefined {
+    return dto.postboxNumber
 }
 
-function forMember_Location_postalCode() {
-    return forMember<Address, Location>(
-        (v) => v.postalCode,
-        mapFrom((v) => v.postalCode)
-    )
+function toLocationPostalCode(dto: Address): string | undefined {
+    return dto.postalCode
 }
 
-function forMember_Location_city() {
-    return forMember<Address, Location>(
-        (v) => v.city,
-        mapFrom((v) => v.city)
-    )
+function toLocationCity(dto: Address): string | undefined {
+    return dto.city
 }
 
-function forMember_Location_state() {
-    return forMember<Address, Location>(
-        (v) => v.state,
-        mapFrom((v) => v.state)
-    )
+function toLocationState(dto: Address): string | undefined {
+    return dto.state
 }
 
-function forMember_Location_country() {
-    return forMember<Address, Location>(
-        (v) => v.country,
-        mapFrom((v) => v.country)
-    )
+function toLocationCountry(dto: Address): string | undefined {
+    return dto.country
 }
 
-function forMember_Location_notes() {
-    return forMember<Address, Location>(
-        (v) => v.notes,
-        mapWith(Annotation, AnnotationEntity, (v) => v.notes)
-    )
+function toLocationNotes(dto: Address): Annotation[] | undefined {
+    return !!dto.notes ? dto.notes.map(mapAnnotationDtoToAnnotation) : undefined
 }
 
-function forMember_Location_telecoms() {
-    return forMember<Address, Location>(
-        (v) => v.telecoms,
-        mapWith(ContactPoint, Telecom, (v) => v.telecoms)
-    )
+function toLocationTelecoms(dto: Address): ContactPoint[] | undefined {
+    return !!dto.telecoms ? dto.telecoms.map(mapTelecomToContactPoint) : undefined
 }
 
-function forMember_Location_encryptedSelf() {
-    return forMember<Address, Location>(
-        (v) => v.encryptedSelf,
-        mapFrom((v) => v.encryptedSelf)
-    )
+function toLocationEncryptedSelf(dto: Address): string | undefined {
+    return dto.encryptedSelf
 }
 
-export function initializeLocationMapper(mapper: Mapper) {
-    createMap(mapper, Location, Address, forMember_Address_addressType(), forMember_Address_descr(), forMember_Address_street(), forMember_Address_houseNumber(), forMember_Address_postboxNumber(), forMember_Address_postalCode(), forMember_Address_city(), forMember_Address_state(), forMember_Address_country(), forMember_Address_note(), forMember_Address_notes(), forMember_Address_telecoms(), forMember_Address_encryptedSelf())
+export function mapAddressToLocation(dto: Address): Location {
+    return new Location({
+        addressType: toLocationAddressType(dto),
+        description: toLocationDescription(dto),
+        street: toLocationStreet(dto),
+        houseNumber: toLocationHouseNumber(dto),
+        postboxNumber: toLocationPostboxNumber(dto),
+        postalCode: toLocationPostalCode(dto),
+        city: toLocationCity(dto),
+        state: toLocationState(dto),
+        country: toLocationCountry(dto),
+        notes: toLocationNotes(dto),
+        telecoms: toLocationTelecoms(dto),
+        encryptedSelf: toLocationEncryptedSelf(dto),
+    })
+}
 
-    createMap(mapper, Address, Location, forMember_Location_addressType(), forMember_Location_description(), forMember_Location_street(), forMember_Location_houseNumber(), forMember_Location_postboxNumber(), forMember_Location_postalCode(), forMember_Location_city(), forMember_Location_state(), forMember_Location_country(), forMember_Location_notes(), forMember_Location_telecoms(), forMember_Location_encryptedSelf())
+export function mapLocationToAddress(domain: Location): Address {
+    return new Address({
+        addressType: toAddressAddressType(domain),
+        descr: toAddressDescr(domain),
+        street: toAddressStreet(domain),
+        houseNumber: toAddressHouseNumber(domain),
+        postboxNumber: toAddressPostboxNumber(domain),
+        postalCode: toAddressPostalCode(domain),
+        city: toAddressCity(domain),
+        state: toAddressState(domain),
+        country: toAddressCountry(domain),
+        note: toAddressNote(domain),
+        notes: toAddressNotes(domain),
+        telecoms: toAddressTelecoms(domain),
+        encryptedSelf: toAddressEncryptedSelf(domain),
+    })
 }

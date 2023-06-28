@@ -1,73 +1,93 @@
-import { HumanName } from "../models/HumanName.model"
-import { PersonName } from "@icure/api"
-import {createMap, forMember, mapFrom, Mapper} from "@automapper/core"
+import { HumanName } from '../models/HumanName.model'
+import { PersonName } from '@icure/api'
+import { HumanNameUseEnum } from '../models/enums/HumanNameUse.enum'
 
-function forMember_PersonName_lastName() {
-    return forMember<HumanName, PersonName>(v => v.lastName, mapFrom(v => v.lastName))
+function toPersonNameLastName(domain: HumanName): string | undefined {
+    return domain.lastName
 }
 
-function forMember_PersonName_firstNames() {
-    return forMember<HumanName, PersonName>(v => v.firstNames, mapFrom(v => v.firstNames))
+function toPersonNameFirstNames(domain: HumanName): string[] | undefined {
+    return domain.firstNames
 }
 
-function forMember_PersonName_start() {
-    return forMember<HumanName, PersonName>(v => v.start, mapFrom(v => v.start))
+function toPersonNameStart(domain: HumanName): number | undefined {
+    return domain.start
 }
 
-function forMember_PersonName_end() {
-    return forMember<HumanName, PersonName>(v => v.end, mapFrom(v => v.end))
+function toPersonNameEnd(domain: HumanName): number | undefined {
+    return domain.end
 }
 
-function forMember_PersonName_prefix() {
-    return forMember<HumanName, PersonName>(v => v.prefix, mapFrom(v => v.prefix))
+function toPersonNamePrefix(domain: HumanName): string[] | undefined {
+    return domain.prefix
 }
 
-function forMember_PersonName_suffix() {
-    return forMember<HumanName, PersonName>(v => v.suffix, mapFrom(v => v.suffix))
+function toPersonNameSuffix(domain: HumanName): string[] | undefined {
+    return domain.suffix
 }
 
-function forMember_PersonName_text() {
-    return forMember<HumanName, PersonName>(v => v.text, mapFrom(v => v.text))
+function toPersonNameText(domain: HumanName): string | undefined {
+    return domain.text
 }
 
-function forMember_PersonName_use() {
-    return forMember<HumanName, PersonName>(v => v.use, mapFrom(v => v.use))
+function toPersonNameUse(domain: HumanName): PersonName.UseEnum | undefined {
+    return domain.use as PersonName.UseEnum | undefined
 }
 
-function forMember_HumanName_lastName() {
-    return forMember<PersonName, HumanName>(v => v.lastName, mapFrom(v => v.lastName))
+function toHumanNameLastName(dto: PersonName): string | undefined {
+    return dto.lastName
 }
 
-function forMember_HumanName_firstNames() {
-    return forMember<PersonName, HumanName>(v => v.firstNames, mapFrom(v => v.firstNames))
+function toHumanNameFirstNames(dto: PersonName): string[] | undefined {
+    return dto.firstNames
 }
 
-function forMember_HumanName_start() {
-    return forMember<PersonName, HumanName>(v => v.start, mapFrom(v => v.start))
+function toHumanNameStart(dto: PersonName): number | undefined {
+    return dto.start
 }
 
-function forMember_HumanName_end() {
-    return forMember<PersonName, HumanName>(v => v.end, mapFrom(v => v.end))
+function toHumanNameEnd(dto: PersonName): number | undefined {
+    return dto.end
 }
 
-function forMember_HumanName_prefix() {
-    return forMember<PersonName, HumanName>(v => v.prefix, mapFrom(v => v.prefix))
+function toHumanNamePrefix(dto: PersonName): string[] | undefined {
+    return dto.prefix
 }
 
-function forMember_HumanName_suffix() {
-    return forMember<PersonName, HumanName>(v => v.suffix, mapFrom(v => v.suffix))
+function toHumanNameSuffix(dto: PersonName): string[] | undefined {
+    return dto.suffix
 }
 
-function forMember_HumanName_text() {
-    return forMember<PersonName, HumanName>(v => v.text, mapFrom(v => v.text))
+function toHumanNameText(dto: PersonName): string | undefined {
+    return dto.text
 }
 
-function forMember_HumanName_use() {
-    return forMember<PersonName, HumanName>(v => v.use, mapFrom(v => v.use))
+function toHumanNameUse(dto: PersonName): HumanNameUseEnum | undefined {
+    return dto.use as HumanNameUseEnum
 }
 
-export function initializeHumanNameMapper(mapper: Mapper) {
-    createMap(mapper, HumanName, PersonName, forMember_PersonName_lastName(), forMember_PersonName_firstNames(), forMember_PersonName_start(), forMember_PersonName_end(), forMember_PersonName_prefix(), forMember_PersonName_suffix(), forMember_PersonName_text(), forMember_PersonName_use())
+export function mapPersonNameToHumanName(dto: PersonName): HumanName {
+    return new HumanName({
+        lastName: toHumanNameLastName(dto),
+        firstNames: toHumanNameFirstNames(dto),
+        start: toHumanNameStart(dto),
+        end: toHumanNameEnd(dto),
+        prefix: toHumanNamePrefix(dto),
+        suffix: toHumanNameSuffix(dto),
+        text: toHumanNameText(dto),
+        use: toHumanNameUse(dto),
+    })
+}
 
-    createMap(mapper, PersonName, HumanName, forMember_HumanName_lastName(), forMember_HumanName_firstNames(), forMember_HumanName_start(), forMember_HumanName_end(), forMember_HumanName_prefix(), forMember_HumanName_suffix(), forMember_HumanName_text(), forMember_HumanName_use())
+export function mapHumanNameToPersonName(domain: HumanName): PersonName {
+    return new PersonName({
+        lastName: toPersonNameLastName(domain),
+        firstNames: toPersonNameFirstNames(domain),
+        start: toPersonNameStart(domain),
+        end: toPersonNameEnd(domain),
+        prefix: toPersonNamePrefix(domain),
+        suffix: toPersonNameSuffix(domain),
+        text: toPersonNameText(domain),
+        use: toPersonNameUse(domain),
+    })
 }

@@ -1,158 +1,125 @@
 import { Component } from '../models/Component.model'
-import {
-    Content,
-    Measure as MeasureEntity,
-    Service,
-    TimeSeries as TimeSeriesEntity
-} from '@icure/api'
-import { createMap, forMember, ignore, mapFrom, mapWith, Mapper } from '@automapper/core'
+import { Content, Measure as MeasureDto, Medication, Service, TimeSeries as TimeSeriesDto } from '@icure/api'
 import { Observation } from '../models/Observation.model'
-import {Measure, TimeSeries} from "@icure/typescript-common";
+import { mapMeasureDtoToMeasure, mapMeasureToMeasureDto, mapTimeSeriesDtoToTimeSeries, mapTimeSeriesToTimeSeriesDto, Measure, TimeSeries } from '@icure/typescript-common'
+import { mapObservationToService, mapServiceToObservation } from './Observation.mapper'
 
-function forMember_Content_stringValue() {
-    return forMember<Component, Content>((v) => v.stringValue, ignore())
+function toContentStringValue(domain: Component): string | undefined {
+    return undefined
 }
 
-function forMember_Content_numberValue() {
-    return forMember<Component, Content>(
-        (v) => v.numberValue,
-        mapFrom((v) => v.numberValue)
-    )
+function toContentNumberValue(domain: Component): number | undefined {
+    return domain.numberValue
 }
 
-function forMember_Content_booleanValue() {
-    return forMember<Component, Content>(
-        (v) => v.booleanValue,
-        mapFrom((v) => v.booleanValue)
-    )
+function toContentBooleanValue(domain: Component): boolean | undefined {
+    return domain.booleanValue
 }
 
-function forMember_Content_instantValue() {
-    return forMember<Component, Content>(
-        (v) => v.instantValue,
-        mapFrom((v) => v.instantValue)
-    )
+function toContentInstantValue(domain: Component): number | undefined {
+    return domain.instantValue
 }
 
-function forMember_Content_fuzzyDateValue() {
-    return forMember<Component, Content>(
-        (v) => v.fuzzyDateValue,
-        mapFrom((v) => v.fuzzyDateValue)
-    )
+function toContentFuzzyDateValue(domain: Component): number | undefined {
+    return domain.fuzzyDateValue
 }
 
-function forMember_Content_binaryValue() {
-    return forMember<Component, Content>((v) => v.binaryValue, ignore())
+function toContentBinaryValue(domain: Component): ArrayBuffer | undefined {
+    return undefined
 }
 
-function forMember_Content_documentId() {
-    return forMember<Component, Content>((v) => v.documentId, ignore())
+function toContentDocumentId(domain: Component): string | undefined {
+    return undefined
 }
 
-function forMember_Content_measureValue() {
-    return forMember<Component, Content>(
-        (v) => v.measureValue,
-        mapWith(MeasureEntity, Measure, (v) => v.measureValue)
-    )
+function toContentMeasureValue(domain: Component): MeasureDto | undefined {
+    return !!domain.measureValue ? mapMeasureToMeasureDto(domain.measureValue) : undefined
 }
 
-function forMember_Content_medicationValue() {
-    return forMember<Component, Content>((v) => v.medicationValue, ignore())
+function toContentMedicationValue(domain: Component): Medication | undefined {
+    return undefined
 }
 
-function forMember_Content_timeSeries() {
-    return forMember<Component, Content>(
-        (v) => v.timeSeries,
-        mapWith(TimeSeriesEntity, TimeSeries, (v) => v.timeSeries)
-    )
+function toContentTimeSeries(domain: Component): TimeSeriesDto | undefined {
+    return !!domain.timeSeries ? mapTimeSeriesToTimeSeriesDto(domain.timeSeries) : undefined
 }
 
-function forMember_Content_compoundValue() {
-    return forMember<Component, Content>(
-        (v) => v.compoundValue,
-        mapWith(Observation, Service, (v) => v.compoundValue)
-    )
+function toContentCompoundValue(domain: Component): Service[] | undefined {
+    return !!domain.compoundValue ? domain.compoundValue.map(mapObservationToService) : undefined
 }
 
-function forMember_Content_ratio() {
-    return forMember<Component, Content>(
-        (v) => v.ratio,
-        mapWith(MeasureEntity, Measure, (v) => v.ratio)
-    )
+function toContentRatio(domain: Component): MeasureDto[] | undefined {
+    return !!domain.ratio ? domain.ratio.map(mapMeasureToMeasureDto) : undefined
 }
 
-function forMember_Content_range() {
-    return forMember<Component, Content>(
-        (v) => v.range,
-        mapWith(MeasureEntity, Measure, (v) => v.ratio)
-    )
+function toContentRange(domain: Component): MeasureDto[] | undefined {
+    return !!domain.range ? domain.range.map(mapMeasureToMeasureDto) : undefined
 }
 
-function forMember_Component_numberValue() {
-    return forMember<Content, Component>(
-        (v) => v.numberValue,
-        mapFrom((v) => v.numberValue)
-    )
+function toComponentNumberValue(dto: Content): number | undefined {
+    return dto.numberValue
 }
 
-function forMember_Component_booleanValue() {
-    return forMember<Content, Component>(
-        (v) => v.booleanValue,
-        mapFrom((v) => v.booleanValue)
-    )
+function toComponentBooleanValue(dto: Content): boolean | undefined {
+    return dto.booleanValue
 }
 
-function forMember_Component_instantValue() {
-    return forMember<Content, Component>(
-        (v) => v.instantValue,
-        mapFrom((v) => v.instantValue)
-    )
+function toComponentInstantValue(dto: Content): number | undefined {
+    return dto.instantValue
 }
 
-function forMember_Component_fuzzyDateValue() {
-    return forMember<Content, Component>(
-        (v) => v.fuzzyDateValue,
-        mapFrom((v) => v.fuzzyDateValue)
-    )
+function toComponentFuzzyDateValue(dto: Content): number | undefined {
+    return dto.fuzzyDateValue
 }
 
-function forMember_Component_measureValue() {
-    return forMember<Content, Component>(
-        (v) => v.measureValue,
-        mapFrom((v) => v.measureValue)
-    )
+function toComponentMeasureValue(dto: Content): Measure | undefined {
+    return !!dto.measureValue ? mapMeasureDtoToMeasure(dto.measureValue) : undefined
 }
 
-function forMember_Component_timeSeries() {
-    return forMember<Content, Component>(
-        (v) => v.timeSeries,
-        mapWith(TimeSeries, TimeSeriesEntity, (v) => v.timeSeries)
-    )
+function toComponentTimeSeries(dto: Content): TimeSeries | undefined {
+    return !!dto.timeSeries ? mapTimeSeriesDtoToTimeSeries(dto.timeSeries) : undefined
 }
 
-function forMember_Component_compoundValue() {
-    return forMember<Content, Component>(
-        (v) => v.compoundValue,
-        mapWith(Observation, Service, (v) => v.compoundValue)
-    )
+function toComponentCompoundValue(dto: Content): Observation[] | undefined {
+    return !!dto.compoundValue ? dto.compoundValue.map(mapServiceToObservation) : undefined
 }
 
-function forMember_Component_ratio() {
-    return forMember<Content, Component>(
-        (v) => v.ratio,
-        mapWith(MeasureEntity, Measure, (v) => v.ratio)
-    )
+function toComponentRatio(dto: Content): Measure[] | undefined {
+    return !!dto.ratio ? dto.ratio.map(mapMeasureDtoToMeasure) : undefined
 }
 
-function forMember_Component_range() {
-    return forMember<Content, Component>(
-        (v) => v.range,
-        mapWith(MeasureEntity, Measure, (v) => v.ratio)
-    )
+function toComponentRange(dto: Content): Measure[] | undefined {
+    return !!dto.range ? dto.range.map(mapMeasureDtoToMeasure) : undefined
 }
 
-export function initializeComponentMapper(mapper: Mapper) {
-    createMap(mapper, Component, Content, forMember_Content_stringValue(), forMember_Content_numberValue(), forMember_Content_booleanValue(), forMember_Content_instantValue(), forMember_Content_fuzzyDateValue(), forMember_Content_binaryValue(), forMember_Content_documentId(), forMember_Content_measureValue(), forMember_Content_medicationValue(), forMember_Content_timeSeries(), forMember_Content_compoundValue(), forMember_Content_ratio(), forMember_Content_range())
+export function mapContentToComponent(dto: Content): Component {
+    return new Component({
+        numberValue: toComponentNumberValue(dto),
+        booleanValue: toComponentBooleanValue(dto),
+        instantValue: toComponentInstantValue(dto),
+        fuzzyDateValue: toComponentFuzzyDateValue(dto),
+        measureValue: toComponentMeasureValue(dto),
+        timeSeries: toComponentTimeSeries(dto),
+        compoundValue: toComponentCompoundValue(dto),
+        ratio: toComponentRatio(dto),
+        range: toComponentRange(dto),
+    })
+}
 
-    createMap(mapper, Content, Component, forMember_Component_numberValue(), forMember_Component_booleanValue(), forMember_Component_instantValue(), forMember_Component_fuzzyDateValue(), forMember_Component_measureValue(), forMember_Component_timeSeries(), forMember_Component_compoundValue(), forMember_Component_ratio(), forMember_Component_range())
+export function mapComponentToContent(domain: Component): Content {
+    return new Content({
+        stringValue: toContentStringValue(domain),
+        numberValue: toContentNumberValue(domain),
+        booleanValue: toContentBooleanValue(domain),
+        instantValue: toContentInstantValue(domain),
+        fuzzyDateValue: toContentFuzzyDateValue(domain),
+        binaryValue: toContentBinaryValue(domain),
+        documentId: toContentDocumentId(domain),
+        measureValue: toContentMeasureValue(domain),
+        medicationValue: toContentMedicationValue(domain),
+        timeSeries: toContentTimeSeries(domain),
+        compoundValue: toContentCompoundValue(domain),
+        ratio: toContentRatio(domain),
+        range: toContentRange(domain),
+    })
 }

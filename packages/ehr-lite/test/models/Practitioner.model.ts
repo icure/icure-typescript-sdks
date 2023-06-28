@@ -1,11 +1,11 @@
-import {Practitioner} from "../../src/models/Practitioner.model";
-import {generateIdentifier} from "../../../common/test/models/Identifier.model";
-import {generateCodingReference} from "../../../common/test/models/CodingReference.model";
-import {generateHumanName} from "./HumanName.model";
-import {GenderEnum} from "../../src/models/enums/Gender.enum";
-import {generateLocation} from "./Location.model";
-import {generateProperty} from "../../../common/test/models/Property.model";
-import {generateSystemMetaDataOwner} from "../../../common/test/models/SystemMetaDataOwner.model";
+import { Practitioner } from '../../src/models/Practitioner.model'
+import { generateIdentifier } from '../../../common/test/models/Identifier.model'
+import { generateCodingReference } from '../../../common/test/models/CodingReference.model'
+import { generateHumanName } from './HumanName.model'
+import { GenderEnum } from '../../src/models/enums/Gender.enum'
+import { generateLocation } from './Location.model'
+import { generateProperty } from '../../../common/test/models/Property.model'
+import { generateSystemMetaDataOwner } from '../../../common/test/models/SystemMetaDataOwner.model'
 
 export function generatePractitioner(): Practitioner {
     const practitioner = {
@@ -31,7 +31,10 @@ export function generatePractitioner(): Practitioner {
         languages: ['English'],
         picture: new ArrayBuffer(8),
         specialityCodes: [generateCodingReference()],
-        description: 'dummyDescription',
+        description: new Map([
+            ['en', 'This is a fake practitioner'],
+            ['fr', 'Ceci est un praticien factice'],
+        ]),
         properties: [generateProperty(), generateProperty()],
         systemMetaData: generateSystemMetaDataOwner(),
     }

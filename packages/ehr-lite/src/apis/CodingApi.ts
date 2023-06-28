@@ -1,19 +1,16 @@
-import {Code, IccCodeXApi} from "@icure/api";
-import {mapper} from "../mappers/mapper";
-import {CodeLikeApiImpl, Coding, ErrorHandler} from "@icure/typescript-common";
+import { Code, IccCodeXApi } from '@icure/api'
+import { CodeLikeApiImpl, Coding, ErrorHandler, mapCodeToCoding, mapCodingToCode } from '@icure/typescript-common'
 
-export const codingApi = (
-    errorHandler: ErrorHandler,
-    codeApi: IccCodeXApi,
-) => new CodeLikeApiImpl<Coding>(
-    {
-        toDomain(dto: Code): Coding {
-            return mapper.map(dto, Code, Coding)
+export const codingApi = (errorHandler: ErrorHandler, codeApi: IccCodeXApi) =>
+    new CodeLikeApiImpl<Coding>(
+        {
+            toDomain(dto: Code): Coding {
+                return mapCodeToCoding(dto)
+            },
+            toDto(domain: Coding): Code {
+                return mapCodingToCode(domain)
+            },
         },
-        toDto(domain: Coding): Code {
-            return mapper.map(domain, Coding, Code)
-        }
-    },
-    errorHandler,
-    codeApi,
-)
+        errorHandler,
+        codeApi
+    )

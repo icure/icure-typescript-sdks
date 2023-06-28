@@ -1,19 +1,12 @@
-import {initializeMapper, mapper} from "../../src/mappers/mapper";
-import {generatePatient} from "../models/Patient.model";
-import {Patient} from "../../src/models/Patient.model";
-import {Patient as PatientEntity} from "@icure/api";
-import {initializeMapper as commonInitializeMapper} from "@icure/typescript-common";
+import { generatePatient } from '../models/Patient.model'
+import { Patient } from '../../src/models/Patient.model'
+import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../../src/mappers/Patient.mapper'
 
 describe('Patient', function () {
-    beforeAll(() => {
-        commonInitializeMapper(mapper)
-        initializeMapper(mapper)
-    })
-
     it('should correctly map to PatientEntity and back to Patient', () => {
         const instance = generatePatient()
-        const iCureInstance = mapper.map(instance, Patient, PatientEntity)
-        const newInstance = mapper.map(iCureInstance, PatientEntity, Patient)
+        const iCureInstance = mapPatientToPatientDto(instance)
+        const newInstance = mapPatientDtoToPatient(iCureInstance)
 
         expect(newInstance).toEqual(instance)
     })

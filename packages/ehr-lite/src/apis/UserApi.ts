@@ -1,32 +1,28 @@
-import {IccUserXApi, User as UserDto, Patient as PatientDto} from "@icure/api";
-import {ErrorHandler, MessageGatewayApi, Sanitizer, User, UserLikeApiImpl} from "@icure/typescript-common";
-import {Patient} from "../models/Patient.model";
-import {mapper} from "../mappers/mapper";
+import { IccUserXApi, User as UserDto, Patient as PatientDto } from '@icure/api'
+import { ErrorHandler, mapUserDtoToUser, mapUserToUserDto, MessageGatewayApi, Sanitizer, User, UserLikeApiImpl } from '@icure/typescript-common'
+import { Patient } from '../models/Patient.model'
+import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
 
-export const userApi = (
-    errorHandler: ErrorHandler,
-    sanitizer: Sanitizer,
-    userApi: IccUserXApi,
-    messageGatewayApi?: MessageGatewayApi,
-) => new UserLikeApiImpl<User, Patient>(
-    {
-        toDomain(dto: UserDto): User {
-            return mapper.map(dto, UserDto, User)
+export const userApi = (errorHandler: ErrorHandler, sanitizer: Sanitizer, userApi: IccUserXApi, messageGatewayApi?: MessageGatewayApi) =>
+    new UserLikeApiImpl<User, Patient>(
+        {
+            toDomain(dto: UserDto): User {
+                return mapUserDtoToUser(dto)
+            },
+            toDto(domain: User): UserDto {
+                return mapUserToUserDto(domain)
+            },
         },
-        toDto(domain: User): UserDto {
-            return mapper.map(domain, User, UserDto)
-        }
-    },
-    {
-        toDomain(dto: PatientDto): Patient {
-            return mapper.map(dto, PatientDto, Patient)
+        {
+            toDomain(dto: PatientDto): Patient {
+                return mapPatientDtoToPatient(dto)
+            },
+            toDto(domain: Patient): PatientDto {
+                return mapPatientToPatientDto(domain)
+            },
         },
-        toDto(domain: Patient): PatientDto {
-            return mapper.map(domain, Patient, PatientDto)
-        }
-    },
-    errorHandler,
-    sanitizer,
-    userApi,
-    messageGatewayApi
-)
+        errorHandler,
+        sanitizer,
+        userApi,
+        messageGatewayApi
+    )

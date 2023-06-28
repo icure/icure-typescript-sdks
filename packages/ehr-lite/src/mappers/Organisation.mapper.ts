@@ -1,10 +1,8 @@
 import { Organisation } from '../models/Organisation.model'
-import { Address, CodeStub, HealthcareParty, Identifier as IdentifierEntity, PropertyStub } from '@icure/api'
-import { createMap, forMember, ignore, mapFrom, mapWith, Mapper } from '@automapper/core'
-import { mapper } from './mapper'
+import { Address, CodeStub, FinancialInstitutionInformation, FlatRateTarification, HealthcareParty, HealthcarePartyHistoryStatus, Identifier as IdentifierDto, PersonName, PropertyStub } from '@icure/api'
 import { Location } from '../models/Location.model'
-import {CodingReference, Identifier, Property} from '@icure/typescript-common'
 import {
+    CodingReference,
     convertDeepNestedMapToObject,
     convertMapToObject,
     convertNestedMapToObject,
@@ -17,438 +15,403 @@ import {
     extractPublicKey,
     extractPublicKeysForOaepWithSha256,
     extractTransferKeys,
+    Identifier,
+    mapCodeStubToCodingReference,
+    mapCodingReferenceToCodeStub,
+    mapIdentifierDtoToIdentifier,
+    mapIdentifierToIdentifierDto,
+    mapPropertyStubToProperty,
+    mapPropertyToPropertyStub,
+    Property,
+    SystemMetaDataOwner,
 } from '@icure/typescript-common'
-import { SystemMetaDataOwner } from '@icure/typescript-common'
+import { mapAddressToLocation, mapLocationToAddress } from './Location.mapper'
 import { healthcareProfessionalIdentifiers } from './utils/HealthProfessional.utils'
 
-function forMember_HealthcareParty_id() {
-    return forMember<Organisation, HealthcareParty>(
-        (v) => v.id,
-        mapFrom((v) => v.id)
-    )
+function toHealthcarePartyId(domain: Organisation): string | undefined {
+    return domain.id
 }
 
-function forMember_HealthcareParty_rev() {
-    return forMember<Organisation, HealthcareParty>(
-        (v) => v.rev,
-        mapFrom((v) => v.rev)
-    )
+function toHealthcarePartyRev(domain: Organisation): string | undefined {
+    return domain.rev
 }
 
-function forMember_HealthcareParty_created() {
-    return forMember<Organisation, HealthcareParty>(
-        (v) => v.created,
-        mapFrom((v) => v.created)
-    )
+function toHealthcarePartyCreated(domain: Organisation): number | undefined {
+    return domain.created
 }
 
-function forMember_HealthcareParty_modified() {
-    return forMember<Organisation, HealthcareParty>(
-        (v) => v.modified,
-        mapFrom((v) => v.modified)
-    )
+function toHealthcarePartyModified(domain: Organisation): number | undefined {
+    return domain.modified
 }
 
-function forMember_HealthcareParty_deletionDate() {
-    return forMember<Organisation, HealthcareParty>(
-        (v) => v.deletionDate,
-        mapFrom((v) => v.deletionDate)
-    )
+function toHealthcarePartyDeletionDate(domain: Organisation): number | undefined {
+    return domain.deletionDate
 }
 
-function forMember_HealthcareParty_identifier() {
-    return forMember<Organisation, HealthcareParty>(
-        (v) => v.identifier,
-        mapWith(IdentifierEntity, Identifier, (v) => v.identifiers)
-    )
+function toHealthcarePartyIdentifier(domain: Organisation): IdentifierDto[] | undefined {
+    return !!domain.identifiers ? domain.identifiers.map(mapIdentifierToIdentifierDto) : undefined
 }
 
-function forMember_HealthcareParty_tags() {
-    return forMember<Organisation, HealthcareParty>(
-        (v) => v.tags,
-        mapWith(CodeStub, CodingReference, (v) => v.tags)
-    )
+function toHealthcarePartyTags(domain: Organisation): CodeStub[] | undefined {
+    return !!domain.tags ? domain.tags.map(mapCodingReferenceToCodeStub) : undefined
 }
 
-function forMember_HealthcareParty_codes() {
-    return forMember<Organisation, HealthcareParty>(
-        (v) => v.codes,
-        mapWith(CodeStub, CodingReference, (v) => v.codes)
-    )
+function toHealthcarePartyCodes(domain: Organisation): CodeStub[] | undefined {
+    return !!domain.codes ? domain.codes.map(mapCodingReferenceToCodeStub) : undefined
 }
 
-function forMember_HealthcareParty_name() {
-    return forMember<Organisation, HealthcareParty>(
-        (v) => v.name,
-        mapFrom((v) => v.name)
-    )
+function toHealthcarePartyName(domain: Organisation): string | undefined {
+    return domain.name
 }
 
-function forMember_HealthcareParty_lastName() {
-    return forMember<Organisation, HealthcareParty>((v) => v.lastName, ignore())
+function toHealthcarePartyLastName(domain: Organisation): string | undefined {
+    return undefined
 }
 
-function forMember_HealthcareParty_firstName() {
-    return forMember<Organisation, HealthcareParty>((v) => v.firstName, ignore())
+function toHealthcarePartyFirstName(domain: Organisation): string | undefined {
+    return undefined
 }
 
-function forMember_HealthcareParty_names() {
-    return forMember<Organisation, HealthcareParty>((v) => v.names, ignore())
+function toHealthcarePartyNames(domain: Organisation): PersonName[] | undefined {
+    return undefined
 }
 
-function forMember_HealthcareParty_gender() {
-    return forMember<Organisation, HealthcareParty>((v) => v.gender, ignore())
+function toHealthcarePartyGender(domain: Organisation): HealthcareParty.GenderEnum | undefined {
+    return undefined
 }
 
-function forMember_HealthcareParty_civility() {
-    return forMember<Organisation, HealthcareParty>((v) => v.civility, ignore())
+function toHealthcarePartyCivility(domain: Organisation): string | undefined {
+    return undefined
 }
 
-function forMember_HealthcareParty_companyName() {
-    return forMember<Organisation, HealthcareParty>((v) => v.companyName, ignore())
+function toHealthcarePartyCompanyName(domain: Organisation): string | undefined {
+    return undefined
 }
 
-function forMember_HealthcareParty_speciality() {
-    return forMember<Organisation, HealthcareParty>((v) => v.speciality, ignore())
+function toHealthcarePartySpeciality(domain: Organisation): string | undefined {
+    return undefined
 }
 
-function forMember_HealthcareParty_bankAccount() {
-    return forMember<Organisation, HealthcareParty>((v) => v.bankAccount, ignore())
+function toHealthcarePartyBankAccount(domain: Organisation): string | undefined {
+    return undefined
 }
 
-function forMember_HealthcareParty_bic() {
-    return forMember<Organisation, HealthcareParty>((v) => v.bic, ignore())
+function toHealthcarePartyBic(domain: Organisation): string | undefined {
+    return undefined
 }
 
-function forMember_HealthcareParty_proxyBankAccount() {
-    return forMember<Organisation, HealthcareParty>((v) => v.proxyBankAccount, ignore())
+function toHealthcarePartyProxyBankAccount(domain: Organisation): string | undefined {
+    return undefined
 }
 
-function forMember_HealthcareParty_proxyBic() {
-    return forMember<Organisation, HealthcareParty>((v) => v.proxyBic, ignore())
+function toHealthcarePartyProxyBic(domain: Organisation): string | undefined {
+    return undefined
 }
 
-function forMember_HealthcareParty_invoiceHeader() {
-    return forMember<Organisation, HealthcareParty>((v) => v.invoiceHeader, ignore())
+function toHealthcarePartyInvoiceHeader(domain: Organisation): string | undefined {
+    return undefined
 }
 
-function forMember_HealthcareParty_cbe() {
-    return forMember<Organisation, HealthcareParty>((v) => v.cbe, ignore())
+function toHealthcarePartyCbe(domain: Organisation): string | undefined {
+    return undefined
 }
 
-function forMember_HealthcareParty_ehp() {
-    return forMember<Organisation, HealthcareParty>((v) => v.ehp, ignore())
+function toHealthcarePartyEhp(domain: Organisation): string | undefined {
+    return undefined
 }
 
-function forMember_HealthcareParty_userId() {
-    return forMember<Organisation, HealthcareParty>(
-        (v) => v.userId,
-        mapFrom((v) => v.userId)
-    )
+function toHealthcarePartyUserId(domain: Organisation): string | undefined {
+    return domain.userId
 }
 
-function forMember_HealthcareParty_parentId() {
-    return forMember<Organisation, HealthcareParty>(
-        (v) => v.parentId,
-        mapFrom((v) => v.parentId)
-    )
+function toHealthcarePartyParentId(domain: Organisation): string | undefined {
+    return domain.parentId
 }
 
-function forMember_HealthcareParty_convention() {
-    return forMember<Organisation, HealthcareParty>((v) => v.convention, ignore())
+function toHealthcarePartyConvention(domain: Organisation): number | undefined {
+    return undefined
 }
 
-function forMember_HealthcareParty_nihii() {
-    return forMember<Organisation, HealthcareParty>((v) => v.nihii, ignore())
+function toHealthcarePartyNihii(domain: Organisation): string | undefined {
+    return undefined
 }
 
-function forMember_HealthcareParty_nihiiSpecCode() {
-    return forMember<Organisation, HealthcareParty>((v) => v.nihiiSpecCode, ignore())
+function toHealthcarePartyNihiiSpecCode(domain: Organisation): string | undefined {
+    return undefined
 }
 
-function forMember_HealthcareParty_ssin() {
-    return forMember<Organisation, HealthcareParty>((v) => v.ssin, ignore())
+function toHealthcarePartySsin(domain: Organisation): string | undefined {
+    return undefined
 }
 
-function forMember_HealthcareParty_addresses() {
-    return forMember<Organisation, HealthcareParty>(
-        (v) => v.addresses,
-        mapWith(Address, Location, (v) => v.addresses)
-    )
+function toHealthcarePartyAddresses(domain: Organisation): Address[] | undefined {
+    return !!domain.addresses ? domain.addresses.map(mapLocationToAddress) : undefined
 }
 
-function forMember_HealthcareParty_languages() {
-    return forMember<Organisation, HealthcareParty>(
-        (v) => v.languages,
-        mapFrom((v) => v.languages)
-    )
+function toHealthcarePartyLanguages(domain: Organisation): string[] | undefined {
+    return domain.languages
 }
 
-function forMember_HealthcareParty_picture() {
-    return forMember<Organisation, HealthcareParty>(
-        (v) => v.picture,
-        mapFrom((v) => v.picture)
-    )
+function toHealthcarePartyPicture(domain: Organisation): ArrayBuffer | undefined {
+    return domain.picture
 }
 
-function forMember_HealthcareParty_statuses() {
-    return forMember<Organisation, HealthcareParty>((v) => v.statuses, ignore())
+function toHealthcarePartyStatuses(domain: Organisation): HealthcareParty.StatusesEnum[] | undefined {
+    return undefined
 }
 
-function forMember_HealthcareParty_statusHistory() {
-    return forMember<Organisation, HealthcareParty>((v) => v.statusHistory, ignore())
+function toHealthcarePartyStatusHistory(domain: Organisation): HealthcarePartyHistoryStatus[] | undefined {
+    return undefined
 }
 
-function forMember_HealthcareParty_specialityCodes() {
-    return forMember<Organisation, HealthcareParty>((v) => v.specialityCodes, ignore())
+function toHealthcarePartySpecialityCodes(domain: Organisation): CodeStub[] | undefined {
+    return undefined
 }
 
-function forMember_HealthcareParty_sendFormats() {
-    return forMember<Organisation, HealthcareParty>((v) => v.sendFormats, ignore())
+function toHealthcarePartySendFormats(domain: Organisation): { [key: string]: string } | undefined {
+    return undefined
 }
 
-function forMember_HealthcareParty_notes() {
-    return forMember<Organisation, HealthcareParty>((v) => v.notes, ignore())
+function toHealthcarePartyNotes(domain: Organisation): string | undefined {
+    return undefined
 }
 
-function forMember_HealthcareParty_financialInstitutionInformation() {
-    return forMember<Organisation, HealthcareParty>((v) => v.financialInstitutionInformation, ignore())
+function toHealthcarePartyFinancialInstitutionInformation(domain: Organisation): FinancialInstitutionInformation[] | undefined {
+    return undefined
 }
 
-function forMember_HealthcareParty_descr() {
-    return forMember<Organisation, HealthcareParty>(
-        (v) => v.descr,
-        mapFrom((v) => v.description)
-    )
+function toHealthcarePartyDescr(domain: Organisation): { [key: string]: string } | undefined {
+    return !!domain.description ? convertMapToObject(domain.description) : undefined
 }
 
-function forMember_HealthcareParty_billingType() {
-    return forMember<Organisation, HealthcareParty>((v) => v.billingType, ignore())
+function toHealthcarePartyBillingType(domain: Organisation): string | undefined {
+    return undefined
 }
 
-function forMember_HealthcareParty_type() {
-    return forMember<Organisation, HealthcareParty>((v) => v.type, ignore())
+function toHealthcarePartyType(domain: Organisation): string | undefined {
+    return undefined
 }
 
-function forMember_HealthcareParty_contactPerson() {
-    return forMember<Organisation, HealthcareParty>((v) => v.contactPerson, ignore())
+function toHealthcarePartyContactPerson(domain: Organisation): string | undefined {
+    return undefined
 }
 
-function forMember_HealthcareParty_contactPersonHcpId() {
-    return forMember<Organisation, HealthcareParty>((v) => v.contactPersonHcpId, ignore())
+function toHealthcarePartyContactPersonHcpId(domain: Organisation): string | undefined {
+    return undefined
 }
 
-function forMember_HealthcareParty_supervisorId() {
-    return forMember<Organisation, HealthcareParty>((v) => v.supervisorId, ignore())
+function toHealthcarePartySupervisorId(domain: Organisation): string | undefined {
+    return undefined
 }
 
-function forMember_HealthcareParty_flatRateTarifications() {
-    return forMember<Organisation, HealthcareParty>((v) => v.flatRateTarifications, ignore())
+function toHealthcarePartyFlatRateTarifications(domain: Organisation): FlatRateTarification[] | undefined {
+    return undefined
 }
 
-function forMember_HealthcareParty_importedData() {
-    return forMember<Organisation, HealthcareParty>((v) => v.importedData, ignore())
+function toHealthcarePartyImportedData(domain: Organisation): { [key: string]: string } | undefined {
+    return undefined
 }
 
-function forMember_HealthcareParty_options() {
-    return forMember<Organisation, HealthcareParty>((v) => v.options, ignore())
+function toHealthcarePartyOptions(domain: Organisation): { [key: string]: string } | undefined {
+    return undefined
 }
 
-function forMember_HealthcareParty_properties() {
-    return forMember<Organisation, HealthcareParty>(
-        (v) => v.properties,
-        mapWith(PropertyStub, Property, (v) => v.properties)
-    )
+function toHealthcarePartyProperties(domain: Organisation): PropertyStub[] | undefined {
+    return !!domain.properties ? domain.properties.map(mapPropertyToPropertyStub) : undefined
 }
 
-function forMember_HealthcareParty_hcPartyKeys() {
-    return forMember<Organisation, HealthcareParty>(
-        (v) => v.hcPartyKeys,
-        mapFrom((v) => Object.fromEntries(extractHcPartyKeys(v.systemMetaData)?.entries() ?? []))
-    )
+function toHealthcarePartyHcPartyKeys(domain: Organisation): { [key: string]: string[] } | undefined {
+    const hcPartyKeys = extractHcPartyKeys(domain.systemMetaData)
+    return hcPartyKeys ? Object.fromEntries(hcPartyKeys.entries() ?? []) : undefined
 }
 
-function forMember_HealthcareParty_aesExchangeKeys() {
-    return forMember<Organisation, HealthcareParty>(
-        (v) => v.aesExchangeKeys,
-        mapFrom((v) => {
-            const aesExchangeKeys = extractAesExchangeKeys(v.systemMetaData)
-            return !!aesExchangeKeys ? convertDeepNestedMapToObject(aesExchangeKeys) : undefined
-        })
-    )
+function toHealthcarePartyAesExchangeKeys(domain: Organisation):
+    | {
+          [key: string]: { [key: string]: { [key: string]: string } }
+      }
+    | undefined {
+    const aesExchangeKeys = extractAesExchangeKeys(domain.systemMetaData)
+    return !!aesExchangeKeys ? convertDeepNestedMapToObject(aesExchangeKeys) : undefined
 }
 
-function forMember_HealthcareParty_transferKeys() {
-    return forMember<Organisation, HealthcareParty>(
-        (v) => v.transferKeys,
-        mapFrom((v) => {
-            const transferKeys = extractTransferKeys(v.systemMetaData)
-            return !!transferKeys ? convertNestedMapToObject(transferKeys) : undefined
-        })
-    )
+function toHealthcarePartyTransferKeys(domain: Organisation):
+    | {
+          [key: string]: { [key: string]: string }
+      }
+    | undefined {
+    const transferKeys = extractTransferKeys(domain.systemMetaData)
+    return !!transferKeys ? convertNestedMapToObject(transferKeys) : undefined
 }
 
-function forMember_HealthcareParty_privateKeyShamirPartitions() {
-    return forMember<Organisation, HealthcareParty>(
-        (v) => v.privateKeyShamirPartitions,
-        mapFrom((v) => {
-            const privateKeyShamirPartitions = extractPrivateKeyShamirPartitions(v.systemMetaData)
-            return !!privateKeyShamirPartitions ? convertMapToObject(privateKeyShamirPartitions) : undefined
-        })
-    )
+function toHealthcarePartyPrivateKeyShamirPartitions(domain: Organisation): { [key: string]: string } | undefined {
+    const privateKeyShamirPartitions = extractPrivateKeyShamirPartitions(domain.systemMetaData)
+    return !!privateKeyShamirPartitions ? convertMapToObject(privateKeyShamirPartitions) : undefined
 }
 
-function forMember_HealthcareParty_publicKey() {
-    return forMember<Organisation, HealthcareParty>(
-        (v) => v.publicKey,
-        mapFrom((v) => extractPublicKey(v.systemMetaData))
-    )
+function toHealthcarePartyPublicKey(domain: Organisation): string | undefined {
+    return extractPublicKey(domain.systemMetaData)
 }
 
-function forMember_Organisation_id() {
-    return forMember<HealthcareParty, Organisation>(
-        (v) => v.id,
-        mapFrom((v) => v.id)
-    )
+function toHealthcarePartyPublicKeysForOaepWithSha256(domain: Organisation): string[] | undefined {
+    return extractPublicKeysForOaepWithSha256(domain.systemMetaData)
 }
 
-function forMember_Organisation_rev() {
-    return forMember<HealthcareParty, Organisation>(
-        (v) => v.rev,
-        mapFrom((v) => v.rev)
-    )
+function toOrganisationId(dto: HealthcareParty): string | undefined {
+    return dto.id
 }
 
-function forMember_Organisation_created() {
-    return forMember<HealthcareParty, Organisation>(
-        (v) => v.created,
-        mapFrom((v) => v.created)
-    )
+function toOrganisationRev(dto: HealthcareParty): string | undefined {
+    return dto.rev
 }
 
-function forMember_Organisation_modified() {
-    return forMember<HealthcareParty, Organisation>(
-        (v) => v.modified,
-        mapFrom((v) => v.modified)
-    )
+function toOrganisationCreated(dto: HealthcareParty): number | undefined {
+    return dto.created
 }
 
-function forMember_Organisation_tags() {
-    return forMember<HealthcareParty, Organisation>(
-        (v) => v.tags,
-        mapWith(CodingReference, CodeStub, (v) => v.tags)
-    )
+function toOrganisationModified(dto: HealthcareParty): number | undefined {
+    return dto.modified
 }
 
-function forMember_Organisation_codes() {
-    return forMember<HealthcareParty, Organisation>(
-        (v) => v.codes,
-        mapWith(CodingReference, CodeStub, (v) => v.codes)
-    )
-}
+function toOrganisationIdentifiers(dto: HealthcareParty): Identifier[] | undefined {
+    const identifiers = healthcareProfessionalIdentifiers(dto)
 
-function forMember_Organisation_deletionDate() {
-    return forMember<HealthcareParty, Organisation>(
-        (v) => v.deletionDate,
-        mapFrom((v) => v.deletionDate)
-    )
+    if (identifiers.length === 0) return undefined
+
+    return identifiers.map(mapIdentifierDtoToIdentifier)
 }
 
-function forMember_Organisation_name() {
-    return forMember<HealthcareParty, Organisation>(
-        (v) => v.name,
-        mapFrom((v) => v.name)
-    )
+function toOrganisationTags(dto: HealthcareParty): CodingReference[] | undefined {
+    return !!dto.tags ? dto.tags.map(mapCodeStubToCodingReference) : undefined
 }
 
-function forMember_Organisation_parentId() {
-    return forMember<HealthcareParty, Organisation>(
-        (v) => v.parentId,
-        mapFrom((v) => v.parentId)
-    )
+function toOrganisationCodes(dto: HealthcareParty): CodingReference[] | undefined {
+    return !!dto.codes ? dto.codes.map(mapCodeStubToCodingReference) : undefined
 }
 
-function forMember_Organisation_addresses() {
-    return forMember<HealthcareParty, Organisation>(
-        (v) => v.addresses,
-        mapWith(Location, Address, (v) => v.addresses)
-    )
+function toOrganisationDeletionDate(dto: HealthcareParty): number | undefined {
+    return dto.deletionDate
 }
 
-function forMember_Organisation_languages() {
-    return forMember<HealthcareParty, Organisation>(
-        (v) => v.languages,
-        mapFrom((v) => v.languages)
-    )
+function toOrganisationName(dto: HealthcareParty): string | undefined {
+    return dto.name
 }
 
-function forMember_Organisation_picture() {
-    return forMember<HealthcareParty, Organisation>(
-        (v) => v.picture,
-        mapFrom((v) => v.picture)
-    )
+function toOrganisationParentId(dto: HealthcareParty): string | undefined {
+    return dto.parentId
 }
 
-function forMember_Organisation_description() {
-    return forMember<HealthcareParty, Organisation>(
-        (v) => v.description,
-        mapFrom((v) => v.descr)
-    )
+function toOrganisationUserId(dto: HealthcareParty): string | undefined {
+    return dto.userId
 }
 
-function forMember_Organisation_properties() {
-    return forMember<HealthcareParty, Organisation>(
-        (v) => v.properties,
-        mapWith(Property, PropertyStub, (v) => v.properties)
-    )
+function toOrganisationAddresses(dto: HealthcareParty): Location[] | undefined {
+    return !!dto.addresses ? dto.addresses.map(mapAddressToLocation) : undefined
 }
 
-function forMember_Organisation_systemMetaData() {
-    return forMember<HealthcareParty, Organisation>(
-        (v) => v.systemMetaData,
-        mapFrom((v) => {
-            return new SystemMetaDataOwner({
-                hcPartyKeys: !!v.hcPartyKeys ? new Map(Object.entries(v.hcPartyKeys)) : undefined,
-                publicKey: v.publicKey,
-                aesExchangeKeys: !!v.aesExchangeKeys ? convertObjectToDeepNestedMap(v.aesExchangeKeys) : undefined,
-                transferKeys: !!v.transferKeys ? convertObjectToNestedMap(v.transferKeys) : undefined,
-                privateKeyShamirPartitions: !!v.privateKeyShamirPartitions ? convertObjectToMap(v.privateKeyShamirPartitions) : undefined,
-                publicKeysForOaepWithSha256: v.publicKeysForOaepWithSha256,
-            })
-        })
-    )
+function toOrganisationLanguages(dto: HealthcareParty): string[] | undefined {
+    return dto.languages
 }
 
-function forMember_Organisation_identifiers() {
-    return forMember<HealthcareParty, Organisation>(
-        (v) => v.identifiers,
-        mapWith(Identifier, IdentifierEntity, (h) => healthcareProfessionalIdentifiers(h))
-    )
+function toOrganisationPicture(dto: HealthcareParty): ArrayBuffer | undefined {
+    return dto.picture
 }
 
-function forMember_Organisation_userId() {
-    return forMember<HealthcareParty, Organisation>(
-        (v) => v.userId,
-        mapFrom((v) => v.userId)
-    )
+function toOrganisationDescription(dto: HealthcareParty): Map<string, string> | undefined {
+    return !!dto.descr ? convertObjectToMap(dto.descr) : undefined
 }
 
-function forMember_HealthcareParty_publicKeysForOaepWithSha256() {
-    return forMember<Organisation, HealthcareParty>(
-        (v) => v.publicKeysForOaepWithSha256,
-        mapFrom((o) => extractPublicKeysForOaepWithSha256(o.systemMetaData))
-    )
+function toOrganisationProperties(dto: HealthcareParty): Property[] | undefined {
+    return !!dto.properties ? dto.properties.map(mapPropertyStubToProperty) : undefined
 }
 
-export const organisationMapper = {
-    toDto: (organisation: Organisation): HealthcareParty => mapper.map(organisation, Organisation, HealthcareParty),
-    toDomain: (healthcareParty: HealthcareParty): Organisation => {
-        return mapper.map(healthcareParty, HealthcareParty, Organisation);
-    },
+function toOrganisationSystemMetaData(dto: HealthcareParty): SystemMetaDataOwner | undefined {
+    return new SystemMetaDataOwner({
+        hcPartyKeys: !!dto.hcPartyKeys ? new Map(Object.entries(dto.hcPartyKeys)) : undefined,
+        publicKey: dto.publicKey,
+        aesExchangeKeys: !!dto.aesExchangeKeys ? convertObjectToDeepNestedMap(dto.aesExchangeKeys) : undefined,
+        transferKeys: !!dto.transferKeys ? convertObjectToNestedMap(dto.transferKeys) : undefined,
+        privateKeyShamirPartitions: !!dto.privateKeyShamirPartitions ? convertObjectToMap(dto.privateKeyShamirPartitions) : undefined,
+        publicKeysForOaepWithSha256: dto.publicKeysForOaepWithSha256,
+    })
 }
 
-export function initializeOrganisationMapper(mapper: Mapper) {
-    createMap(mapper, Organisation, HealthcareParty, forMember_HealthcareParty_id(), forMember_HealthcareParty_rev(), forMember_HealthcareParty_created(), forMember_HealthcareParty_modified(), forMember_HealthcareParty_deletionDate(), forMember_HealthcareParty_identifier(), forMember_HealthcareParty_tags(), forMember_HealthcareParty_codes(), forMember_HealthcareParty_name(), forMember_HealthcareParty_lastName(), forMember_HealthcareParty_firstName(), forMember_HealthcareParty_names(), forMember_HealthcareParty_gender(), forMember_HealthcareParty_civility(), forMember_HealthcareParty_companyName(), forMember_HealthcareParty_speciality(), forMember_HealthcareParty_bankAccount(), forMember_HealthcareParty_bic(), forMember_HealthcareParty_proxyBankAccount(), forMember_HealthcareParty_proxyBic(), forMember_HealthcareParty_invoiceHeader(), forMember_HealthcareParty_cbe(), forMember_HealthcareParty_ehp(), forMember_HealthcareParty_userId(), forMember_HealthcareParty_parentId(), forMember_HealthcareParty_convention(), forMember_HealthcareParty_nihii(), forMember_HealthcareParty_nihiiSpecCode(), forMember_HealthcareParty_ssin(), forMember_HealthcareParty_addresses(), forMember_HealthcareParty_languages(), forMember_HealthcareParty_picture(), forMember_HealthcareParty_statuses(), forMember_HealthcareParty_statusHistory(), forMember_HealthcareParty_specialityCodes(), forMember_HealthcareParty_sendFormats(), forMember_HealthcareParty_notes(), forMember_HealthcareParty_financialInstitutionInformation(), forMember_HealthcareParty_descr(), forMember_HealthcareParty_billingType(), forMember_HealthcareParty_type(), forMember_HealthcareParty_contactPerson(), forMember_HealthcareParty_contactPersonHcpId(), forMember_HealthcareParty_supervisorId(), forMember_HealthcareParty_flatRateTarifications(), forMember_HealthcareParty_importedData(), forMember_HealthcareParty_options(), forMember_HealthcareParty_properties(), forMember_HealthcareParty_hcPartyKeys(), forMember_HealthcareParty_aesExchangeKeys(), forMember_HealthcareParty_transferKeys(), forMember_HealthcareParty_privateKeyShamirPartitions(), forMember_HealthcareParty_publicKey(), forMember_HealthcareParty_publicKeysForOaepWithSha256())
+export function mapHealthcarePartyToOrganisation(dto: HealthcareParty): Organisation {
+    return new Organisation({
+        id: toOrganisationId(dto),
+        rev: toOrganisationRev(dto),
+        created: toOrganisationCreated(dto),
+        modified: toOrganisationModified(dto),
+        identifiers: toOrganisationIdentifiers(dto),
+        tags: toOrganisationTags(dto),
+        codes: toOrganisationCodes(dto),
+        deletionDate: toOrganisationDeletionDate(dto),
+        name: toOrganisationName(dto),
+        parentId: toOrganisationParentId(dto),
+        userId: toOrganisationUserId(dto),
+        addresses: toOrganisationAddresses(dto),
+        languages: toOrganisationLanguages(dto),
+        picture: toOrganisationPicture(dto),
+        description: toOrganisationDescription(dto),
+        properties: toOrganisationProperties(dto),
+        systemMetaData: toOrganisationSystemMetaData(dto),
+    })
+}
 
-    createMap(mapper, HealthcareParty, Organisation, forMember_Organisation_id(), forMember_Organisation_rev(), forMember_Organisation_created(), forMember_Organisation_modified(), forMember_Organisation_identifiers(), forMember_Organisation_tags(), forMember_Organisation_codes(), forMember_Organisation_deletionDate(), forMember_Organisation_name(), forMember_Organisation_parentId(), forMember_Organisation_userId(), forMember_Organisation_addresses(), forMember_Organisation_languages(), forMember_Organisation_picture(), forMember_Organisation_description(), forMember_Organisation_properties(), forMember_Organisation_systemMetaData())
+export function mapOrganisationToHealthcareParty(domain: Organisation): HealthcareParty {
+    return new HealthcareParty({
+        id: toHealthcarePartyId(domain),
+        rev: toHealthcarePartyRev(domain),
+        created: toHealthcarePartyCreated(domain),
+        modified: toHealthcarePartyModified(domain),
+        deletionDate: toHealthcarePartyDeletionDate(domain),
+        identifier: toHealthcarePartyIdentifier(domain),
+        tags: toHealthcarePartyTags(domain),
+        codes: toHealthcarePartyCodes(domain),
+        name: toHealthcarePartyName(domain),
+        lastName: toHealthcarePartyLastName(domain),
+        firstName: toHealthcarePartyFirstName(domain),
+        names: toHealthcarePartyNames(domain),
+        gender: toHealthcarePartyGender(domain),
+        civility: toHealthcarePartyCivility(domain),
+        companyName: toHealthcarePartyCompanyName(domain),
+        speciality: toHealthcarePartySpeciality(domain),
+        bankAccount: toHealthcarePartyBankAccount(domain),
+        bic: toHealthcarePartyBic(domain),
+        proxyBankAccount: toHealthcarePartyProxyBankAccount(domain),
+        proxyBic: toHealthcarePartyProxyBic(domain),
+        invoiceHeader: toHealthcarePartyInvoiceHeader(domain),
+        cbe: toHealthcarePartyCbe(domain),
+        ehp: toHealthcarePartyEhp(domain),
+        userId: toHealthcarePartyUserId(domain),
+        parentId: toHealthcarePartyParentId(domain),
+        convention: toHealthcarePartyConvention(domain),
+        nihii: toHealthcarePartyNihii(domain),
+        nihiiSpecCode: toHealthcarePartyNihiiSpecCode(domain),
+        ssin: toHealthcarePartySsin(domain),
+        addresses: toHealthcarePartyAddresses(domain),
+        languages: toHealthcarePartyLanguages(domain),
+        picture: toHealthcarePartyPicture(domain),
+        statuses: toHealthcarePartyStatuses(domain),
+        statusHistory: toHealthcarePartyStatusHistory(domain),
+        specialityCodes: toHealthcarePartySpecialityCodes(domain),
+        sendFormats: toHealthcarePartySendFormats(domain),
+        notes: toHealthcarePartyNotes(domain),
+        financialInstitutionInformation: toHealthcarePartyFinancialInstitutionInformation(domain),
+        descr: toHealthcarePartyDescr(domain),
+        billingType: toHealthcarePartyBillingType(domain),
+        type: toHealthcarePartyType(domain),
+        contactPerson: toHealthcarePartyContactPerson(domain),
+        contactPersonHcpId: toHealthcarePartyContactPersonHcpId(domain),
+        supervisorId: toHealthcarePartySupervisorId(domain),
+        flatRateTarifications: toHealthcarePartyFlatRateTarifications(domain),
+        importedData: toHealthcarePartyImportedData(domain),
+        options: toHealthcarePartyOptions(domain),
+        properties: toHealthcarePartyProperties(domain),
+        hcPartyKeys: toHealthcarePartyHcPartyKeys(domain),
+        aesExchangeKeys: toHealthcarePartyAesExchangeKeys(domain),
+        transferKeys: toHealthcarePartyTransferKeys(domain),
+        privateKeyShamirPartitions: toHealthcarePartyPrivateKeyShamirPartitions(domain),
+        publicKey: toHealthcarePartyPublicKey(domain),
+        publicKeysForOaepWithSha256: toHealthcarePartyPublicKeysForOaepWithSha256(domain),
+    })
 }

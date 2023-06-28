@@ -1,38 +1,33 @@
-import {HealthElement, IccCryptoXApi, IccHelementXApi, IccPatientXApi, IccUserXApi, Patient} from "@icure/api";
-import {Condition} from "../models/Condition.model";
-import {ErrorHandler, HealthElementLikeApiImpl} from "@icure/typescript-common";
-import {mapper} from "../mappers/mapper";
-import {Patient as PatientModel} from "../models/Patient.model";
-import {IccDataOwnerXApi} from "@icure/api/icc-x-api/icc-data-owner-x-api";
+import { HealthElement, IccCryptoXApi, IccHelementXApi, IccPatientXApi, IccUserXApi, Patient as PatientDto } from '@icure/api'
+import { Condition } from '../models/Condition.model'
+import { ErrorHandler, HealthElementLikeApiImpl } from '@icure/typescript-common'
+import { Patient } from '../models/Patient.model'
+import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
+import { mapConditionToHealthElement, mapHealthElementToCondition } from '../mappers/Condition.mapper'
+import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
 
-export const conditionApi = (
-    errorHandler: ErrorHandler,
-    healthElementApi: IccHelementXApi,
-    userApi: IccUserXApi,
-    patientApi: IccPatientXApi,
-    dataOwnerApi: IccDataOwnerXApi,
-    cryptoApi: IccCryptoXApi,
-) => new HealthElementLikeApiImpl<Condition, PatientModel>(
-    {
-        toDomain(dto: HealthElement): Condition {
-            return mapper.map(dto, HealthElement, Condition)
+export const conditionApi = (errorHandler: ErrorHandler, healthElementApi: IccHelementXApi, userApi: IccUserXApi, patientApi: IccPatientXApi, dataOwnerApi: IccDataOwnerXApi, cryptoApi: IccCryptoXApi) =>
+    new HealthElementLikeApiImpl<Condition, Patient>(
+        {
+            toDomain(dto: HealthElement): Condition {
+                return mapHealthElementToCondition(dto)
+            },
+            toDto(domain: Condition): HealthElement {
+                return mapConditionToHealthElement(domain)
+            },
         },
-        toDto(domain: Condition): HealthElement {
-            return mapper.map(domain, Condition, HealthElement)
-        }
-    },
-    {
-        toDomain(dto: Patient): PatientModel {
-            return mapper.map(dto, Patient, PatientModel)
+        {
+            toDomain(dto: PatientDto): Patient {
+                return mapPatientDtoToPatient(dto)
+            },
+            toDto(domain: Patient): PatientDto {
+                return mapPatientToPatientDto(domain)
+            },
         },
-        toDto(domain: PatientModel): Patient {
-            return mapper.map(domain, PatientModel, Patient)
-        }
-    },
-    errorHandler,
-    healthElementApi,
-    userApi,
-    patientApi,
-    dataOwnerApi,
-    cryptoApi,
-)
+        errorHandler,
+        healthElementApi,
+        userApi,
+        patientApi,
+        dataOwnerApi,
+        cryptoApi
+    )

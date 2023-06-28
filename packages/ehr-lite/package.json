@@ -1,6 +1,6 @@
 {
     "name": "@icure/ehr-lite-sdk",
-    "version": "1.0.0",
+    "version": "1.1.18",
     "devDependencies": {
         "@babel/core": "^7.22.5",
         "@babel/plugin-proposal-decorators": "^7.22.5",
@@ -9,14 +9,11 @@
         "@types/jest": "^29.5.2",
         "babel-jest": "^29.5.0",
         "jest": "^29.5.0",
-        "ts-jest": "^29.1.0",
-        "ttypescript": "^1.5.15"
+        "ts-jest": "^29.1.0"
     },
     "main": "dist/index.js",
     "typings": "dist/index.d.ts",
     "dependencies": {
-        "@automapper/classes": "^8.7.7",
-        "@automapper/core": "^8.7.7",
         "@icure/api": "^8.0.0-beta.7",
         "@icure/typescript-common": "*",
         "reflect-metadata": "^0.1.13",
@@ -25,6 +22,8 @@
     "scripts": {
         "build": "tsc",
         "test": "jest --no-cache test",
+        "prepare": "rimraf dist && yarn run build && jq '{name:.name, version:.version, description:.description, main:\"index.js\", types:\"index.d.ts\", dependencies:.dependencies, author:.author, license:.license, bugs:.bugs, homepage:.homepage}' < package.json > dist/package.json",
+        "publish": "yarn version patch && yarn run prepare && cd dist && npm publish --registry=http://localhost:4873 && cd ..",
         "marshall": "nx run hephaestus:start --tsconfig ../ehr-lite/tsconfig.json --model-regex '^.*/ehr-lite/src/models/.*.model.ts$' --mapper-location src/mappers --marshaller-generator --mapper-generator"
     }
 }
