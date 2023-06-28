@@ -1,7 +1,7 @@
-import {Measure} from "../models/Measure.model"
-import {CodeStub, Measure as MeasureDto} from "@icure/api"
-import {mapCodeStubToCodingReference, mapCodingReferenceToCodeStub} from "./CodingReference.mapper";
-import {CodingReference} from "../models/CodingReference.model";
+import { Measure } from '../models/Measure.model'
+import { CodeStub, Measure as MeasureDto } from '@icure/api'
+import { mapCodeStubToCodingReference, mapCodingReferenceToCodeStub } from './CodingReference.mapper'
+import { CodingReference } from '../models/CodingReference.model'
 
 function toMeasureDtoValue(domain: Measure): number | undefined {
     return domain.value

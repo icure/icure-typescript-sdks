@@ -1,5 +1,5 @@
-import {TimeSeries as TimeSeriesDto} from '@icure/api'
-import {TimeSeries} from "../models/TimeSeries.model";
+import { TimeSeries as TimeSeriesDto } from '@icure/api'
+import { TimeSeries } from '../models/TimeSeries.model'
 
 function toTimeSeriesDtoFields(domain: TimeSeries): string[] | undefined {
     return domain.fields

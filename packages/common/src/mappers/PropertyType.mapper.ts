@@ -1,6 +1,6 @@
-import {PropertyTypeStub} from "@icure/api"
-import {PropertyType} from "../models/PropertyType.model";
-import {TypeEnum} from "../models/enums/Type.enum";
+import { PropertyTypeStub } from '@icure/api'
+import { PropertyType } from '../models/PropertyType.model'
+import { TypeEnum } from '../models/enums/Type.enum'
 
 function toPropertyTypeStubIdentifier(domain: PropertyType): string | undefined {
     return domain.identifier

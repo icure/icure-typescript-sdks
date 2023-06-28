@@ -1,5 +1,5 @@
-import {CodeStub, ISO639_1} from '@icure/api'
-import {CodingReference} from '../models/CodingReference.model'
+import { CodeStub, ISO639_1 } from '@icure/api'
+import { CodingReference } from '../models/CodingReference.model'
 
 function toCodeStubId(domain: CodingReference): string | undefined {
     return `${domain.type ?? null}|${domain.code ?? null}|${domain.version ?? null}`
@@ -21,7 +21,7 @@ function toCodeStubVersion(domain: CodingReference): string | undefined {
     return domain.version
 }
 
-function toCodeStubLabel(domain: CodingReference): { [key: string]: string; } | undefined {
+function toCodeStubLabel(domain: CodingReference): { [key: string]: string } | undefined {
     return domain.label ? Object.fromEntries(domain.label.entries()) : undefined
 }
 
@@ -42,7 +42,7 @@ function toCodingReferenceVersion(dto: CodeStub): string | undefined {
 }
 
 function toCodingReferenceLabel(dto: CodeStub): Map<ISO639_1, string> | undefined {
-    return !!dto.label ? new Map(Object.entries(dto.label)) as Map<ISO639_1, string> : undefined
+    return !!dto.label ? (new Map(Object.entries(dto.label)) as Map<ISO639_1, string>) : undefined
 }
 
 export function mapCodeStubToCodingReference(dto: CodeStub): CodingReference {

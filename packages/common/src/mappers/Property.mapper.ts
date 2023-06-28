@@ -1,10 +1,9 @@
-import {PropertyStub, PropertyTypeStub, TypedValueObject as TypedValueObjectDto} from '@icure/api'
-import {forMember, mapFrom, mapWith} from '@automapper/core'
-import {Property} from "../models/Property.model";
-import {PropertyType} from "../models/PropertyType.model";
-import {TypedValueObject} from "../models/TypedValueObject.model";
-import {mapPropertyTypeStubToPropertyType} from "./PropertyType.mapper";
-import {mapTypedValueObjectDtoToTypedValueObject} from "./TypedValueObject.mapper";
+import { PropertyStub, PropertyTypeStub } from '@icure/api'
+import { Property } from '../models/Property.model'
+import { PropertyType } from '../models/PropertyType.model'
+import { TypedValueObject } from '../models/TypedValueObject.model'
+import { mapPropertyTypeStubToPropertyType } from './PropertyType.mapper'
+import { mapTypedValueObjectDtoToTypedValueObject } from './TypedValueObject.mapper'
 
 function toPropertyStubId(domain: Property): string | undefined {
     return domain.id

@@ -1,17 +1,10 @@
-import {Document} from "../models/Document.model"
-import {
-    CodeStub,
-    DataAttachment,
-    DeletedAttachment,
-    Document as DocumentDto,
-    DocumentTemplate,
-    SecurityMetadata
-} from "@icure/api"
-import {EntityWithDelegationTypeName} from "@icure/api/icc-x-api/utils/EntityWithDelegationTypeName";
-import {Delegation} from "../models/Delegation.model";
-import DocumentLocationEnum = DocumentDto.DocumentLocationEnum;
-import DocumentTypeEnum = DocumentTemplate.DocumentTypeEnum;
-import DocumentStatusEnum = DocumentDto.DocumentStatusEnum;
+import { Document } from '../models/Document.model'
+import { CodeStub, DataAttachment, DeletedAttachment, Document as DocumentDto, DocumentTemplate, SecurityMetadata } from '@icure/api'
+import { EntityWithDelegationTypeName } from '@icure/api/icc-x-api/utils/EntityWithDelegationTypeName'
+import { Delegation } from '../models/Delegation.model'
+import DocumentLocationEnum = DocumentDto.DocumentLocationEnum
+import DocumentTypeEnum = DocumentTemplate.DocumentTypeEnum
+import DocumentStatusEnum = DocumentDto.DocumentStatusEnum
 
 function toDocumentDtoId(domain: Document): string | undefined {
     return domain.id
@@ -117,7 +110,7 @@ function toDocumentDtoOtherUtis(domain: Document): string[] | undefined {
     return undefined
 }
 
-function toDocumentDtoSecondaryAttachments(domain: Document): { [key: string]: DataAttachment; } | undefined {
+function toDocumentDtoSecondaryAttachments(domain: Document): { [key: string]: DataAttachment } | undefined {
     return undefined
 }
 
@@ -137,15 +130,15 @@ function toDocumentDtoSecretForeignKeys(domain: Document): string[] | undefined 
     return undefined
 }
 
-function toDocumentDtoCryptedForeignKeys(domain: Document): { [key: string]: Delegation[]; } | undefined {
+function toDocumentDtoCryptedForeignKeys(domain: Document): { [key: string]: Delegation[] } | undefined {
     return undefined
 }
 
-function toDocumentDtoDelegations(domain: Document): { [key: string]: Delegation[]; } | undefined {
+function toDocumentDtoDelegations(domain: Document): { [key: string]: Delegation[] } | undefined {
     return undefined
 }
 
-function toDocumentDtoEncryptionKeys(domain: Document): { [key: string]: Delegation[]; } | undefined {
+function toDocumentDtoEncryptionKeys(domain: Document): { [key: string]: Delegation[] } | undefined {
     return undefined
 }
 
@@ -158,7 +151,7 @@ function toDocumentDtoSecurityMetadata(domain: Document): SecurityMetadata | und
 }
 
 function toDocumentDto_type(domain: Document): EntityWithDelegationTypeName | undefined {
-    return "Document"
+    return 'Document'
 }
 
 function toDocumentId(dto: DocumentDto): string | undefined {

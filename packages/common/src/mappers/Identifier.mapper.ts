@@ -1,8 +1,8 @@
-import {Identifier as IdentifierDto} from '@icure/api/icc-api/model/Identifier'
-import {Identifier} from '../models/Identifier.model'
-import {CodeStub} from '@icure/api'
-import {CodingReference} from '../models/CodingReference.model'
-import {mapCodeStubToCodingReference, mapCodingReferenceToCodeStub} from "./CodingReference.mapper";
+import { Identifier as IdentifierDto } from '@icure/api/icc-api/model/Identifier'
+import { Identifier } from '../models/Identifier.model'
+import { CodeStub } from '@icure/api'
+import { CodingReference } from '../models/CodingReference.model'
+import { mapCodeStubToCodingReference, mapCodingReferenceToCodeStub } from './CodingReference.mapper'
 
 function toIdentifierDtoId(domain: Identifier): string | undefined {
     return domain.id

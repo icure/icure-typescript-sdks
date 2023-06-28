@@ -1,6 +1,6 @@
-import {SecureDelegation} from '../models/SecureDelegation.model'
-import {SecureDelegation as SecureDelegationDto} from '@icure/api'
-import {AccessLevelEnum} from "../models/enums/AccessLevel.enum";
+import { SecureDelegation } from '../models/SecureDelegation.model'
+import { SecureDelegation as SecureDelegationDto } from '@icure/api'
+import { AccessLevelEnum } from '../models/enums/AccessLevel.enum'
 
 function toSecureDelegationDtoDelegator(domain: SecureDelegation): string | undefined {
     return domain.delegator

@@ -1,6 +1,6 @@
-import {Coding} from "../models/Coding.model"
-import {Code, Periodicity} from "@icure/api"
-import {convertMapOfArrayOfGenericToObject, convertObjectToMapOfArrayOfGeneric} from "../utils/Metadata.utils";
+import { Coding } from '../models/Coding.model'
+import { Code, Periodicity } from '@icure/api'
+import { convertMapOfArrayOfGenericToObject, convertObjectToMapOfArrayOfGeneric } from '../utils/Metadata.utils'
 
 function toCodeId(domain: Coding): string | undefined {
     return `${domain.type}|${domain.code}|${domain.version}`
@@ -30,7 +30,7 @@ function toCodeVersion(domain: Coding): string | undefined {
     return domain.version
 }
 
-function toCodeLabel(domain: Coding): { [key: string]: string; } | undefined {
+function toCodeLabel(domain: Coding): { [key: string]: string } | undefined {
     return !!domain.description ? Object.fromEntries(domain.description.entries()) : undefined
 }
 
@@ -54,7 +54,7 @@ function toCodeLinks(domain: Coding): string[] | undefined {
     return undefined
 }
 
-function toCodeQualifiedLinks(domain: Coding): { [key: string]: string[]; } | undefined {
+function toCodeQualifiedLinks(domain: Coding): { [key: string]: string[] } | undefined {
     return !!domain.qualifiedLinks ? convertMapOfArrayOfGenericToObject(domain.qualifiedLinks, (t) => t) : undefined
 }
 
@@ -62,7 +62,7 @@ function toCodeFlags(domain: Coding): Code.FlagsEnum[] | undefined {
     return undefined
 }
 
-function toCodeSearchTerms(domain: Coding): { [key: string]: string[]; } | undefined {
+function toCodeSearchTerms(domain: Coding): { [key: string]: string[] } | undefined {
     return Object.fromEntries([...domain.searchTerms.entries()].map(([k, v]) => [k, Array.from(v)]))
 }
 
@@ -70,7 +70,7 @@ function toCodeData(domain: Coding): string | undefined {
     return undefined
 }
 
-function toCodeAppendices(domain: Coding): { [key: string]: string; } | undefined {
+function toCodeAppendices(domain: Coding): { [key: string]: string } | undefined {
     return undefined
 }
 
@@ -111,7 +111,7 @@ function toCodingQualifiedLinks(dto: Code): Map<string, string[]> {
 }
 
 function toCodingSearchTerms(dto: Code): Map<string, Set<string>> {
-    return !!dto.searchTerms ? new Map([...Object.entries(dto.searchTerms)].map(([k, v]) => [k, new Set(...v)])) : new Map() as Map<string, Set<string>>
+    return !!dto.searchTerms ? new Map([...Object.entries(dto.searchTerms)].map(([k, v]) => [k, new Set(...v)])) : (new Map() as Map<string, Set<string>>)
 }
 
 export function mapCodeToCoding(dto: Code): Coding {

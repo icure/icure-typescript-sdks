@@ -1,8 +1,8 @@
-import {SharedDataType, User} from "../models/User.model"
-import {Permission as PermissionDto, PropertyStub as PropertyStubDto, User as UserDto} from "@icure/api"
-import {mapPropertyStubToProperty, mapPropertyToPropertyStub} from "./Property.mapper";
-import {Property} from "../models/Property.model";
-import {AuthenticationToken} from "../models/AuthenticationToken.model";
+import { SharedDataType, User } from '../models/User.model'
+import { Permission as PermissionDto, PropertyStub as PropertyStubDto, User as UserDto } from '@icure/api'
+import { mapPropertyStubToProperty, mapPropertyToPropertyStub } from './Property.mapper'
+import { Property } from '../models/Property.model'
+import { AuthenticationToken } from '../models/AuthenticationToken.model'
 
 export function toUserDtoId(domain: User): string | undefined {
     return domain.id
@@ -76,27 +76,29 @@ export function toUserDtoDeviceId(domain: User): string | undefined {
     return domain.deviceId
 }
 
-export function toUserDtoAutoDelegations(domain: User): {
-    all?: string[] | undefined;
-    administrativeData?: string[] | undefined;
-    generalInformation?: string[] | undefined;
-    financialInformation?: string[] | undefined;
-    medicalInformation?: string[] | undefined;
-    sensitiveInformation?: string[] | undefined;
-    confidentialInformation?: string[] | undefined;
-    cdItemRisk?: string[] | undefined;
-    cdItemFamilyRisk?: string[] | undefined;
-    cdItemHealthcareelement?: string[] | undefined;
-    cdItemHealthcareapproach?: string[] | undefined;
-    cdItemAllergy?: string[] | undefined;
-    cdItemDiagnosis?: string[] | undefined;
-    cdItemLab?: string[] | undefined;
-    cdItemResult?: string[] | undefined;
-    cdItemParameter?: string[] | undefined;
-    cdItemMedication?: string[] | undefined;
-    cdItemTreatment?: string[] | undefined;
-    cdItemVaccine?: string[] | undefined;
-} | undefined {
+export function toUserDtoAutoDelegations(domain: User):
+    | {
+          all?: string[] | undefined
+          administrativeData?: string[] | undefined
+          generalInformation?: string[] | undefined
+          financialInformation?: string[] | undefined
+          medicalInformation?: string[] | undefined
+          sensitiveInformation?: string[] | undefined
+          confidentialInformation?: string[] | undefined
+          cdItemRisk?: string[] | undefined
+          cdItemFamilyRisk?: string[] | undefined
+          cdItemHealthcareelement?: string[] | undefined
+          cdItemHealthcareapproach?: string[] | undefined
+          cdItemAllergy?: string[] | undefined
+          cdItemDiagnosis?: string[] | undefined
+          cdItemLab?: string[] | undefined
+          cdItemResult?: string[] | undefined
+          cdItemParameter?: string[] | undefined
+          cdItemMedication?: string[] | undefined
+          cdItemTreatment?: string[] | undefined
+          cdItemVaccine?: string[] | undefined
+      }
+    | undefined {
     return Object.fromEntries([...domain.sharingDataWith.entries()].map(([k, v]) => [k, [...v]]))
 }
 
@@ -116,13 +118,15 @@ export function toUserDtoMobilePhone(domain: User): string | undefined {
     return domain.mobilePhone
 }
 
-export function toUserDtoApplicationTokens(domain: User): { [key: string]: string; } | undefined {
+export function toUserDtoApplicationTokens(domain: User): { [key: string]: string } | undefined {
     return undefined
 }
 
-export function toUserDtoAuthenticationTokens(domain: User): {
-    [key: string]: AuthenticationToken;
-} | undefined {
+export function toUserDtoAuthenticationTokens(domain: User):
+    | {
+          [key: string]: AuthenticationToken
+      }
+    | undefined {
     return Object.fromEntries([...domain.authenticationTokens.entries()])
 }
 

@@ -1,6 +1,6 @@
-import {TypedValueObject as TypedValueObjectDto} from '@icure/api'
-import {TypedValueObject} from "../models/TypedValueObject.model";
-import {TypeEnum} from "../models/enums/Type.enum";
+import { TypedValueObject as TypedValueObjectDto } from '@icure/api'
+import { TypedValueObject } from '../models/TypedValueObject.model'
+import { TypeEnum } from '../models/enums/Type.enum'
 
 function toTypedValueObjectDtoType(domain: TypedValueObject): TypedValueObjectDto.TypeEnum | undefined {
     return domain.type
