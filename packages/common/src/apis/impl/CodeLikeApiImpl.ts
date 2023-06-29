@@ -1,19 +1,13 @@
-import {Filter} from "../../filter/Filter";
-import {CodeLikeApi} from "../CodeLikeApi";
-import {Mapper} from "../Mapper";
-import {Code, IccCodeXApi} from "@icure/api";
-import {ErrorHandler} from "../../services/ErrorHandler";
-import {firstOrNull} from "../../utils/functionalUtils";
-import {PaginatedList} from "../../models/PaginatedList.model";
+import { Filter } from '../../filters/Filter'
+import { CodeLikeApi } from '../CodeLikeApi'
+import { Mapper } from '../Mapper'
+import { Code, IccCodeXApi } from '@icure/api'
+import { ErrorHandler } from '../../services/ErrorHandler'
+import { firstOrNull } from '../../utils/functionalUtils'
+import { PaginatedList } from '../../models/PaginatedList.model'
 
 export class CodeLikeApiImpl<DSCode> implements CodeLikeApi<DSCode> {
-
-    constructor(
-        private readonly mapper: Mapper<DSCode, Code>,
-        private readonly errorHandler: ErrorHandler,
-        private readonly codeApi: IccCodeXApi
-    ) {
-    }
+    constructor(private readonly mapper: Mapper<DSCode, Code>, private readonly errorHandler: ErrorHandler, private readonly codeApi: IccCodeXApi) {}
 
     async createOrModify(code: DSCode): Promise<DSCode> {
         const processedCoding = firstOrNull(
@@ -29,7 +23,7 @@ export class CodeLikeApiImpl<DSCode> implements CodeLikeApi<DSCode> {
     }
 
     async createOrModifyMany(codes: Array<DSCode>): Promise<Array<DSCode>> {
-        const mappedCodes = codes.map((c) => this.mapper.toDto(c));
+        const mappedCodes = codes.map((c) => this.mapper.toDto(c))
 
         const codesToCreate = mappedCodes.filter((dev) => !dev.rev)
         const codesToUpdate = mappedCodes.filter((dev) => !!dev.rev)
@@ -56,21 +50,19 @@ export class CodeLikeApiImpl<DSCode> implements CodeLikeApi<DSCode> {
     }
 
     filterBy(filter: Filter<DSCode>, nextCodeId?: string, limit?: number): Promise<PaginatedList<DSCode>> {
-        throw "TODO"
+        throw 'TODO'
     }
 
     async get(id: string): Promise<DSCode> {
         return this.mapper.toDomain(
-            await this.codeApi
-                .getCode(id)
-                .catch((e) => {
-                    throw this.errorHandler.createErrorFromAny(e)
-                })
+            await this.codeApi.getCode(id).catch((e) => {
+                throw this.errorHandler.createErrorFromAny(e)
+            })
         )
     }
 
     matchBy(filter: Filter<DSCode>): Promise<Array<string>> {
-        throw "TODO"
+        throw 'TODO'
     }
 
     private static isCodeId(id?: string): boolean {

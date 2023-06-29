@@ -1,28 +1,15 @@
-import {Filter} from "../../filter/Filter";
-import {PaginatedList} from "../../models/PaginatedList.model";
-import {Connection} from "../../models/Connection.model";
-import {ServiceLikeApi} from "../ServiceLikeApi";
-import {Mapper} from "../Mapper";
-import {
-    Contact as ContactDto,
-    Service as ServiceDto,
-    User as UserDto,
-    Patient as PatientDto,
-    Document as DocumentDto,
-    IccContactXApi,
-    IccPatientXApi,
-    IccUserXApi,
-    ListOfIds,
-    ServiceLink,
-    SubContact, IccHelementXApi, IccCryptoXApi,
-} from "@icure/api";
-import {ErrorHandler} from "../../services/ErrorHandler";
-import {any, distinctBy, firstOrNull, isNotEmpty, sumOf} from "../../utils/functionalUtils";
-import {CachedMap} from "../../utils/cachedMap";
-import {IccDataOwnerXApi} from "@icure/api/icc-x-api/icc-data-owner-x-api";
+import { Filter } from '../../filters/Filter'
+import { PaginatedList } from '../../models/PaginatedList.model'
+import { Connection } from '../../models/Connection.model'
+import { ServiceLikeApi } from '../ServiceLikeApi'
+import { Mapper } from '../Mapper'
+import { Contact as ContactDto, Service as ServiceDto, User as UserDto, Patient as PatientDto, Document as DocumentDto, IccContactXApi, IccPatientXApi, IccUserXApi, ListOfIds, ServiceLink, SubContact, IccHelementXApi, IccCryptoXApi } from '@icure/api'
+import { ErrorHandler } from '../../services/ErrorHandler'
+import { any, distinctBy, firstOrNull, isNotEmpty, sumOf } from '../../utils/functionalUtils'
+import { CachedMap } from '../../utils/cachedMap'
+import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
 
 export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements ServiceLikeApi<DSService, DSPatient, DSDocument> {
-
     private readonly contactsCache: CachedMap<ContactDto> = new CachedMap<ContactDto>(5 * 60, 10000)
 
     constructor(
@@ -35,9 +22,8 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         private readonly patientApi: IccPatientXApi,
         private readonly healthElementApi: IccHelementXApi,
         private readonly cryptoApi: IccCryptoXApi,
-        private readonly dataOwnerApi: IccDataOwnerXApi,
-    ) {
-    }
+        private readonly dataOwnerApi: IccDataOwnerXApi
+    ) {}
 
     private clearContactCache() {
         this.contactsCache.invalidateAll()
@@ -100,12 +86,8 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
                     }
                 }),
                 subContacts: subContacts,
-                openingDate: Math.min(
-                    ...servicesToModify.filter((element) => element.openingDate != null || element.valueDate != null).map((e) => e.openingDate ?? e.valueDate!)
-                ),
-                closingDate: Math.max(
-                    ...servicesToModify.filter((element) => element.closingDate != null || element.valueDate != null).map((e) => e.closingDate ?? e.valueDate!)
-                ),
+                openingDate: Math.min(...servicesToModify.filter((element) => element.openingDate != null || element.valueDate != null).map((e) => e.openingDate ?? e.valueDate!)),
+                closingDate: Math.max(...servicesToModify.filter((element) => element.closingDate != null || element.valueDate != null).map((e) => e.closingDate ?? e.valueDate!)),
             }
 
             createdOrModifiedContact = await this.contactApi.modifyContactWithUser(currentUser, contactToModify).catch((e) => {
@@ -126,19 +108,16 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
 
         createdOrModifiedContact.services!.forEach((service) => this.contactsCache.put(service.id!, createdOrModifiedContact))
         return Promise.resolve(
-            createdOrModifiedContact.services!.map(
-                (service) => {
+            createdOrModifiedContact.services!.map((service) => {
+                const subContacts = createdOrModifiedContact.subContacts?.filter((subContact) => subContact.services?.find((s) => s.serviceId == service.id) != undefined)
 
-                    const subContacts = createdOrModifiedContact.subContacts?.filter((subContact) => subContact.services?.find((s) => s.serviceId == service.id) != undefined)
-
-                    return this.serviceMapper.toDomain({
-                        ...this.enrichWithContactMetadata(service, createdOrModifiedContact),
-                        subContactIds: subContacts?.map((subContact) => subContact.id!),
-                        healthElementsIds: service.healthElementsIds ?? subContacts?.filter((subContact) => subContact.healthElementId)?.map((subContact) => subContact.healthElementId!),
-                        formIds: !!subContacts ? subContacts.filter((subContact) => subContact.formId).map((subContact) => subContact.formId!) : service.formIds
-                    })!;
-                }
-            )
+                return this.serviceMapper.toDomain({
+                    ...this.enrichWithContactMetadata(service, createdOrModifiedContact),
+                    subContactIds: subContacts?.map((subContact) => subContact.id!),
+                    healthElementsIds: service.healthElementsIds ?? subContacts?.filter((subContact) => subContact.healthElementId)?.map((subContact) => subContact.healthElementId!),
+                    formIds: !!subContacts ? subContacts.filter((subContact) => subContact.formId).map((subContact) => subContact.formId!) : service.formIds,
+                })!
+            })
         )
     }
 
@@ -155,33 +134,29 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
     }
 
     private _createPotentialSubContactsForHealthElements(services: Array<ServiceDto>, currentUser: UserDto): Promise<SubContact[]> {
-        return Promise.all(services.filter((service) => service.healthElementsIds != undefined && service.healthElementsIds.length > 0)).then(
-            (servicesWithHe) => {
-                return servicesWithHe.length > 0
-                    ? this._checkAndRetrieveProvidedHealthElements(
-                        servicesWithHe.flatMap((service) => Array.from(service.healthElementsIds!.values())),
-                        currentUser
-                    ).then((heIds) => {
-                        return heIds
-                            .map((heId) => {
-                                return {
-                                    healthElement: heId,
-                                    services: servicesWithHe
-                                        .filter((s) => s.healthElementsIds!.find((servHeId) => servHeId == heId))
-                                        .map((s) => new ServiceLink({serviceId: s.id!})),
-                                }
-                            })
-                            .map(
-                                ({healthElement, services}) =>
-                                    new SubContact({
-                                        healthElementId: healthElement,
-                                        services: services,
-                                    })
-                            )
-                    })
-                    : []
-            }
-        )
+        return Promise.all(services.filter((service) => service.healthElementsIds != undefined && service.healthElementsIds.length > 0)).then((servicesWithHe) => {
+            return servicesWithHe.length > 0
+                ? this._checkAndRetrieveProvidedHealthElements(
+                      servicesWithHe.flatMap((service) => Array.from(service.healthElementsIds!.values())),
+                      currentUser
+                  ).then((heIds) => {
+                      return heIds
+                          .map((heId) => {
+                              return {
+                                  healthElement: heId,
+                                  services: servicesWithHe.filter((s) => s.healthElementsIds!.find((servHeId) => servHeId == heId)).map((s) => new ServiceLink({ serviceId: s.id! })),
+                              }
+                          })
+                          .map(
+                              ({ healthElement, services }) =>
+                                  new SubContact({
+                                      healthElementId: healthElement,
+                                      services: services,
+                                  })
+                          )
+                  })
+                : []
+        })
     }
 
     private async _checkAndRetrieveProvidedHealthElements(healthElementIds: Array<string>, currentUser: UserDto): Promise<Array<string>> {
@@ -190,14 +165,12 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         }
 
         const distinctIds = Array.from(new Set(healthElementIds).values())
-        return await this.healthElementApi.getHealthElementsWithUser(currentUser, new ListOfIds({ids: distinctIds})).then((healthElements) => {
+        return await this.healthElementApi.getHealthElementsWithUser(currentUser, new ListOfIds({ ids: distinctIds })).then((healthElements) => {
             const foundIds = (healthElements ?? []).map((he) => he.id!)
             if (healthElements.length < distinctIds.length) {
                 const missingIds = Array.from(distinctIds.values()).filter((id) => foundIds.find((fId) => fId == id) == undefined)
 
-                throw this.errorHandler.createErrorWithMessage(
-                    `Health elements ${missingIds.join(',')} do not exist or user ${currentUser.id} may not access them`
-                )
+                throw this.errorHandler.createErrorWithMessage(`Health elements ${missingIds.join(',')} do not exist or user ${currentUser.id} may not access them`)
             }
 
             return foundIds
@@ -225,16 +198,10 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         }
     }
 
-    async createContactDtoUsing(
-        currentUser: UserDto,
-        contactPatient: PatientDto,
-        services: Array<ServiceDto>,
-        existingContact?: ContactDto
-    ): Promise<ContactDto> {
-        const servicesToCreate = services
-            .map((e) => {
-                return {...e, modified: undefined}
-            })
+    async createContactDtoUsing(currentUser: UserDto, contactPatient: PatientDto, services: Array<ServiceDto>, existingContact?: ContactDto): Promise<ContactDto> {
+        const servicesToCreate = services.map((e) => {
+            return { ...e, modified: undefined }
+        })
 
         let baseContact: ContactDto
 
@@ -248,25 +215,19 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
                 modified: Date.now(),
             }
         } else {
-            baseContact = await this.contactApi
-                .newInstance(currentUser, contactPatient, new ContactDto({id: this.cryptoApi.primitives.randomUuid()}))
-                .catch((e) => {
-                    throw this.errorHandler.createErrorFromAny(e)
-                })
+            baseContact = await this.contactApi.newInstance(currentUser, contactPatient, new ContactDto({ id: this.cryptoApi.primitives.randomUuid() })).catch((e) => {
+                throw this.errorHandler.createErrorFromAny(e)
+            })
         }
 
         return {
             ...baseContact,
             subContacts: subContacts,
             services: servicesToCreate.map((service) => {
-                return {...service, formIds: undefined, healthElementsIds: undefined}
+                return { ...service, formIds: undefined, healthElementsIds: undefined }
             }),
-            openingDate: Math.min(
-                ...servicesToCreate.filter((element) => element.openingDate != null || element.valueDate != null).map((e) => e.openingDate ?? e.valueDate!)
-            ),
-            closingDate: Math.max(
-                ...servicesToCreate.filter((element) => element.closingDate != null || element.valueDate != null).map((e) => e.closingDate ?? e.valueDate!)
-            ),
+            openingDate: Math.min(...servicesToCreate.filter((element) => element.openingDate != null || element.valueDate != null).map((e) => e.openingDate ?? e.valueDate!)),
+            closingDate: Math.max(...servicesToCreate.filter((element) => element.closingDate != null || element.valueDate != null).map((e) => e.closingDate ?? e.valueDate!)),
         }
     }
 
@@ -280,7 +241,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
     }
 
     deleteAttachment(id: string, documentId: string): Promise<string> {
-        return Promise.resolve("");
+        return Promise.resolve('')
     }
 
     async deleteMany(ids: Array<string>): Promise<Array<string>> {
@@ -346,7 +307,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
     }
 
     private async _findContactsForDataSampleIds(currentUser: UserDto, serviceIds: Array<string>): Promise<Array<ContactDto>> {
-        throw "TODO"
+        throw 'TODO'
         /*const cachedContacts = this.contactsCache.getAllPresent(serviceIds)
         const serviceIdsToSearch = serviceIds.filter((element) => Object.keys(cachedContacts).find((key) => key == element) == undefined)
 
@@ -397,7 +358,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
     }
 
     filterBy(filter: Filter<DSService>, nextServiceId?: string, limit?: number): Promise<PaginatedList<DSService>> {
-        throw "TODO"
+        throw 'TODO'
     }
 
     async get(id: string): Promise<DSService> {
@@ -412,9 +373,8 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         return this.contactApi.getServiceWithUser(currentUser, serviceId)
     }
 
-
     getForPatient(patient: DSPatient): Promise<Array<DSService>> {
-        throw "TODO"
+        throw 'TODO'
     }
 
     async giveAccessTo(service: DSService, delegatedTo: string): Promise<DSService> {
@@ -425,10 +385,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         const dataOwnerId = this.dataOwnerApi.getDataOwnerIdOf(currentUser)
         const contactOfDataSample = (await this._getContactOfService(currentUser, mappedService))[1]
 
-        if (contactOfDataSample == undefined)
-            throw this.errorHandler.createErrorWithMessage(
-                `Could not find the batch of the service ${mappedService.id}. User ${currentUser.id} may not have access to it.`
-            )
+        if (contactOfDataSample == undefined) throw this.errorHandler.createErrorWithMessage(`Could not find the batch of the service ${mappedService.id}. User ${currentUser.id} may not have access to it.`)
 
         const updatedContact = await this.contactApi.shareWith(delegatedTo, contactOfDataSample)
 
@@ -442,19 +399,24 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
             ...this.enrichWithContactMetadata(updatedContact.services.find((service) => service.id == service.id)!, updatedContact),
             subContactIds: subContacts?.map((subContact) => subContact.id!),
             healthElementsIds: mappedService.healthElementsIds ?? subContacts?.filter((subContact) => subContact.healthElementId)?.map((subContact) => subContact.healthElementId!),
-            formIds: !!subContacts ? subContacts.filter((subContact) => subContact.formId).map((subContact) => subContact.formId!) : mappedService.formIds
+            formIds: !!subContacts ? subContacts.filter((subContact) => subContact.formId).map((subContact) => subContact.formId!) : mappedService.formIds,
         })!
     }
 
     matchBy(filter: Filter<DSService>): Promise<Array<string>> {
-        throw "TODO"
+        throw 'TODO'
     }
 
-    subscribeToServiceEvents(eventTypes: ("CREATE" | "UPDATE" | "DELETE")[], filter: Filter<DSService>, eventFired: (service: DSService) => Promise<void>, options?: {
-        connectionMaxRetry?: number;
-        connectionRetryIntervalMs?: number
-    }): Promise<Connection> {
-        throw "TODO"
+    subscribeToServiceEvents(
+        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
+        filter: Filter<DSService>,
+        eventFired: (service: DSService) => Promise<void>,
+        options?: {
+            connectionMaxRetry?: number
+            connectionRetryIntervalMs?: number
+        }
+    ): Promise<Connection> {
+        throw 'TODO'
     }
 
     // getAttachmentContent(id: string, documentId: string, attachmentId: string): Promise<ArrayBuffer> {

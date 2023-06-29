@@ -1,30 +1,24 @@
-import {Filter} from "../../filter/Filter";
-import {PaginatedList} from "../../models/PaginatedList.model";
-import {HealthcarePartyLikeApi} from "../HealthcarePartyLikeApi";
-import {ErrorHandler} from "../../services/ErrorHandler";
-import {HealthcareParty, IccHcpartyXApi} from "@icure/api";
-import {Mapper} from "../Mapper";
-import {firstOrNull} from "../../utils/functionalUtils";
+import { Filter } from '../../filters/Filter'
+import { PaginatedList } from '../../models/PaginatedList.model'
+import { HealthcarePartyLikeApi } from '../HealthcarePartyLikeApi'
+import { ErrorHandler } from '../../services/ErrorHandler'
+import { HealthcareParty, IccHcpartyXApi } from '@icure/api'
+import { Mapper } from '../Mapper'
+import { firstOrNull } from '../../utils/functionalUtils'
 
 export class HealthcarePartyLikeApiImpl<DSHealthcareParty> implements HealthcarePartyLikeApi<DSHealthcareParty> {
-
-    constructor(
-        private readonly mapper: Mapper<DSHealthcareParty, HealthcareParty>,
-        private readonly errorHandler: ErrorHandler,
-        private readonly healthcarePartyApi: IccHcpartyXApi
-    ) {
-    }
+    constructor(private readonly mapper: Mapper<DSHealthcareParty, HealthcareParty>, private readonly errorHandler: ErrorHandler, private readonly healthcarePartyApi: IccHcpartyXApi) {}
 
     async createOrModify(healthcareParty: DSHealthcareParty): Promise<DSHealthcareParty> {
-        const mappedHealthcareParty = this.mapper.toDto(healthcareParty);
+        const mappedHealthcareParty = this.mapper.toDto(healthcareParty)
 
         const createdOrModifiedHealthcareParty = mappedHealthcareParty.rev
             ? await this.healthcarePartyApi.modifyHealthcareParty(mappedHealthcareParty).catch((e) => {
-                throw this.errorHandler.createErrorFromAny(e)
-            })
+                  throw this.errorHandler.createErrorFromAny(e)
+              })
             : await this.healthcarePartyApi.createHealthcareParty(mappedHealthcareParty).catch((e) => {
-                throw this.errorHandler.createErrorFromAny(e)
-            })
+                  throw this.errorHandler.createErrorFromAny(e)
+              })
 
         if (createdOrModifiedHealthcareParty) {
             return this.mapper.toDomain(createdOrModifiedHealthcareParty)!
@@ -46,7 +40,7 @@ export class HealthcarePartyLikeApiImpl<DSHealthcareParty> implements Healthcare
     }
 
     filter(filter: Filter<DSHealthcareParty>, nextHealthcarePartyId?: string, limit?: number): Promise<PaginatedList<DSHealthcareParty>> {
-        throw "TODO"
+        throw 'TODO'
     }
 
     async get(id: string): Promise<DSHealthcareParty> {
@@ -58,6 +52,6 @@ export class HealthcarePartyLikeApiImpl<DSHealthcareParty> implements Healthcare
     }
 
     matchBy(filter: Filter<DSHealthcareParty>): Promise<Array<string>> {
-        throw "TODO"
+        throw 'TODO'
     }
 }

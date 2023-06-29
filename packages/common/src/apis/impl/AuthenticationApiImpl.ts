@@ -1,26 +1,23 @@
-
-import {AuthenticationApi} from "../AuthenticationApi";
-import {IccCryptoXApi, IccPatientXApi, IccUserXApi, retry, ua2hex, User} from "@icure/api";
-import {Sanitizer} from "../../services/Sanitizer";
-import {ErrorHandler} from "../../services/ErrorHandler";
-import {MessageGatewayApi} from "../MessageGatewayApi";
+import { AuthenticationApi } from '../AuthenticationApi'
+import { IccCryptoXApi, IccPatientXApi, IccUserXApi, retry, ua2hex, User } from '@icure/api'
+import { Sanitizer } from '../../services/Sanitizer'
+import { ErrorHandler } from '../../services/ErrorHandler'
+import { MessageGatewayApi } from '../MessageGatewayApi'
 import { KeyPair } from '@icure/api/icc-x-api/crypto/RSA'
-import {AuthenticationResult} from "../../models/AuthenticationResult.model";
-import {AuthenticationProcess} from "../../models/AuthenticationProcess.model";
-import {RecaptchaType} from "../../models/RecaptchaType.model";
+import { AuthenticationResult } from '../../models/AuthenticationResult.model'
+import { AuthenticationProcess } from '../../models/AuthenticationProcess.model'
+import { RecaptchaType } from '../../models/RecaptchaType.model'
+import { CommonApi } from '../CommonApi'
 
-
-export abstract class AuthenticationApiImpl<DSApi> implements AuthenticationApi<DSApi> {
-
+export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements AuthenticationApi<DSApi> {
     protected constructor(
         private readonly messageGatewayApi: MessageGatewayApi,
         protected readonly errorHandler: ErrorHandler,
         private readonly sanitizer: Sanitizer,
         protected readonly iCureBasePath: string,
         private readonly authProcessByEmailId: string | undefined,
-        private readonly authProcessBySmsId: string | undefined,
-    ) {
-    }
+        private readonly authProcessBySmsId: string | undefined
+    ) {}
 
     async completeAuthentication(process: AuthenticationProcess, validationCode: string): Promise<AuthenticationResult<DSApi>> {
         const result = await this.messageGatewayApi.validateProcess(process.requestId, validationCode).catch((e) => {
@@ -34,9 +31,7 @@ export abstract class AuthenticationApiImpl<DSApi> implements AuthenticationApi<
             return this._initUserAuthTokenAndCrypto(process.login, validationCode)
         }
 
-        throw this.errorHandler.createErrorWithMessage(
-            `iCure could not complete authentication process with requestId ${process.requestId}. Try again later.`
-        )
+        throw this.errorHandler.createErrorWithMessage(`iCure could not complete authentication process with requestId ${process.requestId}. Try again later.`)
     }
 
     async startAuthentication(
@@ -51,9 +46,7 @@ export abstract class AuthenticationApiImpl<DSApi> implements AuthenticationApi<
         recaptchaType?: RecaptchaType
     ): Promise<AuthenticationProcess> {
         if (!email && !phoneNumber) {
-            throw this.errorHandler.createErrorWithMessage(
-                `In order to start authentication of a user, you should at least provide its email OR its phone number`
-            )
+            throw this.errorHandler.createErrorWithMessage(`In order to start authentication of a user, you should at least provide its email OR its phone number`)
         }
 
         if ((!!email && !this.authProcessByEmailId) || (!!phoneNumber && !this.authProcessBySmsId)) {
@@ -83,21 +76,22 @@ export abstract class AuthenticationApiImpl<DSApi> implements AuthenticationApi<
             return new AuthenticationProcess({
                 requestId,
                 login: (email ?? phoneNumber)!,
-                bypassTokenCheck: bypassTokenCheck
+                bypassTokenCheck: bypassTokenCheck,
             })
         }
 
-        throw this.errorHandler.createErrorWithMessage(
-            `iCure could not start the authentication process ${processId} for user ${email ?? phoneNumber}. Try again later`
-        )
+        throw this.errorHandler.createErrorWithMessage(`iCure could not start the authentication process ${processId} for user ${email ?? phoneNumber}. Try again later`)
     }
 
-    protected abstract _generateAndAssignAuthenticationToken(login: string, validationCode: string): Promise<{
-        authenticatedApi: DSApi,
-        user: User,
-        password: string,
-        cryptoApi: IccCryptoXApi,
-    }>;
+    protected abstract _generateAndAssignAuthenticationToken(
+        login: string,
+        validationCode: string
+    ): Promise<{
+        authenticatedApi: DSApi
+        user: User
+        password: string
+        cryptoApi: IccCryptoXApi
+    }>
 
     abstract authenticateAndAskAccessToItsExistingData(userLogin: string, shortLivedToken: string): Promise<AuthenticationResult<DSApi>>
 

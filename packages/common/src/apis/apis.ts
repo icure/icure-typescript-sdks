@@ -23,4 +23,5 @@ export * from './MessageGatewayApi'
 export * from './PatientLikeApi'
 export * from './ServiceLikeApi'
 export * from './UserLikeApi'
-export {ServiceLikeApiImpl} from "./impl/ServiceLikeApiImpl";
+
+export * from './CommonApi'

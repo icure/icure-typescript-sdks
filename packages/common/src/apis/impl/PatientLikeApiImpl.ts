@@ -1,23 +1,15 @@
-import {Filter} from "../../filter/Filter";
-import {PaginatedList} from "../../models/PaginatedList.model";
-import {SharingResult, SharingStatus} from "../../utils/interfaces";
-import {Connection} from "../../models/Connection.model";
-import {PatientLikeApi} from "../PatientLikeApi";
-import {IccPatientXApi, IccUserXApi, Patient as PatientDto} from "@icure/api";
-import {ErrorHandler} from "../../services/ErrorHandler";
-import {Mapper} from "../Mapper";
-import {IccDataOwnerXApi} from "@icure/api/icc-x-api/icc-data-owner-x-api";
+import { Filter } from '../../filters/Filter'
+import { PaginatedList } from '../../models/PaginatedList.model'
+import { SharingResult, SharingStatus } from '../../utils/interfaces'
+import { Connection } from '../../models/Connection.model'
+import { PatientLikeApi } from '../PatientLikeApi'
+import { IccPatientXApi, IccUserXApi, Patient as PatientDto } from '@icure/api'
+import { ErrorHandler } from '../../services/ErrorHandler'
+import { Mapper } from '../Mapper'
+import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
 
 export class PatientLikeApiImpl<DSPatient> implements PatientLikeApi<DSPatient> {
-
-    constructor(
-        private readonly mapper: Mapper<DSPatient, PatientDto>,
-        private readonly errorHandler: ErrorHandler,
-        private readonly patientApi: IccPatientXApi,
-        private readonly userApi: IccUserXApi,
-        private readonly dataOwnerApi: IccDataOwnerXApi,
-    ) {
-    }
+    constructor(private readonly mapper: Mapper<DSPatient, PatientDto>, private readonly errorHandler: ErrorHandler, private readonly patientApi: IccPatientXApi, private readonly userApi: IccUserXApi, private readonly dataOwnerApi: IccDataOwnerXApi) {}
 
     async createOrModify(patient: DSPatient): Promise<DSPatient> {
         return this.mapper.toDomain(await this._createOrModifyPatient(patient))
@@ -32,11 +24,11 @@ export class PatientLikeApiImpl<DSPatient> implements PatientLikeApi<DSPatient> 
 
         const createdOrUpdatedPatient = patientDto.rev
             ? await this.patientApi.modifyPatientWithUser(currentUser, patientDto).catch((e) => {
-                throw this.errorHandler.createErrorFromAny(e)
-            })
+                  throw this.errorHandler.createErrorFromAny(e)
+              })
             : await this.patientApi.createPatientWithUser(currentUser, await this.patientApi.newInstance(currentUser, patientDto)).catch((e) => {
-                throw this.errorHandler.createErrorFromAny(e)
-            })
+                  throw this.errorHandler.createErrorFromAny(e)
+              })
 
         if (createdOrUpdatedPatient) {
             return createdOrUpdatedPatient
@@ -62,19 +54,22 @@ export class PatientLikeApiImpl<DSPatient> implements PatientLikeApi<DSPatient> 
     }
 
     filterBy(filter: Filter<DSPatient>, nextPatientId?: string, limit?: number): Promise<PaginatedList<DSPatient>> {
-        throw "TODO"
+        throw 'TODO'
     }
 
     async get(patientId: string): Promise<DSPatient> {
         return (await this._getPatient(patientId, true)).patient
     }
 
-    async getAndTryDecrypt(id: string): Promise<{ patient: DSPatient, decrypted: boolean }> {
+    async getAndTryDecrypt(id: string): Promise<{ patient: DSPatient; decrypted: boolean }> {
         return await this._getPatient(id, false)
     }
 
-    private async _getPatient(patientId: string, requireDecrypted: boolean): Promise<{
-        patient: DSPatient,
+    private async _getPatient(
+        patientId: string,
+        requireDecrypted: boolean
+    ): Promise<{
+        patient: DSPatient
         decrypted: boolean
     }> {
         const currentUser = await this.userApi.getCurrentUser().catch((e) => {
@@ -89,7 +84,7 @@ export class PatientLikeApiImpl<DSPatient> implements PatientLikeApi<DSPatient> 
                 throw this.errorHandler.createErrorWithMessage(`Could not decrypt patient ${patientId} with current user ${currentUser.id}`)
             }
 
-            return {patient: this.mapper.toDomain(foundPatient.patient)!, decrypted: foundPatient.decrypted}
+            return { patient: this.mapper.toDomain(foundPatient.patient)!, decrypted: foundPatient.decrypted }
         }
 
         throw this.errorHandler.createErrorWithMessage(`Could not find patient ${patientId} with current user ${currentUser.id}`)
@@ -109,14 +104,10 @@ export class PatientLikeApiImpl<DSPatient> implements PatientLikeApi<DSPatient> 
             throw this.errorHandler.createErrorFromAny(e)
         })
         if (!currentUser) {
-            throw this.errorHandler.createErrorWithMessage(
-                'There is no user currently logged in. You must call this method from an authenticated MedTechApi'
-            )
+            throw this.errorHandler.createErrorWithMessage('There is no user currently logged in. You must call this method from an authenticated MedTechApi')
         }
         if (!this.dataOwnerApi.getDataOwnerIdOf(currentUser)) {
-            throw this.errorHandler.createErrorWithMessage(
-                'The current user is not a data owner. You must been either a patient, a device or a healthcare professional to call this method.'
-            )
+            throw this.errorHandler.createErrorWithMessage('The current user is not a data owner. You must been either a patient, a device or a healthcare professional to call this method.')
         }
         return this.patientApi
             .shareAllDataOfPatient(currentUser, patientId, this.dataOwnerApi.getDataOwnerIdOf(currentUser), [patientId], { [patientId]: ['all'] })
@@ -136,13 +127,18 @@ export class PatientLikeApiImpl<DSPatient> implements PatientLikeApi<DSPatient> 
     }
 
     matchBy(filter: Filter<DSPatient>): Promise<Array<string>> {
-        throw "TODO"
+        throw 'TODO'
     }
 
-    subscribeTo(eventTypes: ("CREATE" | "UPDATE" | "DELETE")[], filter: Filter<DSPatient>, eventFired: (patient: DSPatient) => Promise<void>, options?: {
-        connectionMaxRetry?: number;
-        connectionRetryIntervalMs?: number
-    }): Promise<Connection> {
-        throw "TODO"
+    subscribeTo(
+        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
+        filter: Filter<DSPatient>,
+        eventFired: (patient: DSPatient) => Promise<void>,
+        options?: {
+            connectionMaxRetry?: number
+            connectionRetryIntervalMs?: number
+        }
+    ): Promise<Connection> {
+        throw 'TODO'
     }
 }

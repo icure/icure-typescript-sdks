@@ -1,27 +1,25 @@
-import {EmailMessageFactory, SMSMessageFactory} from "../../utils/msgGtwMessageFactory";
-import {Filter} from "../../filter/Filter";
-import {PaginatedList} from "../../models/PaginatedList.model";
-import {SharedDataType} from "../../models/User.model";
-import {Connection} from "../../models/Connection.model";
-import {UserLikeApi} from "../UserLikeApi";
-import {ErrorHandler} from "../../services/ErrorHandler";
-import {IccUserXApi, Patient as PatientDto, User as UserDto} from "@icure/api";
-import {Mapper} from "../Mapper";
-import {MessageGatewayApi} from "../MessageGatewayApi";
-import {Sanitizer} from "../../services/Sanitizer";
-import {forceUuid} from "../../utils/uuidUtils";
+import { EmailMessageFactory, SMSMessageFactory } from '../../utils/msgGtwMessageFactory'
+import { Filter } from '../../filters/Filter'
+import { PaginatedList } from '../../models/PaginatedList.model'
+import { SharedDataType } from '../../models/User.model'
+import { Connection } from '../../models/Connection.model'
+import { UserLikeApi } from '../UserLikeApi'
+import { ErrorHandler } from '../../services/ErrorHandler'
+import { IccUserXApi, Patient as PatientDto, User as UserDto } from '@icure/api'
+import { Mapper } from '../Mapper'
+import { MessageGatewayApi } from '../MessageGatewayApi'
+import { Sanitizer } from '../../services/Sanitizer'
+import { forceUuid } from '../../utils/uuidUtils'
 
 export class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, DSPatient> {
-
     constructor(
         private readonly userMapper: Mapper<DSUser, UserDto>,
         private readonly patientMapper: Mapper<DSPatient, PatientDto>,
         private readonly errorHandler: ErrorHandler,
         private readonly sanitizer: Sanitizer,
         private readonly userApi: IccUserXApi,
-        private readonly messageGatewayApi?: MessageGatewayApi,
-    ) {
-    }
+        private readonly messageGatewayApi?: MessageGatewayApi
+    ) {}
 
     checkTokenValidity(id: string, token: string): Promise<boolean> {
         return this.userApi.checkTokenValidity(id, token).catch((e) => {
@@ -30,7 +28,7 @@ export class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, D
     }
 
     createAndInvite(patient: DSPatient, messageFactory: SMSMessageFactory | EmailMessageFactory, tokenDuration?: number): Promise<DSUser> {
-        throw "TODO"
+        throw 'TODO'
     }
 
     async createOrModify(user: DSUser): Promise<DSUser> {
@@ -69,7 +67,7 @@ export class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, D
     }
 
     filterBy(filter: Filter<DSUser>, nextUserId?: string, limit?: number): Promise<PaginatedList<DSUser>> {
-        throw "TODO"
+        throw 'TODO'
     }
 
     async get(id: string): Promise<DSUser> {
@@ -97,7 +95,7 @@ export class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, D
     }
 
     matchBy(filter: Filter<DSUser>): Promise<Array<string>> {
-        throw "TODO"
+        throw 'TODO'
     }
 
     async shareAllFutureDataWith(dataOwnerIds: string[], type?: SharedDataType): Promise<DSUser> {
@@ -106,9 +104,7 @@ export class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, D
         })
 
         if (!user) {
-            throw this.errorHandler.createErrorWithMessage(
-                'There is no user currently logged in. You must call this method from an authenticated MedTechApi'
-            )
+            throw this.errorHandler.createErrorWithMessage('There is no user currently logged in. You must call this method from an authenticated MedTechApi')
         }
 
         let newDataSharing
@@ -153,9 +149,7 @@ export class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, D
         })
 
         if (!user) {
-            throw this.errorHandler.createErrorWithMessage(
-                'There is no user currently logged in. You must call this method from an authenticated MedTechApi'
-            )
+            throw this.errorHandler.createErrorWithMessage('There is no user currently logged in. You must call this method from an authenticated MedTechApi')
         }
 
         const delegationsToRemove = user.autoDelegations?.[type ?? 'all']?.filter((item) => dataOwnerIds.indexOf(item) >= 0)
@@ -186,10 +180,15 @@ export class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, D
         throw this.errorHandler.createErrorWithMessage("Couldn't remove data sharing of user")
     }
 
-    subscribeTo(eventTypes: ("CREATE" | "UPDATE" | "DELETE")[], filter: Filter<DSUser>, eventFired: (user: DSUser) => Promise<void>, options?: {
-        connectionMaxRetry?: number;
-        connectionRetryIntervalMs?: number
-    }): Promise<Connection> {
-        throw "TODO"
+    subscribeTo(
+        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
+        filter: Filter<DSUser>,
+        eventFired: (user: DSUser) => Promise<void>,
+        options?: {
+            connectionMaxRetry?: number
+            connectionRetryIntervalMs?: number
+        }
+    ): Promise<Connection> {
+        throw 'TODO'
     }
 }
