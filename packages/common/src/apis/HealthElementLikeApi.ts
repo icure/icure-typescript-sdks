@@ -1,6 +1,7 @@
 import { Filter } from '../filters/Filter'
 import { Connection } from '../models/Connection.model'
 import { PaginatedList } from '../models/PaginatedList.model'
+import {HealthElement} from "@icure/api";
 
 /**
  * The HealthElementApi interface provides methods to manage healthcare elements.
@@ -54,7 +55,7 @@ export interface HealthElementLikeApi<DSHealthElement, DSPatient> {
      * @param nextHealthElementId The id of the first Healthcare professional in the next page
      * @param limit The maximum number of healthcare elements that should contain the returned page. By default, a page contains 1000 healthcare elements
      */
-    filterBy(filter: Filter<DSHealthElement>, nextHealthElementId?: string, limit?: number): Promise<PaginatedList<DSHealthElement>>
+    filterBy(filter: Filter<HealthElement>, nextHealthElementId?: string, limit?: number): Promise<PaginatedList<DSHealthElement>>
 
     /**
      * Retrieves the information of a specific Healthcare Element
@@ -69,7 +70,7 @@ export interface HealthElementLikeApi<DSHealthElement, DSPatient> {
      *
      * @param filter Filtering conditions that the returned healthcare element ids are satisfying.
      */
-    matchBy(filter: Filter<DSHealthElement>): Promise<Array<string>>
+    matchBy(filter: Filter<HealthElement>): Promise<Array<string>>
 
     /**
    * Service where current user gives access to the healthcare Element information to another dataOwner (HCP, patient or device).

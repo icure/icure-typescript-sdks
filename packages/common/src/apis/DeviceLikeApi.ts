@@ -1,5 +1,6 @@
 import { Filter } from '../filters/Filter'
 import { PaginatedList } from '../models/PaginatedList.model'
+import {Device} from "@icure/api";
 
 /**
  * The DeviceApi interface provides methods to manage medical devices.
@@ -36,7 +37,7 @@ export interface DeviceLikeApi<DSDevice> {
      * @param nextDeviceId The id of the first device in the next page
      * @param limit The number of devices to return in the queried page
      */
-    filterBy(filter: Filter<DSDevice>, nextDeviceId?: string, limit?: number): Promise<PaginatedList<DSDevice>>
+    filterBy(filter: Filter<Device>, nextDeviceId?: string, limit?: number): Promise<PaginatedList<DSDevice>>
     /**
      * Each medical device is uniquely identified by a device id. The device id is a UUID. This [deviceId] is the preferred method to retrieve one specific device.
      * Get a Medical Device
@@ -48,5 +49,5 @@ export interface DeviceLikeApi<DSDevice> {
      * Load medical device ids from the database by filtering them using the provided Filter.
      * @param filter The Filter object that describes which condition(s) the elements whose the ids should be returned must fulfill
      */
-    matchBy(filter: Filter<DSDevice>): Promise<Array<string>>
+    matchBy(filter: Filter<Device>): Promise<Array<string>>
 }

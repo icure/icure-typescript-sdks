@@ -1,5 +1,6 @@
 import { Filter } from '../filters/Filter'
 import { PaginatedList } from '../models/PaginatedList.model'
+import {HealthcareParty} from "@icure/api";
 
 /**
  * The HealthcarePartyApi interface provides methods to manage healthcare professionals.
@@ -26,7 +27,7 @@ export interface HealthcarePartyLikeApi<DSHealthcareParty> {
      * @param nextHealthcarePartyId The id of the first Healthcare professional in the next page
      * @param limit The number of healthcare professionals to return in the queried page
      */
-    filter(filter: Filter<DSHealthcareParty>, nextHealthcarePartyId?: string, limit?: number): Promise<PaginatedList<DSHealthcareParty>>
+    filter(filter: Filter<HealthcareParty>, nextHealthcarePartyId?: string, limit?: number): Promise<PaginatedList<DSHealthcareParty>>
     /**
      * Each healthcare professional is uniquely identified by a healthcare professional id. The healthcare professional id is a UUID. This hcpId is the preferred method to retrieve one specific healthcare professional.
      * Get a Healthcare professional by id.
@@ -38,5 +39,5 @@ export interface HealthcarePartyLikeApi<DSHealthcareParty> {
      * Load healthcare professional ids from the database by filtering them using the provided Filter.
      * @param filter The Filter object that describes which condition(s) the elements whose the ids should be returned must fulfill
      */
-    matchBy(filter: Filter<DSHealthcareParty>): Promise<Array<string>>
+    matchBy(filter: Filter<HealthcareParty>): Promise<Array<string>>
 }

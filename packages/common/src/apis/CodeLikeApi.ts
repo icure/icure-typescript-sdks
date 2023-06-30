@@ -1,5 +1,6 @@
 import { Filter } from '../filters/Filter'
 import { PaginatedList } from '../models/PaginatedList.model'
+import {Code} from "@icure/api";
 
 /**
  * The CodeApi interface provides methods to manage code and terminologies (like ATC, ICD-10, LOINC, SNOMED-CT,… ).
@@ -27,7 +28,7 @@ export interface CodeLikeApi<DSCode> {
      * @param nextCodeId The id of the first code in the next page
      * @param limit The maximum number of codes that should contain the returned page. By default, a page contains 1000 codes
      */
-    filterBy(filter: Filter<DSCode>, nextCodeId?: string, limit?: number): Promise<PaginatedList<DSCode>>
+    filterBy(filter: Filter<Code>, nextCodeId?: string, limit?: number): Promise<PaginatedList<DSCode>>
     /**
      * Each code is uniquely identified by a code id. The code id is a UUID. This [codeId] is the preferred method to retrieve one specific code.
      * Get a [Code]
@@ -39,5 +40,5 @@ export interface CodeLikeApi<DSCode> {
      * Load code ids from the database by filtering them using the provided [filter].
      * @param filter The Filter object that describes which condition(s) the elements whose the ids should be returned must fulfill
      */
-    matchBy(filter: Filter<DSCode>): Promise<Array<string>>
+    matchBy(filter: Filter<Code>): Promise<Array<string>>
 }

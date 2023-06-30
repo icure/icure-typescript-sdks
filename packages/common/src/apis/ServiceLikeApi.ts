@@ -1,6 +1,7 @@
 import { Filter } from '../filters/Filter'
 import { Connection } from '../models/Connection.model'
 import { PaginatedList } from '../models/PaginatedList.model'
+import {Service} from "@icure/api";
 
 /**
  * The ServiceApi interface provides methods to manage data samples.
@@ -18,7 +19,7 @@ export interface ServiceLikeApi<DSService, DSPatient, DSDocument> {
      * All the provided data samples will be created in the same batch. If you are trying to update some data samples, then those ones need to come from the same batch.                  When modifying a data sample, you can't update the patient of it : For this, you need to delete the faulty data sample and create a new one. When modifying the data sample, you also need to keep the same batchId : It is not possible to change the batch of a data sample.
      * Create or update a batch of [Service] for a patient
      * @param patientId
-     * @param service
+     * @param services
      */
     createOrModifyManyFor(patientId: string, services: Array<DSService>): Promise<Array<DSService>>
 
@@ -51,7 +52,7 @@ export interface ServiceLikeApi<DSService, DSPatient, DSDocument> {
      * @param nextServiceId The id of the first data sample in the next page
      * @param limit The maximum number of data samples that should contain the returned page. By default, a page contains 1000 data samples
      */
-    filterBy(filter: Filter<DSService>, nextServiceId?: string, limit?: number): Promise<PaginatedList<DSService>>
+    filterBy(filter: Filter<Service>, nextServiceId?: string, limit?: number): Promise<PaginatedList<DSService>>
 
     /**
      * Each data sample is uniquely identified by a data sample id which is a UUID. This [id] is the preferred method to retrieve one specific data sample.
@@ -65,7 +66,7 @@ export interface ServiceLikeApi<DSService, DSPatient, DSDocument> {
      * Find data samples ids using the provided Filter.
      * @param filter The Filter object that describes which condition(s) the elements whose the ids should be returned must fulfill
      */
-    matchBy(filter: Filter<DSService>): Promise<Array<string>>
+    matchBy(filter: Filter<Service>): Promise<Array<string>>
 
     /**
    * Service where current user gives access to the data sample information to another dataOwner (HCP, patient or device).

@@ -3,6 +3,7 @@ import { SharedDataType } from '../models/User.model'
 import { Connection } from '../models/Connection.model'
 import { EmailMessageFactory, SMSMessageFactory } from '../utils/msgGtwMessageFactory'
 import { PaginatedList } from '../models/PaginatedList.model'
+import {User} from "@icure/api";
 
 /**
  * The UserApi interface provides methods to manage users.
@@ -50,7 +51,7 @@ export interface UserLikeApi<DSUser, DSPatient> {
      * @param nextUserId The id of the first User in the next page
      * @param limit The number of users to return in the queried page
      */
-    filterBy(filter: Filter<DSUser>, nextUserId?: string, limit?: number): Promise<PaginatedList<DSUser>>
+    filterBy(filter: Filter<User>, nextUserId?: string, limit?: number): Promise<PaginatedList<DSUser>>
     /**
      * When you make a call to the server, an authentication token is used to identify you. This call returns the complete User object that corresponds to your authentication credentials.
      * Get the details of the logged User.
@@ -77,7 +78,7 @@ export interface UserLikeApi<DSUser, DSPatient> {
      * Load user ids from the database by filtering them using the provided Filter.
      * @param filter The Filter object that describes which condition(s) the elements whose the ids should be returned must fulfill
      */
-    matchBy(filter: Filter<DSUser>): Promise<Array<string>>
+    matchBy(filter: Filter<User>): Promise<Array<string>>
 
     /**
      * Opens a WebSocket Connection in order to receive all the Users corresponding to specific filter criteria.

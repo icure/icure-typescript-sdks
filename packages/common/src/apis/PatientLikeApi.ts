@@ -2,6 +2,7 @@ import { Filter } from '../filters/Filter'
 import { SharingResult } from '../utils/interfaces'
 import { PaginatedList } from '../models/PaginatedList.model'
 import { Connection } from '../models/Connection.model'
+import {Patient} from "@icure/api";
 
 /**
  * The PatientApi interface provides methods to manage patients.
@@ -35,7 +36,7 @@ export interface PatientLikeApi<DSPatient> {
      * @param nextPatientId The id of the first patient in the next page
      * @param limit The maximum number of patients that should contain the returned page. By default, a page contains 1000 patients
      */
-    filterBy(filter: Filter<DSPatient>, nextPatientId?: string, limit?: number): Promise<PaginatedList<DSPatient>>
+    filterBy(filter: Filter<Patient>, nextPatientId?: string, limit?: number): Promise<PaginatedList<DSPatient>>
     /**
      * Each patient is uniquely identified by a patient id. The patient id is a UUID. This [patientId] is the preferred method to retrieve one specific patient.
      * Get a [Patient]
@@ -47,7 +48,7 @@ export interface PatientLikeApi<DSPatient> {
      * Load patient ids from the database by filtering them using the provided [filter].
      * @param filter The Filter object that describes which condition(s) the elements whose the ids should be returned must fulfill
      */
-    matchBy(filter: Filter<DSPatient>): Promise<Array<string>>
+    matchBy(filter: Filter<Patient>): Promise<Array<string>>
 
     /**
      * Service where current user gives access to the patient information to another dataOwner (HCP, patient or device).
