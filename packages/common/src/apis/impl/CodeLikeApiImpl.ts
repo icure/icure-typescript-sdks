@@ -1,13 +1,21 @@
-import { Filter } from '../../filters/Filter'
-import { CodeLikeApi } from '../CodeLikeApi'
-import { Mapper } from '../Mapper'
-import { Code, IccCodeXApi } from '@icure/api'
-import { ErrorHandler } from '../../services/ErrorHandler'
-import { firstOrNull } from '../../utils/functionalUtils'
-import { PaginatedList } from '../../models/PaginatedList.model'
+import {Filter} from '../../filters/Filter'
+import {CodeLikeApi} from '../CodeLikeApi'
+import {Mapper} from '../Mapper'
+import {Code, FilterChainCode, IccCodeXApi, PaginatedListCode} from '@icure/api'
+import {ErrorHandler} from '../../services/ErrorHandler'
+import {firstOrNull} from '../../utils/functionalUtils'
+import {PaginatedList} from '../../models/PaginatedList.model'
+import {NoOpFilter} from '../../filters/dsl/filterDsl'
+import {FilterMapper} from "../../mappers/Filter.mapper";
 
 export class CodeLikeApiImpl<DSCode> implements CodeLikeApi<DSCode> {
-    constructor(private readonly mapper: Mapper<DSCode, Code>, private readonly errorHandler: ErrorHandler, private readonly codeApi: IccCodeXApi) {}
+    constructor(private readonly mapper: Mapper<DSCode, Code>, private readonly paginatedMapper: Mapper<PaginatedList<DSCode>, PaginatedListCode>, private readonly errorHandler: ErrorHandler, private readonly codeApi: IccCodeXApi) {
+    }
+
+    private static isCodeId(id?: string): boolean {
+        const codeRegex = new RegExp(`[a-zA-Z0-9]{0,80}\\|[a-zA-Z0-9.-]{0,80}\\|[a-zA-Z0-9.]{0,80}`)
+        return id != undefined && codeRegex.test(id)
+    }
 
     async createOrModify(code: DSCode): Promise<DSCode> {
         const processedCoding = firstOrNull(
@@ -49,8 +57,32 @@ export class CodeLikeApiImpl<DSCode> implements CodeLikeApi<DSCode> {
         return [...createdCodes, ...updatedCodes].map((c) => this.mapper.toDomain(c))
     }
 
-    filterBy(filter: Filter<DSCode>, nextCodeId?: string, limit?: number): Promise<PaginatedList<DSCode>> {
-        throw 'TODO'
+    async filterBy(filter: Filter<Code>, nextCodeId?: string, limit?: number): Promise<PaginatedList<DSCode>> {
+        if (NoOpFilter.isNoOp(filter)) {
+            return {
+                pageSize: 0,
+                totalSize: 0,
+                rows: [],
+            } as PaginatedList<DSCode>
+        } else {
+            return this.paginatedMapper.toDomain(
+                await this.codeApi
+                    .filterCodesBy(
+                        undefined,
+                        nextCodeId,
+                        limit,
+                        undefined,
+                        undefined,
+                        undefined,
+                        new FilterChainCode({
+                            filter: FilterMapper.toAbstractFilterDto<Code>(filter, 'Code'),
+                        })
+                    )
+                    .catch((e) => {
+                        throw this.errorHandler.createErrorFromAny(e)
+                    })
+            )!
+        }
     }
 
     async get(id: string): Promise<DSCode> {
@@ -61,12 +93,13 @@ export class CodeLikeApiImpl<DSCode> implements CodeLikeApi<DSCode> {
         )
     }
 
-    matchBy(filter: Filter<DSCode>): Promise<Array<string>> {
-        throw 'TODO'
-    }
-
-    private static isCodeId(id?: string): boolean {
-        const codeRegex = new RegExp(`[a-zA-Z0-9]{0,80}\\|[a-zA-Z0-9.-]{0,80}\\|[a-zA-Z0-9.]{0,80}`)
-        return id != undefined && codeRegex.test(id)
+    async matchBy(filter: Filter<Code>): Promise<Array<string>> {
+        if (NoOpFilter.isNoOp(filter)) {
+            return []
+        } else {
+            return this.codeApi.matchCodesBy(FilterMapper.toAbstractFilterDto<Code>(filter, 'Code')).catch((e) => {
+                throw this.errorHandler.createErrorFromAny(e)
+            })
+        }
     }
 }

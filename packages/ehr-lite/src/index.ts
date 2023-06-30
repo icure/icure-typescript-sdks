@@ -1,7 +1,8 @@
 import 'reflect-metadata'
 
-export * from './models/models'
 export * from './apis/apis'
+export * from './filters/filters'
+export * from './models/models'
 
 // @ts-ignore
 export * from '@icure/typescript-common'

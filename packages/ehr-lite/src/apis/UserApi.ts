@@ -1,9 +1,18 @@
-import { IccUserXApi, User as UserDto, Patient as PatientDto } from '@icure/api'
-import { ErrorHandler, mapUserDtoToUser, mapUserToUserDto, MessageGatewayApi, Sanitizer, User, UserLikeApiImpl } from '@icure/typescript-common'
+import {IccUserXApi, User as UserDto, Patient as PatientDto, PaginatedListUser} from '@icure/api'
+import {
+    CommonApi,
+    ErrorHandler,
+    mapUserDtoToUser,
+    mapUserToUserDto,
+    MessageGatewayApi, PaginatedList,
+    Sanitizer,
+    User,
+    UserLikeApiImpl
+} from '@icure/typescript-common'
 import { Patient } from '../models/Patient.model'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
 
-export const userApi = (errorHandler: ErrorHandler, sanitizer: Sanitizer, userApi: IccUserXApi, messageGatewayApi?: MessageGatewayApi) =>
+export const userApi = (errorHandler: ErrorHandler, sanitizer: Sanitizer, userApi: IccUserXApi, api: CommonApi, messageGatewayApi?: MessageGatewayApi) =>
     new UserLikeApiImpl<User, Patient>(
         {
             toDomain(dto: UserDto): User {
@@ -21,8 +30,23 @@ export const userApi = (errorHandler: ErrorHandler, sanitizer: Sanitizer, userAp
                 return mapPatientToPatientDto(domain)
             },
         },
+        {
+            toDomain(dto: PaginatedListUser): PaginatedList<User> {
+                return {
+                    ...dto,
+                    rows: dto.rows?.map(mapUserDtoToUser)
+                }
+            },
+            toDto(domain: PaginatedList<User>): PaginatedListUser {
+                return {
+                    ...domain,
+                    rows: domain.rows?.map(mapUserToUserDto)
+                }
+            }
+        },
         errorHandler,
         sanitizer,
         userApi,
-        messageGatewayApi
+        api,
+        messageGatewayApi,
     )

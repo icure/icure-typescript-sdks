@@ -3,13 +3,15 @@ import { PaginatedList } from '../../models/PaginatedList.model'
 import { SharingResult, SharingStatus } from '../../utils/interfaces'
 import { Connection } from '../../models/Connection.model'
 import { PatientLikeApi } from '../PatientLikeApi'
-import { IccPatientXApi, IccUserXApi, Patient as PatientDto } from '@icure/api'
+import {FilterChainPatient, IccPatientXApi, IccUserXApi, PaginatedListPatient, Patient as PatientDto} from '@icure/api'
 import { ErrorHandler } from '../../services/ErrorHandler'
 import { Mapper } from '../Mapper'
 import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
+import {NoOpFilter} from "../../filters/dsl/filterDsl";
+import {FilterMapper} from "../../mappers/Filter.mapper";
 
 export class PatientLikeApiImpl<DSPatient> implements PatientLikeApi<DSPatient> {
-    constructor(private readonly mapper: Mapper<DSPatient, PatientDto>, private readonly errorHandler: ErrorHandler, private readonly patientApi: IccPatientXApi, private readonly userApi: IccUserXApi, private readonly dataOwnerApi: IccDataOwnerXApi) {}
+    constructor(private readonly mapper: Mapper<DSPatient, PatientDto>, private readonly paginatedListMapper: Mapper<PaginatedList<DSPatient>, PaginatedListPatient>, private readonly errorHandler: ErrorHandler, private readonly patientApi: IccPatientXApi, private readonly userApi: IccUserXApi, private readonly dataOwnerApi: IccDataOwnerXApi) {}
 
     async createOrModify(patient: DSPatient): Promise<DSPatient> {
         return this.mapper.toDomain(await this._createOrModifyPatient(patient))
@@ -53,8 +55,28 @@ export class PatientLikeApiImpl<DSPatient> implements PatientLikeApi<DSPatient> 
         throw this.errorHandler.createErrorWithMessage(`Could not delete patient ${patientId}`)
     }
 
-    filterBy(filter: Filter<DSPatient>, nextPatientId?: string, limit?: number): Promise<PaginatedList<DSPatient>> {
-        throw 'TODO'
+    async filterBy(filter: Filter<DSPatient>, nextPatientId?: string, limit?: number): Promise<PaginatedList<DSPatient>> {
+        if (NoOpFilter.isNoOp(filter)) {
+            return { totalSize: 0, pageSize: 0, rows: [] }
+        } else {
+            return this.paginatedListMapper.toDomain(
+                await this.patientApi
+                    .filterPatientsBy(
+                        undefined,
+                        nextPatientId,
+                        limit,
+                        undefined,
+                        undefined,
+                        undefined,
+                        new FilterChainPatient({
+                            filter: FilterMapper.toAbstractFilterDto<PatientDto>(filter, 'Patient'),
+                        })
+                    )
+                    .catch((e) => {
+                        throw this.errorHandler.createErrorFromAny(e)
+                    })
+            )!
+        }
     }
 
     async get(patientId: string): Promise<DSPatient> {
@@ -126,8 +148,14 @@ export class PatientLikeApiImpl<DSPatient> implements PatientLikeApi<DSPatient> 
             })
     }
 
-    matchBy(filter: Filter<DSPatient>): Promise<Array<string>> {
-        throw 'TODO'
+    matchBy(filter: Filter<PatientDto>): Promise<Array<string>> {
+        if (NoOpFilter.isNoOp(filter)) {
+            return Promise.resolve([])
+        } else {
+            return this.patientApi.matchPatientsBy(FilterMapper.toAbstractFilterDto<PatientDto>(filter, 'Patient')).catch((e) => {
+                throw this.errorHandler.createErrorFromAny(e)
+            })
+        }
     }
 
     subscribeTo(

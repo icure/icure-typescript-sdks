@@ -88,13 +88,13 @@ export class EHRLiteApi extends CommonApi {
 
         this._codingApi = codingApi(errorHandler, this._baseApi.codeApi)
 
-        this._conditionApi = conditionApi(errorHandler, this._baseApi.healthcareElementApi, this._baseApi.userApi, this._baseApi.patientApi, this._baseApi.dataOwnerApi, this._baseApi.cryptoApi)
+        this._conditionApi = conditionApi(errorHandler, this._baseApi.healthcareElementApi, this._baseApi.userApi, this._baseApi.patientApi, this._baseApi.dataOwnerApi, this._baseApi.cryptoApi, this)
 
-        this._observationApi = observationApi(errorHandler, this._baseApi.contactApi, this._baseApi.userApi, this._baseApi.patientApi, this._baseApi.healthcareElementApi, this._baseApi.cryptoApi, this._baseApi.dataOwnerApi)
+        this._observationApi = observationApi(errorHandler, this._baseApi.contactApi, this._baseApi.userApi, this._baseApi.patientApi, this._baseApi.healthcareElementApi, this._baseApi.cryptoApi, this._baseApi.dataOwnerApi, this)
 
-        this._organisationApi = organisationApi(errorHandler, this._baseApi.healthcarePartyApi)
+        this._organisationApi = organisationApi(errorHandler, this._baseApi.healthcarePartyApi, this)
 
-        this._patientApi = patientApi(errorHandler, this._baseApi.patientApi, this._baseApi.userApi, this._baseApi.dataOwnerApi)
+        this._patientApi = patientApi(errorHandler, this._baseApi.patientApi, this._baseApi.userApi, this._baseApi.dataOwnerApi, this)
 
         this._practitionerApi = practitionerApi(errorHandler, this._baseApi.healthcarePartyApi)
 
@@ -102,9 +102,9 @@ export class EHRLiteApi extends CommonApi {
 
         this._messageGatewayApi = msgGwApi
 
-        this._userApi = userApi(errorHandler, sanitizer, this._baseApi.userApi, msgGwApi)
+        this._userApi = userApi(errorHandler, sanitizer, this._baseApi.userApi, this, msgGwApi)
 
-        this._notificationApi = notificationApi(errorHandler, this._baseApi.maintenanceTaskApi, this._baseApi.userApi, this._baseApi.dataOwnerApi)
+        this._notificationApi = notificationApi(errorHandler, this._baseApi.maintenanceTaskApi, this._baseApi.userApi, this._baseApi.dataOwnerApi, this)
     }
 
     get codingApi(): CodeLikeApi<Coding> {

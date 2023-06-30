@@ -69,7 +69,7 @@ class MaintenanceTaskFilterWithDataOwner
     return this
   }
 
-  afterDate(fromDate: number): MaintenanceTaskFilterWithDataOwner {
+  afterDate(fromDate?: number): MaintenanceTaskFilterWithDataOwner {
     const filter = this._dataOwnerId.then((id) => {
       return {
         healthcarePartyId: id,
