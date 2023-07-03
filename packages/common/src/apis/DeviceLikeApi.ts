@@ -31,7 +31,7 @@ export interface DeviceLikeApi<DSDevice> {
      */
     deleteMany(requestBody: Array<string>): Promise<Array<string>>
     /**
-     * Filters are complex selectors that are built by combining basic building blocks. Examples of filters available for [Device] are AllDevicesFilter and DevicesByIdsFilter. This method returns a paginated list of medical devices (with a cursor that lets you query the following items).
+     * Filters are complex selectors that are built by combining basic building blocks. You can learn more on how to build filters here {@link https://docs.icure.com/sdks/how-to/how-to-filter-data-with-advanced-search-criteria}. This method returns a paginated list of medical devices (with a cursor that lets you query the following items).
      * Load devices from the database by filtering them using the provided [filter].
      * @param filter The Filter object that describes which condition(s) the elements whose the ids should be returned must fulfill
      * @param nextDeviceId The id of the first device in the next page
@@ -45,7 +45,7 @@ export interface DeviceLikeApi<DSDevice> {
      */
     get(id: string): Promise<DSDevice>
     /**
-     * Filters are complex selectors that are built by combining basic building blocks. Examples of filters available for [Device] are AllDevicesFilter and DevicesByIdsFilter. This method returns the list of the ids of the users matching the filter.
+     * Filters are complex selectors that are built by combining basic building blocks. You can learn more on how to build filters here {@link https://docs.icure.com/sdks/how-to/how-to-filter-data-with-advanced-search-criteria}. This method returns the list of the ids of the users matching the filter.
      * Load medical device ids from the database by filtering them using the provided Filter.
      * @param filter The Filter object that describes which condition(s) the elements whose the ids should be returned must fulfill
      */

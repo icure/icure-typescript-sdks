@@ -21,14 +21,7 @@ export interface PatientLikeApi<DSPatient> {
      */
     delete(patientId: string): Promise<string>
     /**
-     * Filters are complex selectors that are built by combining basic building blocks. Examples of filters available for [Patient] are :
-     *  - PatientByHealthcarePartyDateOfBirthBetweenFilter;
-     *  - PatientByHealthcarePartyFilter;
-     *  - PatientByHealthcarePartyGenderEducationProfessionFilter;
-     *  - PatientByHealthcarePartyIdentifiersFilter;
-     *  - PatientByHealthcarePartyNameContainsFuzzyFilter;
-     *  - PatientByHealthcarePartySsinsFilter;
-     *  - and PatientsByIdsFilter.
+     * Filters are complex selectors that are built by combining basic building blocks. You can learn more on how to build filters here {@link https://docs.icure.com/sdks/how-to/how-to-filter-data-with-advanced-search-criteria}.
      *
      * This method returns a paginated list of patient (with a cursor that lets you query the following items).
      * Load patients from the database by filtering them using the provided [filter].
@@ -44,7 +37,7 @@ export interface PatientLikeApi<DSPatient> {
      */
     get(patientId: string): Promise<DSPatient>
     /**
-     * Filters are complex selectors that are built by combining basic building blocks. Examples of filters available for [Patient] are AllPatientsFilter and PatientsByIdsFilter. This method returns the list of the ids of the users matching the [filter].
+     * Filters are complex selectors that are built by combining basic building blocks. You can learn more on how to build filters here {@link https://docs.icure.com/sdks/how-to/how-to-filter-data-with-advanced-search-criteria}. This method returns the list of the ids of the users matching the [filter].
      * Load patient ids from the database by filtering them using the provided [filter].
      * @param filter The Filter object that describes which condition(s) the elements whose the ids should be returned must fulfill
      */

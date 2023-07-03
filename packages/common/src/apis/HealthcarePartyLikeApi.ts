@@ -21,7 +21,7 @@ export interface HealthcarePartyLikeApi<DSHealthcareParty> {
      */
     delete(id: string): Promise<string>
     /**
-     * Filters are complex selectors that are built by combining basic building blocks. Examples of filters available for Healthcare professionals are AllHealthcarePartysFilter and HealthcarePartysByIdsFilter. This method returns a paginated list of healthcare professionals (with a cursor that lets you query the following items).
+     * Filters are complex selectors that are built by combining basic building blocks. You can learn more on how to build filters here {@link https://docs.icure.com/sdks/how-to/how-to-filter-data-with-advanced-search-criteria}. This method returns a paginated list of healthcare professionals (with a cursor that lets you query the following items).
      * Load healthcare professionals from the database by filtering them using the provided Filter.
      * @param filter The Filter object that describes which condition(s) the elements whose the ids should be returned must fulfill
      * @param nextHealthcarePartyId The id of the first Healthcare professional in the next page
@@ -35,7 +35,7 @@ export interface HealthcarePartyLikeApi<DSHealthcareParty> {
      */
     get(id: string): Promise<DSHealthcareParty>
     /**
-     * Filters are complex selectors that are built by combining basic building blocks. Examples of filters available for Healthcare professionals are AllHealthcare professionalsFilter and Healthcare professionalsByIdsFilter. This method returns the list of the ids of the healthcare professionals matching the filter.
+     * Filters are complex selectors that are built by combining basic building blocks. You can learn more on how to build filters here {@link https://docs.icure.com/sdks/how-to/how-to-filter-data-with-advanced-search-criteria}. This method returns the list of the ids of the healthcare professionals matching the filter.
      * Load healthcare professional ids from the database by filtering them using the provided Filter.
      * @param filter The Filter object that describes which condition(s) the elements whose the ids should be returned must fulfill
      */

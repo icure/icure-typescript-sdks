@@ -10,7 +10,7 @@ export interface HealthElementLikeApi<DSHealthElement, DSPatient> {
     /**
      * A Healthcare Element is a data giving some medical context to a series of measures, symptoms, ...
      * For example, if the data samples are symptoms representing fever, cold feel, headache, ... the associated healthcare
-     * element could be a flue.
+     * element could be a flu.
      *
      * A healthcare Element can be linked to a patient and to a series of data samples.
      *
@@ -24,7 +24,7 @@ export interface HealthElementLikeApi<DSHealthElement, DSPatient> {
     /**
      * A Healthcare Element is a data giving some medical context to a series of measures, symptoms, ...
      * For example, if the data samples are symptoms representing fever, cold feel, headache, ... the associated healthcare
-     * element could be a flue.
+     * element could be a flu.
      *
      * A healthcare Element can be linked to a patient and to a series of data samples.
      *
@@ -42,12 +42,7 @@ export interface HealthElementLikeApi<DSHealthElement, DSPatient> {
     delete(id: string): Promise<string>
 
     /**
-     * Filters are complex selectors that are built by combining basic building blocks. Examples of filters available for Healthcare elements are :
-     *  - HealthElementByHealthcarePartyFilter;
-     *  - HealthElementByHealthcarePartyIdentifiersFilter;
-     *  - HealthElementByHealthcarePartyLabelCodeFilter;
-     *  - HealthElementByHealthcarePartyPatientFilter;
-     *  - and HealthElementByIdsFilter.
+     * Filters are complex selectors that are built by combining basic building blocks. You can learn more on how to build filters here {@link https://docs.icure.com/sdks/how-to/how-to-filter-data-with-advanced-search-criteria}.
      *
      * This method returns a paginated list of healthcare elements (with a cursor that lets you query the following items).
      * Load healthcare elements from the database by filtering them using the provided Filter.

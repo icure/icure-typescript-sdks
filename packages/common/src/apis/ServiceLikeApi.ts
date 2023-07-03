@@ -38,13 +38,7 @@ export interface ServiceLikeApi<DSService, DSPatient, DSDocument> {
     deleteMany(ids: Array<string>): Promise<Array<string>>
 
     /**
-     * Filters are complex selectors that are built by combining basic building blocks. Examples of filters available for [Service] are :
-     *  - ServiceByHealthcarePartyFilter;
-     *  - ServiceByHealthcarePartyHealthcareElementFilter;
-     *  - ServiceByHealthcarePartyIdentifiersFilter;
-     *  - ServiceByHealthcarePartyPatientFilter;
-     *  - ServiceByHealthcarePartyTagCodeDateFilter;
-     *  - and ServicesByIdsFilter.
+     * Filters are complex selectors that are built by combining basic building blocks. You can learn more on how to build filters here {@link https://docs.icure.com/sdks/how-to/how-to-filter-data-with-advanced-search-criteria}..
      *
      * This method returns a paginated list of data samples (with a cursor that lets you query the following items).
      * Find data samples using the provided [filter].
@@ -62,7 +56,7 @@ export interface ServiceLikeApi<DSService, DSPatient, DSDocument> {
     get(id: string): Promise<DSService>
 
     /**
-     * Filters are complex selectors that are built by combining basic building blocks. Examples of filters available for [Service] are AllServicesFilter and ServicesByIdsFilter. This method returns a paginated list of data samples (with a cursor that lets you query the following items).
+     * Filters are complex selectors that are built by combining basic building blocks. You can learn more on how to build filters here {@link https://docs.icure.com/sdks/how-to/how-to-filter-data-with-advanced-search-criteria}. This method returns a paginated list of data samples (with a cursor that lets you query the following items).
      * Find data samples ids using the provided Filter.
      * @param filter The Filter object that describes which condition(s) the elements whose the ids should be returned must fulfill
      */

@@ -23,7 +23,7 @@ export interface MaintenanceTaskLikeApi<DSMaintenanceTask> {
     delete(id: string): Promise<string | undefined>
 
     /**
-     * Filters are complex selectors that are built by combining basic building blocks. This method returns a paginated list of MaintenanceTask (with a cursor that lets you query the following items).
+     * Filters are complex selectors that are built by combining basic building blocks. You can learn more on how to build filters here {@link https://docs.icure.com/sdks/how-to/how-to-filter-data-with-advanced-search-criteria}. This method returns a paginated list of MaintenanceTask (with a cursor that lets you query the following items).
      * Load notifications from the database by filtering them using the provided [filter].
      * @param filter The Filter object that describes which condition(s) the elements which the ids should be returned must fulfill
      * @param nextMaintenanceTaskId The id of the first notification in the next page

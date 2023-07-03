@@ -13,7 +13,7 @@ export interface AuthenticationApi<DSApi extends CommonApi> {
      *
      * Provide at least one authentication tool (email and/or phoneNumber) to start the process.
      *
-     * @param recaptcha To authenticate through iCure, we ask you to implement the reCAPTCHA v3 (Check {@link https://developers.google.com/recaptcha/docs/v3}).
+     * @param recaptcha To authenticate through iCure, we ask you to implement the reCAPTCHA v3 (Check {@link https://developers.google.com/recaptcha/docs/v3}) or the friendly-captcha {@link https://friendlycaptcha.com/}. Use the friendly-recaptcha if you would like to avoid tracking solution of Google reCAPTCHA.
      * This argument corresponds to the resulting key of the recaptcha procedure.
      *
      * @param email The email to use to authenticate the user
