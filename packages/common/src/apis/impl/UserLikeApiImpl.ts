@@ -1,27 +1,39 @@
-import {EmailMessageFactory, SMSMessageFactory} from "../../utils/msgGtwMessageFactory";
-import {Filter} from "../../filter/Filter";
-import {PaginatedList} from "../../models/PaginatedList.model";
-import {SharedDataType} from "../../models/User.model";
-import {Connection} from "../../models/Connection.model";
-import {UserLikeApi} from "../UserLikeApi";
-import {ErrorHandler} from "../../services/ErrorHandler";
-import {IccUserXApi, Patient as PatientDto, User as UserDto} from "@icure/api";
-import {Mapper} from "../Mapper";
-import {MessageGatewayApi} from "../MessageGatewayApi";
-import {Sanitizer} from "../../services/Sanitizer";
-import {forceUuid} from "../../utils/uuidUtils";
+import { EmailMessageFactory, SMSMessageFactory } from '../../utils/msgGtwMessageFactory'
+import { Filter } from '../../filters/Filter'
+import { PaginatedList } from '../../models/PaginatedList.model'
+import { SharedDataType } from '../../models/User.model'
+import { Connection } from '../../models/Connection.model'
+import { UserLikeApi } from '../UserLikeApi'
+import { ErrorHandler } from '../../services/ErrorHandler'
+import {
+    FilterChainUser,
+    IccUserXApi,
+    PaginatedListUser,
+    Patient as PatientDto,
+    retry,
+    User as UserDto
+} from '@icure/api'
+import { Mapper } from '../Mapper'
+import { MessageGatewayApi } from '../MessageGatewayApi'
+import { Sanitizer } from '../../services/Sanitizer'
+import { forceUuid } from '../../utils/uuidUtils'
+import {filteredContactsFromAddresses} from "../../utils/addressUtils";
+import {UserFilter} from "../../filters/dsl/UserFilterDsl";
+import {CommonApi} from "../CommonApi";
+import {NoOpFilter} from "../../filters/dsl/filterDsl";
+import {FilterMapper} from "../../mappers/Filter.mapper";
 
 export class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, DSPatient> {
-
     constructor(
         private readonly userMapper: Mapper<DSUser, UserDto>,
         private readonly patientMapper: Mapper<DSPatient, PatientDto>,
+        private readonly paginatedListMapper: Mapper<PaginatedList<DSUser>, PaginatedListUser>,
         private readonly errorHandler: ErrorHandler,
         private readonly sanitizer: Sanitizer,
         private readonly userApi: IccUserXApi,
+        private readonly api: CommonApi,
         private readonly messageGatewayApi?: MessageGatewayApi,
-    ) {
-    }
+    ) {}
 
     checkTokenValidity(id: string, token: string): Promise<boolean> {
         return this.userApi.checkTokenValidity(id, token).catch((e) => {
@@ -29,8 +41,66 @@ export class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, D
         })
     }
 
-    createAndInvite(patient: DSPatient, messageFactory: SMSMessageFactory | EmailMessageFactory, tokenDuration?: number): Promise<DSUser> {
-        throw "TODO"
+    async createAndInvite(patient: DSPatient, messageFactory: SMSMessageFactory | EmailMessageFactory, tokenDuration?: number): Promise<DSUser> {
+        if (!this.messageGatewayApi) {
+            throw this.errorHandler.createErrorWithMessage(
+                'Can not invite a user, as no msgGtwUrl and/or specId have been provided : Make sure to call .withMsgGtwUrl and .withMsgGtwSpecId when creating your MedTechApi'
+            )
+        }
+
+        const patientDto = this.patientMapper.toDto(patient)
+
+        // Checks that the Patient has all the required information
+        if (!patientDto.id) throw this.errorHandler.createErrorWithMessage('Patient does not have a valid id')
+
+        // Checks that no Users already exist for the Patient
+        const existingUsers = await this.filterBy(await new UserFilter(this.api).byPatientId(patientDto.id).build())
+
+        if (!!existingUsers && existingUsers.rows != undefined && existingUsers.rows.length > 0) throw this.errorHandler.createErrorWithMessage('A User already exists for this Patient')
+
+        // Gets the preferred contact information
+        const contact = [
+            filteredContactsFromAddresses(patientDto.addresses ?? [], 'email', 'home'), // Check for the home email
+            filteredContactsFromAddresses(patientDto.addresses ?? [], 'mobile', 'home'), // Check for the home mobile
+            filteredContactsFromAddresses(patientDto.addresses ?? [], 'email', 'work'), // Check for the work email
+            filteredContactsFromAddresses(patientDto.addresses ?? [], 'mobile', 'work'), // Check for the work mobile
+            filteredContactsFromAddresses(patientDto.addresses ?? [], 'email'), // Check for any email
+            filteredContactsFromAddresses(patientDto.addresses ?? [], 'mobile'), // Check for any mobile
+        ].filter((contact) => !!contact)[0]
+        if (!contact) throw this.errorHandler.createErrorWithMessage('No email or mobile phone information provided in patient')
+
+        // Creates the user
+        const createdUser = await this.userApi.createUser(
+
+                new UserDto({
+                    created: new Date().getTime(),
+                    name: contact.telecomNumber,
+                    login: contact.telecomNumber,
+                    patientId: patientDto.id,
+                    email: contact.telecomType == 'email' ? contact.telecomNumber : undefined,
+                    mobilePhone: contact.telecomType == 'mobile' ? contact.telecomNumber : undefined,
+                })
+        )
+        if (!createdUser || !createdUser.id || !createdUser.login)
+            throw this.errorHandler.createErrorWithMessage('Something went wrong during User creation')
+
+        // Gets a short-lived authentication token
+        const shortLivedToken = await retry(() => this.createToken(createdUser.id!, tokenDuration), 5, 2_000).catch(() => {
+            throw this.errorHandler.createErrorWithMessage('Something went wrong while creating a token for the User')
+        })
+        if (!shortLivedToken) throw this.errorHandler.createErrorWithMessage('Something went wrong while creating a token for the User')
+
+        const messagePromise = !!createdUser.email
+            ? this.messageGatewayApi?.sendEmail(createdUser.login, (messageFactory as EmailMessageFactory).get(createdUser, shortLivedToken)).catch((e) => {
+                throw this.errorHandler.createErrorFromAny(e)
+            })
+            : this.messageGatewayApi?.sendSMS(createdUser.login, (messageFactory as SMSMessageFactory).get(createdUser, shortLivedToken)).catch((e) => {
+                throw this.errorHandler.createErrorFromAny(e)
+            })
+
+        if (!(await messagePromise)) throw this.errorHandler.createErrorWithMessage('Something went wrong contacting the Message Gateway')
+
+        return this.userMapper.toDomain(createdUser)
     }
 
     async createOrModify(user: DSUser): Promise<DSUser> {
@@ -68,8 +138,24 @@ export class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, D
         throw this.errorHandler.createErrorWithMessage('Invalid user id')
     }
 
-    filterBy(filter: Filter<DSUser>, nextUserId?: string, limit?: number): Promise<PaginatedList<DSUser>> {
-        throw "TODO"
+    async filterBy(filter: Filter<DSUser>, nextUserId?: string, limit?: number): Promise<PaginatedList<DSUser>> {
+        if (NoOpFilter.isNoOp(filter)) {
+            return { totalSize: 0, pageSize: 0, rows: [] }
+        } else {
+            return this.paginatedListMapper.toDomain(
+                await this.userApi
+                    .filterUsersBy(
+                        nextUserId,
+                        limit,
+                        new FilterChainUser({
+                            filter: FilterMapper.toAbstractFilterDto<UserDto>(filter, 'User'),
+                        })
+                    )
+                    .catch((e) => {
+                        throw this.errorHandler.createErrorFromAny(e)
+                    })
+            )!
+        }
     }
 
     async get(id: string): Promise<DSUser> {
@@ -96,8 +182,14 @@ export class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, D
         )!
     }
 
-    matchBy(filter: Filter<DSUser>): Promise<Array<string>> {
-        throw "TODO"
+    async matchBy(filter: Filter<DSUser>): Promise<Array<string>> {
+        if (NoOpFilter.isNoOp(filter)) {
+            return []
+        } else {
+            return this.userApi.matchUsersBy(FilterMapper.toAbstractFilterDto<UserDto>(filter, 'User')).catch((e) => {
+                throw this.errorHandler.createErrorFromAny(e)
+            })
+        }
     }
 
     async shareAllFutureDataWith(dataOwnerIds: string[], type?: SharedDataType): Promise<DSUser> {
@@ -106,9 +198,7 @@ export class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, D
         })
 
         if (!user) {
-            throw this.errorHandler.createErrorWithMessage(
-                'There is no user currently logged in. You must call this method from an authenticated MedTechApi'
-            )
+            throw this.errorHandler.createErrorWithMessage('There is no user currently logged in. You must call this method from an authenticated MedTechApi')
         }
 
         let newDataSharing
@@ -153,9 +243,7 @@ export class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, D
         })
 
         if (!user) {
-            throw this.errorHandler.createErrorWithMessage(
-                'There is no user currently logged in. You must call this method from an authenticated MedTechApi'
-            )
+            throw this.errorHandler.createErrorWithMessage('There is no user currently logged in. You must call this method from an authenticated MedTechApi')
         }
 
         const delegationsToRemove = user.autoDelegations?.[type ?? 'all']?.filter((item) => dataOwnerIds.indexOf(item) >= 0)
@@ -186,10 +274,15 @@ export class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, D
         throw this.errorHandler.createErrorWithMessage("Couldn't remove data sharing of user")
     }
 
-    subscribeTo(eventTypes: ("CREATE" | "UPDATE" | "DELETE")[], filter: Filter<DSUser>, eventFired: (user: DSUser) => Promise<void>, options?: {
-        connectionMaxRetry?: number;
-        connectionRetryIntervalMs?: number
-    }): Promise<Connection> {
-        throw "TODO"
+    subscribeTo(
+        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
+        filter: Filter<DSUser>,
+        eventFired: (user: DSUser) => Promise<void>,
+        options?: {
+            connectionMaxRetry?: number
+            connectionRetryIntervalMs?: number
+        }
+    ): Promise<Connection> {
+        throw 'TODO'
     }
 }

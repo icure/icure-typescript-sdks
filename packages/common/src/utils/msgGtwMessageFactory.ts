@@ -1,6 +1,5 @@
-import { User } from '../models/User.model'
 import { filteredContactsFromAddresses } from './addressUtils'
-import {HealthcareParty, Patient} from "@icure/api";
+import {HealthcareParty, Patient, User} from "@icure/api";
 
 export type SMSMessage = { message: string }
 export type EmailMessage = { from: string; html: string; subject: string }

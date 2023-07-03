@@ -1,17 +1,9 @@
-import {
-    Api,
-    Apis,
-    DataOwnerWithType as DataOwnerWithTypeDto,
-    IccCryptoXApi,
-    KeyStorageFacade,
-    KeyStorageImpl,
-    LocalStorageImpl,
-    StorageFacade
-} from "@icure/api";
+import { Api, Apis, DataOwnerWithType as DataOwnerWithTypeDto, IccCryptoXApi, KeyStorageFacade, KeyStorageImpl, LocalStorageImpl, StorageFacade } from '@icure/api'
 import {
     AuthenticationApi,
     CodeLikeApi,
     Coding,
+    CommonApi,
     CryptoStrategies,
     CryptoStrategiesBridge,
     DataOwnerLikeApi,
@@ -30,29 +22,28 @@ import {
     SanitizerImpl,
     ServiceLikeApi,
     User,
-    UserLikeApi
-} from "@icure/typescript-common";
-import {DataOwnerTypeEnum, DataOwnerWithType} from "../models/DataOwner.model";
-import {dataOwnerApi} from "./DataOwnerApi";
-import {codingApi} from "./CodingApi";
-import {Patient} from "../models/Patient.model";
-import {conditionApi} from "./ConditionApi";
-import {Condition} from "../models/Condition.model";
-import {Observation} from "../models/Observation.model";
-import {observationApi} from "./ObservationApi";
-import {Organisation} from "../models/Organisation.model";
-import {Practitioner} from "../models/Practitioner.model";
-import {organisationApi} from "./OrganisationApi";
-import {patientApi} from "./PatientApi";
-import {practitionerApi} from "./PractitionerApi";
-import {userApi} from "./UserApi";
-import {messageGatewayApi} from "./MessageGatewayApi";
-import {notificationApi} from "./NotificationApi";
-import {DataOwnerTypeEnum as DataOwnerTypeEnumDto} from "@icure/api/icc-api/model/DataOwnerTypeEnum";
-import dataOwnerMapper from "../mappers/DataOwner.mapper";
+    UserLikeApi,
+} from '@icure/typescript-common'
+import { DataOwnerTypeEnum, DataOwnerWithType } from '../models/DataOwner.model'
+import { dataOwnerApi } from './DataOwnerApi'
+import { codingApi } from './CodingApi'
+import { Patient } from '../models/Patient.model'
+import { conditionApi } from './ConditionApi'
+import { Condition } from '../models/Condition.model'
+import { Observation } from '../models/Observation.model'
+import { observationApi } from './ObservationApi'
+import { Organisation } from '../models/Organisation.model'
+import { Practitioner } from '../models/Practitioner.model'
+import { organisationApi } from './OrganisationApi'
+import { patientApi } from './PatientApi'
+import { practitionerApi } from './PractitionerApi'
+import { userApi } from './UserApi'
+import { messageGatewayApi } from './MessageGatewayApi'
+import { notificationApi } from './NotificationApi'
+import { DataOwnerTypeEnum as DataOwnerTypeEnumDto } from '@icure/api/icc-api/model/DataOwnerTypeEnum'
+import dataOwnerMapper from '../mappers/DataOwner.mapper'
 
-export class EHRLiteApi {
-
+export class EHRLiteApi extends CommonApi {
     private readonly _codingApi: CodeLikeApi<Coding>
     private readonly _conditionApi: HealthElementLikeApi<Condition, Patient>
     private readonly _dataOwnerApi: DataOwnerLikeApi<DataOwnerWithType, User>
@@ -72,7 +63,7 @@ export class EHRLiteApi {
     private readonly _keyStorage: KeyStorageFacade
 
     constructor(
-        private readonly _baseApi: Apis,
+        _baseApi: Apis,
         private readonly _iCureBaseUrl: string,
         private readonly _username: string,
         private readonly _password: string,
@@ -84,6 +75,7 @@ export class EHRLiteApi {
         storage?: StorageFacade<string>,
         keyStorage?: KeyStorageFacade
     ) {
+        super(_baseApi)
         const errorHandler = new ErrorHandlerImpl()
         const sanitizer = new SanitizerImpl(errorHandler)
 
@@ -92,79 +84,27 @@ export class EHRLiteApi {
 
         this._cryptoApi = this._baseApi.cryptoApi
 
-        this._dataOwnerApi = dataOwnerApi(
-            errorHandler,
-            this._baseApi.dataOwnerApi,
-            this._baseApi.patientApi,
-            this._baseApi.icureMaintenanceTaskApi,
-        )
+        this._dataOwnerApi = dataOwnerApi(errorHandler, this._baseApi.dataOwnerApi, this._baseApi.patientApi, this._baseApi.icureMaintenanceTaskApi)
 
-        this._codingApi = codingApi(
-            errorHandler,
-            this._baseApi.codeApi,
-        )
+        this._codingApi = codingApi(errorHandler, this._baseApi.codeApi)
 
-        this._conditionApi = conditionApi(
-            errorHandler,
-            this._baseApi.healthcareElementApi,
-            this._baseApi.userApi,
-            this._baseApi.patientApi,
-            this._baseApi.dataOwnerApi,
-            this._baseApi.cryptoApi,
-        )
+        this._conditionApi = conditionApi(errorHandler, this._baseApi.healthcareElementApi, this._baseApi.userApi, this._baseApi.patientApi, this._baseApi.dataOwnerApi, this._baseApi.cryptoApi, this)
 
-        this._observationApi = observationApi(
-            errorHandler,
-            this._baseApi.contactApi,
-            this._baseApi.userApi,
-            this._baseApi.patientApi,
-            this._baseApi.healthcareElementApi,
-            this._baseApi.cryptoApi,
-            this._baseApi.dataOwnerApi,
-        )
+        this._observationApi = observationApi(errorHandler, this._baseApi.contactApi, this._baseApi.userApi, this._baseApi.patientApi, this._baseApi.healthcareElementApi, this._baseApi.cryptoApi, this._baseApi.dataOwnerApi, this)
 
-        this._organisationApi = organisationApi(
-            errorHandler,
-            this._baseApi.healthcarePartyApi,
-        )
+        this._organisationApi = organisationApi(errorHandler, this._baseApi.healthcarePartyApi, this)
 
-        this._patientApi = patientApi(
-            errorHandler,
-            this._baseApi.patientApi,
-            this._baseApi.userApi,
-            this._baseApi.dataOwnerApi,
-        )
+        this._patientApi = patientApi(errorHandler, this._baseApi.patientApi, this._baseApi.userApi, this._baseApi.dataOwnerApi, this)
 
-        this._practitionerApi = practitionerApi(
-            errorHandler,
-            this._baseApi.healthcarePartyApi,
-        )
+        this._practitionerApi = practitionerApi(errorHandler, this._baseApi.healthcarePartyApi)
 
-        const msgGwApi = _msgGtwUrl && _msgGtwSpecId ?
-            messageGatewayApi(
-                _msgGtwUrl,
-                _msgGtwSpecId,
-                errorHandler,
-                sanitizer,
-                _username,
-                _password,
-            ) : undefined
+        const msgGwApi = _msgGtwUrl && _msgGtwSpecId ? messageGatewayApi(_msgGtwUrl, _msgGtwSpecId, errorHandler, sanitizer, _username, _password) : undefined
 
         this._messageGatewayApi = msgGwApi
 
-        this._userApi = userApi(
-            errorHandler,
-            sanitizer,
-            this._baseApi.userApi,
-            msgGwApi,
-        )
+        this._userApi = userApi(errorHandler, sanitizer, this._baseApi.userApi, this, msgGwApi)
 
-        this._notificationApi = notificationApi(
-            errorHandler,
-            this._baseApi.maintenanceTaskApi,
-            this._baseApi.userApi,
-            this._baseApi.dataOwnerApi,
-        )
+        this._notificationApi = notificationApi(errorHandler, this._baseApi.maintenanceTaskApi, this._baseApi.userApi, this._baseApi.dataOwnerApi, this)
     }
 
     get codingApi(): CodeLikeApi<Coding> {
@@ -213,10 +153,6 @@ export class EHRLiteApi {
 
     get notificationApi(): MaintenanceTaskLikeApiImpl<Notification> {
         return this._notificationApi
-    }
-
-    get baseApi(): Apis {
-        return this._baseApi
     }
 
     get iCureBaseUrl(): string {
@@ -355,7 +291,7 @@ export namespace EHRLite {
                         },
                         toDto(domain: DataOwnerWithType): DataOwnerWithTypeDto {
                             return dataOwnerMapper.toDto(domain)
-                        }
+                        },
                     },
                     (stubWithType) => {
                         switch (stubWithType.type) {
@@ -392,36 +328,14 @@ export namespace EHRLite {
                     keyStorage: keyStorage,
                     createMaintenanceTasksOnNewKey: true,
                 }
-            ).then(
-                (api) =>
-                    new EHRLiteApi(
-                        api,
-                        baseUrl,
-                        userName,
-                        password,
-                        cryptoStrategies,
-                        msgGwUrl,
-                        msgGwSpecId,
-                        authProcessByEmailId,
-                        authProcessBySmsId,
-                        storage,
-                        keyStorage
-                    )
-            )
+            ).then((api) => new EHRLiteApi(api, baseUrl, userName, password, cryptoStrategies, msgGwUrl, msgGwSpecId, authProcessByEmailId, authProcessBySmsId, storage, keyStorage))
         }
     }
 
     export const api = (api?: EHRLiteApi) => {
         const apiBuilder = new Builder()
         if (api) {
-            return apiBuilder
-                .withICureBaseUrl(api.iCureBaseUrl)
-                .withCrypto(api.cryptoApi.primitives.crypto)
-                .withUserName(api.username)
-                .withPassword(api.password)
-                .withStorage(api.storage)
-                .withKeyStorage(api.keyStorage)
-                .withCryptoStrategies(api.cryptoStrategies)
+            return apiBuilder.withICureBaseUrl(api.iCureBaseUrl).withCrypto(api.cryptoApi.primitives.crypto).withUserName(api.username).withPassword(api.password).withStorage(api.storage).withKeyStorage(api.keyStorage).withCryptoStrategies(api.cryptoStrategies)
         }
 
         return apiBuilder

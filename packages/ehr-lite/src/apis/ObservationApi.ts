@@ -1,12 +1,29 @@
-import { ErrorHandler, ServiceLikeApiImpl, Document, mapDocumentDtoToDocument, mapDocumentToDocumentDto } from '@icure/typescript-common'
+import {
+    ErrorHandler,
+    ServiceLikeApiImpl,
+    Document,
+    mapDocumentDtoToDocument,
+    mapDocumentToDocumentDto,
+    CommonApi, PaginatedList
+} from '@icure/typescript-common'
 import { Patient } from '../models/Patient.model'
 import { Observation } from '../models/Observation.model'
-import { Document as DocumentDto, IccContactXApi, IccCryptoXApi, IccHelementXApi, IccPatientXApi, IccUserXApi, Patient as PatientDto, Service } from '@icure/api'
+import {
+    Document as DocumentDto,
+    IccContactXApi,
+    IccCryptoXApi,
+    IccHelementXApi,
+    IccPatientXApi,
+    IccUserXApi,
+    PaginatedListService,
+    Patient as PatientDto,
+    Service
+} from '@icure/api'
 import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
 import { mapObservationToService, mapServiceToObservation } from '../mappers/Observation.mapper'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
 
-export const observationApi = (errorHandler: ErrorHandler, contactApi: IccContactXApi, userApi: IccUserXApi, patientApi: IccPatientXApi, healthElementApi: IccHelementXApi, cryptoApi: IccCryptoXApi, dataOwnerApi: IccDataOwnerXApi) =>
+export const observationApi = (errorHandler: ErrorHandler, contactApi: IccContactXApi, userApi: IccUserXApi, patientApi: IccPatientXApi, healthElementApi: IccHelementXApi, cryptoApi: IccCryptoXApi, dataOwnerApi: IccDataOwnerXApi, api: CommonApi) =>
     new ServiceLikeApiImpl<Observation, Patient, Document>(
         {
             toDomain(dto: Service): Observation {
@@ -32,11 +49,26 @@ export const observationApi = (errorHandler: ErrorHandler, contactApi: IccContac
                 return mapDocumentToDocumentDto(domain)
             },
         },
+        {
+            toDomain(dto: PaginatedListService): PaginatedList<Observation> {
+                return {
+                    ...dto,
+                    rows: dto.rows?.map(mapServiceToObservation)
+                }
+            },
+            toDto(domain: PaginatedList<Observation>): PaginatedListService {
+                return {
+                    ...domain,
+                    rows: domain.rows?.map(mapObservationToService)
+                }
+            }
+        },
         errorHandler,
         userApi,
         contactApi,
         patientApi,
         healthElementApi,
         cryptoApi,
-        dataOwnerApi
+        dataOwnerApi,
+        api
     )

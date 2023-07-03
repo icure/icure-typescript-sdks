@@ -1,21 +1,17 @@
-import {Filter} from "../../filter/Filter";
-import {PaginatedList} from "../../models/PaginatedList.model";
-import {DeviceLikeApi} from "../DeviceLikeApi";
-import {ErrorHandler} from "../../services/ErrorHandler";
-import {Device, IccDeviceApi, ListOfIds} from "@icure/api";
-import {Mapper} from "../Mapper";
-import {firstOrNull} from "../../utils/functionalUtils";
+import { Filter } from '../../filters/Filter'
+import { PaginatedList } from '../../models/PaginatedList.model'
+import { DeviceLikeApi } from '../DeviceLikeApi'
+import { ErrorHandler } from '../../services/ErrorHandler'
+import {Device, FilterChainDevice, IccDeviceApi, ListOfIds, PaginatedListDevice} from '@icure/api'
+import { Mapper } from '../Mapper'
+import { firstOrNull } from '../../utils/functionalUtils'
 
-import {forceUuid} from "../../utils/uuidUtils";
+import { forceUuid } from '../../utils/uuidUtils'
+import {NoOpFilter} from "../../filters/dsl/filterDsl";
+import {FilterMapper} from "../../mappers/Filter.mapper";
 
 export class DeviceLikeApiImpl<DSDevice> implements DeviceLikeApi<DSDevice> {
-
-    constructor(
-        private readonly mapper: Mapper<DSDevice, Device>,
-        private readonly errorHandler: ErrorHandler,
-        private readonly deviceApi: IccDeviceApi
-    ) {
-    }
+    constructor(private readonly mapper: Mapper<DSDevice, Device>, private readonly paginatedListMapper: Mapper<PaginatedList<DSDevice>, PaginatedListDevice>, private readonly errorHandler: ErrorHandler, private readonly deviceApi: IccDeviceApi) {}
 
     async createOrModify(device: DSDevice): Promise<DSDevice> {
         const createdDevice = firstOrNull(await this.createOrModifyMany([device]))
@@ -27,7 +23,7 @@ export class DeviceLikeApiImpl<DSDevice> implements DeviceLikeApi<DSDevice> {
     }
 
     async createOrModifyMany(device: Array<DSDevice>): Promise<Array<DSDevice>> {
-        const mappedDevices = device.map((c) => this.mapper.toDto(c));
+        const mappedDevices = device.map((c) => this.mapper.toDto(c))
 
         const devicesToCreate = mappedDevices.filter((dev) => !dev.rev)
         const devicesToUpdate = mappedDevices.filter((dev) => !!dev.rev)
@@ -69,8 +65,24 @@ export class DeviceLikeApiImpl<DSDevice> implements DeviceLikeApi<DSDevice> {
             .map((d) => d.rev!)
     }
 
-    filterBy(filter: Filter<DSDevice>, nextDeviceId?: string, limit?: number): Promise<PaginatedList<DSDevice>> {
-        throw "TODO"
+    async filterBy(filter: Filter<DSDevice>, nextDeviceId?: string, limit?: number): Promise<PaginatedList<DSDevice>> {
+        if (NoOpFilter.isNoOp(filter)) {
+            return { totalSize: 0, pageSize: 0, rows: [] }
+        } else {
+            return this.paginatedListMapper.toDomain(
+                await this.deviceApi
+                    .filterDevicesBy(
+                        nextDeviceId,
+                        limit,
+                        new FilterChainDevice({
+                            filter: FilterMapper.toAbstractFilterDto<Device>(filter, 'Device'),
+                        })
+                    )
+                    .catch((e) => {
+                        throw this.errorHandler.createErrorFromAny(e)
+                    })
+            )!
+        }
     }
 
     async get(id: string): Promise<DSDevice> {
@@ -81,7 +93,13 @@ export class DeviceLikeApiImpl<DSDevice> implements DeviceLikeApi<DSDevice> {
         )
     }
 
-    matchBy(filter: Filter<DSDevice>): Promise<Array<string>> {
-        throw "TODO"
+    async matchBy(filter: Filter<DSDevice>): Promise<Array<string>> {
+        if (NoOpFilter.isNoOp(filter)) {
+            return []
+        } else {
+            return this.deviceApi.matchDevicesBy(FilterMapper.toAbstractFilterDto<Device>(filter, 'User')).catch((e) => {
+                throw this.errorHandler.createErrorFromAny(e)
+            })
+        }
     }
 }
