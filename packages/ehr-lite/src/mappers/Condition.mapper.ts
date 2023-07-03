@@ -1,4 +1,4 @@
-import { CareTeamMember, CodeStub, Delegation as DelegationDto, Episode, HealthElement, Identifier as IdentifierDto, PlanOfAction, SecurityMetadata as SecurityMetadataDto } from '@icure/api'
+import { CareTeamMember, CodeStub, Delegation as DelegationDto, Episode, HealthElement, Identifier as IdentifierDto, PlanOfAction } from '@icure/api'
 import { Condition } from '../models/Condition.model'
 import {
     Annotation,
@@ -20,12 +20,9 @@ import {
     mapDelegationToDelegationDto,
     mapIdentifierDtoToIdentifier,
     mapIdentifierToIdentifierDto,
-    mapSecurityMetadataDtoToSecurityMetadata,
-    mapSecurityMetadataToSecurityMetadataDto,
     SystemMetaDataEncrypted,
 } from '@icure/typescript-common'
 import { Annotation as AnnotationDto } from '@icure/api/icc-api/model/Annotation'
-import { EntityWithDelegationTypeName } from '@icure/api/icc-x-api/utils/EntityWithDelegationTypeName'
 import { ClinicalStatusEnum } from '../models/enums/ClinicalStatus.enum'
 import { VerificationStatusEnum } from '../models/enums/VerificationStatus.enum'
 import { CategoryEnum } from '../models/enums/Category.enum'
@@ -229,15 +226,6 @@ function toHealthElementEncryptedSelf(domain: Condition): string | undefined {
     return extractEncryptedSelf(domain.systemMetaData)
 }
 
-function toHealthElementSecurityMetadata(domain: Condition): SecurityMetadataDto | undefined {
-    const securityMetadata = extractSecurityMetadata(domain.systemMetaData)
-    return securityMetadata ? mapSecurityMetadataToSecurityMetadataDto(securityMetadata) : undefined
-}
-
-function toHealthElement_type(domain: Condition): EntityWithDelegationTypeName | undefined {
-    return 'HealthElement'
-}
-
 function toConditionId(dto: HealthElement): string | undefined {
     return dto.id
 }
@@ -350,7 +338,6 @@ function toConditionSystemMetaData(dto: HealthElement): SystemMetaDataEncrypted 
         cryptedForeignKeys: !!dto.cryptedForeignKeys ? new Map(Object.entries(dto.cryptedForeignKeys).map(([k, v]) => [k, v.map(mapDelegationDtoToDelegation)])) : undefined,
         delegations: !!dto.delegations ? new Map(Object.entries(dto.delegations).map(([k, v]) => [k, v.map(mapDelegationDtoToDelegation)])) : undefined,
         encryptionKeys: !!dto.encryptionKeys ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.encryptionKeys, (arr) => arr.map(mapDelegationDtoToDelegation)) : undefined,
-        securityMetadata: !!dto.securityMetadata ? mapSecurityMetadataDtoToSecurityMetadata(dto.securityMetadata) : undefined,
     })
 }
 
@@ -418,7 +405,5 @@ export function mapConditionToHealthElement(domain: Condition): HealthElement {
         delegations: toHealthElementDelegations(domain),
         encryptionKeys: toHealthElementEncryptionKeys(domain),
         encryptedSelf: toHealthElementEncryptedSelf(domain),
-        securityMetadata: toHealthElementSecurityMetadata(domain),
-        _type: toHealthElement_type(domain),
     })
 }

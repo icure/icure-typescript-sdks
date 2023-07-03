@@ -1,4 +1,4 @@
-import { Api, Apis, DataOwnerWithType as DataOwnerWithTypeDto, IccCryptoXApi, KeyStorageFacade, KeyStorageImpl, LocalStorageImpl, StorageFacade } from '@icure/api'
+import { Apis, DataOwnerWithType as DataOwnerWithTypeDto, IccCryptoXApi, IcureApi, KeyStorageFacade, KeyStorageImpl, LocalStorageImpl, StorageFacade } from '@icure/api'
 import {
     AuthenticationApi,
     CodeLikeApi,
@@ -277,7 +277,7 @@ export namespace EHRLite {
                 throw new Error('cryptoStrategies is required')
             }
 
-            return Api(
+            return IcureApi.initialise(
                 baseUrl,
                 {
                     username: userName,

@@ -97,7 +97,7 @@ export class HealthElementFilterWithDataOwner extends SortableFilterBuilder<Heal
 
     forPatients(patients: Patient[]): HealthElementFilterWithDataOwner {
         const filter = this._dataOwnerId.then((id) => {
-            return Promise.all(patients.map((p) => this.api.baseApi.cryptoApi.xapi.secretIdsOf({ entity: p!, type: 'Patient' }, undefined)))
+            return Promise.all(patients.map((p) => this.api.baseApi.cryptoApi.entities.secretIdsOf(p!, undefined)))
                 .then((sfksForPatients) => sfksForPatients.flat())
                 .then((sfks) => {
                     return {

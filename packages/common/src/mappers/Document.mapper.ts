@@ -1,10 +1,10 @@
 import { Document } from '../models/Document.model'
-import { CodeStub, DataAttachment, DeletedAttachment, Document as DocumentDto, DocumentTemplate, SecurityMetadata } from '@icure/api'
-import { EntityWithDelegationTypeName } from '@icure/api/icc-x-api/utils/EntityWithDelegationTypeName'
+import { CodeStub, DataAttachment, DeletedAttachment, Document as DocumentDto, DocumentTemplate } from '@icure/api'
 import { Delegation } from '../models/Delegation.model'
 import DocumentLocationEnum = DocumentDto.DocumentLocationEnum
 import DocumentTypeEnum = DocumentTemplate.DocumentTypeEnum
 import DocumentStatusEnum = DocumentDto.DocumentStatusEnum
+import { SecurityMetadata } from '../models/SecurityMetadata.model'
 
 function toDocumentDtoId(domain: Document): string | undefined {
     return domain.id
@@ -150,10 +150,6 @@ function toDocumentDtoSecurityMetadata(domain: Document): SecurityMetadata | und
     return undefined
 }
 
-function toDocumentDto_type(domain: Document): EntityWithDelegationTypeName | undefined {
-    return 'Document'
-}
-
 function toDocumentId(dto: DocumentDto): string | undefined {
     return dto.id
 }
@@ -281,7 +277,5 @@ export function mapDocumentToDocumentDto(domain: Document): DocumentDto {
         delegations: toDocumentDtoDelegations(domain),
         encryptionKeys: toDocumentDtoEncryptionKeys(domain),
         encryptedSelf: toDocumentDtoEncryptedSelf(domain),
-        securityMetadata: toDocumentDtoSecurityMetadata(domain),
-        _type: toDocumentDto_type(domain),
     })
 }

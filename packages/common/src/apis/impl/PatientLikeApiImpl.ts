@@ -3,15 +3,22 @@ import { PaginatedList } from '../../models/PaginatedList.model'
 import { SharingResult, SharingStatus } from '../../utils/interfaces'
 import { Connection } from '../../models/Connection.model'
 import { PatientLikeApi } from '../PatientLikeApi'
-import {FilterChainPatient, IccPatientXApi, IccUserXApi, PaginatedListPatient, Patient as PatientDto} from '@icure/api'
+import { FilterChainPatient, IccPatientXApi, IccUserXApi, PaginatedListPatient, Patient as PatientDto } from '@icure/api'
 import { ErrorHandler } from '../../services/ErrorHandler'
 import { Mapper } from '../Mapper'
 import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
-import {NoOpFilter} from "../../filters/dsl/filterDsl";
-import {FilterMapper} from "../../mappers/Filter.mapper";
+import { NoOpFilter } from '../../filters/dsl/filterDsl'
+import { FilterMapper } from '../../mappers/Filter.mapper'
 
 export class PatientLikeApiImpl<DSPatient> implements PatientLikeApi<DSPatient> {
-    constructor(private readonly mapper: Mapper<DSPatient, PatientDto>, private readonly paginatedListMapper: Mapper<PaginatedList<DSPatient>, PaginatedListPatient>, private readonly errorHandler: ErrorHandler, private readonly patientApi: IccPatientXApi, private readonly userApi: IccUserXApi, private readonly dataOwnerApi: IccDataOwnerXApi) {}
+    constructor(
+        private readonly mapper: Mapper<DSPatient, PatientDto>,
+        private readonly paginatedListMapper: Mapper<PaginatedList<DSPatient>, PaginatedListPatient>,
+        private readonly errorHandler: ErrorHandler,
+        private readonly patientApi: IccPatientXApi,
+        private readonly userApi: IccUserXApi,
+        private readonly dataOwnerApi: IccDataOwnerXApi
+    ) {}
 
     async createOrModify(patient: DSPatient): Promise<DSPatient> {
         return this.mapper.toDomain(await this._createOrModifyPatient(patient))
@@ -132,7 +139,7 @@ export class PatientLikeApiImpl<DSPatient> implements PatientLikeApi<DSPatient> 
             throw this.errorHandler.createErrorWithMessage('The current user is not a data owner. You must been either a patient, a device or a healthcare professional to call this method.')
         }
         return this.patientApi
-            .shareAllDataOfPatient(currentUser, patientId, this.dataOwnerApi.getDataOwnerIdOf(currentUser), [patientId], { [patientId]: ['all'] })
+            .share(currentUser, patientId, this.dataOwnerApi.getDataOwnerIdOf(currentUser), [patientId], { [patientId]: ['all'] })
             .then((res) => {
                 return {
                     patient: !!res?.patient ? this.mapper.toDomain(res.patient) : undefined,

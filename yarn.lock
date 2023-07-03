@@ -1431,9 +1431,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@icure/api@npm:^8.0.0-beta.7":
-  version: 8.0.0-beta.7
-  resolution: "@icure/api@npm:8.0.0-beta.7"
+"@icure/api@npm:7.0.0-beta.4":
+  version: 7.0.0-beta.4
+  resolution: "@icure/api@npm:7.0.0-beta.4"
   dependencies:
     date-fns: ^2.23.0
     libphonenumber-js: ^1.7.18
@@ -1442,7 +1442,22 @@ __metadata:
     text-encoding: ^0.7.0
     uuid: ^8.3.2
     uuid-encoder: ^1.1.0
-  checksum: 037fd5947228bafcd087f24000a9c2ec62a6be25dfc3effe4e86956e6ad4097446f9e81e7b319221fe504d0702ddb29020ce42cc4a47943c1c059eb7265135f5
+  checksum: 82d14a7096f8fa45565509525598941b9c24bc6fb94a34f7d49f10cd3d228ced6dede450126a3a14784269cb9448d40c8f17cc587244be53370d9a9a10cac55b
+  languageName: node
+  linkType: hard
+
+"@icure/api@npm:^7.0.0-beta.5":
+  version: 7.0.0-beta.5
+  resolution: "@icure/api@npm:7.0.0-beta.5"
+  dependencies:
+    date-fns: ^2.23.0
+    libphonenumber-js: ^1.7.18
+    lodash: ^4.17.21
+    moment: ^2.22.1
+    text-encoding: ^0.7.0
+    uuid: ^8.3.2
+    uuid-encoder: ^1.1.0
+  checksum: b42eed22d95472b9b0cf2f5b94c778adb8e211b9d1233c3d4455b7e7fd690869f04897af37ea572a1da58e938687ed885508cd8948f1cb41be8e02fdde175a5c
   languageName: node
   linkType: hard
 
@@ -1454,7 +1469,7 @@ __metadata:
     "@babel/plugin-proposal-decorators": ^7.22.5
     "@babel/preset-env": ^7.22.5
     "@babel/preset-typescript": ^7.22.5
-    "@icure/api": ^8.0.0-beta.7
+    "@icure/api": ^7.0.0-beta.5
     "@icure/typescript-common": "*"
     "@types/jest": ^29.5.2
     babel-jest: ^29.5.0
@@ -1473,7 +1488,7 @@ __metadata:
     "@babel/plugin-proposal-decorators": ^7.22.5
     "@babel/preset-env": ^7.22.5
     "@babel/preset-typescript": ^7.22.5
-    "@icure/api": ^8.0.0-beta.7
+    "@icure/api": ^7.0.0-beta.5
     "@types/jest": ^29.5.2
     "@types/uuid": ^9.0.1
     babel-jest: ^29.5.0
@@ -5903,7 +5918,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "typescript-websocket-sdk@workspace:packages/websocket"
   dependencies:
-    "@icure/api": ^8.0.0-beta.7
+    "@icure/api": 7.0.0-beta.4
     "@icure/typescript-common": "*"
     "@types/ws": ^8.5.4
     loglevel: ^1.8.1

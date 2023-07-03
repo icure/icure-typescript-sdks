@@ -1,27 +1,26 @@
-import {DataOwnerWithType as DataOwnerWithTypeDto, hex2ua, ua2hex} from '@icure/api'
-import {CryptoPrimitives} from '@icure/api/icc-x-api/crypto/CryptoPrimitives'
-import {KeyPair, ShaVersion} from '@icure/api/icc-x-api/crypto/RSA'
-import {fingerprintV1, hexPublicKeysWithSha1Of, hexPublicKeysWithSha256Of} from '@icure/api/icc-x-api/crypto/utils'
-import {CryptoActorStubWithType} from '@icure/api/icc-api/model/CryptoActorStub'
-import {CryptoStrategies} from "../../services/CryptoStrategies";
-import KeyVerificationBehaviour = CryptoStrategies.KeyVerificationBehaviour;
-import {CryptoStrategies as BaseCryptoStrategies} from "@icure/api/icc-x-api/crypto/CryptoStrategies";
-import {Mapper} from "../Mapper";
-import {DataOwnerWithType} from "../../models/DataOwner.model";
+import { CryptoStrategies as BaseCryptoStrategies } from '@icure/api/icc-x-api/crypto/CryptoStrategies'
+import { CryptoStrategies } from '../../services/CryptoStrategies'
+import { DataOwnerWithType as DataOwnerWithTypeDto, hex2ua, ua2hex } from '@icure/api'
+import { CryptoPrimitives } from '@icure/api/icc-x-api/crypto/CryptoPrimitives'
+import { KeyPair } from '@icure/api/icc-x-api/crypto/RSA'
+import { CryptoActorStubWithType } from '@icure/api/icc-api/model/CryptoActorStub'
+import KeyVerificationBehaviour = CryptoStrategies.KeyVerificationBehaviour
+import { hexPublicKeysOf } from '@icure/api/icc-x-api/crypto/utils'
+import { DataOwnerWithType } from '../../models/DataOwner.model'
+import { Mapper } from '../Mapper'
 
 export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithType> implements BaseCryptoStrategies {
     constructor(
-        private readonly strategies: CryptoStrategies<DSDataOwnerWithType>,
+        private readonly medtechStrategies: CryptoStrategies<DSDataOwnerWithType>,
         private readonly dataOwnerMapper: Mapper<DSDataOwnerWithType, DataOwnerWithTypeDto>,
         private readonly cryptoActorStubToDomainTypeMapper: (stub: CryptoActorStubWithType) => DSDataOwnerWithType['type']
-    ) {
-    }
+    ) {}
 
     async generateNewKeyForDataOwner(self: DataOwnerWithTypeDto, cryptoPrimitives: CryptoPrimitives): Promise<KeyPair<CryptoKey> | boolean> {
-        const canGenerate = await this.strategies.allowNewKeyPairGeneration(this.dataOwnerMapper.toDomain(self))
+        const canGenerate = await this.medtechStrategies.allowNewKeyPairGeneration(this.dataOwnerMapper.toDomain(self))
         if (canGenerate) {
-            const newKey = await cryptoPrimitives.RSA.generateKeyPair('sha-256')
-            await this.strategies.notifyKeyPairGeneration({
+            const newKey = await cryptoPrimitives.RSA.generateKeyPair()
+            await this.medtechStrategies.notifyKeyPairGeneration({
                 privateKey: ua2hex(await cryptoPrimitives.RSA.exportKey(newKey.privateKey, 'pkcs8')),
                 publicKey: ua2hex(await cryptoPrimitives.RSA.exportKey(newKey.publicKey, 'spki')),
             })
@@ -31,7 +30,7 @@ export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithTyp
 
     async recoverAndVerifySelfHierarchyKeys(
         keysData: {
-            dataOwnerInfo: DataOwnerWithTypeDto
+            dataOwner: DataOwnerWithTypeDto
             unknownKeys: string[]
             unavailableKeys: string[]
         }[],
@@ -51,51 +50,29 @@ export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithTyp
         }
         const missingKeys = keysData[0].unavailableKeys
         const unverifiedKeys = keysData[0].unknownKeys
-        const {recoveredKeyPairs, verifiedKeys} = await this.strategies.recoverAndVerifyKeys(
-            this.dataOwnerMapper.toDomain(keysData[0].dataOwnerInfo),
-            missingKeys,
-            unverifiedKeys
-        )
+        const { recoveredKeyPairs, verifiedKeys } = await this.medtechStrategies.recoverAndVerifyKeys(this.dataOwnerMapper.toDomain(keysData[0].dataOwner), missingKeys, unverifiedKeys)
         const missingKeysSet = new Set(missingKeys)
         const unverifiedKeysSet = new Set(unverifiedKeys)
-        if (recoveredKeyPairs.some(({publicKey}) => !missingKeysSet.has(publicKey))) {
+        if (recoveredKeyPairs.some(({ publicKey }) => !missingKeysSet.has(publicKey))) {
             throw new Error('Recovered keys should only contain keys which were originally missing')
         }
         if (Object.keys(verifiedKeys).some((publicKey) => !unverifiedKeysSet.has(publicKey))) {
             throw new Error('Verified keys should only contain keys which were originally unverified')
         }
-        if (
-            unverifiedKeys.some(
-                (unverifiedKey) => !verifiedKeys[unverifiedKey] && !recoveredKeyPairs.find((recoveredKeyPair) => recoveredKeyPair.publicKey === unverifiedKey)
-            )
-        ) {
+        if (unverifiedKeys.some((unverifiedKey) => !verifiedKeys[unverifiedKey] && !recoveredKeyPairs.find((recoveredKeyPair) => recoveredKeyPair.publicKey === unverifiedKey))) {
             throw new Error('Verified keys should contain an entry for each unverified key which was not recovered')
         }
-        if (
-            recoveredKeyPairs.some(
-                (recoveredKeyPair) =>
-                    verifiedKeys[recoveredKeyPair.publicKey] && verifiedKeys[recoveredKeyPair.publicKey] !== KeyVerificationBehaviour.MARK_VERIFIED
-            )
-        ) {
+        if (recoveredKeyPairs.some((recoveredKeyPair) => verifiedKeys[recoveredKeyPair.publicKey] && verifiedKeys[recoveredKeyPair.publicKey] !== KeyVerificationBehaviour.MARK_VERIFIED)) {
             throw new Error('Recovered keys should considered as verified.')
         }
-        const existingKeysSha1 = hexPublicKeysWithSha1Of(keysData[0].dataOwnerInfo)
-        const existingKeysSha256 = hexPublicKeysWithSha256Of(keysData[0].dataOwnerInfo)
+        const existingKeys = hexPublicKeysOf(keysData[0].dataOwner)
         return Promise.resolve({
-            [keysData[0].dataOwnerInfo.dataOwner.id!]: {
+            [keysData[0].dataOwner.dataOwner.id!]: {
                 recoveredKeys: Object.fromEntries(
                     await Promise.all(
                         recoveredKeyPairs.map(async (x): Promise<[string, KeyPair<CryptoKey>]> => {
-                            let hashAlgorithm: ShaVersion
-                            if (existingKeysSha1.has(x.publicKey)) {
-                                hashAlgorithm = 'sha-1'
-                            } else if (existingKeysSha256.has(x.publicKey)) {
-                                hashAlgorithm = 'sha-256'
-                            } else throw new Error('Internal error: recovered key should be an existing key')
-                            return [
-                                fingerprintV1(x.publicKey),
-                                await cryptoPrimitives.RSA.importKeyPair('pkcs8', hex2ua(x.privateKey), 'spki', hex2ua(x.publicKey), hashAlgorithm),
-                            ]
+                            if (!existingKeys.has(x.publicKey)) throw new Error('Internal error: recovered key should be an existing key')
+                            return [x.publicKey.slice(-32), await cryptoPrimitives.RSA.importKeyPair('pkcs8', hex2ua(x.privateKey), 'spki', hex2ua(x.publicKey))]
                         })
                     )
                 ),
@@ -104,9 +81,9 @@ export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithTyp
                         .filter(([, b]) => b !== KeyVerificationBehaviour.TEMPORARILY_UNVERIFIED)
                         .map(([k, b]) => {
                             if (b === KeyVerificationBehaviour.MARK_VERIFIED) {
-                                return [fingerprintV1(k), true]
+                                return [k.slice(-32), true]
                             } else if (b === KeyVerificationBehaviour.MARK_UNVERIFIED) {
-                                return [fingerprintV1(k), false]
+                                return [k.slice(-32), false]
                             } else throw new Error(`Unexpected key verification behaviour ${b}`)
                         })
                 ),
@@ -115,10 +92,6 @@ export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithTyp
     }
 
     async verifyDelegatePublicKeys(delegate: CryptoActorStubWithType, publicKeys: string[], cryptoPrimitives: CryptoPrimitives): Promise<string[]> {
-        return await this.strategies.verifyDelegatePublicKeys(delegate.stub.id, publicKeys, cryptoPrimitives)
-    }
-
-    dataOwnerRequiresAnonymousDelegation(dataOwner: CryptoActorStubWithType): boolean {
-        return this.strategies.dataOwnerRequiresAnonymousDelegation(dataOwner.stub.id, this.cryptoActorStubToDomainTypeMapper(dataOwner))
+        return await this.medtechStrategies.verifyDelegatePublicKeys(delegate.stub.id, publicKeys, cryptoPrimitives)
     }
 }

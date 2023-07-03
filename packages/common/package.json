@@ -1,12 +1,12 @@
 {
     "name": "@icure/typescript-common",
-    "version": "1.0.15",
+    "version": "0.0.0",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "author": "iCure",
     "license": "MIT",
     "dependencies": {
-        "@icure/api": "^8.0.0-beta.8",
+        "@icure/api": "^7.0.0-beta.5",
         "reflect-metadata": "^0.1.13",
         "uuid": "^9.0.0"
     },
@@ -25,7 +25,7 @@
     "scripts": {
         "marshall": "nx run hephaestus:start --tsconfig ../common/tsconfig.json --model-regex '^.*/common/src/models/.*.model.ts$' --mapper-location ../common/src/mappers --marshaller-generator --mapper-generator",
         "prepare": "rimraf dist && yarn run build && jq '{name:.name, version:.version, description:.description, main:\"index.js\", types:\"index.d.ts\", dependencies:.dependencies, author:.author, license:.license, bugs:.bugs, homepage:.homepage}' < package.json > dist/package.json",
-        "publish": "yarn version patch && yarn run prepare && cd dist && npm publish --registry=http://localhost:4873 && cd ..",
+        "publish": "yarn version && yarn run prepare && cd dist && npm publish --registry=http://localhost:4873 && cd ..",
         "test": "jest --no-cache test",
         "build": "tsc"
     }

@@ -23,13 +23,10 @@ import {
     mapDelegationToDelegationDto,
     mapIdentifierDtoToIdentifier,
     mapIdentifierToIdentifierDto,
-    mapSecurityMetadataDtoToSecurityMetadata,
-    mapSecurityMetadataToSecurityMetadataDto,
     SystemMetaDataEncrypted,
 } from '@icure/typescript-common'
 import { Component } from '../models/Component.model'
 import { LocalComponent } from '../models/LocalComponent.model'
-import { SecurityMetadata as SecurityMetadataDto } from '@icure/api/icc-api/model/SecurityMetadata'
 import { mapContentToLocalComponent, mapLocalComponentToContent } from './LocalComponent.mapper'
 import { mapComponentToContent, mapContentToComponent } from './Component.mapper'
 
@@ -194,11 +191,6 @@ function toServiceEncryptedSelf(domain: Observation): string | undefined {
     return extractEncryptedSelf(domain.systemMetaData)
 }
 
-function toServiceSecurityMetadata(domain: Observation): SecurityMetadataDto | undefined {
-    const sm = extractSecurityMetadata(domain.systemMetaData)
-    return !!sm ? mapSecurityMetadataToSecurityMetadataDto(sm) : undefined
-}
-
 function toObservationId(dto: Service): string | undefined {
     return dto.id
 }
@@ -284,7 +276,6 @@ function toObservationTags(dto: Service): Set<CodingReference> | undefined {
 function toObservationSystemMetaData(dto: Service): SystemMetaDataEncrypted | undefined {
     return new SystemMetaDataEncrypted({
         encryptedSelf: dto.encryptedSelf,
-        securityMetadata: dto.securityMetadata ? mapSecurityMetadataDtoToSecurityMetadata(dto.securityMetadata) : undefined,
         cryptedForeignKeys: !!dto.cryptedForeignKeys ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.cryptedForeignKeys, (arr) => arr.map(mapDelegationDtoToDelegation)) : undefined,
         delegations: !!dto.delegations ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.delegations, (arr) => arr.map(mapDelegationDtoToDelegation)) : undefined,
         encryptionKeys: !!dto.encryptionKeys ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.encryptionKeys, (arr) => arr.map(mapDelegationDtoToDelegation)) : undefined,
@@ -360,6 +351,5 @@ export function mapObservationToService(domain: Observation): Service {
         codes: toServiceCodes(domain),
         tags: toServiceTags(domain),
         encryptedSelf: toServiceEncryptedSelf(domain),
-        securityMetadata: toServiceSecurityMetadata(domain),
     })
 }

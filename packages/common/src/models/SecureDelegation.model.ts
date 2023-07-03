@@ -1,8 +1,5 @@
-import { SecureDelegation as SecureDelegationDto } from '@icure/api/icc-api/model/SecureDelegation';
-import { mapTo } from "../utils/decorators";
-import { AccessLevelEnum } from "./enums/AccessLevel.enum";
+import { AccessLevelEnum } from './enums/AccessLevel.enum'
 
-@mapTo(SecureDelegationDto)
 export class SecureDelegation {
     constructor(secureDelegation?: ISecureDelegation | any) {
         this.delegator = secureDelegation?.delegator
@@ -61,19 +58,28 @@ export class SecureDelegation {
 
     static toJSON(instance: SecureDelegation): any {
         const pojo: any = {}
-        pojo["delegator"] = instance.delegator
-        pojo["delegate"] = instance.delegate
-        pojo["secretIds"] = instance.secretIds?.map(item => item)
-        pojo["encryptionKeys"] = instance.encryptionKeys?.map(item => item)
-        pojo["owningEntityIds"] = instance.owningEntityIds?.map(item => item)
-        pojo["parentDelegations"] = instance.parentDelegations?.map(item => item)
-        pojo["exchangeDataId"] = instance.exchangeDataId
-        pojo["permissions"] = instance.permissions
+        pojo['delegator'] = instance.delegator
+        pojo['delegate'] = instance.delegate
+        pojo['secretIds'] = instance.secretIds?.map((item) => item)
+        pojo['encryptionKeys'] = instance.encryptionKeys?.map((item) => item)
+        pojo['owningEntityIds'] = instance.owningEntityIds?.map((item) => item)
+        pojo['parentDelegations'] = instance.parentDelegations?.map((item) => item)
+        pojo['exchangeDataId'] = instance.exchangeDataId
+        pojo['permissions'] = instance.permissions
         return pojo
     }
 
     static fromJSON(pojo: any): SecureDelegation {
-        return new SecureDelegation({delegator: pojo["delegator"], delegate: pojo["delegate"], secretIds: pojo["secretIds"]?.map((item: any) => item), encryptionKeys: pojo["encryptionKeys"]?.map((item: any) => item), owningEntityIds: pojo["owningEntityIds"]?.map((item: any) => item), parentDelegations: pojo["parentDelegations"]?.map((item: any) => item), exchangeDataId: pojo["exchangeDataId"], permissions: pojo["permissions"]})
+        return new SecureDelegation({
+            delegator: pojo['delegator'],
+            delegate: pojo['delegate'],
+            secretIds: pojo['secretIds']?.map((item: any) => item),
+            encryptionKeys: pojo['encryptionKeys']?.map((item: any) => item),
+            owningEntityIds: pojo['owningEntityIds']?.map((item: any) => item),
+            parentDelegations: pojo['parentDelegations']?.map((item: any) => item),
+            exchangeDataId: pojo['exchangeDataId'],
+            permissions: pojo['permissions'],
+        })
     }
 }
 

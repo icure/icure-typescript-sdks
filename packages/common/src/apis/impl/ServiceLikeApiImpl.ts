@@ -22,16 +22,16 @@ import {
     PaginatedListContact,
     FilterChainService,
     PaginatedListService,
-    Service
+    Service,
 } from '@icure/api'
 import { ErrorHandler } from '../../services/ErrorHandler'
 import { any, distinctBy, firstOrNull, isNotEmpty, sumOf } from '../../utils/functionalUtils'
 import { CachedMap } from '../../utils/cachedMap'
 import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
-import {NoOpFilter} from "../../filters/dsl/filterDsl";
-import {FilterMapper} from "../../mappers/Filter.mapper";
-import {ServiceFilter} from "../../filters/dsl/ServiceFilterDsl";
-import {CommonApi} from "../CommonApi";
+import { NoOpFilter } from '../../filters/dsl/filterDsl'
+import { FilterMapper } from '../../mappers/Filter.mapper'
+import { ServiceFilter } from '../../filters/dsl/ServiceFilterDsl'
+import { CommonApi } from '../CommonApi'
 
 export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements ServiceLikeApi<DSService, DSPatient, DSDocument> {
     private readonly contactsCache: CachedMap<ContactDto> = new CachedMap<ContactDto>(5 * 60, 10000)
@@ -210,7 +210,6 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
             cryptedForeignKeys: contact.cryptedForeignKeys,
             delegations: contact.delegations,
             encryptionKeys: contact.encryptionKeys,
-            securityMetadata: contact.securityMetadata,
         }
     }
 
@@ -358,9 +357,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
 
             // Caching
             notCachedContacts.forEach((contact) => {
-                contact.services
-                    ?.filter((service) => service.id != undefined && dataSampleIdsToSearch.includes(service.id))
-                    .forEach((service) => this.contactsCache.put(service.id!, contact))
+                contact.services?.filter((service) => service.id != undefined && dataSampleIdsToSearch.includes(service.id)).forEach((service) => this.contactsCache.put(service.id!, contact))
             })
 
             return [...Object.values(cachedContacts), ...notCachedContacts]
@@ -379,7 +376,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
     }
 
     async extractPatientId(service: DSService): Promise<string | undefined> {
-        return (await this.cryptoApi.xapi.owningEntityIdsOf({ entity: this.serviceMapper.toDto(service)!, type: 'Contact' }, undefined))[0]
+        return (await this.cryptoApi.entities.owningEntityIdsOf(this.serviceMapper.toDto(service)!, undefined))[0]
     }
 
     async filterBy(filter: Filter<DSService>, nextServiceId?: string, limit?: number): Promise<PaginatedList<DSService>> {
@@ -399,11 +396,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
                     filter: FilterMapper.toAbstractFilterDto(filter, 'Service'),
                 })
             )
-            .then((paginatedServices) =>
-                this.contactApi
-                    .decryptServices(hcpId, paginatedServices.rows!)
-                    .then((decryptedRows) => Object.assign(paginatedServices, { rows: decryptedRows }))
-            )
+            .then((paginatedServices) => this.contactApi.decryptServices(hcpId, paginatedServices.rows!).then((decryptedRows) => Object.assign(paginatedServices, { rows: decryptedRows })))
             .catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
             })
@@ -427,33 +420,22 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
             throw this.errorHandler.createErrorFromAny(e)
         })
         if (!user) {
-            throw this.errorHandler.createErrorWithMessage(
-                'There is no user currently logged in. You must call this method from an authenticated MedTechApi'
-            )
+            throw this.errorHandler.createErrorWithMessage('There is no user currently logged in. You must call this method from an authenticated MedTechApi')
         }
         const dataOwnerId = this.dataOwnerApi.getDataOwnerIdOf(user)
         if (!dataOwnerId) {
-            throw this.errorHandler.createErrorWithMessage(
-                'The current user is not a data owner. You must be either a patient, a device or a healthcare professional to call this method.'
-            )
+            throw this.errorHandler.createErrorWithMessage('The current user is not a data owner. You must be either a patient, a device or a healthcare professional to call this method.')
         }
         const patientDto = this.patientMapper.toDto(patient)!
 
         const filter = await new ServiceFilter(this.api).forDataOwner(dataOwnerId).forPatients([patientDto]).build()
 
-        return (await this.concatenateFilterResults(filter))
+        return await this.concatenateFilterResults(filter)
     }
 
-    async concatenateFilterResults(
-        filter: Filter<Service>,
-        nextId?: string | undefined,
-        limit?: number | undefined,
-        accumulator: Array<DSService> = []
-    ): Promise<Array<DSService>> {
+    async concatenateFilterResults(filter: Filter<Service>, nextId?: string | undefined, limit?: number | undefined, accumulator: Array<DSService> = []): Promise<Array<DSService>> {
         const paginatedDataSamples = await this.filterBy(filter, nextId, limit)
-        return !paginatedDataSamples.nextKeyPair?.startKeyDocId
-            ? accumulator.concat(paginatedDataSamples.rows ?? [])
-            : this.concatenateFilterResults(filter, paginatedDataSamples.nextKeyPair.startKeyDocId, limit, accumulator.concat(paginatedDataSamples.rows ?? []))
+        return !paginatedDataSamples.nextKeyPair?.startKeyDocId ? accumulator.concat(paginatedDataSamples.rows ?? []) : this.concatenateFilterResults(filter, paginatedDataSamples.nextKeyPair.startKeyDocId, limit, accumulator.concat(paginatedDataSamples.rows ?? []))
     }
 
     async giveAccessTo(service: DSService, delegatedTo: string): Promise<DSService> {

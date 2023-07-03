@@ -14,7 +14,6 @@ import {
     PersonName,
     PropertyStub,
     SchoolingInfo,
-    SecurityMetadata as SecurityMetadataDto,
 } from '@icure/api'
 import { HumanName } from '../models/HumanName.model'
 import { Location } from '../models/Location.model'
@@ -53,8 +52,6 @@ import {
     mapIdentifierToIdentifierDto,
     mapPropertyStubToProperty,
     mapPropertyToPropertyStub,
-    mapSecurityMetadataDtoToSecurityMetadata,
-    mapSecurityMetadataToSecurityMetadataDto,
     Property,
     SystemMetaDataOwnerEncrypted,
 } from '@icure/typescript-common'
@@ -64,7 +61,6 @@ import { Delegation as DelegationDto } from '@icure/api/icc-api/model/Delegation
 import { mapHumanNameToPersonName, mapPersonNameToHumanName } from './HumanName.mapper'
 import { mapPartnershipToRelatedPerson, mapRelatedPersonToPartnership } from './RelatedPerson.mapper'
 import { mapPatientHealthCarePartyToRelatedPractitioner, mapRelatedPractitionerToPatientHealthCareParty } from './RelatedPractitioner.mapper'
-import { EntityWithDelegationTypeName } from '@icure/api/icc-x-api/utils/EntityWithDelegationTypeName'
 import { mapAddressToLocation, mapLocationToAddress } from './Location.mapper'
 import { GenderEnum } from '../models/enums/Gender.enum'
 import { PatientDeactivationReasonEnum } from '../models/enums/PatientDeactivationReason.enum'
@@ -397,15 +393,6 @@ function toPatientDtoEmployementInfos(domain: Patient): EmploymentInfo[] | undef
     return undefined
 }
 
-function toPatientDtoSecurityMetadata(domain: Patient): SecurityMetadataDto | undefined {
-    const sm = extractSecurityMetadata(domain.systemMetaData)
-    return !!sm ? mapSecurityMetadataToSecurityMetadataDto(sm) : undefined
-}
-
-function toPatientDto_type(domain: Patient): EntityWithDelegationTypeName | undefined {
-    return 'Patient'
-}
-
 function toPatientId(dto: PatientDto): string | undefined {
     return dto.id
 }
@@ -573,7 +560,6 @@ function toPatientProperties(dto: PatientDto): Property[] | undefined {
 function toPatientSystemMetaData(dto: PatientDto): SystemMetaDataOwnerEncrypted | undefined {
     return new SystemMetaDataOwnerEncrypted({
         encryptedSelf: dto.encryptedSelf,
-        securityMetadata: !!dto.securityMetadata ? mapSecurityMetadataDtoToSecurityMetadata(dto.securityMetadata) : undefined,
         cryptedForeignKeys: !!dto.cryptedForeignKeys ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.cryptedForeignKeys, (arr) => arr.map(mapDelegationDtoToDelegation)) : undefined,
         delegations: !!dto.delegations ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.delegations, (arr) => arr.map(mapDelegationDtoToDelegation)) : undefined,
         encryptionKeys: !!dto.encryptionKeys ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.encryptionKeys, (arr) => arr.map(mapDelegationDtoToDelegation)) : undefined,
@@ -715,7 +701,5 @@ export function mapPatientToPatientDto(domain: Patient): PatientDto {
         mainSourceOfIncome: toPatientDtoMainSourceOfIncome(domain),
         schoolingInfos: toPatientDtoSchoolingInfos(domain),
         employementInfos: toPatientDtoEmployementInfos(domain),
-        securityMetadata: toPatientDtoSecurityMetadata(domain),
-        _type: toPatientDto_type(domain),
     })
 }

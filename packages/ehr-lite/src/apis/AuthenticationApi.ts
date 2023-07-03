@@ -32,10 +32,7 @@ class AuthenticationApi extends AuthenticationApiImpl<EHRLiteApi> {
             const patientDataOwner = await authenticationResult.api.patientApi.getAndTryDecrypt(loggedUser.patientId)
             if (!patientDataOwner) throw this.errorHandler.createErrorWithMessage(`Impossible to find the patient ${loggedUser.patientId} apparently linked to the user ${loggedUser.id}. Are you sure this patientId is correct ?`)
 
-            const delegatesInfo = await authenticationResult.api.cryptoApi.xapi.getDataOwnersWithAccessTo({
-                entity: mapPatientToPatientDto(patientDataOwner.patient),
-                type: 'Patient',
-            })
+            const delegatesInfo = await authenticationResult.api.cryptoApi.entities.getDataOwnersWithAccessTo(mapPatientToPatientDto(patientDataOwner.patient))
             const delegates = Object.keys(delegatesInfo.permissionsByDataOwnerId)
 
             for (const delegate of delegates) {

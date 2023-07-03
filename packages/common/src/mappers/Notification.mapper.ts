@@ -1,17 +1,14 @@
 import { Notification, NotificationStatusEnum, NotificationTypeEnum } from '../models/Notification.model'
 import { CodeStub, Identifier as IdentifierDto, MaintenanceTask, PropertyStub } from '@icure/api'
 import { Property } from '../models/Property.model'
-import { convertMapOfArrayOfGenericToObject, convertObjectToMapOfArrayOfGeneric, extractCryptedForeignKeys, extractDelegations, extractEncryptedSelf, extractEncryptionKeys, extractSecretForeignKeys, extractSecurityMetadata } from '../utils/Metadata.utils'
+import { convertMapOfArrayOfGenericToObject, convertObjectToMapOfArrayOfGeneric, extractCryptedForeignKeys, extractDelegations, extractEncryptedSelf, extractEncryptionKeys, extractSecretForeignKeys } from '../utils/Metadata.utils'
 import { Delegation } from '../models/Delegation.model'
 import { Delegation as DelegationDto } from '@icure/api/icc-api/model/Delegation'
-import { SecurityMetadata as SecurityMetadataDto } from '@icure/api/icc-api/model/SecurityMetadata'
 import { Identifier } from '../models/Identifier.model'
 import { SystemMetaDataEncrypted } from '../models/SystemMetaDataEncrypted.model'
 import { mapIdentifierDtoToIdentifier, mapIdentifierToIdentifierDto } from './Identifier.mapper'
 import { mapPropertyStubToProperty, mapPropertyToPropertyStub } from './Property.mapper'
 import { mapDelegationDtoToDelegation, mapDelegationToDelegationDto } from './Delegation.mapper'
-import { mapSecurityMetadataDtoToSecurityMetadata, mapSecurityMetadataToSecurityMetadataDto } from './SecurityMetadata.mapper'
-import { EntityWithDelegationTypeName } from '@icure/api/icc-x-api/utils/EntityWithDelegationTypeName'
 
 function toMaintenanceTaskId(domain: Notification): string | undefined {
     return domain.id
@@ -118,20 +115,6 @@ function toMaintenanceTaskEncryptedSelf(domain: Notification): string | undefine
     return extractEncryptedSelf(domain.systemMetaData)
 }
 
-function toMaintenanceTaskSecurityMetadata(domain: Notification): SecurityMetadataDto | undefined {
-    const securityMetadata = extractSecurityMetadata(domain.systemMetaData)
-
-    if (!securityMetadata) {
-        return undefined
-    }
-
-    return mapSecurityMetadataToSecurityMetadataDto(securityMetadata)
-}
-
-function toMaintenanceTask_type(domain: Notification): EntityWithDelegationTypeName | undefined {
-    return 'MaintenanceTask'
-}
-
 function toNotificationId(dto: MaintenanceTask): string | undefined {
     return dto.id
 }
@@ -183,7 +166,6 @@ function toNotificationType(dto: MaintenanceTask): NotificationTypeEnum | undefi
 function toNotificationSystemMetaData(dto: MaintenanceTask): SystemMetaDataEncrypted | undefined {
     return new SystemMetaDataEncrypted({
         encryptedSelf: dto.encryptedSelf,
-        securityMetadata: !!dto.securityMetadata ? mapSecurityMetadataDtoToSecurityMetadata(dto.securityMetadata) : undefined,
         cryptedForeignKeys: !!dto.cryptedForeignKeys ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.cryptedForeignKeys, (arr) => arr.map(mapDelegationDtoToDelegation)) : undefined,
         delegations: !!dto.delegations ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.delegations, (arr) => arr.map(mapDelegationDtoToDelegation)) : undefined,
         encryptionKeys: !!dto.encryptionKeys ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.encryptionKeys, (arr) => arr.map(mapDelegationDtoToDelegation)) : undefined,
@@ -231,7 +213,5 @@ export function mapNotificationToMaintenanceTask(domain: Notification): Maintena
         delegations: toMaintenanceTaskDelegations(domain),
         encryptionKeys: toMaintenanceTaskEncryptionKeys(domain),
         encryptedSelf: toMaintenanceTaskEncryptedSelf(domain),
-        securityMetadata: toMaintenanceTaskSecurityMetadata(domain),
-        _type: toMaintenanceTask_type(domain),
     })
 }

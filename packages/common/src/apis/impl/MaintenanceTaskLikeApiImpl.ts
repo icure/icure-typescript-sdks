@@ -1,25 +1,18 @@
 import { Filter } from '../../filters/Filter'
 import { PaginatedList } from '../../models/PaginatedList.model'
 import { Connection } from '../../models/Connection.model'
-import {
-    FilterChainMaintenanceTask,
-    IccUserXApi,
-    MaintenanceTask,
-    PaginatedListMaintenanceTask,
-    SecureDelegation,
-    User
-} from '@icure/api'
+import { FilterChainMaintenanceTask, IccUserXApi, MaintenanceTask, PaginatedListMaintenanceTask, User } from '@icure/api'
 import { MaintenanceTaskLikeApi } from '../MaintenanceTaskLikeApi'
 import { Mapper } from '../Mapper'
 import { ErrorHandler } from '../../services/ErrorHandler'
 import { IccMaintenanceTaskXApi } from '@icure/api/icc-x-api/icc-maintenance-task-x-api'
 import { deepEquality } from '../../utils/equality'
-import AccessLevelEnum = SecureDelegation.AccessLevelEnum
 import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
-import {NoOpFilter} from "../../filters/dsl/filterDsl";
-import {FilterMapper} from "../../mappers/Filter.mapper";
-import {MaintenanceTaskFilter} from "../../filters/dsl/MaintenanceTaskFilterDsl";
-import {CommonApi} from "../CommonApi";
+import { NoOpFilter } from '../../filters/dsl/filterDsl'
+import { FilterMapper } from '../../mappers/Filter.mapper'
+import { MaintenanceTaskFilter } from '../../filters/dsl/MaintenanceTaskFilterDsl'
+import { CommonApi } from '../CommonApi'
+import { AccessLevelEnum } from '../../models/enums/AccessLevel.enum'
 
 export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements MaintenanceTaskLikeApi<DSMaintenanceTask> {
     constructor(
@@ -68,10 +61,7 @@ export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements Maintenanc
             return { totalSize: 0, pageSize: 0, rows: [] }
         } else {
             return this.userApi.getCurrentUser().then((user) => {
-                if (!user)
-                    throw this.errorHandler.createErrorWithMessage(
-                        'There is no user currently logged in. You must call this method from an authenticated MedTechApi'
-                    )
+                if (!user) throw this.errorHandler.createErrorWithMessage('There is no user currently logged in. You must call this method from an authenticated MedTechApi')
                 return this.maintenanceTaskApi
                     .filterMaintenanceTasksByWithUser(
                         user,
@@ -110,14 +100,10 @@ export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements Maintenanc
             throw this.errorHandler.createErrorFromAny(e)
         })
         if (!user) {
-            throw this.errorHandler.createErrorWithMessage(
-                'There is no user currently logged in. You must call this method from an authenticated MedTechApi'
-            )
+            throw this.errorHandler.createErrorWithMessage('There is no user currently logged in. You must call this method from an authenticated MedTechApi')
         }
         if (!this.dataOwnerApi.getDataOwnerIdOf(user)) {
-            throw this.errorHandler.createErrorWithMessage(
-                'The current user is not a data owner. You must been either a patient, a device or a healthcare professional to call this method.'
-            )
+            throw this.errorHandler.createErrorWithMessage('The current user is not a data owner. You must been either a patient, a device or a healthcare professional to call this method.')
         }
 
         const filter = await new MaintenanceTaskFilter(this.api).forDataOwner(this.dataOwnerApi.getDataOwnerIdOf(user)).afterDate(fromDate).build()
@@ -125,21 +111,9 @@ export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements Maintenanc
         return (await this.concatenateFilterResults(filter)).filter((it) => this.mapper.toDto(it).status === 'pending')
     }
 
-    async concatenateFilterResults(
-        filter: Filter<Notification>,
-        nextId?: string | undefined,
-        limit?: number | undefined,
-        accumulator: Array<DSMaintenanceTask> = []
-    ): Promise<Array<DSMaintenanceTask>> {
+    async concatenateFilterResults(filter: Filter<Notification>, nextId?: string | undefined, limit?: number | undefined, accumulator: Array<DSMaintenanceTask> = []): Promise<Array<DSMaintenanceTask>> {
         const paginatedNotifications = await this.filterBy(filter, nextId, limit)
-        return !paginatedNotifications.nextKeyPair?.startKeyDocId
-            ? accumulator.concat(paginatedNotifications.rows ?? [])
-            : this.concatenateFilterResults(
-                filter,
-                paginatedNotifications.nextKeyPair.startKeyDocId,
-                limit,
-                accumulator.concat(paginatedNotifications.rows ?? [])
-            )
+        return !paginatedNotifications.nextKeyPair?.startKeyDocId ? accumulator.concat(paginatedNotifications.rows ?? []) : this.concatenateFilterResults(filter, paginatedNotifications.nextKeyPair.startKeyDocId, limit, accumulator.concat(paginatedNotifications.rows ?? []))
     }
 
     subscribeTo(
@@ -173,7 +147,6 @@ export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements Maintenanc
         else if (existingMappedMaintenanceTask.author !== maintenanceTask.author) throw this.errorHandler.createErrorWithMessage('Cannot modify  author field')
         else if (existingMappedMaintenanceTask.responsible !== maintenanceTask.responsible) throw this.errorHandler.createErrorWithMessage('Cannot modify responsible field')
         else if (existingMappedMaintenanceTask.taskType !== maintenanceTask.taskType) throw this.errorHandler.createErrorWithMessage('Cannot modify type field')
-        else if (!deepEquality(existingMappedMaintenanceTask.securityMetadata, maintenanceTask.securityMetadata)) throw this.errorHandler.createErrorWithMessage('Cannot modify securityMetadata field')
         else if (!deepEquality(existingMappedMaintenanceTask.secretForeignKeys, maintenanceTask.secretForeignKeys)) throw this.errorHandler.createErrorWithMessage('Cannot modify dataOwner field')
         else if (!deepEquality(existingMappedMaintenanceTask.encryptionKeys, maintenanceTask.encryptionKeys)) throw this.errorHandler.createErrorWithMessage('Cannot modify encryptionKeys field')
         else if (!deepEquality(existingMappedMaintenanceTask.cryptedForeignKeys, maintenanceTask.cryptedForeignKeys)) throw this.errorHandler.createErrorWithMessage('Cannot modify cryptedForeignKeys field')
