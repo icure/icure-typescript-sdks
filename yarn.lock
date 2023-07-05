@@ -1446,9 +1446,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@icure/api@npm:^7.0.0-beta.5":
-  version: 7.0.0-beta.5
-  resolution: "@icure/api@npm:7.0.0-beta.5"
+"@icure/api@npm:^7.0.0-beta.7":
+  version: 7.0.0-beta.7
+  resolution: "@icure/api@npm:7.0.0-beta.7"
   dependencies:
     date-fns: ^2.23.0
     libphonenumber-js: ^1.7.18
@@ -1457,7 +1457,7 @@ __metadata:
     text-encoding: ^0.7.0
     uuid: ^8.3.2
     uuid-encoder: ^1.1.0
-  checksum: b42eed22d95472b9b0cf2f5b94c778adb8e211b9d1233c3d4455b7e7fd690869f04897af37ea572a1da58e938687ed885508cd8948f1cb41be8e02fdde175a5c
+  checksum: e451515da43917944b076a553884d35de557b339f1af290238c06929e28c9acfec5c6d79e6fbd69369f870c314a8c15c6f7f46fc0f1ab454b327ec43e09c41fc
   languageName: node
   linkType: hard
 
@@ -1469,7 +1469,7 @@ __metadata:
     "@babel/plugin-proposal-decorators": ^7.22.5
     "@babel/preset-env": ^7.22.5
     "@babel/preset-typescript": ^7.22.5
-    "@icure/api": ^7.0.0-beta.5
+    "@icure/api": ^7.0.0-beta.7
     "@icure/typescript-common": "*"
     "@types/jest": ^29.5.2
     babel-jest: ^29.5.0
@@ -1488,7 +1488,7 @@ __metadata:
     "@babel/plugin-proposal-decorators": ^7.22.5
     "@babel/preset-env": ^7.22.5
     "@babel/preset-typescript": ^7.22.5
-    "@icure/api": ^7.0.0-beta.5
+    "@icure/api": ^7.0.0-beta.7
     "@types/jest": ^29.5.2
     "@types/uuid": ^9.0.1
     babel-jest: ^29.5.0

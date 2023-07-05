@@ -48,10 +48,10 @@ import {
     UnionFilter as UnionFilterDto,
     User as UserDto,
     UserByIdsFilter as UserByIdsFilterDto,
+    MaintenanceTaskByIdsFilter as MaintenanceTaskByIdsFilterDto,
+    MaintenanceTaskByHcPartyAndTypeFilter as MaintenanceTaskByHcPartyAndTypeFilterDto,
+    MaintenanceTaskAfterDateFilter as MaintenanceTaskAfterDateFilterDto,
 } from '@icure/api'
-import { MaintenanceTaskByIdsFilter as MaintenanceTaskByIdsFilterDto } from '@icure/api/icc-x-api/filters/maintenancetaskByIdsFilter'
-import { MaintenanceTaskByHcPartyAndTypeFilter as MaintenanceTaskByHcPartyAndTypeFilterDto } from '@icure/api/icc-x-api/filters/maintenancetaskByHcPartyAndTypeFilter'
-import { MaintenanceTaskAfterDateFilter as MaintenanceTaskAfterDateFilterDto } from '@icure/api/icc-x-api/filters/maintenancetaskAfterDateFilter'
 import { UsersByPatientIdFilter as UsersByPatientIdFilterDto } from '@icure/api/icc-x-api/filters/UsersByPatientIdFilter'
 import { ComplementFilter } from '../filters/ComplementFilter'
 import { UnionFilter } from '../filters/UnionFilter'

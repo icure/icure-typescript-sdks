@@ -1,6 +1,7 @@
 {
     "name": "@icure/ehr-lite-sdk",
     "version": "0.0.0",
+    "description": "SDK for EHR Lite",
     "devDependencies": {
         "@babel/core": "^7.22.5",
         "@babel/plugin-proposal-decorators": "^7.22.5",
@@ -14,7 +15,7 @@
     "main": "dist/index.js",
     "typings": "dist/index.d.ts",
     "dependencies": {
-        "@icure/api": "^7.0.0-beta.5",
+        "@icure/api": "^7.0.0-beta.7",
         "@icure/typescript-common": "*",
         "reflect-metadata": "^0.1.13",
         "uuid": "^9.0.0"
@@ -23,7 +24,7 @@
         "build": "tsc",
         "test": "jest --no-cache test",
         "prepare": "rimraf dist && yarn run build && jq '{name:.name, version:.version, description:.description, main:\"index.js\", types:\"index.d.ts\", dependencies:.dependencies, author:.author, license:.license, bugs:.bugs, homepage:.homepage}' < package.json > dist/package.json",
-        "publish": "yarn version && yarn run prepare && cd dist && npm publish --registry=http://localhost:4873 && cd ..",
+        "publish": "yarn run prepare && cd dist && npm publish --registry=http://localhost:4873 && cd ..",
         "marshall": "nx run hephaestus:start --tsconfig ../ehr-lite/tsconfig.json --model-regex '^.*/ehr-lite/src/models/.*.model.ts$' --mapper-location src/mappers --marshaller-generator --mapper-generator"
     }
 }

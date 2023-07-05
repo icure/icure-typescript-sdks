@@ -42,6 +42,7 @@ import { messageGatewayApi } from './MessageGatewayApi'
 import { notificationApi } from './NotificationApi'
 import { DataOwnerTypeEnum as DataOwnerTypeEnumDto } from '@icure/api/icc-api/model/DataOwnerTypeEnum'
 import dataOwnerMapper from '../mappers/DataOwner.mapper'
+import {authenticationApi} from "./AuthenticationApi";
 
 export class EHRLiteApi extends CommonApi {
     private readonly _codingApi: CodeLikeApi<Coding>
@@ -101,6 +102,8 @@ export class EHRLiteApi extends CommonApi {
         const msgGwApi = _msgGtwUrl && _msgGtwSpecId ? messageGatewayApi(_msgGtwUrl, _msgGtwSpecId, errorHandler, sanitizer, _username, _password) : undefined
 
         this._messageGatewayApi = msgGwApi
+
+        this._authenticationApi = msgGwApi ?  authenticationApi(errorHandler, sanitizer, msgGwApi, _iCureBaseUrl, _authProcessByEmailId, _authProcessBySmsId, crypto, this._storage, this._keyStorage, _cryptoStrategies) : undefined
 
         this._userApi = userApi(errorHandler, sanitizer, this._baseApi.userApi, this, msgGwApi)
 
