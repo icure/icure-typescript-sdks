@@ -1,13 +1,14 @@
-import { DataOwnerApiImpl, ErrorHandler, mapUserDtoToUser, mapUserToUserDto, User } from '@icure/typescript-common'
+import { CommonApi, DataOwnerLikeApiImpl, mapUserDtoToUser, mapUserToUserDto, User } from '@icure/typescript-common'
 import { DataOwner, DataOwnerWithType as EHRDataOwnerWithType } from '../models/DataOwner.model'
 import { Patient } from '../models/Patient.model'
-import { DataOwnerWithType, IccPatientXApi, User as UserDto } from '@icure/api'
-import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
-import { IccIcureMaintenanceXApi } from '@icure/api/icc-x-api/icc-icure-maintenance-x-api'
+import { DataOwnerWithType, User as UserDto } from '@icure/api'
 import dataOwnerMapper from '../mappers/DataOwner.mapper'
 
-export const dataOwnerApi = (errorHandler: ErrorHandler, dataOwnerApi: IccDataOwnerXApi, patientApi: IccPatientXApi, icureMaintenanceApi: IccIcureMaintenanceXApi) =>
-    new DataOwnerApiImpl<EHRDataOwnerWithType, DataOwner, Patient, User>(
+export class DataOwnerApi extends DataOwnerLikeApiImpl<EHRDataOwnerWithType, DataOwner, Patient, User> {
+}
+
+export const dataOwnerApi = (api: CommonApi) =>
+    new DataOwnerApi(
         {
             toDomain(dto: DataOwnerWithType): EHRDataOwnerWithType {
                 return dataOwnerMapper.toDomain(dto)
@@ -24,8 +25,8 @@ export const dataOwnerApi = (errorHandler: ErrorHandler, dataOwnerApi: IccDataOw
                 return mapUserToUserDto(domain)
             },
         },
-        errorHandler,
-        dataOwnerApi,
-        patientApi,
-        icureMaintenanceApi
+        api.errorHandler,
+        api.baseApi.dataOwnerApi,
+        api.baseApi.patientApi,
+        api.baseApi.icureMaintenanceTaskApi
     )

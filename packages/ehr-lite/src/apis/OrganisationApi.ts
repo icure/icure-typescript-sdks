@@ -1,10 +1,12 @@
-import {CommonApi, ErrorHandler, HealthcarePartyLikeApiImpl, PaginatedList} from '@icure/typescript-common'
-import {HealthcareParty, IccHcpartyXApi, PaginatedListHealthcareParty} from '@icure/api'
+import { CommonApi, HealthcarePartyLikeApiImpl, PaginatedList } from '@icure/typescript-common'
+import { HealthcareParty, PaginatedListHealthcareParty } from '@icure/api'
 import { Organisation } from '../models/Organisation.model'
 import { mapHealthcarePartyToOrganisation, mapOrganisationToHealthcareParty } from '../mappers/Organisation.mapper'
 
-export const organisationApi = (errorHandler: ErrorHandler, healthcarePartyApi: IccHcpartyXApi, api: CommonApi) =>
-    new HealthcarePartyLikeApiImpl<Organisation>(
+export class OrganisationApi extends HealthcarePartyLikeApiImpl<Organisation> {}
+
+export const organisationApi = (api: CommonApi) =>
+    new OrganisationApi(
         {
             toDomain(dto: HealthcareParty): Organisation {
                 return mapHealthcarePartyToOrganisation(dto)
@@ -17,16 +19,16 @@ export const organisationApi = (errorHandler: ErrorHandler, healthcarePartyApi: 
             toDomain(dto: PaginatedListHealthcareParty): PaginatedList<Organisation> {
                 return {
                     ...dto,
-                    rows: dto.rows?.map(mapHealthcarePartyToOrganisation)
+                    rows: dto.rows?.map(mapHealthcarePartyToOrganisation),
                 }
             },
             toDto(domain: PaginatedList<Organisation>): PaginatedListHealthcareParty {
                 return {
                     ...domain,
-                    rows: domain.rows?.map(mapOrganisationToHealthcareParty)
+                    rows: domain.rows?.map(mapOrganisationToHealthcareParty),
                 }
-            }
+            },
         },
-        errorHandler,
-        healthcarePartyApi
+        api.errorHandler,
+        api.baseApi.healthcarePartyApi
     )

@@ -1,21 +1,23 @@
-import { Filter } from '../../filters/Filter'
-import { PaginatedList } from '../../models/PaginatedList.model'
-import { Connection } from '../../models/Connection.model'
-import { HealthElementLikeApi } from '../HealthElementLikeApi'
+import {Filter} from '../../filters/Filter'
+import {PaginatedList} from '../../models/PaginatedList.model'
+import {Connection} from '../../models/Connection.model'
+import {HealthElementLikeApi} from '../HealthElementLikeApi'
 import {
     FilterChainHealthElement,
     HealthElement,
     IccCryptoXApi,
     IccHelementXApi,
     IccPatientXApi,
-    IccUserXApi, PaginatedListHealthElement, Patient,
+    IccUserXApi,
+    PaginatedListHealthElement,
+    Patient,
     User
 } from '@icure/api'
-import { Mapper } from '../Mapper'
-import { ErrorHandler } from '../../services/ErrorHandler'
-import { firstOrNull } from '../../utils/functionalUtils'
-import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
-import { forceUuid } from '../../utils/uuidUtils'
+import {Mapper} from '../Mapper'
+import {ErrorHandler} from '../../services/ErrorHandler'
+import {firstOrNull} from '../../utils/functionalUtils'
+import {IccDataOwnerXApi} from '@icure/api/icc-x-api/icc-data-owner-x-api'
+import {forceUuid} from '../../utils/uuidUtils'
 import {NoOpFilter} from "../../filters/dsl/filterDsl";
 import {FilterMapper} from "../../mappers/Filter.mapper";
 import {HealthElementFilter} from "../../filters/dsl/HealthElementFilterDsl";
@@ -33,7 +35,9 @@ export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements Hea
         private readonly dataOwnerApi: IccDataOwnerXApi,
         private readonly cryptoApi: IccCryptoXApi,
         private readonly api: CommonApi
-    ) {}
+    ) {
+    }
+
     async createOrModify(healthElement: DSHealthElement, patientId?: string): Promise<DSHealthElement> {
         const createdOrModifiedHealthElement = firstOrNull(await this.createOrModifyMany([healthElement], patientId))
 
@@ -56,8 +60,8 @@ export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements Hea
 
         const patient = patientId
             ? await this.patientApi.getPatientWithUser(currentUser, patientId).catch((e) => {
-                  throw this.errorHandler.createErrorFromAny(e)
-              })
+                throw this.errorHandler.createErrorFromAny(e)
+            })
             : undefined
 
         if (!heToUpdate.every((he) => he.id != null && forceUuid(he.id))) {
@@ -68,7 +72,7 @@ export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements Hea
             throw this.errorHandler.createErrorWithMessage('Error while creating: patientId should be provided to create new healthcare elements')
         }
 
-        const hesCreated = await Promise.all(heToCreate.map((he) => this.heApi.newInstance(currentUser, patient, he, { confidential: true })))
+        const hesCreated = await Promise.all(heToCreate.map((he) => this.heApi.newInstance(currentUser, patient, he, {confidential: true})))
             .then((healthElementsToCreate) => this.heApi.createHealthElementsWithUser(currentUser, healthElementsToCreate))
             .catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
@@ -94,7 +98,7 @@ export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements Hea
 
     async filterBy(filter: Filter<HealthElement>, nextHealthElementId?: string, limit?: number): Promise<PaginatedList<DSHealthElement>> {
         if (NoOpFilter.isNoOp(filter)) {
-            return { totalSize: 0, pageSize: 0, rows: [] }
+            return {totalSize: 0, pageSize: 0, rows: []}
         }
 
         const currentUser = (await this.userApi.getCurrentUser().catch((e) => {
@@ -182,7 +186,7 @@ export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements Hea
         }
     }
 
-    subscribeTo(
+    subscribeToEvents(
         eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
         filter: Filter<DSHealthElement>,
         eventFired: (dataSample: DSHealthElement) => Promise<void>,

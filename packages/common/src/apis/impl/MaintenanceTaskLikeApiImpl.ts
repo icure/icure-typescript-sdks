@@ -13,6 +13,7 @@ import { FilterMapper } from '../../mappers/Filter.mapper'
 import { MaintenanceTaskFilter } from '../../filters/dsl/MaintenanceTaskFilterDsl'
 import { CommonApi } from '../CommonApi'
 import { AccessLevelEnum } from '../../models/enums/AccessLevel.enum'
+import {CommonFilter} from "../../filters/filters";
 
 export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements MaintenanceTaskLikeApi<DSMaintenanceTask> {
     constructor(
@@ -116,9 +117,9 @@ export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements Maintenanc
         return !paginatedNotifications.nextKeyPair?.startKeyDocId ? accumulator.concat(paginatedNotifications.rows ?? []) : this.concatenateFilterResults(filter, paginatedNotifications.nextKeyPair.startKeyDocId, limit, accumulator.concat(paginatedNotifications.rows ?? []))
     }
 
-    subscribeTo(
+    subscribeToEvents(
         eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
-        filter: Filter<DSMaintenanceTask>,
+        filter: CommonFilter<MaintenanceTask>,
         eventFired: (dataSample: DSMaintenanceTask) => Promise<void>,
         options?: {
             connectionMaxRetry?: number

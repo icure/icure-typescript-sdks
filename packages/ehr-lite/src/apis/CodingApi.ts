@@ -1,15 +1,17 @@
-import {Code, IccCodeXApi, PaginatedListCode} from '@icure/api'
+import {Code, PaginatedListCode} from '@icure/api'
 import {
     CodeLikeApiImpl,
     Coding,
-    ErrorHandler,
+    CommonApi,
     mapCodeToCoding,
     mapCodingToCode,
     PaginatedList
 } from '@icure/typescript-common'
 
-export const codingApi = (errorHandler: ErrorHandler, codeApi: IccCodeXApi) =>
-    new CodeLikeApiImpl<Coding>(
+export class CodingApi extends CodeLikeApiImpl<Coding> {}
+
+export const codingApi = (api: CommonApi) =>
+    new CodingApi(
         {
             toDomain(dto: Code): Coding {
                 return mapCodeToCoding(dto)
@@ -22,16 +24,16 @@ export const codingApi = (errorHandler: ErrorHandler, codeApi: IccCodeXApi) =>
             toDomain(dto: PaginatedListCode): PaginatedList<Coding> {
                 return {
                     ...dto,
-                    rows: dto.rows?.map(mapCodeToCoding)
+                    rows: dto.rows?.map(mapCodeToCoding),
                 } satisfies PaginatedList<Coding>
             },
             toDto(domain: PaginatedList<Coding>): PaginatedListCode {
                 return {
                     ...domain,
-                    rows: domain.rows?.map(mapCodingToCode)
+                    rows: domain.rows?.map(mapCodingToCode),
                 } satisfies PaginatedListCode
-            }
+            },
         },
-        errorHandler,
-        codeApi
+        api.errorHandler,
+        api.baseApi.codeApi
     )

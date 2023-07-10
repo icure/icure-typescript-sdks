@@ -1,9 +1,30 @@
-import { AuthenticationApiImpl, AuthenticationResult, CryptoStrategies, DataOwnerWithType, ErrorHandler, mapUserToUserDto, MessageGatewayApi, Notification, NotificationTypeEnum, Sanitizer } from '@icure/typescript-common'
+import {
+    AuthenticationApiImpl,
+    AuthenticationResult,
+    CryptoStrategies,
+    DataOwnerWithType,
+    ErrorHandler,
+    extractDomainType,
+    mapUserToUserDto,
+    MessageGatewayApi,
+    Notification,
+    NotificationTypeEnum,
+    Sanitizer
+} from '@icure/typescript-common'
 import { EHRLite, EHRLiteApi } from './EHRLiteApi'
-import { IccCryptoXApi, KeyStorageFacade, StorageFacade, User as UserDto } from '@icure/api'
+import {
+    Device,
+    HealthcareParty,
+    IccCryptoXApi,
+    KeyStorageFacade,
+    Patient,
+    StorageFacade,
+    User as UserDto
+} from '@icure/api'
 import { v4 as uuid } from 'uuid'
 import Crypto from 'crypto'
 import { mapPatientToPatientDto } from '../mappers/Patient.mapper'
+import {DataOwnerTypeEnum} from "../models/DataOwner.model";
 
 class AuthenticationApi extends AuthenticationApiImpl<EHRLiteApi> {
     constructor(
@@ -22,75 +43,45 @@ class AuthenticationApi extends AuthenticationApiImpl<EHRLiteApi> {
         super(messageGatewayApi, errorHandler, sanitizer, iCureBasePath, authProcessByEmailId, authProcessBySmsId)
     }
 
-    async authenticateAndAskAccessToItsExistingData(userLogin: string, shortLivedToken: string): Promise<AuthenticationResult<EHRLiteApi>> {
-        const authenticationResult = await this._initUserAuthTokenAndCrypto(userLogin, shortLivedToken)
-
-        const loggedUser = await authenticationResult.api.userApi.getLogged()
-        if (!loggedUser) {
-            throw this.errorHandler.createErrorWithMessage(`There is no user currently logged in. You must call this method from an authenticated MedTechApi`)
-        } else if (!!loggedUser.patientId) {
-            const patientDataOwner = await authenticationResult.api.patientApi.getAndTryDecrypt(loggedUser.patientId)
-            if (!patientDataOwner) throw this.errorHandler.createErrorWithMessage(`Impossible to find the patient ${loggedUser.patientId} apparently linked to the user ${loggedUser.id}. Are you sure this patientId is correct ?`)
-
-            const delegatesInfo = await authenticationResult.api.cryptoApi.entities.getDataOwnersWithAccessTo(mapPatientToPatientDto(patientDataOwner.patient))
-            const delegates = Object.keys(delegatesInfo.permissionsByDataOwnerId)
-
-            for (const delegate of delegates) {
-                const accessNotification = await authenticationResult.api.notificationApi.createOrModify(
-                    new Notification({
-                        id: uuid(),
-                        status: 'pending',
-                        author: loggedUser.id,
-                        responsible: loggedUser.patientId,
-                        type: NotificationTypeEnum.NEW_USER_OWN_DATA_ACCESS,
-                    }),
-                    delegate
-                )
-                //TODO Return which delegates were warned to share back info & add retry mechanism
-                if (!accessNotification)
-                    console.error(`iCure could not create a notification to healthcare party ${delegate} to ask access back to ${loggedUser.patientId} data. Make sure to create a notification for the healthcare party so that he gives back access to ${loggedUser.patientId} data.`)
-            }
-        } else if (!!loggedUser.healthcarePartyId) {
-            const hcpDataOwner = await authenticationResult.api.baseApi.healthcarePartyApi.getHealthcareParty(loggedUser.healthcarePartyId, false).catch((e) => {
-                throw this.errorHandler.createErrorFromAny(e)
-            })
-
-            if (!hcpDataOwner) throw this.errorHandler.createErrorWithMessage(`Impossible to find the healthcare party ${loggedUser.healthcarePartyId} apparently linked to user ${loggedUser.id}. Are you sure this healthcarePartyId is correct ?`)
-        } else {
-            throw this.errorHandler.createErrorWithMessage(`User with id ${loggedUser.id} is not a Data Owner. To be a Data Owner, your user needs to have either patientId, healthcarePartyId or deviceId filled in`)
+    protected initApi(username: string, password: string): Promise<EHRLiteApi> {
+        const builder = EHRLite.api()
+            .withICureBaseUrl(this.iCureBasePath)
+            .withUserName(username)
+            .withPassword(password)
+            .withCrypto(this.crypto)
+            .withStorage(this.storage)
+            .withKeyStorage(this.keyStorage)
+            .withCryptoStrategies(this.cryptoStrategies)
+        if (this.authProcessBySmsId) {
+            builder.withAuthProcessBySmsId(this.authProcessBySmsId)
         }
-
-        return authenticationResult
+        if (this.authProcessByEmailId) {
+            builder.withAuthProcessByEmailId(this.authProcessByEmailId)
+        }
+        return builder.build()
     }
 
-    protected async _generateAndAssignAuthenticationToken(
-        login: string,
-        validationCode: string
-    ): Promise<{
-        authenticatedApi: EHRLiteApi
-        user: UserDto
-        password: string
-        cryptoApi: IccCryptoXApi
-    }> {
-        const api = await EHRLite.api().withICureBaseUrl(this.iCureBasePath).withUserName(login).withPassword(validationCode).withCrypto(this.crypto).withStorage(this.storage).withKeyStorage(this.keyStorage).withCryptoStrategies(this.cryptoStrategies).build()
+    protected validateDevice(deviceDto: Device): void {
+        throw new Error('Unsupported DataOwner')
+    }
 
-        const user = await api.userApi.getLogged()
-        if (!user) {
-            throw this.errorHandler.createErrorWithMessage(`Your validation code ${validationCode} expired. Start a new authentication process for your user`)
+    protected validateHcp(hcpDto: HealthcareParty): void {
+        const domainType = hcpDto.tags ? extractDomainType(hcpDto.tags) : undefined
+
+        if (domainType === undefined) {
+            throw new Error('Domain type is not found')
         }
 
-        const token = await api.userApi.createToken(user.id!, 3600 * 24 * 365 * 10)
-        if (!token) {
-            throw this.errorHandler.createErrorWithMessage(`Your validation code ${validationCode} expired. Start a new authentication process for your user`)
-        }
-
-        return {
-            authenticatedApi: await EHRLite.api(api).withPassword(token).build(),
-            user: mapUserToUserDto(user),
-            password: token,
-            cryptoApi: api.cryptoApi,
+        if (domainType !== DataOwnerTypeEnum.PRACTITIONER && domainType !== DataOwnerTypeEnum.ORGANISATION) {
+            throw new Error('Unsupported DataOwner')
         }
     }
+
+    protected validatePatient(patientDto: Patient): void {
+        return
+    }
+
+
 }
 
 export const authenticationApi = (

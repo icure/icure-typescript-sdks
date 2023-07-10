@@ -41,7 +41,7 @@ export class HealthcarePartyLikeApiImpl<DSHealthcareParty> implements Healthcare
         throw this.errorHandler.createErrorWithMessage(`Could not delete healthcare party ${id}`)
     }
 
-    async filter(filter: Filter<DSHealthcareParty>, nextHealthcarePartyId?: string, limit?: number): Promise<PaginatedList<DSHealthcareParty>> {
+    async filterBy(filter: Filter<DSHealthcareParty>, nextHealthcarePartyId?: string, limit?: number): Promise<PaginatedList<DSHealthcareParty>> {
         if (NoOpFilter.isNoOp(filter)) {
             return { pageSize: 0, totalSize: 0, rows: [] }
         } else {

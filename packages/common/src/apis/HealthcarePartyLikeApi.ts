@@ -27,7 +27,7 @@ export interface HealthcarePartyLikeApi<DSHealthcareParty> {
      * @param nextHealthcarePartyId The id of the first Healthcare professional in the next page
      * @param limit The number of healthcare professionals to return in the queried page
      */
-    filter(filter: Filter<HealthcareParty>, nextHealthcarePartyId?: string, limit?: number): Promise<PaginatedList<DSHealthcareParty>>
+    filterBy(filter: Filter<HealthcareParty>, nextHealthcarePartyId?: string, limit?: number): Promise<PaginatedList<DSHealthcareParty>>
     /**
      * Each healthcare professional is uniquely identified by a healthcare professional id. The healthcare professional id is a UUID. This hcpId is the preferred method to retrieve one specific healthcare professional.
      * Get a Healthcare professional by id.

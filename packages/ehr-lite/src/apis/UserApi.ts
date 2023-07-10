@@ -1,19 +1,12 @@
-import {IccUserXApi, User as UserDto, Patient as PatientDto, PaginatedListUser} from '@icure/api'
-import {
-    CommonApi,
-    ErrorHandler,
-    mapUserDtoToUser,
-    mapUserToUserDto,
-    MessageGatewayApi, PaginatedList,
-    Sanitizer,
-    User,
-    UserLikeApiImpl
-} from '@icure/typescript-common'
+import { IccUserXApi, User as UserDto, Patient as PatientDto, PaginatedListUser } from '@icure/api'
+import { CommonApi, ErrorHandler, mapUserDtoToUser, mapUserToUserDto, MessageGatewayApi, PaginatedList, Sanitizer, User, UserLikeApiImpl } from '@icure/typescript-common'
 import { Patient } from '../models/Patient.model'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
 
-export const userApi = (errorHandler: ErrorHandler, sanitizer: Sanitizer, userApi: IccUserXApi, api: CommonApi, messageGatewayApi?: MessageGatewayApi) =>
-    new UserLikeApiImpl<User, Patient>(
+export class UserApi extends UserLikeApiImpl<User, Patient> {}
+
+export const userApi = (api: CommonApi) =>
+    new UserApi(
         {
             toDomain(dto: UserDto): User {
                 return mapUserDtoToUser(dto)
@@ -34,19 +27,19 @@ export const userApi = (errorHandler: ErrorHandler, sanitizer: Sanitizer, userAp
             toDomain(dto: PaginatedListUser): PaginatedList<User> {
                 return {
                     ...dto,
-                    rows: dto.rows?.map(mapUserDtoToUser)
+                    rows: dto.rows?.map(mapUserDtoToUser),
                 }
             },
             toDto(domain: PaginatedList<User>): PaginatedListUser {
                 return {
                     ...domain,
-                    rows: domain.rows?.map(mapUserToUserDto)
+                    rows: domain.rows?.map(mapUserToUserDto),
                 }
-            }
+            },
         },
-        errorHandler,
-        sanitizer,
-        userApi,
+        api.errorHandler,
+        api.sanitizer,
+        api.baseApi.userApi,
         api,
-        messageGatewayApi,
+        api.messageGatewayApi
     )

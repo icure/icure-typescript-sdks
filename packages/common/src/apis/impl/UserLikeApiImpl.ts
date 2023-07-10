@@ -22,6 +22,7 @@ import {UserFilter} from "../../filters/dsl/UserFilterDsl";
 import {CommonApi} from "../CommonApi";
 import {NoOpFilter} from "../../filters/dsl/filterDsl";
 import {FilterMapper} from "../../mappers/Filter.mapper";
+import {CommonFilter} from "../../filters/filters";
 
 export class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, DSPatient> {
     constructor(
@@ -138,7 +139,7 @@ export class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, D
         throw this.errorHandler.createErrorWithMessage('Invalid user id')
     }
 
-    async filterBy(filter: Filter<DSUser>, nextUserId?: string, limit?: number): Promise<PaginatedList<DSUser>> {
+    async filterBy(filter: CommonFilter<UserDto>, nextUserId?: string, limit?: number): Promise<PaginatedList<DSUser>> {
         if (NoOpFilter.isNoOp(filter)) {
             return { totalSize: 0, pageSize: 0, rows: [] }
         } else {
@@ -182,7 +183,7 @@ export class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, D
         )!
     }
 
-    async matchBy(filter: Filter<DSUser>): Promise<Array<string>> {
+    async matchBy(filter: CommonFilter<UserDto>): Promise<Array<string>> {
         if (NoOpFilter.isNoOp(filter)) {
             return []
         } else {
@@ -274,9 +275,9 @@ export class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, D
         throw this.errorHandler.createErrorWithMessage("Couldn't remove data sharing of user")
     }
 
-    subscribeTo(
+    subscribeToEvents(
         eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
-        filter: Filter<DSUser>,
+        filter: CommonFilter<UserDto>,
         eventFired: (user: DSUser) => Promise<void>,
         options?: {
             connectionMaxRetry?: number

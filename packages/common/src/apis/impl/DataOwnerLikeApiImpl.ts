@@ -8,7 +8,7 @@ import { DataOwnerTypeEnum } from '@icure/api/icc-api/model/DataOwnerTypeEnum'
 import { DataOwnerWithType } from '../../models/DataOwner.model'
 import { hexPublicKeysOf } from '@icure/api/icc-x-api/crypto/utils'
 
-export class DataOwnerApiImpl<DSDataOwnerWithType extends DataOwnerWithType, DSDataOwnerType, DSPatient, DSUser> implements DataOwnerLikeApi<DSDataOwnerWithType, DSUser> {
+export class DataOwnerLikeApiImpl<DSDataOwnerWithType extends DataOwnerWithType, DSDataOwnerType, DSPatient, DSUser> implements DataOwnerLikeApi<DSDataOwnerWithType, DSUser> {
     constructor(
         private readonly dataOwnerWithTypeMapper: Mapper<DSDataOwnerWithType, DataOwnerWithTypeDto>,
         private readonly userMapper: Mapper<DSUser, User>,

@@ -1,21 +1,14 @@
-import {
-    HealthElement,
-    IccCryptoXApi,
-    IccHelementXApi,
-    IccPatientXApi,
-    IccUserXApi,
-    PaginatedListHealthElement,
-    Patient as PatientDto
-} from '@icure/api'
+import { HealthElement, PaginatedListHealthElement, Patient as PatientDto } from '@icure/api'
 import { Condition } from '../models/Condition.model'
-import {CommonApi, ErrorHandler, HealthElementLikeApiImpl, PaginatedList} from '@icure/typescript-common'
+import { CommonApi, HealthElementLikeApiImpl, PaginatedList } from '@icure/typescript-common'
 import { Patient } from '../models/Patient.model'
-import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
 import { mapConditionToHealthElement, mapHealthElementToCondition } from '../mappers/Condition.mapper'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
 
-export const conditionApi = (errorHandler: ErrorHandler, healthElementApi: IccHelementXApi, userApi: IccUserXApi, patientApi: IccPatientXApi, dataOwnerApi: IccDataOwnerXApi, cryptoApi: IccCryptoXApi, api: CommonApi) =>
-    new HealthElementLikeApiImpl<Condition, Patient>(
+export class ConditionApi extends HealthElementLikeApiImpl<Condition, Patient> {}
+
+export const conditionApi = (api: CommonApi) =>
+    new ConditionApi(
         {
             toDomain(dto: HealthElement): Condition {
                 return mapHealthElementToCondition(dto)
@@ -36,22 +29,21 @@ export const conditionApi = (errorHandler: ErrorHandler, healthElementApi: IccHe
             toDomain(dto: PaginatedListHealthElement): PaginatedList<Condition> {
                 return {
                     ...dto,
-                    rows: dto.rows?.map(mapHealthElementToCondition)
+                    rows: dto.rows?.map(mapHealthElementToCondition),
                 }
-
             },
             toDto(domain: PaginatedList<Condition>): PaginatedListHealthElement {
                 return {
                     ...domain,
-                    rows: domain.rows?.map(mapConditionToHealthElement)
+                    rows: domain.rows?.map(mapConditionToHealthElement),
                 }
-            }
+            },
         },
-        errorHandler,
-        healthElementApi,
-        userApi,
-        patientApi,
-        dataOwnerApi,
-        cryptoApi,
+        api.errorHandler,
+        api.baseApi.healthcareElementApi,
+        api.baseApi.userApi,
+        api.baseApi.patientApi,
+        api.baseApi.dataOwnerApi,
+        api.baseApi.cryptoApi,
         api
     )

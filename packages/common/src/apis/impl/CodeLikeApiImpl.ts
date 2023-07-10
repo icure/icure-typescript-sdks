@@ -7,6 +7,7 @@ import {firstOrNull} from '../../utils/functionalUtils'
 import {PaginatedList} from '../../models/PaginatedList.model'
 import {NoOpFilter} from '../../filters/dsl/filterDsl'
 import {FilterMapper} from "../../mappers/Filter.mapper";
+import {CommonFilter} from "../../filters/filters";
 
 export class CodeLikeApiImpl<DSCode> implements CodeLikeApi<DSCode> {
     constructor(private readonly mapper: Mapper<DSCode, Code>, private readonly paginatedMapper: Mapper<PaginatedList<DSCode>, PaginatedListCode>, private readonly errorHandler: ErrorHandler, private readonly codeApi: IccCodeXApi) {
@@ -57,7 +58,7 @@ export class CodeLikeApiImpl<DSCode> implements CodeLikeApi<DSCode> {
         return [...createdCodes, ...updatedCodes].map((c) => this.mapper.toDomain(c))
     }
 
-    async filterBy(filter: Filter<Code>, nextCodeId?: string, limit?: number): Promise<PaginatedList<DSCode>> {
+    async filterBy(filter: CommonFilter<Code>, nextCodeId?: string, limit?: number): Promise<PaginatedList<DSCode>> {
         if (NoOpFilter.isNoOp(filter)) {
             return {
                 pageSize: 0,
@@ -93,7 +94,7 @@ export class CodeLikeApiImpl<DSCode> implements CodeLikeApi<DSCode> {
         )
     }
 
-    async matchBy(filter: Filter<Code>): Promise<Array<string>> {
+    async matchBy(filter: CommonFilter<Code>): Promise<Array<string>> {
         if (NoOpFilter.isNoOp(filter)) {
             return []
         } else {

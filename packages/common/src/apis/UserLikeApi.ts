@@ -91,7 +91,7 @@ export interface UserLikeApi<DSUser, DSPatient> {
      *    - connectionMaxRetry : how many time retrying to reconnect to the iCure WebSocket;
      *    - connectionRetryIntervalInMs : How long base interval will be between two retry. The retry attempt is exponential and using a random value (connectionRetryIntervalMs * (random between 1 and 2))^nbAttempts)
      */
-    subscribeTo(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: Filter<DSUser>, eventFired: (user: DSUser) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection>
+    subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: Filter<DSUser>, eventFired: (user: DSUser) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection>
 
     /**
      * Add autoDelegations values to the user.

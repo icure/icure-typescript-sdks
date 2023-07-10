@@ -11,16 +11,16 @@ import { Mapper } from '../Mapper'
 
 export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithType> implements BaseCryptoStrategies {
     constructor(
-        private readonly medtechStrategies: CryptoStrategies<DSDataOwnerWithType>,
+        private readonly dsStrategies: CryptoStrategies<DSDataOwnerWithType>,
         private readonly dataOwnerMapper: Mapper<DSDataOwnerWithType, DataOwnerWithTypeDto>,
         private readonly cryptoActorStubToDomainTypeMapper: (stub: CryptoActorStubWithType) => DSDataOwnerWithType['type']
     ) {}
 
     async generateNewKeyForDataOwner(self: DataOwnerWithTypeDto, cryptoPrimitives: CryptoPrimitives): Promise<KeyPair<CryptoKey> | boolean> {
-        const canGenerate = await this.medtechStrategies.allowNewKeyPairGeneration(this.dataOwnerMapper.toDomain(self))
+        const canGenerate = await this.dsStrategies.allowNewKeyPairGeneration(this.dataOwnerMapper.toDomain(self))
         if (canGenerate) {
             const newKey = await cryptoPrimitives.RSA.generateKeyPair()
-            await this.medtechStrategies.notifyKeyPairGeneration({
+            await this.dsStrategies.notifyKeyPairGeneration({
                 privateKey: ua2hex(await cryptoPrimitives.RSA.exportKey(newKey.privateKey, 'pkcs8')),
                 publicKey: ua2hex(await cryptoPrimitives.RSA.exportKey(newKey.publicKey, 'spki')),
             })
@@ -50,7 +50,7 @@ export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithTyp
         }
         const missingKeys = keysData[0].unavailableKeys
         const unverifiedKeys = keysData[0].unknownKeys
-        const { recoveredKeyPairs, verifiedKeys } = await this.medtechStrategies.recoverAndVerifyKeys(this.dataOwnerMapper.toDomain(keysData[0].dataOwner), missingKeys, unverifiedKeys)
+        const { recoveredKeyPairs, verifiedKeys } = await this.dsStrategies.recoverAndVerifyKeys(this.dataOwnerMapper.toDomain(keysData[0].dataOwner), missingKeys, unverifiedKeys)
         const missingKeysSet = new Set(missingKeys)
         const unverifiedKeysSet = new Set(unverifiedKeys)
         if (recoveredKeyPairs.some(({ publicKey }) => !missingKeysSet.has(publicKey))) {
@@ -92,6 +92,6 @@ export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithTyp
     }
 
     async verifyDelegatePublicKeys(delegate: CryptoActorStubWithType, publicKeys: string[], cryptoPrimitives: CryptoPrimitives): Promise<string[]> {
-        return await this.medtechStrategies.verifyDelegatePublicKeys(delegate.stub.id, publicKeys, cryptoPrimitives)
+        return await this.dsStrategies.verifyDelegatePublicKeys(delegate.stub.id, publicKeys, cryptoPrimitives)
     }
 }

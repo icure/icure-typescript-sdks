@@ -1,4 +1,3 @@
-import { Filter } from '../../filters/Filter'
 import { PaginatedList } from '../../models/PaginatedList.model'
 import { Connection } from '../../models/Connection.model'
 import { ServiceLikeApi } from '../ServiceLikeApi'
@@ -32,6 +31,8 @@ import { NoOpFilter } from '../../filters/dsl/filterDsl'
 import { FilterMapper } from '../../mappers/Filter.mapper'
 import { ServiceFilter } from '../../filters/dsl/ServiceFilterDsl'
 import { CommonApi } from '../CommonApi'
+import {CommonFilter} from "../../filters/filters";
+import {Document} from "../../models/Document.model";
 
 export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements ServiceLikeApi<DSService, DSPatient, DSDocument> {
     private readonly contactsCache: CachedMap<ContactDto> = new CachedMap<ContactDto>(5 * 60, 10000)
@@ -379,7 +380,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         return (await this.cryptoApi.entities.owningEntityIdsOf(this.serviceMapper.toDto(service)!, undefined))[0]
     }
 
-    async filterBy(filter: Filter<DSService>, nextServiceId?: string, limit?: number): Promise<PaginatedList<DSService>> {
+    async filterBy(filter: CommonFilter<Service>, nextServiceId?: string, limit?: number): Promise<PaginatedList<DSService>> {
         if (NoOpFilter.isNoOp(filter)) {
             return { pageSize: 0, totalSize: 0, rows: [] }
         }
@@ -433,7 +434,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         return await this.concatenateFilterResults(filter)
     }
 
-    async concatenateFilterResults(filter: Filter<Service>, nextId?: string | undefined, limit?: number | undefined, accumulator: Array<DSService> = []): Promise<Array<DSService>> {
+    async concatenateFilterResults(filter: CommonFilter<Service>, nextId?: string | undefined, limit?: number | undefined, accumulator: Array<DSService> = []): Promise<Array<DSService>> {
         const paginatedDataSamples = await this.filterBy(filter, nextId, limit)
         return !paginatedDataSamples.nextKeyPair?.startKeyDocId ? accumulator.concat(paginatedDataSamples.rows ?? []) : this.concatenateFilterResults(filter, paginatedDataSamples.nextKeyPair.startKeyDocId, limit, accumulator.concat(paginatedDataSamples.rows ?? []))
     }
@@ -464,7 +465,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         })!
     }
 
-    matchBy(filter: Filter<Service>): Promise<Array<string>> {
+    matchBy(filter: CommonFilter<Service>): Promise<Array<string>> {
         if (NoOpFilter.isNoOp(filter)) {
             return Promise.resolve([])
         } else {
@@ -474,9 +475,9 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         }
     }
 
-    subscribeToServiceEvents(
+    subscribeToEvents(
         eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
-        filter: Filter<Service>,
+        filter: CommonFilter<Service>,
         eventFired: (service: DSService) => Promise<void>,
         options?: {
             connectionMaxRetry?: number
@@ -486,15 +487,15 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         throw 'TODO'
     }
 
-    // getAttachmentContent(id: string, documentId: string, attachmentId: string): Promise<ArrayBuffer> {
-    //     return Promise.resolve(undefined);
-    // }
-    //
-    // getAttachmentDocument(id: string, documentId: string): Promise<Document> {
-    //     return Promise.resolve(undefined);
-    // }
-    //
-    // setAttachment(id: string, body: ArrayBuffer, documentName?: string, documentVersion?: string, documentExternalUuid?: string, documentLanguage?: string): Promise<Document> {
-    //     return Promise.resolve(undefined);
-    // }
+    getAttachmentContent(id: string, documentId: string): Promise<ArrayBuffer> {
+        throw 'Not implemented yet'
+    }
+
+    getAttachmentDocument(id: string, documentId: string): Promise<Document> {
+        throw 'Not implemented yet'
+    }
+
+    setAttachment(id: string, body: ArrayBuffer, documentName?: string, documentVersion?: string, documentExternalUuid?: string, documentLanguage?: string): Promise<Document> {
+        throw 'Not implemented yet'
+    }
 }

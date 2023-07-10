@@ -2,6 +2,7 @@ import { Filter } from '../filters/Filter'
 import { Connection } from '../models/Connection.model'
 import { PaginatedList } from '../models/PaginatedList.model'
 import {Service} from "@icure/api";
+import {Document} from "../models/Document.model";
 
 /**
  * The ServiceApi interface provides methods to manage data samples.
@@ -92,51 +93,51 @@ export interface ServiceLikeApi<DSService, DSPatient, DSDocument> {
      *    - connectionMaxRetry : how many time retrying to reconnect to the iCure WebSocket;
      *    - connectionRetryIntervalInMs : How long base interval will be between two retry. The retry attempt is exponential and using a random value (connectionRetryIntervalMs * (random between 1 and 2))^nbAttempts)
      */
-    subscribeToServiceEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: Filter<DSService>, eventFired: (service: DSService) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection>
+    subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: Filter<DSService>, eventFired: (service: DSService) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection>
 
     extractPatientId(service: DSService): Promise<string | undefined>
 
-    // /**
-    //  * Data Samples may contain attachments such as prescriptions, reports, ... Use this method to get the content of an attachment
-    //  * Get attachment content of a Service
-    //  * @param id
-    //  * @param documentId
-    //  * @param attachmentId
-    //  */
-    // getAttachmentContent(id: string, documentId: string, attachmentId: string): Promise<ArrayBuffer>
-    //
-    // /**
-    //  * Data Samples may contain attachments such as prescriptions, reports, ... Use this method to get the document metadata information of an attachment
-    //  * Get document metadata of a Service attachment
-    //  * @param id
-    //  * @param documentId
-    //  */
-    // getAttachmentDocument(id: string, documentId: string): Promise<Document>
-    //
-    // /**
-    //  * Deletes an attachment, using its corresponding documentId
-    //  * Delete an attachment of a Service
-    //  * @param id
-    //  * @param documentId
-    //  */
-    // deleteAttachment(id: string, documentId: string): Promise<string>
-    //
-    // /**
-    //  * Link an attachment or update the attachment of a data sample
-    //  * Add or update the attachment of a Service
-    //  * @param id
-    //  * @param body
-    //  * @param documentName
-    //  * @param documentVersion
-    //  * @param documentExternalUuid
-    //  * @param documentLanguage
-    //  */
-    // setAttachment(
-    //   id: string,
-    //   body: ArrayBuffer,
-    //   documentName?: string,
-    //   documentVersion?: string,
-    //   documentExternalUuid?: string,
-    //   documentLanguage?: string
-    // ): Promise<Document>
+    /**
+     * Data Samples may contain attachments such as prescriptions, reports, ... Use this method to get the content of an attachment
+     * Get attachment content of a Service
+     * @param id
+     * @param documentId
+     * @param attachmentId
+     */
+    getAttachmentContent(id: string, documentId: string, attachmentId: string): Promise<ArrayBuffer>
+
+    /**
+     * Data Samples may contain attachments such as prescriptions, reports, ... Use this method to get the document metadata information of an attachment
+     * Get document metadata of a Service attachment
+     * @param id
+     * @param documentId
+     */
+    getAttachmentDocument(id: string, documentId: string): Promise<Document>
+
+    /**
+     * Deletes an attachment, using its corresponding documentId
+     * Delete an attachment of a Service
+     * @param id
+     * @param documentId
+     */
+    deleteAttachment(id: string, documentId: string): Promise<string>
+
+    /**
+     * Link an attachment or update the attachment of a data sample
+     * Add or update the attachment of a Service
+     * @param id
+     * @param body
+     * @param documentName
+     * @param documentVersion
+     * @param documentExternalUuid
+     * @param documentLanguage
+     */
+    setAttachment(
+      id: string,
+      body: ArrayBuffer,
+      documentName?: string,
+      documentVersion?: string,
+      documentExternalUuid?: string,
+      documentLanguage?: string
+    ): Promise<Document>
 }
