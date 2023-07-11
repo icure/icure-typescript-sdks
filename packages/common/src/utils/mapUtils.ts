@@ -1,3 +1,7 @@
+export function mapOf<K extends string, V>(mapObj: Partial<{ [key in K]: V }>): Map<K, V> {
+    return new Map(Object.entries(mapObj) as [K, V][])
+}
+
 export function toMap<V>(entries: [key: string, value: V][]): { [key: string]: V } {
     return entries.reduce((m, [k, v]) => {
         m[k] = v
@@ -5,9 +9,14 @@ export function toMap<V>(entries: [key: string, value: V][]): { [key: string]: V
     }, {} as { [key: string]: V })
 }
 
-export function mapReduce<I, O>(map: { [key: string]: I } | undefined, mapper: (obj: I) => O | undefined): {
-    [key: string]: O
-} | undefined {
+export function mapReduce<I, O>(
+    map: { [key: string]: I } | undefined,
+    mapper: (obj: I) => O | undefined
+):
+    | {
+          [key: string]: O
+      }
+    | undefined {
     if (!map) {
         return undefined
     }
@@ -42,19 +51,21 @@ export function map<I, O>(arr: I[] | undefined, mapper: (obj: I) => O | undefine
     return arr.map((it) => mapper(it)!)
 }
 
-export function toMapTransform<I, O>(map: { [key: string]: I } | undefined, mapper: (obj: I) => O | undefined): {
-    [key: string]: O
-} | undefined {
+export function toMapTransform<I, O>(
+    map: { [key: string]: I } | undefined,
+    mapper: (obj: I) => O | undefined
+):
+    | {
+          [key: string]: O
+      }
+    | undefined {
     if (!map) {
         return undefined
     }
     return Object.fromEntries(Object.entries(map).map(([k, v]) => [k, mapper(v)!]))
 }
 
-export function toMapArrayTransform<I, O>(
-    map: { [key: string]: Iterable<I> } | undefined,
-    mapper: (obj: I) => O | undefined
-): { [key: string]: O[] } | undefined {
+export function toMapArrayTransform<I, O>(map: { [key: string]: Iterable<I> } | undefined, mapper: (obj: I) => O | undefined): { [key: string]: O[] } | undefined {
     if (!map) {
         return undefined
     }
@@ -66,10 +77,7 @@ export function toMapArrayTransform<I, O>(
         }, {} as { [key: string]: O[] })
 }
 
-export function toMapSetTransform<I, O>(
-    map: { [key: string]: Iterable<I> } | undefined,
-    mapper: (obj: I) => O | undefined
-): { [key: string]: Set<O> } | undefined {
+export function toMapSetTransform<I, O>(map: { [key: string]: Iterable<I> } | undefined, mapper: (obj: I) => O | undefined): { [key: string]: Set<O> } | undefined {
     if (!map) {
         return undefined
     }

@@ -1,39 +1,36 @@
-import { EmailMessageFactory, SMSMessageFactory } from '../../utils/msgGtwMessageFactory'
-import { Filter } from '../../filters/Filter'
 import { PaginatedList } from '../../models/PaginatedList.model'
 import { SharedDataType } from '../../models/User.model'
 import { Connection } from '../../models/Connection.model'
 import { UserLikeApi } from '../UserLikeApi'
 import { ErrorHandler } from '../../services/ErrorHandler'
-import {
-    FilterChainUser,
-    IccUserXApi,
-    PaginatedListUser,
-    Patient as PatientDto,
-    retry,
-    User as UserDto
-} from '@icure/api'
+import { FilterChainUser, HealthcareParty as HealthcarePartyDto, IccUserXApi, PaginatedListUser, Patient as PatientDto, retry, User as UserDto } from '@icure/api'
 import { Mapper } from '../Mapper'
 import { MessageGatewayApi } from '../MessageGatewayApi'
 import { Sanitizer } from '../../services/Sanitizer'
 import { forceUuid } from '../../utils/uuidUtils'
-import {filteredContactsFromAddresses} from "../../utils/addressUtils";
-import {UserFilter} from "../../filters/dsl/UserFilterDsl";
-import {CommonApi} from "../CommonApi";
-import {NoOpFilter} from "../../filters/dsl/filterDsl";
-import {FilterMapper} from "../../mappers/Filter.mapper";
-import {CommonFilter} from "../../filters/filters";
+import { filteredContactsFromAddresses } from '../../utils/addressUtils'
+import { UserFilter } from '../../filters/dsl/UserFilterDsl'
+import { CommonApi } from '../CommonApi'
+import { NoOpFilter } from '../../filters/dsl/filterDsl'
+import { FilterMapper } from '../../mappers/Filter.mapper'
+import { CommonFilter } from '../../filters/filters'
+import { MessageFactory } from '../../services/MessageFactory'
+import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
+import { DataOwnerTypeEnum } from '@icure/api/icc-api/model/DataOwnerTypeEnum'
 
-export class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, DSPatient> {
+export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements UserLikeApi<DSUser, DSPatient> {
     constructor(
         private readonly userMapper: Mapper<DSUser, UserDto>,
         private readonly patientMapper: Mapper<DSPatient, PatientDto>,
+        private readonly hcpMapper: Mapper<DSHealthcareParty, HealthcarePartyDto>,
         private readonly paginatedListMapper: Mapper<PaginatedList<DSUser>, PaginatedListUser>,
         private readonly errorHandler: ErrorHandler,
         private readonly sanitizer: Sanitizer,
         private readonly userApi: IccUserXApi,
+        private readonly dataOwnerApi: IccDataOwnerXApi,
         private readonly api: CommonApi,
-        private readonly messageGatewayApi?: MessageGatewayApi,
+        private readonly messageFactory: MessageFactory<DSUser, DSHealthcareParty, DSPatient>,
+        private readonly messageGatewayApi?: MessageGatewayApi
     ) {}
 
     checkTokenValidity(id: string, token: string): Promise<boolean> {
@@ -42,12 +39,14 @@ export class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, D
         })
     }
 
-    async createAndInvite(patient: DSPatient, messageFactory: SMSMessageFactory | EmailMessageFactory, tokenDuration?: number): Promise<DSUser> {
+    async createAndInvite(patient: DSPatient, tokenDuration?: number): Promise<DSUser> {
         if (!this.messageGatewayApi) {
-            throw this.errorHandler.createErrorWithMessage(
-                'Can not invite a user, as no msgGtwUrl and/or specId have been provided : Make sure to call .withMsgGtwUrl and .withMsgGtwSpecId when creating your MedTechApi'
-            )
+            throw this.errorHandler.createErrorWithMessage('Can not invite a user, as no msgGtwUrl and/or specId have been provided : Make sure to call .withMsgGtwUrl and .withMsgGtwSpecId when creating your MedTechApi')
         }
+
+        const selfUser = await this.userApi.getCurrentUser()
+        const selfDataOwner = await this.dataOwnerApi.getCurrentDataOwner()
+        if (selfDataOwner.type !== DataOwnerTypeEnum.Hcp) throw new Error('Only an HCP can invite a patient')
 
         const patientDto = this.patientMapper.toDto(patient)
 
@@ -60,30 +59,30 @@ export class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, D
         if (!!existingUsers && existingUsers.rows != undefined && existingUsers.rows.length > 0) throw this.errorHandler.createErrorWithMessage('A User already exists for this Patient')
 
         // Gets the preferred contact information
-        const contact = [
+        const contacts = [
             filteredContactsFromAddresses(patientDto.addresses ?? [], 'email', 'home'), // Check for the home email
             filteredContactsFromAddresses(patientDto.addresses ?? [], 'mobile', 'home'), // Check for the home mobile
             filteredContactsFromAddresses(patientDto.addresses ?? [], 'email', 'work'), // Check for the work email
             filteredContactsFromAddresses(patientDto.addresses ?? [], 'mobile', 'work'), // Check for the work mobile
             filteredContactsFromAddresses(patientDto.addresses ?? [], 'email'), // Check for any email
             filteredContactsFromAddresses(patientDto.addresses ?? [], 'mobile'), // Check for any mobile
-        ].filter((contact) => !!contact)[0]
-        if (!contact) throw this.errorHandler.createErrorWithMessage('No email or mobile phone information provided in patient')
+        ].filter((contact) => !!contact)
+        const favouredEmail = contacts.find((contact) => contact?.telecomType == 'email')
+        const favouredMobile = contacts.find((contact) => contact?.telecomType == 'mobile')
+        if (!favouredEmail && !favouredMobile) throw this.errorHandler.createErrorWithMessage('No email or mobile phone information provided in patient')
 
         // Creates the user
         const createdUser = await this.userApi.createUser(
-
-                new UserDto({
-                    created: new Date().getTime(),
-                    name: contact.telecomNumber,
-                    login: contact.telecomNumber,
-                    patientId: patientDto.id,
-                    email: contact.telecomType == 'email' ? contact.telecomNumber : undefined,
-                    mobilePhone: contact.telecomType == 'mobile' ? contact.telecomNumber : undefined,
-                })
+            new UserDto({
+                created: new Date().getTime(),
+                name: favouredEmail?.telecomNumber ?? favouredMobile?.telecomNumber,
+                login: favouredEmail?.telecomNumber ?? favouredMobile?.telecomNumber,
+                patientId: patientDto.id,
+                email: favouredEmail?.telecomNumber,
+                mobilePhone: favouredMobile?.telecomNumber,
+            })
         )
-        if (!createdUser || !createdUser.id || !createdUser.login)
-            throw this.errorHandler.createErrorWithMessage('Something went wrong during User creation')
+        if (!createdUser || !createdUser.id || !createdUser.login) throw this.errorHandler.createErrorWithMessage('Something went wrong during User creation')
 
         // Gets a short-lived authentication token
         const shortLivedToken = await retry(() => this.createToken(createdUser.id!, tokenDuration), 5, 2_000).catch(() => {
@@ -91,13 +90,18 @@ export class UserLikeApiImpl<DSUser, DSPatient> implements UserLikeApi<DSUser, D
         })
         if (!shortLivedToken) throw this.errorHandler.createErrorWithMessage('Something went wrong while creating a token for the User')
 
-        const messagePromise = !!createdUser.email
-            ? this.messageGatewayApi?.sendEmail(createdUser.login, (messageFactory as EmailMessageFactory).get(createdUser, shortLivedToken)).catch((e) => {
-                throw this.errorHandler.createErrorFromAny(e)
-            })
-            : this.messageGatewayApi?.sendSMS(createdUser.login, (messageFactory as SMSMessageFactory).get(createdUser, shortLivedToken)).catch((e) => {
-                throw this.errorHandler.createErrorFromAny(e)
-            })
+        const preferredMessageType = !!createdUser.email && !!createdUser.mobilePhone ? this.messageFactory.preferredMessageType : !!createdUser.email ? 'email' : 'sms'
+
+        const messagePromise =
+            preferredMessageType === 'email'
+                ? this.messageGatewayApi
+                      ?.sendEmail(createdUser.login, this.messageFactory.getPatientInvitationEmail(this.userMapper.toDomain(createdUser), patient, shortLivedToken, this.userMapper.toDomain(selfUser), this.hcpMapper.toDomain(selfDataOwner.dataOwner)))
+                      .catch((e) => {
+                          throw this.errorHandler.createErrorFromAny(e)
+                      })
+                : this.messageGatewayApi?.sendSMS(createdUser.login, this.messageFactory.getPatientInvitationSMS(this.userMapper.toDomain(createdUser), patient, shortLivedToken, this.userMapper.toDomain(selfUser), this.hcpMapper.toDomain(selfDataOwner.dataOwner))).catch((e) => {
+                      throw this.errorHandler.createErrorFromAny(e)
+                  })
 
         if (!(await messagePromise)) throw this.errorHandler.createErrorWithMessage('Something went wrong contacting the Message Gateway')
 

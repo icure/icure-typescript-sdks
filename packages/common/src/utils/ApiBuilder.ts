@@ -1,14 +1,10 @@
+import { CryptoStrategies } from '../services/CryptoStrategies'
+import { CommonApi, formatICureApiUrl, ICURE_CLOUD_URL, MessageFactory, MSG_GW_CLOUD_URL } from '../index'
+import { KeyStorageFacade, KeyStorageImpl, LocalStorageImpl, StorageFacade } from '@icure/api'
+import { CryptoPrimitives } from '@icure/api/icc-x-api/crypto/CryptoPrimitives'
+import { CommonAnonymousApi } from '../apis/CommonAnonymousApi'
 
-import {CryptoStrategies} from "../services/CryptoStrategies";
-import {CommonApi, formatICureApiUrl, ICURE_CLOUD_URL, MSG_GW_CLOUD_URL} from "../index";
-import {KeyStorageFacade, KeyStorageImpl, LocalStorageImpl, StorageFacade} from "@icure/api";
-import {CryptoPrimitives} from "@icure/api/icc-x-api/crypto/CryptoPrimitives";
-import {CommonAnonymousApi} from "../apis/CommonAnonymousApi";
-
-export abstract class ApiBuilder<
-    DSCryptoStrategies extends CryptoStrategies<any>,
-    DSApi
-> {
+export abstract class ApiBuilder<DSCryptoStrategies extends CryptoStrategies<any>, DSApi> {
     protected iCureBaseUrl: string = ICURE_CLOUD_URL
     protected msgGwUrl: string = MSG_GW_CLOUD_URL
     protected msgGwSpecId?: string
@@ -67,10 +63,7 @@ export abstract class ApiBuilder<
     abstract build(): Promise<DSApi>
 }
 
-export abstract class AnonymousApiBuilder<
-    DSCryptoStrategies extends CryptoStrategies<any>,
-    DSApi extends CommonAnonymousApi<any>
-> extends ApiBuilder<DSCryptoStrategies, DSApi> {
+export abstract class AnonymousApiBuilder<DSCryptoStrategies extends CryptoStrategies<any>, DSApi extends CommonAnonymousApi<any>> extends ApiBuilder<DSCryptoStrategies, DSApi> {
     build(): Promise<DSApi> {
         const iCureBaseUrl = this.iCureBaseUrl
         const msgGwUrl = this.msgGwUrl
@@ -78,13 +71,7 @@ export abstract class AnonymousApiBuilder<
         const authProcessByEmailId = this.authProcessByEmailId
         const authProcessBySmsId = this.authProcessBySmsId
         const cryptoStrategies = this.cryptoStrategies
-        const authProcessInfo = (!!authProcessByEmailId && !!authProcessBySmsId)
-            ? { authProcessBySmsId, authProcessByEmailId }
-            : (!!authProcessBySmsId)
-                ? { authProcessBySmsId }
-                : (!!authProcessByEmailId)
-                    ? { authProcessByEmailId }
-                    : undefined
+        const authProcessInfo = !!authProcessByEmailId && !!authProcessBySmsId ? { authProcessBySmsId, authProcessByEmailId } : !!authProcessBySmsId ? { authProcessBySmsId } : !!authProcessByEmailId ? { authProcessByEmailId } : undefined
         if (!authProcessInfo) {
             throw new Error('At least one between authProcessIdBySms and authProcessByEmailId is required')
         }
@@ -106,30 +93,26 @@ export abstract class AnonymousApiBuilder<
             keyStorage,
             primitives: new CryptoPrimitives(this.crypto),
             cryptoStrategies: cryptoStrategies,
-            authProcessInfo
+            authProcessInfo,
         })
     }
 
     protected abstract doBuild(props: {
-        iCureBaseUrl: string,
-        msgGwUrl: string,
-        msgGwSpecId: string,
-        storage: StorageFacade<string>,
-        keyStorage: KeyStorageFacade,
-        primitives: CryptoPrimitives,
-        cryptoStrategies: DSCryptoStrategies,
-        authProcessInfo:
-            | { authProcessBySmsId: string, authProcessByEmailId?: string }
-            | { authProcessBySmsId?: string, authProcessByEmailId: string }
+        iCureBaseUrl: string
+        msgGwUrl: string
+        msgGwSpecId: string
+        storage: StorageFacade<string>
+        keyStorage: KeyStorageFacade
+        primitives: CryptoPrimitives
+        cryptoStrategies: DSCryptoStrategies
+        authProcessInfo: { authProcessBySmsId: string; authProcessByEmailId?: string } | { authProcessBySmsId?: string; authProcessByEmailId: string }
     }): Promise<DSApi>
 }
 
-export abstract class AuthenticatedApiBuilder<
-    DSCryptoStrategies extends CryptoStrategies<any>,
-    DSApi extends CommonApi
-> extends ApiBuilder<DSCryptoStrategies, DSApi> {
+export abstract class AuthenticatedApiBuilder<DSCryptoStrategies extends CryptoStrategies<any>, DSMessageFactory extends MessageFactory<any, any, any>, DSApi extends CommonApi> extends ApiBuilder<DSCryptoStrategies, DSApi> {
     private userName?: string
     private password?: string
+    protected messageFactory?: DSMessageFactory
 
     withUserName(newUserName: string): this {
         this.userName = newUserName
@@ -138,6 +121,11 @@ export abstract class AuthenticatedApiBuilder<
 
     withPassword(newPassword: string): this {
         this.password = newPassword
+        return this
+    }
+
+    withMessageFactory(messageFactory: DSMessageFactory): this {
+        this.messageFactory = messageFactory
         return this
     }
 
@@ -153,6 +141,7 @@ export abstract class AuthenticatedApiBuilder<
         const authProcessBySmsId = this.authProcessBySmsId
         const storage = this.storage
         const keyStorage = this.keyStorage
+        const messageFactory = this.messageFactory
         if (iCureBaseUrl == undefined) {
             throw new Error('iCureBaseUrl is required')
         }
@@ -177,23 +166,23 @@ export abstract class AuthenticatedApiBuilder<
             authProcessByEmailId,
             authProcessBySmsId,
             storage,
-            keyStorage
+            keyStorage,
+            messageFactory,
         })
     }
 
-    protected abstract doBuild(
-        props: {
-            iCureBaseUrl: string,
-            msgGwUrl: string,
-            msgGwSpecId: string | undefined,
-            storage: StorageFacade<string> | undefined,
-            keyStorage: KeyStorageFacade | undefined,
-            cryptoStrategies: DSCryptoStrategies,
-            userName: string,
-            password: string,
-            crypto: Crypto | undefined,
-            authProcessByEmailId: string | undefined,
-            authProcessBySmsId: string | undefined,
-        },
-    ): Promise<DSApi>
+    protected abstract doBuild(props: {
+        iCureBaseUrl: string
+        msgGwUrl: string
+        msgGwSpecId: string | undefined
+        storage: StorageFacade<string> | undefined
+        keyStorage: KeyStorageFacade | undefined
+        cryptoStrategies: DSCryptoStrategies
+        userName: string
+        password: string
+        crypto: Crypto | undefined
+        authProcessByEmailId: string | undefined
+        authProcessBySmsId: string | undefined
+        messageFactory: DSMessageFactory | undefined
+    }): Promise<DSApi>
 }

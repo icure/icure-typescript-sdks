@@ -1,12 +1,13 @@
-import {AuthenticationProcessBody, EmailMessage, SMSMessage} from '../utils/msgGtwMessageFactory'
+import { AuthenticationProcessBody } from '../models/api/AuthenticationProcessBody'
+import { EmailMessage } from '../models/api/EmailMessage'
+import { SMSMessage } from '../models/api/SMSMessage'
 
 export interface MessageGatewayApi {
-  sendEmail(recipientEmail: string, email: EmailMessage): Promise<boolean>
+    sendEmail(recipientEmail: string, email: EmailMessage): Promise<boolean>
 
-  sendSMS(recipientMobileNumber: string, sms: SMSMessage): Promise<boolean>
+    sendSMS(recipientMobileNumber: string, sms: SMSMessage): Promise<boolean>
 
-  startProcess(processId: string, processBody: AuthenticationProcessBody, validationCodeLength?: number): Promise<string>
+    startProcess(processId: string, processBody: AuthenticationProcessBody, validationCodeLength?: number): Promise<string>
 
-  validateProcess(requestId: string, validationCode: string): Promise<boolean>
+    validateProcess(requestId: string, validationCode: string): Promise<boolean>
 }
-

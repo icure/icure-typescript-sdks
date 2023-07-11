@@ -170,7 +170,7 @@ interface IDataSample {
   healthcareElementIds?: Set<string>
   canvasesIds?: Set<string>
   index?: number
-  content?: Map<string, Content>
+  content?: Map<ISO639_1, Content>
   valueDate?: number
   openingDate?: number
   closingDate?: number

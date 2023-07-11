@@ -31,8 +31,8 @@ import { NoOpFilter } from '../../filters/dsl/filterDsl'
 import { FilterMapper } from '../../mappers/Filter.mapper'
 import { ServiceFilter } from '../../filters/dsl/ServiceFilterDsl'
 import { CommonApi } from '../CommonApi'
-import {CommonFilter} from "../../filters/filters";
-import {Document} from "../../models/Document.model";
+import { CommonFilter } from '../../filters/filters'
+import { Document } from '../../models/Document.model'
 
 export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements ServiceLikeApi<DSService, DSPatient, DSDocument> {
     private readonly contactsCache: CachedMap<ContactDto> = new CachedMap<ContactDto>(5 * 60, 10000)
@@ -52,7 +52,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         private readonly api: CommonApi
     ) {}
 
-    private clearContactCache() {
+    clearContactCache() {
         this.contactsCache.invalidateAll()
     }
 

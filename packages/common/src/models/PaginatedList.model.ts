@@ -1,8 +1,8 @@
-import {PaginatedDocumentKeyAndIdPairObject} from "./PaginatedDocumentKeyAndIdPairObject.model";
+import { PaginatedDocumentKeyAndIdPairObject } from './PaginatedDocumentKeyAndIdPairObject.model'
 
 export interface PaginatedList<T> {
-    pageSize?: number
-    totalSize?: number
-    rows?: Array<T>
+    pageSize: number
+    totalSize: number
+    rows: Array<T>
     nextKeyPair?: PaginatedDocumentKeyAndIdPairObject
 }

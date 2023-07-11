@@ -1,8 +1,7 @@
 import { CryptoStrategies } from '../CryptoStrategies'
-import { KeyPair } from '@icure/api/icc-x-api/crypto/RSA'
 import { CryptoPrimitives } from '@icure/api/icc-x-api/crypto/CryptoPrimitives'
-import {DataOwnerTypeEnum} from "@icure/api/icc-api/model/DataOwnerTypeEnum";
-import {DataOwnerWithType} from "../../models/DataOwner.model";
+import { DataOwnerWithType } from '../../models/DataOwner.model'
+import { KeyPair } from '../../models/KeyPair.model'
 
 /**
  * Implementation of med-tech crypto strategies which uses pre-loaded keys for initialisation and puts full trust on the
@@ -14,66 +13,61 @@ import {DataOwnerWithType} from "../../models/DataOwner.model";
  * automatically loaded by the initialisation procedure.
  */
 export class SimpleCryptoStrategies<DSDataOwnerWithType extends DataOwnerWithType> implements CryptoStrategies<DSDataOwnerWithType> {
-  /**
-   * If a new key pair was initialised during api initialisation this will return the generated keypair.
-   */
-  get generatedKeyPair(): KeyPair<string> | undefined {
-    return this._generatedKeyPair ? { ...this._generatedKeyPair } : undefined
-  }
-  private _generatedKeyPair: KeyPair<string> | undefined
+    private _generatedKeyPair: KeyPair | undefined
 
-  /**
-   * Builds a new instance of simple med-tech crypto strategies:
-   * @param availableKeys pre-loaded available keys which may not be contained yet in the key storage. Will be also
-   * considered as verified.
-   * @param anonymousDataOwnerTypes data owner types which require anonymous delegations
-   */
-  constructor(private readonly availableKeys: KeyPair<string>[], private readonly anonymousDataOwnerTypes: Set<DataOwnerTypeEnum>) {}
+    /**
+     * Builds a new instance of simple med-tech crypto strategies:
+     * @param availableKeys pre-loaded available keys which may not be contained yet in the key storage. Will be also
+     * considered as verified.
+     */
+    // * @param anonymousDataOwnerTypes data owner types which require anonymous delegations
+    constructor(private readonly availableKeys: KeyPair[]) // private readonly anonymousDataOwnerTypes: Set<DSDataOwnerWithType['type']>
+    {}
 
-  allowNewKeyPairGeneration(self: DSDataOwnerWithType): Promise<boolean> {
-    return Promise.resolve(true)
-  }
+    /**
+     * If a new key pair was initialised during api initialisation this will return the generated keypair.
+     */
+    get generatedKeyPair(): KeyPair | undefined {
+        return this._generatedKeyPair ? { ...this._generatedKeyPair } : undefined
+    }
 
-  recoverAndVerifyKeys(
-    self: DSDataOwnerWithType,
-    missingKeys: string[],
-    unverifiedKeys: string[]
-  ): Promise<{
-    recoveredKeyPairs: KeyPair<string>[]
-    verifiedKeys: { [p: string]: CryptoStrategies.KeyVerificationBehaviour }
-  }> {
-    const availableKeysByPublic = Object.fromEntries(this.availableKeys.map((keyPair) => [keyPair.publicKey, keyPair] as [string, KeyPair<string>]))
-    const recoveredKeyPairs = missingKeys.flatMap((missingKey) => {
-      const availableKey = availableKeysByPublic[missingKey]
-      return availableKey ? [availableKey] : []
-    })
-    const recoveredPublicKeysSet = new Set(recoveredKeyPairs.map((keyPair) => keyPair.publicKey))
-    const verifiedKeys = Object.fromEntries(
-      unverifiedKeys
-        .filter((unverifiedKey) => !recoveredPublicKeysSet.has(unverifiedKey))
-        .map(
-          (unverifiedKey) =>
-            [
-              unverifiedKey,
-              !!availableKeysByPublic[unverifiedKey]
-                ? CryptoStrategies.KeyVerificationBehaviour.MARK_VERIFIED
-                : CryptoStrategies.KeyVerificationBehaviour.TEMPORARILY_UNVERIFIED,
-            ] as [string, CryptoStrategies.KeyVerificationBehaviour]
+    allowNewKeyPairGeneration(self: DSDataOwnerWithType): Promise<boolean> {
+        return Promise.resolve(true)
+    }
+
+    recoverAndVerifyKeys(
+        self: DSDataOwnerWithType,
+        missingKeys: string[],
+        unverifiedKeys: string[]
+    ): Promise<{
+        recoveredKeyPairs: KeyPair[]
+        verifiedKeys: { [p: string]: CryptoStrategies.KeyVerificationBehaviour }
+    }> {
+        const availableKeysByPublic = Object.fromEntries(this.availableKeys.map((keyPair) => [keyPair.publicKey, keyPair] as [string, KeyPair]))
+        const recoveredKeyPairs = missingKeys.flatMap((missingKey) => {
+            const availableKey = availableKeysByPublic[missingKey]
+            return availableKey ? [availableKey] : []
+        })
+        const recoveredPublicKeysSet = new Set(recoveredKeyPairs.map((keyPair) => keyPair.publicKey))
+        const verifiedKeys = Object.fromEntries(
+            unverifiedKeys
+                .filter((unverifiedKey) => !recoveredPublicKeysSet.has(unverifiedKey))
+                .map((unverifiedKey) => [unverifiedKey, !!availableKeysByPublic[unverifiedKey] ? CryptoStrategies.KeyVerificationBehaviour.MARK_VERIFIED : CryptoStrategies.KeyVerificationBehaviour.TEMPORARILY_UNVERIFIED] as [string, CryptoStrategies.KeyVerificationBehaviour])
         )
-    )
-    return Promise.resolve({ recoveredKeyPairs, verifiedKeys })
-  }
+        return Promise.resolve({ recoveredKeyPairs, verifiedKeys })
+    }
 
-  async notifyKeyPairGeneration(keyPair: KeyPair<string>): Promise<void> {
-    if (!!this._generatedKeyPair) throw new Error('A new key pair was already created')
-    this._generatedKeyPair = keyPair
-  }
+    async notifyKeyPairGeneration(keyPair: KeyPair): Promise<void> {
+        if (!!this._generatedKeyPair) throw new Error('A new key pair was already created')
+        this._generatedKeyPair = keyPair
+    }
 
-  verifyDelegatePublicKeys(delegateId: string, publicKeys: string[], cryptoPrimitives: CryptoPrimitives): Promise<string[]> {
-    return Promise.resolve(publicKeys)
-  }
+    verifyDelegatePublicKeys(delegateId: string, publicKeys: string[], cryptoPrimitives: CryptoPrimitives): Promise<string[]> {
+        return Promise.resolve(publicKeys)
+    }
 
-  dataOwnerRequiresAnonymousDelegation(dataOwnerId: string, dataOwnerType: DataOwnerTypeEnum): boolean {
-    return this.anonymousDataOwnerTypes.has(dataOwnerType)
-  }
+    // TODO will be needed for api v8
+    // dataOwnerRequiresAnonymousDelegation(dataOwnerId: string, dataOwnerType: DSDataOwnerWithType['type']): boolean {
+    //   return this.anonymousDataOwnerTypes.has(dataOwnerType)
+    // }
 }
