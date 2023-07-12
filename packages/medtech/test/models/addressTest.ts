@@ -1,6 +1,6 @@
 import 'mocha'
 
-import { Address } from '../../src/models/Address'
+import { Address } from '../..'
 import { assert } from 'chai'
 import { newTelecom } from './telecomTest'
 
@@ -23,7 +23,7 @@ export function newAddress(): Address {
 describe('Address model test', () => {
   it('Marshalling/Unmarshalling of Address model - Success', () => {
     const address = newAddress()
-    const marshalledAddress = address.marshal()
+    const marshalledAddress = Address.toJSON(address)
     const unmarshalledAddress = new Address(JSON.parse(JSON.stringify(marshalledAddress)))
     assert.deepEqual(address, unmarshalledAddress)
     assert.deepEqual(address, new Address(address))
