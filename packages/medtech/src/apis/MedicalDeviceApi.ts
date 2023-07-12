@@ -1,13 +1,9 @@
-import {CommonApi, CommonFilter, DeviceLikeApiImpl, ErrorHandler, PaginatedList} from '@icure/typescript-common'
-import { Device, PaginatedListDevice } from '@icure/api'
-import { MedicalDevice } from '../models/MedicalDevice.model'
-import { mapDeviceToMedicalDevice, mapMedicalDeviceToDevice } from '../mappers/MedicalDevice.mapper'
+import {CommonApi, CommonFilter, DeviceLikeApi, DeviceLikeApiImpl, PaginatedList} from '@icure/typescript-common'
+import {Device, PaginatedListDevice} from '@icure/api'
+import {MedicalDevice} from '../models/MedicalDevice.model'
+import {mapDeviceToMedicalDevice, mapMedicalDeviceToDevice} from '../mappers/MedicalDevice.mapper'
 
-/**
- * The MedicalDeviceApi interface provides methods to manage medical devices.
- */
-export class MedicalDeviceApi extends DeviceLikeApiImpl<MedicalDevice> {
-
+export interface MedicalDeviceApi extends DeviceLikeApi<MedicalDevice> {
   /**
    * @deprecated use {@link MedicalDeviceApi.createOrModify} instead.
    *
@@ -15,9 +11,7 @@ export class MedicalDeviceApi extends DeviceLikeApiImpl<MedicalDevice> {
    * Create or update a [MedicalDevice]
    * @param medicalDevice
    */
-  createOrModifyMedicalDevice(medicalDevice: MedicalDevice): Promise<MedicalDevice> {
-    return this.createOrModify(medicalDevice)
-  }
+  createOrModifyMedicalDevice(medicalDevice: MedicalDevice): Promise<MedicalDevice>;
 
   /**
    * @deprecated use {@link MedicalDeviceApi.createOrModifyMany} instead.
@@ -26,9 +20,7 @@ export class MedicalDeviceApi extends DeviceLikeApiImpl<MedicalDevice> {
    * Create or update a batch of [MedicalDevice]
    * @param medicalDevices
    */
-  createOrModifyMedicalDevices(medicalDevices: Array<MedicalDevice>): Promise<Array<MedicalDevice>> {
-    return this.createOrModifyMany(medicalDevices)
-  }
+  createOrModifyMedicalDevices(medicalDevices: Array<MedicalDevice>): Promise<Array<MedicalDevice>>;
 
   /**
    * @deprecated use {@link MedicalDeviceApi.delete} instead.
@@ -37,9 +29,7 @@ export class MedicalDeviceApi extends DeviceLikeApiImpl<MedicalDevice> {
    * Delete a [MedicalDevice]
    * @param medicalDeviceId
    */
-  deleteMedicalDevice(medicalDeviceId: string): Promise<string> {
-    return this.delete(medicalDeviceId)
-  }
+  deleteMedicalDevice(medicalDeviceId: string): Promise<string>;
 
   /**
    * @deprecated use {@link MedicalDeviceApi.deleteMany} instead.
@@ -48,9 +38,7 @@ export class MedicalDeviceApi extends DeviceLikeApiImpl<MedicalDevice> {
    * Delete a batch of [MedicalDevice]
    * @param ids
    */
-  deleteMedicalDevices(ids: Array<string>): Promise<Array<string>> {
-    return this.deleteMany(ids)
-  }
+  deleteMedicalDevices(ids: Array<string>): Promise<Array<string>>;
 
   /**
    * @deprecated use {@link MedicalDeviceApi.filterBy} instead.
@@ -61,9 +49,7 @@ export class MedicalDeviceApi extends DeviceLikeApiImpl<MedicalDevice> {
    * @param nextDeviceId The id of the first device in the next page
    * @param limit The number of devices to return in the queried page
    */
-  filterMedicalDevices(filter: CommonFilter<Device>, nextDeviceId?: string, limit?: number): Promise<PaginatedList<MedicalDevice>> {
-    return this.filterBy(filter, nextDeviceId, limit)
-  }
+  filterMedicalDevices(filter: CommonFilter<Device>, nextDeviceId?: string, limit?: number): Promise<PaginatedList<MedicalDevice>>;
 
   /**
    * @deprecated use {@link MedicalDeviceApi.get} instead.
@@ -72,9 +58,7 @@ export class MedicalDeviceApi extends DeviceLikeApiImpl<MedicalDevice> {
    * Get a Medical Device
    * @param medicalDeviceId
    */
-  getMedicalDevice(medicalDeviceId: string): Promise<MedicalDevice> {
-    return this.get(medicalDeviceId)
-  }
+  getMedicalDevice(medicalDeviceId: string): Promise<MedicalDevice>;
 
   /**
    * @deprecated use {@link MedicalDeviceApi.matchBy} instead.
@@ -83,33 +67,41 @@ export class MedicalDeviceApi extends DeviceLikeApiImpl<MedicalDevice> {
    * Load medical device ids from the database by filtering them using the provided Filter.
    * @param filter The Filter object that describes which condition(s) the elements whose the ids should be returned must fulfill
    */
+  matchMedicalDevices(filter: CommonFilter<Device>): Promise<Array<string>>;
+}
+
+class MedicalDeviceApiImpl extends DeviceLikeApiImpl<MedicalDevice> implements MedicalDeviceApi {
+  createOrModifyMedicalDevice(medicalDevice: MedicalDevice): Promise<MedicalDevice> {
+    return this.createOrModify(medicalDevice)
+  }
+  createOrModifyMedicalDevices(medicalDevices: Array<MedicalDevice>): Promise<Array<MedicalDevice>> {
+    return this.createOrModifyMany(medicalDevices)
+  }
+  deleteMedicalDevice(medicalDeviceId: string): Promise<string> {
+    return this.delete(medicalDeviceId)
+  }
+  deleteMedicalDevices(ids: Array<string>): Promise<Array<string>> {
+    return this.deleteMany(ids)
+  }
+  filterMedicalDevices(filter: CommonFilter<Device>, nextDeviceId?: string, limit?: number): Promise<PaginatedList<MedicalDevice>> {
+    return this.filterBy(filter, nextDeviceId, limit)
+  }
+  getMedicalDevice(medicalDeviceId: string): Promise<MedicalDevice> {
+    return this.get(medicalDeviceId)
+  }
   matchMedicalDevices(filter: CommonFilter<Device>): Promise<Array<string>> {
     return this.matchBy(filter)
   }
 }
 
-export const medicalDeviceApi = (api: CommonApi) => {
-  return new MedicalDeviceApi(
+export const medicalDeviceApi = (api: CommonApi): MedicalDeviceApi => {
+  return new MedicalDeviceApiImpl(
     {
       toDomain(dto: Device): MedicalDevice {
         return mapDeviceToMedicalDevice(dto)
       },
       toDto(domain: MedicalDevice): Device {
         return mapMedicalDeviceToDevice(domain)
-      },
-    },
-    {
-      toDomain(dto: PaginatedListDevice): PaginatedList<MedicalDevice> {
-        return {
-          rows: dto.rows?.map(mapDeviceToMedicalDevice),
-          totalSize: dto.totalSize,
-        }
-      },
-      toDto(domain: PaginatedList<MedicalDevice>): PaginatedListDevice {
-        return {
-          rows: domain.rows?.map(mapMedicalDeviceToDevice),
-          totalSize: domain.totalSize,
-        }
       },
     },
     api.errorHandler,

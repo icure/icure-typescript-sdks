@@ -5,10 +5,10 @@ import {
     Document,
     mapDocumentDtoToDocument,
     mapDocumentToDocumentDto,
-    PaginatedList,
+    PaginatedList, ServiceLikeApi,
     ServiceLikeApiImpl,
 } from '@icure/typescript-common'
-import {Document as DocumentDto, PaginatedListService, Patient as PatientDto, Service} from '@icure/api'
+import {Document as DocumentDto, Patient as PatientDto, Service} from '@icure/api'
 import {DataSample} from '../models/DataSample.model'
 import {Patient} from '../models/Patient.model'
 import {mapDataSampleToService, mapServiceToDataSample} from '../mappers/DataSample.mapper'
@@ -17,7 +17,7 @@ import {mapPatientDtoToPatient, mapPatientToPatientDto} from '../mappers/Patient
 /**
  * The DataSampleApi interface provides methods to manage data samples.
  */
-export class DataSampleApi extends ServiceLikeApiImpl<DataSample, Patient, Document> {
+export interface DataSampleApi extends ServiceLikeApi<DataSample, Patient, Document> {
     /**
      * @deprecated use {@link DataSampleApi.createOrModifyFor} instead
      *
@@ -26,9 +26,7 @@ export class DataSampleApi extends ServiceLikeApiImpl<DataSample, Patient, Docum
      * @param patientId
      * @param dataSample
      */
-    createOrModifyDataSampleFor(patientId: string, dataSample: DataSample): Promise<DataSample> {
-        return this.createOrModifyFor(patientId, dataSample)
-    }
+    createOrModifyDataSampleFor(patientId: string, dataSample: DataSample): Promise<DataSample>
 
     /**
      * @deprecated use {@link DataSampleApi.createOrModifyManyFor} instead
@@ -39,9 +37,7 @@ export class DataSampleApi extends ServiceLikeApiImpl<DataSample, Patient, Docum
      * @param patientId
      * @param dataSamples
      */
-    createOrModifyDataSamplesFor(patientId: string, dataSamples: Array<DataSample>): Promise<Array<DataSample>> {
-        return this.createOrModifyManyFor(patientId, dataSamples)
-    }
+    createOrModifyDataSamplesFor(patientId: string, dataSamples: Array<DataSample>): Promise<Array<DataSample>>
 
     /**
      * @deprecated use {@link DataSampleApi.createOrModifyMany} instead
@@ -50,9 +46,7 @@ export class DataSampleApi extends ServiceLikeApiImpl<DataSample, Patient, Docum
      * Delete a [DataSample] by its id
      * @param dataSampleId
      */
-    deleteDataSample(dataSampleId: string): Promise<string> {
-        return this.delete(dataSampleId)
-    }
+    deleteDataSample(dataSampleId: string): Promise<string>
 
     /**
      * @deprecated use {@link DataSampleApi.deleteMany} instead
@@ -61,9 +55,7 @@ export class DataSampleApi extends ServiceLikeApiImpl<DataSample, Patient, Docum
      * Delete a batch of [Data Samples]
      * @param requestBody
      */
-    deleteDataSamples(requestBody: Array<string>): Promise<Array<string>> {
-        return this.deleteMany(requestBody)
-    }
+    deleteDataSamples(requestBody: Array<string>): Promise<Array<string>>
 
     /**
      * @deprecated use {@link DataSampleApi.filterBy} instead
@@ -82,9 +74,7 @@ export class DataSampleApi extends ServiceLikeApiImpl<DataSample, Patient, Docum
      * @param nextDataSampleId The id of the first data sample in the next page
      * @param limit The maximum number of data samples that should contain the returned page. By default, a page contains 1000 data samples
      */
-    filterDataSample(filter: CommonFilter<DataSample>, nextDataSampleId?: string, limit?: number): Promise<PaginatedList<DataSample>> {
-        return this.filterBy(filter, nextDataSampleId, limit)
-    }
+    filterDataSample(filter: CommonFilter<DataSample>, nextDataSampleId?: string, limit?: number): Promise<PaginatedList<DataSample>>
 
     /**
      * @deprecated use {@link DataSampleApi.get} instead
@@ -93,9 +83,7 @@ export class DataSampleApi extends ServiceLikeApiImpl<DataSample, Patient, Docum
      * Get a [DataSample] by its id
      * @param dataSampleId
      */
-    getDataSample(dataSampleId: string): Promise<DataSample> {
-        return this.get(dataSampleId)
-    }
+    getDataSample(dataSampleId: string): Promise<DataSample>
 
     /**
      * @deprecated use {@link DataSampleApi.matchBy} instead
@@ -104,9 +92,7 @@ export class DataSampleApi extends ServiceLikeApiImpl<DataSample, Patient, Docum
      * Find data samples ids using the provided Filter.
      * @param filter The Filter object that describes which condition(s) the elements whose the ids should be returned must fulfill
      */
-    matchDataSample(filter: CommonFilter<DataSample>): Promise<Array<string>> {
-        return this.matchBy(filter)
-    }
+    matchDataSample(filter: CommonFilter<DataSample>): Promise<Array<string>>
 
     /**
      * @deprecated use {@link DataSampleApi.getForPatient} instead
@@ -116,9 +102,7 @@ export class DataSampleApi extends ServiceLikeApiImpl<DataSample, Patient, Docum
      *
      * @return an array containing the Data Samples
      */
-    getDataSamplesForPatient(patient: Patient): Promise<Array<DataSample>> {
-        return this.getForPatient(patient)
-    }
+    getDataSamplesForPatient(patient: Patient): Promise<Array<DataSample>>
 
     /**
      * @deprecated use {@link DataSampleApi.subscribeToEvents} instead
@@ -138,9 +122,7 @@ export class DataSampleApi extends ServiceLikeApiImpl<DataSample, Patient, Docum
         filter: CommonFilter<DataSample>,
         eventFired: (dataSample: DataSample) => Promise<void>,
         options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }
-    ): Promise<Connection> {
-        return this.subscribeToEvents(eventTypes, filter, eventFired, options)
-    }
+    ): Promise<Connection>
 
     /**
      * @deprecated use {@link DataSampleApi.setAttachment} instead
@@ -161,10 +143,7 @@ export class DataSampleApi extends ServiceLikeApiImpl<DataSample, Patient, Docum
         documentVersion?: string,
         documentExternalUuid?: string,
         documentLanguage?: string
-    ): Promise<Document> {
-        return this.setAttachment(dataSampleId, body, documentName, documentVersion, documentExternalUuid, documentLanguage)
-    }
-
+    ): Promise<Document>
     /**
      * @deprecated use {@link DataSampleApi.getAttachmentContent} instead
      *
@@ -173,9 +152,7 @@ export class DataSampleApi extends ServiceLikeApiImpl<DataSample, Patient, Docum
      * @param dataSampleId
      * @param documentId
      */
-    getDataSampleAttachmentContent(dataSampleId: string, documentId: string): Promise<ArrayBuffer> {
-        return this.getAttachmentContent(dataSampleId, documentId)
-    }
+    getDataSampleAttachmentContent(dataSampleId: string, documentId: string): Promise<ArrayBuffer>
 
     /**
      * @deprecated use {@link DataSampleApi.getAttachmentDocument} instead
@@ -185,14 +162,63 @@ export class DataSampleApi extends ServiceLikeApiImpl<DataSample, Patient, Docum
      * @param dataSampleId
      * @param documentId
      */
+    getDataSampleAttachmentDocument(dataSampleId: string, documentId: string): Promise<Document>
+}
+
+class DataSampleApiImpl extends ServiceLikeApiImpl<DataSample, Patient, Document> implements DataSampleApi {
+    createOrModifyDataSampleFor(patientId: string, dataSample: DataSample): Promise<DataSample> {
+        return this.createOrModifyFor(patientId, dataSample)
+    }
+    createOrModifyDataSamplesFor(patientId: string, dataSamples: Array<DataSample>): Promise<Array<DataSample>> {
+        return this.createOrModifyManyFor(patientId, dataSamples)
+    }
+    deleteDataSample(dataSampleId: string): Promise<string> {
+        return this.delete(dataSampleId)
+    }
+    deleteDataSamples(requestBody: Array<string>): Promise<Array<string>> {
+        return this.deleteMany(requestBody)
+    }
+    filterDataSample(filter: CommonFilter<DataSample>, nextDataSampleId?: string, limit?: number): Promise<PaginatedList<DataSample>> {
+        return this.filterBy(filter, nextDataSampleId, limit)
+    }
+    getDataSample(dataSampleId: string): Promise<DataSample> {
+        return this.get(dataSampleId)
+    }
+    matchDataSample(filter: CommonFilter<DataSample>): Promise<Array<string>> {
+        return this.matchBy(filter)
+    }
+    getDataSamplesForPatient(patient: Patient): Promise<Array<DataSample>> {
+        return this.getForPatient(patient)
+    }
+    subscribeToDataSampleEvents(
+        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
+        filter: CommonFilter<DataSample>,
+        eventFired: (dataSample: DataSample) => Promise<void>,
+        options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }
+    ): Promise<Connection> {
+        return this.subscribeToEvents(eventTypes, filter, eventFired, options)
+    }
+    setDataSampleAttachment(
+        dataSampleId: string,
+        body: ArrayBuffer,
+        documentName?: string,
+        documentVersion?: string,
+        documentExternalUuid?: string,
+        documentLanguage?: string
+    ): Promise<Document> {
+        return this.setAttachment(dataSampleId, body, documentName, documentVersion, documentExternalUuid, documentLanguage)
+    }
+    getDataSampleAttachmentContent(dataSampleId: string, documentId: string): Promise<ArrayBuffer> {
+        return this.getAttachmentContent(dataSampleId, documentId)
+    }
     getDataSampleAttachmentDocument(dataSampleId: string, documentId: string): Promise<Document> {
         return this.getAttachmentDocument(dataSampleId, documentId)
     }
 }
 
 
-export const dataSampleApi = (api: CommonApi) => {
-    return new DataSampleApi(
+export const dataSampleApi = (api: CommonApi): DataSampleApi => {
+    return new DataSampleApiImpl(
         {
             toDomain(dto: Service): DataSample {
                 return mapServiceToDataSample(dto)
@@ -215,20 +241,6 @@ export const dataSampleApi = (api: CommonApi) => {
             },
             toDto(domain: Document): DocumentDto {
                 return mapDocumentToDocumentDto(domain)
-            },
-        },
-        {
-            toDomain(dto: PaginatedListService): PaginatedList<DataSample> {
-                return {
-                    rows: dto.rows?.map(mapServiceToDataSample),
-                    totalSize: dto.totalSize,
-                }
-            },
-            toDto(domain: PaginatedList<DataSample>): PaginatedListService {
-                return {
-                    rows: domain.rows?.map(mapDataSampleToService),
-                    totalSize: domain.totalSize,
-                }
             },
         },
         api.errorHandler,

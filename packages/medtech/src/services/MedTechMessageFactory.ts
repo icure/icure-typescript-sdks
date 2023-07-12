@@ -20,4 +20,4 @@ class ICureMedTechMessageFactory extends ICureMessageFactory<User, Patient> {
     return patient.firstName
   }
 }
-export const iCureMedTechMessageFactory = new ICureMedTechMessageFactory()
+export const iCureMedTechMessageFactory: MedTechMessageFactory = new ICureMedTechMessageFactory()

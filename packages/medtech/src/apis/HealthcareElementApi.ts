@@ -1,5 +1,12 @@
 import {HealthElement, PaginatedListHealthElement, Patient as PatientDto} from '@icure/api'
-import {CommonApi, CommonFilter, Connection, HealthElementLikeApiImpl, PaginatedList} from '@icure/typescript-common'
+import {
+    CommonApi,
+    CommonFilter,
+    Connection,
+    HealthElementLikeApi,
+    HealthElementLikeApiImpl,
+    PaginatedList
+} from '@icure/typescript-common'
 import {
     mapHealthcareElementToHealthElement,
     mapHealthElementToHealthcareElement
@@ -8,7 +15,7 @@ import {Patient} from '../models/Patient.model'
 import {mapPatientDtoToPatient, mapPatientToPatientDto} from '../mappers/Patient.mapper'
 import {HealthcareElement} from '../models/HealthcareElement.model'
 
-export class HealthcareElementApi extends HealthElementLikeApiImpl<HealthcareElement, Patient> {
+export interface HealthcareElementApi extends HealthElementLikeApi<HealthcareElement, Patient> {
     /**
      * @deprecated use {@link HealthcareElementApi.createOrModify} instead.
      *
@@ -23,9 +30,7 @@ export class HealthcareElementApi extends HealthElementLikeApiImpl<HealthcareEle
      * @param healthcareElement Healthcare element to create in iCure Database
      * @param patientId Id of the patient to which the healthcare element is linked
      */
-    createOrModifyHealthcareElement(healthcareElement: HealthcareElement, patientId?: string): Promise<HealthcareElement> {
-        return this.createOrModify(healthcareElement, patientId)
-    }
+    createOrModifyHealthcareElement(healthcareElement: HealthcareElement, patientId?: string): Promise<HealthcareElement>;
 
     /**
      * @deprecated use {@link HealthcareElementApi.createOrModifyMany} instead.
@@ -41,9 +46,7 @@ export class HealthcareElementApi extends HealthElementLikeApiImpl<HealthcareEle
      * @param healthcareElements
      * @param patientId Id of the patient to which the healthcare elements are linked
      */
-    createOrModifyHealthcareElements(healthcareElements: Array<HealthcareElement>, patientId?: string): Promise<Array<HealthcareElement>> {
-        return this.createOrModifyMany(healthcareElements, patientId)
-    }
+    createOrModifyHealthcareElements(healthcareElements: Array<HealthcareElement>, patientId?: string): Promise<Array<HealthcareElement>>;
 
     /**
      * @deprecated use {@link HealthcareElementApi.delete} instead.
@@ -51,9 +54,7 @@ export class HealthcareElementApi extends HealthElementLikeApiImpl<HealthcareEle
      * Delete a Healthcare Element from the iCure database
      * @param id Id of the healthcare element to delete
      */
-    deleteHealthcareElement(id: string): Promise<string> {
-        return this.delete(id)
-    }
+    deleteHealthcareElement(id: string): Promise<string>;
 
     /**
      * @deprecated use {@link HealthcareElementApi.filterBy} instead.
@@ -71,9 +72,7 @@ export class HealthcareElementApi extends HealthElementLikeApiImpl<HealthcareEle
      * @param nextHealthElementId The id of the first Healthcare professional in the next page
      * @param limit The maximum number of healthcare elements that should contain the returned page. By default, a page contains 1000 healthcare elements
      */
-    filterHealthcareElement(filter: CommonFilter<HealthElement>, nextHealthElementId?: string, limit?: number): Promise<PaginatedList<HealthcareElement>> {
-        return this.filterBy(filter, nextHealthElementId, limit)
-    }
+    filterHealthcareElement(filter: CommonFilter<HealthElement>, nextHealthElementId?: string, limit?: number): Promise<PaginatedList<HealthcareElement>>;
 
     /**
      * @deprecated use {@link HealthcareElementApi.get} instead.
@@ -81,9 +80,7 @@ export class HealthcareElementApi extends HealthElementLikeApiImpl<HealthcareEle
      * Retrieves the information of a specific Healthcare Element
      * @param id Id of the healthcare element to retrieve
      */
-    getHealthcareElement(id: string): Promise<HealthcareElement> {
-        return this.get(id)
-    }
+    getHealthcareElement(id: string): Promise<HealthcareElement>;
 
     /**
      * @deprecated use {@link HealthcareElementApi.matchBy} instead.
@@ -94,9 +91,7 @@ export class HealthcareElementApi extends HealthElementLikeApiImpl<HealthcareEle
      *
      * @param filter Filtering conditions that the returned healthcare element ids are satisfying.
      */
-    matchHealthcareElement(filter: CommonFilter<HealthElement>): Promise<Array<string>> {
-        return this.matchBy(filter)
-    }
+    matchHealthcareElement(filter: CommonFilter<HealthElement>): Promise<Array<string>>;
 
     /**
      * @deprecated use {@link HealthcareElementApi.getAllForPatient} instead.
@@ -106,9 +101,7 @@ export class HealthcareElementApi extends HealthElementLikeApiImpl<HealthcareEle
      *
      * @return an array containing the Healthcare Elements
      */
-    getHealthcareElementsForPatient(patient: Patient): Promise<Array<HealthcareElement>> {
-        return this.getAllForPatient(patient)
-    }
+    getHealthcareElementsForPatient(patient: Patient): Promise<Array<HealthcareElement>>;
 
     /**
      * @deprecated use {@link HealthcareElementApi.subscribeToEvents} instead.
@@ -128,13 +121,45 @@ export class HealthcareElementApi extends HealthElementLikeApiImpl<HealthcareEle
         filter: CommonFilter<HealthElement>,
         eventFired: (dataSample: HealthcareElement) => Promise<void>,
         options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }
+    ): Promise<Connection>;
+}
+
+class HealthcareElementApiImpl extends HealthElementLikeApiImpl<HealthcareElement, Patient> implements HealthcareElementApi {
+    createOrModifyHealthcareElement(healthcareElement: HealthcareElement, patientId?: string): Promise<HealthcareElement> {
+        return this.createOrModify(healthcareElement, patientId)
+    }
+    createOrModifyHealthcareElements(healthcareElements: Array<HealthcareElement>, patientId?: string): Promise<Array<HealthcareElement>> {
+        return this.createOrModifyMany(healthcareElements, patientId)
+    }
+    deleteHealthcareElement(id: string): Promise<string> {
+        return this.delete(id)
+    }
+    filterHealthcareElement(filter: CommonFilter<HealthElement>, nextHealthElementId?: string, limit?: number): Promise<PaginatedList<HealthcareElement>> {
+        return this.filterBy(filter, nextHealthElementId, limit)
+    }
+    getHealthcareElement(id: string): Promise<HealthcareElement> {
+        return this.get(id)
+    }
+    matchHealthcareElement(filter: CommonFilter<HealthElement>): Promise<Array<string>> {
+        return this.matchBy(filter)
+    }
+    getHealthcareElementsForPatient(patient: Patient): Promise<Array<HealthcareElement>> {
+        return this.getAllForPatient(patient)
+    }
+    subscribeToHealthcareElementEvents(
+        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
+        filter: CommonFilter<HealthElement>,
+        eventFired: (dataSample: HealthcareElement) => Promise<void>,
+        options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }
     ): Promise<Connection> {
         return this.subscribeToEvents(eventTypes, filter, eventFired, options)
     }
 }
 
-export const healthcareElementApi = (api: CommonApi) => {
-    return new HealthcareElementApi(
+
+
+export const healthcareElementApi = (api: CommonApi): HealthcareElementApi => {
+    return new HealthcareElementApiImpl(
         {
             toDomain(dto: HealthElement): HealthcareElement {
                 return mapHealthElementToHealthcareElement(dto)
@@ -149,20 +174,6 @@ export const healthcareElementApi = (api: CommonApi) => {
             },
             toDto(domain: Patient): PatientDto {
                 return mapPatientToPatientDto(domain)
-            },
-        },
-        {
-            toDomain(dto: PaginatedListHealthElement): PaginatedList<HealthcareElement> {
-                return {
-                    totalSize: dto.totalSize,
-                    rows: dto.rows?.map(mapHealthElementToHealthcareElement),
-                }
-            },
-            toDto(domain: PaginatedList<HealthcareElement>): PaginatedListHealthElement {
-                return {
-                    totalSize: domain.totalSize,
-                    rows: domain.rows?.map(mapHealthcareElementToHealthElement),
-                }
             },
         },
         api.errorHandler,

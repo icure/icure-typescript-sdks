@@ -2,22 +2,37 @@ import {Address, Telecom} from "@icure/api";
 import TelecomTypeEnum = Telecom.TelecomTypeEnum;
 import AddressTypeEnum = Address.AddressTypeEnum;
 
-type AddressLike<T extends TelecomLike> = {
-    telecoms?: Array<T>,
-    addressType?: AddressTypeEnum
-}
-
-type TelecomLike = {
-    telecomType?: TelecomTypeEnum
-}
-
-export function filteredContactsFromAddressesLike<A extends AddressLike<T>, T extends TelecomLike>(
-    addresses: Array<A>,
+export function findTelecomOfAddresses(
+    addresses: Array<Address>,
     telecomType: TelecomTypeEnum,
-    addressType?: AddressTypeEnum
-): T | undefined {
-    return addresses
-        .filter(address => (!addressType || address.addressType === addressType) && (address.telecoms?.filter(telecom => telecom.telecomType === telecomType) ?? [] as Telecom[]).length > 0)
-        .map(address => address.telecoms?.filter(telecom => telecom.telecomType === telecomType)?.pop())
-        .filter(telecom => !!telecom)[0]
+    addressType?: AddressTypeEnum,
+): Telecom | undefined {
+    return findTelecomOfAddressesLike(
+        addresses,
+        telecomType,
+        addressType,
+        (address) => address.addressType,
+        (address) => address.telecoms,
+        (telecom) => telecom.telecomType,
+    )
+}
+
+export function findTelecomOfAddressesLike<DSAddress, DSTelecom>(
+    addresses: Array<DSAddress>,
+    telecomType: TelecomTypeEnum,
+    addressType: AddressTypeEnum | undefined,
+    addressTypeOf: (address: DSAddress) => AddressTypeEnum | undefined,
+    telecoms: (address: DSAddress) => Array<DSTelecom> | undefined,
+    telecomTypeOf: (telecom: DSTelecom) => TelecomTypeEnum | undefined,
+): DSTelecom | undefined {
+    for (const address of addresses) {
+        if (!addressType || addressTypeOf(address) === addressType) {
+            for (const telecom of telecoms(address) ?? []) {
+                if (telecomTypeOf(telecom) === telecomType) {
+                    return telecom
+                }
+            }
+        }
+    }
+    return undefined
 }

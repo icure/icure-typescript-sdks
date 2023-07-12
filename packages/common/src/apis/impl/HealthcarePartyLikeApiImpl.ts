@@ -7,9 +7,14 @@ import { Mapper } from '../Mapper'
 import { firstOrNull } from '../../utils/functionalUtils'
 import {NoOpFilter} from "../../filters/dsl/filterDsl";
 import {FilterMapper} from "../../mappers/Filter.mapper";
+import {toPaginatedList} from "../../mappers/PaginatedList.mapper";
 
 export class HealthcarePartyLikeApiImpl<DSHealthcareParty> implements HealthcarePartyLikeApi<DSHealthcareParty> {
-    constructor(private readonly mapper: Mapper<DSHealthcareParty, HealthcareParty>, private readonly paginatedListMapper: Mapper<PaginatedList<DSHealthcareParty>, PaginatedListHealthcareParty>, private readonly errorHandler: ErrorHandler, private readonly healthcarePartyApi: IccHcpartyXApi) {}
+    constructor(
+        private readonly mapper: Mapper<DSHealthcareParty, HealthcareParty>,
+        private readonly errorHandler: ErrorHandler,
+        private readonly healthcarePartyApi: IccHcpartyXApi
+    ) {}
 
     async createOrModify(healthcareParty: DSHealthcareParty): Promise<DSHealthcareParty> {
         const mappedHealthcareParty = this.mapper.toDto(healthcareParty)
@@ -43,9 +48,9 @@ export class HealthcarePartyLikeApiImpl<DSHealthcareParty> implements Healthcare
 
     async filterBy(filter: Filter<DSHealthcareParty>, nextHealthcarePartyId?: string, limit?: number): Promise<PaginatedList<DSHealthcareParty>> {
         if (NoOpFilter.isNoOp(filter)) {
-            return { pageSize: 0, totalSize: 0, rows: [] }
+            return PaginatedList.empty()
         } else {
-            return this.paginatedListMapper.toDomain(
+            return toPaginatedList(
                 await this.healthcarePartyApi
                     .filterHealthPartiesBy(
                         nextHealthcarePartyId,
@@ -56,7 +61,8 @@ export class HealthcarePartyLikeApiImpl<DSHealthcareParty> implements Healthcare
                     )
                     .catch((e) => {
                         throw this.errorHandler.createErrorFromAny(e)
-                    })
+                    }),
+                this.mapper.toDomain
             )!
         }
     }

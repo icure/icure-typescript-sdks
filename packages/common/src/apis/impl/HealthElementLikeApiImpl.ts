@@ -22,10 +22,9 @@ import {NoOpFilter} from "../../filters/dsl/filterDsl";
 import {FilterMapper} from "../../mappers/Filter.mapper";
 import {HealthElementFilter} from "../../filters/dsl/HealthElementFilterDsl";
 import {CommonApi} from "../CommonApi";
+import {toPaginatedList} from "../../mappers/PaginatedList.mapper";
 
 export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements HealthElementLikeApi<DSHealthElement, DSPatient> {
-    private readonly paginatedListMapper: Mapper<PaginatedList<DSHealthElement>, PaginatedListHealthElement>
-
     constructor(
         private readonly healthElementMapper: Mapper<DSHealthElement, HealthElement>,
         private readonly patientMapper: Mapper<DSPatient, Patient>,
@@ -36,22 +35,7 @@ export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements Hea
         private readonly dataOwnerApi: IccDataOwnerXApi,
         private readonly cryptoApi: IccCryptoXApi,
         private readonly api: CommonApi
-    ) {
-        this.paginatedListMapper = {
-            toDomain(dto: PaginatedListHealthElement): PaginatedList<DSHealthElement> {
-                return {
-                    ...dto,
-                    rows: dto.rows?.map((he) => healthElementMapper.toDomain(he)),
-                }
-            },
-            toDto(domain: PaginatedList<DSHealthElement>): PaginatedListHealthElement {
-                return {
-                    ...domain,
-                    rows: domain.rows?.map((he) => healthElementMapper.toDto(he)),
-                }
-            }
-        }
-    }
+    ) {}
 
     async createOrModify(healthElement: DSHealthElement, patientId?: string): Promise<DSHealthElement> {
         const createdOrModifiedHealthElement = firstOrNull(await this.createOrModifyMany([healthElement], patientId))
@@ -113,14 +97,14 @@ export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements Hea
 
     async filterBy(filter: Filter<HealthElement>, nextHealthElementId?: string, limit?: number): Promise<PaginatedList<DSHealthElement>> {
         if (NoOpFilter.isNoOp(filter)) {
-            return {totalSize: 0, pageSize: 0, rows: []}
+            return PaginatedList.empty()
         }
 
         const currentUser = (await this.userApi.getCurrentUser().catch((e) => {
             throw this.errorHandler.createErrorFromAny(e)
         })) as User
 
-        return this.paginatedListMapper.toDomain(
+        return toPaginatedList(
             (await this.heApi
                 .filterByWithUser(
                     currentUser,
@@ -132,7 +116,8 @@ export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements Hea
                 )
                 .catch((e) => {
                     throw this.errorHandler.createErrorFromAny(e)
-                }))
+                })),
+            this.healthElementMapper.toDomain
         )!
     }
 

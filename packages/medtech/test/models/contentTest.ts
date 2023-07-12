@@ -6,6 +6,7 @@ import { newMeasure } from './measureTest'
 import { newTimeSeries } from './timeSeriesTest'
 import { newDataSample } from './dataSampleTest'
 import { DataSample } from '../..'
+import {mapOf} from "@icure/typescript-common";
 
 export function newContent(): Content {
   return new Content({
@@ -18,7 +19,7 @@ export function newContent(): Content {
     documentId: 'documentId',
     measureValue: newMeasure(),
     timeSeries: newTimeSeries(),
-    compoundValue: [new DataSample({ ...newDataSample(false), content: { en: new Content({ stringValue: 'stringValue' }) } })],
+    compoundValue: [new DataSample({ ...newDataSample(false), content: mapOf({ en: new Content({ stringValue: 'stringValue' }) }) })],
     ratio: [newMeasure(), newMeasure()],
     range: [newMeasure(), newMeasure()],
   })

@@ -1,12 +1,25 @@
-import { IccUserXApi, User as UserDto, Patient as PatientDto, PaginatedListUser } from '@icure/api'
-import { CommonApi, ErrorHandler, mapUserDtoToUser, mapUserToUserDto, MessageGatewayApi, PaginatedList, Sanitizer, User, UserLikeApiImpl } from '@icure/typescript-common'
+import { User as UserDto, Patient as PatientDto, HealthcareParty as HealthcarePartyDto } from '@icure/api'
+import {
+    CommonApi,
+    mapUserDtoToUser,
+    mapUserToUserDto,
+    User,
+    UserLikeApi,
+    UserLikeApiImpl
+} from '@icure/typescript-common'
 import { Patient } from '../models/Patient.model'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
+import {Practitioner} from "../models/Practitioner.model";
+import {Organisation} from "../models/Organisation.model";
+import {EHRLiteMessageFactory} from "../services/EHRLiteMessageFactory";
+import {mapDomainToHealthcareParty, mapHealthcarePartyToDomain} from "../mappers/HealthcareParty.mapper";
 
-export class UserApi extends UserLikeApiImpl<User, Patient> {}
+export interface UserApi extends UserLikeApi<User, Patient> {}
 
-export const userApi = (api: CommonApi) =>
-    new UserApi(
+class UserApiImpl extends UserLikeApiImpl<User, Patient, Practitioner | Organisation> implements UserApi {}
+
+export const userApi = (api: CommonApi, messageFactory: EHRLiteMessageFactory): UserApi =>
+    new UserApiImpl(
         {
             toDomain(dto: UserDto): User {
                 return mapUserDtoToUser(dto)
@@ -24,22 +37,18 @@ export const userApi = (api: CommonApi) =>
             },
         },
         {
-            toDomain(dto: PaginatedListUser): PaginatedList<User> {
-                return {
-                    ...dto,
-                    rows: dto.rows?.map(mapUserDtoToUser),
-                }
+            toDomain(dto: HealthcarePartyDto): Practitioner | Organisation {
+                return mapHealthcarePartyToDomain(dto)
             },
-            toDto(domain: PaginatedList<User>): PaginatedListUser {
-                return {
-                    ...domain,
-                    rows: domain.rows?.map(mapUserToUserDto),
-                }
-            },
+            toDto(domain: Practitioner | Organisation): HealthcarePartyDto {
+                return mapDomainToHealthcareParty(domain)
+            }
         },
         api.errorHandler,
         api.sanitizer,
         api.baseApi.userApi,
+        api.baseApi.dataOwnerApi,
         api,
+        messageFactory,
         api.messageGatewayApi
     )

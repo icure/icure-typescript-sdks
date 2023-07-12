@@ -1,16 +1,18 @@
-import {CommonApi, CommonFilter, HealthcarePartyLikeApiImpl, PaginatedList} from '@icure/typescript-common'
-import {HealthcareParty, PaginatedListHealthcareParty} from '@icure/api'
+import {
+    CommonApi,
+    CommonFilter,
+    HealthcarePartyLikeApi,
+    HealthcarePartyLikeApiImpl,
+    PaginatedList
+} from '@icure/typescript-common'
+import {HealthcareParty} from '@icure/api'
 import {HealthcareProfessional} from '../models/HealthcareProfessional.model'
 import {
     mapHealthcarePartyToHealthcareProfessional,
     mapHealthcareProfessionalToHealthcareParty
 } from '../mappers/HealthcareProfessional.mapper'
 
-/**
- * The HealthcareProfessionalApi interface provides methods to manage healthcare professionals.
- */
-export class HealthcareProfessionalApi extends HealthcarePartyLikeApiImpl<HealthcareProfessional> {
-
+export interface HealthcareProfessionalApi extends HealthcarePartyLikeApi<HealthcareProfessional> {
     /**
      * @deprecated use {@link HealthcareProfessionalApi.createOrModify} instead.
      *
@@ -18,9 +20,7 @@ export class HealthcareProfessionalApi extends HealthcarePartyLikeApiImpl<Health
      * Create a new Healthcare professional or modify an existing one.
      * @param healthcareProfessional The healthcare professional that must be created in the database.
      */
-    createOrModifyHealthcareProfessional(healthcareProfessional: HealthcareProfessional): Promise<HealthcareProfessional> {
-        return this.createOrModify(healthcareProfessional)
-    }
+    createOrModifyHealthcareProfessional(healthcareProfessional: HealthcareProfessional): Promise<HealthcareProfessional>;
 
     /**
      * @deprecated use {@link HealthcareProfessionalApi.delete} instead.
@@ -29,9 +29,7 @@ export class HealthcareProfessionalApi extends HealthcarePartyLikeApiImpl<Health
      * Delete an existing healthcare professional.
      * @param hcpId The UUID that uniquely identifies the healthcare professional to be deleted.
      */
-    deleteHealthcareProfessional(hcpId: string): Promise<string> {
-        return this.delete(hcpId)
-    }
+    deleteHealthcareProfessional(hcpId: string): Promise<string>;
 
     /**
      * @deprecated use {@link HealthcareProfessionalApi.filterBy} instead.
@@ -42,9 +40,7 @@ export class HealthcareProfessionalApi extends HealthcarePartyLikeApiImpl<Health
      * @param nextHcpId The id of the first Healthcare professional in the next page
      * @param limit The number of healthcare professionals to return in the queried page
      */
-    filterHealthcareProfessionalBy(filter: CommonFilter<HealthcareParty>, nextHcpId?: string, limit?: number): Promise<PaginatedList<HealthcareProfessional>> {
-        return this.filterBy(filter, nextHcpId, limit)
-    }
+    filterHealthcareProfessionalBy(filter: CommonFilter<HealthcareParty>, nextHcpId?: string, limit?: number): Promise<PaginatedList<HealthcareProfessional>>;
 
     /**
      * @deprecated use {@link HealthcareProfessionalApi.get} instead.
@@ -53,9 +49,7 @@ export class HealthcareProfessionalApi extends HealthcarePartyLikeApiImpl<Health
      * Get a Healthcare professional by id.
      * @param hcpId The UUID that identifies the healthcare professional uniquely
      */
-    getHealthcareProfessional(hcpId: string): Promise<HealthcareProfessional> {
-        return this.get(hcpId)
-    }
+    getHealthcareProfessional(hcpId: string): Promise<HealthcareProfessional>;
 
     /**
      * @deprecated use {@link HealthcareProfessionalApi.matchBy} instead.
@@ -64,33 +58,35 @@ export class HealthcareProfessionalApi extends HealthcarePartyLikeApiImpl<Health
      * Load healthcare professional ids from the database by filtering them using the provided Filter.
      * @param filter The Filter object that describes which condition(s) the elements whose the ids should be returned must fulfill
      */
+    matchHealthcareProfessionalBy(filter: CommonFilter<HealthcareParty>): Promise<Array<string>>;
+}
+
+class HealthcareProfessionalApiImpl extends HealthcarePartyLikeApiImpl<HealthcareProfessional> implements HealthcareProfessionalApi {
+    createOrModifyHealthcareProfessional(healthcareProfessional: HealthcareProfessional): Promise<HealthcareProfessional> {
+        return this.createOrModify(healthcareProfessional)
+    }
+    deleteHealthcareProfessional(hcpId: string): Promise<string> {
+        return this.delete(hcpId)
+    }
+    filterHealthcareProfessionalBy(filter: CommonFilter<HealthcareParty>, nextHcpId?: string, limit?: number): Promise<PaginatedList<HealthcareProfessional>> {
+        return this.filterBy(filter, nextHcpId, limit)
+    }
+    getHealthcareProfessional(hcpId: string): Promise<HealthcareProfessional> {
+        return this.get(hcpId)
+    }
     matchHealthcareProfessionalBy(filter: CommonFilter<HealthcareParty>): Promise<Array<string>> {
         return this.matchBy(filter)
     }
 }
 
-export const healthcareProfessionalApi = (api: CommonApi) => {
-    return new HealthcareProfessionalApi(
+export const healthcareProfessionalApi = (api: CommonApi): HealthcareProfessionalApi => {
+    return new HealthcareProfessionalApiImpl(
         {
             toDomain(dto: HealthcareParty): HealthcareProfessional {
                 return mapHealthcarePartyToHealthcareProfessional(dto)
             },
             toDto(domain: HealthcareProfessional): HealthcareParty {
                 return mapHealthcareProfessionalToHealthcareParty(domain)
-            },
-        },
-        {
-            toDomain(dto: PaginatedListHealthcareParty): PaginatedList<HealthcareProfessional> {
-                return {
-                    rows: dto.rows?.map(mapHealthcarePartyToHealthcareProfessional),
-                    totalSize: dto.totalSize,
-                }
-            },
-            toDto(domain: PaginatedList<HealthcareProfessional>): PaginatedListHealthcareParty {
-                return {
-                    rows: domain.rows?.map(mapHealthcareProfessionalToHealthcareParty),
-                    totalSize: domain.totalSize,
-                }
             },
         },
         api.errorHandler,

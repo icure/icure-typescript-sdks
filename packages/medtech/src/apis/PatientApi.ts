@@ -1,12 +1,16 @@
 import {PaginatedListPatient, Patient as PatientDto} from '@icure/api'
-import {CommonApi, CommonFilter, Connection, PaginatedList, PatientLikeApiImpl} from '@icure/typescript-common'
+import {
+    CommonApi,
+    CommonFilter,
+    Connection,
+    PaginatedList,
+    PatientLikeApi,
+    PatientLikeApiImpl
+} from '@icure/typescript-common'
 import {Patient} from '../models/Patient.model'
 import {mapPatientDtoToPatient, mapPatientToPatientDto} from '../mappers/Patient.mapper'
 
-/**
- * The PatientApi interface provides methods to manage patients.
- */
-export class PatientApi extends PatientLikeApiImpl<Patient> {
+export interface PatientApi extends PatientLikeApi<Patient> {
     /**
      * @deprecated Use {@link PatientApi.createOrModify} instead.
      *
@@ -14,9 +18,7 @@ export class PatientApi extends PatientLikeApiImpl<Patient> {
      * Create or update a [Patient]
      * @param patient
      */
-    createOrModifyPatient(patient: Patient): Promise<Patient> {
-        return this.createOrModify(patient)
-    }
+    createOrModifyPatient(patient: Patient): Promise<Patient>;
 
     /**
      * @deprecated Use {@link PatientApi.delete} instead.
@@ -25,9 +27,7 @@ export class PatientApi extends PatientLikeApiImpl<Patient> {
      * Delete a [Patient]
      * @param patientId
      */
-    deletePatient(patientId: string): Promise<string> {
-        return this.delete(patientId)
-    }
+    deletePatient(patientId: string): Promise<string>;
 
     /**
      * @deprecated Use {@link PatientApi.filterBy} instead.
@@ -47,9 +47,7 @@ export class PatientApi extends PatientLikeApiImpl<Patient> {
      * @param nextPatientId The id of the first patient in the next page
      * @param limit The maximum number of patients that should contain the returned page. By default, a page contains 1000 patients
      */
-    filterPatients(filter: CommonFilter<PatientDto>, nextPatientId?: string, limit?: number): Promise<PaginatedList<Patient>> {
-        return this.filterBy(filter, nextPatientId, limit)
-    }
+    filterPatients(filter: CommonFilter<PatientDto>, nextPatientId?: string, limit?: number): Promise<PaginatedList<Patient>>;
 
     /**
      * @deprecated Use {@link PatientApi.get} instead.
@@ -58,9 +56,7 @@ export class PatientApi extends PatientLikeApiImpl<Patient> {
      * Get a [Patient]
      * @param patientId
      */
-    getPatient(patientId: string): Promise<Patient> {
-        return this.get(patientId)
-    }
+    getPatient(patientId: string): Promise<Patient>;
 
     /**
      * @deprecated Use {@link PatientApi.matchBy} instead.
@@ -69,9 +65,7 @@ export class PatientApi extends PatientLikeApiImpl<Patient> {
      * Load patient ids from the database by filtering them using the provided [filter].
      * @param filter The Filter object that describes which condition(s) the elements whose the ids should be returned must fulfill
      */
-    matchPatients(filter: CommonFilter<PatientDto>): Promise<Array<string>> {
-        return this.matchBy(filter)
-    }
+    matchPatients(filter: CommonFilter<PatientDto>): Promise<Array<string>>;
 
     /**
      * @deprecated Use {@link PatientApi.giveAccessTo} instead.
@@ -81,9 +75,7 @@ export class PatientApi extends PatientLikeApiImpl<Patient> {
      * @param patient Patient the current data owner would like to share with another data owner
      * @param delegatedTo ID of the data owner to which current user would like to give access
      */
-    giveAccessToPotentiallyEncrypted(patient: Patient, delegatedTo: string): Promise<Patient> {
-        return this.giveAccessTo(patient, delegatedTo)
-    }
+    giveAccessToPotentiallyEncrypted(patient: Patient, delegatedTo: string): Promise<Patient>;
 
     /**
      * @deprecated Use {@link PatientApi.subscribeToEvents} instead.
@@ -103,9 +95,7 @@ export class PatientApi extends PatientLikeApiImpl<Patient> {
         filter: CommonFilter<PatientDto>,
         eventFired: (patient: Patient) => Promise<void>,
         options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }
-    ): Promise<Connection> {
-        return this.subscribeToEvents(eventTypes, filter, eventFired, options)
-    }
+    ): Promise<Connection>;
 
     /**
      * @deprecated Use {@link PatientApi.getAndTryDecrypt} instead.
@@ -116,34 +106,53 @@ export class PatientApi extends PatientLikeApiImpl<Patient> {
      * gave them access to their own data: instead of giving an error if the data can't be decrypted (like what happens
      * in getPatient) you will be able to get at least partial information.
      */
+    getPatientAndTryDecrypt(patientId: string): Promise<{ patient: Patient; decrypted: boolean }>;
+}
+
+/**
+ * The PatientApi interface provides methods to manage patients.
+ */
+class PatientApiImpl extends PatientLikeApiImpl<Patient> implements PatientApi {
+    createOrModifyPatient(patient: Patient): Promise<Patient> {
+        return this.createOrModify(patient)
+    }
+    deletePatient(patientId: string): Promise<string> {
+        return this.delete(patientId)
+    }
+    filterPatients(filter: CommonFilter<PatientDto>, nextPatientId?: string, limit?: number): Promise<PaginatedList<Patient>> {
+        return this.filterBy(filter, nextPatientId, limit)
+    }
+    getPatient(patientId: string): Promise<Patient> {
+        return this.get(patientId)
+    }
+    matchPatients(filter: CommonFilter<PatientDto>): Promise<Array<string>> {
+        return this.matchBy(filter)
+    }
+    giveAccessToPotentiallyEncrypted(patient: Patient, delegatedTo: string): Promise<Patient> {
+        return this.giveAccessTo(patient, delegatedTo)
+    }
+    subscribeToPatientEvents(
+        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
+        filter: CommonFilter<PatientDto>,
+        eventFired: (patient: Patient) => Promise<void>,
+        options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }
+    ): Promise<Connection> {
+        return this.subscribeToEvents(eventTypes, filter, eventFired, options)
+    }
     getPatientAndTryDecrypt(patientId: string): Promise<{ patient: Patient; decrypted: boolean }> {
         return this.getAndTryDecrypt(patientId)
     }
 }
 
 
-export const patientApi = (api: CommonApi) => {
-    return new PatientApi(
+export const patientApi = (api: CommonApi): PatientApi => {
+    return new PatientApiImpl(
         {
             toDomain(dto: PatientDto): Patient {
                 return mapPatientDtoToPatient(dto)
             },
             toDto(domain: Patient): PatientDto {
                 return mapPatientToPatientDto(domain)
-            },
-        },
-        {
-            toDomain(dto: PaginatedListPatient): PaginatedList<Patient> {
-                return {
-                    totalSize: dto.totalSize,
-                    rows: dto.rows?.map(mapPatientDtoToPatient),
-                }
-            },
-            toDto(domain: PaginatedList<Patient>): PaginatedListPatient {
-                return {
-                    totalSize: domain.totalSize,
-                    rows: domain.rows?.map(mapPatientToPatientDto),
-                }
             },
         },
         api.errorHandler,

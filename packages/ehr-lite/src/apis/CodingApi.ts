@@ -1,37 +1,24 @@
-import {Code, PaginatedListCode} from '@icure/api'
+import {Code} from '@icure/api'
 import {
+    CodeLikeApi,
     CodeLikeApiImpl,
     Coding,
     CommonApi,
     mapCodeToCoding,
-    mapCodingToCode,
-    PaginatedList
+    mapCodingToCode
 } from '@icure/typescript-common'
 
-export class CodingApi extends CodeLikeApiImpl<Coding> {}
+export interface CodingApi extends CodeLikeApi<Coding> {}
+class CodingApiImpl extends CodeLikeApiImpl<Coding> {}
 
-export const codingApi = (api: CommonApi) =>
-    new CodingApi(
+export const codingApi = (api: CommonApi): CodingApi =>
+    new CodingApiImpl(
         {
             toDomain(dto: Code): Coding {
                 return mapCodeToCoding(dto)
             },
             toDto(domain: Coding): Code {
                 return mapCodingToCode(domain)
-            },
-        },
-        {
-            toDomain(dto: PaginatedListCode): PaginatedList<Coding> {
-                return {
-                    ...dto,
-                    rows: dto.rows?.map(mapCodeToCoding),
-                } satisfies PaginatedList<Coding>
-            },
-            toDto(domain: PaginatedList<Coding>): PaginatedListCode {
-                return {
-                    ...domain,
-                    rows: domain.rows?.map(mapCodingToCode),
-                } satisfies PaginatedListCode
             },
         },
         api.errorHandler,

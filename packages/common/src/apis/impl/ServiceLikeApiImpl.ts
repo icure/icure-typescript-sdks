@@ -33,6 +33,7 @@ import { ServiceFilter } from '../../filters/dsl/ServiceFilterDsl'
 import { CommonApi } from '../CommonApi'
 import { CommonFilter } from '../../filters/filters'
 import { Document } from '../../models/Document.model'
+import {toPaginatedList} from "../../mappers/PaginatedList.mapper";
 
 export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements ServiceLikeApi<DSService, DSPatient, DSDocument> {
     private readonly contactsCache: CachedMap<ContactDto> = new CachedMap<ContactDto>(5 * 60, 10000)
@@ -41,7 +42,6 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         private readonly serviceMapper: Mapper<DSService, ServiceDto>,
         private readonly patientMapper: Mapper<DSPatient, PatientDto>,
         private readonly documentMapper: Mapper<DSDocument, DocumentDto>,
-        private readonly paginatedListMapper: Mapper<PaginatedList<DSService>, PaginatedListService>,
         private readonly errorHandler: ErrorHandler,
         private readonly userApi: IccUserXApi,
         private readonly contactApi: IccContactXApi,
@@ -382,7 +382,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
 
     async filterBy(filter: CommonFilter<Service>, nextServiceId?: string, limit?: number): Promise<PaginatedList<DSService>> {
         if (NoOpFilter.isNoOp(filter)) {
-            return { pageSize: 0, totalSize: 0, rows: [] }
+            return PaginatedList.empty()
         }
         const currentUser = await this.userApi.getCurrentUser().catch((e) => {
             throw this.errorHandler.createErrorFromAny(e)
@@ -401,7 +401,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
             .catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
             })
-        return this.paginatedListMapper.toDomain(paginatedListService)!
+        return toPaginatedList(paginatedListService, this.serviceMapper.toDomain)!
     }
 
     async get(id: string): Promise<DSService> {

@@ -30,11 +30,7 @@ import {DataOwnerApi, dataOwnerApi} from './DataOwnerApi'
 import {CodingApi, codingApi} from './CodingApi'
 import { Patient } from '../models/Patient.model'
 import {ConditionApi, conditionApi} from './ConditionApi'
-import { Condition } from '../models/Condition.model'
-import { Observation } from '../models/Observation.model'
 import {ObservationApi, observationApi} from './ObservationApi'
-import { Organisation } from '../models/Organisation.model'
-import { Practitioner } from '../models/Practitioner.model'
 import {OrganisationApi, organisationApi} from './OrganisationApi'
 import {PatientApi, patientApi} from './PatientApi'
 import {PractitionerApi, practitionerApi} from './PractitionerApi'
@@ -43,6 +39,8 @@ import {NotificationApi, notificationApi} from './NotificationApi'
 import { DataOwnerTypeEnum as DataOwnerTypeEnumDto } from '@icure/api/icc-api/model/DataOwnerTypeEnum'
 import dataOwnerMapper from '../mappers/DataOwner.mapper'
 import { authenticationApi } from './AuthenticationApi'
+import {EHRLiteCryptoStrategies} from "../services/EHRLiteCryptoStrategies";
+import {EHRLiteMessageFactory, iCureEHRLiteMessageFactory} from "../services/EHRLiteMessageFactory";
 import {MedTechApi} from "@icure/medical-device-sdk";
 
 export class EHRLiteApi extends CommonApi {
@@ -60,6 +58,8 @@ export class EHRLiteApi extends CommonApi {
 
     private readonly _authenticationApi?: AuthenticationApi<EHRLiteApi>
 
+    private readonly _messageFactory: EHRLiteMessageFactory
+
     constructor(
         _baseApi: Apis,
         private readonly _iCureBaseUrl: string,
@@ -71,7 +71,8 @@ export class EHRLiteApi extends CommonApi {
         private readonly _authProcessByEmailId: string | undefined = undefined,
         private readonly _authProcessBySmsId: string | undefined = undefined,
         storage?: StorageFacade<string>,
-        keyStorage?: KeyStorageFacade
+        keyStorage?: KeyStorageFacade,
+        messageFactory?: EHRLiteMessageFactory
     ) {
         super(_baseApi, _username, _password, _msgGtwUrl, _msgGtwSpecId, storage, keyStorage)
 
@@ -93,7 +94,9 @@ export class EHRLiteApi extends CommonApi {
 
         this._authenticationApi = this.messageGatewayApi ? authenticationApi(this.errorHandler, this.sanitizer, this.messageGatewayApi, _iCureBaseUrl, _authProcessByEmailId, _authProcessBySmsId, crypto, this._storage, this._keyStorage, _cryptoStrategies) : undefined
 
-        this._userApi = userApi(this)
+        this._messageFactory = messageFactory ?? iCureEHRLiteMessageFactory
+
+        this._userApi = userApi(this, this._messageFactory)
 
         this._notificationApi = notificationApi(this)
     }
@@ -162,6 +165,10 @@ export class EHRLiteApi extends CommonApi {
         return this._keyStorage
     }
 
+    get messageFactory(): EHRLiteMessageFactory {
+        return this._messageFactory
+    }
+
     /**
      * @internal this property is for internal use only and may be changed without notice
      */
@@ -171,7 +178,20 @@ export class EHRLiteApi extends CommonApi {
 }
 
 export namespace EHRLite {
-    export class Builder extends AuthenticatedApiBuilder<CryptoStrategies<DataOwnerWithType>, EHRLiteApi>{
+    export class Builder extends AuthenticatedApiBuilder<EHRLiteCryptoStrategies, EHRLiteMessageFactory, EHRLiteApi>{
+        constructor(initialisationApi?: EHRLiteApi) {
+            super()
+            if (initialisationApi) {
+                super.withICureBaseUrl(initialisationApi.iCureBaseUrl)
+                super.withCrypto(initialisationApi.cryptoApi.primitives.crypto)
+                super.withUserName(initialisationApi.username)
+                super.withPassword(initialisationApi.password)
+                super.withStorage(initialisationApi.storage)
+                super.withKeyStorage(initialisationApi.keyStorage)
+                super.withCryptoStrategies(initialisationApi.cryptoStrategies)
+                super.withMessageFactory(initialisationApi.messageFactory)
+            }
+        }
 
         protected doBuild(props: {
             iCureBaseUrl: string;
@@ -254,14 +274,5 @@ export namespace EHRLite {
                     )
             )
         }
-    }
-
-    export const api = (api?: EHRLiteApi) => {
-        const apiBuilder = new Builder()
-        if (api) {
-            return apiBuilder.withICureBaseUrl(api.iCureBaseUrl).withCrypto(api.cryptoApi.primitives.crypto).withUserName(api.username).withPassword(api.password).withStorage(api.storage).withKeyStorage(api.keyStorage).withCryptoStrategies(api.cryptoStrategies)
-        }
-
-        return apiBuilder
     }
 }

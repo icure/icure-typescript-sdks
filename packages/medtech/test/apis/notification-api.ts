@@ -381,7 +381,7 @@ describe('Notification API', async function () {
       nextId = page?.nextKeyPair?.startKeyDocId
     } while (!!nextId)
 
-    const result = await (hcp1Api!.notificationApi as MaintenanceTaskLikeApiImpl<any>).concatenateFilterResults(
+    const result = await (hcp1Api!.notificationApi as unknown as MaintenanceTaskLikeApiImpl<any>).concatenateFilterResults(
       filter,
       undefined,
       Math.floor(existingNotifications.length / 3)

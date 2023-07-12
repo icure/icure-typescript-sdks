@@ -80,7 +80,7 @@ describe('Data Samples API', () => {
 
     // When
     const createdDataSamples = await TestUtils.createDataSamplesForPatient(medtechApi, patient)
-    ;(medtechApi.dataSampleApi as ServiceLikeApiImpl<any, any, any>).clearContactCache()
+    ;(medtechApi.dataSampleApi as unknown as ServiceLikeApiImpl<any, any, any>).clearContactCache()
     const deletedDataSamples = await medtechApi.dataSampleApi.deleteDataSamples(createdDataSamples.map((ds) => ds.id!))
     // Then
     assert(deletedDataSamples.length == 2)

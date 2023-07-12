@@ -1,14 +1,25 @@
-import { ErrorHandler, ServiceLikeApiImpl, Document, mapDocumentDtoToDocument, mapDocumentToDocumentDto, CommonApi, PaginatedList } from '@icure/typescript-common'
-import { Patient } from '../models/Patient.model'
-import { Observation } from '../models/Observation.model'
-import { Document as DocumentDto, IccContactXApi, IccCryptoXApi, IccHelementXApi, IccPatientXApi, IccUserXApi, PaginatedListService, Patient as PatientDto, Service } from '@icure/api'
-import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
-import { mapObservationToService, mapServiceToObservation } from '../mappers/Observation.mapper'
-import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
+import {
+    ServiceLikeApiImpl,
+    Document,
+    mapDocumentDtoToDocument,
+    mapDocumentToDocumentDto,
+    CommonApi,
+    ServiceLikeApi
+} from '@icure/typescript-common'
+import {Patient} from '../models/Patient.model'
+import {Observation} from '../models/Observation.model'
+import {Document as DocumentDto, Patient as PatientDto, Service} from '@icure/api'
+import {mapObservationToService, mapServiceToObservation} from '../mappers/Observation.mapper'
+import {mapPatientDtoToPatient, mapPatientToPatientDto} from '../mappers/Patient.mapper'
 
-export class ObservationApi extends ServiceLikeApiImpl<Observation, Patient, Document> {}
-export const observationApi = (api: CommonApi) =>
-    new ObservationApi(
+export interface ObservationApi extends ServiceLikeApi<Observation, Patient, Document> {
+}
+
+class ObservationApiImpl extends ServiceLikeApiImpl<Observation, Patient, Document> implements ObservationApi {
+}
+
+export const observationApi = (api: CommonApi): ObservationApi =>
+    new ObservationApiImpl(
         {
             toDomain(dto: Service): Observation {
                 return mapServiceToObservation(dto)
@@ -31,20 +42,6 @@ export const observationApi = (api: CommonApi) =>
             },
             toDto(domain: Document): DocumentDto {
                 return mapDocumentToDocumentDto(domain)
-            },
-        },
-        {
-            toDomain(dto: PaginatedListService): PaginatedList<Observation> {
-                return {
-                    ...dto,
-                    rows: dto.rows?.map(mapServiceToObservation),
-                }
-            },
-            toDto(domain: PaginatedList<Observation>): PaginatedListService {
-                return {
-                    ...domain,
-                    rows: domain.rows?.map(mapObservationToService),
-                }
             },
         },
         api.errorHandler,

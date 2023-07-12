@@ -14,11 +14,11 @@ import { MaintenanceTaskFilter } from '../../filters/dsl/MaintenanceTaskFilterDs
 import { CommonApi } from '../CommonApi'
 import { AccessLevelEnum } from '../../models/enums/AccessLevel.enum'
 import {CommonFilter} from "../../filters/filters";
+import {toPaginatedList} from "../../mappers/PaginatedList.mapper";
 
 export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements MaintenanceTaskLikeApi<DSMaintenanceTask> {
     constructor(
         private readonly mapper: Mapper<DSMaintenanceTask, MaintenanceTask>,
-        private readonly paginatedListMapper: Mapper<PaginatedList<DSMaintenanceTask>, PaginatedListMaintenanceTask>,
         private readonly errorHandler: ErrorHandler,
         private readonly maintenanceTaskApi: IccMaintenanceTaskXApi,
         private readonly userApi: IccUserXApi,
@@ -59,7 +59,7 @@ export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements Maintenanc
 
     async filterBy(filter: Filter<MaintenanceTask>, nextMaintenanceTaskId?: string, limit?: number): Promise<PaginatedList<DSMaintenanceTask>> {
         if (NoOpFilter.isNoOp(filter)) {
-            return { totalSize: 0, pageSize: 0, rows: [] }
+            return PaginatedList.empty()
         } else {
             return this.userApi.getCurrentUser().then((user) => {
                 if (!user) throw this.errorHandler.createErrorWithMessage('There is no user currently logged in. You must call this method from an authenticated MedTechApi')
@@ -73,7 +73,7 @@ export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements Maintenanc
                         })
                     )
                     .then((paginatedList) => {
-                        return this.paginatedListMapper.toDomain(paginatedList)!
+                        return toPaginatedList(paginatedList, this.mapper.toDomain)
                     })
                     .catch((e) => {
                         throw this.errorHandler.createErrorFromAny(e)

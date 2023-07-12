@@ -24,6 +24,10 @@ export class PaginatedList<T> {
             nextKeyPair: pojo["nextKeyPair"] ? PaginatedDocumentKeyAndIdPairObject.fromJSON(pojo["nextKeyPair"]) : undefined
         })
     }
+
+    static empty<T>(): PaginatedList<T> {
+        return new PaginatedList({ rows: [] })
+    }
 }
 
 interface IPaginatedList<T> {

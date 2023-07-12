@@ -1,19 +1,15 @@
 import {
     CommonApi,
     CommonFilter,
-    Connection,
-    MaintenanceTaskLikeApiImpl,
+    Connection, MaintenanceTaskLikeApi, MaintenanceTaskLikeApiImpl,
     mapMaintenanceTaskToNotification,
     mapNotificationToMaintenanceTask,
     Notification,
     PaginatedList,
 } from '@icure/typescript-common'
-import {MaintenanceTask, PaginatedListMaintenanceTask} from '@icure/api'
+import {MaintenanceTask} from '@icure/api'
 
-/**
- * The NotificationApi interface provides methods to subscribe to notifications.
- */
-export class NotificationApi extends MaintenanceTaskLikeApiImpl<Notification> {
+export interface NotificationApi extends MaintenanceTaskLikeApi<Notification> {
     /**
      * @deprecated use {@link NotificationApi.createOrModify} instead.
      *
@@ -22,9 +18,7 @@ export class NotificationApi extends MaintenanceTaskLikeApiImpl<Notification> {
      * @param delegate the id of the Healthcare Party to delegate.
      * @return a Promise containing the Notification or undefined if something goes wrong.
      */
-    createOrModifyNotification(notification: Notification, delegate?: string): Promise<Notification | undefined> {
-        return this.createOrModify(notification, delegate)
-    }
+    createOrModifyNotification(notification: Notification, delegate?: string): Promise<Notification | undefined>;
 
     /**
      * @deprecated use {@link NotificationApi.delete} instead.
@@ -33,9 +27,7 @@ export class NotificationApi extends MaintenanceTaskLikeApiImpl<Notification> {
      * @param notificationId the id of the Notification to delete
      * @return a Promise containing the id of the Notification or undefined if something goes wrong.
      */
-    deleteNotification(notificationId: string): Promise<string | undefined> {
-        return this.delete(notificationId)
-    }
+    deleteNotification(notificationId: string): Promise<string | undefined>;
 
     /**
      * @deprecated use {@link NotificationApi.filter} instead.
@@ -47,9 +39,7 @@ export class NotificationApi extends MaintenanceTaskLikeApiImpl<Notification> {
      * @param limit The number of patients to return in the queried page
      * @return a Promise containing the PaginatedList of Notification objects
      */
-    filterNotifications(filter: CommonFilter<MaintenanceTask>, nextNotificationId?: string, limit?: number): Promise<PaginatedList<Notification>> {
-        return this.filterBy(filter, nextNotificationId, limit)
-    }
+    filterNotifications(filter: CommonFilter<MaintenanceTask>, nextNotificationId?: string, limit?: number): Promise<PaginatedList<Notification>>;
 
     /**
      * @deprecated use {@link NotificationApi.get} instead.
@@ -58,9 +48,7 @@ export class NotificationApi extends MaintenanceTaskLikeApiImpl<Notification> {
      * @param notificationId the id of the Notification to retrieve.
      * @return a Promise containing the Notification or undefined if something goes wrong.
      */
-    getNotification(notificationId: string): Promise<Notification | undefined> {
-        return this.get(notificationId)
-    }
+    getNotification(notificationId: string): Promise<Notification | undefined>;
 
     /**
      * @deprecated use {@link NotificationApi.getPendingAfter} instead.
@@ -70,9 +58,7 @@ export class NotificationApi extends MaintenanceTaskLikeApiImpl<Notification> {
      * @param fromDate : Default value is now less 30 days
      * @return an Array of the Notifications matching those criteria
      */
-    getPendingNotificationsAfter(fromDate?: number): Promise<Array<Notification>> {
-        return this.getPendingAfter(fromDate)
-    }
+    getPendingNotificationsAfter(fromDate?: number): Promise<Array<Notification>>;
 
     /**
      * @deprecated use {@link NotificationApi.updateNotificationStatus} instead.
@@ -82,9 +68,7 @@ export class NotificationApi extends MaintenanceTaskLikeApiImpl<Notification> {
      * @param newStatus the new status
      * @return the updated Notification
      */
-    updateNotificationStatus(notification: Notification, newStatus: MaintenanceTask.StatusEnum): Promise<Notification | undefined> {
-        return this.updateStatus(notification, newStatus)
-    }
+    updateNotificationStatus(notification: Notification, newStatus: MaintenanceTask.StatusEnum): Promise<Notification | undefined>;
 
     /**
      * @deprecated use {@link NotificationApi.subscribeToEvents} instead.
@@ -104,34 +88,50 @@ export class NotificationApi extends MaintenanceTaskLikeApiImpl<Notification> {
         filter: CommonFilter<MaintenanceTask>,
         eventFired: (dataSample: Notification) => Promise<void>,
         options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }
+    ): Promise<Connection>;
+}
+
+/**
+ * The NotificationApi interface provides methods to subscribe to notifications.
+ */
+class NotificationApiImpl extends MaintenanceTaskLikeApiImpl<Notification> implements NotificationApi {
+    createOrModifyNotification(notification: Notification, delegate?: string): Promise<Notification | undefined> {
+        return this.createOrModify(notification, delegate)
+    }
+    deleteNotification(notificationId: string): Promise<string | undefined> {
+        return this.delete(notificationId)
+    }
+    filterNotifications(filter: CommonFilter<MaintenanceTask>, nextNotificationId?: string, limit?: number): Promise<PaginatedList<Notification>> {
+        return this.filterBy(filter, nextNotificationId, limit)
+    }
+    getNotification(notificationId: string): Promise<Notification | undefined> {
+        return this.get(notificationId)
+    }
+    getPendingNotificationsAfter(fromDate?: number): Promise<Array<Notification>> {
+        return this.getPendingAfter(fromDate)
+    }
+    updateNotificationStatus(notification: Notification, newStatus: MaintenanceTask.StatusEnum): Promise<Notification | undefined> {
+        return this.updateStatus(notification, newStatus)
+    }
+    subscribeToNotificationEvents(
+        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
+        filter: CommonFilter<MaintenanceTask>,
+        eventFired: (dataSample: Notification) => Promise<void>,
+        options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }
     ): Promise<Connection> {
         return this.subscribeToEvents(eventTypes, filter, eventFired, options)
     }
 }
 
 
-export const notificationApi = (api: CommonApi) => {
-    return new NotificationApi(
+export const notificationApi = (api: CommonApi): NotificationApi => {
+    return new NotificationApiImpl(
         {
             toDomain(dto: MaintenanceTask): Notification {
                 return mapMaintenanceTaskToNotification(dto)
             },
             toDto(domain: Notification): MaintenanceTask {
                 return mapNotificationToMaintenanceTask(domain)
-            },
-        },
-        {
-            toDomain(dto: PaginatedListMaintenanceTask): PaginatedList<Notification> {
-                return {
-                    rows: dto.rows?.map(mapMaintenanceTaskToNotification),
-                    totalSize: dto.totalSize,
-                }
-            },
-            toDto(domain: PaginatedList<Notification>): PaginatedListMaintenanceTask {
-                return {
-                    rows: domain.rows?.map(mapNotificationToMaintenanceTask),
-                    totalSize: domain.totalSize,
-                }
             },
         },
         api.errorHandler,

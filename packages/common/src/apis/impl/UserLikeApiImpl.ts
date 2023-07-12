@@ -1,29 +1,36 @@
-import { PaginatedList } from '../../models/PaginatedList.model'
-import { SharedDataType } from '../../models/User.model'
-import { Connection } from '../../models/Connection.model'
-import { UserLikeApi } from '../UserLikeApi'
-import { ErrorHandler } from '../../services/ErrorHandler'
-import { FilterChainUser, HealthcareParty as HealthcarePartyDto, IccUserXApi, PaginatedListUser, Patient as PatientDto, retry, User as UserDto } from '@icure/api'
-import { Mapper } from '../Mapper'
-import { MessageGatewayApi } from '../MessageGatewayApi'
-import { Sanitizer } from '../../services/Sanitizer'
-import { forceUuid } from '../../utils/uuidUtils'
-import { filteredContactsFromAddresses } from '../../utils/addressUtils'
-import { UserFilter } from '../../filters/dsl/UserFilterDsl'
-import { CommonApi } from '../CommonApi'
-import { NoOpFilter } from '../../filters/dsl/filterDsl'
-import { FilterMapper } from '../../mappers/Filter.mapper'
-import { CommonFilter } from '../../filters/filters'
-import { MessageFactory } from '../../services/MessageFactory'
-import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
-import { DataOwnerTypeEnum } from '@icure/api/icc-api/model/DataOwnerTypeEnum'
+import {PaginatedList} from '../../models/PaginatedList.model'
+import {SharedDataType} from '../../models/User.model'
+import {Connection} from '../../models/Connection.model'
+import {UserLikeApi} from '../UserLikeApi'
+import {ErrorHandler} from '../../services/ErrorHandler'
+import {
+    FilterChainUser,
+    HealthcareParty as HealthcarePartyDto,
+    IccUserXApi,
+    Patient as PatientDto,
+    retry,
+    User as UserDto
+} from '@icure/api'
+import {Mapper} from '../Mapper'
+import {MessageGatewayApi} from '../MessageGatewayApi'
+import {Sanitizer} from '../../services/Sanitizer'
+import {forceUuid} from '../../utils/uuidUtils'
+import {findTelecomOfAddresses} from '../../utils/addressUtils'
+import {UserFilter} from '../../filters/dsl/UserFilterDsl'
+import {CommonApi} from '../CommonApi'
+import {NoOpFilter} from '../../filters/dsl/filterDsl'
+import {FilterMapper} from '../../mappers/Filter.mapper'
+import {CommonFilter} from '../../filters/filters'
+import {MessageFactory} from '../../services/MessageFactory'
+import {IccDataOwnerXApi} from '@icure/api/icc-x-api/icc-data-owner-x-api'
+import {DataOwnerTypeEnum} from '@icure/api/icc-api/model/DataOwnerTypeEnum'
+import {toPaginatedList} from "../../mappers/PaginatedList.mapper";
 
 export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements UserLikeApi<DSUser, DSPatient> {
     constructor(
         private readonly userMapper: Mapper<DSUser, UserDto>,
         private readonly patientMapper: Mapper<DSPatient, PatientDto>,
         private readonly hcpMapper: Mapper<DSHealthcareParty, HealthcarePartyDto>,
-        private readonly paginatedListMapper: Mapper<PaginatedList<DSUser>, PaginatedListUser>,
         private readonly errorHandler: ErrorHandler,
         private readonly sanitizer: Sanitizer,
         private readonly userApi: IccUserXApi,
@@ -60,12 +67,12 @@ export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements Us
 
         // Gets the preferred contact information
         const contacts = [
-            filteredContactsFromAddresses(patientDto.addresses ?? [], 'email', 'home'), // Check for the home email
-            filteredContactsFromAddresses(patientDto.addresses ?? [], 'mobile', 'home'), // Check for the home mobile
-            filteredContactsFromAddresses(patientDto.addresses ?? [], 'email', 'work'), // Check for the work email
-            filteredContactsFromAddresses(patientDto.addresses ?? [], 'mobile', 'work'), // Check for the work mobile
-            filteredContactsFromAddresses(patientDto.addresses ?? [], 'email'), // Check for any email
-            filteredContactsFromAddresses(patientDto.addresses ?? [], 'mobile'), // Check for any mobile
+            findTelecomOfAddresses(patientDto.addresses ?? [], 'email', 'home'), // Check for the home email
+            findTelecomOfAddresses(patientDto.addresses ?? [], 'mobile', 'home'), // Check for the home mobile
+            findTelecomOfAddresses(patientDto.addresses ?? [], 'email', 'work'), // Check for the work email
+            findTelecomOfAddresses(patientDto.addresses ?? [], 'mobile', 'work'), // Check for the work mobile
+            findTelecomOfAddresses(patientDto.addresses ?? [], 'email'), // Check for any email
+            findTelecomOfAddresses(patientDto.addresses ?? [], 'mobile'), // Check for any mobile
         ].filter((contact) => !!contact)
         const favouredEmail = contacts.find((contact) => contact?.telecomType == 'email')
         const favouredMobile = contacts.find((contact) => contact?.telecomType == 'mobile')
@@ -145,9 +152,9 @@ export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements Us
 
     async filterBy(filter: CommonFilter<UserDto>, nextUserId?: string, limit?: number): Promise<PaginatedList<DSUser>> {
         if (NoOpFilter.isNoOp(filter)) {
-            return { totalSize: 0, pageSize: 0, rows: [] }
+            return PaginatedList.empty()
         } else {
-            return this.paginatedListMapper.toDomain(
+            return toPaginatedList(
                 await this.userApi
                     .filterUsersBy(
                         nextUserId,
@@ -158,7 +165,8 @@ export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements Us
                     )
                     .catch((e) => {
                         throw this.errorHandler.createErrorFromAny(e)
-                    })
+                    }),
+                this.userMapper.toDomain
             )!
         }
     }

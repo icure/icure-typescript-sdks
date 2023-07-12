@@ -5,20 +5,24 @@ import {
   mapUserDtoToUser,
   mapUserToUserDto,
   PaginatedList,
-  User,
-  UserLikeApiImpl,
+  User, UserLikeApi, UserLikeApiImpl,
 } from '@icure/typescript-common'
-import { HealthcareParty as HealthcarePartyDto, PaginatedListUser, Patient as PatientDto, User as UserDto } from '@icure/api'
-import { Patient } from '../models/Patient.model'
-import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
-import { mapHealthcarePartyToHealthcareProfessional, mapHealthcareProfessionalToHealthcareParty } from '../mappers/HealthcareProfessional.mapper'
-import { HealthcareProfessional } from '../models/HealthcareProfessional.model'
-import { MessageFactory } from '@icure/typescript-common/dist/services/MessageFactory'
+import {
+  HealthcareParty as HealthcarePartyDto,
+  PaginatedListUser,
+  Patient as PatientDto,
+  User as UserDto
+} from '@icure/api'
+import {Patient} from '../models/Patient.model'
+import {mapPatientDtoToPatient, mapPatientToPatientDto} from '../mappers/Patient.mapper'
+import {
+  mapHealthcarePartyToHealthcareProfessional,
+  mapHealthcareProfessionalToHealthcareParty
+} from '../mappers/HealthcareProfessional.mapper'
+import {HealthcareProfessional} from '../models/HealthcareProfessional.model'
+import {MessageFactory} from '@icure/typescript-common/dist/services/MessageFactory'
 
-/**
- * The UserApi interface provides methods to manage users.
- */
-export class UserApi extends UserLikeApiImpl<User, Patient, HealthcareProfessional> {
+export interface UserApi extends UserLikeApi<User, Patient> {
   /**
    * @deprecated Use {@link UserApi.createOrModify} instead.
    *
@@ -27,9 +31,7 @@ export class UserApi extends UserLikeApiImpl<User, Patient, HealthcareProfession
    * @param patient the Patient to create the user for.
    * @param tokenDuration the validity duration of the short-lived token, in seconds (default 48 hours)
    */
-  createAndInviteUser(patient: Patient, tokenDuration?: number): Promise<User> {
-    return this.createAndInvite(patient, tokenDuration)
-  }
+  createAndInviteUser(patient: Patient, tokenDuration?: number): Promise<User>;
 
   /**
    * @deprecated Use {@link UserApi.createOrModify} instead.
@@ -38,9 +40,7 @@ export class UserApi extends UserLikeApiImpl<User, Patient, HealthcareProfession
    * Create a new user or modify an existing one.
    * @param user The user that must be created in the database.
    */
-  createOrModifyUser(user: User): Promise<User> {
-    return this.createOrModify(user)
-  }
+  createOrModifyUser(user: User): Promise<User>;
 
   /**
    * @deprecated Use {@link UserApi.delete} instead.
@@ -49,9 +49,7 @@ export class UserApi extends UserLikeApiImpl<User, Patient, HealthcareProfession
    * Delete an existing user.
    * @param userId The UUID that uniquely identifies the user to be deleted.
    */
-  deleteUser(userId: string): Promise<string> {
-    return this.delete(userId)
-  }
+  deleteUser(userId: string): Promise<string>;
 
   /**
    * @deprecated Use {@link UserApi.filterBy} instead.
@@ -62,9 +60,7 @@ export class UserApi extends UserLikeApiImpl<User, Patient, HealthcareProfession
    * @param nextUserId The id of the first User in the next page
    * @param limit The number of users to return in the queried page
    */
-  filterUsers(filter: CommonFilter<UserDto>, nextUserId?: string, limit?: number): Promise<PaginatedList<User>> {
-    return this.filterBy(filter, nextUserId, limit)
-  }
+  filterUsers(filter: CommonFilter<UserDto>, nextUserId?: string, limit?: number): Promise<PaginatedList<User>>;
 
   /**
    * @deprecated Use {@link UserApi.getLogged} instead.
@@ -72,9 +68,7 @@ export class UserApi extends UserLikeApiImpl<User, Patient, HealthcareProfession
    * When you make a call to the server, an authentication token is used to identify you. This call returns the complete User object that corresponds to your authentication credentials.
    * Get the details of the logged User.
    */
-  getLoggedUser(): Promise<User> {
-    return this.getLogged()
-  }
+  getLoggedUser(): Promise<User>;
 
   /**
    * @deprecated Use {@link UserApi.getUser} instead.
@@ -83,9 +77,7 @@ export class UserApi extends UserLikeApiImpl<User, Patient, HealthcareProfession
    * Get a User by id.
    * @param userId The UUID that identifies the user uniquely
    */
-  getUser(userId: string): Promise<User> {
-    return this.get(userId)
-  }
+  getUser(userId: string): Promise<User>;
 
   /**
    * @deprecated Use {@link UserApi.getByEmail} instead.
@@ -96,9 +88,7 @@ export class UserApi extends UserLikeApiImpl<User, Patient, HealthcareProfession
    *
    * @param email The email that identifies the user uniquely
    */
-  getUserByEmail(email: string): Promise<User> {
-    return this.getByEmail(email)
-  }
+  getUserByEmail(email: string): Promise<User>;
 
   /**
    * @deprecated Use {@link UserApi.matchBy} instead.
@@ -107,9 +97,7 @@ export class UserApi extends UserLikeApiImpl<User, Patient, HealthcareProfession
    * Load user ids from the database by filtering them using the provided Filter.
    * @param filter The Filter object that describes which condition(s) the elements whose the ids should be returned must fulfill
    */
-  matchUsers(filter: CommonFilter<UserDto>): Promise<Array<string>> {
-    return this.matchBy(filter)
-  }
+  matchUsers(filter: CommonFilter<UserDto>): Promise<Array<string>>;
 
   /**
    * @deprecated Use {@link UserApi.subscribeToEvents} instead.
@@ -125,17 +113,53 @@ export class UserApi extends UserLikeApiImpl<User, Patient, HealthcareProfession
    *    - connectionRetryIntervalInMs : How long base interval will be between two retry. The retry attempt is exponential and using a random value (connectionRetryIntervalMs * (random between 1 and 2))^nbAttempts)
    */
   subscribeToUserEvents(
-    eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
-    filter: CommonFilter<UserDto>,
-    eventFired: (user: User) => Promise<void>,
-    options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }
+      eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
+      filter: CommonFilter<UserDto>,
+      eventFired: (user: User) => Promise<void>,
+      options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }
+  ): Promise<Connection>;
+}
+
+/**
+ * The UserApi interface provides methods to manage users.
+ */
+class UserApiImpl extends UserLikeApiImpl<User, Patient, HealthcareProfessional> implements UserApi {
+  createAndInviteUser(patient: Patient, tokenDuration?: number): Promise<User> {
+    return this.createAndInvite(patient, tokenDuration)
+  }
+  createOrModifyUser(user: User): Promise<User> {
+    return this.createOrModify(user)
+  }
+  deleteUser(userId: string): Promise<string> {
+    return this.delete(userId)
+  }
+  filterUsers(filter: CommonFilter<UserDto>, nextUserId?: string, limit?: number): Promise<PaginatedList<User>> {
+    return this.filterBy(filter, nextUserId, limit)
+  }
+  getLoggedUser(): Promise<User> {
+    return this.getLogged()
+  }
+  getUser(userId: string): Promise<User> {
+    return this.get(userId)
+  }
+  getUserByEmail(email: string): Promise<User> {
+    return this.getByEmail(email)
+  }
+  matchUsers(filter: CommonFilter<UserDto>): Promise<Array<string>> {
+    return this.matchBy(filter)
+  }
+  subscribeToUserEvents(
+      eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
+      filter: CommonFilter<UserDto>,
+      eventFired: (user: User) => Promise<void>,
+      options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }
   ): Promise<Connection> {
     return this.subscribeToEvents(eventTypes, filter, eventFired, options)
   }
 }
 
 export const userApi = (api: CommonApi, messageFactory: MessageFactory<User, HealthcareProfessional, Patient>) => {
-  return new UserApi(
+  return new UserApiImpl(
     {
       toDomain(dto: UserDto): User {
         return mapUserDtoToUser(dto)
@@ -158,20 +182,6 @@ export const userApi = (api: CommonApi, messageFactory: MessageFactory<User, Hea
       },
       toDto(domain: HealthcareProfessional): HealthcarePartyDto {
         return mapHealthcareProfessionalToHealthcareParty(domain)
-      },
-    },
-    {
-      toDomain(dto: PaginatedListUser): PaginatedList<User> {
-        return {
-          totalSize: dto.totalSize,
-          rows: dto.rows?.map(mapUserDtoToUser),
-        }
-      },
-      toDto(domain: PaginatedList<User>): PaginatedListUser {
-        return {
-          totalSize: domain.totalSize,
-          rows: domain.rows?.map(mapUserToUserDto),
-        }
       },
     },
     api.errorHandler,

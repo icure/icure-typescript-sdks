@@ -1,29 +1,15 @@
 import {
     AuthenticationApiImpl,
-    AuthenticationResult,
     CryptoStrategies,
     DataOwnerWithType,
     ErrorHandler,
     extractDomainType,
-    mapUserToUserDto,
     MessageGatewayApi,
-    Notification,
-    NotificationTypeEnum,
     Sanitizer
 } from '@icure/typescript-common'
-import { EHRLite, EHRLiteApi } from './EHRLiteApi'
-import {
-    Device,
-    HealthcareParty,
-    IccCryptoXApi,
-    KeyStorageFacade,
-    Patient,
-    StorageFacade,
-    User as UserDto
-} from '@icure/api'
-import { v4 as uuid } from 'uuid'
+import {EHRLite, EHRLiteApi} from './EHRLiteApi'
+import {Device, HealthcareParty, KeyStorageFacade, Patient, StorageFacade} from '@icure/api'
 import Crypto from 'crypto'
-import { mapPatientToPatientDto } from '../mappers/Patient.mapper'
 import {DataOwnerTypeEnum} from "../models/DataOwner.model";
 
 class AuthenticationApi extends AuthenticationApiImpl<EHRLiteApi> {
@@ -44,7 +30,7 @@ class AuthenticationApi extends AuthenticationApiImpl<EHRLiteApi> {
     }
 
     protected initApi(username: string, password: string): Promise<EHRLiteApi> {
-        const builder = EHRLite.api()
+        const builder = new EHRLite.Builder()
             .withICureBaseUrl(this.iCureBasePath)
             .withUserName(username)
             .withPassword(password)

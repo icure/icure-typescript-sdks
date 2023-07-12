@@ -8,10 +8,10 @@ import {mapOf} from "@icure/typescript-common";
 export function newSystemMetaDataOwnerEncrypted(): SystemMetaDataOwnerEncrypted {
   return new SystemMetaDataOwnerEncrypted({
     publicKey: 'publicKey',
-    hcPartyKeys: { key: ['hcPartyKeys'] },
-    privateKeyShamirPartitions: { key: 'privateKeyShamirPartitions' },
-    aesExchangeKeys: { key: { key: { key: 'aesExchangeKeys' } } },
-    transferKeys: { key: { key: 'aesExchangeKeys' } },
+    hcPartyKeys: mapOf({ key: ['hcPartyKeys'] }),
+    privateKeyShamirPartitions: mapOf({ key: 'privateKeyShamirPartitions' }),
+    aesExchangeKeys: mapOf({ key: mapOf({ key: mapOf({ key: 'aesExchangeKeys' }) }) }),
+    transferKeys: mapOf({ key: mapOf({ key: 'aesExchangeKeys' }) }),
     secretForeignKeys: ['secretForeignKeys'],
     cryptedForeignKeys: mapOf({ key: new Set([newDelegation()]) }),
     delegations: mapOf({ key: new Set([newDelegation()]) }),
