@@ -1,5 +1,6 @@
 import { Delegation } from './Delegation.model'
 import { SecurityMetadata } from './SecurityMetadata.model'
+import {CodingReference} from "./CodingReference.model";
 
 export class SystemMetaDataOwnerEncrypted {
     publicKey?: string
@@ -14,6 +15,7 @@ export class SystemMetaDataOwnerEncrypted {
     securityMetadata?: SecurityMetadata
     publicKeysForOaepWithSha256?: Array<string>
     encryptedSelf?: string
+    tags?: Set<CodingReference>
 
     constructor(systemMetaDataOwnerEncrypted?: ISystemMetaDataOwnerEncrypted) {
         this.publicKey = systemMetaDataOwnerEncrypted?.publicKey
@@ -78,4 +80,5 @@ interface ISystemMetaDataOwnerEncrypted {
     securityMetadata?: SecurityMetadata
     publicKeysForOaepWithSha256?: Array<string>
     encryptedSelf?: string
+    tags?: Set<CodingReference>
 }

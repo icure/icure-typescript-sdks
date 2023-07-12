@@ -1,5 +1,6 @@
 import { Delegation } from './Delegation.model'
 import { SecurityMetadata } from './SecurityMetadata.model'
+import {CodingReference} from "./CodingReference.model";
 
 export class SystemMetaDataEncrypted {
     secretForeignKeys?: string[]
@@ -8,6 +9,7 @@ export class SystemMetaDataEncrypted {
     encryptionKeys?: Map<string, Set<Delegation>>
     securityMetadata?: SecurityMetadata
     encryptedSelf?: string
+    tags?: Set<CodingReference>
 
     constructor(systemMetaDataEncrypted?: ISystemMetaDataEncrypted) {
         this.secretForeignKeys = systemMetaDataEncrypted?.secretForeignKeys
@@ -48,4 +50,5 @@ interface ISystemMetaDataEncrypted {
     encryptionKeys?: Map<string, Set<Delegation>>
     securityMetadata?: SecurityMetadata
     encryptedSelf?: string
+    tags?: Set<CodingReference>
 }

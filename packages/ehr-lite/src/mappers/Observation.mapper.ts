@@ -1,35 +1,40 @@
-import { Observation } from '../models/Observation.model'
-import { Annotation as AnnotationDto, CodeStub, Content, Delegation as DelegationDto, Identifier as IdentifierDto, ISO639_1, Service } from '@icure/api'
+import {Observation} from '../models/Observation.model'
+import {
+    Annotation as AnnotationDto,
+    CodeStub,
+    Content,
+    Delegation as DelegationDto,
+    Identifier as IdentifierDto,
+    ISO639_1,
+    Service
+} from '@icure/api'
 import {
     Annotation,
     CodingReference,
-    convertMapOfArrayOfGenericToObject,
     convertNestedMapToObject,
-    convertObjectToMapOfArrayOfGeneric,
-    convertObjectToNestedMap,
-    Delegation,
-    extractCryptedForeignKeys,
-    extractDelegations,
-    extractEncryptedSelf,
-    extractEncryptionKeys,
-    extractSecretForeignKeys,
-    extractSecurityMetadata,
+    convertObjectToNestedMap, dataOwnerDomainTypeTag, extractDomainTypeTag,
+    extractEncryptedSelf, ICURE_DOMAIN_TYPE_ID,
     Identifier,
     mapAnnotationDtoToAnnotation,
     mapAnnotationToAnnotationDto,
     mapCodeStubToCodingReference,
     mapCodingReferenceToCodeStub,
-    mapDelegationDtoToDelegation,
-    mapDelegationToDelegationDto,
     mapIdentifierDtoToIdentifier,
     mapIdentifierToIdentifierDto,
-    SystemMetaDataEncrypted,
+    SystemMetaDataEncrypted, systemMetaDataTags,
 } from '@icure/typescript-common'
-import { Component } from '../models/Component.model'
-import { LocalComponent } from '../models/LocalComponent.model'
-import { mapContentToLocalComponent, mapLocalComponentToContent } from './LocalComponent.mapper'
-import { mapComponentToContent, mapContentToComponent } from './Component.mapper'
-import { toCryptedForeignKeys, toDelegations, toEncryptionKeys, toSecretForeignKeys, toSystemMetaDataEncrypted } from '@icure/typescript-common/dist/mappers/SystemMetaData.mapper'
+import {Component} from '../models/Component.model'
+import {LocalComponent} from '../models/LocalComponent.model'
+import {mapContentToLocalComponent, mapLocalComponentToContent} from './LocalComponent.mapper'
+import {mapComponentToContent, mapContentToComponent} from './Component.mapper'
+import {
+    toCryptedForeignKeys,
+    toDelegations,
+    toEncryptionKeys,
+    toSecretForeignKeys,
+    toSystemMetaDataEncrypted
+} from '@icure/typescript-common/dist/mappers/SystemMetaData.mapper'
+import {addUniqueObjectsToArray} from "../utils/Array.utils";
 
 function toServiceId(domain: Observation): string | undefined {
     return domain.id
@@ -91,11 +96,7 @@ function toServiceIndex(domain: Observation): number | undefined {
     return domain.index
 }
 
-function toServiceContent(domain: Observation):
-    | {
-          [key: string]: Content
-      }
-    | undefined {
+function toServiceContent(domain: Observation): | { [key: string]: Content } | undefined {
     const nonLocalizedContent = !!domain.component ? mapComponentToContent(domain.component) : undefined
     const localizedContentEntries: [ISO639_1, Content][] = [...(domain.localContent?.entries() ?? [])]?.map(([key, value]) => {
         return [key, mapLocalComponentToContent(value)]
@@ -182,7 +183,14 @@ function toServiceCodes(domain: Observation): CodeStub[] | undefined {
 }
 
 function toServiceTags(domain: Observation): CodeStub[] | undefined {
-    return !!domain.tags ? [...domain.tags].map(mapCodingReferenceToCodeStub) : undefined
+    const mappedTags = !!domain.tags ? [...domain.tags].map(mapCodingReferenceToCodeStub) : []
+    const systemMetaDataCodeStubs = [...(domain.systemMetaData ? systemMetaDataTags(domain.systemMetaData) : [])].map(mapCodingReferenceToCodeStub)
+
+    if (!!domain.systemMetaData) {
+        return addUniqueObjectsToArray(mappedTags, dataOwnerDomainTypeTag('Observation'), ...systemMetaDataCodeStubs)
+    }
+
+    return addUniqueObjectsToArray(mappedTags, ...systemMetaDataCodeStubs)
 }
 
 function toServiceEncryptedSelf(domain: Observation): string | undefined {
@@ -268,7 +276,14 @@ function toObservationCodes(dto: Service): Set<CodingReference> | undefined {
 }
 
 function toObservationTags(dto: Service): Set<CodingReference> | undefined {
-    return !!dto.tags ? new Set(dto.tags.map(mapCodeStubToCodingReference)) : undefined
+    const domainTypeTag = extractDomainTypeTag(dto.tags)
+
+    if (!domainTypeTag || domainTypeTag.context !== 'Observation') {
+        throw new Error('Observation must have a domain type tag')
+    }
+
+    const filteredTags = dto.tags?.filter(t => t.id !== ICURE_DOMAIN_TYPE_ID)
+    return !!filteredTags ? new Set(filteredTags.map(mapCodeStubToCodingReference)) : undefined
 }
 
 function toObservationSystemMetaData(dto: Service): SystemMetaDataEncrypted | undefined {

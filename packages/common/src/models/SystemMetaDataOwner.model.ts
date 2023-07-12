@@ -1,3 +1,5 @@
+import {CodingReference} from "./CodingReference.model";
+
 export class SystemMetaDataOwner {
     publicKey?: string
     hcPartyKeys?: Map<string, string[]>
@@ -5,6 +7,7 @@ export class SystemMetaDataOwner {
     aesExchangeKeys?: Map<string, Map<string, Map<string, string>>>
     transferKeys?: Map<string, Map<string, string>>
     publicKeysForOaepWithSha256?: Array<string>
+    tags?: Set<CodingReference>
 
     constructor(systemMetaDataOwner?: ISystemMetaDataOwner) {
         this.publicKey = systemMetaDataOwner?.publicKey
@@ -38,4 +41,5 @@ interface ISystemMetaDataOwner {
     aesExchangeKeys?: Map<string, Map<string, Map<string, string>>>
     transferKeys?: Map<string, Map<string, string>>
     publicKeysForOaepWithSha256?: Array<string>
+    tags?: Set<CodingReference>
 }

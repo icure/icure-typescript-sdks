@@ -1,8 +1,19 @@
-import { CareTeamMember, CodeStub, Delegation as DelegationDto, Episode, HealthElement, Identifier as IdentifierDto, PlanOfAction } from '@icure/api'
-import { Condition } from '../models/Condition.model'
+import {
+    CareTeamMember,
+    CodeStub,
+    Delegation as DelegationDto,
+    Episode,
+    HealthElement,
+    Identifier as IdentifierDto,
+    PlanOfAction
+} from '@icure/api'
+import {Condition} from '../models/Condition.model'
 import {
     Annotation,
     CodingReference,
+    dataOwnerDomainTypeTag,
+    extractDomainTypeTag,
+    ICURE_DOMAIN_TYPE_ID,
     Identifier,
     mapAnnotationDtoToAnnotation,
     mapAnnotationToAnnotationDto,
@@ -11,13 +22,22 @@ import {
     mapIdentifierDtoToIdentifier,
     mapIdentifierToIdentifierDto,
     SystemMetaDataEncrypted,
+    systemMetaDataTags,
 } from '@icure/typescript-common'
-import { Annotation as AnnotationDto } from '@icure/api/icc-api/model/Annotation'
-import { ClinicalStatusEnum } from '../models/enums/ClinicalStatus.enum'
-import { VerificationStatusEnum } from '../models/enums/VerificationStatus.enum'
-import { CategoryEnum } from '../models/enums/Category.enum'
-import { SeverityEnum } from '../models/enums/Severity.enum'
-import { toCryptedForeignKeys, toDelegations, toEncryptedSelf, toEncryptionKeys, toSecretForeignKeys, toSystemMetaDataEncrypted } from '@icure/typescript-common/dist/mappers/SystemMetaData.mapper'
+import {Annotation as AnnotationDto} from '@icure/api/icc-api/model/Annotation'
+import {ClinicalStatusEnum} from '../models/enums/ClinicalStatus.enum'
+import {VerificationStatusEnum} from '../models/enums/VerificationStatus.enum'
+import {CategoryEnum} from '../models/enums/Category.enum'
+import {SeverityEnum} from '../models/enums/Severity.enum'
+import {
+    toCryptedForeignKeys,
+    toDelegations,
+    toEncryptedSelf,
+    toEncryptionKeys,
+    toSecretForeignKeys,
+    toSystemMetaDataEncrypted
+} from '@icure/typescript-common/dist/mappers/SystemMetaData.mapper'
+import {addUniqueObjectsToArray} from "../utils/Array.utils";
 
 function toHealthElementId(domain: Condition): string | undefined {
     return domain.id
@@ -88,7 +108,11 @@ function toHealthElementTags(domain: Condition): CodeStub[] | undefined {
 
     const tagsCodeStubs = tags.map(mapCodingReferenceToCodeStub)
 
-    return [...tagsCodeStubs, ...bodySiteCodeStubs, clinicalStatus, severity, verificationStatus, category]
+    if (!!domain.rev) {
+        return addUniqueObjectsToArray(tagsCodeStubs, ...bodySiteCodeStubs, clinicalStatus, severity, verificationStatus, category, ...[...systemMetaDataTags(domain.systemMetaData)].map(mapCodingReferenceToCodeStub), dataOwnerDomainTypeTag('Condition'))
+    }
+
+    return addUniqueObjectsToArray(tagsCodeStubs, ...bodySiteCodeStubs, clinicalStatus, severity, verificationStatus, category, ...[...systemMetaDataTags(domain.systemMetaData)].map(mapCodingReferenceToCodeStub))
 }
 
 function toHealthElementCodes(domain: Condition): CodeStub[] | undefined {
@@ -173,24 +197,24 @@ function toHealthElementSecretForeignKeys(domain: Condition): string[] | undefin
 
 function toHealthElementCryptedForeignKeys(domain: Condition):
     | {
-          [key: string]: DelegationDto[]
-      }
+    [key: string]: DelegationDto[]
+}
     | undefined {
     return !!domain.systemMetaData ? toCryptedForeignKeys(domain.systemMetaData) : undefined
 }
 
 function toHealthElementDelegations(domain: Condition):
     | {
-          [key: string]: DelegationDto[]
-      }
+    [key: string]: DelegationDto[]
+}
     | undefined {
     return !!domain.systemMetaData ? toDelegations(domain.systemMetaData) : undefined
 }
 
 function toHealthElementEncryptionKeys(domain: Condition):
     | {
-          [key: string]: DelegationDto[]
-      }
+    [key: string]: DelegationDto[]
+}
     | undefined {
     return !!domain.systemMetaData ? toEncryptionKeys(domain.systemMetaData) : undefined
 }
@@ -261,11 +285,19 @@ function toConditionTags(dto: HealthElement): Set<CodingReference> | undefined {
     const contexts = ['clinicalStatus', 'verificationStatus', 'category', 'severity', 'bodySite']
     const tags = dto.tags?.filter((v) => (!!v.context ? !contexts.includes(v.context) : true))
 
-    if (!tags) {
+    const domainTypeTag = extractDomainTypeTag(dto.tags)
+
+    if (!domainTypeTag || domainTypeTag.context !== 'Condition') {
+        throw new Error('Domain type tag is missing')
+    }
+
+    const filteredTags = tags?.filter(t => t.id === ICURE_DOMAIN_TYPE_ID)
+
+    if (!filteredTags || filteredTags.length === 0) {
         return undefined
     }
 
-    return new Set([...tags].map(mapCodeStubToCodingReference))
+    return new Set(filteredTags.map(mapCodeStubToCodingReference))
 }
 
 function toConditionCodes(dto: HealthElement): Set<CodingReference> | undefined {
