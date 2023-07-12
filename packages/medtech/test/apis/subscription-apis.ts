@@ -2,26 +2,29 @@ import 'mocha'
 import { MedTechApi } from '../../src/apis/MedTechApi'
 import 'isomorphic-fetch'
 
-import { sleep } from '@icure/api'
+import {sleep} from '@icure/api'
 
 import { assert } from 'chai'
-import { DataSample } from '../../src/models/DataSample'
-import { Content } from '../../src/models/Content'
-import { CodingReference } from '../../src/models/CodingReference'
-import { Patient } from '../../src/models/Patient'
+import { DataSample } from '../../src/models/DataSample.model'
+import { Content } from '../../src/models/Content.model'
+import { Patient } from '../../src/models/Patient.model'
 import { getEnvironmentInitializer, hcp1Username, hcp3Username, setLocalStorage, TestUtils } from '../test-utils'
-import { Notification, NotificationTypeEnum } from '../../src/models/Notification'
-import { User } from '../../src/models/User'
 import { v4 as uuid } from 'uuid'
-import { HealthcareElement } from '../../src/models/HealthcareElement'
-import { Connection } from '../../src/models/Connection'
-import { WebSocketWrapper } from '../../src/utils/websocket'
-import { DataSampleFilter } from '../../src/filter/dsl/DataSampleFilterDsl'
-import { UserFilter } from '../../src/filter/dsl/UserFilterDsl'
-import { NotificationFilter } from '../../src/filter/dsl/NotificationFilterDsl'
-import { HealthcareElementFilter } from '../../src/filter/dsl/HealthcareElementFilterDsl'
-import { PatientFilter } from '../../src/filter/dsl/PatientFilterDsl'
+import { HealthcareElement } from '../../src/models/HealthcareElement.model'
+import { DataSampleFilter } from '../../src/filter/DataSampleFilterDsl'
+import { UserFilter } from '../../src/filter/UserFilterDsl'
+import { NotificationFilter } from '../../src/filter/NotificationFilterDsl'
+import { HealthcareElementFilter } from '../../src/filter/HealthcareElementFilterDsl'
+import { PatientFilter } from '../../src/filter/PatientFilterDsl'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
+import {
+  CodingReference,
+  Connection,
+  mapOf,
+  Notification,
+  NotificationTypeEnum, User,
+  WebSocketWrapper
+} from "@icure/typescript-common";
 
 setLocalStorage(fetch)
 
@@ -142,7 +145,7 @@ describe('Subscription API', () => {
         patient.id!,
         new DataSample({
           labels: new Set([new CodingReference({ type: testType, code: testCode })]),
-          content: { en: new Content({ stringValue: 'Hello world' }) },
+          content: mapOf({ en: new Content({ stringValue: 'Hello world' }) }),
         })
       )
     }
@@ -505,10 +508,12 @@ describe('Subscription API', () => {
 
       const ws = await WebSocketWrapper.create(
         env!.iCureUrl.replace('http', 'ws').replace('rest', 'ws') + '/notification/subscribe',
-        {
-          getBearerToken: () => Promise.resolve(undefined),
-          getIcureOtt: () => Promise.resolve('fake-token'),
-        },
+        () => Promise.resolve('fake-token'),
+        // TODO COMPATIBILITY is missing updated websocket implementation
+        // {
+        //   getBearerToken: () => Promise.resolve(undefined),
+        //   getIcureOtt: () => Promise.resolve('fake-token'),
+        // },
         10,
         500,
         {

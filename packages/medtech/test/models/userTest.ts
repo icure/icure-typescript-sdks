@@ -1,6 +1,6 @@
 import 'mocha'
 
-import { User } from '../../src/models/User'
+import {mapOf, User} from "@icure/typescript-common";
 import { assert } from 'chai'
 import { newProperty } from './propertyTest'
 import { newAuthenticationToken } from './authenticationTokenTest'
@@ -22,17 +22,17 @@ export function newUser(): User {
     healthcarePartyId: 'healthcarePartyId',
     patientId: 'patientId',
     deviceId: 'deviceId',
-    sharingDataWith: { all: new Set(['sharingDataWith']) },
+    sharingDataWith: mapOf({ all: new Set(['sharingDataWith']) }),
     email: 'email',
     mobilePhone: 'mobilePhone',
-    authenticationTokens: { key: newAuthenticationToken() },
+    authenticationTokens: mapOf({ key: newAuthenticationToken() }),
   })
 }
 
 describe('User model test', () => {
   it('Marshalling/Unmarshalling of User model - Success', () => {
     const user = newUser()
-    const marshalledUser = user.marshal()
+    const marshalledUser = User.toJSON(user)
     const unmarshalledUser = new User(JSON.parse(JSON.stringify(marshalledUser)))
     assert.deepEqual(user, unmarshalledUser)
     assert.deepEqual(user, new User(user))

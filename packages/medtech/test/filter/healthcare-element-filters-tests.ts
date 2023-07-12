@@ -1,16 +1,17 @@
 import 'isomorphic-fetch'
 import { MedTechApi } from '../../src/apis/MedTechApi'
-import { User } from '../../src/models/User'
+import {User} from "@icure/typescript-common";
 import { getEnvironmentInitializer, hcp1Username, setLocalStorage, TestUtils } from '../test-utils'
-import { HealthcareElementFilter } from '../../src/filter/dsl/HealthcareElementFilterDsl'
-import { FilterComposition, NoOpFilter } from '../../src/filter/dsl/filterDsl'
+import { HealthcareElementFilter } from '../../src/filter/HealthcareElementFilterDsl'
+import {FilterComposition, NoOpFilter} from "@icure/typescript-common/dist/filters/dsl/filterDsl";
 import { expect } from 'chai'
-import { HealthcareElement } from '../../src/models/HealthcareElement'
-import { CodingReference } from '../../src/models/CodingReference'
-import { Patient } from '../../src/models/Patient'
+import { HealthcareElement } from '../../src/models/HealthcareElement.model'
+import { CodingReference } from '@icure/typescript-common'
+import { Patient } from '../../src/models/Patient.model'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
-import { HealthcareElementMapper } from '../../src/mappers/healthcareElement'
 import { v4 as uuid } from 'uuid'
+import {mapHealthcareElementToHealthElement} from "../../src/mappers/HealthcareElement.mapper";
+import {mapPatientToPatientDto} from "../../src/mappers/Patient.mapper";
 
 setLocalStorage(fetch)
 
@@ -84,14 +85,14 @@ describe('Healthcare Element Filters Test', function () {
 
     expect(elements.rows.length).to.be.greaterThan(0)
     for (const e of elements.rows) {
-      const accessInfo = await hcp1Api.cryptoApi.entities.getDataOwnersWithAccessTo(HealthcareElementMapper.toHealthElementDto(e)!)
+      const accessInfo = await hcp1Api.cryptoApi.entities.getDataOwnersWithAccessTo(mapHealthcareElementToHealthElement(e)!)
       expect(Object.keys(accessInfo.permissionsByDataOwnerId)).to.contain(hcp1User.healthcarePartyId!)
     }
   })
 
   it('Can filter Healthcare Elements by patient', async function () {
     const elements = await hcp1Api.healthcareElementApi.filterHealthcareElement(
-      await new HealthcareElementFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).forPatients([patient]).build()
+      await new HealthcareElementFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).forPatients([mapPatientToPatientDto(patient)]).build()
     )
 
     expect(!!elements).to.eq(true)

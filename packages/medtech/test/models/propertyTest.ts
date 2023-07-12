@@ -1,9 +1,9 @@
 import 'mocha'
 
-import { Property } from '../../src/models/Property'
 import { assert } from 'chai'
 import { newPropertyType } from './propertyTypeTest'
 import { newTypedValueObject } from './typedValueObjectTest'
+import {Property} from "@icure/typescript-common";
 
 export function newProperty(): Property {
   return new Property({
@@ -17,7 +17,7 @@ export function newProperty(): Property {
 describe('Property model test', () => {
   it('Marshalling/Unmarshalling of Property model - Success', () => {
     const property = newProperty()
-    const marshalledProperty = property.marshal()
+    const marshalledProperty = Property.toJSON(property)
     const unmarshalledProperty = new Property(JSON.parse(JSON.stringify(marshalledProperty)))
     assert.deepEqual(property, unmarshalledProperty)
     assert.deepEqual(property, new Property(property))

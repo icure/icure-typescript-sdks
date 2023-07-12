@@ -1,6 +1,5 @@
 import 'mocha'
 
-import { PaginatedListUser } from '../../src/models/PaginatedListUser'
 import { assert } from 'chai'
 import { newUser } from './userTest'
 import { newPaginatedDocumentKeyAndIdPairObject } from './paginatedDocumentKeyAndIdPairObjectTest'

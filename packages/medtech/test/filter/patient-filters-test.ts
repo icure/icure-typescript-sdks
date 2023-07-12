@@ -1,14 +1,14 @@
 import 'isomorphic-fetch'
 import { getEnvironmentInitializer, hcp1Username, setLocalStorage, TestUtils } from '../test-utils'
 import { MedTechApi } from '../../src/apis/MedTechApi'
-import { User } from '../../src/models/User'
-import { Patient } from '../../src/models/Patient'
+import {User} from "@icure/typescript-common";
+import { Patient } from '../../src/models/Patient.model'
 import { expect } from 'chai'
-import { PatientFilter } from '../../src/filter/dsl/PatientFilterDsl'
-import { FilterComposition, NoOpFilter } from '../../src/filter/dsl/filterDsl'
+import { PatientFilter } from '../../src/filter/PatientFilterDsl'
+import {FilterComposition, NoOpFilter} from "@icure/typescript-common/dist/filters/dsl/filterDsl";
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
-import { PatientMapper } from '../../src/mappers/patient'
 import { v4 as uuid } from 'uuid'
+import {mapPatientToPatientDto} from "../../src/mappers/Patient.mapper";
 
 setLocalStorage(fetch)
 
@@ -77,7 +77,7 @@ describe('Patient Filters Test', function () {
     const patients = await api.patientApi.filterPatients(filter)
     expect(patients.rows.length).to.be.greaterThan(0)
     for (const p of patients.rows) {
-      const accessInfo = await api.cryptoApi.entities.getDataOwnersWithAccessTo(PatientMapper.toPatientDto(p)!)
+      const accessInfo = await api.cryptoApi.entities.getDataOwnersWithAccessTo(mapPatientToPatientDto(p)!)
       expect(Object.keys(accessInfo.permissionsByDataOwnerId)).to.contain(user.healthcarePartyId!)
     }
   })

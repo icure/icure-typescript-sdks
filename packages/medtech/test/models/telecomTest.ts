@@ -1,6 +1,6 @@
 import 'mocha'
 
-import { Telecom } from '../../src/models/Telecom'
+import { Telecom } from '../../src/models/Telecom.model'
 import { assert } from 'chai'
 
 export function newTelecom(): Telecom {
@@ -14,7 +14,7 @@ export function newTelecom(): Telecom {
 describe('Telecom model test', () => {
   it('Marshalling/Unmarshalling of Telecom model - Success', () => {
     const telecom = newTelecom()
-    const marshalledTelecom = telecom.marshal()
+    const marshalledTelecom = Telecom.toJSON(telecom)
     const unmarshalledTelecom = new Telecom(JSON.parse(JSON.stringify(marshalledTelecom)))
     assert.deepEqual(telecom, unmarshalledTelecom)
     assert.deepEqual(telecom, new Telecom(telecom))

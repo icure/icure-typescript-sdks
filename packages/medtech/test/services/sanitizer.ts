@@ -1,7 +1,6 @@
 import 'mocha'
 import { expect } from 'chai'
-import { SanitizerImpl } from '../../src/services/impl/SanitizerImpl'
-import { ErrorHandlerImpl } from '../../src/services/impl/ErrorHandlerImpl'
+import {ErrorHandlerImpl, SanitizerImpl} from "@icure/typescript-common";
 
 describe('Sanitizer', () => {
   const sanitizer = new SanitizerImpl(new ErrorHandlerImpl())

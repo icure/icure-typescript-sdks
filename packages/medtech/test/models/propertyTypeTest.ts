@@ -1,7 +1,7 @@
 import 'mocha'
 
-import { PropertyType } from '../../src/models/PropertyType'
 import { assert } from 'chai'
+import {PropertyType} from "@icure/typescript-common";
 
 export function newPropertyType(): PropertyType {
   return new PropertyType({
@@ -13,7 +13,7 @@ export function newPropertyType(): PropertyType {
 describe('PropertyType model test', () => {
   it('Marshalling/Unmarshalling of PropertyType model - Success', () => {
     const propertyType = newPropertyType()
-    const marshalledPropertyType = propertyType.marshal()
+    const marshalledPropertyType = PropertyType.toJSON(propertyType)
     const unmarshalledPropertyType = new PropertyType(JSON.parse(JSON.stringify(marshalledPropertyType)))
     assert.deepEqual(propertyType, unmarshalledPropertyType)
     assert.deepEqual(propertyType, new PropertyType(propertyType))

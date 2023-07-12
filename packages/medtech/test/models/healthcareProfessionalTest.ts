@@ -1,6 +1,6 @@
 import 'mocha'
 
-import { HealthcareProfessional } from '../../src/models/HealthcareProfessional'
+import { HealthcareProfessional } from '../../src/models/HealthcareProfessional.model'
 import { assert } from 'chai'
 import { newAddress } from './addressTest'
 import { newCodingReference } from './codingReferenceTest'

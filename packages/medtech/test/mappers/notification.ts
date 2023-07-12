@@ -1,13 +1,15 @@
 import 'mocha'
-import { Notification, NotificationTypeEnum } from '../../src/models/Notification'
 import { v4 as uuid } from 'uuid'
 import { MaintenanceTask } from '@icure/api/icc-api/model/MaintenanceTask'
-import { Delegation } from '../../src/models/Delegation'
-import { Property } from '../../src/models/Property'
-import { SystemMetaDataEncrypted } from '../../src/models/SystemMetaDataEncrypted'
 import { assert } from 'chai'
-import { NotificationMapper } from '../../src/mappers/notification'
 import { Identifier } from '@icure/api'
+import {
+  Property,
+  Delegation,
+  Notification,
+  SystemMetaDataEncrypted,
+  mapMaintenanceTaskToNotification, NotificationTypeEnum, mapOf, mapNotificationToMaintenanceTask,
+} from "@icure/typescript-common";
 
 function identifierEquality(identifier1: Identifier, identifier2: Identifier) {
   return identifier1.id === identifier2.id
@@ -86,12 +88,12 @@ describe('Notification mapper test', () => {
       ...commonOptions,
       type: NotificationTypeEnum.KEY_PAIR_UPDATE,
       systemMetaData: new SystemMetaDataEncrypted({
-        delegations: { TEST_ID: new Set([new Delegation({ owner: uuid(), delegatedTo: uuid() })]) },
-        encryptionKeys: { TEST_KEY: new Set([new Delegation({ owner: uuid(), delegatedTo: uuid() })]) },
+        delegations: mapOf({ TEST_ID: new Set([new Delegation({ owner: uuid(), delegatedTo: uuid() })]) }),
+        encryptionKeys: mapOf({ TEST_KEY: new Set([new Delegation({ owner: uuid(), delegatedTo: uuid() })]) }),
       }),
     })
     assert(newNotification)
-    const newTask = NotificationMapper.toMaintenanceTaskDto(newNotification)
+    const newTask = mapNotificationToMaintenanceTask(newNotification)
     assert(newTask)
     assertNotificationIsEquivalentToMaintenanceTask(newNotification, newTask)
   })
@@ -104,7 +106,7 @@ describe('Notification mapper test', () => {
       encryptionKeys: { TEST_KEY: new Set([new Delegation({ owner: uuid(), delegatedTo: uuid() })]) },
     })
     assert(newTask)
-    const newNotification = NotificationMapper.toNotification(newTask)
+    const newNotification = mapMaintenanceTaskToNotification(newTask)
     assert(newNotification)
     assertNotificationIsEquivalentToMaintenanceTask(newNotification, newTask)
   })
@@ -115,19 +117,9 @@ describe('Notification mapper test', () => {
       taskType: 'THIS DOES NOT BELONG TO THE ENUM',
     })
     assert(newTask)
-    const newNotification = NotificationMapper.toNotification(newTask)
+    const newNotification = mapMaintenanceTaskToNotification(newTask)
     assert(newNotification)
     assert(newNotification.id === newTask.id)
     assert(newNotification.type === NotificationTypeEnum.OTHER)
-  })
-
-  it('If the toNotification parameter is undefined, then the result is undefined', () => {
-    const newNotification = NotificationMapper.toNotification(undefined)
-    assert(newNotification === undefined)
-  })
-
-  it('If the toMaintenanceTask parameter is undefined, then the result is undefined', () => {
-    const newTask = NotificationMapper.toNotification(undefined)
-    assert(newTask === undefined)
   })
 })

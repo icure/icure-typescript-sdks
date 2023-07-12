@@ -1,9 +1,9 @@
 import 'isomorphic-fetch'
 import { MedTechApi } from '../../src/apis/MedTechApi'
-import { User } from '../../src/models/User'
+import {User} from "@icure/typescript-common";
 import { getEnvironmentInitializer, getTempEmail, hcp1Username, patUsername, setLocalStorage, TestUtils } from '../test-utils'
-import { UserFilter } from '../../src/filter/dsl/UserFilterDsl'
-import { FilterComposition, NoOpFilter } from '../../src/filter/dsl/filterDsl'
+import { UserFilter } from '../../src/filter/UserFilterDsl'
+import {FilterComposition, NoOpFilter} from "@icure/typescript-common/dist/filters/dsl/filterDsl";
 import { expect } from 'chai'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import { v4 as uuid } from 'uuid'

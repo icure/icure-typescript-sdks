@@ -1,17 +1,17 @@
 import 'isomorphic-fetch'
 import { MedTechApi } from '../../src/apis/MedTechApi'
-import { User } from '../../src/models/User'
 import { getEnvironmentInitializer, hcp1Username, setLocalStorage, TestUtils } from '../test-utils'
-import { DataSampleFilter } from '../../src/filter/dsl/DataSampleFilterDsl'
+import { DataSampleFilter } from '../../src/filter/DataSampleFilterDsl'
 import { expect } from 'chai'
-import { DataSample } from '../../src/models/DataSample'
-import { CodingReference } from '../../src/models/CodingReference'
-import { Patient } from '../../src/models/Patient'
-import { HealthcareElement } from '../../src/models/HealthcareElement'
-import { Content } from '../../src/models/Content'
+import { DataSample } from '../../src/models/DataSample.model'
+import { Patient } from '../../src/models/Patient.model'
+import { HealthcareElement } from '../../src/models/HealthcareElement.model'
+import { Content } from '../../src/models/Content.model'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
-import { FilterComposition, NoOpFilter } from '../../src/filter/dsl/filterDsl'
 import { v4 as uuid } from 'uuid'
+import {CodingReference, mapOf, User} from "@icure/typescript-common";
+import {mapPatientToPatientDto} from "../../src/mappers/Patient.mapper";
+import {FilterComposition, NoOpFilter} from "@icure/typescript-common/dist/filters/dsl/filterDsl";
 
 setLocalStorage(fetch)
 
@@ -54,7 +54,7 @@ describe('Data Sample Filters Tests', function () {
             version: '20020131',
           }),
         ]),
-        content: { en: new Content({ stringValue: 'Hello world' }) },
+        content: mapOf({ en: new Content({ stringValue: 'Hello world' }) }),
       })
     )
 
@@ -85,7 +85,7 @@ describe('Data Sample Filters Tests', function () {
             version: '20020131',
           }),
         ]),
-        content: { en: new Content({ stringValue: 'Hello world' }) },
+        content: mapOf({ en: new Content({ stringValue: 'Hello world' }) }),
       })
     )
 
@@ -100,7 +100,7 @@ describe('Data Sample Filters Tests', function () {
             version: '20020131',
           }),
         ]),
-        content: { en: new Content({ stringValue: 'Hello world' }) },
+        content: mapOf({ en: new Content({ stringValue: 'Hello world' }) }),
       })
     )
   })
@@ -125,7 +125,7 @@ describe('Data Sample Filters Tests', function () {
 
   it('Can filter Data Samples by patient', async function () {
     const samples = await hcp1Api.dataSampleApi.filterDataSample(
-      await new DataSampleFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).forPatients([patient]).build()
+      await new DataSampleFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).forPatients([mapPatientToPatientDto(patient)]).build()
     )
 
     expect(samples.rows.length).to.be.greaterThan(0)
@@ -187,7 +187,7 @@ describe('Data Sample Filters Tests', function () {
   })
 
   it('Can filter Data Samples by explicit intersection filter', async function () {
-    const filterByPatient = await new DataSampleFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).forPatients([patient]).build()
+    const filterByPatient = await new DataSampleFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).forPatients([mapPatientToPatientDto(patient)]).build()
 
     const filterByHe = await new DataSampleFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).byHealthElementIds([he1.id!]).build()
 
@@ -205,7 +205,7 @@ describe('Data Sample Filters Tests', function () {
     const filterByPatientAndByHe = await new DataSampleFilter(hcp1Api)
       .forDataOwner(hcp1User.healthcarePartyId!)
       .byHealthElementIds([he1.id!])
-      .forPatients([patient])
+      .forPatients([mapPatientToPatientDto(patient)])
       .build()
 
     const samples = await hcp1Api.dataSampleApi.filterDataSample(filterByPatientAndByHe)

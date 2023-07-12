@@ -24,10 +24,11 @@ import {HealthElementFilter} from "../../filters/dsl/HealthElementFilterDsl";
 import {CommonApi} from "../CommonApi";
 
 export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements HealthElementLikeApi<DSHealthElement, DSPatient> {
+    private readonly paginatedListMapper: Mapper<PaginatedList<DSHealthElement>, PaginatedListHealthElement>
+
     constructor(
         private readonly healthElementMapper: Mapper<DSHealthElement, HealthElement>,
         private readonly patientMapper: Mapper<DSPatient, Patient>,
-        private readonly paginatedListMapper: Mapper<PaginatedList<DSHealthElement>, PaginatedListHealthElement>,
         private readonly errorHandler: ErrorHandler,
         private readonly heApi: IccHelementXApi,
         private readonly userApi: IccUserXApi,
@@ -36,6 +37,20 @@ export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements Hea
         private readonly cryptoApi: IccCryptoXApi,
         private readonly api: CommonApi
     ) {
+        this.paginatedListMapper = {
+            toDomain(dto: PaginatedListHealthElement): PaginatedList<DSHealthElement> {
+                return {
+                    ...dto,
+                    rows: dto.rows?.map((he) => healthElementMapper.toDomain(he)),
+                }
+            },
+            toDto(domain: PaginatedList<DSHealthElement>): PaginatedListHealthElement {
+                return {
+                    ...domain,
+                    rows: domain.rows?.map((he) => healthElementMapper.toDto(he)),
+                }
+            }
+        }
     }
 
     async createOrModify(healthElement: DSHealthElement, patientId?: string): Promise<DSHealthElement> {

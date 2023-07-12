@@ -1,6 +1,6 @@
 import 'mocha'
 
-import { HealthcareElement } from '../../src/models/HealthcareElement'
+import { HealthcareElement } from '../../src/models/HealthcareElement.model'
 import { assert } from 'chai'
 import { newIdentifier } from './identifierTest'
 import { newCodingReference } from './codingReferenceTest'

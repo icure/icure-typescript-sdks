@@ -1,7 +1,6 @@
 import { assert } from 'chai'
-import { deepEquality } from '../../src/utils/equality'
-import { Delegation } from '../../src/models/Delegation'
-import { SystemMetaDataEncrypted } from '../../src/models/SystemMetaDataEncrypted'
+import {Delegation} from "@icure/api";
+import {deepEquality, mapOf, SystemMetaDataEncrypted} from "@icure/typescript-common";
 
 class DummyData {
   constructor(public field1: string, public field2: string) {}
@@ -27,9 +26,9 @@ const firstDelegationWithNullTags = () =>
 const metaData1 = () =>
   new SystemMetaDataEncrypted({
     secretForeignKeys: ['s1', 's2'],
-    cryptedForeignKeys: { key1: new Set([new Delegation({ owner: 'o' })]) },
-    delegations: { key2: new Set([new Delegation({ owner: 'o' }), new Delegation({ owner: 'o2' })]) },
-    encryptionKeys: { key3: new Set([new Delegation({ owner: 'o2' })]), key4: new Set([new Delegation({ owner: 'o3' })]) },
+    cryptedForeignKeys: mapOf({ key1: new Set([new Delegation({ owner: 'o' })]) }),
+    delegations: mapOf({ key2: new Set([new Delegation({ owner: 'o' }), new Delegation({ owner: 'o2' })]) }),
+    encryptionKeys: mapOf({ key3: new Set([new Delegation({ owner: 'o2' })]), key4: new Set([new Delegation({ owner: 'o3' })]) }),
   })
 
 describe('Equality functions test', () => {
@@ -124,8 +123,8 @@ describe('Equality functions test', () => {
   it('deepEquality should fail if two systemMetaDataEncrypted are equal if cryptedForeignKeys have different keys', () => {
     assert(
       !deepEquality(
-        new SystemMetaDataEncrypted({ cryptedForeignKeys: { key1: new Set([new Delegation({ owner: 'o' })]) } }),
-        new SystemMetaDataEncrypted({ cryptedForeignKeys: { key2: new Set([new Delegation({ owner: 'o' })]) } })
+        new SystemMetaDataEncrypted({ cryptedForeignKeys: mapOf({ key1: new Set([new Delegation({ owner: 'o' })]) }) }),
+        new SystemMetaDataEncrypted({ cryptedForeignKeys: mapOf({ key2: new Set([new Delegation({ owner: 'o' })]) }) })
       )
     )
   })
@@ -133,9 +132,9 @@ describe('Equality functions test', () => {
   it('deepEquality should fail if two systemMetaDataEncrypted are equal if cryptedForeignKeys have different number of keys', () => {
     assert(
       !deepEquality(
-        new SystemMetaDataEncrypted({ cryptedForeignKeys: { key1: new Set([new Delegation({ owner: 'o' })]) } }),
+        new SystemMetaDataEncrypted({ cryptedForeignKeys: mapOf({ key1: new Set([new Delegation({ owner: 'o' })]) }) }),
         new SystemMetaDataEncrypted({
-          cryptedForeignKeys: { key2: new Set([new Delegation({ owner: 'o' })]), key1: new Set([new Delegation({ owner: 'o' })]) },
+          cryptedForeignKeys: mapOf({ key2: new Set([new Delegation({ owner: 'o' })]), key1: new Set([new Delegation({ owner: 'o' })]) }),
         })
       )
     )
@@ -144,8 +143,8 @@ describe('Equality functions test', () => {
   it('deepEquality should fail if two systemMetaDataEncrypted are equal if cryptedForeignKeys have different elements', () => {
     assert(
       !deepEquality(
-        new SystemMetaDataEncrypted({ cryptedForeignKeys: { key1: new Set([new Delegation({ owner: 'o' })]) } }),
-        new SystemMetaDataEncrypted({ cryptedForeignKeys: { key1: new Set([new Delegation({ owner: 'o1' })]) } })
+        new SystemMetaDataEncrypted({ cryptedForeignKeys: mapOf({ key1: new Set([new Delegation({ owner: 'o' })]) }) }),
+        new SystemMetaDataEncrypted({ cryptedForeignKeys: mapOf({ key1: new Set([new Delegation({ owner: 'o1' })]) }) })
       )
     )
   })
@@ -153,8 +152,8 @@ describe('Equality functions test', () => {
   it('deepEquality should fail if two systemMetaDataEncrypted are equal if delegations have different keys', () => {
     assert(
       !deepEquality(
-        new SystemMetaDataEncrypted({ delegations: { key1: new Set([new Delegation({ owner: 'o' })]) } }),
-        new SystemMetaDataEncrypted({ delegations: { key2: new Set([new Delegation({ owner: 'o' })]) } })
+        new SystemMetaDataEncrypted({ delegations: mapOf({ key1: new Set([new Delegation({ owner: 'o' })]) }) }),
+        new SystemMetaDataEncrypted({ delegations: mapOf({ key2: new Set([new Delegation({ owner: 'o' })]) }) })
       )
     )
   })
@@ -162,9 +161,9 @@ describe('Equality functions test', () => {
   it('deepEquality should fail if two systemMetaDataEncrypted are equal if delegations have different number of keys', () => {
     assert(
       !deepEquality(
-        new SystemMetaDataEncrypted({ delegations: { key1: new Set([new Delegation({ owner: 'o' })]) } }),
+        new SystemMetaDataEncrypted({ delegations: mapOf({ key1: new Set([new Delegation({ owner: 'o' })]) }) }),
         new SystemMetaDataEncrypted({
-          delegations: { key2: new Set([new Delegation({ owner: 'o' })]), key1: new Set([new Delegation({ owner: 'o' })]) },
+          delegations: mapOf({ key2: new Set([new Delegation({ owner: 'o' })]), key1: new Set([new Delegation({ owner: 'o' })]) }),
         })
       )
     )
@@ -173,8 +172,8 @@ describe('Equality functions test', () => {
   it('deepEquality should fail if two systemMetaDataEncrypted are equal if delegations have different elements', () => {
     assert(
       !deepEquality(
-        new SystemMetaDataEncrypted({ delegations: { key1: new Set([new Delegation({ owner: 'o' })]) } }),
-        new SystemMetaDataEncrypted({ delegations: { key1: new Set([new Delegation({ owner: 'o1' })]) } })
+        new SystemMetaDataEncrypted({ delegations: mapOf({ key1: new Set([new Delegation({ owner: 'o' })]) }) }),
+        new SystemMetaDataEncrypted({ delegations: mapOf({ key1: new Set([new Delegation({ owner: 'o1' })]) }) })
       )
     )
   })
@@ -182,8 +181,8 @@ describe('Equality functions test', () => {
   it('deepEquality should fail if two systemMetaDataEncrypted are equal if encryptionKeys have different keys', () => {
     assert(
       !deepEquality(
-        new SystemMetaDataEncrypted({ encryptionKeys: { key1: new Set([new Delegation({ owner: 'o' })]) } }),
-        new SystemMetaDataEncrypted({ encryptionKeys: { key2: new Set([new Delegation({ owner: 'o' })]) } })
+        new SystemMetaDataEncrypted({ encryptionKeys: mapOf({ key1: new Set([new Delegation({ owner: 'o' })]) }) }),
+        new SystemMetaDataEncrypted({ encryptionKeys: mapOf({ key2: new Set([new Delegation({ owner: 'o' })]) }) })
       )
     )
   })
@@ -191,9 +190,9 @@ describe('Equality functions test', () => {
   it('deepEquality should fail if two systemMetaDataEncrypted are equal if encryptionKeys have different number of keys', () => {
     assert(
       !deepEquality(
-        new SystemMetaDataEncrypted({ encryptionKeys: { key1: new Set([new Delegation({ owner: 'o' })]) } }),
+        new SystemMetaDataEncrypted({ encryptionKeys: mapOf({ key1: new Set([new Delegation({ owner: 'o' })]) }) }),
         new SystemMetaDataEncrypted({
-          encryptionKeys: { key2: new Set([new Delegation({ owner: 'o' })]), key1: new Set([new Delegation({ owner: 'o' })]) },
+          encryptionKeys: mapOf({ key2: new Set([new Delegation({ owner: 'o' })]), key1: new Set([new Delegation({ owner: 'o' })]) }),
         })
       )
     )
@@ -202,8 +201,8 @@ describe('Equality functions test', () => {
   it('deepEquality should fail if two systemMetaDataEncrypted are equal if encryptionKeys have different elements', () => {
     assert(
       !deepEquality(
-        new SystemMetaDataEncrypted({ encryptionKeys: { key1: new Set([new Delegation({ owner: 'o' })]) } }),
-        new SystemMetaDataEncrypted({ encryptionKeys: { key1: new Set([new Delegation({ owner: 'o1' })]) } })
+        new SystemMetaDataEncrypted({ encryptionKeys: mapOf({ key1: new Set([new Delegation({ owner: 'o' })]) }) }),
+        new SystemMetaDataEncrypted({ encryptionKeys: mapOf({ key1: new Set([new Delegation({ owner: 'o1' })]) }) })
       )
     )
   })

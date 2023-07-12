@@ -15,7 +15,7 @@ export class SystemMetaDataOwnerEncrypted {
     publicKeysForOaepWithSha256?: Array<string>
     encryptedSelf?: string
 
-    constructor(systemMetaDataOwnerEncrypted?: ISystemMetaDataOwnerEncrypted | any) {
+    constructor(systemMetaDataOwnerEncrypted?: ISystemMetaDataOwnerEncrypted) {
         this.publicKey = systemMetaDataOwnerEncrypted?.publicKey
         this.hcPartyKeys = systemMetaDataOwnerEncrypted?.hcPartyKeys
         this.privateKeyShamirPartitions = systemMetaDataOwnerEncrypted?.privateKeyShamirPartitions

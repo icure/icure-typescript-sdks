@@ -1,7 +1,7 @@
-import { Address, AddressAddressTypeEnum } from '../../src/models/Address'
-import { Telecom, TelecomTelecomTypeEnum } from '../../src/models/Telecom'
-import { filteredContactsFromAddresses } from '../../src/utils/addressUtils'
+import { Address, AddressAddressTypeEnum } from '../../src/models/Address.model'
+import { Telecom, TelecomTelecomTypeEnum } from '../../src/models/Telecom.model'
 import { assert } from 'chai'
+import {filteredContactsFromAddresses} from "../../src/utils/addressUtils";
 
 const addressTypes = ['home', 'work', 'vacation', 'hospital', 'clinic', 'hq', 'other', 'temporary', 'postal', 'diplomatic', 'reference']
 const telecomTypes = [

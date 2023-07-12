@@ -1,6 +1,6 @@
 import 'mocha'
 
-import { Patient } from '../../src/models/Patient'
+import { Patient } from '../../src/models/Patient.model'
 import { assert } from 'chai'
 import { newAddress } from './addressTest'
 import { newCodingReference } from './codingReferenceTest'
@@ -9,6 +9,7 @@ import { newPatientHealthCareParty } from './patientHealthCarePartyTest'
 import { newPartnership } from './partnershipTest'
 import { newSystemMetaDataOwnerEncrypted } from './systemMetaDataOwnerEncryptedTest'
 import { newProperty } from './propertyTest'
+import {mapOf} from "@icure/typescript-common";
 
 export function newPatient(): Patient {
   return new Patient({
@@ -58,7 +59,7 @@ export function newPatient(): Patient {
     partnerships: [newPartnership()],
     patientHealthCareParties: [newPatientHealthCareParty()],
     patientProfessions: [newCodingReference()],
-    parameters: { key: ['parameters'] },
+    parameters: mapOf({ key: ['parameters'] }),
     properties: new Set([newProperty()]),
     systemMetaData: newSystemMetaDataOwnerEncrypted(),
   })
@@ -67,7 +68,7 @@ export function newPatient(): Patient {
 describe('Patient model test', () => {
   it('Marshalling/Unmarshalling of Patient model - Success', () => {
     const patient = newPatient()
-    const marshalledPatient = patient.marshal()
+    const marshalledPatient = Patient.toJSON(patient)
     const unmarshalledPatient = new Patient(JSON.parse(JSON.stringify(marshalledPatient)))
     assert.deepEqual(patient, unmarshalledPatient)
     assert.deepEqual(patient, new Patient(patient))

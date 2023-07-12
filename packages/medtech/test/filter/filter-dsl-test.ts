@@ -2,16 +2,24 @@ import 'isomorphic-fetch'
 import { v4 as uuid } from 'uuid'
 import { getEnvironmentInitializer, hcp1Username, setLocalStorage, TestUtils } from '../test-utils'
 import { MedTechApi } from '../../src/apis/MedTechApi'
-import { PatientFilter } from '../../src/filter/dsl/PatientFilterDsl'
+import { PatientFilter } from '../../src/filter/PatientFilterDsl'
 import { expect } from 'chai'
-import { PatientByHealthcarePartyFilter } from '../../src/filter/patient/PatientByHealthcarePartyFilter'
-import { PatientByHealthcarePartyDateOfBirthBetweenFilter } from '../../src/filter/patient/PatientByHealthcarePartyDateOfBirthBetweenFilter'
 import { format } from 'date-fns'
-import { NoOpFilter } from '../../src/filter/dsl/filterDsl'
 import { IntersectionFilter, Patient } from '@icure/api'
-import { PatientByHealthcarePartyNameContainsFuzzyFilter } from '../../src/filter/patient/PatientByHealthcarePartyNameContainsFuzzyFilter'
-import { PatientByHealthcarePartySsinsFilter } from '../../src/filter/patient/PatientByHealthcarePartySsinsFilter'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
+import {
+  PatientByHealthcarePartyFilter
+} from "@icure/typescript-common/dist/filters/patient/PatientByHealthcarePartyFilter";
+import {
+  PatientByHealthcarePartyDateOfBirthBetweenFilter
+} from "@icure/typescript-common/dist/filters/patient/PatientByHealthcarePartyDateOfBirthBetweenFilter";
+import {NoOpFilter} from "@icure/typescript-common/dist/filters/dsl/filterDsl";
+import {
+  PatientByHealthcarePartyNameContainsFuzzyFilter
+} from "@icure/typescript-common/dist/filters/patient/PatientByHealthcarePartyNameContainsFuzzyFilter";
+import {
+  PatientByHealthcarePartySsinsFilter
+} from "@icure/typescript-common/dist/filters/patient/PatientByHealthcarePartySsinsFilter";
 
 setLocalStorage(fetch)
 

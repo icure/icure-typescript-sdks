@@ -1,8 +1,8 @@
 import 'mocha'
 
-import { TimeSeries } from '../../src/models/TimeSeries'
 import { assert } from 'chai'
 import { newDelegation } from './delegationTest'
+import {TimeSeries} from "@icure/typescript-common";
 
 export function newTimeSeries(): TimeSeries {
   return new TimeSeries({
@@ -19,7 +19,7 @@ export function newTimeSeries(): TimeSeries {
 describe('TimeSeries model test', () => {
   it('Marshalling/Unmarshalling of TimeSeries model - Success', () => {
     const timeSeries = newTimeSeries()
-    const marshalledTimeSeries = timeSeries.marshal()
+    const marshalledTimeSeries = TimeSeries.toJSON(timeSeries)
     const unmarshalledTimeSeries = new TimeSeries(JSON.parse(JSON.stringify(marshalledTimeSeries)))
     assert.deepEqual(timeSeries, unmarshalledTimeSeries)
     assert.deepEqual(timeSeries, new TimeSeries(timeSeries))

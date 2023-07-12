@@ -1,8 +1,8 @@
 import 'mocha'
 
-import { TypedValueObject } from '../../src/models/TypedValueObject'
 import { assert } from 'chai'
 import { newDelegation } from './delegationTest'
+import {TypedValueObject} from "@icure/typescript-common";
 
 export function newTypedValueObject(): TypedValueObject {
   return new TypedValueObject({
@@ -18,7 +18,7 @@ export function newTypedValueObject(): TypedValueObject {
 describe('TypedValueObject model test', () => {
   it('Marshalling/Unmarshalling of TypedValueObject model - Success', () => {
     const typedValueObject = newTypedValueObject()
-    const marshalledTypedValueObject = typedValueObject.marshal()
+    const marshalledTypedValueObject = TypedValueObject.toJSON(typedValueObject)
     const unmarshalledTypedValueObject = new TypedValueObject(JSON.parse(JSON.stringify(marshalledTypedValueObject)))
     assert.deepEqual(typedValueObject, unmarshalledTypedValueObject)
     assert.deepEqual(typedValueObject, new TypedValueObject(typedValueObject))

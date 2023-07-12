@@ -1,6 +1,6 @@
 import 'mocha'
 
-import { CodingReference } from '../..'
+import { CodingReference } from '@icure/typescript-common'
 import { assert } from 'chai'
 
 export function newCodingReference(): CodingReference {

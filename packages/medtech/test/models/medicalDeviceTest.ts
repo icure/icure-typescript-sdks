@@ -1,6 +1,6 @@
 import 'mocha'
 
-import { MedicalDevice } from '../../src/models/MedicalDevice'
+import { MedicalDevice } from '../../src/models/MedicalDevice.model'
 import { assert } from 'chai'
 import { newCodingReference } from './codingReferenceTest'
 import { newProperty } from './propertyTest'

@@ -1,22 +1,22 @@
 import 'mocha'
 
-import { SystemMetaDataEncrypted } from '../../src/models/SystemMetaDataEncrypted'
 import { assert } from 'chai'
 import { newDelegation } from './delegationTest'
+import {mapOf, SystemMetaDataEncrypted} from "@icure/typescript-common";
 
 export function newSystemMetaDataEncrypted(): SystemMetaDataEncrypted {
   return new SystemMetaDataEncrypted({
     secretForeignKeys: ['secretForeignKeys'],
-    cryptedForeignKeys: { key: new Set([newDelegation()]) },
-    delegations: { key: new Set([newDelegation()]) },
-    encryptionKeys: { key: new Set([newDelegation()]) },
+    cryptedForeignKeys: mapOf({ key: new Set([newDelegation()]) }),
+    delegations: mapOf({ key: new Set([newDelegation()]) }),
+    encryptionKeys: mapOf({ key: new Set([newDelegation()]) }),
   })
 }
 
 describe('SystemMetaDataEncrypted model test', () => {
   it('Marshalling/Unmarshalling of SystemMetaDataEncrypted model - Success', () => {
     const systemMetaDataEncrypted = newSystemMetaDataEncrypted()
-    const marshalledSystemMetaDataEncrypted = systemMetaDataEncrypted.marshal()
+    const marshalledSystemMetaDataEncrypted = SystemMetaDataEncrypted.toJSON(systemMetaDataEncrypted)
     const unmarshalledSystemMetaDataEncrypted = new SystemMetaDataEncrypted(JSON.parse(JSON.stringify(marshalledSystemMetaDataEncrypted)))
     assert.deepEqual(systemMetaDataEncrypted, unmarshalledSystemMetaDataEncrypted)
     assert.deepEqual(systemMetaDataEncrypted, new SystemMetaDataEncrypted(systemMetaDataEncrypted))
