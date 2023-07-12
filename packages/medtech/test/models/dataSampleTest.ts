@@ -1,12 +1,13 @@
 import 'mocha'
 
-import { DataSample } from '../../src/models/DataSample'
+import { DataSample } from '../..'
 import { assert } from 'chai'
 import { newContent } from './contentTest'
 import { newIdentifier } from './identifierTest'
 import { newCodingReference } from './codingReferenceTest'
 import { newSystemMetaDataOwner } from './systemMetaDataOwnerTest'
 import { newSystemMetaDataEncrypted } from './systemMetaDataEncryptedTest'
+import {mapOf} from "@icure/typescript-common";
 
 export function newDataSample(makeContent = false): DataSample {
   return new DataSample({
@@ -17,7 +18,7 @@ export function newDataSample(makeContent = false): DataSample {
     healthcareElementIds: new Set('healthcareElementIds'),
     canvasesIds: new Set('canvasesIds'),
     index: 123,
-    content: makeContent ? { en: newContent() } : {},
+    content: makeContent ? mapOf({ en: newContent() }) : undefined,
     valueDate: 456,
     openingDate: 789,
     closingDate: 101112,
@@ -27,7 +28,7 @@ export function newDataSample(makeContent = false): DataSample {
     author: 'author',
     responsible: 'responsible',
     comment: 'comment',
-    qualifiedLinks: { from: { to: 'to' } },
+    qualifiedLinks: mapOf({ 'from': mapOf({ 'to': 'to' }) }),
     codes: new Set([newCodingReference()]),
     labels: new Set([newCodingReference()]),
     systemMetaData: newSystemMetaDataEncrypted(),
@@ -37,7 +38,7 @@ export function newDataSample(makeContent = false): DataSample {
 describe('DataSample model test', () => {
   it('Marshalling/Unmarshalling of DataSample model - Success', () => {
     const dataSample = newDataSample()
-    const marshalledDataSample = dataSample.marshal()
+    const marshalledDataSample = DataSample.toJSON(dataSample)
     const unmarshalledDataSample = new DataSample(JSON.parse(JSON.stringify(marshalledDataSample)))
     assert.deepEqual(dataSample, unmarshalledDataSample)
     assert.deepEqual(dataSample, new DataSample(dataSample))

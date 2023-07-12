@@ -1,8 +1,7 @@
 import 'mocha'
 
+import { TimeSeries } from '../..'
 import { assert } from 'chai'
-import { newDelegation } from './delegationTest'
-import {TimeSeries} from "@icure/typescript-common";
 
 export function newTimeSeries(): TimeSeries {
   return new TimeSeries({

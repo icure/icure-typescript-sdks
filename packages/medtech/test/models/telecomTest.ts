@@ -1,6 +1,6 @@
 import 'mocha'
 
-import { Telecom } from '../../src/models/Telecom.model'
+import { Telecom } from '../..'
 import { assert } from 'chai'
 
 export function newTelecom(): Telecom {

@@ -1,9 +1,9 @@
 import 'mocha'
 
+import { Property } from '../..'
 import { assert } from 'chai'
 import { newPropertyType } from './propertyTypeTest'
 import { newTypedValueObject } from './typedValueObjectTest'
-import {Property} from "@icure/typescript-common";
 
 export function newProperty(): Property {
   return new Property({

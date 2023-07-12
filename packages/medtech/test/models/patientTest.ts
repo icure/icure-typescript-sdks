@@ -1,6 +1,6 @@
 import 'mocha'
 
-import { Patient } from '../../src/models/Patient.model'
+import { Patient } from '../..'
 import { assert } from 'chai'
 import { newAddress } from './addressTest'
 import { newCodingReference } from './codingReferenceTest'

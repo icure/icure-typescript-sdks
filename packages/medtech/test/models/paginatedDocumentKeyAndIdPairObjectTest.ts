@@ -1,6 +1,6 @@
 import 'mocha'
 
-import { PaginatedDocumentKeyAndIdPairObject } from '../../src/models/PaginatedDocumentKeyAndIdPairObject'
+import { PaginatedDocumentKeyAndIdPairObject } from '../..'
 import { assert } from 'chai'
 
 export function newPaginatedDocumentKeyAndIdPairObject(): PaginatedDocumentKeyAndIdPairObject {
@@ -13,7 +13,7 @@ export function newPaginatedDocumentKeyAndIdPairObject(): PaginatedDocumentKeyAn
 describe('PaginatedDocumentKeyAndIdPairObject model test', () => {
   it('Marshalling/Unmarshalling of PaginatedDocumentKeyAndIdPairObject model - Success', () => {
     const paginatedDocumentKeyAndIdPairObject = newPaginatedDocumentKeyAndIdPairObject()
-    const marshalledPaginatedDocumentKeyAndIdPairObject = paginatedDocumentKeyAndIdPairObject.marshal()
+    const marshalledPaginatedDocumentKeyAndIdPairObject = PaginatedDocumentKeyAndIdPairObject.toJSON(paginatedDocumentKeyAndIdPairObject)
     const unmarshalledPaginatedDocumentKeyAndIdPairObject = new PaginatedDocumentKeyAndIdPairObject(
       JSON.parse(JSON.stringify(marshalledPaginatedDocumentKeyAndIdPairObject))
     )

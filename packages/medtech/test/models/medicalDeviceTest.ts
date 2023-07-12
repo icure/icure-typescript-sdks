@@ -1,6 +1,6 @@
 import 'mocha'
 
-import { MedicalDevice } from '../../src/models/MedicalDevice.model'
+import { MedicalDevice } from '../..'
 import { assert } from 'chai'
 import { newCodingReference } from './codingReferenceTest'
 import { newProperty } from './propertyTest'
@@ -34,7 +34,7 @@ export function newMedicalDevice(): MedicalDevice {
 describe('MedicalDevice model test', () => {
   it('Marshalling/Unmarshalling of MedicalDevice model - Success', () => {
     const medicalDevice = newMedicalDevice()
-    const marshalledMedicalDevice = medicalDevice.marshal()
+    const marshalledMedicalDevice = MedicalDevice.toJSON(medicalDevice)
     const unmarshalledMedicalDevice = new MedicalDevice(JSON.parse(JSON.stringify(marshalledMedicalDevice)))
     assert.deepEqual(medicalDevice, unmarshalledMedicalDevice)
     assert.deepEqual(medicalDevice, new MedicalDevice(medicalDevice))

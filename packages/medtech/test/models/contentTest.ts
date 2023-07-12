@@ -1,11 +1,11 @@
 import 'mocha'
 
-import { Content } from '../../src/models/Content'
+import { Content } from '../..'
 import { assert } from 'chai'
 import { newMeasure } from './measureTest'
 import { newTimeSeries } from './timeSeriesTest'
 import { newDataSample } from './dataSampleTest'
-import { DataSample } from '../../src/models/DataSample'
+import { DataSample } from '../..'
 
 export function newContent(): Content {
   return new Content({
@@ -27,7 +27,7 @@ export function newContent(): Content {
 describe('Content model test', () => {
   it('Marshalling/Unmarshalling of Content model - Success', () => {
     const content = newContent()
-    const marshalledContent = content.marshal()
+    const marshalledContent = Content.toJSON(content)
     const unmarshalledContent = new Content(JSON.parse(JSON.stringify(marshalledContent)))
     assert.deepEqual(content, unmarshalledContent)
     assert.deepEqual(content, new Content(content))

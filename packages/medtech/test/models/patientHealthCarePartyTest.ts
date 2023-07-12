@@ -1,6 +1,6 @@
 import 'mocha'
 
-import { PatientHealthCareParty } from '../../src/models/PatientHealthCareParty.model'
+import { PatientHealthCareParty } from '../..'
 import { assert } from 'chai'
 
 export function newPatientHealthCareParty(): PatientHealthCareParty {

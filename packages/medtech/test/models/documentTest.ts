@@ -1,6 +1,6 @@
 import 'mocha'
 
-import { Document } from '../../src/models/Document'
+import { Document } from '../..'
 import { assert } from 'chai'
 
 export function newDocument(): Document {
@@ -28,7 +28,7 @@ export function newDocument(): Document {
 describe('Document model test', () => {
   it('Marshalling/Unmarshalling of Document model - Success', () => {
     const document = newDocument()
-    const marshalledDocument = document.marshal()
+    const marshalledDocument = Document.toJSON(document)
     const unmarshalledDocument = new Document(JSON.parse(JSON.stringify(marshalledDocument)))
     assert.deepEqual(document, unmarshalledDocument)
     assert.deepEqual(document, new Document(document))

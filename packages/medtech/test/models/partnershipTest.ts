@@ -1,6 +1,6 @@
 import 'mocha'
 
-import { Partnership } from '../../src/models/Partnership.model'
+import { Partnership } from '../..'
 import { assert } from 'chai'
 
 export function newPartnership(): Partnership {

@@ -22,12 +22,6 @@ export class Telecom {
   'telecomNumber'?: string
   'telecomDescription'?: string
 
-  marshal(): ITelecom {
-    return {
-      ...this,
-    }
-  }
-
   static toJSON(instance: Telecom): any {
     const pojo: any = {}
     pojo['telecomType'] = instance.telecomType

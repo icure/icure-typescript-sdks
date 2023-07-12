@@ -1,9 +1,10 @@
 import 'mocha'
 
-import {mapOf, User} from "@icure/typescript-common";
+import { User } from '../..'
 import { assert } from 'chai'
 import { newProperty } from './propertyTest'
 import { newAuthenticationToken } from './authenticationTokenTest'
+import {mapOf} from "@icure/typescript-common";
 
 export function newUser(): User {
   return new User({

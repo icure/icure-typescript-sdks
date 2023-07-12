@@ -1,6 +1,6 @@
 import 'mocha'
 
-import { PersonName } from '../../src/models/PersonName.model'
+import { PersonName } from '../..'
 import { assert } from 'chai'
 
 export function newPersonName(): PersonName {

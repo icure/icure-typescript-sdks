@@ -1,6 +1,6 @@
 import 'mocha'
 
-import { HealthcareElement } from '../../src/models/HealthcareElement.model'
+import { HealthcareElement } from '../..'
 import { assert } from 'chai'
 import { newIdentifier } from './identifierTest'
 import { newCodingReference } from './codingReferenceTest'
@@ -33,7 +33,7 @@ export function newHealthcareElement(): HealthcareElement {
 describe('HealthcareElement model test', () => {
   it('Marshalling/Unmarshalling of HealthcareElement model - Success', () => {
     const healthcareElement = newHealthcareElement()
-    const marshalledHealthcareElement = healthcareElement.marshal()
+    const marshalledHealthcareElement = HealthcareElement.toJSON(healthcareElement)
     const unmarshalledHealthcareElement = new HealthcareElement(JSON.parse(JSON.stringify(marshalledHealthcareElement)))
     assert.deepEqual(healthcareElement, unmarshalledHealthcareElement)
     assert.deepEqual(healthcareElement, new HealthcareElement(healthcareElement))

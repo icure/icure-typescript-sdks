@@ -1,6 +1,6 @@
 import 'mocha'
 
-import { Measure } from '../../src/models/Measure'
+import { Measure } from '../..'
 import { assert } from 'chai'
 import { newCodingReference } from './codingReferenceTest'
 
@@ -23,7 +23,7 @@ export function newMeasure(): Measure {
 describe('Measure model test', () => {
   it('Marshalling/Unmarshalling of Measure model - Success', () => {
     const measure = newMeasure()
-    const marshalledMeasure = measure.marshal()
+    const marshalledMeasure = Measure.toJSON(measure)
     const unmarshalledMeasure = new Measure(JSON.parse(JSON.stringify(marshalledMeasure)))
     assert.deepEqual(measure, unmarshalledMeasure)
     assert.deepEqual(measure, new Measure(measure))

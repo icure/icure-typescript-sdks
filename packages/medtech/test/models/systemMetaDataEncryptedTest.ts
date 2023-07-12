@@ -1,8 +1,9 @@
 import 'mocha'
 
+import { SystemMetaDataEncrypted } from '../..'
 import { assert } from 'chai'
 import { newDelegation } from './delegationTest'
-import {mapOf, SystemMetaDataEncrypted} from "@icure/typescript-common";
+import {mapOf} from "@icure/typescript-common";
 
 export function newSystemMetaDataEncrypted(): SystemMetaDataEncrypted {
   return new SystemMetaDataEncrypted({
