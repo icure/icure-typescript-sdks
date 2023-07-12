@@ -1,6 +1,6 @@
 import 'mocha'
 
-import { AuthenticationProcess } from '../../src/models/AuthenticationProcess'
+import { AuthenticationProcess } from '../..'
 import { assert } from 'chai'
 
 function newAuthenticationProcess(): AuthenticationProcess {
@@ -14,7 +14,7 @@ function newAuthenticationProcess(): AuthenticationProcess {
 describe('AuthenticationProcess model test', () => {
   it('Marshalling/Unmarshalling of AuthenticationProcess model - Success', () => {
     const authenticationProcess = newAuthenticationProcess()
-    const marshalledAuthenticationProcess = authenticationProcess.marshal()
+    const marshalledAuthenticationProcess = AuthenticationProcess.toJSON(authenticationProcess)
     const unmarshalledAuthenticationProcess = new AuthenticationProcess(JSON.parse(JSON.stringify(marshalledAuthenticationProcess)))
     assert.deepEqual(authenticationProcess, unmarshalledAuthenticationProcess)
     assert.deepEqual(authenticationProcess, new AuthenticationProcess(authenticationProcess))
