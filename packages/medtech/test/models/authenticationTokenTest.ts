@@ -1,6 +1,6 @@
 import 'mocha'
 
-import { AuthenticationToken } from '../../src/models/AuthenticationToken'
+import { AuthenticationToken } from '../..'
 import { assert } from 'chai'
 
 export function newAuthenticationToken(): AuthenticationToken {
@@ -14,7 +14,7 @@ export function newAuthenticationToken(): AuthenticationToken {
 describe('AuthenticationToken model test', () => {
   it('Marshalling/Unmarshalling of AuthenticationToken model - Success', () => {
     const authenticationToken = newAuthenticationToken()
-    const marshalledAuthenticationToken = authenticationToken.marshal()
+    const marshalledAuthenticationToken = AuthenticationToken.toJSON(authenticationToken)
     const unmarshalledAuthenticationToken = new AuthenticationToken(JSON.parse(JSON.stringify(marshalledAuthenticationToken)))
     assert.deepEqual(authenticationToken, unmarshalledAuthenticationToken)
     assert.deepEqual(authenticationToken, new AuthenticationToken(authenticationToken))
