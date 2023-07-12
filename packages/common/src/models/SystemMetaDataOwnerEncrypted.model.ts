@@ -70,9 +70,9 @@ interface ISystemMetaDataOwnerEncrypted {
     hcPartyKeys?: Map<string, string[]>
     privateKeyShamirPartitions?: Map<string, string>
     secretForeignKeys?: string[]
-    cryptedForeignKeys?: Map<string, Delegation[]>
-    delegations?: Map<string, Delegation[]>
-    encryptionKeys?: Map<string, Delegation[]>
+    cryptedForeignKeys?: Map<string, Set<Delegation>>
+    delegations?: Map<string, Set<Delegation>>
+    encryptionKeys?: Map<string, Set<Delegation>>
     aesExchangeKeys?: Map<string, Map<string, Map<string, string>>>
     transferKeys?: Map<string, Map<string, string>>
     securityMetadata?: SecurityMetadata

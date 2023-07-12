@@ -1,14 +1,12 @@
 import { Notification, NotificationStatusEnum, NotificationTypeEnum } from '../models/Notification.model'
 import { CodeStub, Identifier as IdentifierDto, MaintenanceTask, PropertyStub } from '@icure/api'
 import { Property } from '../models/Property.model'
-import { convertMapOfArrayOfGenericToObject, convertObjectToMapOfArrayOfGeneric, extractCryptedForeignKeys, extractDelegations, extractEncryptedSelf, extractEncryptionKeys, extractSecretForeignKeys } from '../utils/Metadata.utils'
-import { Delegation } from '../models/Delegation.model'
 import { Delegation as DelegationDto } from '@icure/api/icc-api/model/Delegation'
 import { Identifier } from '../models/Identifier.model'
 import { SystemMetaDataEncrypted } from '../models/SystemMetaDataEncrypted.model'
 import { mapIdentifierDtoToIdentifier, mapIdentifierToIdentifierDto } from './Identifier.mapper'
 import { mapPropertyStubToProperty, mapPropertyToPropertyStub } from './Property.mapper'
-import { mapDelegationDtoToDelegation, mapDelegationToDelegationDto } from './Delegation.mapper'
+import { toCryptedForeignKeys, toDelegations, toEncryptedSelf, toEncryptionKeys, toSecretForeignKeys, toSystemMetaDataEncrypted } from './SystemMetaData.mapper'
 
 function toMaintenanceTaskId(domain: Notification): string | undefined {
     return domain.id
@@ -71,7 +69,7 @@ function toMaintenanceTaskStatus(domain: Notification): MaintenanceTask.StatusEn
 }
 
 function toMaintenanceTaskSecretForeignKeys(domain: Notification): string[] | undefined {
-    return extractSecretForeignKeys(domain.systemMetaData)
+    return !!domain.systemMetaData ? toSecretForeignKeys(domain.systemMetaData) : undefined
 }
 
 function toMaintenanceTaskCryptedForeignKeys(domain: Notification):
@@ -79,13 +77,7 @@ function toMaintenanceTaskCryptedForeignKeys(domain: Notification):
           [key: string]: DelegationDto[]
       }
     | undefined {
-    const cryptedForeignKeys = extractCryptedForeignKeys(domain.systemMetaData)
-
-    if (!cryptedForeignKeys) {
-        return undefined
-    }
-
-    return Object.fromEntries([...cryptedForeignKeys].map(([key, value]) => [key, value.map(mapDelegationToDelegationDto)]))
+    return !!domain.systemMetaData ? toCryptedForeignKeys(domain.systemMetaData) : undefined
 }
 
 function toMaintenanceTaskDelegations(domain: Notification):
@@ -93,13 +85,7 @@ function toMaintenanceTaskDelegations(domain: Notification):
           [key: string]: DelegationDto[]
       }
     | undefined {
-    const delegations = extractDelegations(domain.systemMetaData)
-
-    if (!delegations) {
-        return undefined
-    }
-
-    return Object.fromEntries([...delegations].map(([key, value]) => [key, value.map(mapDelegationToDelegationDto)]))
+    return !!domain.systemMetaData ? toDelegations(domain.systemMetaData) : undefined
 }
 
 function toMaintenanceTaskEncryptionKeys(domain: Notification):
@@ -107,12 +93,11 @@ function toMaintenanceTaskEncryptionKeys(domain: Notification):
           [key: string]: DelegationDto[]
       }
     | undefined {
-    const encryptionKeys = extractEncryptionKeys(domain.systemMetaData)
-    return !!encryptionKeys ? convertMapOfArrayOfGenericToObject<Delegation, DelegationDto>(encryptionKeys, (arr) => arr.map(mapDelegationToDelegationDto)) : undefined
+    return !!domain.systemMetaData ? toEncryptionKeys(domain.systemMetaData) : undefined
 }
 
 function toMaintenanceTaskEncryptedSelf(domain: Notification): string | undefined {
-    return extractEncryptedSelf(domain.systemMetaData)
+    return !!domain.systemMetaData ? toEncryptedSelf(domain.systemMetaData) : undefined
 }
 
 function toNotificationId(dto: MaintenanceTask): string | undefined {
@@ -164,13 +149,7 @@ function toNotificationType(dto: MaintenanceTask): NotificationTypeEnum | undefi
 }
 
 function toNotificationSystemMetaData(dto: MaintenanceTask): SystemMetaDataEncrypted | undefined {
-    return new SystemMetaDataEncrypted({
-        encryptedSelf: dto.encryptedSelf,
-        cryptedForeignKeys: !!dto.cryptedForeignKeys ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.cryptedForeignKeys, (arr) => arr.map(mapDelegationDtoToDelegation)) : undefined,
-        delegations: !!dto.delegations ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.delegations, (arr) => arr.map(mapDelegationDtoToDelegation)) : undefined,
-        encryptionKeys: !!dto.encryptionKeys ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.encryptionKeys, (arr) => arr.map(mapDelegationDtoToDelegation)) : undefined,
-        secretForeignKeys: dto.secretForeignKeys,
-    })
+    return toSystemMetaDataEncrypted(dto)
 }
 
 export function mapMaintenanceTaskToNotification(dto: MaintenanceTask): Notification {

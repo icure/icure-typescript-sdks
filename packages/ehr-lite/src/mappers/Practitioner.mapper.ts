@@ -4,19 +4,8 @@ import { HumanName } from '../models/HumanName.model'
 import { Location } from '../models/Location.model'
 import {
     CodingReference,
-    convertDeepNestedMapToObject,
-    convertMapOfArrayOfGenericToObject,
     convertMapToObject,
-    convertNestedMapToObject,
-    convertObjectToDeepNestedMap,
     convertObjectToMap,
-    convertObjectToNestedMap,
-    extractAesExchangeKeys,
-    extractHcPartyKeys,
-    extractPrivateKeyShamirPartitions,
-    extractPublicKey,
-    extractPublicKeysForOaepWithSha256,
-    extractTransferKeys,
     Identifier,
     mapCodeStubToCodingReference,
     mapCodingReferenceToCodeStub,
@@ -26,11 +15,17 @@ import {
     mapPropertyToPropertyStub,
     Property,
     SystemMetaDataOwner,
+    toAesExchangeKeys,
+    toPrivateKeyShamirPartitions,
+    toPublicKey,
+    toPublicKeysForOaepWithSha256,
+    toTransferKeys,
 } from '@icure/typescript-common'
 import { mapHumanNameToPersonName, mapPersonNameToHumanName } from './HumanName.mapper'
 import { mapAddressToLocation, mapLocationToAddress } from './Location.mapper'
 import { GenderEnum } from '../models/enums/Gender.enum'
 import { healthcareProfessionalIdentifiers } from './utils/HealthProfessional.utils'
+import { toHcPartyKeys, toSystemMetaDataOwner } from '@icure/typescript-common/dist/mappers/SystemMetaData.mapper'
 
 function toHealthcarePartyId(domain: Practitioner): string | undefined {
     return domain.id
@@ -225,8 +220,7 @@ function toHealthcarePartyProperties(domain: Practitioner): PropertyStub[] | und
 }
 
 function toHealthcarePartyHcPartyKeys(domain: Practitioner): { [key: string]: string[] } | undefined {
-    const hcpKeys = extractHcPartyKeys(domain.systemMetaData)
-    return !!hcpKeys ? convertMapOfArrayOfGenericToObject(hcpKeys, (arr) => arr) : undefined
+    return !!domain.systemMetaData ? toHcPartyKeys(domain.systemMetaData) : undefined
 }
 
 function toHealthcarePartyAesExchangeKeys(domain: Practitioner):
@@ -234,8 +228,7 @@ function toHealthcarePartyAesExchangeKeys(domain: Practitioner):
           [key: string]: { [key: string]: { [key: string]: string } }
       }
     | undefined {
-    const aesExchangeKeys = extractAesExchangeKeys(domain.systemMetaData)
-    return !!aesExchangeKeys ? convertDeepNestedMapToObject(aesExchangeKeys) : undefined
+    return !!domain.systemMetaData ? toAesExchangeKeys(domain.systemMetaData) : undefined
 }
 
 function toHealthcarePartyTransferKeys(domain: Practitioner):
@@ -243,21 +236,19 @@ function toHealthcarePartyTransferKeys(domain: Practitioner):
           [key: string]: { [key: string]: string }
       }
     | undefined {
-    const transferKeys = extractTransferKeys(domain.systemMetaData)
-    return !!transferKeys ? convertNestedMapToObject(transferKeys) : undefined
+    return !!domain.systemMetaData ? toTransferKeys(domain.systemMetaData) : undefined
 }
 
 function toHealthcarePartyPrivateKeyShamirPartitions(domain: Practitioner): { [key: string]: string } | undefined {
-    const privateKeyShamirPartitions = extractPrivateKeyShamirPartitions(domain.systemMetaData)
-    return !!privateKeyShamirPartitions ? convertMapToObject(privateKeyShamirPartitions) : undefined
+    return !!domain.systemMetaData ? toPrivateKeyShamirPartitions(domain.systemMetaData) : undefined
 }
 
 function toHealthcarePartyPublicKey(domain: Practitioner): string | undefined {
-    return extractPublicKey(domain.systemMetaData)
+    return !!domain.systemMetaData ? toPublicKey(domain.systemMetaData) : undefined
 }
 
 function toHealthcarePartyPublicKeysForOaepWithSha256(domain: Practitioner): string[] | undefined {
-    return extractPublicKeysForOaepWithSha256(domain.systemMetaData)
+    return !!domain.systemMetaData ? toPublicKeysForOaepWithSha256(domain.systemMetaData) : undefined
 }
 
 function toPractitionerId(dto: HealthcareParty): string | undefined {
@@ -357,14 +348,7 @@ function toPractitionerProperties(dto: HealthcareParty): Property[] | undefined 
 }
 
 function toPractitionerSystemMetaData(dto: HealthcareParty): SystemMetaDataOwner | undefined {
-    return new SystemMetaDataOwner({
-        hcPartyKeys: !!dto.hcPartyKeys ? new Map(Object.entries(dto.hcPartyKeys)) : undefined,
-        publicKey: dto.publicKey,
-        aesExchangeKeys: !!dto.aesExchangeKeys ? convertObjectToDeepNestedMap(dto.aesExchangeKeys) : undefined,
-        transferKeys: !!dto.transferKeys ? convertObjectToNestedMap(dto.transferKeys) : undefined,
-        privateKeyShamirPartitions: !!dto.privateKeyShamirPartitions ? convertObjectToMap(dto.privateKeyShamirPartitions) : undefined,
-        publicKeysForOaepWithSha256: dto.publicKeysForOaepWithSha256,
-    })
+    return toSystemMetaDataOwner(dto)
 }
 
 export function mapHealthcarePartyToPractitioner(dto: HealthcareParty): Practitioner {

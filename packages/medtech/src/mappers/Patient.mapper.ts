@@ -19,39 +19,29 @@ import {
 import {
   Annotation,
   CodingReference,
-  convertDeepNestedMapToObject,
-  convertMapOfArrayOfGenericToObject,
-  convertMapToObject,
-  convertNestedMapToObject,
-  convertObjectToDeepNestedMap,
-  convertObjectToMap,
-  convertObjectToMapOfArrayOfGeneric,
-  convertObjectToNestedMap,
-  Delegation,
-  extractAesExchangeKeys,
-  extractCryptedForeignKeys,
-  extractDelegations,
-  extractEncryptedSelf,
-  extractEncryptionKeys,
-  extractHcPartyKeys,
-  extractPrivateKeyShamirPartitions,
-  extractPublicKey,
-  extractPublicKeysForOaepWithSha256,
-  extractSecretForeignKeys,
-  extractTransferKeys,
   Identifier,
   mapAnnotationDtoToAnnotation,
   mapAnnotationToAnnotationDto,
   mapCodeStubToCodingReference,
   mapCodingReferenceToCodeStub,
-  mapDelegationDtoToDelegation,
-  mapDelegationToDelegationDto,
   mapIdentifierDtoToIdentifier,
   mapIdentifierToIdentifierDto,
   mapPropertyStubToProperty,
   mapPropertyToPropertyStub,
   Property,
   SystemMetaDataOwnerEncrypted,
+  toAesExchangeKeys,
+  toCryptedForeignKeys,
+  toDelegations,
+  toEncryptedSelf,
+  toEncryptionKeys,
+  toHcPartyKeys,
+  toPrivateKeyShamirPartitions,
+  toPublicKey,
+  toPublicKeysForOaepWithSha256,
+  toSecretForeignKeys,
+  toSystemMetaDataOwnerEncrypted,
+  toTransferKeys,
 } from '@icure/typescript-common'
 import { PersonName } from '../models/PersonName.model'
 import { Address } from '../models/Address.model'
@@ -290,35 +280,35 @@ function toPatientDtoProperties(domain: Patient): PropertyStub[] | undefined {
 }
 
 function toPatientDtoHcPartyKeys(domain: Patient): { [key: string]: string[] } | undefined {
-  const hcPartyKeys = extractHcPartyKeys(domain.systemMetaData)
-  return hcPartyKeys ? Object.fromEntries(hcPartyKeys.entries()) : undefined
+  return !!domain.systemMetaData ? toHcPartyKeys(domain.systemMetaData) : undefined
 }
 
-function toPatientDtoAesExchangeKeys(domain: Patient): { [key: string]: { [key: string]: { [key: string]: string } } } | undefined {
-  const aesExchangeKeys = extractAesExchangeKeys(domain.systemMetaData)
-  return !!aesExchangeKeys ? convertDeepNestedMapToObject(aesExchangeKeys) : undefined
+function toPatientDtoAesExchangeKeys(domain: Patient):
+  | {
+      [key: string]: { [key: string]: { [key: string]: string } }
+    }
+  | undefined {
+  return !!domain.systemMetaData ? toAesExchangeKeys(domain.systemMetaData) : undefined
 }
 
 function toPatientDtoTransferKeys(domain: Patient): { [key: string]: { [key: string]: string } } | undefined {
-  const transferKeys = extractTransferKeys(domain.systemMetaData)
-  return !!transferKeys ? convertNestedMapToObject(transferKeys) : undefined
+  return !!domain.systemMetaData ? toTransferKeys(domain.systemMetaData) : undefined
 }
 
 function toPatientDtoPrivateKeyShamirPartitions(domain: Patient): { [key: string]: string } | undefined {
-  const privateKeyShamirPartitions = extractPrivateKeyShamirPartitions(domain.systemMetaData)
-  return !!privateKeyShamirPartitions ? convertMapToObject(privateKeyShamirPartitions) : undefined
+  return !!domain.systemMetaData ? toPrivateKeyShamirPartitions(domain.systemMetaData) : undefined
 }
 
 function toPatientDtoPublicKey(domain: Patient): string | undefined {
-  return extractPublicKey(domain.systemMetaData)
+  return !!domain.systemMetaData ? toPublicKey(domain.systemMetaData) : undefined
 }
 
 function toPatientDtoPublicKeysForOaepWithSha256(domain: Patient): string[] | undefined {
-  return extractPublicKeysForOaepWithSha256(domain.systemMetaData)
+  return !!domain.systemMetaData ? toPublicKeysForOaepWithSha256(domain.systemMetaData) : undefined
 }
 
 function toPatientDtoSecretForeignKeys(domain: Patient): string[] | undefined {
-  return extractSecretForeignKeys(domain.systemMetaData)
+  return !!domain.systemMetaData ? toSecretForeignKeys(domain.systemMetaData) : undefined
 }
 
 function toPatientDtoCryptedForeignKeys(domain: Patient):
@@ -326,10 +316,7 @@ function toPatientDtoCryptedForeignKeys(domain: Patient):
       [key: string]: DelegationDto[]
     }
   | undefined {
-  const delegations = extractCryptedForeignKeys(domain.systemMetaData)
-  return !!delegations
-    ? convertMapOfArrayOfGenericToObject<Delegation, DelegationDto>(delegations, (arr) => arr.map(mapDelegationToDelegationDto))
-    : undefined
+  return !!domain.systemMetaData ? toCryptedForeignKeys(domain.systemMetaData) : undefined
 }
 
 function toPatientDtoDelegations(domain: Patient):
@@ -337,10 +324,7 @@ function toPatientDtoDelegations(domain: Patient):
       [key: string]: DelegationDto[]
     }
   | undefined {
-  const delegations = extractDelegations(domain.systemMetaData)
-  return !!delegations
-    ? convertMapOfArrayOfGenericToObject<Delegation, DelegationDto>(delegations, (arr) => arr.map(mapDelegationToDelegationDto))
-    : undefined
+  return !!domain.systemMetaData ? toDelegations(domain.systemMetaData) : undefined
 }
 
 function toPatientDtoEncryptionKeys(domain: Patient):
@@ -348,14 +332,11 @@ function toPatientDtoEncryptionKeys(domain: Patient):
       [key: string]: DelegationDto[]
     }
   | undefined {
-  const delegations = extractEncryptionKeys(domain.systemMetaData)
-  return !!delegations
-    ? convertMapOfArrayOfGenericToObject<Delegation, DelegationDto>(delegations, (arr) => arr.map(mapDelegationToDelegationDto))
-    : undefined
+  return !!domain.systemMetaData ? toEncryptionKeys(domain.systemMetaData) : undefined
 }
 
 function toPatientDtoEncryptedSelf(domain: Patient): string | undefined {
-  return extractEncryptedSelf(domain.systemMetaData)
+  return !!domain.systemMetaData ? toEncryptedSelf(domain.systemMetaData) : undefined
 }
 
 function toPatientDtoMedicalLocationId(domain: Patient): string | undefined {
@@ -603,25 +584,7 @@ function toPatientProperties(dto: PatientDto): Set<Property> {
 }
 
 function toPatientSystemMetaData(dto: PatientDto): SystemMetaDataOwnerEncrypted | undefined {
-  return new SystemMetaDataOwnerEncrypted({
-    encryptedSelf: dto.encryptedSelf,
-    cryptedForeignKeys: !!dto.cryptedForeignKeys
-      ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.cryptedForeignKeys, (arr) => arr.map(mapDelegationDtoToDelegation))
-      : undefined,
-    delegations: !!dto.delegations
-      ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.delegations, (arr) => arr.map(mapDelegationDtoToDelegation))
-      : undefined,
-    encryptionKeys: !!dto.encryptionKeys
-      ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.encryptionKeys, (arr) => arr.map(mapDelegationDtoToDelegation))
-      : undefined,
-    secretForeignKeys: dto.secretForeignKeys,
-    hcPartyKeys: !!dto.hcPartyKeys ? new Map(Object.entries(dto.hcPartyKeys)) : undefined,
-    publicKey: dto.publicKey,
-    aesExchangeKeys: !!dto.aesExchangeKeys ? convertObjectToDeepNestedMap(dto.aesExchangeKeys) : undefined,
-    transferKeys: !!dto.transferKeys ? convertObjectToNestedMap(dto.transferKeys) : undefined,
-    privateKeyShamirPartitions: !!dto.privateKeyShamirPartitions ? convertObjectToMap(dto.privateKeyShamirPartitions) : undefined,
-    publicKeysForOaepWithSha256: dto.publicKeysForOaepWithSha256,
-  })
+  return toSystemMetaDataOwnerEncrypted(dto)
 }
 
 function toPatientDeactivationDate(dto: PatientDto): number | undefined {

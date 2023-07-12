@@ -12,24 +12,20 @@ import {
 import {
   Annotation,
   CodingReference,
-  convertMapOfArrayOfGenericToObject,
-  convertObjectToMapOfArrayOfGeneric,
-  Delegation,
-  extractCryptedForeignKeys,
-  extractDelegations,
-  extractEncryptedSelf,
-  extractEncryptionKeys,
-  extractSecretForeignKeys,
   Identifier,
   mapAnnotationDtoToAnnotation,
   mapAnnotationToAnnotationDto,
   mapCodeStubToCodingReference,
   mapCodingReferenceToCodeStub,
-  mapDelegationDtoToDelegation,
-  mapDelegationToDelegationDto,
   mapIdentifierDtoToIdentifier,
   mapIdentifierToIdentifierDto,
   SystemMetaDataEncrypted,
+  toCryptedForeignKeys,
+  toDelegations,
+  toEncryptedSelf,
+  toEncryptionKeys,
+  toSecretForeignKeys,
+  toSystemMetaDataEncrypted,
 } from '@icure/typescript-common'
 
 function toHealthElementId(domain: HealthcareElement): string | undefined {
@@ -145,32 +141,23 @@ function toHealthElementCareTeam(domain: HealthcareElement): CareTeamMember[] | 
 }
 
 function toHealthElementSecretForeignKeys(domain: HealthcareElement): string[] | undefined {
-  return extractSecretForeignKeys(domain.systemMetaData)
+  return !!domain.systemMetaData ? toSecretForeignKeys(domain.systemMetaData) : undefined
 }
 
 function toHealthElementCryptedForeignKeys(domain: HealthcareElement): { [key: string]: DelegationDto[] } | undefined {
-  const cryptedForeignKeys = extractCryptedForeignKeys(domain.systemMetaData)
-  return !!cryptedForeignKeys
-    ? convertMapOfArrayOfGenericToObject<Delegation, DelegationDto>(cryptedForeignKeys, (arr) => arr.map(mapDelegationToDelegationDto))
-    : undefined
+  return !!domain.systemMetaData ? toCryptedForeignKeys(domain.systemMetaData) : undefined
 }
 
 function toHealthElementDelegations(domain: HealthcareElement): { [key: string]: DelegationDto[] } | undefined {
-  const delegations = extractDelegations(domain.systemMetaData)
-  return !!delegations
-    ? convertMapOfArrayOfGenericToObject<Delegation, DelegationDto>(delegations, (arr) => arr.map(mapDelegationToDelegationDto))
-    : undefined
+  return !!domain.systemMetaData ? toDelegations(domain.systemMetaData) : undefined
 }
 
 function toHealthElementEncryptionKeys(domain: HealthcareElement): { [key: string]: DelegationDto[] } | undefined {
-  const encryptionKeys = extractEncryptionKeys(domain.systemMetaData)
-  return !!encryptionKeys
-    ? convertMapOfArrayOfGenericToObject<Delegation, DelegationDto>(encryptionKeys, (arr) => arr.map(mapDelegationToDelegationDto))
-    : undefined
+  return !!domain.systemMetaData ? toEncryptionKeys(domain.systemMetaData) : undefined
 }
 
 function toHealthElementEncryptedSelf(domain: HealthcareElement): string | undefined {
-  return extractEncryptedSelf(domain.systemMetaData)
+  return !!domain.systemMetaData ? toEncryptedSelf(domain.systemMetaData) : undefined
 }
 
 function toHealthcareElementId(dto: HealthElement): string | undefined {
@@ -246,19 +233,7 @@ function toHealthcareElementNote(dto: HealthElement): string | undefined {
 }
 
 function toHealthcareElementSystemMetaData(dto: HealthElement): SystemMetaDataEncrypted | undefined {
-  return new SystemMetaDataEncrypted({
-    encryptedSelf: dto.encryptedSelf,
-    cryptedForeignKeys: !!dto.cryptedForeignKeys
-      ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.cryptedForeignKeys, (arr) => arr.map(mapDelegationDtoToDelegation))
-      : undefined,
-    delegations: !!dto.delegations
-      ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.delegations, (arr) => arr.map(mapDelegationDtoToDelegation))
-      : undefined,
-    encryptionKeys: !!dto.encryptionKeys
-      ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.encryptionKeys, (arr) => arr.map(mapDelegationDtoToDelegation))
-      : undefined,
-    secretForeignKeys: dto.secretForeignKeys,
-  })
+  return toSystemMetaDataEncrypted(dto)
 }
 
 function toHealthcareElementNotes(dto: HealthElement): Annotation[] | undefined {
