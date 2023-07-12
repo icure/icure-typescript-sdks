@@ -1,6 +1,6 @@
 import 'mocha'
 
-import { CodingReference } from '../../src/models/CodingReference'
+import { CodingReference } from '../..'
 import { assert } from 'chai'
 
 export function newCodingReference(): CodingReference {
@@ -15,7 +15,7 @@ export function newCodingReference(): CodingReference {
 describe('CodingReference model test', () => {
   it('Marshalling/Unmarshalling of CodingReference model - Success', () => {
     const codingReference = newCodingReference()
-    const marshalledCodingReference = codingReference.marshal()
+    const marshalledCodingReference = CodingReference.toJSON(codingReference)
     const unmarshalledCodingReference = new CodingReference(JSON.parse(JSON.stringify(marshalledCodingReference)))
     assert.deepEqual(codingReference, unmarshalledCodingReference)
     assert.deepEqual(codingReference, new CodingReference(codingReference))
