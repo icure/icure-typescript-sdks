@@ -53,11 +53,12 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
         phoneNumber?: string,
         firstName: string = '',
         lastName: string = '',
-        healthcareProfessionalId?: string,
-        bypassTokenCheck?: boolean,
-        validationCodeLength?: number,
-        recaptchaType?: RecaptchaType
+        healthcareProfessionalId: string = '',
+        bypassTokenCheck: boolean = false,
+        validationCodeLength: number = 6,
+        recaptchaType: RecaptchaType = 'recaptcha'
     ): Promise<AuthenticationProcess> {
+
         if (!email && !phoneNumber) {
             throw this.errorHandler.createErrorWithMessage(`In order to start authentication of a user, you should at least provide its email OR its phone number`)
         }

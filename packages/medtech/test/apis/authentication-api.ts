@@ -32,7 +32,7 @@ describe('Authentication API', () => {
 
   it("AnonymousMedTechApi shouldn't be instantiated if authServerUrl, authProcessId and specId aren't passed", async () => {
     await expect(
-      new AnonymousMedTechApi.Builder()
+      Promise.resolve().then(() => new AnonymousMedTechApi.Builder()
         .withICureBaseUrl(env!.iCureUrl)
         .withCrypto(webcrypto as any)
         .withMsgGwUrl(env!.msgGtwUrl)
@@ -40,6 +40,7 @@ describe('Authentication API', () => {
         .withAuthProcessBySmsId(env!.hcpAuthProcessId)
         .withCryptoStrategies(new SimpleMedTechCryptoStrategies([]))
         .build()
+      )
     ).to.be.rejected
 
     const anonymousMedTechApi = await new AnonymousMedTechApi.Builder()
@@ -77,12 +78,13 @@ describe('Authentication API', () => {
 
   it('Cannot instantiate the API if no AuthProcessId is passed', async () => {
     await expect(
-      new AnonymousMedTechApi.Builder()
+      Promise.resolve().then(() => new AnonymousMedTechApi.Builder()
         .withICureBaseUrl(env!.iCureUrl)
         .withMsgGwUrl(env!.msgGtwUrl)
         .withMsgGwSpecId(env!.specId)
         .withCrypto(webcrypto as any)
         .build()
+      )
     ).to.be.rejected
   }).timeout(60000)
 

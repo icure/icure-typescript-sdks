@@ -257,7 +257,7 @@ export namespace MedTechApi {
             }
           }
         ),
-        crypto,
+        props.crypto,
         fetch,
         {
           storage: props.storage,
