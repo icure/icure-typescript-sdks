@@ -3,9 +3,10 @@ import { Annotation } from '../models/Annotation.model'
 import { CodeStub, ISO639_1 } from '@icure/api'
 import { CodingReference } from '../models/CodingReference.model'
 import { mapCodeStubToCodingReference, mapCodingReferenceToCodeStub } from './CodingReference.mapper'
+import {forceUuid} from "../utils/uuidUtils";
 
 function toAnnotationDtoId(domain: Annotation): string | undefined {
-    return domain.id
+    return forceUuid(domain.id)
 }
 
 function toAnnotationDtoAuthor(domain: Annotation): string | undefined {
@@ -220,7 +221,7 @@ function toAnnotationDtoConfidential(domain: Annotation): boolean | undefined {
 }
 
 function toAnnotationDtoTags(domain: Annotation): CodeStub[] | undefined {
-    return domain.tags?.map((t) => mapCodingReferenceToCodeStub(t))
+    return [...domain.tags].map((t) => mapCodingReferenceToCodeStub(t))
 }
 
 function toAnnotationDtoLocation(domain: Annotation): string | undefined {
@@ -231,12 +232,12 @@ function toAnnotationDtoEncryptedSelf(domain: Annotation): string | undefined {
     return domain.encryptedSelf
 }
 
-function toAnnotationId(dto: AnnotationDto): string | undefined {
-    return dto.id
+function toAnnotationId(dto: AnnotationDto): string {
+    return dto.id!
 }
 
-function toAnnotationTags(dto: AnnotationDto): CodingReference[] | undefined {
-    return dto.tags?.map((t) => mapCodeStubToCodingReference(t))
+function toAnnotationTags(dto: AnnotationDto): Set<CodingReference> {
+    return new Set(dto.tags?.map((t) => mapCodeStubToCodingReference(t))) ?? new Set()
 }
 
 function toAnnotationAuthor(dto: AnnotationDto): string | undefined {
@@ -251,8 +252,8 @@ function toAnnotationModified(dto: AnnotationDto): number | undefined {
     return dto.modified
 }
 
-function toAnnotationMarkdown(dto: AnnotationDto): Map<ISO639_1, string> | undefined {
-    return !!dto.markdown ? (new Map(Object.entries(dto.markdown)) as Map<ISO639_1, string>) : undefined
+function toAnnotationMarkdown(dto: AnnotationDto): Map<ISO639_1, string> {
+    return new Map(Object.entries(dto.markdown ?? {})) as Map<ISO639_1, string>
 }
 
 function toAnnotationTarget(dto: AnnotationDto): string | undefined {
