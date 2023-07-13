@@ -8,7 +8,7 @@ import { HealthcareElement } from '../../src/models/HealthcareElement.model'
 import { getEnvironmentInitializer, hcp1Username, hcp2Username, hcp3Username, patUsername, setLocalStorage, TestUtils } from '../test-utils'
 import { it } from 'mocha'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
-import { deepEquality, User } from '@icure/typescript-common'
+import { User } from '@icure/typescript-common'
 import { HealthcareElementFilter } from '../../src/filter/HealthcareElementFilterDsl'
 import { mapPatientToPatientDto } from '../../src/mappers/Patient.mapper'
 chaiUse(require('chai-as-promised'))
@@ -112,7 +112,7 @@ describe('Healthcare Element API', () => {
     const sharedHealthcareElement = await patApi!.healthcareElementApi.giveAccessTo(createdHealthcareElement, patUser!.patientId!)
 
     // Then
-    assert(deepEquality(createdHealthcareElement, sharedHealthcareElement))
+    expect(sharedHealthcareElement).to.deep.equal(createdHealthcareElement)
   })
 
   it('Users without access to the Healthcare element can not share it', async () => {

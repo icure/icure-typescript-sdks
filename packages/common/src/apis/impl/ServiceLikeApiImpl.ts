@@ -57,7 +57,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
     }
 
     async createOrModifyFor(patientId: string, service: DSService): Promise<DSService> {
-        const createdOrUpdatedDataSample = (await this.createOrModifyManyFor(patientId, [service])).pop()
+        const createdOrUpdatedDataSample = (await this.createOrModifyManyFor(patientId, [service]))[0]
         if (createdOrUpdatedDataSample) {
             return createdOrUpdatedDataSample
         }

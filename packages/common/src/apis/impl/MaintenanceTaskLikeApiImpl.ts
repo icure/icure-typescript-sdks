@@ -6,7 +6,6 @@ import { MaintenanceTaskLikeApi } from '../MaintenanceTaskLikeApi'
 import { Mapper } from '../Mapper'
 import { ErrorHandler } from '../../services/ErrorHandler'
 import { IccMaintenanceTaskXApi } from '@icure/api/icc-x-api/icc-maintenance-task-x-api'
-import { deepEquality } from '../../utils/equality'
 import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
 import { NoOpFilter } from '../../filters/dsl/filterDsl'
 import { FilterMapper } from '../../mappers/Filter.mapper'
@@ -135,23 +134,6 @@ export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements Maintenanc
 
     private async _updateNotification(maintenanceTask: MaintenanceTask, user: User): Promise<any> {
         if (!maintenanceTask.id) throw this.errorHandler.createErrorWithMessage('Invalid maintenanceTask')
-        const existingMaintenanceTask = await this.get(maintenanceTask.id)
-        if (!existingMaintenanceTask) throw this.errorHandler.createErrorWithMessage('Cannot modify a non-existing NotificationModel')
-
-        const existingMappedMaintenanceTask = this.mapper.toDto(existingMaintenanceTask)
-
-        if (existingMappedMaintenanceTask.rev !== maintenanceTask.rev) throw this.errorHandler.createErrorWithMessage('Cannot modify rev field')
-        else if (existingMappedMaintenanceTask.created !== maintenanceTask.created) throw this.errorHandler.createErrorWithMessage('Cannot modify created field')
-        else if (existingMappedMaintenanceTask.endOfLife !== maintenanceTask.endOfLife) throw this.errorHandler.createErrorWithMessage('Cannot modify endOfLife field')
-        else if (existingMappedMaintenanceTask.deletionDate !== maintenanceTask.deletionDate) throw this.errorHandler.createErrorWithMessage('Cannot modify deletionDate field')
-        else if (existingMappedMaintenanceTask.modified !== maintenanceTask.modified) throw this.errorHandler.createErrorWithMessage('Cannot modify modified field')
-        else if (existingMappedMaintenanceTask.author !== maintenanceTask.author) throw this.errorHandler.createErrorWithMessage('Cannot modify  author field')
-        else if (existingMappedMaintenanceTask.responsible !== maintenanceTask.responsible) throw this.errorHandler.createErrorWithMessage('Cannot modify responsible field')
-        else if (existingMappedMaintenanceTask.taskType !== maintenanceTask.taskType) throw this.errorHandler.createErrorWithMessage('Cannot modify type field')
-        else if (!deepEquality(existingMappedMaintenanceTask.secretForeignKeys, maintenanceTask.secretForeignKeys)) throw this.errorHandler.createErrorWithMessage('Cannot modify dataOwner field')
-        else if (!deepEquality(existingMappedMaintenanceTask.encryptionKeys, maintenanceTask.encryptionKeys)) throw this.errorHandler.createErrorWithMessage('Cannot modify encryptionKeys field')
-        else if (!deepEquality(existingMappedMaintenanceTask.cryptedForeignKeys, maintenanceTask.cryptedForeignKeys)) throw this.errorHandler.createErrorWithMessage('Cannot modify cryptedForeignKeys field')
-        else if (!deepEquality(existingMappedMaintenanceTask.delegations, maintenanceTask.delegations)) throw this.errorHandler.createErrorWithMessage('Cannot modify delegations field')
         return this.maintenanceTaskApi.modifyMaintenanceTaskWithUser(user, maintenanceTask).catch((e) => {
             throw this.errorHandler.createErrorFromAny(e)
         })
