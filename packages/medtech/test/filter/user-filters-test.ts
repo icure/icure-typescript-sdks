@@ -3,7 +3,7 @@ import { MedTechApi } from '../../src/apis/MedTechApi'
 import {User} from "@icure/typescript-common";
 import { getEnvironmentInitializer, getTempEmail, hcp1Username, patUsername, setLocalStorage, TestUtils } from '../test-utils'
 import { UserFilter } from '../../src/filter/UserFilterDsl'
-import {FilterComposition, NoOpFilter} from "@icure/typescript-common/dist/filters/dsl/filterDsl";
+import {FilterComposition, NoOpFilter} from "@icure/typescript-common";
 import { expect } from 'chai'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import { v4 as uuid } from 'uuid'

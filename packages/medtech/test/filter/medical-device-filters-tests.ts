@@ -2,7 +2,7 @@ import 'isomorphic-fetch'
 import { getEnvironmentInitializer, hcp1Username, setLocalStorage, TestUtils } from '../test-utils'
 import { MedTechApi } from '../../src/apis/MedTechApi'
 import {User} from "@icure/typescript-common";
-import {FilterComposition, NoOpFilter} from "@icure/typescript-common/dist/filters/dsl/filterDsl";
+import {FilterComposition, NoOpFilter} from "@icure/typescript-common";
 import { expect } from 'chai'
 import { MedicalDevice } from '../../src/models/MedicalDevice.model'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'

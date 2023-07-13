@@ -11,7 +11,7 @@ import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import { v4 as uuid } from 'uuid'
 import {CodingReference, mapOf, User} from "@icure/typescript-common";
 import {mapPatientToPatientDto} from "../../src/mappers/Patient.mapper";
-import {FilterComposition, NoOpFilter} from "@icure/typescript-common/dist/filters/dsl/filterDsl";
+import {FilterComposition, NoOpFilter} from "@icure/typescript-common";
 
 setLocalStorage(fetch)
 

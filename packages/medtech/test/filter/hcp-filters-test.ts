@@ -7,7 +7,7 @@ import { v4 as uuid } from 'uuid'
 import { CodingReference } from '@icure/typescript-common'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import {User} from "@icure/typescript-common";
-import {FilterComposition, NoOpFilter} from "@icure/typescript-common/dist/filters/dsl/filterDsl";
+import {FilterComposition, NoOpFilter} from "@icure/typescript-common";
 import {HealthcareProfessionalFilter} from "../../src/filter/HealthcareProfessionalFilterDsl";
 
 setLocalStorage(fetch)

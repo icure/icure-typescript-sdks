@@ -7,7 +7,7 @@ import { v4 as uuid } from 'uuid'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import { Coding, mapOf, User } from '@icure/typescript-common'
 import { CodingFilter } from '@icure/ehr-lite-sdk'
-import { FilterComposition, NoOpFilter } from '@icure/typescript-common/dist/filters/dsl/filterDsl'
+import { FilterComposition, NoOpFilter } from '@icure/typescript-common'
 
 setLocalStorage(fetch)
 

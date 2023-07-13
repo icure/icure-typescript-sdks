@@ -3,7 +3,7 @@ import { MedTechApi } from '../../src/apis/MedTechApi'
 import {User} from "@icure/typescript-common";
 import { getEnvironmentInitializer, hcp1Username, setLocalStorage, TestUtils } from '../test-utils'
 import { HealthcareElementFilter } from '../../src/filter/HealthcareElementFilterDsl'
-import {FilterComposition, NoOpFilter} from "@icure/typescript-common/dist/filters/dsl/filterDsl";
+import {FilterComposition, NoOpFilter} from "@icure/typescript-common";
 import { expect } from 'chai'
 import { HealthcareElement } from '../../src/models/HealthcareElement.model'
 import { CodingReference } from '@icure/typescript-common'
