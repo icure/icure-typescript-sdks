@@ -11,8 +11,8 @@ export class Practitioner {
     created?: number
     modified?: number
     identifiers?: Identifier[]
-    tags?: CodingReference[]
-    codes?: CodingReference[]
+    tags?: Set<CodingReference>
+    codes?: Set<CodingReference>
     deletionDate?: number
     name?: string
     lastName?: string
@@ -65,8 +65,8 @@ export class Practitioner {
         pojo['created'] = instance.created
         pojo['modified'] = instance.modified
         pojo['identifiers'] = instance.identifiers?.map((item) => Identifier.toJSON(item))
-        pojo['tags'] = instance.tags?.map((item) => CodingReference.toJSON(item))
-        pojo['codes'] = instance.codes?.map((item) => CodingReference.toJSON(item))
+        pojo['tags'] = Array.from([...(instance.tags ?? [])]?.map((item) => CodingReference.toJSON(item)) ?? [])
+        pojo['codes'] = Array.from([...(instance.codes ?? [])]?.map((item) => CodingReference.toJSON(item)) ?? [])
         pojo['deletionDate'] = instance.deletionDate
         pojo['name'] = instance.name
         pojo['lastName'] = instance.lastName
@@ -94,8 +94,8 @@ export class Practitioner {
             created: pojo['created'],
             modified: pojo['modified'],
             identifiers: pojo['identifiers']?.map((item: any) => Identifier.fromJSON(item)),
-            tags: pojo['tags']?.map((item: any) => CodingReference.fromJSON(item)),
-            codes: pojo['codes']?.map((item: any) => CodingReference.fromJSON(item)),
+            tags: new Set(pojo['tags']?.map((item: any) => CodingReference.fromJSON(item)) ?? []),
+            codes: new Set(pojo['codes']?.map((item: any) => CodingReference.fromJSON(item)) ?? []),
             deletionDate: pojo['deletionDate'],
             name: pojo['name'],
             lastName: pojo['lastName'],
@@ -122,8 +122,8 @@ interface IPractitioner {
     rev?: string
     created?: number
     modified?: number
-    tags?: CodingReference[]
-    codes?: CodingReference[]
+    tags?: Set<CodingReference>
+    codes?: Set<CodingReference>
     deletionDate?: number
     name?: string
     lastName?: string

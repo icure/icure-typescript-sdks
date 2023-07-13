@@ -1,6 +1,6 @@
+import { CodingReference } from './CodingReference.model'
 import { Delegation } from './Delegation.model'
 import { SecurityMetadata } from './SecurityMetadata.model'
-import {CodingReference} from "./CodingReference.model";
 
 export class SystemMetaDataOwnerEncrypted {
     publicKey?: string
@@ -46,6 +46,7 @@ export class SystemMetaDataOwnerEncrypted {
         pojo['securityMetadata'] = !!instance.securityMetadata ? SecurityMetadata.toJSON(instance.securityMetadata) : undefined
         pojo['publicKeysForOaepWithSha256'] = instance.publicKeysForOaepWithSha256?.map((item) => item)
         pojo['encryptedSelf'] = instance.encryptedSelf
+        pojo['tags'] = Array.from([...(instance.tags ?? [])]?.map((item) => CodingReference.toJSON(item)) ?? [])
         return pojo
     }
 
@@ -63,6 +64,7 @@ export class SystemMetaDataOwnerEncrypted {
             securityMetadata: !!pojo['securityMetadata'] ? SecurityMetadata.fromJSON(pojo['securityMetadata']) : undefined,
             publicKeysForOaepWithSha256: pojo['publicKeysForOaepWithSha256']?.map((item: any) => item),
             encryptedSelf: pojo['encryptedSelf'],
+            tags: new Set(pojo['tags']?.map((item: any) => CodingReference.fromJSON(item)) ?? []),
         })
     }
 }

@@ -1,6 +1,6 @@
+import { CodingReference } from './CodingReference.model'
 import { Delegation } from './Delegation.model'
 import { SecurityMetadata } from './SecurityMetadata.model'
-import {CodingReference} from "./CodingReference.model";
 
 export class SystemMetaDataEncrypted {
     secretForeignKeys?: string[]
@@ -28,6 +28,7 @@ export class SystemMetaDataEncrypted {
         pojo['encryptionKeys'] = !!instance.encryptionKeys ? Object.fromEntries([...instance.encryptionKeys.entries()].map(([k, v]) => [k, Array.from([...v].map((item) => Delegation.toJSON(item)))])) : undefined
         pojo['securityMetadata'] = !!instance.securityMetadata ? SecurityMetadata.toJSON(instance.securityMetadata) : undefined
         pojo['encryptedSelf'] = instance.encryptedSelf
+        pojo['tags'] = Array.from([...(instance.tags ?? [])]?.map((item) => CodingReference.toJSON(item)) ?? [])
         return pojo
     }
 
@@ -39,6 +40,7 @@ export class SystemMetaDataEncrypted {
             encryptionKeys: pojo['encryptionKeys'] ? new Map(Object.entries(pojo['encryptionKeys']).map(([k, v]: [any, any]) => [k, new Set(v.map((item: any) => Delegation.fromJSON(item)))])) : undefined,
             securityMetadata: !!pojo['securityMetadata'] ? SecurityMetadata.fromJSON(pojo['securityMetadata']) : undefined,
             encryptedSelf: pojo['encryptedSelf'],
+            tags: new Set(pojo['tags']?.map((item: any) => CodingReference.fromJSON(item)) ?? []),
         })
     }
 }

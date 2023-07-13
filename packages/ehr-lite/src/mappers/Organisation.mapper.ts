@@ -5,19 +5,24 @@ import {
     CodingReference,
     convertMapToObject,
     convertObjectToMap,
+    dataOwnerDomainTypeTag,
+    extractDomainTypeTag, filteringOutInternalTags,
+    ICURE_DOMAIN_TYPE_ID,
     Identifier,
     mapCodeStubToCodingReference,
     mapCodingReferenceToCodeStub,
     mapIdentifierDtoToIdentifier,
     mapIdentifierToIdentifierDto,
     mapPropertyStubToProperty,
-    mapPropertyToPropertyStub,
+    mapPropertyToPropertyStub, mergeTagsWithInternalTags,
     Property,
     SystemMetaDataOwner,
+    systemMetaDataTags,
 } from '@icure/typescript-common'
 import { mapAddressToLocation, mapLocationToAddress } from './Location.mapper'
 import { healthcareProfessionalIdentifiers } from './utils/HealthProfessional.utils'
 import { toAesExchangeKeys, toHcPartyKeys, toPrivateKeyShamirPartitions, toPublicKey, toPublicKeysForOaepWithSha256, toSystemMetaDataOwner, toTransferKeys } from '@icure/typescript-common/dist/mappers/SystemMetaData.mapper'
+import { addUniqueObjectsToArray } from '../utils/Array.utils'
 
 function toHealthcarePartyId(domain: Organisation): string | undefined {
     return domain.id
@@ -44,11 +49,11 @@ function toHealthcarePartyIdentifier(domain: Organisation): IdentifierDto[] | un
 }
 
 function toHealthcarePartyTags(domain: Organisation): CodeStub[] | undefined {
-    return !!domain.tags ? domain.tags.map(mapCodingReferenceToCodeStub) : undefined
+    return mergeTagsWithInternalTags('Organisation', domain.tags, domain.systemMetaData)
 }
 
 function toHealthcarePartyCodes(domain: Organisation): CodeStub[] | undefined {
-    return !!domain.codes ? domain.codes.map(mapCodingReferenceToCodeStub) : undefined
+    return !!domain.codes ? [...domain.codes].map(mapCodingReferenceToCodeStub) : undefined
 }
 
 function toHealthcarePartyName(domain: Organisation): string | undefined {
@@ -267,12 +272,12 @@ function toOrganisationIdentifiers(dto: HealthcareParty): Identifier[] | undefin
     return identifiers.map(mapIdentifierDtoToIdentifier)
 }
 
-function toOrganisationTags(dto: HealthcareParty): CodingReference[] | undefined {
-    return !!dto.tags ? dto.tags.map(mapCodeStubToCodingReference) : undefined
+function toOrganisationTags(dto: HealthcareParty): Set<CodingReference> | undefined {
+    return filteringOutInternalTags('Organisation', dto.tags)
 }
 
-function toOrganisationCodes(dto: HealthcareParty): CodingReference[] | undefined {
-    return !!dto.codes ? dto.codes.map(mapCodeStubToCodingReference) : undefined
+function toOrganisationCodes(dto: HealthcareParty): Set<CodingReference> | undefined {
+    return !!dto.codes ? new Set(dto.codes.map(mapCodeStubToCodingReference)) : undefined
 }
 
 function toOrganisationDeletionDate(dto: HealthcareParty): number | undefined {

@@ -6,15 +6,19 @@ import {
     CodingReference,
     convertMapToObject,
     convertObjectToMap,
+    dataOwnerDomainTypeTag,
+    extractDomainTypeTag, filteringOutInternalTags,
+    ICURE_DOMAIN_TYPE_ID,
     Identifier,
     mapCodeStubToCodingReference,
     mapCodingReferenceToCodeStub,
     mapIdentifierDtoToIdentifier,
     mapIdentifierToIdentifierDto,
     mapPropertyStubToProperty,
-    mapPropertyToPropertyStub,
+    mapPropertyToPropertyStub, mergeTagsWithInternalTags,
     Property,
     SystemMetaDataOwner,
+    systemMetaDataTags,
     toAesExchangeKeys,
     toPrivateKeyShamirPartitions,
     toPublicKey,
@@ -26,6 +30,7 @@ import { mapAddressToLocation, mapLocationToAddress } from './Location.mapper'
 import { GenderEnum } from '../models/enums/Gender.enum'
 import { healthcareProfessionalIdentifiers } from './utils/HealthProfessional.utils'
 import { toHcPartyKeys, toSystemMetaDataOwner } from '@icure/typescript-common/dist/mappers/SystemMetaData.mapper'
+import { addUniqueObjectsToArray } from '../utils/Array.utils'
 
 function toHealthcarePartyId(domain: Practitioner): string | undefined {
     return domain.id
@@ -52,11 +57,11 @@ function toHealthcarePartyIdentifier(domain: Practitioner): IdentifierDto[] | un
 }
 
 function toHealthcarePartyTags(domain: Practitioner): CodeStub[] | undefined {
-    return !!domain.tags ? domain.tags.map(mapCodingReferenceToCodeStub) : undefined
+    return mergeTagsWithInternalTags('Practitioner', domain.tags, domain.systemMetaData)
 }
 
 function toHealthcarePartyCodes(domain: Practitioner): CodeStub[] | undefined {
-    return !!domain.codes ? domain.codes.map(mapCodingReferenceToCodeStub) : undefined
+    return !!domain.codes ? [...domain.codes].map(mapCodingReferenceToCodeStub) : undefined
 }
 
 function toHealthcarePartyName(domain: Practitioner): string | undefined {
@@ -275,12 +280,12 @@ function toPractitionerIdentifiers(dto: HealthcareParty): Identifier[] | undefin
     return identifiers.map(mapIdentifierDtoToIdentifier)
 }
 
-function toPractitionerTags(dto: HealthcareParty): CodingReference[] | undefined {
-    return !!dto.tags ? dto.tags.map(mapCodeStubToCodingReference) : undefined
+function toPractitionerTags(dto: HealthcareParty): Set<CodingReference> | undefined {
+    return filteringOutInternalTags('Practitioner', dto.tags)
 }
 
-function toPractitionerCodes(dto: HealthcareParty): CodingReference[] | undefined {
-    return !!dto.codes ? dto.codes.map(mapCodeStubToCodingReference) : undefined
+function toPractitionerCodes(dto: HealthcareParty): Set<CodingReference> | undefined {
+    return !!dto.codes ? new Set(dto.codes.map(mapCodeStubToCodingReference)) : undefined
 }
 
 function toPractitionerDeletionDate(dto: HealthcareParty): number | undefined {
