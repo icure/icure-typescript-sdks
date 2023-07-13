@@ -3,7 +3,7 @@ import {KeyStorageFacade, StorageFacade} from '@icure/api'
 import {CryptoPrimitives} from '@icure/api/icc-x-api/crypto/CryptoPrimitives'
 import {EHRLiteApi} from './EHRLiteApi'
 import {authenticationApi} from './AuthenticationApi'
-import {CommonAnonymousApi} from "@icure/typescript-common/dist/apis/CommonAnonymousApi";
+import {CommonAnonymousApi} from "@icure/typescript-common";
 
 export class AnonymousEHRLiteApi extends CommonAnonymousApi<EHRLiteApi> {
     private readonly _authenticationApi: AuthenticationApi<EHRLiteApi>

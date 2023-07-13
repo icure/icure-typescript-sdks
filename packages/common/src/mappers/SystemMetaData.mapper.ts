@@ -1,7 +1,7 @@
-import {CodeStub, Device, HealthcareParty, HealthElement, MaintenanceTask, Patient, Service} from "@icure/api";
-import {SystemMetaDataEncrypted} from "../models/SystemMetaDataEncrypted.model";
-import {mapDelegationDtoToDelegation, mapDelegationToDelegationDto} from "./Delegation.mapper";
-import {SystemMetaDataOwner} from "../models/SystemMetaDataOwner.model";
+import { CodeStub, Device, HealthcareParty, HealthElement, MaintenanceTask, Patient, Service } from '@icure/api'
+import { SystemMetaDataEncrypted } from '../models/SystemMetaDataEncrypted.model'
+import { mapDelegationDtoToDelegation, mapDelegationToDelegationDto } from './Delegation.mapper'
+import { SystemMetaDataOwner } from '../models/SystemMetaDataOwner.model'
 import {
     convertDeepNestedMapToObject,
     convertMapToObject,
@@ -19,21 +19,21 @@ import {
     extractPublicKey,
     extractPublicKeysForOaepWithSha256,
     extractSecretForeignKeys,
-    extractTransferKeys
-} from "../utils/Metadata.utils";
-import {SystemMetaDataOwnerEncrypted} from "../models/SystemMetaDataOwnerEncrypted.model";
-import {Delegation as DelegationDto} from "@icure/api/icc-api/model/Delegation";
-import {Delegation} from "../models/Delegation.model";
-import {ICURE_DOMAIN_TYPE_ID} from "../utils/domain";
-import {mapCodeStubToCodingReference} from "./CodingReference.mapper";
-import {CodingReference} from "../models/CodingReference.model";
+    extractTransferKeys,
+} from '../utils/Metadata.utils'
+import { SystemMetaDataOwnerEncrypted } from '../models/SystemMetaDataOwnerEncrypted.model'
+import { Delegation as DelegationDto } from '@icure/api/icc-api/model/Delegation'
+import { Delegation } from '../models/Delegation.model'
+import { ICURE_INTERNAL_FHIR_TAG_ID } from '../utils/domain'
+import { mapCodeStubToCodingReference } from './CodingReference.mapper'
+import { CodingReference } from '../models/CodingReference.model'
 
 function toMapOfSetOfDelegations(delegations: { [p: string]: DelegationDto[] }): Map<string, Set<DelegationDto>> {
     return new Map(Object.entries(delegations).map(([k, v]) => [k, new Set(v.map(mapDelegationDtoToDelegation))]))
 }
 
 function extractInternalTags(dto: HealthElement | Service | MaintenanceTask | HealthcareParty | Patient | Device): Set<CodingReference> | undefined {
-    return !!dto.tags ? new Set(dto.tags.filter(t => t.id === ICURE_DOMAIN_TYPE_ID).map(mapCodeStubToCodingReference)) : undefined
+    return !!dto.tags ? new Set(dto.tags.filter((t) => t.id === ICURE_INTERNAL_FHIR_TAG_ID).map(mapCodeStubToCodingReference)) : undefined
 }
 
 export function toSystemMetaDataEncrypted(dto: HealthElement | Service | MaintenanceTask): SystemMetaDataEncrypted | undefined {
@@ -76,32 +76,38 @@ export function toSystemMetaDataOwnerEncrypted(dto: Patient): SystemMetaDataOwne
     })
 }
 
-export function toHcPartyKeys(systemMetaData: SystemMetaDataOwnerEncrypted | SystemMetaDataOwner): {
-    [key: string]: string[]
-} | undefined {
+export function toHcPartyKeys(systemMetaData: SystemMetaDataOwnerEncrypted | SystemMetaDataOwner):
+    | {
+          [key: string]: string[]
+      }
+    | undefined {
     const hcPartyKeys = extractHcPartyKeys(systemMetaData)
     return !!hcPartyKeys ? Object.fromEntries(hcPartyKeys.entries()) : undefined
 }
 
 export function toAesExchangeKeys(systemMetaData: SystemMetaDataOwnerEncrypted | SystemMetaDataOwner):
     | {
-    [key: string]: { [key: string]: { [key: string]: string } }
-}
+          [key: string]: { [key: string]: { [key: string]: string } }
+      }
     | undefined {
     const aesExchangeKeys = extractAesExchangeKeys(systemMetaData)
     return !!aesExchangeKeys ? convertDeepNestedMapToObject(aesExchangeKeys) : undefined
 }
 
-export function toTransferKeys(systemMetaData: SystemMetaDataOwnerEncrypted | SystemMetaDataOwner): {
-    [key: string]: { [key: string]: string }
-} | undefined {
+export function toTransferKeys(systemMetaData: SystemMetaDataOwnerEncrypted | SystemMetaDataOwner):
+    | {
+          [key: string]: { [key: string]: string }
+      }
+    | undefined {
     const transferKeys = extractTransferKeys(systemMetaData)
     return !!transferKeys ? convertNestedMapToObject(transferKeys) : undefined
 }
 
-export function toPrivateKeyShamirPartitions(systemMetaData: SystemMetaDataOwnerEncrypted | SystemMetaDataOwner): {
-    [key: string]: string
-} | undefined {
+export function toPrivateKeyShamirPartitions(systemMetaData: SystemMetaDataOwnerEncrypted | SystemMetaDataOwner):
+    | {
+          [key: string]: string
+      }
+    | undefined {
     const privateKeyShamirPartitions = extractPrivateKeyShamirPartitions(systemMetaData)
     return !!privateKeyShamirPartitions ? convertMapToObject(privateKeyShamirPartitions) : undefined
 }
@@ -118,30 +124,38 @@ export function toSecretForeignKeys(systemMetaData: SystemMetaDataOwnerEncrypted
     return extractSecretForeignKeys(systemMetaData)
 }
 
-export function toCryptedForeignKeys(systemMetaData: SystemMetaDataOwnerEncrypted | SystemMetaDataEncrypted): {
-    [key: string]: DelegationDto[]
-} | undefined {
+export function toCryptedForeignKeys(systemMetaData: SystemMetaDataOwnerEncrypted | SystemMetaDataEncrypted):
+    | {
+          [key: string]: DelegationDto[]
+      }
+    | undefined {
     const delegations = extractCryptedForeignKeys(systemMetaData)
     return !!delegations ? toObjectOfArrayOfDelegations(delegations) : undefined
 }
 
-export function toDelegations(systemMetaData: SystemMetaDataOwnerEncrypted | SystemMetaDataEncrypted): {
-    [key: string]: DelegationDto[]
-} | undefined {
+export function toDelegations(systemMetaData: SystemMetaDataOwnerEncrypted | SystemMetaDataEncrypted):
+    | {
+          [key: string]: DelegationDto[]
+      }
+    | undefined {
     const delegations = extractDelegations(systemMetaData)
     return !!delegations ? toObjectOfArrayOfDelegations(delegations) : undefined
 }
 
-export function toEncryptionKeys(systemMetaData: SystemMetaDataOwnerEncrypted | SystemMetaDataEncrypted): {
-    [key: string]: DelegationDto[]
-} | undefined {
+export function toEncryptionKeys(systemMetaData: SystemMetaDataOwnerEncrypted | SystemMetaDataEncrypted):
+    | {
+          [key: string]: DelegationDto[]
+      }
+    | undefined {
     const delegations = extractEncryptionKeys(systemMetaData)
     return !!delegations ? toObjectOfArrayOfDelegations(delegations) : undefined
 }
 
-function toObjectOfArrayOfDelegations(delegations: Map<string, Set<Delegation>>): {
-    [key: string]: DelegationDto[]
-} | undefined {
+function toObjectOfArrayOfDelegations(delegations: Map<string, Set<Delegation>>):
+    | {
+          [key: string]: DelegationDto[]
+      }
+    | undefined {
     return Object.fromEntries(Array.from(delegations.entries()).map(([k, v]) => [k, Array.from(v).map(mapDelegationToDelegationDto)]))
 }
 

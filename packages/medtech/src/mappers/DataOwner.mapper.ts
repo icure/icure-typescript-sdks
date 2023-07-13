@@ -1,4 +1,4 @@
-import { Mapper } from '@icure/typescript-common/dist/apis/Mapper'
+import { Mapper } from '@icure/typescript-common'
 import { DataOwnerWithType } from '@icure/typescript-common'
 import { DataOwnerTypeEnum as DataOwnerTypeEnumDto } from '@icure/api/icc-api/model/DataOwnerTypeEnum'
 import { DataOwnerTypeEnum } from '../models/DataOwner.model'

@@ -20,7 +20,7 @@ import {
   mapHealthcareProfessionalToHealthcareParty
 } from '../mappers/HealthcareProfessional.mapper'
 import {HealthcareProfessional} from '../models/HealthcareProfessional.model'
-import {MessageFactory} from '@icure/typescript-common/dist/services/MessageFactory'
+import {MessageFactory} from '@icure/typescript-common'
 
 export interface UserApi extends UserLikeApi<User, Patient> {
   /**

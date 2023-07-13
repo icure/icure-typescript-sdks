@@ -5,24 +5,27 @@ import {
     CodingReference,
     convertMapToObject,
     convertObjectToMap,
-    dataOwnerDomainTypeTag,
-    extractDomainTypeTag, filteringOutInternalTags,
-    ICURE_DOMAIN_TYPE_ID,
+    filteringOutInternalTags,
     Identifier,
     mapCodeStubToCodingReference,
     mapCodingReferenceToCodeStub,
     mapIdentifierDtoToIdentifier,
     mapIdentifierToIdentifierDto,
     mapPropertyStubToProperty,
-    mapPropertyToPropertyStub, mergeTagsWithInternalTags,
+    mapPropertyToPropertyStub,
+    mergeTagsWithInternalTags,
     Property,
     SystemMetaDataOwner,
-    systemMetaDataTags,
+    toAesExchangeKeys,
+    toHcPartyKeys,
+    toPrivateKeyShamirPartitions,
+    toPublicKey,
+    toPublicKeysForOaepWithSha256,
+    toSystemMetaDataOwner,
+    toTransferKeys,
 } from '@icure/typescript-common'
 import { mapAddressToLocation, mapLocationToAddress } from './Location.mapper'
 import { healthcareProfessionalIdentifiers } from './utils/HealthProfessional.utils'
-import { toAesExchangeKeys, toHcPartyKeys, toPrivateKeyShamirPartitions, toPublicKey, toPublicKeysForOaepWithSha256, toSystemMetaDataOwner, toTransferKeys } from '@icure/typescript-common/dist/mappers/SystemMetaData.mapper'
-import { addUniqueObjectsToArray } from '../utils/Array.utils'
 
 function toHealthcarePartyId(domain: Organisation): string | undefined {
     return domain.id

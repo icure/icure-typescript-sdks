@@ -1,4 +1,4 @@
-import {Patient} from '../models/Patient.model'
+import { Patient } from '../models/Patient.model'
 import {
     Address,
     Annotation as AnnotationDto,
@@ -15,12 +15,11 @@ import {
     PropertyStub,
     SchoolingInfo,
 } from '@icure/api'
-import {HumanName} from '../models/HumanName.model'
-import {Location} from '../models/Location.model'
+import { HumanName } from '../models/HumanName.model'
+import { Location } from '../models/Location.model'
 import {
     Annotation,
     CodingReference,
-    filteringOutInternalTags,
     Identifier,
     mapAnnotationDtoToAnnotation,
     mapAnnotationToAnnotationDto,
@@ -30,7 +29,6 @@ import {
     mapIdentifierToIdentifierDto,
     mapPropertyStubToProperty,
     mapPropertyToPropertyStub,
-    mergeTagsWithInternalTags,
     Property,
     SystemMetaDataOwnerEncrypted,
     toAesExchangeKeys,
@@ -46,19 +44,16 @@ import {
     toSystemMetaDataOwnerEncrypted,
     toTransferKeys,
 } from '@icure/typescript-common'
-import {RelatedPerson} from '../models/RelatedPerson.model'
-import {RelatedPractitioner} from '../models/RelatedPractitioner.model'
-import {Delegation as DelegationDto} from '@icure/api/icc-api/model/Delegation'
-import {mapHumanNameToPersonName, mapPersonNameToHumanName} from './HumanName.mapper'
-import {mapPartnershipToRelatedPerson, mapRelatedPersonToPartnership} from './RelatedPerson.mapper'
-import {
-    mapPatientHealthCarePartyToRelatedPractitioner,
-    mapRelatedPractitionerToPatientHealthCareParty
-} from './RelatedPractitioner.mapper'
-import {mapAddressToLocation, mapLocationToAddress} from './Location.mapper'
-import {GenderEnum} from '../models/enums/Gender.enum'
-import {PatientDeactivationReasonEnum} from '../models/enums/PatientDeactivationReason.enum'
-import {PatientPersonalStatusEnum} from '../models/enums/PatientPersonalStatus.enum'
+import { RelatedPerson } from '../models/RelatedPerson.model'
+import { RelatedPractitioner } from '../models/RelatedPractitioner.model'
+import { Delegation as DelegationDto } from '@icure/api/icc-api/model/Delegation'
+import { mapHumanNameToPersonName, mapPersonNameToHumanName } from './HumanName.mapper'
+import { mapPartnershipToRelatedPerson, mapRelatedPersonToPartnership } from './RelatedPerson.mapper'
+import { mapPatientHealthCarePartyToRelatedPractitioner, mapRelatedPractitionerToPatientHealthCareParty } from './RelatedPractitioner.mapper'
+import { mapAddressToLocation, mapLocationToAddress } from './Location.mapper'
+import { GenderEnum } from '../models/enums/Gender.enum'
+import { PatientDeactivationReasonEnum } from '../models/enums/PatientDeactivationReason.enum'
+import { PatientPersonalStatusEnum } from '../models/enums/PatientPersonalStatus.enum'
 
 function toPatientDtoId(domain: Patient): string | undefined {
     return domain.id
@@ -89,7 +84,7 @@ function toPatientDtoResponsible(domain: Patient): string | undefined {
 }
 
 function toPatientDtoTags(domain: Patient): CodeStub[] | undefined {
-    return mergeTagsWithInternalTags('Patient', domain.tags, domain.systemMetaData)
+    return !!domain.tags ? [...domain.tags].map(mapCodingReferenceToCodeStub) : undefined
 }
 
 function toPatientDtoCodes(domain: Patient): CodeStub[] | undefined {
@@ -290,8 +285,8 @@ function toPatientDtoHcPartyKeys(domain: Patient): { [key: string]: string[] } |
 
 function toPatientDtoAesExchangeKeys(domain: Patient):
     | {
-    [key: string]: { [key: string]: { [key: string]: string } }
-}
+          [key: string]: { [key: string]: { [key: string]: string } }
+      }
     | undefined {
     return !!domain.systemMetaData ? toAesExchangeKeys(domain.systemMetaData) : undefined
 }
@@ -409,11 +404,11 @@ function toPatientResponsible(dto: PatientDto): string | undefined {
 }
 
 function toPatientTags(dto: PatientDto): Set<CodingReference> | undefined {
-    return filteringOutInternalTags('Patient', dto.tags)
+    return !!dto.tags?.length ? new Set(dto.tags.map(mapCodeStubToCodingReference)) : undefined
 }
 
 function toPatientCodes(dto: PatientDto): Set<CodingReference> | undefined {
-    return !!dto.codes ? new Set(dto.codes.map(mapCodeStubToCodingReference)) : undefined
+    return !!dto.codes?.length ? new Set(dto.codes.map(mapCodeStubToCodingReference)) : undefined
 }
 
 function toPatientEndOfLife(dto: PatientDto): number | undefined {

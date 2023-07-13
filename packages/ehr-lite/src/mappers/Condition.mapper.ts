@@ -3,26 +3,29 @@ import { Condition } from '../models/Condition.model'
 import {
     Annotation,
     CodingReference,
-    dataOwnerDomainTypeTag,
-    extractDomainTypeTag, filteringOutInternalTags,
-    ICURE_DOMAIN_TYPE_ID,
+    filteringOutInternalTags,
     Identifier,
     mapAnnotationDtoToAnnotation,
     mapAnnotationToAnnotationDto,
     mapCodeStubToCodingReference,
     mapCodingReferenceToCodeStub,
     mapIdentifierDtoToIdentifier,
-    mapIdentifierToIdentifierDto, mergeTagsWithInternalTags,
+    mapIdentifierToIdentifierDto,
+    mergeTagsWithInternalTags,
     SystemMetaDataEncrypted,
-    systemMetaDataTags,
+    toCryptedForeignKeys,
+    toDelegations,
+    toEncryptedSelf,
+    toEncryptionKeys,
+    toSecretForeignKeys,
+    toSystemMetaDataEncrypted,
 } from '@icure/typescript-common'
 import { Annotation as AnnotationDto } from '@icure/api/icc-api/model/Annotation'
 import { ClinicalStatusEnum } from '../models/enums/ClinicalStatus.enum'
 import { VerificationStatusEnum } from '../models/enums/VerificationStatus.enum'
 import { CategoryEnum } from '../models/enums/Category.enum'
 import { SeverityEnum } from '../models/enums/Severity.enum'
-import { toCryptedForeignKeys, toDelegations, toEncryptedSelf, toEncryptionKeys, toSecretForeignKeys, toSystemMetaDataEncrypted } from '@icure/typescript-common/dist/mappers/SystemMetaData.mapper'
-import { addUniqueObjectsToArray } from '../utils/Array.utils'
+import { addUniqueObjectsToArray } from '../../../common/src/utils/Array.utils'
 
 function toHealthElementId(domain: Condition): string | undefined {
     return domain.id
@@ -57,7 +60,6 @@ function toHealthElementMedicalLocationId(domain: Condition): string | undefined
 }
 
 function toHealthElementTags(domain: Condition): CodeStub[] | undefined {
-
     const mappedTags = mergeTagsWithInternalTags('Condition', domain.tags, domain.systemMetaData)
 
     const bodySite = [...(domain.bodySite ?? [])]

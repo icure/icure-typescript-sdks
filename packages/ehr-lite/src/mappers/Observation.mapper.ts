@@ -7,15 +7,17 @@ import {
     convertObjectToNestedMap,
     dataOwnerDomainTypeTag,
     extractDomainTypeTag,
-    extractEncryptedSelf, filteringOutInternalTags,
-    ICURE_DOMAIN_TYPE_ID,
+    extractEncryptedSelf,
+    filteringOutInternalTags,
+    ICURE_INTERNAL_FHIR_TAG_ID,
     Identifier,
     mapAnnotationDtoToAnnotation,
     mapAnnotationToAnnotationDto,
     mapCodeStubToCodingReference,
     mapCodingReferenceToCodeStub,
     mapIdentifierDtoToIdentifier,
-    mapIdentifierToIdentifierDto, mergeTagsWithInternalTags,
+    mapIdentifierToIdentifierDto,
+    mergeTagsWithInternalTags,
     SystemMetaDataEncrypted,
     systemMetaDataTags,
 } from '@icure/typescript-common'
@@ -23,8 +25,8 @@ import { Component } from '../models/Component.model'
 import { LocalComponent } from '../models/LocalComponent.model'
 import { mapContentToLocalComponent, mapLocalComponentToContent } from './LocalComponent.mapper'
 import { mapComponentToContent, mapContentToComponent } from './Component.mapper'
-import { toCryptedForeignKeys, toDelegations, toEncryptionKeys, toSecretForeignKeys, toSystemMetaDataEncrypted } from '@icure/typescript-common/dist/mappers/SystemMetaData.mapper'
-import { addUniqueObjectsToArray } from '../utils/Array.utils'
+import { toCryptedForeignKeys, toDelegations, toEncryptionKeys, toSecretForeignKeys, toSystemMetaDataEncrypted } from '@icure/typescript-common'
+import { addUniqueObjectsToArray } from '../../../common/src/utils/Array.utils'
 
 function toServiceId(domain: Observation): string | undefined {
     return domain.id

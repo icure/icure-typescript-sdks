@@ -1,4 +1,4 @@
-import {deepEqual} from "./Object.utils";
+import {deepEqual} from "../../../common/src/utils/Object.utils";
 
 export function addUniqueObjectToSet<T>(set: Set<T>, obj: T): Set<T> {
     for (const item of set) {
