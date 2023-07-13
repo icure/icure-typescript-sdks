@@ -21,10 +21,6 @@ function toCodeStubVersion(domain: CodingReference): string | undefined {
     return domain.version
 }
 
-function toCodeStubLabel(domain: CodingReference): { [key: string]: string } | undefined {
-    return domain.label ? Object.fromEntries(domain.label.entries()) : undefined
-}
-
 function toCodingReferenceId(dto: CodeStub): string | undefined {
     return `${dto.type ?? null}|${dto.code ?? null}|${dto.version ?? null}`
 }
@@ -41,17 +37,12 @@ function toCodingReferenceVersion(dto: CodeStub): string | undefined {
     return dto.version
 }
 
-function toCodingReferenceLabel(dto: CodeStub): Map<ISO639_1, string> | undefined {
-    return !!dto.label ? (new Map(Object.entries(dto.label)) as Map<ISO639_1, string>) : undefined
-}
-
 export function mapCodeStubToCodingReference(dto: CodeStub): CodingReference {
     return new CodingReference({
         id: toCodingReferenceId(dto),
         type: toCodingReferenceType(dto),
         code: toCodingReferenceCode(dto),
         version: toCodingReferenceVersion(dto),
-        label: toCodingReferenceLabel(dto),
     })
 }
 
@@ -62,6 +53,5 @@ export function mapCodingReferenceToCodeStub(domain: CodingReference): CodeStub 
         type: toCodeStubType(domain),
         code: toCodeStubCode(domain),
         version: toCodeStubVersion(domain),
-        label: toCodeStubLabel(domain),
     })
 }

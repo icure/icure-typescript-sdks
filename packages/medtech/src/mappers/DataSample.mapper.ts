@@ -41,7 +41,7 @@ function toServiceIdentifier(domain: DataSample): IdentifierDto[] | undefined {
 }
 
 function toServiceContactId(domain: DataSample): string | undefined {
-  return undefined
+  return domain.batchId
 }
 
 function toServiceSubContactIds(domain: DataSample): string[] | undefined {

@@ -1,15 +1,20 @@
-import { Observation } from '../models/Observation.model'
-import { Annotation as AnnotationDto, CodeStub, Content, Delegation as DelegationDto, Identifier as IdentifierDto, ISO639_1, Service } from '@icure/api'
+import {Observation} from '../models/Observation.model'
+import {
+    Annotation as AnnotationDto,
+    CodeStub,
+    Content,
+    Delegation as DelegationDto,
+    Identifier as IdentifierDto,
+    ISO639_1,
+    Service
+} from '@icure/api'
 import {
     Annotation,
     CodingReference,
     convertNestedMapToObject,
     convertObjectToNestedMap,
-    dataOwnerDomainTypeTag,
-    extractDomainTypeTag,
     extractEncryptedSelf,
     filteringOutInternalTags,
-    ICURE_INTERNAL_FHIR_TAG_ID,
     Identifier,
     mapAnnotationDtoToAnnotation,
     mapAnnotationToAnnotationDto,
@@ -19,14 +24,16 @@ import {
     mapIdentifierToIdentifierDto,
     mergeTagsWithInternalTags,
     SystemMetaDataEncrypted,
-    systemMetaDataTags,
+    toCryptedForeignKeys,
+    toDelegations,
+    toEncryptionKeys,
+    toSecretForeignKeys,
+    toSystemMetaDataEncrypted,
 } from '@icure/typescript-common'
-import { Component } from '../models/Component.model'
-import { LocalComponent } from '../models/LocalComponent.model'
-import { mapContentToLocalComponent, mapLocalComponentToContent } from './LocalComponent.mapper'
-import { mapComponentToContent, mapContentToComponent } from './Component.mapper'
-import { toCryptedForeignKeys, toDelegations, toEncryptionKeys, toSecretForeignKeys, toSystemMetaDataEncrypted } from '@icure/typescript-common'
-import { addUniqueObjectsToArray } from '../../../common/src/utils/Array.utils'
+import {Component} from '../models/Component.model'
+import {LocalComponent} from '../models/LocalComponent.model'
+import {mapContentToLocalComponent, mapLocalComponentToContent} from './LocalComponent.mapper'
+import {mapComponentToContent, mapContentToComponent} from './Component.mapper'
 
 function toServiceId(domain: Observation): string | undefined {
     return domain.id

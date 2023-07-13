@@ -112,7 +112,7 @@ export interface ServiceLikeApi<DSService, DSPatient, DSDocument> {
      * @param id
      * @param documentId
      */
-    getAttachmentDocument(id: string, documentId: string): Promise<Document>
+    getAttachmentDocument(id: string, documentId: string): Promise<DSDocument>
 
     /**
      * Deletes an attachment, using its corresponding documentId
@@ -139,5 +139,5 @@ export interface ServiceLikeApi<DSService, DSPatient, DSDocument> {
       documentVersion?: string,
       documentExternalUuid?: string,
       documentLanguage?: string
-    ): Promise<Document>
+    ): Promise<DSDocument>
 }

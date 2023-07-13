@@ -233,7 +233,7 @@ describe('Data Samples API', () => {
     await expect(hcpApi.dataSampleApi.getDataSample(createdDataSample.id!)).to.be.rejected
     // Patient shares data sample and gets it updated and decrypted
     const sharedDataSample = await patApi.dataSampleApi.giveAccessTo(createdDataSample, currentHcp.id!)
-    expect(Object.keys(sharedDataSample.content!)).to.have.length.greaterThan(0)
+    expect(Array.from(sharedDataSample.content.keys())).to.have.members(['en'])
     // Hcp can now get data sample and decrypt it
     const hcpDataSample = await hcpApi.dataSampleApi.getDataSample(sharedDataSample.id!)
     expect(hcpDataSample).to.deep.equal(sharedDataSample)
@@ -255,7 +255,7 @@ describe('Data Samples API', () => {
     await expect(patApi.dataSampleApi.getDataSample(createdDataSample.id!)).to.be.rejected
     // Hcp shares data sample and gets it updated and decrypted
     const sharedDataSample = await hcpApi.dataSampleApi.giveAccessTo(createdDataSample, updatedPatient.id!)
-    expect(Object.keys(sharedDataSample.content!)).to.have.length.greaterThan(0)
+    expect(Array.from(sharedDataSample.content.keys())).to.have.members(['en'])
     // Patient can now get data sample and decrypt it
     await patApi.forceReload()
     const patDataSample = await patApi.dataSampleApi.getDataSample(sharedDataSample.id!)
@@ -279,7 +279,7 @@ describe('Data Samples API', () => {
     await expect(hcp2Api.dataSampleApi.getDataSample(createdDataSample.id!)).to.be.rejected
     // Patient shares data sample and gets it updated and decrypted
     const sharedDataSample = await hcp1Api.dataSampleApi.giveAccessTo(createdDataSample, currentHcp2.id!)
-    expect(Object.keys(sharedDataSample.content!)).to.have.length.greaterThan(0)
+    expect(Array.from(sharedDataSample.content.keys())).to.have.members(['en'])
     // Hcp can now get data sample and decrypt it
     const hcpDataSample = await hcp2Api.dataSampleApi.getDataSample(sharedDataSample.id!)
     expect(hcpDataSample).to.deep.equal(sharedDataSample)

@@ -103,7 +103,7 @@ function toDocumentDtoObjectStoreReference(domain: Document): string | undefined
 }
 
 function toDocumentDtoMainUti(domain: Document): string | undefined {
-    return undefined
+    return domain.mainUti
 }
 
 function toDocumentDtoOtherUtis(domain: Document): string[] | undefined {

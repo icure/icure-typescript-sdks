@@ -4,6 +4,7 @@ import { IntersectionFilter } from '../IntersectionFilter'
 import { ServiceByHealthcarePartyFilter } from '../service/ServiceByHealthcarePartyFilter'
 import { Identifier, Patient, Service } from '@icure/api'
 import { CommonApi } from '../../apis/CommonApi'
+import { ServiceByHealthcarePartyHealthElementIdsFilter } from '../service/ServiceByHealthcarePartyHealthcareElementIdsFilter'
 
 interface BaseServiceFilterBuilder<F> {
     /**
@@ -129,11 +130,11 @@ class ServiceFilterWithDataOwner extends SortableFilterBuilder<Service, ServiceF
         const filter = this._dataOwnerId.then((id) => {
             return {
                 healthcarePartyId: id,
-                healthcareElementIds: byHealthElementIds,
+                healthElementIds: byHealthElementIds,
                 $type: 'ServiceByHealthcarePartyHealthElementIdsFilter',
-            }
+            } satisfies ServiceByHealthcarePartyHealthElementIdsFilter
         })
-        this._builderAccumulator.addByIdsFilter(filter, 'healthcareElementIds')
+        this._builderAccumulator.addByIdsFilter(filter, 'healthElementIds')
         return this
     }
 
