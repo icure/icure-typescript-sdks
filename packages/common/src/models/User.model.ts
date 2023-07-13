@@ -19,6 +19,10 @@ import { Property } from "./Property.model";
 export class User {
   constructor(json: IUser) {
     Object.assign(this as User, json);
+    this.properties = json.properties ?? new Set()
+    this.roles = json.roles ?? new Set()
+    this.sharingDataWith = json.sharingDataWith ?? new Map()
+    this.authenticationTokens = json.authenticationTokens ?? new Map()
   }
 
   /**

@@ -30,9 +30,10 @@ import {
 } from '@icure/typescript-common'
 import { mapPersonNameDtoToPersonName, mapPersonNameToPersonNameDto } from './PersonName.mapper'
 import { mapAddressDtoToAddress, mapAddressToAddressDto } from './Address.mapper'
+import {forceUuid} from "./utils";
 
 function toHealthcarePartyId(domain: HealthcareProfessional): string | undefined {
-  return domain.id
+  return forceUuid(domain.id)
 }
 
 function toHealthcarePartyRev(domain: HealthcareProfessional): string | undefined {
