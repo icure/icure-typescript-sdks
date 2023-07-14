@@ -18,18 +18,18 @@ export class Location {
     telecoms: ContactPoint[]
     encryptedSelf?: string
 
-    constructor(location?: ILocation | any) {
-        this.addressType = location?.addressType
-        this.description = location?.description
-        this.street = location?.street
-        this.houseNumber = location?.houseNumber
-        this.postboxNumber = location?.postboxNumber
-        this.postalCode = location?.postalCode
-        this.city = location?.city
-        this.state = location?.state
-        this.country = location?.country
-        this.notes = location?.notes
-        this.telecoms = location?.telecoms
+    constructor(location: ILocation) {
+        this.addressType = location.addressType
+        this.description = location.description
+        this.street = location.street
+        this.houseNumber = location.houseNumber
+        this.postboxNumber = location.postboxNumber
+        this.postalCode = location.postalCode
+        this.city = location.city
+        this.state = location.state
+        this.country = location.country
+        this.notes = location.notes
+        this.telecoms = location.telecoms ?? []
     }
 
     static toJSON(instance: Location): any {
@@ -79,4 +79,5 @@ interface ILocation {
     country?: string
     notes?: Annotation[]
     telecoms?: ContactPoint[]
+    encryptedSelf?: string
 }
