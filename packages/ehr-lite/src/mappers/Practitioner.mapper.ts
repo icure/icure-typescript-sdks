@@ -1,5 +1,16 @@
 import { Practitioner } from '../models/Practitioner.model'
-import { Address, CodeStub, FinancialInstitutionInformation, FlatRateTarification, HealthcareParty, HealthcarePartyHistoryStatus, Identifier as IdentifierDto, PersonName, PropertyStub } from '@icure/api'
+import {
+    Address,
+    CodeStub,
+    FinancialInstitutionInformation,
+    FlatRateTarification,
+    HealthcareParty,
+    HealthcarePartyHistoryStatus,
+    Identifier as IdentifierDto,
+    ISO639_1,
+    PersonName,
+    PropertyStub
+} from '@icure/api'
 import { HumanName } from '../models/HumanName.model'
 import { Location } from '../models/Location.model'
 import {
@@ -167,7 +178,7 @@ function toHealthcarePartyStatusHistory(domain: Practitioner): HealthcarePartyHi
 }
 
 function toHealthcarePartySpecialityCodes(domain: Practitioner): CodeStub[] | undefined {
-    return !!domain.specialityCodes ? domain.specialityCodes.map(mapCodingReferenceToCodeStub) : undefined
+    return !!domain.specialityCodes ? [...domain.specialityCodes].map(mapCodingReferenceToCodeStub) : undefined
 }
 
 function toHealthcarePartySendFormats(domain: Practitioner): { [key: string]: string } | undefined {
@@ -219,7 +230,7 @@ function toHealthcarePartyOptions(domain: Practitioner): { [key: string]: string
 }
 
 function toHealthcarePartyProperties(domain: Practitioner): PropertyStub[] | undefined {
-    return !!domain.properties ? domain.properties.map(mapPropertyToPropertyStub) : undefined
+    return !!domain.properties ? [...domain.properties].map(mapPropertyToPropertyStub) : undefined
 }
 
 function toHealthcarePartyHcPartyKeys(domain: Practitioner): { [key: string]: string[] } | undefined {
@@ -338,16 +349,16 @@ function toPractitionerPicture(dto: HealthcareParty): ArrayBuffer | undefined {
     return dto.picture
 }
 
-function toPractitionerSpecialityCodes(dto: HealthcareParty): CodingReference[] | undefined {
-    return !!dto.specialityCodes ? dto.specialityCodes.map(mapCodeStubToCodingReference) : undefined
+function toPractitionerSpecialityCodes(dto: HealthcareParty): Set<CodingReference> | undefined {
+    return !!dto.specialityCodes ? new Set(dto.specialityCodes.map(mapCodeStubToCodingReference)) : undefined
 }
 
-function toPractitionerDescription(dto: HealthcareParty): Map<string, string> | undefined {
-    return !!dto.descr ? convertObjectToMap(dto.descr) : undefined
+function toPractitionerDescription(dto: HealthcareParty): Map<ISO639_1, string> | undefined {
+    return !!dto.descr ? convertObjectToMap(dto.descr) as Map<ISO639_1, string> : undefined
 }
 
-function toPractitionerProperties(dto: HealthcareParty): Property[] | undefined {
-    return !!dto.properties ? dto.properties.map(mapPropertyStubToProperty) : undefined
+function toPractitionerProperties(dto: HealthcareParty): Set<Property> | undefined {
+    return !!dto.properties ? new Set(dto.properties.map(mapPropertyStubToProperty)) : undefined
 }
 
 function toPractitionerSystemMetaData(dto: HealthcareParty): SystemMetaDataOwner | undefined {
