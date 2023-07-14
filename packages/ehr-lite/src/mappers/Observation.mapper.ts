@@ -1,13 +1,5 @@
-import {Observation} from '../models/Observation.model'
-import {
-    Annotation as AnnotationDto,
-    CodeStub,
-    Content,
-    Delegation as DelegationDto,
-    Identifier as IdentifierDto,
-    ISO639_1,
-    Service
-} from '@icure/api'
+import { Observation } from '../models/Observation.model'
+import { Annotation as AnnotationDto, CodeStub, Content, Delegation as DelegationDto, Identifier as IdentifierDto, ISO639_1, Service } from '@icure/api'
 import {
     Annotation,
     CodingReference,
@@ -30,10 +22,10 @@ import {
     toSecretForeignKeys,
     toSystemMetaDataEncrypted,
 } from '@icure/typescript-common'
-import {Component} from '../models/Component.model'
-import {LocalComponent} from '../models/LocalComponent.model'
-import {mapContentToLocalComponent, mapLocalComponentToContent} from './LocalComponent.mapper'
-import {mapComponentToContent, mapContentToComponent} from './Component.mapper'
+import { Component } from '../models/Component.model'
+import { LocalComponent } from '../models/LocalComponent.model'
+import { mapContentToLocalComponent, mapLocalComponentToContent } from './LocalComponent.mapper'
+import { mapComponentToContent, mapContentToComponent } from './Component.mapper'
 
 function toServiceId(domain: Observation): string | undefined {
     return domain.id
