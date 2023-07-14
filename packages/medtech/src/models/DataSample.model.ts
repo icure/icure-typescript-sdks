@@ -11,7 +11,7 @@
  */
 
 import { ISO639_1, Service } from '@icure/api'
-import { CodingReference, Identifier, SystemMetaDataEncrypted, mapTo } from '@icure/typescript-common'
+import { CodingReference, Identifier, SystemMetaDataEncrypted, forceUuid, mapTo } from '@icure/typescript-common'
 import { Content } from './Content.model'
 
 /**
@@ -19,14 +19,10 @@ import { Content } from './Content.model'
  */
 @mapTo(Service)
 export class DataSample {
-  constructor(json: IDataSample) {
-    Object.assign(this as DataSample, json as IDataSample)
-  }
-
   /**
    * The Id of the Data sample. We encourage using either a v4 UUID or a HL7 Id.
    */
-  'id'?: string
+  'id': string
   /**
    * The transactionId is used when a single data sample had to be split into parts for technical reasons. Several data samples with the same non null transaction id form one single data sample
    */
@@ -104,6 +100,30 @@ export class DataSample {
    */
   'labels': Set<CodingReference>
   'systemMetaData'?: SystemMetaDataEncrypted
+
+  constructor(json: IDataSample) {
+    this.id = forceUuid(json.id)
+    this.transactionId = json.transactionId
+    this.identifiers = json.identifiers ?? []
+    this.batchId = json.batchId
+    this.healthcareElementIds = json.healthcareElementIds
+    this.canvasesIds = json.canvasesIds
+    this.content = json.content ?? new Map()
+    this.valueDate = json.valueDate
+    this.openingDate = json.openingDate
+    this.closingDate = json.closingDate
+    this.index = json.index
+    this.created = json.created
+    this.modified = json.modified
+    this.author = json.author
+    this.responsible = json.responsible
+    this.comment = json.comment
+    this.qualifiedLinks = json.qualifiedLinks ?? new Map()
+    this.labels = json.labels ?? new Set()
+    this.systemMetaData = json.systemMetaData
+    this.codes = json.codes ?? new Set()
+    this.endOfLife = json.endOfLife
+  }
 
   static toJSON(instance: DataSample): any {
     const pojo: any = {}
