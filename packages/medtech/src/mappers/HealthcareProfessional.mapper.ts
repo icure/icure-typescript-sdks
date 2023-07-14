@@ -13,7 +13,7 @@ import {
 import { PersonName } from '../models/PersonName.model'
 import { Address } from '../models/Address.model'
 import {
-  CodingReference,
+  CodingReference, forceUuid,
   mapCodeStubToCodingReference,
   mapCodingReferenceToCodeStub,
   mapPropertyStubToProperty,
@@ -30,7 +30,6 @@ import {
 } from '@icure/typescript-common'
 import { mapPersonNameDtoToPersonName, mapPersonNameToPersonNameDto } from './PersonName.mapper'
 import { mapAddressDtoToAddress, mapAddressToAddressDto } from './Address.mapper'
-import {forceUuid} from "./utils";
 
 function toHealthcarePartyId(domain: HealthcareProfessional): string | undefined {
   return forceUuid(domain.id)
