@@ -19,7 +19,7 @@ export class Organisation {
     languages: string[]
     picture?: ArrayBuffer
     description: Map<ISO639_1, string>
-    properties: Property[]
+    properties: Set<Property>
     systemMetaData?: SystemMetaDataOwner
 
     constructor(organisation: IOrganisation) {
@@ -38,7 +38,7 @@ export class Organisation {
         this.languages = organisation.languages ?? []
         this.picture = organisation.picture
         this.description = organisation.description ?? new Map()
-        this.properties = organisation.properties ?? []
+        this.properties = organisation.properties ?? new Set()
         this.systemMetaData = organisation.systemMetaData
     }
 
@@ -59,7 +59,7 @@ export class Organisation {
         pojo['languages'] = instance.languages.map((item) => item)
         pojo['picture'] = !!instance.picture ? ua2b64(instance.picture) : undefined
         pojo['description'] = Object.fromEntries([...instance.description.entries()].map(([k, v]) => [k, v]))
-        pojo['properties'] = instance.properties.map((item) => Property.toJSON(item))
+        pojo['properties'] = Array.from([...instance.properties].map((item) => Property.toJSON(item)))
         pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataOwner.toJSON(instance.systemMetaData) : undefined
         return pojo
     }
@@ -81,7 +81,7 @@ export class Organisation {
             languages: pojo['languages'].map((item: any) => item),
             picture: !!pojo['picture'] ? b64_2ab(pojo['picture']) : undefined,
             description: new Map(Object.entries(pojo['description']).map(([k, v]: [any, any]) => [k, v])),
-            properties: pojo['properties'].map((item: any) => Property.fromJSON(item)),
+            properties: new Set(pojo['properties'].map((item: any) => Property.fromJSON(item))),
             systemMetaData: !!pojo['systemMetaData'] ? SystemMetaDataOwner.fromJSON(pojo['systemMetaData']) : undefined,
         })
     }
@@ -103,6 +103,6 @@ interface IOrganisation {
     languages?: string[]
     picture?: ArrayBuffer
     description?: Map<ISO639_1, string>
-    properties?: Property[]
+    properties?: Set<Property>
     systemMetaData?: SystemMetaDataOwner
 }

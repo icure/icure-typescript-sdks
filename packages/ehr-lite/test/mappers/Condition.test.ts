@@ -1,5 +1,5 @@
 import { mapConditionToHealthElement, mapHealthElementToCondition } from '../../src/mappers/mapper'
-import { Condition } from '../../src/models/Condition.model'
+import { Condition } from '../../src'
 import { generateCondition } from '../models/Condition.model'
 
 describe('Condition', function () {

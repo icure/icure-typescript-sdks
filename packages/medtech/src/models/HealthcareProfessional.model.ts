@@ -11,7 +11,7 @@
  */
 
 import { b64_2ab, HealthcareParty, ua2b64 } from '@icure/api'
-import {CodingReference, forceUuid, mapTo, Property, SystemMetaDataOwner} from '@icure/typescript-common'
+import { CodingReference, forceUuid, mapTo, Property, SystemMetaDataOwner } from '@icure/typescript-common'
 import { Address } from './Address.model'
 import { PersonName } from './PersonName.model'
 
@@ -147,7 +147,7 @@ export class HealthcareProfessional {
     pojo['addresses'] = instance.addresses.map((item) => Address.toJSON(item))
     pojo['languages'] = instance.languages.map((item) => item)
     pojo['picture'] = !!instance.picture ? ua2b64(instance.picture) : undefined
-    pojo['specialityCodes'] = Array.from([...(instance.specialityCodes ?? [])]?.map((item) => CodingReference.toJSON(item)) ?? [])
+    pojo['specialityCodes'] = Array.from([...instance.specialityCodes].map((item) => CodingReference.toJSON(item)))
     pojo['notes'] = instance.notes
     pojo['properties'] = Array.from([...instance.properties].map((item) => Property.toJSON(item)))
     pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataOwner.toJSON(instance.systemMetaData) : undefined
@@ -174,7 +174,7 @@ export class HealthcareProfessional {
       addresses: pojo['addresses'].map((item: any) => Address.fromJSON(item)),
       languages: pojo['languages'].map((item: any) => item),
       picture: !!pojo['picture'] ? b64_2ab(pojo['picture']) : undefined,
-      specialityCodes: new Set(pojo['specialityCodes']?.map((item: any) => CodingReference.fromJSON(item)) ?? []),
+      specialityCodes: new Set(pojo['specialityCodes'].map((item: any) => CodingReference.fromJSON(item))),
       notes: pojo['notes'],
       properties: new Set(pojo['properties'].map((item: any) => Property.fromJSON(item))),
       systemMetaData: !!pojo['systemMetaData'] ? SystemMetaDataOwner.fromJSON(pojo['systemMetaData']) : undefined,

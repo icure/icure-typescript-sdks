@@ -18,7 +18,8 @@ import {
 } from '@icure/api'
 import {
   Annotation,
-  CodingReference, forceUuid,
+  CodingReference,
+  forceUuid,
   Identifier,
   mapAnnotationDtoToAnnotation,
   mapAnnotationToAnnotationDto,

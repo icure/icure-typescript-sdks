@@ -13,7 +13,8 @@ import {
 import { PersonName } from '../models/PersonName.model'
 import { Address } from '../models/Address.model'
 import {
-  CodingReference, forceUuid,
+  CodingReference,
+  forceUuid,
   mapCodeStubToCodingReference,
   mapCodingReferenceToCodeStub,
   mapPropertyStubToProperty,

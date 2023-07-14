@@ -216,7 +216,7 @@ function toHealthcarePartyOptions(domain: Organisation): { [key: string]: string
 }
 
 function toHealthcarePartyProperties(domain: Organisation): PropertyStub[] | undefined {
-    return !!domain.properties ? domain.properties.map(mapPropertyToPropertyStub) : undefined
+    return !!domain.properties ? [...domain.properties].map(mapPropertyToPropertyStub) : undefined
 }
 
 function toHealthcarePartyHcPartyKeys(domain: Organisation): { [key: string]: string[] } | undefined {
@@ -315,8 +315,8 @@ function toOrganisationDescription(dto: HealthcareParty): Map<ISO639_1, string> 
     return !!dto.descr ? (convertObjectToMap(dto.descr) as Map<ISO639_1, string>) : undefined
 }
 
-function toOrganisationProperties(dto: HealthcareParty): Property[] | undefined {
-    return !!dto.properties ? dto.properties.map(mapPropertyStubToProperty) : undefined
+function toOrganisationProperties(dto: HealthcareParty): Set<Property> | undefined {
+    return !!dto.properties ? new Set(dto.properties.map(mapPropertyStubToProperty)) : undefined
 }
 
 function toOrganisationSystemMetaData(dto: HealthcareParty): SystemMetaDataOwner | undefined {

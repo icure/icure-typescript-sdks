@@ -91,7 +91,7 @@ export class Patient {
       patientProfessions,
       properties,
       systemMetaData,
-        notes,
+      notes,
       ...simpleProperties
     } = json
 
@@ -169,7 +169,7 @@ export class Patient {
     pojo['education'] = instance.education
     pojo['profession'] = instance.profession
     pojo['note'] = instance.note
-    pojo['notes'] = instance.notes?.map((item) => Annotation.toJSON(item))
+    pojo['notes'] = instance.notes.map((item) => Annotation.toJSON(item))
     pojo['administrativeNote'] = instance.administrativeNote
     pojo['nationality'] = instance.nationality
     pojo['race'] = instance.race
@@ -226,7 +226,7 @@ export class Patient {
       education: pojo['education'],
       profession: pojo['profession'],
       note: pojo['note'],
-      notes: pojo['notes']?.map((item: any) => Annotation.fromJSON(item)),
+      notes: pojo['notes'].map((item: any) => Annotation.fromJSON(item)),
       administrativeNote: pojo['administrativeNote'],
       nationality: pojo['nationality'],
       race: pojo['race'],

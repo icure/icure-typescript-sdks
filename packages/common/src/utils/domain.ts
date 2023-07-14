@@ -6,7 +6,7 @@ import { systemMetaDataTags } from '../mappers/SystemMetaData.mapper'
 import { SystemMetaDataEncrypted } from '../models/SystemMetaDataEncrypted.model'
 import { SystemMetaDataOwner } from '../models/SystemMetaDataOwner.model'
 import { SystemMetaDataOwnerEncrypted } from '../models/SystemMetaDataOwnerEncrypted.model'
-import {addUniqueObjectsToArray} from "./Array.utils";
+import { addUniqueObjectsToArray } from './Array.utils'
 
 const ICURE_INTERNAL_FHIR_TAG_TYPE = 'ICURE_INTERNAL'
 const ICURE_INTERNAL_FHIR_TAG_CODE = 'FHIR_TYPE'
@@ -36,9 +36,9 @@ export const extractDomainType = (tags?: CodeStub[]) => {
     return domainTypeTag?.context
 }
 
-export const dataOwnerDomainTypeTag = (domainType: string): CodeStub => {
+export const domainTypeTag = (domainType: string): CodeStub => {
     return new CodeStub({
-        id: `${ICURE_INTERNAL_FHIR_TAG_TYPE}|${ICURE_INTERNAL_FHIR_TAG_CODE}|${ICURE_INTERNAL_FHIR_TAG_VERSION}`,
+        id: ICURE_INTERNAL_FHIR_TAG_ID,
         context: domainType,
         version: ICURE_INTERNAL_FHIR_TAG_VERSION,
         code: ICURE_INTERNAL_FHIR_TAG_CODE,
@@ -56,7 +56,7 @@ export const filteringOutInternalTags = (fhirType: string, tags?: CodeStub[], th
 export const mergeTagsWithInternalTags = (fhir: string, tags: Set<CodingReference> | undefined, systemMetaData: SystemMetaDataEncrypted | SystemMetaDataOwnerEncrypted | SystemMetaDataOwner | undefined): CodeStub[] => {
     const tagArray = [...(tags ?? [])]
     if (!systemMetaData) {
-        return addUniqueObjectsToArray(tagArray?.map(mapCodingReferenceToCodeStub) ?? [], dataOwnerDomainTypeTag(fhir))
+        return addUniqueObjectsToArray(tagArray?.map(mapCodingReferenceToCodeStub) ?? [], domainTypeTag(fhir))
     }
     const systemMetaDataCodeStubs = systemMetaDataTags(systemMetaData)
     return addUniqueObjectsToArray(tagArray, ...systemMetaDataCodeStubs).map(mapCodingReferenceToCodeStub)
