@@ -3,7 +3,7 @@ import { Annotation } from '../models/Annotation.model'
 import { CodeStub, ISO639_1 } from '@icure/api'
 import { CodingReference } from '../models/CodingReference.model'
 import { mapCodeStubToCodingReference, mapCodingReferenceToCodeStub } from './CodingReference.mapper'
-import {forceUuid} from "../utils/uuidUtils";
+import { forceUuid } from '../utils/uuidUtils'
 
 function toAnnotationDtoId(domain: Annotation): string | undefined {
     return forceUuid(domain.id)
