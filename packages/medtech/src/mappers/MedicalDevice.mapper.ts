@@ -19,9 +19,10 @@ import {
   toSystemMetaDataOwner,
   toTransferKeys,
 } from '@icure/typescript-common'
+import {forceUuid} from "./utils";
 
-function toDeviceId(domain: MedicalDevice): string | undefined {
-  return domain.id
+function toDeviceId(domain: MedicalDevice): string {
+  return forceUuid(domain.id)
 }
 
 function toDeviceRev(domain: MedicalDevice): string | undefined {
