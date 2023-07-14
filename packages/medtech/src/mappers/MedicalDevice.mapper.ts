@@ -2,6 +2,7 @@ import { MedicalDevice } from '../models/MedicalDevice.model'
 import { CodeStub, Device, Identifier as IdentifierDto, PropertyStub } from '@icure/api'
 import {
   CodingReference,
+  forceUuid,
   Identifier,
   mapCodeStubToCodingReference,
   mapCodingReferenceToCodeStub,
@@ -19,7 +20,6 @@ import {
   toSystemMetaDataOwner,
   toTransferKeys,
 } from '@icure/typescript-common'
-import {forceUuid} from "./utils";
 
 function toDeviceId(domain: MedicalDevice): string {
   return forceUuid(domain.id)

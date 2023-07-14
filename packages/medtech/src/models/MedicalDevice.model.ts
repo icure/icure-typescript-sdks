@@ -11,18 +11,38 @@
  */
 
 import { b64_2ab, Device, ua2b64 } from '@icure/api'
-import { CodingReference, Identifier, mapTo, Property, SystemMetaDataOwner } from '@icure/typescript-common'
+import { CodingReference, forceUuid, Identifier, mapTo, Property, SystemMetaDataOwner } from '@icure/typescript-common'
 
 @mapTo(Device)
 export class MedicalDevice {
   constructor(json: IMedicalDevice) {
-    Object.assign(this as MedicalDevice, json as IMedicalDevice)
+    this.id = forceUuid(json.id)
+    this.rev = json.rev
+    this.deletionDate = json.deletionDate
+    this.identifiers = json.identifiers ?? []
+    this.created = json.created
+    this.modified = json.modified
+    this.author = json.author
+    this.responsible = json.responsible
+    this.properties = json.properties ?? new Set()
+    this.labels = json.labels ?? new Set()
+    this.codes = json.codes ?? new Set()
+    this.endOfLife = json.endOfLife
+    this.externalId = json.externalId
+    this.name = json.name
+    this.type = json.type
+    this.brand = json.brand
+    this.model = json.model
+    this.serialNumber = json.serialNumber
+    this.parentId = json.parentId
+    this.systemMetaData = json.systemMetaData
+    this.picture = json.picture
   }
 
   /**
    * The Id of the MedicalDevice. We encourage using either a v4 UUID or a HL7 Id.
    */
-  'id'?: string
+  'id': string
   /**
    * the revision of the medical device in the database, used for conflict management / optimistic locking.
    */
