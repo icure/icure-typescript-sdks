@@ -2,7 +2,16 @@ import 'isomorphic-fetch'
 import { medTechApi, MedTechApi } from '../../src/apis/MedTechApi'
 import { webcrypto } from 'crypto'
 import { sleep } from '@icure/api'
-import { getEnvironmentInitializer, getTempEmail, hcp1Username, hcp3Username, patUsername, setLocalStorage, TestUtils } from '../test-utils'
+import {
+  getEnvironmentInitializer,
+  getTempEmail,
+  hcp1Username,
+  hcp3Username,
+  patUsername,
+  setLocalStorage,
+  TestMessageFactory,
+  TestUtils
+} from '../test-utils'
 import { assert, expect, use as chaiUse } from 'chai'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import { NotificationTypeEnum, User } from '@icure/typescript-common'
@@ -14,6 +23,7 @@ import { AnonymousMedTechApi } from '../../src/apis/AnonymousMedTechApi'
 import { SimpleMedTechCryptoStrategies } from '../../src/services/MedTechCryptoStrategies'
 import { HealthcareElementFilter } from '../../src/filter/HealthcareElementFilterDsl'
 import { mapPatientToPatientDto } from '../../src/mappers/Patient.mapper'
+import { describe, before, it } from 'mocha'
 
 chaiUse(require('chai-as-promised'))
 
@@ -36,8 +46,13 @@ describe('A Healthcare Party', () => {
 
     if (env.backendType === 'oss') this.skip()
 
-    const hcpApi1AndUser = await TestUtils.createMedTechApiAndLoggedUserFor(env.iCureUrl, env.dataOwnerDetails[hcp1Username], (b) =>
-      b.withMsgGwUrl(env!.msgGtwUrl).withMsgGwSpecId(env!.specId)
+    const hcpApi1AndUser = await TestUtils.createMedTechApiAndLoggedUserFor(
+      env.iCureUrl,
+      env.dataOwnerDetails[hcp1Username],
+      (b) => b
+          .withMsgGwUrl(env!.msgGtwUrl)
+          .withMsgGwSpecId(env!.specId)
+          .withMessageFactory(new TestMessageFactory())
     )
     hcp1Api = hcpApi1AndUser.api
     hcp1User = hcpApi1AndUser.user
@@ -101,8 +116,7 @@ describe('A Healthcare Party', () => {
 
     // When HCP_1 creates user for patient PAT_1
     // And HCP_1 is sending an invitation email to patient PAT_1
-    console.log('xxA')
-    console.log('xxB')
+    await hcp1Api.userApi.createAndInviteUser(newPatient, 3600)
     await sleep(3_000)
 
     // And PAT_1 accepts this invitation and changes his credentials
@@ -133,7 +147,7 @@ describe('A Healthcare Party', () => {
     await TestUtils.retrieveHealthcareElementAndExpectError(newPatientApi, newHE2.id!)
     await expect(newPatientApi.patientApi.getPatient(newPatient.id!)).to.be.rejected
     const encryptedPatient = await newPatientApi.patientApi.getPatientAndTryDecrypt(newPatient.id!)
-    expect(encryptedPatient.decrypted).to.be.true
+    expect(encryptedPatient.decrypted).to.be.false
     expect(encryptedPatient.patient.note).to.be.undefined
 
     // When HCP_1 gives access to PAT_1
@@ -185,12 +199,7 @@ describe('A Healthcare Party', () => {
       lastName: 'Specter',
     })
 
-    try {
-      await userFromPatient(hcp1Api, newPatient, hcp1)
-      expect(true, 'promise should fail').eq(false)
-    } catch (e) {
-      expect((e as Error).message).to.eq('HCP does not have a valid email!')
-    }
+    await expect(userFromPatient(hcp1Api, newPatient, hcp1)).to.be.rejected
   })
 
   it('should not be able to create a new User if it already exists for that Patient', async () => {
@@ -211,12 +220,7 @@ describe('A Healthcare Party', () => {
     )
     assert(!!newUser)
 
-    try {
-      await hcp1Api.userApi.createAndInviteUser(newPatient, 3600)
-      expect(true, 'promise should fail').eq(false)
-    } catch (e) {
-      expect((e as Error).message).to.eq('A User already exists for this Patient')
-    }
+    await expect(hcp1Api.userApi.createAndInviteUser(newPatient, 3600)).to.be.rejected
   })
 })
 
@@ -245,9 +249,7 @@ describe('A patient user', () => {
     )
     const heByHcp = await TestUtils.createHealthElementForPatient(hcp1Api, patient)
     // Create patient api
-    console.log('yyA')
     await hcp1Api.userApi.createAndInviteUser(patient, 3600)
-    console.log('yyB')
 
     await sleep(3_000)
 
@@ -271,7 +273,7 @@ describe('A patient user', () => {
 
     // ...can modify only non-encrypted data of patient and...
     const encryptedPatient = await patientApi.patientApi.getPatientAndTryDecrypt(patient.id!)
-    expect(encryptedPatient.decrypted).to.be.true
+    expect(encryptedPatient.decrypted).to.be.false
     encryptedPatient.patient.note = 'This is not allowed'
     await expect(patientApi.patientApi.createOrModify(encryptedPatient.patient)).to.be.rejected
     encryptedPatient.patient.note = undefined

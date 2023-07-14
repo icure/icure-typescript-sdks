@@ -12,18 +12,58 @@ import { DefaultStorageEntryKeysFactory } from '@icure/api/icc-x-api/storage/Def
 import { EnvInitializer } from '@icure/test-setup/decorators'
 import { getEnvVariables, UserDetails } from '@icure/test-setup/types'
 import { TestEnvironmentBuilder } from '@icure/test-setup/builder'
-import { CodingReference, mapOf, RecaptchaType, User } from '@icure/typescript-common'
+import {
+  CodingReference,
+  EmailMessage,
+  ICureMessageFactory,
+  mapOf,
+  RecaptchaType,
+  SMSMessage,
+  User
+} from '@icure/typescript-common'
 import { HealthcareElement } from '../src/models/HealthcareElement.model'
 import { Patient } from '../src/models/Patient.model'
 import { SimpleMedTechCryptoStrategies } from '../src/services/MedTechCryptoStrategies'
 import { DataSample } from '../src/models/DataSample.model'
 import { Content } from '../src/models/Content.model'
+import {MedTechMessageFactory} from "../src/services/MedTechMessageFactory";
+import {HealthcareProfessional} from "../src/models/HealthcareProfessional.model";
 
 let cachedHcpApi: MedTechApi | undefined
 let cachedHcpLoggedUser: User | undefined
 let cachedPatient: Patient | undefined
 let cachedHealthcareElement: HealthcareElement | undefined
 let cachedInitializer: EnvInitializer | undefined
+
+export class TestMessageFactory implements MedTechMessageFactory {
+  readonly preferredMessageType = "email"
+
+  getPatientInvitationEmail(
+      recipientUser: User,
+      recipientPatient: Patient,
+      recipientPassword: string,
+      invitingUser: User,
+      invitingDataOwner: HealthcareProfessional
+  ): EmailMessage {
+    return {
+      from: 'nobody@nowhere.boh',
+      subject: `${recipientUser.login}|${recipientPassword}`,
+      html: `User: ${recipientUser.id}`
+    }
+  }
+
+  getPatientInvitationSMS(
+      recipientUser: User,
+      recipientPatient: Patient,
+      recipientPassword: string,
+      invitingUser: User,
+      invitingDataOwner: HealthcareProfessional
+  ): SMSMessage {
+    return {
+      message: `${recipientUser.login}|${recipientPassword}`
+    }
+  }
+}
 
 export function getTempEmail(): string {
   return `${uuid().substring(0, 8)}@icure.com`

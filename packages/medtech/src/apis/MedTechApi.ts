@@ -223,6 +223,7 @@ export namespace MedTechApi {
       crypto: Crypto | undefined
       authProcessByEmailId: string | undefined
       authProcessBySmsId: string | undefined
+      messageFactory: MedTechMessageFactory | undefined
     }): Promise<MedTechApi> {
       return IcureApi.initialise(
         props.iCureBaseUrl,
@@ -277,7 +278,8 @@ export namespace MedTechApi {
             props.authProcessByEmailId,
             props.authProcessBySmsId,
             props.storage,
-            props.keyStorage
+            props.keyStorage,
+            props.messageFactory
           )
       )
     }

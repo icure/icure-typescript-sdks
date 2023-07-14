@@ -81,6 +81,7 @@ export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements Us
         // Creates the user
         const createdUser = await this.userApi.createUser(
             new UserDto({
+                id: forceUuid(),
                 created: new Date().getTime(),
                 name: favouredEmail?.telecomNumber ?? favouredMobile?.telecomNumber,
                 login: favouredEmail?.telecomNumber ?? favouredMobile?.telecomNumber,
