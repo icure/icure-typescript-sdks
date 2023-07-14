@@ -551,14 +551,14 @@ describe('Authentication API', () => {
     const hcpNotification = (await hcpApiAndUser.api.notificationApi.getPendingAfter(startTimestamp)).find(
       (notif) =>
         notif.type === NotificationTypeEnum.KEY_PAIR_UPDATE &&
-        notif.properties?.find((prop) => prop.typedValue?.stringValue == currentPatient.id!) != undefined
+        Array.from(notif.properties).find((prop) => prop.typedValue?.stringValue == currentPatient.id!) != undefined
     )
 
     expect(hcpNotification).to.not.be.undefined
 
-    const patientId = hcpNotification!.properties?.find((prop) => prop.id == 'dataOwnerConcernedId')
+    const patientId = Array.from(hcpNotification!.properties).find((prop) => prop.id == 'dataOwnerConcernedId')
     expect(patientId).to.not.be.undefined
-    const patientPubKey = hcpNotification!.properties?.find((prop) => prop.id == 'dataOwnerConcernedPubKey')
+    const patientPubKey = Array.from(hcpNotification!.properties).find((prop) => prop.id == 'dataOwnerConcernedPubKey')
     expect(patientPubKey).to.not.be.undefined
 
     await hcpApiAndUser.api.dataOwnerApi.giveAccessBackTo(patientId!.typedValue!.stringValue!, patientPubKey!.typedValue!.stringValue!)

@@ -102,8 +102,8 @@ describe('Notification mapper test', () => {
     const newTask = new MaintenanceTask({
       ...commonOptions,
       taskType: NotificationTypeEnum.NEW_USER_OWN_DATA_ACCESS,
-      delegations: { TEST_ID: new Set([new Delegation({ owner: uuid(), delegatedTo: uuid() })]) },
-      encryptionKeys: { TEST_KEY: new Set([new Delegation({ owner: uuid(), delegatedTo: uuid() })]) },
+      delegations: { TEST_ID: [new Delegation({ owner: uuid(), delegatedTo: uuid() })] },
+      encryptionKeys: { TEST_KEY: [new Delegation({ owner: uuid(), delegatedTo: uuid() })] },
     })
     assert(newTask)
     const newNotification = mapMaintenanceTaskToNotification(newTask)
