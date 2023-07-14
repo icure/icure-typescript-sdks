@@ -7,9 +7,10 @@ import { SystemMetaDataEncrypted } from '../models/SystemMetaDataEncrypted.model
 import { mapIdentifierDtoToIdentifier, mapIdentifierToIdentifierDto } from './Identifier.mapper'
 import { mapPropertyStubToProperty, mapPropertyToPropertyStub } from './Property.mapper'
 import { toCryptedForeignKeys, toDelegations, toEncryptedSelf, toEncryptionKeys, toSecretForeignKeys, toSystemMetaDataEncrypted } from './SystemMetaData.mapper'
+import { forceUuid } from '../utils/uuidUtils'
 
-function toMaintenanceTaskId(domain: Notification): string | undefined {
-    return domain.id
+function toMaintenanceTaskId(domain: Notification): string {
+    return forceUuid(domain.id)
 }
 
 function toMaintenanceTaskRev(domain: Notification): string | undefined {
@@ -61,7 +62,7 @@ function toMaintenanceTaskTaskType(domain: Notification): MaintenanceTask.TaskTy
 }
 
 function toMaintenanceTaskProperties(domain: Notification): PropertyStub[] | undefined {
-    return !!domain.properties ? domain.properties.map(mapPropertyToPropertyStub) : undefined
+    return !!domain.properties ? [...domain.properties].map(mapPropertyToPropertyStub) : undefined
 }
 
 function toMaintenanceTaskStatus(domain: Notification): MaintenanceTask.StatusEnum | undefined {
@@ -100,8 +101,8 @@ function toMaintenanceTaskEncryptedSelf(domain: Notification): string | undefine
     return !!domain.systemMetaData ? toEncryptedSelf(domain.systemMetaData) : undefined
 }
 
-function toNotificationId(dto: MaintenanceTask): string | undefined {
-    return dto.id
+function toNotificationId(dto: MaintenanceTask): string {
+    return dto.id!
 }
 
 function toNotificationRev(dto: MaintenanceTask): string | undefined {
@@ -124,8 +125,8 @@ function toNotificationDeletionDate(dto: MaintenanceTask): number | undefined {
     return dto.deletionDate
 }
 
-function toNotificationIdentifiers(dto: MaintenanceTask): Identifier[] | undefined {
-    return !!dto.identifier ? dto.identifier.map(mapIdentifierDtoToIdentifier) : undefined
+function toNotificationIdentifiers(dto: MaintenanceTask): Identifier[] {
+    return !!dto.identifier ? dto.identifier.map(mapIdentifierDtoToIdentifier) : []
 }
 
 function toNotificationModified(dto: MaintenanceTask): number | undefined {
@@ -140,8 +141,8 @@ function toNotificationResponsible(dto: MaintenanceTask): string | undefined {
     return dto.responsible
 }
 
-function toNotificationProperties(dto: MaintenanceTask): Property[] | undefined {
-    return !!dto.properties ? dto.properties.map(mapPropertyStubToProperty) : undefined
+function toNotificationProperties(dto: MaintenanceTask): Set<Property> {
+    return new Set(dto.properties?.map(mapPropertyStubToProperty) ?? [])
 }
 
 function toNotificationType(dto: MaintenanceTask): NotificationTypeEnum | undefined {
