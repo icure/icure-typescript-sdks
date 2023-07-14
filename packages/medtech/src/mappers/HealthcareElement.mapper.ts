@@ -27,9 +27,10 @@ import {
   toSecretForeignKeys,
   toSystemMetaDataEncrypted,
 } from '@icure/typescript-common'
+import {forceUuid} from "./utils";
 
-function toHealthElementId(domain: HealthcareElement): string | undefined {
-  return domain.id
+function toHealthElementId(domain: HealthcareElement): string {
+  return forceUuid(domain.id)
 }
 
 function toHealthElementIdentifiers(domain: HealthcareElement): IdentifierDto[] | undefined {
@@ -76,8 +77,9 @@ function toHealthElementDeletionDate(domain: HealthcareElement): number | undefi
   return domain.deletionDate
 }
 
-function toHealthElementHealthElementId(domain: HealthcareElement): string | undefined {
-  return domain.healthcareElementId
+// If domain.healthcareElementId is undefined we take the chosen "main" id for the dto
+function toHealthElementHealthElementId(domain: HealthcareElement, initialisedId: string): string {
+  return domain.healthcareElementId ?? initialisedId
 }
 
 function toHealthElementValueDate(domain: HealthcareElement): number | undefined {
@@ -266,8 +268,9 @@ export function mapHealthElementToHealthcareElement(dto: HealthElement): Healthc
 }
 
 export function mapHealthcareElementToHealthElement(domain: HealthcareElement): HealthElement {
+  const id = toHealthElementId(domain)
   return new HealthElement({
-    id: toHealthElementId(domain),
+    id,
     identifiers: toHealthElementIdentifiers(domain),
     rev: toHealthElementRev(domain),
     created: toHealthElementCreated(domain),
@@ -279,7 +282,7 @@ export function mapHealthcareElementToHealthElement(domain: HealthcareElement): 
     codes: toHealthElementCodes(domain),
     endOfLife: toHealthElementEndOfLife(domain),
     deletionDate: toHealthElementDeletionDate(domain),
-    healthElementId: toHealthElementHealthElementId(domain),
+    healthElementId: toHealthElementHealthElementId(domain, id),
     valueDate: toHealthElementValueDate(domain),
     openingDate: toHealthElementOpeningDate(domain),
     closingDate: toHealthElementClosingDate(domain),
