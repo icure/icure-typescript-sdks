@@ -16,13 +16,15 @@ import { mapTo } from '../utils/decorators'
 @mapTo(Code)
 export class Coding {
     constructor(json: ICoding) {
-        const { searchTerms, ...simpleProperties } = json
-        Object.assign(this as Coding, simpleProperties as ICoding)
-        this.searchTerms = searchTerms
-            ? Object.entries(searchTerms)
-                  .map(([k, v]) => [k, new Set([...v])] as [string, Set<string>])
-                  .reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {})
-            : ({} as any)
+        this.id = json.id
+        this.rev = json.rev
+        this.type = json.type
+        this.code = json.code
+        this.version = json.version
+        this.regions = json.regions ?? new Set()
+        this.description = json.description
+        this.qualifiedLinks = json.qualifiedLinks ?? new Map()
+        this.searchTerms = json.searchTerms ?? new Map()
     }
 
     /**
@@ -88,8 +90,8 @@ interface ICoding {
     type?: string
     code?: string
     version?: string
-    regions: Set<string>
+    regions?: Set<string>
     description?: Map<string, string>
-    qualifiedLinks: Map<string, Array<string>>
-    searchTerms: Map<string, Set<string>>
+    qualifiedLinks?: Map<string, Array<string>>
+    searchTerms?: Map<string, Set<string>>
 }
