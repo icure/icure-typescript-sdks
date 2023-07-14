@@ -18,7 +18,7 @@ import {
 } from '@icure/api'
 import {
   Annotation,
-  CodingReference,
+  CodingReference, forceUuid,
   Identifier,
   mapAnnotationDtoToAnnotation,
   mapAnnotationToAnnotationDto,
@@ -56,7 +56,7 @@ import {
 } from './PatientHealthCareParty.mapper'
 
 function toPatientDtoId(domain: Patient): string | undefined {
-  return domain.id
+  return forceUuid(domain.id)
 }
 
 function toPatientDtoRev(domain: Patient): string | undefined {
