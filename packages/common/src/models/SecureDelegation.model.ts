@@ -4,12 +4,12 @@ export class SecureDelegation {
     constructor(secureDelegation: ISecureDelegation) {
         this.delegator = secureDelegation.delegator
         this.delegate = secureDelegation.delegate
-        this.secretIds = secureDelegation.secretIds
-        this.encryptionKeys = secureDelegation.encryptionKeys
-        this.owningEntityIds = secureDelegation.owningEntityIds
-        this.parentDelegations = secureDelegation.parentDelegations
+        this.secretIds = secureDelegation.secretIds ?? new Set()
+        this.encryptionKeys = secureDelegation.encryptionKeys ?? new Set()
+        this.owningEntityIds = secureDelegation.owningEntityIds ?? new Set()
+        this.parentDelegations = secureDelegation.parentDelegations ?? new Set()
         this.exchangeDataId = secureDelegation.exchangeDataId
-        this.permissions = secureDelegation.permissions
+        this.permissions = secureDelegation.permissions!
     }
 
     /**
@@ -86,10 +86,10 @@ export class SecureDelegation {
 interface ISecureDelegation {
     delegator?: string
     delegate?: string
-    secretIds: Set<string>
-    encryptionKeys: Set<string>
-    owningEntityIds: Set<string>
-    parentDelegations: Set<string>
+    secretIds?: Set<string>
+    encryptionKeys?: Set<string>
+    owningEntityIds?: Set<string>
+    parentDelegations?: Set<string>
     exchangeDataId?: string
-    permissions: AccessLevelEnum
+    permissions?: AccessLevelEnum
 }

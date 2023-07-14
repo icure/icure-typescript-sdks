@@ -12,7 +12,7 @@ export class Property {
     encryptedSelf?: string
 
     constructor(property: IProperty) {
-        this.id = property.id
+        this.id = property.id!
         this.type = property.type
         this.typedValue = property.typedValue
         this.deleted = property.deleted
@@ -35,7 +35,7 @@ export class Property {
 }
 
 interface IProperty {
-    id: string
+    id?: string
     type?: PropertyType
     typedValue?: TypedValueObject
     deleted?: number

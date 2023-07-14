@@ -1,5 +1,6 @@
 import { MaintenanceTask } from '@icure/api'
 import { mapTo } from '../utils/decorators'
+import { forceUuid } from '../utils/uuidUtils'
 import { Identifier } from './Identifier.model'
 import { Property } from './Property.model'
 import { SystemMetaDataEncrypted } from './SystemMetaDataEncrypted.model'
@@ -57,17 +58,17 @@ export class Notification {
     'systemMetaData'?: SystemMetaDataEncrypted
 
     constructor(notification: INotification) {
-        this.id = notification.id
+        this.id = forceUuid(notification.id)
         this.rev = notification.rev
         this.status = notification.status
         this.created = notification.created
         this.endOfLife = notification.endOfLife
         this.deletionDate = notification.deletionDate
-        this.identifiers = notification.identifiers
+        this.identifiers = notification.identifiers ?? []
         this.modified = notification.modified
         this.author = notification.author
         this.responsible = notification.responsible
-        this.properties = notification.properties
+        this.properties = notification.properties ?? new Set()
         this.type = notification.type
         this.systemMetaData = notification.systemMetaData
     }
@@ -110,17 +111,17 @@ export class Notification {
 }
 
 export interface INotification {
-    id: string
+    id?: string
     rev?: string
     status?: NotificationStatusEnum
-    identifiers: Array<Identifier>
+    identifiers?: Array<Identifier>
     created?: number
     modified?: number
     endOfLife?: number
     deletionDate?: number
     author?: string
     responsible?: string
-    properties: Set<Property>
+    properties?: Set<Property>
     type?: NotificationTypeEnum
     systemMetaData?: SystemMetaDataEncrypted
 }
