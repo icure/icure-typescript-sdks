@@ -12,6 +12,7 @@ import {
 import {
   Annotation,
   CodingReference,
+  forceUuid,
   Identifier,
   mapAnnotationDtoToAnnotation,
   mapAnnotationToAnnotationDto,
@@ -27,7 +28,6 @@ import {
   toSecretForeignKeys,
   toSystemMetaDataEncrypted,
 } from '@icure/typescript-common'
-import {forceUuid} from "./utils";
 
 function toHealthElementId(domain: HealthcareElement): string {
   return forceUuid(domain.id)
