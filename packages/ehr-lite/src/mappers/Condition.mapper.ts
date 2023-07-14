@@ -3,7 +3,7 @@ import { Condition } from '../models/Condition.model'
 import {
     Annotation,
     CodingReference,
-    filteringOutInternalTags,
+    filteringOutInternalTags, forceUuid,
     Identifier,
     mapAnnotationDtoToAnnotation,
     mapAnnotationToAnnotationDto,
@@ -27,8 +27,8 @@ import { CategoryEnum } from '../models/enums/Category.enum'
 import { SeverityEnum } from '../models/enums/Severity.enum'
 import { addUniqueObjectsToArray } from '../../../common/src/utils/Array.utils'
 
-function toHealthElementId(domain: Condition): string | undefined {
-    return domain.id
+function toHealthElementId(domain: Condition): string {
+    return forceUuid(domain.id)
 }
 
 function toHealthElementIdentifiers(domain: Condition): IdentifierDto[] | undefined {
@@ -106,8 +106,8 @@ function toHealthElementDeletionDate(domain: Condition): number | undefined {
     return domain.deletionDate
 }
 
-function toHealthElementHealthElementId(domain: Condition): string | undefined {
-    return domain.healthcareElementId
+function toHealthElementHealthElementId(domain: Condition, initialisedId: string): string {
+    return domain.healthcareElementId ?? initialisedId
 }
 
 function toHealthElementValueDate(domain: Condition): number | undefined {
@@ -337,8 +337,8 @@ export function mapHealthElementToCondition(dto: HealthElement): Condition {
 }
 
 export function mapConditionToHealthElement(domain: Condition): HealthElement {
+    const id = toHealthElementId(domain)
     return new HealthElement({
-        id: toHealthElementId(domain),
         identifiers: toHealthElementIdentifiers(domain),
         rev: toHealthElementRev(domain),
         created: toHealthElementCreated(domain),
@@ -350,7 +350,7 @@ export function mapConditionToHealthElement(domain: Condition): HealthElement {
         codes: toHealthElementCodes(domain),
         endOfLife: toHealthElementEndOfLife(domain),
         deletionDate: toHealthElementDeletionDate(domain),
-        healthElementId: toHealthElementHealthElementId(domain),
+        healthElementId: toHealthElementHealthElementId(domain, id),
         valueDate: toHealthElementValueDate(domain),
         openingDate: toHealthElementOpeningDate(domain),
         closingDate: toHealthElementClosingDate(domain),
