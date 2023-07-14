@@ -2,7 +2,7 @@ import { PropertyTypeStub } from '@icure/api'
 import { PropertyType } from '../models/PropertyType.model'
 import { TypeEnum } from '../models/enums/Type.enum'
 
-function toPropertyTypeStubIdentifier(domain: PropertyType): string | undefined {
+function toPropertyTypeStubIdentifier(domain: PropertyType): string {
     return domain.identifier
 }
 
@@ -10,8 +10,8 @@ function toPropertyTypeStubType(domain: PropertyType): PropertyTypeStub.TypeEnum
     return domain.type
 }
 
-function toPropertyTypeIdentifier(dto: PropertyTypeStub): string | undefined {
-    return dto.identifier
+function toPropertyTypeIdentifier(dto: PropertyTypeStub): string {
+    return dto.identifier!
 }
 
 function toPropertyTypeType(dto: PropertyTypeStub): TypeEnum | undefined {
