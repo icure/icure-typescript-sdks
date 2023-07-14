@@ -1,5 +1,5 @@
 import { Organisation } from '../models/Organisation.model'
-import { Address, CodeStub, FinancialInstitutionInformation, FlatRateTarification, HealthcareParty, HealthcarePartyHistoryStatus, Identifier as IdentifierDto, PersonName, PropertyStub } from '@icure/api'
+import { Address, CodeStub, FinancialInstitutionInformation, FlatRateTarification, HealthcareParty, HealthcarePartyHistoryStatus, Identifier as IdentifierDto, ISO639_1, PersonName, PropertyStub } from '@icure/api'
 import { Location } from '../models/Location.model'
 import {
     CodingReference,
@@ -311,8 +311,8 @@ function toOrganisationPicture(dto: HealthcareParty): ArrayBuffer | undefined {
     return dto.picture
 }
 
-function toOrganisationDescription(dto: HealthcareParty): Map<string, string> | undefined {
-    return !!dto.descr ? convertObjectToMap(dto.descr) : undefined
+function toOrganisationDescription(dto: HealthcareParty): Map<ISO639_1, string> | undefined {
+    return !!dto.descr ? (convertObjectToMap(dto.descr) as Map<ISO639_1, string>) : undefined
 }
 
 function toOrganisationProperties(dto: HealthcareParty): Property[] | undefined {
