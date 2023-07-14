@@ -10,76 +10,86 @@
  * Do not edit the class manually.
  */
 
-import { Code } from "@icure/api";
-import { mapTo } from "../utils/decorators";
+import { Code } from '@icure/api'
+import { mapTo } from '../utils/decorators'
 
 @mapTo(Code)
 export class Coding {
-  constructor(json: ICoding) {
-    const { searchTerms, ...simpleProperties } = json;
-    Object.assign(this as Coding, simpleProperties as ICoding);
-    this.searchTerms = searchTerms
-      ? Object.entries(searchTerms)
-          .map(([k, v]) => [k, new Set([...v])] as [string, Set<string>])
-          .reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {})
-      : ({} as any);
-  }
+    constructor(json: ICoding) {
+        const { searchTerms, ...simpleProperties } = json
+        Object.assign(this as Coding, simpleProperties as ICoding)
+        this.searchTerms = searchTerms
+            ? Object.entries(searchTerms)
+                  .map(([k, v]) => [k, new Set([...v])] as [string, Set<string>])
+                  .reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {})
+            : ({} as any)
+    }
 
-  /**
-   * the Id of the coding. We encourage using either a v4 UUID or a HL7 Id.
-   */
-  "id"?: string;
-  /**
-   * the revision of the coding in the database, used for conflict management / optimistic locking.
-   */
-  "rev"?: string;
-  "type"?: string;
-  "code"?: string;
-  /**
-   * Must be lexicographically searchable
-   */
-  "version"?: string;
-  "regions"?: Array<string>;
-  /**
-   * Description (ex: {en: Rheumatic Aortic Stenosis, fr: Sténose rhumatoïde de l'Aorte})
-   */
-  "description"?: Map<string, string>;
-  /**
-   * Links towards related codes
-   */
-  "qualifiedLinks": Map<string, Array<string>>;
-  /**
-   * Extra search terms/ language
-   */
-  "searchTerms": Map<string, Set<string>>;
+    /**
+     * the Id of the coding. We encourage using either a v4 UUID or a HL7 Id.
+     */
+    'id': string
+    /**
+     * the revision of the coding in the database, used for conflict management / optimistic locking.
+     */
+    'rev'?: string
+    'type'?: string
+    'code'?: string
+    /**
+     * Must be lexicographically searchable
+     */
+    'version'?: string
+    'regions': Set<string>
+    /**
+     * Description (ex: {en: Rheumatic Aortic Stenosis, fr: Sténose rhumatoïde de l'Aorte})
+     */
+    'description'?: Map<string, string>
+    /**
+     * Links towards related codes
+     */
+    'qualifiedLinks': Map<string, Array<string>>
+    /**
+     * Extra search terms/ language
+     */
+    'searchTerms': Map<string, Set<string>>
 
     static toJSON(instance: Coding): any {
         const pojo: any = {}
-        pojo["id"] = instance.id
-        pojo["rev"] = instance.rev
-        pojo["type"] = instance.type
-        pojo["code"] = instance.code
-        pojo["version"] = instance.version
-        pojo["regions"] = instance.regions?.map(item => item)
-        pojo["description"] = !!instance.description ? Object.fromEntries([...instance.description.entries()].map(([k, v]) => [k, v])) : undefined
-        pojo["qualifiedLinks"] = Object.fromEntries([...instance.qualifiedLinks.entries()].map(([k, v]) => [k, v.map(item => item)]))
-        pojo["searchTerms"] = Object.fromEntries([...instance.searchTerms.entries()].map(([k, v]) => [k, Array.from([...v].map(item => item))]))
+        pojo['id'] = instance.id
+        pojo['rev'] = instance.rev
+        pojo['type'] = instance.type
+        pojo['code'] = instance.code
+        pojo['version'] = instance.version
+        pojo['regions'] = Array.from([...instance.regions].map((item) => item))
+        pojo['description'] = !!instance.description ? Object.fromEntries([...instance.description.entries()].map(([k, v]) => [k, v])) : undefined
+        pojo['qualifiedLinks'] = Object.fromEntries([...instance.qualifiedLinks.entries()].map(([k, v]) => [k, v.map((item) => item)]))
+        pojo['searchTerms'] = Object.fromEntries([...instance.searchTerms.entries()].map(([k, v]) => [k, Array.from([...v].map((item) => item))]))
         return pojo
     }
 
     static fromJSON(pojo: any): Coding {
-        return new Coding({id: pojo["id"], rev: pojo["rev"], type: pojo["type"], code: pojo["code"], version: pojo["version"], regions: pojo["regions"]?.map((item: any) => item), description: pojo["description"] ? new Map(Object.entries(pojo["description"]).map(([k, v]: [any, any]) => [k, v])) : undefined, qualifiedLinks: new Map(Object.entries(pojo["qualifiedLinks"]).map(([k, v]: [any, any]) => [k, v.map((item: any) => item)])), searchTerms: new Map(Object.entries(pojo["searchTerms"]).map(([k, v]: [any, any]) => [k, new Set(v.map((item: any) => item))]))})
+        return new Coding({
+            id: pojo['id'],
+            rev: pojo['rev'],
+            type: pojo['type'],
+            code: pojo['code'],
+            version: pojo['version'],
+            regions: new Set(pojo['regions'].map((item: any) => item)),
+            description: pojo['description'] ? new Map(Object.entries(pojo['description']).map(([k, v]: [any, any]) => [k, v])) : undefined,
+            qualifiedLinks: new Map(Object.entries(pojo['qualifiedLinks']).map(([k, v]: [any, any]) => [k, v.map((item: any) => item)])),
+            searchTerms: new Map(Object.entries(pojo['searchTerms']).map(([k, v]: [any, any]) => [k, new Set(v.map((item: any) => item))])),
+        })
     }
 }
 
 interface ICoding {
-  id?: string;
-  rev?: string;
-  type?: string;
-  code?: string;
-  version?: string;
-  regions?: Array<string>;
-  description?: Map<string, string>;
-  qualifiedLinks?: Map<string, Array<string>>;
-  searchTerms?: Map<string, Set<string>>;
+    id: string
+    rev?: string
+    type?: string
+    code?: string
+    version?: string
+    regions: Set<string>
+    description?: Map<string, string>
+    qualifiedLinks: Map<string, Array<string>>
+    searchTerms: Map<string, Set<string>>
 }
