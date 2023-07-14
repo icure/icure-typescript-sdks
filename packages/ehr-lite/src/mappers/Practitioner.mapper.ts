@@ -1,16 +1,5 @@
 import { Practitioner } from '../models/Practitioner.model'
-import {
-    Address,
-    CodeStub,
-    FinancialInstitutionInformation,
-    FlatRateTarification,
-    HealthcareParty,
-    HealthcarePartyHistoryStatus,
-    Identifier as IdentifierDto,
-    ISO639_1,
-    PersonName,
-    PropertyStub
-} from '@icure/api'
+import { Address, CodeStub, FinancialInstitutionInformation, FlatRateTarification, HealthcareParty, HealthcarePartyHistoryStatus, Identifier as IdentifierDto, ISO639_1, PersonName, PropertyStub } from '@icure/api'
 import { HumanName } from '../models/HumanName.model'
 import { Location } from '../models/Location.model'
 import {
@@ -354,7 +343,7 @@ function toPractitionerSpecialityCodes(dto: HealthcareParty): Set<CodingReferenc
 }
 
 function toPractitionerDescription(dto: HealthcareParty): Map<ISO639_1, string> | undefined {
-    return !!dto.descr ? convertObjectToMap(dto.descr) as Map<ISO639_1, string> : undefined
+    return !!dto.descr ? (convertObjectToMap(dto.descr) as Map<ISO639_1, string>) : undefined
 }
 
 function toPractitionerProperties(dto: HealthcareParty): Set<Property> | undefined {

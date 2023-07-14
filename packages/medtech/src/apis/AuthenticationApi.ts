@@ -10,11 +10,11 @@ import {
   NotificationTypeEnum,
   Sanitizer,
 } from '@icure/typescript-common'
-import {Device, HealthcareParty, KeyStorageFacade, Patient, StorageFacade} from '@icure/api'
-import {v4 as uuid} from 'uuid'
+import { Device, HealthcareParty, KeyStorageFacade, Patient, StorageFacade } from '@icure/api'
+import { v4 as uuid } from 'uuid'
 import Crypto from 'crypto'
-import {mapPatientToPatientDto} from '../mappers/Patient.mapper'
-import {MedTechApi} from './MedTechApi'
+import { mapPatientToPatientDto } from '../mappers/Patient.mapper'
+import { MedTechApi } from './MedTechApi'
 
 export interface MedTechAuthenticationResult extends AuthenticationResult<MedTechApi> {
   /**
