@@ -25,16 +25,16 @@ export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements Maintenanc
         private readonly api: CommonApi
     ) {}
 
-    createOrModify(maintenanceTask: DSMaintenanceTask, delegate?: string): Promise<DSMaintenanceTask | undefined> {
+    async createOrModify(maintenanceTask: DSMaintenanceTask, delegate?: string): Promise<DSMaintenanceTask | undefined> {
+        return this.mapper.toDomain(await this._createOrModify(this.mapper.toDto(maintenanceTask), delegate))
+    }
+
+    private async _createOrModify(maintenanceTask: MaintenanceTask, delegate?: string): Promise<MaintenanceTask> {
         return this.userApi
             .getCurrentUser()
             .then((user) => {
                 if (!user) throw this.errorHandler.createErrorWithMessage('There is no user currently logged in. You must call this method from an authenticated MedTechApi')
-                const mappedMaintenanceTask = this.mapper.toDto(maintenanceTask)
-                const maintenanceTaskPromise = !mappedMaintenanceTask?.rev ? this._createNotification(mappedMaintenanceTask, user, delegate) : this._updateNotification(mappedMaintenanceTask, user)
-                return maintenanceTaskPromise.then((createdTask) => {
-                    return this.mapper.toDomain(createdTask)
-                })
+                return !maintenanceTask?.rev ? this._createNotification(maintenanceTask, user, delegate) : this._updateNotification(maintenanceTask, user)
             })
             .catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
@@ -128,8 +128,9 @@ export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements Maintenanc
         throw 'TODO'
     }
 
-    updateStatus(maintenanceTask: DSMaintenanceTask, newStatus: MaintenanceTask.StatusEnum): Promise<DSMaintenanceTask | undefined> {
-        return Promise.resolve(undefined)
+    async updateStatus(maintenanceTask: DSMaintenanceTask, newStatus: MaintenanceTask.StatusEnum): Promise<DSMaintenanceTask> {
+        const mapped = this.mapper.toDto(maintenanceTask)
+        return this.mapper.toDomain(await this._createOrModify({ ...mapped, status: newStatus }))
     }
 
     private async _updateNotification(maintenanceTask: MaintenanceTask, user: User): Promise<any> {

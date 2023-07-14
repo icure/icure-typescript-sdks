@@ -53,7 +53,7 @@ export interface MaintenanceTaskLikeApi<DSMaintenanceTask> {
      * @param newStatus the new status
      * @return the updated MaintenanceTask
      */
-    updateStatus(notification: DSMaintenanceTask, newStatus: MaintenanceTask.StatusEnum): Promise<DSMaintenanceTask | undefined>
+    updateStatus(notification: DSMaintenanceTask, newStatus: MaintenanceTask.StatusEnum): Promise<DSMaintenanceTask>
 
     /**
      * Opens a WebSocket Connection in order to receive all the MaintenanceTask corresponding to specific filter criteria.
