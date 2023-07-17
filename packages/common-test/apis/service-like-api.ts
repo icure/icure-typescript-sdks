@@ -22,6 +22,7 @@ import {
     WithPatientApi,
     WithServiceApi
 } from "./TestContexts";
+import {expectArrayContainsExactlyInAnyOrder} from "../assertions";
 // import { DataSampleFilter } from '../../src/filter/DataSampleFilterDsl'
 // import { mapPatientToPatientDto } from '../../src/mappers/Patient.mapper'
 
@@ -129,7 +130,7 @@ export function testServiceLikeApi<
             const deletedServicesIds = await ctx.serviceApi(api).deleteMany(createdServicesDto.map((ds) => ds.id!))
             // Then
             expect(deletedServicesIds).toHaveLength(2)
-            expect(deletedServicesIds).toEqual(expect.arrayContaining(createdServicesDto.map((ds) => ds.id!)))
+            expectArrayContainsExactlyInAnyOrder(deletedServicesIds, createdServicesDto.map((ds) => ds.id!))
         })
 
         it('Delete Data Samples - without data in cache - Success', async () => {
@@ -145,7 +146,7 @@ export function testServiceLikeApi<
             ;(ctx.serviceApi(api) as ServiceLikeApiImpl<any, any, any>).clearContactCache()
             // Then
             expect(deletedServicesIds).toHaveLength(2)
-            expect(deletedServicesIds).toEqual(expect.arrayContaining(createdServicesDto.map((ds) => ds.id!)))
+            expectArrayContainsExactlyInAnyOrder(deletedServicesIds, createdServicesDto.map((ds) => ds.id!))
         })
 
         it('Create Data Sample linked to HealthElement - Success', async () => {
@@ -157,430 +158,361 @@ export function testServiceLikeApi<
 
             const healthElementDto = ctx.toHelementDto(await ctx.createHelemntForPatient(api, patient))
             const serviceToCreate = ctx.toDSService(new Service({
-                labels: [{ type: 'IC-TEST', code: 'TEST' }],
+                tags: [{ type: 'IC-TEST', code: 'TEST' }],
                 content: { en: { stringValue: 'Hello world' } },
-                healthcareElementIds: [healthElementDto!.id!],
+                healthElementsIds: [healthElementDto!.id!],
             }))
 
             // When creating a data sample, linked to this healthcare element
-            const createdDataSample = await ctx.serviceApi(api).createOrModifyFor(patientId, serviceToCreate)
+            const createdService = await ctx.serviceApi(api).createOrModifyFor(patientId, serviceToCreate)
 
             // Then
-            expect(createdDataSample).toBeTruthy()
-            const createdDataSampleDto = ctx.toServiceDto(createdDataSample)
-            expect(createdDataSampleDto.id).toBeTruthy()
-            expect(createdDataSampleDto.healthElementsIds).toContain(healthElementDto.id)
+            expect(createdService).toBeTruthy()
+            const createdServiceDto = ctx.toServiceDto(createdService)
+            expect(createdServiceDto.id).toBeTruthy()
+            expect(createdServiceDto.healthElementsIds).toContain(healthElementDto.id)
         })
-        //
-        // it('Create Data Sample and modify it to link it to HealthElement - Success', async () => {
-        //     // Given
-        //     const apiAndUser = await TestUtils.getOrCreateHcpApiAndLoggedUser(env!.iCureUrl, env!.dataOwnerDetails[hcp1Username])
-        //     const medtechApi = apiAndUser.api
-        //
-        //     const patient = await TestUtils.getOrCreatePatient(medtechApi)
-        //     const createdDataSample = await TestUtils.createDataSampleForPatient(medtechApi, patient)
-        //     const healthElement = await TestUtils.getOrCreateHealthElement(medtechApi, patient)
-        //
-        //     // When
-        //     const modifiedDataSample = await medtechApi.dataSampleApi.createOrModifyDataSampleFor(
-        //         patient.id!,
-        //         new DataSample({
-        //             ...createdDataSample,
-        //             healthcareElementIds: new Set([healthElement!.id!]),
-        //         })
-        //     )
-        //
-        //     // Then
-        //     assert(modifiedDataSample != undefined)
-        //     assert(modifiedDataSample.id == createdDataSample.id)
-        //     assert(modifiedDataSample.healthcareElementIds?.has(healthElement.id!) == true)
-        // })
-        //
-        // it('Can not create Data Sample with invalid healthElementId', async () => {
-        //     // Given
-        //     const apiAndUser = await TestUtils.getOrCreateHcpApiAndLoggedUser(env!.iCureUrl, env!.dataOwnerDetails[hcp1Username])
-        //     const medtechApi = apiAndUser.api
-        //     const loggedUser = apiAndUser.user
-        //     const patient = await TestUtils.getOrCreatePatient(medtechApi)
-        //
-        //     // When
-        //     const createdDataSample = await medtechApi.dataSampleApi
-        //         .createOrModifyDataSampleFor(
-        //             patient.id!,
-        //             new DataSample({
-        //                 labels: new Set([new CodingReference({ type: 'IC-TEST', code: 'TEST' })]),
-        //                 content: mapOf({ en: new Content({ stringValue: 'Hello world' }) }),
-        //                 healthcareElementIds: new Set(['I-DO-NOT-EXIST']),
-        //             })
-        //         )
-        //         .catch((e) => {
-        //             assert((e as Error).message == `Health elements I-DO-NOT-EXIST do not exist or user ${loggedUser.id} may not access them`)
-        //         })
-        //
-        //     // Then
-        //     assert(createdDataSample == undefined)
-        // })
-        //
-        // it('Filter Data Samples', async () => {
-        //     const apiAndUser = await TestUtils.getOrCreateHcpApiAndLoggedUser(env!.iCureUrl, env!.dataOwnerDetails[hcp1Username])
-        //     const medtechApi = apiAndUser.api
-        //     const loggedUser = apiAndUser.user
-        //
-        //     const hcp = await medtechApi.healthcareProfessionalApi.getHealthcareProfessional(loggedUser.healthcarePartyId!)
-        //     const patient = await TestUtils.getOrCreatePatient(medtechApi)
-        //     const createdDataSample = await medtechApi.dataSampleApi.createOrModifyDataSampleFor(
-        //         patient.id!,
-        //         new DataSample({
-        //             labels: new Set([new CodingReference({ type: 'FILTER-IC-TEST', code: 'TEST' })]),
-        //             content: mapOf({ en: new Content({ stringValue: 'Hello world' }) }),
-        //         })
-        //     )
-        //
-        //     const filter = await new DataSampleFilter(medtechApi)
-        //         .forDataOwner(hcp.id!)
-        //         .byLabelCodeDateFilter('FILTER-IC-TEST', 'TEST')
-        //         .forPatients([mapPatientToPatientDto(patient)]) // TODO COMPATIBILITY: should use DSPatient type
-        //         .build()
-        //
-        //     const filteredDataSamples = await medtechApi.dataSampleApi.filterDataSample(filter)
-        //     assert(filteredDataSamples.rows.length == 1)
-        //     assert(filteredDataSamples.rows.find((ds) => ds.id == createdDataSample.id))
-        // })
-        //
-        // it('Filter data samples by HealthElementIds - Success', async () => {
-        //     // Given
-        //     const apiAndUser = await TestUtils.getOrCreateHcpApiAndLoggedUser(env!.iCureUrl, env!.dataOwnerDetails['hcpDetails'])
-        //     const medtechApi = apiAndUser.api
-        //     const loggedUser = apiAndUser.user
-        //
-        //     const patient = await TestUtils.getOrCreatePatient(medtechApi)
-        //     const healthElement = await TestUtils.getOrCreateHealthElement(medtechApi, patient)
-        //     const createdDataSample = await medtechApi.dataSampleApi.createOrModifyDataSampleFor(
-        //         patient.id!,
-        //         new DataSample({
-        //             labels: new Set([new CodingReference({ type: 'FILTER-HE-IC-TEST', code: 'TEST' })]),
-        //             content: mapOf({ en: new Content({ stringValue: 'Hello world' }) }),
-        //             healthcareElementIds: new Set([healthElement!.id!]),
-        //         })
-        //     )
-        //
-        //     const filter = await new DataSampleFilter(medtechApi)
-        //         .forDataOwner(loggedUser.healthcarePartyId!)
-        //         .byLabelCodeDateFilter('FILTER-HE-IC-TEST', 'TEST')
-        //         .byHealthElementIds([healthElement!.id!])
-        //         .build()
-        //
-        //     const filteredDataSamples = await medtechApi.dataSampleApi.filterDataSample(filter)
-        //     assert(filteredDataSamples.rows.length == 1)
-        //
-        //     const testedDataSample = filteredDataSamples.rows.find((ds) => ds.id == createdDataSample.id)
-        //     assert(testedDataSample != undefined)
-        //     assert(testedDataSample!.healthcareElementIds!.has(healthElement.id!))
-        // })
-        //
-        // it('Patient sharing data sample with HCP', async () => {
-        //     // Given
-        //     const patApiAndUser = await TestUtils.createMedTechApiAndLoggedUserFor(env!.iCureUrl, env!.dataOwnerDetails[patUsername])
-        //     const patApi = patApiAndUser.api
-        //     const patUser = patApiAndUser.user
-        //     const currentPatient = await patApi.patientApi.getPatient(patUser.patientId!)
-        //
-        //     const hcpApiAndUser = await TestUtils.createMedTechApiAndLoggedUserFor(env!.iCureUrl, env!.dataOwnerDetails[hcp2Username])
-        //     const hcpApi = hcpApiAndUser.api
-        //     const hcpUser = hcpApiAndUser.user
-        //     const currentHcp = await hcpApi.healthcareProfessionalApi.getHealthcareProfessional(hcpUser.healthcarePartyId!)
-        //     const createdDataSample = await TestUtils.createDataSampleForPatient(patApi, currentPatient)
-        //     // Initially hcp can't get data sample
-        //     await expect(hcpApi.dataSampleApi.getDataSample(createdDataSample.id!)).to.be.rejected
-        //     // Patient shares data sample and gets it updated and decrypted
-        //     const sharedDataSample = await patApi.dataSampleApi.giveAccessTo(createdDataSample, currentHcp.id!)
-        //     expect(Array.from(sharedDataSample.content.keys())).to.have.members(['en'])
-        //     // Hcp can now get data sample and decrypt it
-        //     const hcpDataSample = await hcpApi.dataSampleApi.getDataSample(sharedDataSample.id!)
-        //     expect(hcpDataSample).to.deep.equal(sharedDataSample)
-        // })
-        //
-        // it('HCP sharing data sample with patient', async () => {
-        //     // Given
-        //     const hcpApiAndUser = await TestUtils.createMedTechApiAndLoggedUserFor(env!.iCureUrl, env!.dataOwnerDetails[hcp1Username])
-        //     const hcpApi = hcpApiAndUser.api
-        //
-        //     const patApiAndUser = await TestUtils.createMedTechApiAndLoggedUserFor(env!.iCureUrl, env!.dataOwnerDetails[patUsername])
-        //     const patApi = patApiAndUser.api
-        //     const patUser = patApiAndUser.user
-        //     const currentPatient = await patApi.patientApi.getPatient(patUser.patientId!)
-        //     const updatedPatient = await patApi.patientApi.giveAccessTo(currentPatient, hcpApiAndUser.user.healthcarePartyId!)
-        //
-        //     const createdDataSample = await TestUtils.createDataSampleForPatient(hcpApi, updatedPatient)
-        //     // Initially patient can't get data sample
-        //     await expect(patApi.dataSampleApi.getDataSample(createdDataSample.id!)).to.be.rejected
-        //     // Hcp shares data sample and gets it updated and decrypted
-        //     const sharedDataSample = await hcpApi.dataSampleApi.giveAccessTo(createdDataSample, updatedPatient.id!)
-        //     expect(Array.from(sharedDataSample.content.keys())).to.have.members(['en'])
-        //     // Patient can now get data sample and decrypt it
-        //     await patApi.forceReload()
-        //     const patDataSample = await patApi.dataSampleApi.getDataSample(sharedDataSample.id!)
-        //     expect(patDataSample).to.deep.equal(sharedDataSample)
-        // }).timeout(60000)
-        //
-        // it('HCP sharing data sample with another HCP', async () => {
-        //     // Given
-        //     const hcp1ApiAndUser = await TestUtils.createMedTechApiAndLoggedUserFor(env!.iCureUrl, env!.dataOwnerDetails[hcp1Username])
-        //     const hcp1Api = hcp1ApiAndUser.api
-        //
-        //     const hcp2ApiAndUser = await TestUtils.createMedTechApiAndLoggedUserFor(env!.iCureUrl, env!.dataOwnerDetails[hcp2Username])
-        //     const hcp2Api = hcp2ApiAndUser.api
-        //     const hcp2User = hcp2ApiAndUser.user
-        //     const currentHcp2 = await hcp2Api.healthcareProfessionalApi.getHealthcareProfessional(hcp2User.healthcarePartyId!)
-        //
-        //     const patient = await TestUtils.getOrCreatePatient(hcp1Api)
-        //
-        //     const createdDataSample = await TestUtils.createDataSampleForPatient(hcp1Api, patient)
-        //     // Initially hcp2 can't get data sample
-        //     await expect(hcp2Api.dataSampleApi.getDataSample(createdDataSample.id!)).to.be.rejected
-        //     // Patient shares data sample and gets it updated and decrypted
-        //     const sharedDataSample = await hcp1Api.dataSampleApi.giveAccessTo(createdDataSample, currentHcp2.id!)
-        //     expect(Array.from(sharedDataSample.content.keys())).to.have.members(['en'])
-        //     // Hcp can now get data sample and decrypt it
-        //     const hcpDataSample = await hcp2Api.dataSampleApi.getDataSample(sharedDataSample.id!)
-        //     expect(hcpDataSample).to.deep.equal(sharedDataSample)
-        // })
-        //
-        // it('Optimization - No delegation sharing if delegated already has access to data sample', async () => {
-        //     const { api: h1api, user: h1user } = await TestUtils.createMedTechApiAndLoggedUserFor(env!.iCureUrl, env!.dataOwnerDetails[hcp1Username])
-        //     const patient = await h1api.patientApi.createOrModifyPatient(new Patient({ firstName: 'John', lastName: 'Snow' }))
-        //
-        //     const createdDataSample = await TestUtils.createDataSampleForPatient(h1api, patient)
-        //
-        //     // When
-        //     const sharedDataSample = await h1api.dataSampleApi.giveAccessTo(createdDataSample, h1user.healthcarePartyId!)
-        //
-        //     // Then
-        //     expect(sharedDataSample).to.deep.equal(createdDataSample)
-        // })
-        //
-        // it('Delegator may not share info of Data Sample', async () => {
-        //     const hcp1ApiAndUser = await TestUtils.createMedTechApiAndLoggedUserFor(env!.iCureUrl, env!.dataOwnerDetails[hcp1Username])
-        //     const hcp1Api = hcp1ApiAndUser.api
-        //
-        //     const hcp3ApiAndUser = await TestUtils.createMedTechApiAndLoggedUserFor(env!.iCureUrl, env!.dataOwnerDetails[hcp3Username])
-        //     const hcp3Api = hcp3ApiAndUser.api
-        //
-        //     const patApiAndUser = await TestUtils.createMedTechApiAndLoggedUserFor(env!.iCureUrl, env!.dataOwnerDetails[patUsername])
-        //     const patUser = patApiAndUser.user
-        //
-        //     const patient = await TestUtils.createDefaultPatient(hcp1Api)
-        //     const createdDataSample = await TestUtils.createDataSampleForPatient(hcp1Api, patient)
-        //
-        //     // When
-        //     await hcp3Api.dataSampleApi.giveAccessTo(createdDataSample, patUser.patientId!).then(
-        //         () => {
-        //             throw Error(`HCP ${hcp3ApiAndUser.user.id} should not be able to access info of data sample !!`)
-        //         },
-        //         (e) => assert(e != undefined)
-        //     )
-        // })
-        //
-        // it('Data Owner can filter all the Data Samples for a Patient - Success', async () => {
-        //     const hcp1ApiAndUser = await TestUtils.createMedTechApiAndLoggedUserFor(env!.iCureUrl, env!.dataOwnerDetails[hcp1Username])
-        //     const hcp1Api = hcp1ApiAndUser.api
-        //
-        //     const newPatient = await TestUtils.createDefaultPatient(hcp1Api)
-        //     expect(!!newPatient).to.eq(true)
-        //
-        //     const newDataSample = await TestUtils.createDataSampleForPatient(hcp1Api, newPatient)
-        //     expect(!!newDataSample).to.eq(true)
-        //
-        //     const filteredSamples = await hcp1Api.dataSampleApi.getDataSamplesForPatient(newPatient)
-        //     expect(!!filteredSamples).to.eq(true)
-        //     expect(filteredSamples.length).to.eq(1)
-        //     expect(filteredSamples[0].id).to.eq(newDataSample.id)
-        // })
-        //
-        // it('getDataSamplesForPatient returns no Data Samples for a Patient with no Data Samples', async () => {
-        //     const hcp1ApiAndUser = await TestUtils.createMedTechApiAndLoggedUserFor(env!.iCureUrl, env!.dataOwnerDetails[hcp1Username])
-        //     const hcp1Api = hcp1ApiAndUser.api
-        //
-        //     const newPatient = await TestUtils.createDefaultPatient(hcp1Api)
-        //     expect(!!newPatient).to.eq(true)
-        //
-        //     const filteredSamples = await hcp1Api.dataSampleApi.getDataSamplesForPatient(newPatient)
-        //     expect(!!filteredSamples).to.eq(true)
-        //     expect(filteredSamples.length).to.eq(0)
-        // })
-        //
-        // it('Give access to will fail if the data sample version does not match the latest', async () => {
-        //     const { api: h1api } = await TestUtils.createMedTechApiAndLoggedUserFor(env!.iCureUrl, env!.dataOwnerDetails[hcp2Username])
-        //     const { api: h2api, user: h2 } = await TestUtils.createMedTechApiAndLoggedUserFor(env!.iCureUrl, env!.dataOwnerDetails[hcp3Username])
-        //     const { api: pApi, user: p } = await TestUtils.createMedTechApiAndLoggedUserFor(env!.iCureUrl, env!.dataOwnerDetails[patUsername])
-        //     const patient = await h1api.patientApi.createOrModifyPatient(new Patient({ firstName: 'John', lastName: 'Snow' }))
-        //     const content = mapOf({ en: new Content({ stringValue: 'Hello world' }) })
-        //     const contentString = JSON.stringify(content)
-        //     const dataSample = await h1api.dataSampleApi.createOrModifyDataSampleFor(patient.id!, new DataSample({ content }))
-        //
-        //     await h1api.dataSampleApi.giveAccessTo(dataSample, pApi.dataOwnerApi.getDataOwnerIdOf(p))
-        //
-        //     // Won't work because need to have the latest revision
-        //     await expect(h1api.dataSampleApi.giveAccessTo(dataSample, h2api.dataOwnerApi.getDataOwnerIdOf(h2))).to.be.rejected
-        //
-        //     expect(JSON.stringify((await h1api.dataSampleApi.getDataSample(dataSample.id!)).content)).to.equal(contentString)
-        //     expect(JSON.stringify((await pApi.dataSampleApi.getDataSample(dataSample.id!)).content)).to.equal(contentString)
-        //     await expect(h2api.dataSampleApi.getDataSample(dataSample.id!)).to.be.rejected
-        // })
-        //
-        // it('Should be able to create a DataSample and retrieve the associated patientId', async () => {
-        //     const { api: h1api } = await TestUtils.createMedTechApiAndLoggedUserFor(env!.iCureUrl, env!.dataOwnerDetails[hcp1Username])
-        //     const patient = await h1api.patientApi.createOrModifyPatient(new Patient({ firstName: 'John', lastName: 'Snow' }))
-        //
-        //     expect(patient.id).not.to.be.undefined
-        //
-        //     const dataSample = await h1api.dataSampleApi.createOrModifyDataSampleFor(
-        //         patient.id!,
-        //         new DataSample({
-        //             content: mapOf({
-        //                 en: new Content({ stringValue: 'I am a beautiful string' }),
-        //             }),
-        //         })
-        //     )
-        //
-        //     const patientId = await h1api.dataSampleApi.extractPatientId(dataSample)
-        //
-        //     expect(patientId).to.be.eq(patient.id!)
-        // })
-        //
-        // it('Should be able to filter and sort data samples by descending value date', async () => {
-        //     const { api: h1api } = await TestUtils.createMedTechApiAndLoggedUserFor(env!.iCureUrl, env!.dataOwnerDetails[hcp1Username])
-        //     const patient = await h1api.patientApi.createOrModifyPatient(new Patient({ firstName: 'JohnJohn', lastName: 'John' }))
-        //     const labelType = `type-${h1api.cryptoApi.primitives.randomUuid()}`
-        //     const labelCode = `code-${h1api.cryptoApi.primitives.randomUuid()}`
-        //     const codeRef = new CodingReference({
-        //         code: labelCode,
-        //         type: labelType,
-        //         version: '1',
-        //         id: 'Some id',
-        //     })
-        //     const createDataSample = (valueDate: number) =>
-        //         h1api.dataSampleApi.createOrModifyDataSampleFor(
-        //             patient.id!,
-        //             new DataSample({
-        //                 content: mapOf({
-        //                     en: new Content({ stringValue: `Some sample at ${valueDate}` }),
-        //                 }),
-        //                 labels: new Set([codeRef]),
-        //                 valueDate,
-        //             })
-        //         )
-        //     const createdSamples = []
-        //     for (let i = 0; i < 50; i++) {
-        //         createdSamples.push(await createDataSample(Math.floor(Math.random() * 10000)))
-        //     }
-        //     const filter = await new DataSampleFilter(h1api)
-        //         .forSelf()
-        //         .sort.byLabelCodeDateFilter(labelType, labelCode, undefined, undefined, undefined, undefined, true)
-        //         .build()
-        //     const filteredSamples = await h1api.dataSampleApi.filterDataSample(filter)
-        //     expect(filteredSamples.rows.map((x) => x.id)).to.have.members(createdSamples.map((x) => x.id))
-        //     const sortedIds = [...filteredSamples.rows].sort((a, b) => b.valueDate! - a.valueDate!).map((x) => x.id)
-        //     expect(filteredSamples.rows.map((x) => x.id)).to.have.ordered.members(sortedIds)
-        // })
-        //
-        // it('Should be able to create encrypted attachments to data samples', async () => {
-        //     const { api: h1api } = await TestUtils.createMedTechApiAndLoggedUserFor(env!.iCureUrl, env!.dataOwnerDetails[hcp1Username])
-        //     const patient = await h1api.patientApi.createOrModifyPatient(new Patient({ firstName: 'JohnJohn', lastName: 'John' }))
-        //     const valueEn = 'Hello'
-        //     const valueFr = 'Bonjour'
-        //     const dataSample = await h1api.dataSampleApi.createOrModifyDataSampleFor(
-        //         patient.id!,
-        //         new DataSample({
-        //             content: mapOf({
-        //                 en: new Content({ stringValue: valueEn }),
-        //                 fr: new Content({ stringValue: valueFr }),
-        //             }),
-        //         })
-        //     )
-        //     const documentNameEn = 'something.png'
-        //     const documentVersionEn = '1.0'
-        //     const documentExternalUuidEn = h1api.cryptoApi.primitives.randomUuid()
-        //     const attachmentEn = 'World'
-        //     const attachmentFr = 'Monde'
-        //     const attachmentDocEn = await h1api.dataSampleApi.setDataSampleAttachment(
-        //         dataSample.id!,
-        //         utf8_2ua(attachmentEn),
-        //         documentNameEn,
-        //         documentVersionEn,
-        //         documentExternalUuidEn,
-        //         'en'
-        //     )
-        //     expect(attachmentDocEn.name).to.equal(documentNameEn)
-        //     expect(attachmentDocEn.version).to.equal(documentVersionEn)
-        //     expect(attachmentDocEn.externalUuid).to.equal(documentExternalUuidEn)
-        //     expect(attachmentDocEn.size).to.equal(attachmentEn.length)
-        //     expect(attachmentDocEn.mainUti).to.equal('public.png')
-        //     const attachmentDocFr = await h1api.dataSampleApi.setDataSampleAttachment(
-        //         dataSample.id!,
-        //         utf8_2ua(attachmentFr),
-        //         undefined,
-        //         undefined,
-        //         undefined,
-        //         'fr'
-        //     )
-        //     expect(attachmentDocFr.size).to.equal(attachmentFr.length)
-        //     const updatedDataSample = await h1api.dataSampleApi.getDataSample(dataSample.id!)
-        //     expect(updatedDataSample.content.get('en')!.stringValue).to.equal(valueEn)
-        //     expect(updatedDataSample.content.get('en')!.documentId).to.equal(attachmentDocEn.id)
-        //     expect(updatedDataSample.content.get('fr')!.stringValue).to.equal(valueFr)
-        //     expect(updatedDataSample.content.get('fr')!.documentId).to.equal(attachmentDocFr.id)
-        //     const attachmentEnContent = await h1api.dataSampleApi.getDataSampleAttachmentContent(dataSample.id!, attachmentDocEn.id!)
-        //     expect(ua2utf8(attachmentEnContent)).to.equal(attachmentEn)
-        //     const attachmentFrContent = await h1api.dataSampleApi.getDataSampleAttachmentContent(dataSample.id!, attachmentDocFr.id!)
-        //     expect(ua2utf8(attachmentFrContent)).to.equal(attachmentFr)
-        //     await expect(h1api.dataSampleApi.getDataSampleAttachmentContent(dataSample.id!, 'non-existing-id')).to.be.rejected
-        //     const docApi = new IccDocumentApi(
-        //         env!.iCureUrl,
-        //         {},
-        //         new BasicAuthenticationProvider(hcp1Username, env!.dataOwnerDetails[hcp1Username].password),
-        //         fetch
-        //     )
-        //     expect(await docApi.getDocumentAttachment(attachmentDocEn.id!, 'ignored').then((x) => ua2utf8(x))).to.not.equal(
-        //         attachmentEn,
-        //         'Attachment should be encrypted'
-        //     )
-        //     expect(await docApi.getDocumentAttachment(attachmentDocFr.id!, 'ignored').then((x) => ua2utf8(x))).to.not.equal(
-        //         attachmentFr,
-        //         'Attachment should be encrypted'
-        //     )
-        // })
-        //
-        // it('Created attachments should be accessible to all data owners with access to the data sample', async () => {
-        //     const { api: h1api } = await TestUtils.createMedTechApiAndLoggedUserFor(env!.iCureUrl, env!.dataOwnerDetails[hcp1Username])
-        //     const { api: h2api, user: h2user } = await TestUtils.createMedTechApiAndLoggedUserFor(env!.iCureUrl, env!.dataOwnerDetails[hcp2Username])
-        //     const patient = await h1api.patientApi.giveAccessTo(
-        //         await h1api.patientApi.createOrModifyPatient(new Patient({ firstName: 'JohnJohn', lastName: 'John' })),
-        //         h2user.healthcarePartyId!
-        //     )
-        //     const dataSample = await h1api.dataSampleApi.giveAccessTo(
-        //         await h1api.dataSampleApi.createOrModifyDataSampleFor(patient.id!, new DataSample({})),
-        //         h2user.healthcarePartyId!
-        //     )
-        //     const value = 'Some attachment'
-        //     const attachmentDoc = await h2api.dataSampleApi.setDataSampleAttachment(dataSample.id!, utf8_2ua(value))
-        //     expect(ua2utf8(await h1api.dataSampleApi.getDataSampleAttachmentContent(dataSample.id!, attachmentDoc.id!))).to.equal(value)
-        // })
-        //
-        // it('Sharing a data sample should also share attachments of that data sample', async () => {
-        //     const { api: h1api } = await TestUtils.createMedTechApiAndLoggedUserFor(env!.iCureUrl, env!.dataOwnerDetails[hcp1Username])
-        //     const { api: h2api, user: h2user } = await TestUtils.createMedTechApiAndLoggedUserFor(env!.iCureUrl, env!.dataOwnerDetails[hcp2Username])
-        //     const patient = await h1api.patientApi.createOrModifyPatient(new Patient({ firstName: 'JohnJohn', lastName: 'John' }))
-        //     const dataSample = await h1api.dataSampleApi.createOrModifyDataSampleFor(patient.id!, new DataSample({}))
-        //     const value1 = 'Some attachment 1'
-        //     const value2 = 'Some attachment 2'
-        //     const attachmentDocEn = await h1api.dataSampleApi.setDataSampleAttachment(dataSample.id!, utf8_2ua(value1), undefined, undefined, undefined, 'en')
-        //     const attachmentDocFr = await h1api.dataSampleApi.setDataSampleAttachment(dataSample.id!, utf8_2ua(value2), undefined, undefined, undefined, 'fr')
-        //     await expect(h2api.dataSampleApi.getDataSampleAttachmentContent(dataSample.id!, attachmentDocEn.id!)).to.be.rejected
-        //     await expect(h2api.dataSampleApi.getDataSampleAttachmentContent(dataSample.id!, attachmentDocFr.id!)).to.be.rejected
-        //     await h1api.dataSampleApi.giveAccessTo(dataSample, h2user.healthcarePartyId!)
-        //     expect(ua2utf8(await h2api.dataSampleApi.getDataSampleAttachmentContent(dataSample.id!, attachmentDocEn.id!))).to.equal(value1)
-        //     expect(ua2utf8(await h2api.dataSampleApi.getDataSampleAttachmentContent(dataSample.id!, attachmentDocFr.id!))).to.equal(value2)
-        // })
+
+        it('Create Data Sample and modify it to link it to HealthElement - Success', async () => {
+            // Given
+            const api = (await ctx.apiForEnvUser(env, hcp1Username)).api
+
+            const patient = await ctx.createPatient(api)
+            const patientId = ctx.toPatientDto(patient).id!
+
+            const healthElementDto = ctx.toHelementDto(await ctx.createHelemntForPatient(api, patient))
+            const createdServiceDto = ctx.toServiceDto(await ctx.createServiceForPatient(api, patient))
+
+            // When
+            const modifiedService = await ctx.serviceApi(api).createOrModifyFor(
+                patientId,
+                ctx.toDSService(new Service({
+                    ...createdServiceDto,
+                    healthElementsIds: [healthElementDto.id!],
+                }))
+            )
+
+            // Then
+            expect(modifiedService).toBeTruthy()
+            const modifiedServiceDto = ctx.toServiceDto(modifiedService)
+            expect(modifiedServiceDto.id).toBeTruthy()
+            expect(modifiedServiceDto.healthElementsIds).toContain(healthElementDto.id)
+        })
+
+        it('Can not create Data Sample with invalid healthElementId', async () => {
+            // Given
+            const api = (await ctx.apiForEnvUser(env, hcp1Username)).api
+
+            const patient = await ctx.createPatient(api)
+            const patientId = ctx.toPatientDto(patient).id!
+
+            const nonExistingHeId = 'THIS-DOES-NOT-EXIST'
+            const serviceToCreate = ctx.toDSService(new Service({
+                tags: [{ type: 'IC-TEST', code: 'TEST' }],
+                content: { en: { stringValue: 'Hello world' } },
+                healthElementsIds: [nonExistingHeId],
+            }))
+
+            const creationPromiseResult = await ctx.serviceApi(api).createOrModifyFor(patientId, serviceToCreate).catch((e) => e)
+            expect(creationPromiseResult).toBeInstanceOf(Error)
+            expect(creationPromiseResult.message).toContain(nonExistingHeId)
+        })
+
+        it('Filter Data Samples', async () => {
+            const { api } = await ctx.apiForEnvUser(env, hcp1Username)
+
+            const patient = await ctx.createPatient(api)
+            const patientId = ctx.toPatientDto(patient).id!
+            const createdService = await ctx.serviceApi(api).createOrModifyFor(
+                patientId,
+                ctx.toDSService(new Service({
+                    tags: [{ type: 'FILTER-IC-TEST', code: 'TEST' }],
+                    content: { en: { stringValue: 'Hello world' } },
+                }))
+            )
+            const createdServiceDto = ctx.toServiceDto(createdService)
+
+            const filter = await ctx.newServiceFilter(api)
+                .forSelf()
+                .byLabelCodeDateFilter('FILTER-IC-TEST', 'TEST')
+                .forPatients([ctx.toPatientDto(patient)]) // TODO COMPATIBILITY: should use DSPatient type
+                .build()
+
+            const filteredServices = await ctx.serviceApi(api).filterBy(filter)
+            expect(filteredServices.rows).toHaveLength(1)
+            expect(ctx.toServiceDto(filteredServices.rows[0]).id).toEqual(createdServiceDto.id)
+        })
+
+        it('Filter data samples by HealthElementIds - Success', async () => {
+            // Given
+            const { api } = await ctx.apiForEnvUser(env, hcp1Username)
+
+            const patient = await ctx.createPatient(api)
+            const patientId = ctx.toPatientDto(patient).id!
+            const healthElement = ctx.toHelementDto(await ctx.createHelemntForPatient(api, patient))
+            const createdService = await ctx.serviceApi(api).createOrModifyFor(
+                patientId,
+                ctx.toDSService(new Service({
+                    tags: [{ type: 'FILTER-HE-IC-TEST', code: 'TEST' }],
+                    content: { en: { stringValue: 'Hello world' } },
+                    healthElementsIds: [healthElement.id!],
+                }))
+            )
+            const createdServiceDto = ctx.toServiceDto(createdService)
+
+            const filter = await ctx.newServiceFilter(api)
+                .forSelf()
+                .byLabelCodeDateFilter('FILTER-HE-IC-TEST', 'TEST')
+                .byHealthElementIds([healthElement!.id!])
+                .build()
+
+            const filteredDataSamples = await ctx.serviceApi(api).filterBy(filter)
+            expect(filteredDataSamples.rows).toHaveLength(1)
+            const testedDataSample = ctx.toServiceDto(filteredDataSamples.rows[0])
+            expect(testedDataSample.healthElementsIds).toContain(healthElement.id!)
+        })
+
+        it('Patient sharing data sample with HCP', async () => {
+            // Given
+            const { api: patApi, user: patUser } = await ctx.apiForEnvUser(env, patUsername)
+            const currentPatient = await ctx.patientApi(patApi).get(patUser.patientId!)
+
+            const { api: hcpApi, user: hcpUser } = await ctx.apiForEnvUser(env, hcp2Username)
+            const createdService = await ctx.createServiceForPatient(patApi, currentPatient)
+            // Initially hcp can't get data sample
+            await ctx.checkServiceInaccessible(hcpApi, createdService)
+            // Patient shares data sample and gets it updated and decrypted
+            const sharedService = await ctx.serviceApi(patApi).giveAccessTo(createdService, hcpUser.healthcarePartyId!)
+            const sharedServiceDto = ctx.toServiceDto(sharedService)
+            expectArrayContainsExactlyInAnyOrder(Object.keys(sharedServiceDto.content), ['en'])
+            // Hcp can now get data sample and decrypt it
+            await ctx.checkServiceAccessibleAndDecrypted(hcpApi, createdService)
+        })
+
+        it('HCP sharing data sample with patient', async () => {
+            // Given
+            const { api: patApi, user: patUser } = await ctx.apiForEnvUser(env, patUsername)
+            const { api: hcpApi, user: hcpUser } = await ctx.apiForEnvUser(env, hcp2Username)
+            const currentPatient = await ctx.patientApi(patApi).get(patUser.patientId!)
+            const updatedPatient = await ctx.patientApi(patApi).giveAccessTo(currentPatient, hcpUser.healthcarePartyId!)
+            const createdService = await ctx.createServiceForPatient(hcpApi, updatedPatient)
+            // Initially patient can't get data sample
+            await ctx.checkServiceInaccessible(patApi, createdService)
+            // Hcp shares data sample and gets it updated and decrypted
+            const sharedService = await ctx.serviceApi(hcpApi).giveAccessTo(createdService, patUser.patientId!)
+            const sharedServiceDto = ctx.toServiceDto(sharedService)
+            expectArrayContainsExactlyInAnyOrder(Object.keys(sharedServiceDto.content), ['en'])
+            // Patient can now get data sample and decrypt it
+            await patApi.baseApi.cryptoApi.forceReload()
+            await ctx.checkServiceAccessibleAndDecrypted(patApi, sharedService)
+        })
+
+        it('HCP sharing data sample with another HCP', async () => {
+            // Given
+            const { api: hcp1Api, user: hcp1User } = await ctx.apiForEnvUser(env, hcp1Username)
+            const { api: hcp2Api, user: hcp2User } = await ctx.apiForEnvUser(env, hcp2Username)
+
+            const patient = await ctx.createPatient(hcp1Api)
+
+            const createdService = await ctx.createServiceForPatient(hcp1Api, patient)
+            // Initially hcp2 can't get data sample
+            await ctx.checkServiceInaccessible(hcp2Api, createdService)
+            // Hcp shares data sample and gets it updated and decrypted
+            const sharedService = await ctx.serviceApi(hcp1Api).giveAccessTo(createdService, hcp2User.healthcarePartyId!)
+            const sharedServiceDto = ctx.toServiceDto(sharedService)
+            expectArrayContainsExactlyInAnyOrder(Object.keys(sharedServiceDto.content), ['en'])
+            // Hcp 2 can now get data sample and decrypt it
+            await ctx.checkServiceAccessibleAndDecrypted(hcp2Api, createdService)
+        })
+
+        it('Optimization - No delegation sharing if delegated already has access to data sample', async () => {
+            const { api: hcp1Api, user: hcp1User } = await ctx.apiForEnvUser(env, hcp1Username)
+            const { api: hcp2Api, user: hcp2User } = await ctx.apiForEnvUser(env, hcp2Username)
+            const patient = await ctx.createPatient(hcp1Api)
+            const createdService = await ctx.createServiceForPatient(hcp1Api, patient)
+            const sharedService = await ctx.serviceApi(hcp1Api).giveAccessTo(createdService, hcp2User.healthcarePartyId!)
+            const sharedService2 = await ctx.serviceApi(hcp1Api).giveAccessTo(sharedService, hcp2User.healthcarePartyId!)
+            expect(sharedService2).toEqual(sharedService)
+            expect(ctx.toServiceDto(sharedService2)).toEqual(ctx.toServiceDto(sharedService))
+        })
+
+        it('A data owner with no access to a service may not share it', async () => {
+            const { api: hcp1Api } = await ctx.apiForEnvUser(env, hcp1Username)
+            const { api: hcp3Api } = await ctx.apiForEnvUser(env, hcp3Username)
+            const { user: patUser } = await ctx.apiForEnvUser(env, patUsername)
+            const patient = await ctx.createPatient(hcp1Api)
+            const createdService = await ctx.createServiceForPatient(hcp1Api, patient)
+
+            // When
+            await expect(ctx.serviceApi(hcp3Api).giveAccessTo(createdService, patUser.patientId!)).rejects.toBeInstanceOf(Error)
+        })
+
+        it('Data Owner can filter all the Services  for a Patient - Success', async () => {
+            const { api } = await ctx.apiForEnvUser(env, hcp1Username)
+            const patient = await ctx.createPatient(api)
+            const createdServiceSingle = await ctx.createServiceForPatient(api, patient)
+            const createdServiceMany = await ctx.createServicesForPatient(api, patient)
+            const retrievedServices = await ctx.serviceApi(api).getForPatient(patient)
+            expect(retrievedServices).toHaveLength(createdServiceMany.length + 1)
+            expectArrayContainsExactlyInAnyOrder(
+                retrievedServices.map((x) => ctx.toServiceDto(x).id),
+                [createdServiceSingle, ...createdServiceMany].map((x) => ctx.toServiceDto(x).id)
+            )
+        })
+
+        it('getDataSamplesForPatient returns no Data Samples for a Patient with no Data Samples', async () => {
+            const { api } = await ctx.apiForEnvUser(env, hcp1Username)
+            const patient = await ctx.createPatient(api)
+            const filteredSamples = await ctx.serviceApi(api).getForPatient(patient)
+            expect(filteredSamples).toHaveLength(0)
+        })
+
+        it('Should be able to create a DataSample and retrieve the associated patientId', async () => {
+            const { api } = await ctx.apiForEnvUser(env, hcp1Username)
+            const patient = await ctx.createPatient(api)
+            const patientId = ctx.toPatientDto(patient).id!
+            const service = await ctx.createServiceForPatient(api, patient)
+            const extractedId = await ctx.serviceApi(api).extractPatientId(service)
+            expect(extractedId).toEqual(patientId)
+        })
+
+        it('Should be able to filter and sort data samples by descending value date', async () => {
+            const { api: h1api } = await ctx.apiForEnvUser(env, hcp1Username)
+            const patient = await ctx.createPatient(h1api)
+            const patientId = ctx.toPatientDto(patient).id!
+            const labelType = `type-${h1api.baseApi.cryptoApi.primitives.randomUuid()}`
+            const labelCode = `code-${h1api.baseApi.cryptoApi.primitives.randomUuid()}`
+            const codeRef = {
+                code: labelCode,
+                type: labelType,
+                version: '1',
+                id: 'Some id',
+            }
+            const createService = (valueDate: number) =>
+                ctx.serviceApi(h1api).createOrModifyFor(
+                    patientId,
+                    ctx.toDSService(new Service({
+                        content: { en: { stringValue: `Some sample at ${valueDate}` } },
+                        tags: [codeRef],
+                        valueDate,
+                    }))
+                )
+            const createdServices: Service[] = []
+            for (let i = 0; i < 50; i++) {
+                createdServices.push(ctx.toServiceDto(await createService(Math.floor(Math.random() * 10000))))
+            }
+            const filter = await ctx.newServiceFilter(h1api)
+                .forSelf()
+                .sort.byLabelCodeDateFilter(labelType, labelCode, undefined, undefined, undefined, undefined, true)
+                .build()
+            const filteredServices = await ctx.serviceApi(h1api).filterBy(filter)
+            expectArrayContainsExactlyInAnyOrder(filteredServices.rows.map((x) => ctx.toServiceDto(x).id), createdServices.map((x) => x.id))
+            const sortedIds = [...filteredServices.rows]
+                .sort((a, b) => ctx.toServiceDto(b).valueDate! - ctx.toServiceDto(a).valueDate!)
+                .map((x) => ctx.toServiceDto(x).id)
+            expect(filteredServices.rows.map((x) => ctx.toServiceDto(x).id)).toEqual(sortedIds)
+        })
+
+        it('Should be able to create encrypted attachments to data samples', async () => {
+            const { api: h1api } = await ctx.apiForEnvUser(env, hcp1Username)
+            const patient = await ctx.createPatient(h1api)
+            const patientId = ctx.toPatientDto(patient).id!
+            const valueEn = 'Hello'
+            const valueFr = 'Bonjour'
+            const service = await ctx.serviceApi(h1api).createOrModifyFor(
+                patientId,
+                ctx.toDSService(new Service({
+                    content: {
+                        en: { stringValue: valueEn },
+                        fr: { stringValue: valueFr },
+                    },
+                }))
+            )
+            const serviceDto = ctx.toServiceDto(service)
+            const documentNameEn = 'something.png'
+            const documentVersionEn = '1.0'
+            const documentExternalUuidEn = h1api.baseApi.cryptoApi.primitives.randomUuid()
+            const attachmentEn = 'World'
+            const attachmentFr = 'Monde'
+            const attachmentDocEn = await ctx.serviceApi(h1api).setAttachment(
+                serviceDto.id!,
+                utf8_2ua(attachmentEn),
+                documentNameEn,
+                documentVersionEn,
+                documentExternalUuidEn,
+                'en'
+            )
+            const attachmentDocEnDto = ctx.toDocumentDto(attachmentDocEn)
+            expect(attachmentDocEnDto.name).toEqual(documentNameEn)
+            expect(attachmentDocEnDto.version).toEqual(documentVersionEn)
+            expect(attachmentDocEnDto.externalUuid).toEqual(documentExternalUuidEn)
+            expect(attachmentDocEnDto.size).toEqual(attachmentEn.length)
+            expect(attachmentDocEnDto.mainUti).toEqual('public.png')
+            const attachmentDocFr = await ctx.serviceApi(h1api).setAttachment(
+                serviceDto.id!,
+                utf8_2ua(attachmentFr),
+                undefined,
+                undefined,
+                undefined,
+                'fr'
+            )
+            const attachmentDocFrDto = ctx.toDocumentDto(attachmentDocFr)
+            expect(attachmentDocFrDto.size).toEqual(attachmentFr.length)
+            const updatedDataSampleDto = ctx.toServiceDto(await ctx.serviceApi(h1api).get(serviceDto.id!))
+            expect(updatedDataSampleDto.content['en']!.stringValue).toEqual(valueEn)
+            expect(updatedDataSampleDto.content['en']!.documentId).toEqual(attachmentDocEnDto.id)
+            expect(updatedDataSampleDto.content['fr']!.stringValue).toEqual(valueFr)
+            expect(updatedDataSampleDto.content['fr']!.documentId).toEqual(attachmentDocFrDto.id)
+            const attachmentEnContent = await ctx.serviceApi(h1api).getAttachmentContent(serviceDto.id!, attachmentDocEnDto.id!)
+            expect(ua2utf8(attachmentEnContent)).toEqual(attachmentEn)
+            const attachmentFrContent = await ctx.serviceApi(h1api).getAttachmentContent(serviceDto.id!, attachmentDocFrDto.id!)
+            expect(ua2utf8(attachmentFrContent)).toEqual(attachmentFr)
+            await expect(ctx.serviceApi(h1api).getAttachmentContent(serviceDto.id!, 'non-existing-id')).rejects.toBeInstanceOf(Error)
+            const docApi = new IccDocumentApi(
+                env!.iCureUrl,
+                {},
+                new BasicAuthenticationProvider(hcp1Username, env!.dataOwnerDetails[hcp1Username].password),
+                fetch
+            )
+            // Attachment should be encrypted
+            expect(await docApi.getDocumentAttachment(attachmentDocEnDto.id!, 'ignored').then((x) => ua2utf8(x))).not.toEqual(attachmentEn)
+            expect(await docApi.getDocumentAttachment(attachmentDocFrDto.id!, 'ignored').then((x) => ua2utf8(x))).not.toEqual(attachmentFr)
+        })
+
+        it('Created attachments should be accessible to all data owners with access to the data sample', async () => {
+            const { api: h1api } = await ctx.apiForEnvUser(env, hcp1Username)
+            const { api: h2api, user: h2user } = await ctx.apiForEnvUser(env, hcp2Username)
+            // TODO in order to modify a data sample currently the user needs to have access also to the patient of the data sample (client-side requirement due to implementation)
+            const patient = await ctx.createPatient(h1api)
+            await ctx.patientApi(h1api).giveAccessTo(patient, h2user.healthcarePartyId!)
+            const dataSample = await ctx.serviceApi(h1api).giveAccessTo(
+                await ctx.createServiceForPatient(h1api, patient),
+                h2user.healthcarePartyId!
+            )
+            const dataSampleId = ctx.toServiceDto(dataSample).id!
+            const value = 'Some attachment'
+            const attachmentDoc = await ctx.serviceApi(h2api).setAttachment(dataSampleId, utf8_2ua(value))
+            const attachmentDocId = ctx.toDocumentDto(attachmentDoc).id!
+            expect(ua2utf8(await ctx.serviceApi(h1api).getAttachmentContent(dataSampleId, attachmentDocId))).toEqual(value)
+        })
+
+        it('Sharing a data sample should also share attachments of that data sample', async () => {
+            const { api: h1api } = await ctx.apiForEnvUser(env, hcp1Username)
+            const { api: h2api, user: h2user } = await ctx.apiForEnvUser(env, hcp2Username)
+            const patient = await ctx.createPatient(h1api)
+            const dataSample = await ctx.createServiceForPatient(h1api, patient)
+            const dataSampleId = ctx.toServiceDto(dataSample).id!
+            const value1 = 'Some attachment 1'
+            const value2 = 'Some attachment 2'
+            const attachmentDocEn = await ctx.serviceApi(h1api).setAttachment(dataSampleId, utf8_2ua(value1), undefined, undefined, undefined, 'en')
+            const attachmentDocEnId = ctx.toDocumentDto(attachmentDocEn).id!
+            const attachmentDocFr = await ctx.serviceApi(h1api).setAttachment(dataSampleId, utf8_2ua(value2), undefined, undefined, undefined, 'fr')
+            const attachmentDocFrId = ctx.toDocumentDto(attachmentDocFr).id!
+            await expect(ctx.serviceApi(h2api).getAttachmentContent(dataSampleId, attachmentDocEnId)).rejects.toBeInstanceOf(Error)
+            await expect(ctx.serviceApi(h2api).getAttachmentContent(dataSampleId, attachmentDocFrId)).rejects.toBeInstanceOf(Error)
+            await ctx.serviceApi(h1api).giveAccessTo(dataSample, h2user.healthcarePartyId!)
+            expect(ua2utf8(await ctx.serviceApi(h2api).getAttachmentContent(dataSampleId, attachmentDocEnId))).toEqual(value1)
+            expect(ua2utf8(await ctx.serviceApi(h2api).getAttachmentContent(dataSampleId, attachmentDocFrId))).toEqual(value2)
+        })
     })
 }

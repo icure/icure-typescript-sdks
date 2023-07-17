@@ -493,11 +493,17 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
 
         if (contactOfDataSample == undefined) throw this.errorHandler.createErrorWithMessage(`Could not find the batch of the service ${mappedService.id}. User ${currentUser.id} may not have access to it.`)
 
-        const updatedContact = await this.contactApi.shareWith(delegatedTo, contactOfDataSample)
+        const updatedContact = await this.contactApi.shareWith(delegatedTo, contactOfDataSample).catch((e) => {
+            this.contactsCache.invalidate(mappedService.id!)
+            throw e
+        })
 
         if (updatedContact == undefined || updatedContact.services == undefined) {
+            this.contactsCache.invalidate(mappedService.id!)
             throw this.errorHandler.createErrorWithMessage(`Impossible to give access to ${delegatedTo} to data sample ${mappedService.id} information`)
         }
+
+        this.contactsCache.put(mappedService.id!, updatedContact)
 
         const subContacts = updatedContact.subContacts?.filter((subContact) => subContact.services?.find((s) => s.serviceId == mappedService.id) != undefined)
 

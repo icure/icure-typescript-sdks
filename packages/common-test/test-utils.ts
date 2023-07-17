@@ -3,7 +3,6 @@ import { webcrypto } from 'crypto'
 import { KeyStorageFacade, sleep, StorageFacade } from '@icure/api'
 // import { AnonymousMedTechApi } from '../src/apis/AnonymousMedTechApi'
 import axios, { Method } from 'axios'
-import { assert, expect } from 'chai'
 import { tmpdir } from 'os'
 import { TextDecoder, TextEncoder } from 'util'
 import { v4 as uuid } from 'uuid'
@@ -365,3 +364,5 @@ export class TestUtils {
 //     expect(retrievedDataSample.id).to.eq(dataSampleId)
 //   }
 // }
+
+

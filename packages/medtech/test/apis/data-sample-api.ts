@@ -493,10 +493,7 @@ describe('Data Samples API', () => {
   it('Created attachments should be accessible to all data owners with access to the data sample', async () => {
     const { api: h1api } = await TestUtils.createMedTechApiAndLoggedUserFor(env!.iCureUrl, env!.dataOwnerDetails[hcp1Username])
     const { api: h2api, user: h2user } = await TestUtils.createMedTechApiAndLoggedUserFor(env!.iCureUrl, env!.dataOwnerDetails[hcp2Username])
-    const patient = await h1api.patientApi.giveAccessTo(
-      await h1api.patientApi.createOrModifyPatient(new Patient({ firstName: 'JohnJohn', lastName: 'John' })),
-      h2user.healthcarePartyId!
-    )
+    const patient = await h1api.patientApi.createOrModifyPatient(new Patient({ firstName: 'JohnJohn', lastName: 'John' }))
     const dataSample = await h1api.dataSampleApi.giveAccessTo(
       await h1api.dataSampleApi.createOrModifyDataSampleFor(patient.id!, new DataSample({})),
       h2user.healthcarePartyId!

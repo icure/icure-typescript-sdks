@@ -27,6 +27,7 @@ import {
   WithPatientApi,
   WithServiceApi
 } from "./TestContexts";
+import {expectArrayContainsExactlyInAnyOrder} from "../assertions";
 
 setLocalStorage(fetch)
 
@@ -363,7 +364,7 @@ export function testAuthenticationApi<
       const keysFromNewApi = ctx.dataOwnerApi(newApi).getPublicKeysOf(await ctx.dataOwnerApi(newApi).getDataOwner(user.patientId!))
 
       expect(keysFromNewApi.length).toBeGreaterThan(0)
-      expect(keysFromNewApi).toEqual(expect.arrayContaining(keysFromFirstInit))
+      expectArrayContainsExactlyInAnyOrder(keysFromNewApi, keysFromFirstInit)
     })
 
     it('Patient should be able to signing up through email using a different Storage implementation', async () => {
@@ -447,7 +448,7 @@ export function testAuthenticationApi<
       expect(await ctx.createServiceForPatient(loginAuthResult.api, currentPatient)).toBeTruthy()
 
       // But can't access (v8) / decrypt (v7) previous ones
-      await ctx.checkServiceInaccessible(loginAuthResult.api, createdDataSample)
+      await ctx.checkServiceAccessibleButEncrypted(loginAuthResult.api, createdDataSample)
 
       // When he gave access back with his previous key
       await patApiAndUser.api.baseApi.cryptoApi.forceReload()
@@ -455,7 +456,7 @@ export function testAuthenticationApi<
 
       // Then
       await loginAuthResult.api.baseApi.cryptoApi.forceReload()
-      await ctx.checkServiceAccessible(loginAuthResult.api, createdDataSample)
+      await ctx.checkServiceAccessibleAndDecrypted(loginAuthResult.api, createdDataSample)
     })
 
     it('A patient may login with a new RSA keypair and access his previous data only when a delegate gave him access back', async () => {
@@ -505,7 +506,7 @@ export function testAuthenticationApi<
       // User can create new data
       expect(await ctx.createServiceForPatient(loginAuthResult.api, currentPatient)).toBeTruthy()
       // But can't access (v8) / decrypt (v7) previous ones
-      await ctx.checkServiceInaccessible(loginAuthResult.api, createdService)
+      await ctx.checkServiceAccessibleButEncrypted(loginAuthResult.api, createdService)
 
       // When the delegate gave him access back
       // Hcp checks dedicated notification
@@ -528,7 +529,7 @@ export function testAuthenticationApi<
 
       // Then
       await loginAuthResult.api.baseApi.cryptoApi.forceReload()
-      await ctx.checkServiceAccessible(loginAuthResult.api, createdService)
+      await ctx.checkServiceAccessibleAndDecrypted(loginAuthResult.api, createdService)
     }, 120_000)
   })
 }

@@ -8,7 +8,12 @@ import {
     mapUserDtoToUser,
     mapUserToUserDto,
     User,
-    Notification, mapNotificationToMaintenanceTask, Document, mapMaintenanceTaskToNotification
+    Notification,
+    mapNotificationToMaintenanceTask,
+    Document,
+    mapMaintenanceTaskToNotification,
+    ServiceFilter,
+    mapDocumentToDocumentDto
 } from "@icure/typescript-common";
 import {AnonymousMedTechApi} from "../../src/apis/AnonymousMedTechApi";
 import {MedTechApi} from "../../src/apis/MedTechApi";
@@ -18,6 +23,7 @@ import {
     Service,
     User as UserDto,
     DataOwnerWithType as DataOwnerWithTypeDto,
+    Document as DocumentDto,
     HealthElement
 } from '@icure/api'
 import {UserApi} from "../../src/apis/UserApi"
@@ -51,6 +57,7 @@ import {
     mapHealthcareElementToHealthElement,
     mapHealthElementToHealthcareElement
 } from "../../src/mappers/HealthcareElement.mapper";
+import {DataSampleFilter} from "../../src/filter/DataSampleFilterDsl";
 
 export class MedTechBaseTestContext extends BaseApiTestContext<
     AnonymousMedTechApi.Builder,
@@ -117,16 +124,20 @@ export function DataSampleApiAware<TBase extends Constructor<any>>(Base: TBase):
             return api.dataSampleApi
         }
 
-        async checkServiceAccessible(api: MedTechApi, service: DataSample): Promise<void> {
+        async checkServiceAccessibleAndDecrypted(api: MedTechApi, service: DataSample): Promise<void> {
             const retrieved = await api.dataSampleApi.get(service.id!)
             expect(retrieved).toBeTruthy()
             expect(Array.from(retrieved.content.entries()).length).toBeGreaterThan(0)
         }
 
-        async checkServiceInaccessible(api: MedTechApi, service: DataSample): Promise<void> {
+        async checkServiceAccessibleButEncrypted(api: MedTechApi, service: DataSample): Promise<void> {
             const retrieved = await api.dataSampleApi.get(service.id!)
             expect(retrieved).toBeTruthy()
             expect(Array.from(retrieved.content.entries())).toHaveLength(0)
+        }
+
+        async checkServiceInaccessible(api: MedTechApi, service: DataSample): Promise<void> {
+            await expect(api.dataSampleApi.get(service.id!)).rejects.toBeInstanceOf(Error)
         }
 
         createServiceForPatient(api: MedTechApi, patient: Patient): Promise<DataSample> {
@@ -162,6 +173,14 @@ export function DataSampleApiAware<TBase extends Constructor<any>>(Base: TBase):
 
         toServiceDto(dsService: DataSample): Service {
             return mapDataSampleToService(dsService)
+        }
+
+        newServiceFilter(api: MedTechApi): ServiceFilter {
+            return new DataSampleFilter(api)
+        }
+
+        toDocumentDto(dsDocument: Document): DocumentDto {
+            return mapDocumentToDocumentDto(dsDocument);
         }
     }
 }

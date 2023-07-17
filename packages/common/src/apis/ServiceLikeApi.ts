@@ -102,9 +102,8 @@ export interface ServiceLikeApi<DSService, DSPatient, DSDocument> {
      * Get attachment content of a Service
      * @param id
      * @param documentId
-     * @param attachmentId
      */
-    getAttachmentContent(id: string, documentId: string, attachmentId: string): Promise<ArrayBuffer>
+    getAttachmentContent(id: string, documentId: string): Promise<ArrayBuffer>
 
     /**
      * Data Samples may contain attachments such as prescriptions, reports, ... Use this method to get the document metadata information of an attachment

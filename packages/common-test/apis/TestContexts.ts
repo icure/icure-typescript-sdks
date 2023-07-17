@@ -7,7 +7,7 @@ import {
     CryptoStrategies, DataOwnerLikeApi, DataOwnerWithType,
     HealthcarePartyLikeApi, HealthElementLikeApi,
     KeyPair, MaintenanceTaskLikeApi, PatientLikeApi,
-    RecaptchaType, ServiceLikeApi,
+    RecaptchaType, ServiceFilter, ServiceLikeApi,
     SimpleCryptoStrategies,
     UserLikeApi
 } from "@icure/typescript-common";
@@ -23,7 +23,8 @@ import {
     Patient, Service,
     sleep,
     StorageFacade,
-    User
+    User,
+    Document
 } from "@icure/api";
 import {TestVars} from "@icure/test-setup/types";
 import {DefaultStorageEntryKeysFactory} from "@icure/api/icc-x-api/storage/DefaultStorageEntryKeysFactory";
@@ -182,8 +183,11 @@ export interface WithServiceApi<DSApi, DSService, DSPatient, DSDocument> {
     createServiceForPatient(api: DSApi, patient: DSPatient): Promise<DSService>
     createServicesForPatient(api: DSApi, patient: DSPatient): Promise<DSService[]>
     toDSService(serviceDto: Service): DSService
-    checkServiceAccessible(api: DSApi, service: DSService): Promise<void>
+    checkServiceAccessibleAndDecrypted(api: DSApi, service: DSService): Promise<void>
+    checkServiceAccessibleButEncrypted(api: DSApi, service: DSService): Promise<void>
     checkServiceInaccessible(api: DSApi, service: DSService): Promise<void>
+    newServiceFilter(api: DSApi): ServiceFilter
+    toDocumentDto(dsDocument: DSDocument): Document
 }
 
 export interface WithMaintenanceTaskApi<DSApi, DSMaintenanceTask> {
