@@ -1,7 +1,6 @@
 import 'isomorphic-fetch'
 import {
   getEnvironmentInitializer,
-  getTempEmail,
   hcp1Username,
   hcp3Username,
   setLocalStorage,
@@ -12,197 +11,24 @@ import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import { TestKeyStorage, TestStorage, testStorageForUser } from '../test-storage'
 import {
   AnonymousApiBuilder,
-  ApiBuilder,
-  AuthenticatedApiBuilder,
-  AuthenticationApi,
   CommonAnonymousApi,
   CommonApi,
   CryptoStrategies,
-  DataOwnerLikeApi,
   DataOwnerWithType,
   forceUuid,
-  HealthcarePartyLikeApi,
-  KeyPair, MaintenanceTaskLikeApi,
-  MessageFactory,
   NotificationTypeEnum,
-  PatientLikeApi,
-  RecaptchaType,
-  ServiceLikeApi,
-  SimpleCryptoStrategies,
-  UserLikeApi
 } from "@icure/typescript-common";
-import {HealthcareParty, KeyStorageFacade, MaintenanceTask, Patient, sleep, StorageFacade} from "@icure/api";
-import {MedTechApi} from "@icure/medical-device-sdk";
 import {assert} from "chai";
-import { User } from "@icure/api"
-import {testStorageWithKeys} from "../../medtech/test/TestStorage";
-import {DefaultStorageEntryKeysFactory} from "@icure/api/icc-x-api/storage/DefaultStorageEntryKeysFactory";
-import {SimpleMedTechCryptoStrategies} from "@icure/medical-device-sdk/dist/src/services/MedTechCryptoStrategies";
-// import { SimpleMedTechCryptoStrategies } from '../../src/services/MedTechCryptoStrategies'
-// import { MedTechApi } from '../../src/apis/MedTechApi'
-// import { AnonymousMedTechApi } from '../../src/apis/AnonymousMedTechApi'
-// import { NotificationTypeEnum } from '@icure/typescript-common'
+import {
+  BaseApiTestContext,
+  WithAuthenticationApi,
+  WithDataOwnerApi,
+  WithHcpApi, WithMaintenanceTaskApi,
+  WithPatientApi,
+  WithServiceApi
+} from "./TestContexts";
 
 setLocalStorage(fetch)
-
-export abstract class BaseApiTestContext<
-    DSAnonymousApiBuilder extends AnonymousApiBuilder<DSCryptoStrategies, DSAnonymousApi>,
-    DSAnonymousApi extends CommonAnonymousApi<DSApi>,
-    DSApi extends CommonApi,
-    DSCryptoStrategies extends CryptoStrategies<any>,
-    DSUser
-> {
-  static readonly registerThrottlingLimit = 10000
-  private registerAverageWait = 10000
-  private lastRegisterCall = 0
-
-  abstract newAnonymousApiBuilder(): AnonymousApiBuilder<DSCryptoStrategies, DSAnonymousApi>
-  abstract newApiBuilder(): AuthenticatedApiBuilder<DSCryptoStrategies, any, DSApi>
-  abstract newSimpleCryptoStrategies(availableKeys?: KeyPair[]): DSCryptoStrategies & SimpleCryptoStrategies<any>
-  abstract userApi(api: DSApi): UserLikeApi<DSUser, any>
-  abstract toUserDto(dsUser: DSUser): User
-  abstract toDSUser(userDto: User): DSUser
-
-  async apiForEnvUser(
-      env: TestVars,
-      username: string,
-      additionalBuilderSteps: (builder: AuthenticatedApiBuilder<DSCryptoStrategies, any, DSApi>) => AuthenticatedApiBuilder<DSCryptoStrategies, any, DSApi> = (x) => x
-  ): Promise<{ api: DSApi, user: User }> {
-    const credentials = env.dataOwnerDetails[username]
-    const storage = await testStorageWithKeys(new DefaultStorageEntryKeysFactory(), [
-      {
-        dataOwnerId: credentials.dataOwnerId,
-        pairs: [{ keyPair: { publicKey: credentials.publicKey, privateKey: credentials.privateKey } }],
-      },
-    ])
-    const builderApi = this.newApiBuilder()
-        .withICureBaseUrl(env.iCureUrl)
-        .withUserName(credentials.user)
-        .withPassword(credentials.password)
-        .withCrypto(webcrypto as any)
-        .withStorage(storage.storage)
-        .withKeyStorage(storage.keyStorage)
-        .withCryptoStrategies(this.newSimpleCryptoStrategies())
-    const api = await additionalBuilderSteps(builderApi).build()
-
-    const foundUser = this.toUserDto(await this.userApi(api).getLogged())
-
-    return { api, user: foundUser }
-  }
-
-  async signUpUserUsingEmail(
-      env: TestVars,
-      firstName: string,
-      lastName: string,
-      userType: "hcp" | "patient",
-      inviterId: string,
-      recaptchaType: RecaptchaType = 'recaptcha',
-      storage?: StorageFacade<string>,
-      keyStorage?: KeyStorageFacade
-  ): Promise<{ api: DSApi; user: User; token: string }> {
-    if (new Date().getTime() - this.lastRegisterCall < BaseApiTestContext.registerThrottlingLimit) {
-      const throttlingWait = this.returnWithinBoundaries(
-          (BaseApiTestContext.registerThrottlingLimit - this.registerAverageWait) * 5 - this.registerAverageWait,
-          BaseApiTestContext.registerThrottlingLimit,
-          0
-      )
-      await sleep(throttlingWait)
-      this.registerAverageWait = this.registerAverageWait + (throttlingWait - this.registerAverageWait) / 5
-    }
-    this.lastRegisterCall = new Date().getTime()
-
-    const builder = this.newAnonymousApiBuilder()
-        .withICureBaseUrl(env.iCureUrl)
-        .withMsgGwUrl(env.msgGtwUrl)
-        .withMsgGwSpecId(env.specId)
-        .withCrypto(webcrypto as any)
-        .withAuthProcessByEmailId(userType === "hcp" ? env.hcpAuthProcessId : env.patAuthProcessId)
-        .withCryptoStrategies(this.newSimpleCryptoStrategies())
-
-    if (storage) {
-      builder.withStorage(storage)
-    }
-
-    if (keyStorage) {
-      builder.withKeyStorage(keyStorage)
-    }
-
-    const anonymousApi = await builder.build()
-
-    const email = getTempEmail()
-    const process = await anonymousApi.authenticationApi.startAuthentication(
-        recaptchaType === "recaptcha" ? env.recaptcha : env.friendlyCaptchaKey,
-        email,
-        undefined,
-        firstName,
-        lastName,
-        inviterId,
-        false,
-        8,
-        recaptchaType
-    )
-
-    const emails = await TestUtils.getEmail(email)
-
-    const subjectCode = emails.subject!
-
-    //assert(subjectCode.length === 8, 'The subject code should be 8 characters long')
-    const result = await anonymousApi.authenticationApi.completeAuthentication(process!, subjectCode)
-
-    if (result?.api == undefined) {
-      throw Error(`Couldn't sign up user by email for current test`)
-    }
-
-    const foundUser = await this.userApi(result.api).getLogged()
-    assert(result)
-    assert(result!.token != null)
-    assert(result!.userId != null)
-
-    return {api: result.api, user: this.toUserDto(foundUser), token: result.token}
-  }
-
-  private returnWithinBoundaries(element: number, upperBound: number, lowerBound: number): number {
-    if (element <= upperBound && element >= lowerBound) return element
-    else if (element > upperBound) return upperBound
-    if (element <= upperBound && element >= lowerBound) return element
-    else if (element > upperBound) return upperBound
-    else return lowerBound
-  }
-}
-
-export abstract class AuthenticationApiTestContext<
-    DSAnonymousApiBuilder extends AnonymousApiBuilder<DSCryptoStrategies, DSAnonymousApi>,
-    DSAnonymousApi extends CommonAnonymousApi<DSApi>,
-    DSApi extends CommonApi,
-    DSCryptoStrategies extends CryptoStrategies<any>,
-    DSUser,
-    DSHcp,
-    DSPatient,
-    DSDataOwnerWithType extends DataOwnerWithType,
-    DSService,
-    DSMaintenanceTask
-> extends BaseApiTestContext <
-    DSAnonymousApiBuilder,
-    DSAnonymousApi,
-    DSApi,
-    DSCryptoStrategies,
-    DSUser
-> {
-  abstract authenticationApi(api: DSApi): AuthenticationApi<DSApi>
-  abstract hcpApi(api: DSApi): HealthcarePartyLikeApi<DSHcp>
-  abstract toHcpDto(dsHcp: DSHcp): HealthcareParty
-  abstract toDSHcp(hcpDto: HealthcareParty): DSHcp
-  abstract patientApi(api: DSApi): PatientLikeApi<DSPatient>
-  abstract toPatientDto(dsPatient: DSPatient): Patient
-  abstract toDSPatient(patientDto: Patient): DSPatient
-  abstract dataOwnerApi(api: DSApi): DataOwnerLikeApi<DSDataOwnerWithType, DSUser>
-  abstract serviceApi(api: DSApi): ServiceLikeApi<DSService, DSPatient, any>
-  abstract createServiceForPatient(api: DSApi, patient: DSPatient): Promise<DSService>
-  abstract checkServiceAccessible(api: DSApi, service: DSService): Promise<void>
-  abstract checkServiceInaccessible(api: DSApi, service: DSService): Promise<void>
-  abstract mtApi(api: DSApi): MaintenanceTaskLikeApi<DSMaintenanceTask>
-  abstract toMtDto(dsMt: DSMaintenanceTask): MaintenanceTask
-}
 
 export function testAuthenticationApi<
     DSAnonymousApiBuilder extends AnonymousApiBuilder<DSCryptoStrategies, DSAnonymousApi>,
@@ -216,18 +42,18 @@ export function testAuthenticationApi<
     DSService,
     DSMaintenanceTask
 >(
-    ctx: AuthenticationApiTestContext<
+    ctx: BaseApiTestContext<
         DSAnonymousApiBuilder,
         DSAnonymousApi,
         DSApi,
         DSCryptoStrategies,
-        DSUser,
-        DSHcp,
-        DSPatient,
-        DSDataOwner,
-        DSService,
-        DSMaintenanceTask
-    >
+        DSUser
+    > & WithPatientApi<DSApi, DSPatient>
+      & WithAuthenticationApi<DSApi>
+      & WithHcpApi<DSApi, DSHcp>
+      & WithDataOwnerApi<DSApi, DSDataOwner, DSUser>
+      & WithServiceApi<DSApi, DSService, DSPatient, any>
+      & WithMaintenanceTaskApi<DSApi, DSMaintenanceTask>
 ) {
   let env: TestVars
   let hcpId: string
