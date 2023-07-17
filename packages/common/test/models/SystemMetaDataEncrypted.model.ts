@@ -22,6 +22,6 @@ export function generateSystemMetaDataEncrypted(domainTagType?: CodingReference)
         encryptionKeys,
         // securityMetadata,
         encryptedSelf,
-        tags: new Set([domainTagType] ?? []),
+        tags: domainTagType ? new Set([domainTagType]) : undefined,
     })
 }

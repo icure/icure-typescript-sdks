@@ -7,6 +7,7 @@ import { generateLocation } from './Location.model'
 import { generateProperty } from '../../../common/test/models/Property.model'
 import { generateSystemMetaDataOwner } from '../../../common/test/models/SystemMetaDataOwner.model'
 import { v4 } from 'uuid'
+import { domainTypeTag, mapCodeStubToCodingReference } from '@icure/typescript-common'
 
 export function generatePractitioner(): Practitioner {
     const practitioner = {
@@ -37,7 +38,7 @@ export function generatePractitioner(): Practitioner {
             ['fr', 'Ceci est un praticien factice'],
         ]),
         properties: new Set([generateProperty(), generateProperty()]),
-        systemMetaData: generateSystemMetaDataOwner(),
+        systemMetaData: generateSystemMetaDataOwner(mapCodeStubToCodingReference(domainTypeTag('Practitioner'))),
     } satisfies Practitioner
 
     return new Practitioner(practitioner)

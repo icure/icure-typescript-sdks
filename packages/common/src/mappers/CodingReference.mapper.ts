@@ -6,7 +6,7 @@ function toCodeStubId(domain: CodingReference): string | undefined {
 }
 
 function toCodeStubContext(domain: CodingReference): string | undefined {
-    return undefined
+    return domain.context
 }
 
 function toCodeStubType(domain: CodingReference): string | undefined {
@@ -19,6 +19,10 @@ function toCodeStubCode(domain: CodingReference): string | undefined {
 
 function toCodeStubVersion(domain: CodingReference): string | undefined {
     return domain.version
+}
+
+function toCodeStubLabel(domain: CodingReference): { [key: string]: string } | undefined {
+    return undefined
 }
 
 function toCodingReferenceId(dto: CodeStub): string {
@@ -37,8 +41,8 @@ function toCodingReferenceVersion(dto: CodeStub): string | undefined {
     return dto.version
 }
 
-function toCodeStubLabel(domain: CodingReference): { [key: string]: string } | undefined {
-    return undefined
+function toCodingReferenceContext(dto: CodeStub): string | undefined {
+    return dto.context
 }
 
 export function mapCodeStubToCodingReference(dto: CodeStub): CodingReference {
@@ -47,6 +51,7 @@ export function mapCodeStubToCodingReference(dto: CodeStub): CodingReference {
         type: toCodingReferenceType(dto),
         code: toCodingReferenceCode(dto),
         version: toCodingReferenceVersion(dto),
+        context: toCodingReferenceContext(dto),
     })
 }
 
