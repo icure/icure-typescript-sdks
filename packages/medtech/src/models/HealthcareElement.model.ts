@@ -10,14 +10,14 @@
  * Do not edit the class manually.
  */
 import { HealthElement } from '@icure/api'
-import { Annotation, CodingReference, Identifier, mapTo, SystemMetaDataEncrypted } from '@icure/typescript-common'
+import { Annotation, CodingReference, forceUuid, Identifier, mapTo, SystemMetaDataEncrypted } from '@icure/typescript-common'
 
 @mapTo(HealthElement)
 export class HealthcareElement {
   /**
    * The Id of the healthcare element. We encourage using either a v4 UUID or a HL7 Id.
    */
-  'id'?: string
+  'id': string
   'identifiers': Array<Identifier>
   /**
    * The revision of the healthcare element in the database, used for conflict management / optimistic locking.
@@ -56,11 +56,30 @@ export class HealthcareElement {
    * A text note (can be confidential, encrypted by default).
    */
   'note'?: string
-  notes?: Annotation[]
+  notes: Annotation[]
   'systemMetaData'?: SystemMetaDataEncrypted
 
   constructor(json: IHealthcareElement) {
-    Object.assign(this as HealthcareElement, json as IHealthcareElement)
+    this.id = forceUuid(json.id)
+    this.identifiers = json.identifiers ?? []
+    this.rev = json.rev
+    this.created = json.created
+    this.modified = json.modified
+    this.author = json.author
+    this.responsible = json.responsible
+    this.medicalLocationId = json.medicalLocationId
+    this.labels = json.labels ?? new Set()
+    this.codes = json.codes ?? new Set()
+    this.endOfLife = json.endOfLife
+    this.deletionDate = json.deletionDate
+    this.healthcareElementId = json.healthcareElementId
+    this.valueDate = json.valueDate
+    this.openingDate = json.openingDate
+    this.closingDate = json.closingDate
+    this.description = json.description
+    this.note = json.note
+    this.notes = json.notes ?? []
+    this.systemMetaData = json.systemMetaData
   }
 
   static toJSON(instance: HealthcareElement): any {
@@ -83,7 +102,7 @@ export class HealthcareElement {
     pojo['closingDate'] = instance.closingDate
     pojo['description'] = instance.description
     pojo['note'] = instance.note
-    pojo['notes'] = instance.notes?.map((item) => Annotation.toJSON(item))
+    pojo['notes'] = instance.notes.map((item) => Annotation.toJSON(item))
     pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataEncrypted.toJSON(instance.systemMetaData) : undefined
     return pojo
   }
@@ -108,7 +127,7 @@ export class HealthcareElement {
       closingDate: pojo['closingDate'],
       description: pojo['description'],
       note: pojo['note'],
-      notes: pojo['notes']?.map((item: any) => Annotation.fromJSON(item)),
+      notes: pojo['notes'].map((item: any) => Annotation.fromJSON(item)),
       systemMetaData: !!pojo['systemMetaData'] ? SystemMetaDataEncrypted.fromJSON(pojo['systemMetaData']) : undefined,
     })
   }

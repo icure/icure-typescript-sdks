@@ -6,17 +6,18 @@ import { GenderEnum } from '../../src/models/enums/Gender.enum'
 import { generateLocation } from './Location.model'
 import { generateProperty } from '../../../common/test/models/Property.model'
 import { generateSystemMetaDataOwner } from '../../../common/test/models/SystemMetaDataOwner.model'
+import { v4 } from 'uuid'
 
 export function generatePractitioner(): Practitioner {
     const practitioner = {
-        id: 'dummyId',
+        id: v4(),
         rev: 'dummyRev',
         created: Date.now(),
         modified: Date.now(),
         identifiers: [generateIdentifier()],
         // identifiers: [],
-        tags: [generateCodingReference()],
-        codes: [generateCodingReference()],
+        tags: new Set([generateCodingReference()]),
+        codes: new Set([generateCodingReference()]),
         deletionDate: null,
         name: 'dummyName',
         lastName: 'dummyLastName',
@@ -30,14 +31,14 @@ export function generatePractitioner(): Practitioner {
         addresses: [generateLocation()],
         languages: ['English'],
         picture: new ArrayBuffer(8),
-        specialityCodes: [generateCodingReference()],
+        specialityCodes: new Set([generateCodingReference()]),
         description: new Map([
             ['en', 'This is a fake practitioner'],
             ['fr', 'Ceci est un praticien factice'],
         ]),
-        properties: [generateProperty(), generateProperty()],
+        properties: new Set([generateProperty(), generateProperty()]),
         systemMetaData: generateSystemMetaDataOwner(),
-    }
+    } satisfies Practitioner
 
     return new Practitioner(practitioner)
 }

@@ -9,7 +9,7 @@ export class CodingReference {
     version?: string
 
     constructor(codingReference: ICodingReference) {
-        this.id = codingReference.id
+        this.id = codingReference.id!
         this.type = codingReference.type
         this.code = codingReference.code
         this.version = codingReference.version
@@ -30,7 +30,7 @@ export class CodingReference {
 }
 
 interface ICodingReference {
-    id: string
+    id?: string
     type?: string
     code?: string
     version?: string

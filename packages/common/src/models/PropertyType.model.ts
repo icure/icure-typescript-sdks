@@ -8,8 +8,8 @@ export class PropertyType {
     type?: TypeEnum
 
     constructor(propertyType: IPropertyType) {
-        this.identifier = propertyType?.identifier
-        this.type = propertyType?.type
+        this.identifier = propertyType.identifier!
+        this.type = propertyType.type
     }
 
     static toJSON(instance: PropertyType): any {
@@ -25,6 +25,6 @@ export class PropertyType {
 }
 
 interface IPropertyType {
-    identifier: string
+    identifier?: string
     type?: TypeEnum
 }

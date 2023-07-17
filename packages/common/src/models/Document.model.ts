@@ -15,11 +15,23 @@ import { mapTo } from '../utils/decorators'
 @mapTo(DocumentDto)
 export class Document {
     constructor(json: IDocument) {
-        const { otherUtis, ...simpleProperties } = json
-
-        Object.assign(this as Document, simpleProperties as IDocument)
-
-        this.otherUtis = otherUtis ? new Set([...otherUtis]) : new Set()
+        this.id = json.id!
+        this.rev = json.rev
+        this.created = json.created
+        this.modified = json.modified
+        this.author = json.author
+        this.responsible = json.responsible
+        this.medicalLocationId = json.medicalLocationId
+        this.deletionDate = json.deletionDate
+        this.objectStoreReference = json.objectStoreReference
+        this.mainUti = json.mainUti
+        this.externalUuid = json.externalUuid
+        this.size = json.size
+        this.hash = json.hash
+        this.attachmentId = json.attachmentId
+        this.name = json.name
+        this.version = json.version
+        this.otherUtis = json.otherUtis ?? new Set()
     }
 
     /**
@@ -119,7 +131,7 @@ export class Document {
 }
 
 interface IDocument {
-    id: string
+    id?: string
     rev?: string
     created?: number
     modified?: number
@@ -131,7 +143,7 @@ interface IDocument {
     mainUti?: string
     name?: string
     version?: string
-    otherUtis: Set<string>
+    otherUtis?: Set<string>
     externalUuid?: string
     size?: number
     hash?: string

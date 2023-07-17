@@ -3,7 +3,8 @@ import { Condition } from '../models/Condition.model'
 import {
     Annotation,
     CodingReference,
-    filteringOutInternalTags, forceUuid,
+    filteringOutInternalTags,
+    forceUuid,
     Identifier,
     mapAnnotationDtoToAnnotation,
     mapAnnotationToAnnotationDto,
@@ -206,8 +207,8 @@ function toConditionId(dto: HealthElement): string | undefined {
     return dto.id
 }
 
-function toConditionIdentifiers(dto: HealthElement): Set<Identifier> | undefined {
-    return !!dto.identifiers ? new Set([...dto.identifiers].map(mapIdentifierDtoToIdentifier)) : undefined
+function toConditionIdentifiers(dto: HealthElement): Identifier[] | undefined {
+    return !!dto.identifiers ? [...dto.identifiers].map(mapIdentifierDtoToIdentifier) : undefined
 }
 
 function toConditionRev(dto: HealthElement): string | undefined {

@@ -276,7 +276,7 @@ function toPatientDtoParameters(domain: Patient): { [key: string]: string[] } | 
 }
 
 function toPatientDtoProperties(domain: Patient): PropertyStub[] | undefined {
-    return !!domain.properties ? domain.properties.map(mapPropertyToPropertyStub) : undefined
+    return !!domain.properties ? [...domain.properties].map(mapPropertyToPropertyStub) : undefined
 }
 
 function toPatientDtoHcPartyKeys(domain: Patient): { [key: string]: string[] } | undefined {
@@ -535,8 +535,8 @@ function toPatientPatientProfessions(dto: PatientDto): CodingReference[] | undef
     return !!dto.patientProfessions ? dto.patientProfessions.map(mapCodeStubToCodingReference) : undefined
 }
 
-function toPatientProperties(dto: PatientDto): Property[] | undefined {
-    return !!dto.properties ? dto.properties.map(mapPropertyStubToProperty) : undefined
+function toPatientProperties(dto: PatientDto): Set<Property> | undefined {
+    return !!dto.properties ? new Set(dto.properties.map(mapPropertyStubToProperty)) : undefined
 }
 
 function toPatientSystemMetaData(dto: PatientDto): SystemMetaDataOwnerEncrypted | undefined {

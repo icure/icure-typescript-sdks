@@ -1,5 +1,6 @@
 import { Annotation as AnnotationDto, ISO639_1 } from '@icure/api'
 import { mapTo } from '../utils/decorators'
+import { forceUuid } from '../utils/uuidUtils'
 import { CodingReference } from './CodingReference.model'
 
 @mapTo(AnnotationDto)
@@ -15,12 +16,12 @@ export class Annotation {
     encryptedSelf?: string
 
     constructor(annotation: IAnnotation) {
-        this.id = annotation.id
-        this.tags = annotation.tags
+        this.id = forceUuid(annotation.id)
+        this.tags = annotation.tags ?? new Set()
         this.author = annotation.author
         this.created = annotation.created
         this.modified = annotation.modified
-        this.markdown = annotation.markdown
+        this.markdown = annotation.markdown ?? new Map()
         this.target = annotation.target
         this.confidential = annotation.confidential
         this.encryptedSelf = annotation.encryptedSelf
@@ -56,12 +57,12 @@ export class Annotation {
 }
 
 interface IAnnotation {
-    id: string
-    tags: Set<CodingReference>
+    id?: string
+    tags?: Set<CodingReference>
     author?: string
     created?: number
     modified?: number
-    markdown: Map<ISO639_1, string>
+    markdown?: Map<ISO639_1, string>
     target?: string
     confidential?: boolean
     encryptedSelf?: string

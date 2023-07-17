@@ -1,28 +1,29 @@
-import {Patient} from "../../src/models/Patient.model";
-import {generateIdentifier} from "../../../common/test/models/Identifier.model";
-import {generateCodingReference} from "../../../common/test/models/CodingReference.model";
-import {generateHumanName} from "./HumanName.model";
-import {generateLocation} from "./Location.model";
-import {GenderEnum} from "../../src/models/enums/Gender.enum";
-import {PatientDeactivationReasonEnum} from "../../src/models/enums/PatientDeactivationReason.enum";
-import {PatientPersonalStatusEnum} from "../../src/models/enums/PatientPersonalStatus.enum";
-import {generateAnnotation} from "../../../common/test/models/Annotation.model";
-import {generateProperty} from "../../../common/test/models/Property.model";
-import {generateRelatedPerson} from "./RelatedPerson.model";
-import {generateRelatedPractitioner} from "./RelatedPractitioner.model";
-import {generateSystemMetaDataOwnerEncrypted} from "../../../common/test/models/SystemMetaDataOwnerEncrypted.model";
+import { Patient } from '../../src/models/Patient.model'
+import { generateIdentifier } from '../../../common/test/models/Identifier.model'
+import { generateCodingReference } from '../../../common/test/models/CodingReference.model'
+import { generateHumanName } from './HumanName.model'
+import { generateLocation } from './Location.model'
+import { GenderEnum } from '../../src/models/enums/Gender.enum'
+import { PatientDeactivationReasonEnum } from '../../src/models/enums/PatientDeactivationReason.enum'
+import { PatientPersonalStatusEnum } from '../../src/models/enums/PatientPersonalStatus.enum'
+import { generateAnnotation } from '../../../common/test/models/Annotation.model'
+import { generateProperty } from '../../../common/test/models/Property.model'
+import { generateRelatedPerson } from './RelatedPerson.model'
+import { generateRelatedPractitioner } from './RelatedPractitioner.model'
+import { generateSystemMetaDataOwnerEncrypted } from '../../../common/test/models/SystemMetaDataOwnerEncrypted.model'
+import { v4 } from 'uuid'
 
 export function generatePatient(): Patient {
     const patient = {
-        id: 'sampleId',
+        id: v4(),
         rev: 'sampleRev',
         identifiers: [generateIdentifier()],
         created: 1621872000000,
         modified: 1621872000000,
         author: 'sampleAuthor',
         responsible: 'sampleResponsible',
-        tags: [generateCodingReference()],
-        codes: [generateCodingReference()],
+        tags: new Set([generateCodingReference()]),
+        codes: new Set([generateCodingReference()]),
         endOfLife: 1621872000000,
         deletionDate: 1621872000000,
         names: [generateHumanName()],
@@ -54,9 +55,9 @@ export function generatePatient(): Patient {
         relatives: [generateRelatedPerson()],
         patientPractitioners: [generateRelatedPractitioner()],
         patientProfessions: [generateCodingReference()],
-        properties: [generateProperty()],
+        properties: new Set([generateProperty()]),
         systemMetaData: generateSystemMetaDataOwnerEncrypted(),
-    }
+    } satisfies Patient
 
     return new Patient(patient)
 }

@@ -34,12 +34,19 @@ export class Address {
   encryptedSelf?: string
 
   constructor(json: IAddress) {
-    const { addressType, telecoms, ...simpleProperties } = json
-
-    Object.assign(this as Address, simpleProperties)
-
-    this.addressType = addressType as AddressAddressTypeEnum
-    this.telecoms = telecoms?.map((t) => new Telecom(t)) ?? []
+    this.addressType = json.addressType
+    this.description = json.description
+    this.street = json.street
+    this.houseNumber = json.houseNumber
+    this.postboxNumber = json.postboxNumber
+    this.postalCode = json.postalCode
+    this.city = json.city
+    this.state = json.state
+    this.country = json.country
+    this.note = json.note
+    this.telecoms = json.telecoms ?? []
+    this.notes = json.notes
+    this.encryptedSelf = json.encryptedSelf
   }
 
   static toJSON(instance: Address): any {

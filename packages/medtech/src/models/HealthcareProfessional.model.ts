@@ -11,20 +11,41 @@
  */
 
 import { b64_2ab, HealthcareParty, ua2b64 } from '@icure/api'
-import { CodingReference, mapTo, Property, SystemMetaDataOwner } from '@icure/typescript-common'
+import { CodingReference, forceUuid, mapTo, Property, SystemMetaDataOwner } from '@icure/typescript-common'
 import { Address } from './Address.model'
 import { PersonName } from './PersonName.model'
 
 @mapTo(HealthcareParty)
 export class HealthcareProfessional {
   constructor(json: IHealthcareProfessional) {
-    Object.assign(this as HealthcareProfessional, json as IHealthcareProfessional)
+    this.id = forceUuid(json.id)
+    this.rev = json.rev
+    this.created = json.created
+    this.modified = json.modified
+    this.labels = json.labels ?? new Set()
+    this.codes = json.codes ?? new Set()
+    this.names = json.names ?? []
+    this.addresses = json.addresses ?? []
+    this.properties = json.properties ?? new Set()
+    this.notes = json.notes
+    this.deletionDate = json.deletionDate
+    this.name = json.name
+    this.lastName = json.lastName
+    this.firstName = json.firstName
+    this.gender = json.gender
+    this.civility = json.civility
+    this.speciality = json.speciality
+    this.parentId = json.parentId
+    this.languages = json.languages ?? []
+    this.picture = json.picture
+    this.specialityCodes = json.specialityCodes ?? new Set()
+    this.systemMetaData = json.systemMetaData
   }
 
   /**
    * the Id of the healthcare party. We encourage using either a v4 UUID or a HL7 Id.
    */
-  'id'?: string
+  'id': string
   /**
    * the revision of the healthcare party in the database, used for conflict management / optimistic locking.
    */
@@ -98,7 +119,7 @@ export class HealthcareProfessional {
   /**
    * Medical specialty of the healthcare party codified using FHIR or Kmehr codificaiton scheme
    */
-  'specialityCodes'?: Set<CodingReference>
+  'specialityCodes': Set<CodingReference>
   /**
    * Text notes.
    */
@@ -126,7 +147,7 @@ export class HealthcareProfessional {
     pojo['addresses'] = instance.addresses.map((item) => Address.toJSON(item))
     pojo['languages'] = instance.languages.map((item) => item)
     pojo['picture'] = !!instance.picture ? ua2b64(instance.picture) : undefined
-    pojo['specialityCodes'] = Array.from([...(instance.specialityCodes ?? [])]?.map((item) => CodingReference.toJSON(item)) ?? [])
+    pojo['specialityCodes'] = Array.from([...instance.specialityCodes].map((item) => CodingReference.toJSON(item)))
     pojo['notes'] = instance.notes
     pojo['properties'] = Array.from([...instance.properties].map((item) => Property.toJSON(item)))
     pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataOwner.toJSON(instance.systemMetaData) : undefined
@@ -153,7 +174,7 @@ export class HealthcareProfessional {
       addresses: pojo['addresses'].map((item: any) => Address.fromJSON(item)),
       languages: pojo['languages'].map((item: any) => item),
       picture: !!pojo['picture'] ? b64_2ab(pojo['picture']) : undefined,
-      specialityCodes: new Set(pojo['specialityCodes']?.map((item: any) => CodingReference.fromJSON(item)) ?? []),
+      specialityCodes: new Set(pojo['specialityCodes'].map((item: any) => CodingReference.fromJSON(item))),
       notes: pojo['notes'],
       properties: new Set(pojo['properties'].map((item: any) => Property.fromJSON(item))),
       systemMetaData: !!pojo['systemMetaData'] ? SystemMetaDataOwner.fromJSON(pojo['systemMetaData']) : undefined,

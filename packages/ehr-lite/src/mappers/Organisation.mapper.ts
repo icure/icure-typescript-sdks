@@ -1,5 +1,5 @@
 import { Organisation } from '../models/Organisation.model'
-import { Address, CodeStub, FinancialInstitutionInformation, FlatRateTarification, HealthcareParty, HealthcarePartyHistoryStatus, Identifier as IdentifierDto, PersonName, PropertyStub } from '@icure/api'
+import { Address, CodeStub, FinancialInstitutionInformation, FlatRateTarification, HealthcareParty, HealthcarePartyHistoryStatus, Identifier as IdentifierDto, ISO639_1, PersonName, PropertyStub } from '@icure/api'
 import { Location } from '../models/Location.model'
 import {
     CodingReference,
@@ -216,7 +216,7 @@ function toHealthcarePartyOptions(domain: Organisation): { [key: string]: string
 }
 
 function toHealthcarePartyProperties(domain: Organisation): PropertyStub[] | undefined {
-    return !!domain.properties ? domain.properties.map(mapPropertyToPropertyStub) : undefined
+    return !!domain.properties ? [...domain.properties].map(mapPropertyToPropertyStub) : undefined
 }
 
 function toHealthcarePartyHcPartyKeys(domain: Organisation): { [key: string]: string[] } | undefined {
@@ -311,12 +311,12 @@ function toOrganisationPicture(dto: HealthcareParty): ArrayBuffer | undefined {
     return dto.picture
 }
 
-function toOrganisationDescription(dto: HealthcareParty): Map<string, string> | undefined {
-    return !!dto.descr ? convertObjectToMap(dto.descr) : undefined
+function toOrganisationDescription(dto: HealthcareParty): Map<ISO639_1, string> | undefined {
+    return !!dto.descr ? (convertObjectToMap(dto.descr) as Map<ISO639_1, string>) : undefined
 }
 
-function toOrganisationProperties(dto: HealthcareParty): Property[] | undefined {
-    return !!dto.properties ? dto.properties.map(mapPropertyStubToProperty) : undefined
+function toOrganisationProperties(dto: HealthcareParty): Set<Property> | undefined {
+    return !!dto.properties ? new Set(dto.properties.map(mapPropertyStubToProperty)) : undefined
 }
 
 function toOrganisationSystemMetaData(dto: HealthcareParty): SystemMetaDataOwner | undefined {

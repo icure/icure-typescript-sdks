@@ -1,3 +1,6 @@
+import { Delegation } from '../../src'
+import { generateDelegation } from './Delegation.model'
+
 export function generateRandomStringArray(): string[] {
     return Array.from({ length: 5 }, () => Math.random().toString(36).substring(2, 15))
 }
@@ -40,4 +43,16 @@ export function generateRandomDate(): number {
 
 export function generateRandomEncryptedSelf(): string {
     return generateRandomString()
+}
+
+export function generateDelegationSet(): Set<Delegation> {
+    return new Set(Array.from({ length: 5 }, () => generateDelegation()))
+}
+
+export function generateDelegationMap(): Map<string, Set<Delegation>> {
+    const map: Map<string, Set<Delegation>> = new Map()
+    for (let i = 0; i < 5; i++) {
+        map.set(Math.random().toString(36).substring(2, 15), generateDelegationSet())
+    }
+    return map
 }

@@ -20,7 +20,7 @@ import { PersonName } from './PersonName.model'
 
 @mapTo(PatientDto)
 export class Patient {
-  'id'?: string
+  'id': string
   'rev'?: string
   'identifiers': Identifier[]
   'created'?: number
@@ -59,7 +59,7 @@ export class Patient {
   'education'?: string
   'profession'?: string
   'note'?: string
-  notes?: Annotation[]
+  notes: Annotation[]
   'administrativeNote'?: string
   'nationality'?: string
   'race'?: string
@@ -91,6 +91,7 @@ export class Patient {
       patientProfessions,
       properties,
       systemMetaData,
+      notes,
       ...simpleProperties
     } = json
 
@@ -100,6 +101,7 @@ export class Patient {
 
     this.labels = labels ? new Set([...labels].map((it) => new CodingReference(it))) : new Set()
     this.codes = codes ? new Set([...codes].map((it) => new CodingReference(it))) : new Set()
+    this.notes = notes ? [...notes]?.map((it) => new Annotation(it)) : []
 
     this.names = names?.map((n) => new PersonName(n)) ?? []
     this.addresses = addresses?.map((a) => new Address(a)) ?? []
@@ -167,7 +169,7 @@ export class Patient {
     pojo['education'] = instance.education
     pojo['profession'] = instance.profession
     pojo['note'] = instance.note
-    pojo['notes'] = instance.notes?.map((item) => Annotation.toJSON(item))
+    pojo['notes'] = instance.notes.map((item) => Annotation.toJSON(item))
     pojo['administrativeNote'] = instance.administrativeNote
     pojo['nationality'] = instance.nationality
     pojo['race'] = instance.race
@@ -224,7 +226,7 @@ export class Patient {
       education: pojo['education'],
       profession: pojo['profession'],
       note: pojo['note'],
-      notes: pojo['notes']?.map((item: any) => Annotation.fromJSON(item)),
+      notes: pojo['notes'].map((item: any) => Annotation.fromJSON(item)),
       administrativeNote: pojo['administrativeNote'],
       nationality: pojo['nationality'],
       race: pojo['race'],
