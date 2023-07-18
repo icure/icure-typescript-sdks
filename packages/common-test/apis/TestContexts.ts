@@ -171,6 +171,10 @@ export interface WithPatientApi<DSApi, DSPatient> {
   toPatientDto(dsPatient: DSPatient): Patient
   toDSPatient(patientDto: Patient): DSPatient
   createPatient(api: DSApi): Promise<DSPatient>
+  checkPatientAccessibleAndDecrypted(api: DSApi, patient: DSPatient, checkDeepEquals: boolean): Promise<void>
+  // checkPatientAccessibleButEncrypted(api: DSApi, patient: DSPatient): Promise<void>
+  checkPatientInaccessible(api: DSApi, patient: DSPatient): Promise<void>
+  checkDefaultPatientDecrypted(patient: DSPatient): void
 }
 
 export interface WithDataOwnerApi<DSApi, DSDataOwnerWithType extends DataOwnerWithType, DSUser> {

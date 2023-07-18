@@ -1,4 +1,3 @@
-import { testAuthenticationApi } from '../../../common-test/apis/authentication-api.test'
 import {
     AuthenticationApiAware,
     DataOwnerApiAware,
@@ -6,6 +5,7 @@ import {
     MedTechBaseTestContext, NotificationApiAware,
     PatientApiAware
 } from "./TestContexts";
+import {testAuthenticationApi} from "../../../common-test/apis/authentication-api";
 
 const AuthenticationApiTestContext =
     AuthenticationApiAware(DataSampleApiAware(PatientApiAware(DataOwnerApiAware(HealthcareProfessionalApiAware(NotificationApiAware(MedTechBaseTestContext))))))

@@ -51,12 +51,7 @@ export function testMaintenanceTaskLikeApi<
     DSCryptoStrategies,
     DSUser,
     any
-  > & WithPatientApi<DSApi, DSPatient>
-    & WithAuthenticationApi<DSApi>
-    & WithHcpApi<DSApi, DSHcp>
-    & WithDataOwnerApi<DSApi, DSDataOwner, DSUser>
-    & WithServiceApi<DSApi, DSService, DSPatient, any>
-    & WithMaintenanceTaskApi<DSApi, DSMaintenanceTask>
+  > & WithMaintenanceTaskApi<DSApi, DSMaintenanceTask>
 ) {
   describe('Notification API', function () {
     let env: TestVars

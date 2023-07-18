@@ -124,6 +124,21 @@ export function PatientApiAware<TBase extends Constructor<any>>(Base: TBase): TB
                 })
             )
         }
+
+        checkDefaultPatientDecrypted(patient: Patient): void {
+            expect(patient.note).toEqual('Winter is coming')
+        }
+
+        async checkPatientAccessibleAndDecrypted(api: MedTechApi, patient: Patient, checkDeepEquals: boolean): Promise<void> {
+            const retrieved = await api.patientApi.get(patient.id!)
+            expect(retrieved).toBeTruthy()
+            expect(retrieved.note).toBeTruthy()
+            if (checkDeepEquals) expect(retrieved).toEqual(patient)
+        }
+
+        async checkPatientInaccessible(api: MedTechApi, patient: Patient): Promise<void> {
+            await expect(api.dataSampleApi.get(patient.id!)).rejects.toBeInstanceOf(Error)
+        }
     }
 }
 

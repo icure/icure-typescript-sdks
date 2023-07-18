@@ -1,13 +1,9 @@
 import {
-    AuthenticationApiAware,
-    DataOwnerApiAware,
-    DataSampleApiAware, HealthcareProfessionalApiAware,
-    MedTechBaseTestContext, NotificationApiAware,
-    PatientApiAware
+    MedTechBaseTestContext, NotificationApiAware
 } from "./TestContexts";
 import {testMaintenanceTaskLikeApi} from "../../../common-test/apis/maintenance-task-like-api";
 
 const NotificationApiTestContext =
-    AuthenticationApiAware(DataSampleApiAware(PatientApiAware(DataOwnerApiAware(HealthcareProfessionalApiAware(NotificationApiAware(MedTechBaseTestContext))))))
+    NotificationApiAware(MedTechBaseTestContext)
 
 testMaintenanceTaskLikeApi(new NotificationApiTestContext())
