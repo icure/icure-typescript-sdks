@@ -163,7 +163,7 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
                             status: 'pending',
                             author: loggedUser.id,
                             responsible: loggedUser.patientId,
-                            type: NotificationTypeEnum.NEW_USER_OWN_DATA_ACCESS,
+                            taskType: NotificationTypeEnum.NEW_USER_OWN_DATA_ACCESS,
                         },
                         {
                             additionalDelegates: { [delegate]: 'WRITE' }

@@ -47,7 +47,8 @@ export function testHcpLikeApi<
     DSAnonymousApi,
     DSApi,
     DSCryptoStrategies,
-    DSUser
+    DSUser,
+    any
   > & WithPatientApi<DSApi, DSPatient>
     & WithHcpApi<DSApi, DSHcp>
     & WithDataOwnerApi<DSApi, DSDataOwner, DSUser>

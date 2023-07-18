@@ -125,7 +125,7 @@ export interface UserApi extends UserLikeApi<User, Patient> {
  */
 class UserApiImpl extends UserLikeApiImpl<User, Patient, HealthcareProfessional> implements UserApi {
   createAndInviteUser(patient: Patient, tokenDuration?: number): Promise<User> {
-    return this.createAndInvite(patient, tokenDuration)
+    return this.createAndInviteFor(patient, tokenDuration)
   }
   createOrModifyUser(user: User): Promise<User> {
     return this.createOrModify(user)

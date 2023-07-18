@@ -6,9 +6,9 @@ import {
   setLocalStorage,
   TestUtils
 } from '../test-utils'
-import { webcrypto } from 'crypto'
-import { getEnvVariables, TestVars } from '@icure/test-setup/types'
-import { TestKeyStorage, TestStorage, testStorageForUser } from '../test-storage'
+import {webcrypto} from 'crypto'
+import {getEnvVariables, TestVars} from '@icure/test-setup/types'
+import {TestKeyStorage, TestStorage, testStorageForUser} from '../test-storage'
 import {
   AnonymousApiBuilder,
   CommonAnonymousApi,
@@ -32,29 +32,30 @@ import {expectArrayContainsExactlyInAnyOrder} from "../assertions";
 setLocalStorage(fetch)
 
 export function testAuthenticationApi<
-    DSAnonymousApiBuilder extends AnonymousApiBuilder<DSCryptoStrategies, DSAnonymousApi>,
-    DSAnonymousApi extends CommonAnonymousApi<DSApi>,
-    DSApi extends CommonApi,
-    DSCryptoStrategies extends CryptoStrategies<any>,
-    DSUser,
-    DSHcp,
-    DSPatient,
-    DSDataOwner extends DataOwnerWithType,
-    DSService,
-    DSMaintenanceTask
+  DSAnonymousApiBuilder extends AnonymousApiBuilder<DSCryptoStrategies, DSAnonymousApi>,
+  DSAnonymousApi extends CommonAnonymousApi<DSApi>,
+  DSApi extends CommonApi,
+  DSCryptoStrategies extends CryptoStrategies<any>,
+  DSUser,
+  DSHcp,
+  DSPatient,
+  DSDataOwner extends DataOwnerWithType,
+  DSService,
+  DSMaintenanceTask
 >(
-    ctx: BaseApiTestContext<
-        DSAnonymousApiBuilder,
-        DSAnonymousApi,
-        DSApi,
-        DSCryptoStrategies,
-        DSUser
-    > & WithPatientApi<DSApi, DSPatient>
-      & WithAuthenticationApi<DSApi>
-      & WithHcpApi<DSApi, DSHcp>
-      & WithDataOwnerApi<DSApi, DSDataOwner, DSUser>
-      & WithServiceApi<DSApi, DSService, DSPatient, any>
-      & WithMaintenanceTaskApi<DSApi, DSMaintenanceTask>
+  ctx: BaseApiTestContext<
+    DSAnonymousApiBuilder,
+    DSAnonymousApi,
+    DSApi,
+    DSCryptoStrategies,
+    DSUser,
+    any
+  > & WithPatientApi<DSApi, DSPatient>
+    & WithAuthenticationApi<DSApi>
+    & WithHcpApi<DSApi, DSHcp>
+    & WithDataOwnerApi<DSApi, DSDataOwner, DSUser>
+    & WithServiceApi<DSApi, DSService, DSPatient, any>
+    & WithMaintenanceTaskApi<DSApi, DSMaintenanceTask>
 ) {
   let env: TestVars
   let hcpId: string
@@ -71,26 +72,26 @@ export function testAuthenticationApi<
 
     it("AnonymousMedTechApi shouldn't be instantiated if authServerUrl, authProcessId and specId aren't passed", async () => {
       await expect(
-          Promise.resolve().then(() => ctx.newAnonymousApiBuilder()
-              .withICureBaseUrl(env!.iCureUrl)
-              .withCrypto(webcrypto as any)
-              .withMsgGwUrl(env!.msgGtwUrl)
-              .withAuthProcessByEmailId(env!.hcpAuthProcessId)
-              .withAuthProcessBySmsId(env!.hcpAuthProcessId)
-              .withCryptoStrategies(ctx.newSimpleCryptoStrategies())
-              .build()
-          )
-      ).rejects.toBeInstanceOf(Error)
-
-      const anonymousMedTechApi = await ctx.newAnonymousApiBuilder()
+        Promise.resolve().then(() => ctx.newAnonymousApiBuilder()
           .withICureBaseUrl(env!.iCureUrl)
           .withCrypto(webcrypto as any)
           .withMsgGwUrl(env!.msgGtwUrl)
-          .withMsgGwSpecId(env!.specId)
-          .withAuthProcessByEmailId('fake-process-id')
-          .withAuthProcessBySmsId('fake-process-id')
+          .withAuthProcessByEmailId(env!.hcpAuthProcessId)
+          .withAuthProcessBySmsId(env!.hcpAuthProcessId)
           .withCryptoStrategies(ctx.newSimpleCryptoStrategies())
           .build()
+        )
+      ).rejects.toBeInstanceOf(Error)
+
+      const anonymousMedTechApi = await ctx.newAnonymousApiBuilder()
+        .withICureBaseUrl(env!.iCureUrl)
+        .withCrypto(webcrypto as any)
+        .withMsgGwUrl(env!.msgGtwUrl)
+        .withMsgGwSpecId(env!.specId)
+        .withAuthProcessByEmailId('fake-process-id')
+        .withAuthProcessBySmsId('fake-process-id')
+        .withCryptoStrategies(ctx.newSimpleCryptoStrategies())
+        .build()
 
       expect(anonymousMedTechApi).toBeTruthy()
     })
@@ -114,7 +115,7 @@ export function testAuthenticationApi<
 
       await expect(Promise.resolve().then(() => ctx.authenticationApi(api))).rejects.toBeInstanceOf(Error)
     })
-    
+
     it('Cannot instantiate the API if no AuthProcessId is passed', async () => {
       await expect(
         Promise.resolve().then(() => ctx.newAnonymousApiBuilder()
@@ -126,7 +127,7 @@ export function testAuthenticationApi<
         )
       ).rejects.toBeInstanceOf(Error)
     })
-    
+
     it("User should not be able to start authentication if he didn't provide any email and mobilePhone", async () => {
       // Given
       const anonymousMedTechApi = await ctx.newAnonymousApiBuilder()
@@ -264,12 +265,12 @@ export function testAuthenticationApi<
       const lastName = `Bagigio${forceUuid()}`
       // TODO we need to update this method to also take the FHIR type of hcp or something else?
       const hcpApiAndUser = await ctx.signUpUserUsingEmail(
-          env!,
-          firstName,
-          lastName,
-          "hcp",
-          hcpId!,
-          'friendly-captcha'
+        env!,
+        firstName,
+        lastName,
+        "hcp",
+        hcpId!,
+        'friendly-captcha'
       )
       const currentUser = hcpApiAndUser.user
 
@@ -290,12 +291,12 @@ export function testAuthenticationApi<
       const firstName = `Gigio${forceUuid()}`
       const lastName = `Bagigio${forceUuid()}`
       const patApiAndUser = await ctx.signUpUserUsingEmail(
-          env!,
-          firstName,
-          lastName,
-          "patient",
-          hcpId!,
-          'recaptcha'
+        env!,
+        firstName,
+        lastName,
+        "patient",
+        hcpId!,
+        'recaptcha'
       )
       const currentUser = patApiAndUser.user
 
@@ -316,12 +317,12 @@ export function testAuthenticationApi<
       const firstName = `Gigio${forceUuid()}`
       const lastName = `Bagigio${forceUuid()}`
       const patApiAndUser = await ctx.signUpUserUsingEmail(
-          env!,
-          firstName,
-          lastName,
-          "patient",
-          hcpId!,
-          'friendly-captcha'
+        env!,
+        firstName,
+        lastName,
+        "patient",
+        hcpId!,
+        'friendly-captcha'
       )
       const currentUser = patApiAndUser.user
 
@@ -339,7 +340,7 @@ export function testAuthenticationApi<
 
     it('Patient should be able to retrieve its keys when re-login', async () => {
       // When
-      const { api, user, token } = await ctx.signUpUserUsingEmail(
+      const {api, user, token} = await ctx.signUpUserUsingEmail(
         env,
         'A',
         'B',
@@ -399,12 +400,12 @@ export function testAuthenticationApi<
     it('A patient may login with a new RSA keypair and access his previous data if he gave access to its new key with his previous private key', async () => {
       // Given
       const patApiAndUser = await ctx.signUpUserUsingEmail(
-          env!,
-          'a',
-          'b',
-          'patient',
-          hcpId,
-          'recaptcha',
+        env!,
+        'a',
+        'b',
+        'patient',
+        hcpId,
+        'recaptcha',
       )
 
       const currentPatient = await ctx.patientApi(patApiAndUser.api).get(patApiAndUser.user.patientId!)
@@ -438,7 +439,7 @@ export function testAuthenticationApi<
       }
 
       const keysAfterLoss = ctx.dataOwnerApi(loginAuthResult.api).getPublicKeysOf(
-          await ctx.dataOwnerApi(loginAuthResult.api).getDataOwner(patApiAndUser.user.patientId!)
+        await ctx.dataOwnerApi(loginAuthResult.api).getDataOwner(patApiAndUser.user.patientId!)
       )
       expect(keysAfterLoss.length).toBeGreaterThan(keysFromFirstInit.length)
       expect(newCryptoStrategies.generatedKeyPair).toBeTruthy()
@@ -456,7 +457,7 @@ export function testAuthenticationApi<
 
       // Then
       await loginAuthResult.api.baseApi.cryptoApi.forceReload()
-      await ctx.checkServiceAccessibleAndDecrypted(loginAuthResult.api, createdDataSample)
+      await ctx.checkServiceAccessibleAndDecrypted(loginAuthResult.api, createdDataSample, true)
     })
 
     it('A patient may login with a new RSA keypair and access his previous data only when a delegate gave him access back', async () => {
@@ -475,7 +476,7 @@ export function testAuthenticationApi<
       await ctx.patientApi(patApiAndUser.api).giveAccessTo(currentPatient, hcpApiAndUser.user.healthcarePartyId!)
 
       const createdService = await ctx.createServiceForPatient(patApiAndUser.api, currentPatient)
-      await ctx.serviceApi(patApiAndUser.api).giveAccessTo(createdService, hcpApiAndUser.user.healthcarePartyId!)
+      const sharedService = await ctx.serviceApi(patApiAndUser.api).giveAccessTo(createdService, hcpApiAndUser.user.healthcarePartyId!)
 
       // User lost his key and logs back
       const newCryptoStrategies = ctx.newSimpleCryptoStrategies([])
@@ -512,11 +513,11 @@ export function testAuthenticationApi<
       // Hcp checks dedicated notification
       const startTimestamp = new Date().getTime() - 100000
       const hcpNotification = (await ctx.mtApi(hcpApiAndUser.api).getPendingAfter(startTimestamp))
-          .map((x) => ctx.toMtDto(x))
-          .find((mt) =>
-            mt.taskType === NotificationTypeEnum.KEY_PAIR_UPDATE &&
-            Array.from(mt.properties).find((prop) => prop.typedValue?.stringValue == patApiAndUser.user.patientId!) != undefined
-          )
+        .map((x) => ctx.toMtDto(x))
+        .find((mt) =>
+          mt.taskType === NotificationTypeEnum.KEY_PAIR_UPDATE &&
+          Array.from(mt.properties).find((prop) => prop.typedValue?.stringValue == patApiAndUser.user.patientId!) != undefined
+        )
 
       expect(hcpNotification).toBeTruthy()
 
@@ -529,7 +530,7 @@ export function testAuthenticationApi<
 
       // Then
       await loginAuthResult.api.baseApi.cryptoApi.forceReload()
-      await ctx.checkServiceAccessibleAndDecrypted(loginAuthResult.api, createdService)
+      await ctx.checkServiceAccessibleAndDecrypted(loginAuthResult.api, sharedService, true)
     }, 120_000)
   })
 }

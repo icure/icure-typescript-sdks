@@ -13,7 +13,7 @@ import {
     Document,
     mapMaintenanceTaskToNotification,
     ServiceFilter,
-    mapDocumentToDocumentDto, HealthElementFilter
+    mapDocumentToDocumentDto, HealthElementFilter, MessageFactory
 } from "@icure/typescript-common";
 import {AnonymousMedTechApi} from "../../src/apis/AnonymousMedTechApi";
 import {MedTechApi} from "../../src/apis/MedTechApi";
@@ -59,13 +59,16 @@ import {
 } from "../../src/mappers/HealthcareElement.mapper";
 import {DataSampleFilter} from "../../src/filter/DataSampleFilterDsl";
 import {HealthcareElementFilter} from "../../src/filter/HealthcareElementFilterDsl";
+import {TestMessageFactory} from "../test-utils";
+import {MedTechMessageFactory} from "../../src/services/MedTechMessageFactory";
 
 export class MedTechBaseTestContext extends BaseApiTestContext<
     AnonymousMedTechApi.Builder,
     AnonymousMedTechApi,
     MedTechApi,
     MedTechCryptoStrategies,
-    User
+    User,
+    MedTechMessageFactory
 > {
     newAnonymousApiBuilder(): AnonymousMedTechApi.Builder {
         return new AnonymousMedTechApi.Builder()
@@ -89,6 +92,10 @@ export class MedTechBaseTestContext extends BaseApiTestContext<
 
     userApi(api: MedTechApi): UserApi {
         return api.userApi
+    }
+
+    newTestMessageFactory(): MessageFactory<any, any, any> {
+        return new TestMessageFactory()
     }
 }
 

@@ -46,7 +46,8 @@ export function testHelementLikeApi<
     DSAnonymousApi,
     DSApi,
     DSCryptoStrategies,
-    DSUser
+    DSUser,
+    any
   > & WithPatientApi<DSApi, DSPatient>
     & WithHelementApi<DSApi, DSHelement, DSPatient>
 ) {
