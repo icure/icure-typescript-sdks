@@ -13,7 +13,7 @@ import {
     Document,
     mapMaintenanceTaskToNotification,
     ServiceFilter,
-    mapDocumentToDocumentDto, HealthElementFilter, MessageFactory
+    mapDocumentToDocumentDto, HealthElementFilter, MessageFactory, NotificationTypeEnum, MaintenanceTaskFilter
 } from "@icure/typescript-common";
 import {AnonymousMedTechApi} from "../../src/apis/AnonymousMedTechApi";
 import {MedTechApi} from "../../src/apis/MedTechApi";
@@ -61,6 +61,7 @@ import {DataSampleFilter} from "../../src/filter/DataSampleFilterDsl";
 import {HealthcareElementFilter} from "../../src/filter/HealthcareElementFilterDsl";
 import {TestMessageFactory} from "../test-utils";
 import {MedTechMessageFactory} from "../../src/services/MedTechMessageFactory";
+import {NotificationFilter} from "@icure/ehr-lite-sdk";
 
 export class MedTechBaseTestContext extends BaseApiTestContext<
     AnonymousMedTechApi.Builder,
@@ -210,6 +211,19 @@ export function NotificationApiAware<TBase extends Constructor<any>>(Base: TBase
 
         toDSMt(mtDto: MaintenanceTask): Notification {
             return mapMaintenanceTaskToNotification(mtDto)
+        }
+
+        newMtFilter(api: MedTechApi): MaintenanceTaskFilter {
+            return new NotificationFilter(api)
+        }
+
+        async createMt(api: MedTechApi, delegate: string): Promise<Notification> {
+            const notification = new Notification({
+                type: NotificationTypeEnum.KEY_PAIR_UPDATE,
+            })
+            const createdNotification = await api.notificationApi.createOrModify(notification, delegate)
+            expect(createdNotification).toBeTruthy()
+            return createdNotification
         }
     }
 }

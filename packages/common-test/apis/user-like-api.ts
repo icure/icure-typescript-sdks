@@ -8,25 +8,22 @@ import {
 } from '../test-utils'
 import { webcrypto } from 'crypto'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
-import { TestKeyStorage, TestStorage, testStorageForUser } from '../test-storage'
 import {
   AnonymousApiBuilder,
   CommonAnonymousApi,
   CommonApi,
   CryptoStrategies,
   DataOwnerWithType,
-  forceUuid, MessageFactory,
+  MessageFactory,
   NotificationTypeEnum
 } from "@icure/typescript-common";
 import {
   BaseApiTestContext,
-  WithAuthenticationApi,
   WithDataOwnerApi,
   WithHcpApi, WithHelementApi, WithMaintenanceTaskApi,
   WithPatientApi,
   WithServiceApi
 } from "./TestContexts";
-import {expectArrayContainsExactlyInAnyOrder} from "../assertions";
 import {Patient, sleep, User} from "@icure/api";
 setLocalStorage(fetch)
 
@@ -52,7 +49,6 @@ export function testUserLikeApi<
     DSUser,
     DSMessageFactory
   > & WithPatientApi<DSApi, DSPatient>
-    & WithAuthenticationApi<DSApi>
     & WithHcpApi<DSApi, DSHcp>
     & WithDataOwnerApi<DSApi, DSDataOwner, DSUser>
     & WithServiceApi<DSApi, DSService, DSPatient, any>

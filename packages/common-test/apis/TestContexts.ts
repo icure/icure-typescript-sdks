@@ -6,7 +6,7 @@ import {
   CommonApi,
   CryptoStrategies, DataOwnerLikeApi, DataOwnerWithType,
   HealthcarePartyLikeApi, HealthElementFilter, HealthElementLikeApi,
-  KeyPair, MaintenanceTaskLikeApi, MessageFactory, PatientLikeApi,
+  KeyPair, MaintenanceTaskFilter, MaintenanceTaskLikeApi, MessageFactory, PatientLikeApi,
   RecaptchaType, ServiceFilter, ServiceLikeApi,
   SimpleCryptoStrategies,
   UserLikeApi
@@ -197,6 +197,8 @@ export interface WithMaintenanceTaskApi<DSApi, DSMaintenanceTask> {
   mtApi(api: DSApi): MaintenanceTaskLikeApi<DSMaintenanceTask>
   toMtDto(dsMt: DSMaintenanceTask): MaintenanceTask
   toDSMt(mtDto: MaintenanceTask): DSMaintenanceTask
+  createMt(api: DSApi, delegate: string): Promise<DSMaintenanceTask>
+  newMtFilter(api: DSApi): MaintenanceTaskFilter
 }
 
 export interface WithHelementApi<DSApi, DSHealthElement, DSPatient> {

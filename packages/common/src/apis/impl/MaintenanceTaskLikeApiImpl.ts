@@ -41,14 +41,15 @@ export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements Maintenanc
             })
     }
 
-    delete(id: string): Promise<string | undefined> {
+    delete(id: string): Promise<string> {
         return this.userApi
             .getCurrentUser()
             .then((user) => {
                 if (!user) throw new Error('There is no user currently logged in. You must call this method from an authenticated MedTechApi')
                 return this.maintenanceTaskApi.deleteMaintenanceTaskWithUser(user, id).then((identifiers) => {
-                    if (!identifiers || identifiers.length == 0) return undefined
-                    return identifiers[0].id
+                    const res = identifiers?.[0]?.id
+                    if (!res) throw new Error(`Could not delete notification with id ${id}`)
+                    return res
                 })
             })
             .catch((e) => {
@@ -142,6 +143,13 @@ export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements Maintenanc
 
     private async _createNotification(maintenanceTask: MaintenanceTask, user: User, delegate?: string): Promise<any> {
         if (!delegate) throw this.errorHandler.createErrorWithMessage('No delegate provided for NotificationModel creation. You must provide a delegate to create a NotificationModel. The delegate is the id of the data owner you want to notify.')
+
+        if (maintenanceTask.author != undefined && maintenanceTask.author != user.id) {
+            throw this.errorHandler.createErrorWithMessage('You can set the author only to your user id (if undefined will automatically be set by the server)')
+        }
+        if (maintenanceTask.responsible != undefined && maintenanceTask.responsible != this.dataOwnerApi.getDataOwnerIdOf(user)) {
+            throw this.errorHandler.createErrorWithMessage('You can set the responsible only to your data owner id (if undefined will automatically be set by the server)')
+        }
         return this.maintenanceTaskApi
             .newInstance(user, maintenanceTask, { additionalDelegates: { [delegate]: AccessLevelEnum.WRITE } })
             .then((task) => {
