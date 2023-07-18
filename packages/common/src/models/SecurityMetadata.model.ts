@@ -28,7 +28,10 @@ export class SecurityMetadata {
     }
 
     static fromJSON(pojo: any): SecurityMetadata {
-        return new SecurityMetadata({ secureDelegations: new Map(Object.entries(pojo['secureDelegations']).map(([k, v]: [any, any]) => [k, SecureDelegation.fromJSON(v)])), keysEquivalences: new Map(Object.entries(pojo['keysEquivalences']).map(([k, v]: [any, any]) => [k, v])) })
+        const obj = {} as ISecurityMetadata
+        obj['secureDelegations'] = new Map(Object.entries(pojo['secureDelegations']).map(([k, v]: [any, any]) => [k, SecureDelegation.fromJSON(v)]))
+        obj['keysEquivalences'] = new Map(Object.entries(pojo['keysEquivalences']).map(([k, v]: [any, any]) => [k, v]))
+        return new SecurityMetadata(obj)
     }
 }
 

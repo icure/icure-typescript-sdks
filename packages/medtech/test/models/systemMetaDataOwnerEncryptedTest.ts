@@ -3,7 +3,7 @@ import 'mocha'
 import { SystemMetaDataOwnerEncrypted } from '../..'
 import { assert } from 'chai'
 import { newDelegation } from './delegationTest'
-import {mapOf} from "@icure/typescript-common";
+import { mapOf } from '@icure/typescript-common'
 
 export function newSystemMetaDataOwnerEncrypted(): SystemMetaDataOwnerEncrypted {
   return new SystemMetaDataOwnerEncrypted({
@@ -23,7 +23,7 @@ describe('SystemMetaDataOwnerEncrypted model test', () => {
   it('Marshalling/Unmarshalling of SystemMetaDataOwnerEncrypted model - Success', () => {
     const systemMetaDataOwnerEncrypted = newSystemMetaDataOwnerEncrypted()
     const marshalledSystemMetaDataOwnerEncrypted = SystemMetaDataOwnerEncrypted.toJSON(systemMetaDataOwnerEncrypted)
-    const unmarshalledSystemMetaDataOwnerEncrypted = new SystemMetaDataOwnerEncrypted(
+    const unmarshalledSystemMetaDataOwnerEncrypted = SystemMetaDataOwnerEncrypted.fromJSON(
       JSON.parse(JSON.stringify(marshalledSystemMetaDataOwnerEncrypted))
     )
     assert.deepEqual(systemMetaDataOwnerEncrypted, unmarshalledSystemMetaDataOwnerEncrypted)

@@ -33,7 +33,7 @@ describe('Coding Filters Test', function () {
         type: 'ICURE',
         code: 'PARARIBULITIS',
         version: uuid().substring(0, 6),
-        regions: ['be'],
+        regions: new Set(['be']),
         description: mapOf({ fr: 'Pararibulitis' }),
       })
     )
@@ -43,7 +43,7 @@ describe('Coding Filters Test', function () {
         type: 'ICURE',
         code: 'UNIVERSE THERMAL DEATH',
         version: uuid().substring(0, 6),
-        regions: ['ir', 'gb'],
+        regions: new Set(['ir', 'gb']),
         description: mapOf({ en: 'That is bad' }),
       })
     )
@@ -53,7 +53,7 @@ describe('Coding Filters Test', function () {
         type: 'SNOMED',
         code: 'HEADACHE',
         version: uuid().substring(0, 6),
-        regions: ['ir', 'gb'],
+        regions: new Set(['ir', 'gb']),
         description: mapOf({ en: 'Ouch' }),
       })
     )
@@ -93,7 +93,12 @@ describe('Coding Filters Test', function () {
     expect(codes.rows.length).to.be.greaterThan(0)
     codes.rows.forEach((code) => {
       expect(code).to.satisfy((c: Coding) => {
-        return c.id === code1.id! || ((c.regions ?? []).includes('gb') && Object.keys(c.description ?? {}).includes('en') && c.type === 'SNOMED')
+        return (
+          c.id === code1.id! ||
+          (([...c.regions] ?? []).includes('gb') &&
+            Object.keys(Object.fromEntries((c.description ?? new Map()).entries())).includes('en') &&
+            c.type === 'SNOMED')
+        )
       })
     })
   }).timeout(60000)
@@ -106,7 +111,11 @@ describe('Coding Filters Test', function () {
     codes.rows.forEach((code) => {
       expect(code.id).to.be.oneOf([code1.id!, code2.id!, code3.id!])
       expect(code).to.satisfy((c: Coding) => {
-        return (c.regions ?? []).includes('gb') && Object.keys(c.description ?? {}).includes('en') && c.type === 'SNOMED'
+        return (
+          ([...c.regions] ?? []).includes('gb') &&
+          Object.keys(Object.fromEntries((c.description ?? new Map()).entries())).includes('en') &&
+          c.type === 'SNOMED'
+        )
       })
     })
   })
@@ -121,7 +130,11 @@ describe('Coding Filters Test', function () {
     codes.rows.forEach((code) => {
       expect(code.id).to.be.oneOf([code1.id!, code2.id!, code3.id!])
       expect(code).to.satisfy((c: Coding) => {
-        return (c.regions ?? []).includes('gb') && Object.keys(c.description ?? {}).includes('en') && c.type === 'SNOMED'
+        return (
+          ([...c.regions] ?? []).includes('gb') &&
+          Object.keys(Object.fromEntries((c.description ?? new Map()).entries())).includes('en') &&
+          c.type === 'SNOMED'
+        )
       })
     })
   })

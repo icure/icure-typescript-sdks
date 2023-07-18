@@ -29,7 +29,7 @@ describe('Document model test', () => {
   it('Marshalling/Unmarshalling of Document model - Success', () => {
     const document = newDocument()
     const marshalledDocument = Document.toJSON(document)
-    const unmarshalledDocument = new Document(JSON.parse(JSON.stringify(marshalledDocument)))
+    const unmarshalledDocument = Document.fromJSON(JSON.parse(JSON.stringify(marshalledDocument)))
     assert.deepEqual(document, unmarshalledDocument)
     assert.deepEqual(document, new Document(document))
   })

@@ -14,7 +14,7 @@ export function newMeasure(): Measure {
     severityCode: 'severityCode',
     evolution: 161718,
     unit: 'unit',
-    unitCodes: new Set([newCodingReference()]),
+    unitCodes: [newCodingReference()],
     comment: 'comment',
     comparator: 'comparator',
   })
@@ -24,7 +24,7 @@ describe('Measure model test', () => {
   it('Marshalling/Unmarshalling of Measure model - Success', () => {
     const measure = newMeasure()
     const marshalledMeasure = Measure.toJSON(measure)
-    const unmarshalledMeasure = new Measure(JSON.parse(JSON.stringify(marshalledMeasure)))
+    const unmarshalledMeasure = Measure.fromJSON(JSON.parse(JSON.stringify(marshalledMeasure)))
     assert.deepEqual(measure, unmarshalledMeasure)
     assert.deepEqual(measure, new Measure(measure))
   })

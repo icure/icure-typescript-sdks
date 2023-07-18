@@ -9,6 +9,7 @@ export function newCodingReference(): CodingReference {
     type: 'type',
     code: 'code',
     version: 'version',
+    context: 'context',
   })
 }
 

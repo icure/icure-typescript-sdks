@@ -11,26 +11,31 @@
  */
 
 export class PaginatedDocumentKeyAndIdPairObject {
-  constructor(json: IPaginatedDocumentKeyAndIdPairObject) {
-    Object.assign(this as PaginatedDocumentKeyAndIdPairObject, json);
-  }
+    constructor(json: IPaginatedDocumentKeyAndIdPairObject) {
+        Object.assign(this as PaginatedDocumentKeyAndIdPairObject, json)
+    }
 
-  "startKey"?: any;
-  "startKeyDocId"?: string;
+    'startKey'?: any
+    'startKeyDocId'?: string
 
     static toJSON(instance: PaginatedDocumentKeyAndIdPairObject): any {
         const pojo: any = {}
-        pojo["startKey"] = instance.startKey
-        pojo["startKeyDocId"] = instance.startKeyDocId
+        pojo['startKey'] = instance.startKey
+        if (instance.startKeyDocId !== undefined) pojo['startKeyDocId'] = instance.startKeyDocId
         return pojo
     }
 
     static fromJSON(pojo: any): PaginatedDocumentKeyAndIdPairObject {
-        return new PaginatedDocumentKeyAndIdPairObject({startKey: pojo["startKey"], startKeyDocId: pojo["startKeyDocId"]})
+        const obj = {} as IPaginatedDocumentKeyAndIdPairObject
+        obj['startKey'] = pojo['startKey']
+        if (pojo['startKeyDocId'] !== undefined) {
+            obj['startKeyDocId'] = pojo['startKeyDocId']
+        }
+        return new PaginatedDocumentKeyAndIdPairObject(obj)
     }
 }
 
 interface IPaginatedDocumentKeyAndIdPairObject {
-  startKey?: any;
-  startKeyDocId?: string;
+    startKey?: any
+    startKeyDocId?: string
 }

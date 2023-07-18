@@ -32,14 +32,15 @@ describe('Authentication API', () => {
 
   it("AnonymousMedTechApi shouldn't be instantiated if authServerUrl, authProcessId and specId aren't passed", async () => {
     await expect(
-      Promise.resolve().then(() => new AnonymousMedTechApi.Builder()
-        .withICureBaseUrl(env!.iCureUrl)
-        .withCrypto(webcrypto as any)
-        .withMsgGwUrl(env!.msgGtwUrl)
-        .withAuthProcessByEmailId(env!.hcpAuthProcessId)
-        .withAuthProcessBySmsId(env!.hcpAuthProcessId)
-        .withCryptoStrategies(new SimpleMedTechCryptoStrategies([]))
-        .build()
+      Promise.resolve().then(() =>
+        new AnonymousMedTechApi.Builder()
+          .withICureBaseUrl(env!.iCureUrl)
+          .withCrypto(webcrypto as any)
+          .withMsgGwUrl(env!.msgGtwUrl)
+          .withAuthProcessByEmailId(env!.hcpAuthProcessId)
+          .withAuthProcessBySmsId(env!.hcpAuthProcessId)
+          .withCryptoStrategies(new SimpleMedTechCryptoStrategies([]))
+          .build()
       )
     ).to.be.rejected
 
@@ -78,12 +79,13 @@ describe('Authentication API', () => {
 
   it('Cannot instantiate the API if no AuthProcessId is passed', async () => {
     await expect(
-      Promise.resolve().then(() => new AnonymousMedTechApi.Builder()
-        .withICureBaseUrl(env!.iCureUrl)
-        .withMsgGwUrl(env!.msgGtwUrl)
-        .withMsgGwSpecId(env!.specId)
-        .withCrypto(webcrypto as any)
-        .build()
+      Promise.resolve().then(() =>
+        new AnonymousMedTechApi.Builder()
+          .withICureBaseUrl(env!.iCureUrl)
+          .withMsgGwUrl(env!.msgGtwUrl)
+          .withMsgGwSpecId(env!.specId)
+          .withCrypto(webcrypto as any)
+          .build()
       )
     ).to.be.rejected
   }).timeout(60000)
@@ -551,14 +553,14 @@ describe('Authentication API', () => {
     const hcpNotification = (await hcpApiAndUser.api.notificationApi.getPendingAfter(startTimestamp)).find(
       (notif) =>
         notif.type === NotificationTypeEnum.KEY_PAIR_UPDATE &&
-        notif.properties?.find((prop) => prop.typedValue?.stringValue == currentPatient.id!) != undefined
+        [...notif.properties]?.find((prop) => prop.typedValue?.stringValue == currentPatient.id!) != undefined
     )
 
     expect(hcpNotification).to.not.be.undefined
 
-    const patientId = hcpNotification!.properties?.find((prop) => prop.id == 'dataOwnerConcernedId')
+    const patientId = [...hcpNotification!.properties]?.find((prop) => prop.id == 'dataOwnerConcernedId')
     expect(patientId).to.not.be.undefined
-    const patientPubKey = hcpNotification!.properties?.find((prop) => prop.id == 'dataOwnerConcernedPubKey')
+    const patientPubKey = [...hcpNotification!.properties]?.find((prop) => prop.id == 'dataOwnerConcernedPubKey')
     expect(patientPubKey).to.not.be.undefined
 
     await hcpApiAndUser.api.dataOwnerApi.giveAccessBackTo(patientId!.typedValue!.stringValue!, patientPubKey!.typedValue!.stringValue!)

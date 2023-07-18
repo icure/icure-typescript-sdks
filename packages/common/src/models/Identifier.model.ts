@@ -10,53 +10,78 @@
  * Do not edit the class manually.
  */
 
-import { Identifier as IdentifierDto } from "@icure/api";
-import { mapTo } from "../utils/decorators";
-import { CodingReference } from "./CodingReference.model";
+import { Identifier as IdentifierDto } from '@icure/api'
+import { mapTo } from '../utils/decorators'
+import { CodingReference } from './CodingReference.model'
 
 /**
  * Typically used for business / client identifiers. An identifier should identify a patient uniquely and unambiguously. However, iCure can't guarantee the uniqueness of those identifiers : This is something you need to take care of.
  */
 @mapTo(IdentifierDto)
 export class Identifier {
-  constructor(json: IIdentifier) {
-    Object.assign(this as Identifier, json as IIdentifier);
-  }
+    constructor(json: IIdentifier) {
+        Object.assign(this as Identifier, json as IIdentifier)
+    }
 
-  "id"?: string;
-  "assigner"?: string;
-  "start"?: string;
-  "end"?: string;
-  "system"?: string;
-  "type"?: CodingReference;
-  "use"?: string;
-  "value"?: string;
+    'id'?: string
+    'assigner'?: string
+    'start'?: string
+    'end'?: string
+    'system'?: string
+    'type'?: CodingReference
+    'use'?: string
+    'value'?: string
 
     static toJSON(instance: Identifier): any {
         const pojo: any = {}
-        pojo["id"] = instance.id
-        pojo["assigner"] = instance.assigner
-        pojo["start"] = instance.start
-        pojo["end"] = instance.end
-        pojo["system"] = instance.system
-        pojo["type"] = !!instance.type ? CodingReference.toJSON(instance.type) : undefined
-        pojo["use"] = instance.use
-        pojo["value"] = instance.value
+        if (instance.id !== undefined) pojo['id'] = instance.id
+        if (instance.assigner !== undefined) pojo['assigner'] = instance.assigner
+        if (instance.start !== undefined) pojo['start'] = instance.start
+        if (instance.end !== undefined) pojo['end'] = instance.end
+        if (instance.system !== undefined) pojo['system'] = instance.system
+        if (instance.type !== undefined) pojo['type'] = !!instance.type ? CodingReference.toJSON(instance.type) : undefined
+        if (instance.use !== undefined) pojo['use'] = instance.use
+        if (instance.value !== undefined) pojo['value'] = instance.value
         return pojo
     }
 
     static fromJSON(pojo: any): Identifier {
-        return new Identifier({id: pojo["id"], assigner: pojo["assigner"], start: pojo["start"], end: pojo["end"], system: pojo["system"], type: !!pojo["type"] ? CodingReference.fromJSON(pojo["type"]) : undefined, use: pojo["use"], value: pojo["value"]})
+        const obj = {} as IIdentifier
+        if (pojo['id'] !== undefined) {
+            obj['id'] = pojo['id']
+        }
+        if (pojo['assigner'] !== undefined) {
+            obj['assigner'] = pojo['assigner']
+        }
+        if (pojo['start'] !== undefined) {
+            obj['start'] = pojo['start']
+        }
+        if (pojo['end'] !== undefined) {
+            obj['end'] = pojo['end']
+        }
+        if (pojo['system'] !== undefined) {
+            obj['system'] = pojo['system']
+        }
+        if (pojo['type'] !== undefined) {
+            obj['type'] = !!pojo['type'] ? CodingReference.fromJSON(pojo['type']) : undefined
+        }
+        if (pojo['use'] !== undefined) {
+            obj['use'] = pojo['use']
+        }
+        if (pojo['value'] !== undefined) {
+            obj['value'] = pojo['value']
+        }
+        return new Identifier(obj)
     }
 }
 
 interface IIdentifier {
-  id?: string;
-  assigner?: string;
-  start?: string;
-  end?: string;
-  system?: string;
-  type?: CodingReference;
-  use?: string;
-  value?: string;
+    id?: string
+    assigner?: string
+    start?: string
+    end?: string
+    system?: string
+    type?: CodingReference
+    use?: string
+    value?: string
 }

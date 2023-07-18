@@ -45,45 +45,63 @@ export class Organisation {
     static toJSON(instance: Organisation): any {
         const pojo: any = {}
         pojo['id'] = instance.id
-        pojo['rev'] = instance.rev
-        pojo['created'] = instance.created
-        pojo['modified'] = instance.modified
+        if (instance.rev !== undefined) pojo['rev'] = instance.rev
+        if (instance.created !== undefined) pojo['created'] = instance.created
+        if (instance.modified !== undefined) pojo['modified'] = instance.modified
         pojo['identifiers'] = instance.identifiers.map((item) => Identifier.toJSON(item))
         pojo['tags'] = Array.from([...instance.tags].map((item) => CodingReference.toJSON(item)))
         pojo['codes'] = Array.from([...instance.codes].map((item) => CodingReference.toJSON(item)))
-        pojo['deletionDate'] = instance.deletionDate
-        pojo['name'] = instance.name
-        pojo['parentId'] = instance.parentId
-        pojo['userId'] = instance.userId
+        if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
+        if (instance.name !== undefined) pojo['name'] = instance.name
+        if (instance.parentId !== undefined) pojo['parentId'] = instance.parentId
+        if (instance.userId !== undefined) pojo['userId'] = instance.userId
         pojo['addresses'] = instance.addresses.map((item) => Location.toJSON(item))
         pojo['languages'] = instance.languages.map((item) => item)
-        pojo['picture'] = !!instance.picture ? ua2b64(instance.picture) : undefined
+        if (instance.picture !== undefined) pojo['picture'] = !!instance.picture ? ua2b64(instance.picture) : undefined
         pojo['description'] = Object.fromEntries([...instance.description.entries()].map(([k, v]) => [k, v]))
         pojo['properties'] = Array.from([...instance.properties].map((item) => Property.toJSON(item)))
-        pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataOwner.toJSON(instance.systemMetaData) : undefined
+        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataOwner.toJSON(instance.systemMetaData) : undefined
         return pojo
     }
 
     static fromJSON(pojo: any): Organisation {
-        return new Organisation({
-            id: pojo['id'],
-            rev: pojo['rev'],
-            created: pojo['created'],
-            modified: pojo['modified'],
-            identifiers: pojo['identifiers'].map((item: any) => Identifier.fromJSON(item)),
-            tags: new Set(pojo['tags'].map((item: any) => CodingReference.fromJSON(item))),
-            codes: new Set(pojo['codes'].map((item: any) => CodingReference.fromJSON(item))),
-            deletionDate: pojo['deletionDate'],
-            name: pojo['name'],
-            parentId: pojo['parentId'],
-            userId: pojo['userId'],
-            addresses: pojo['addresses'].map((item: any) => Location.fromJSON(item)),
-            languages: pojo['languages'].map((item: any) => item),
-            picture: !!pojo['picture'] ? b64_2ab(pojo['picture']) : undefined,
-            description: new Map(Object.entries(pojo['description']).map(([k, v]: [any, any]) => [k, v])),
-            properties: new Set(pojo['properties'].map((item: any) => Property.fromJSON(item))),
-            systemMetaData: !!pojo['systemMetaData'] ? SystemMetaDataOwner.fromJSON(pojo['systemMetaData']) : undefined,
-        })
+        const obj = {} as IOrganisation
+        obj['id'] = pojo['id']
+        if (pojo['rev'] !== undefined) {
+            obj['rev'] = pojo['rev']
+        }
+        if (pojo['created'] !== undefined) {
+            obj['created'] = pojo['created']
+        }
+        if (pojo['modified'] !== undefined) {
+            obj['modified'] = pojo['modified']
+        }
+        obj['identifiers'] = pojo['identifiers'].map((item: any) => Identifier.fromJSON(item))
+        obj['tags'] = new Set(pojo['tags'].map((item: any) => CodingReference.fromJSON(item)))
+        obj['codes'] = new Set(pojo['codes'].map((item: any) => CodingReference.fromJSON(item)))
+        if (pojo['deletionDate'] !== undefined) {
+            obj['deletionDate'] = pojo['deletionDate']
+        }
+        if (pojo['name'] !== undefined) {
+            obj['name'] = pojo['name']
+        }
+        if (pojo['parentId'] !== undefined) {
+            obj['parentId'] = pojo['parentId']
+        }
+        if (pojo['userId'] !== undefined) {
+            obj['userId'] = pojo['userId']
+        }
+        obj['addresses'] = pojo['addresses'].map((item: any) => Location.fromJSON(item))
+        obj['languages'] = pojo['languages'].map((item: any) => item)
+        if (pojo['picture'] !== undefined) {
+            obj['picture'] = !!pojo['picture'] ? b64_2ab(pojo['picture']) : undefined
+        }
+        obj['description'] = new Map(Object.entries(pojo['description']).map(([k, v]: [any, any]) => [k, v]))
+        obj['properties'] = new Set(pojo['properties'].map((item: any) => Property.fromJSON(item)))
+        if (pojo['systemMetaData'] !== undefined) {
+            obj['systemMetaData'] = !!pojo['systemMetaData'] ? SystemMetaDataOwner.fromJSON(pojo['systemMetaData']) : undefined
+        }
+        return new Organisation(obj)
     }
 }
 

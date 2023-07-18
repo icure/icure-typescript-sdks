@@ -120,49 +120,77 @@ export class User {
     static toJSON(instance: User): any {
         const pojo: any = {}
         pojo['id'] = instance.id
-        pojo['rev'] = instance.rev
-        pojo['deletionDate'] = instance.deletionDate
-        pojo['created'] = instance.created
-        pojo['name'] = instance.name
+        if (instance.rev !== undefined) pojo['rev'] = instance.rev
+        if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
+        if (instance.created !== undefined) pojo['created'] = instance.created
+        if (instance.name !== undefined) pojo['name'] = instance.name
         pojo['properties'] = Array.from([...instance.properties].map((item) => Property.toJSON(item)))
         pojo['roles'] = Array.from([...instance.roles].map((item) => item))
-        pojo['login'] = instance.login
-        pojo['passwordHash'] = instance.passwordHash
-        pojo['secret'] = instance.secret
-        pojo['use2fa'] = instance.use2fa
-        pojo['groupId'] = instance.groupId
-        pojo['healthcarePartyId'] = instance.healthcarePartyId
-        pojo['patientId'] = instance.patientId
-        pojo['deviceId'] = instance.deviceId
+        if (instance.login !== undefined) pojo['login'] = instance.login
+        if (instance.passwordHash !== undefined) pojo['passwordHash'] = instance.passwordHash
+        if (instance.secret !== undefined) pojo['secret'] = instance.secret
+        if (instance.use2fa !== undefined) pojo['use2fa'] = instance.use2fa
+        if (instance.groupId !== undefined) pojo['groupId'] = instance.groupId
+        if (instance.healthcarePartyId !== undefined) pojo['healthcarePartyId'] = instance.healthcarePartyId
+        if (instance.patientId !== undefined) pojo['patientId'] = instance.patientId
+        if (instance.deviceId !== undefined) pojo['deviceId'] = instance.deviceId
         pojo['sharingDataWith'] = Object.fromEntries([...instance.sharingDataWith.entries()].map(([k, v]) => [k, Array.from([...v].map((item) => item))]))
-        pojo['email'] = instance.email
-        pojo['mobilePhone'] = instance.mobilePhone
+        if (instance.email !== undefined) pojo['email'] = instance.email
+        if (instance.mobilePhone !== undefined) pojo['mobilePhone'] = instance.mobilePhone
         pojo['authenticationTokens'] = Object.fromEntries([...instance.authenticationTokens.entries()].map(([k, v]) => [k, AuthenticationToken.toJSON(v)]))
         return pojo
     }
 
     static fromJSON(pojo: any): User {
-        return new User({
-            id: pojo['id'],
-            rev: pojo['rev'],
-            deletionDate: pojo['deletionDate'],
-            created: pojo['created'],
-            name: pojo['name'],
-            properties: new Set(pojo['properties'].map((item: any) => Property.fromJSON(item))),
-            roles: new Set(pojo['roles'].map((item: any) => item)),
-            login: pojo['login'],
-            passwordHash: pojo['passwordHash'],
-            secret: pojo['secret'],
-            use2fa: pojo['use2fa'],
-            groupId: pojo['groupId'],
-            healthcarePartyId: pojo['healthcarePartyId'],
-            patientId: pojo['patientId'],
-            deviceId: pojo['deviceId'],
-            sharingDataWith: new Map(Object.entries(pojo['sharingDataWith']).map(([k, v]: [any, any]) => [k, new Set(v.map((item: any) => item))])),
-            email: pojo['email'],
-            mobilePhone: pojo['mobilePhone'],
-            authenticationTokens: new Map(Object.entries(pojo['authenticationTokens']).map(([k, v]: [any, any]) => [k, AuthenticationToken.fromJSON(v)])),
-        })
+        const obj = {} as IUser
+        obj['id'] = pojo['id']
+        if (pojo['rev'] !== undefined) {
+            obj['rev'] = pojo['rev']
+        }
+        if (pojo['deletionDate'] !== undefined) {
+            obj['deletionDate'] = pojo['deletionDate']
+        }
+        if (pojo['created'] !== undefined) {
+            obj['created'] = pojo['created']
+        }
+        if (pojo['name'] !== undefined) {
+            obj['name'] = pojo['name']
+        }
+        obj['properties'] = new Set(pojo['properties'].map((item: any) => Property.fromJSON(item)))
+        obj['roles'] = new Set(pojo['roles'].map((item: any) => item))
+        if (pojo['login'] !== undefined) {
+            obj['login'] = pojo['login']
+        }
+        if (pojo['passwordHash'] !== undefined) {
+            obj['passwordHash'] = pojo['passwordHash']
+        }
+        if (pojo['secret'] !== undefined) {
+            obj['secret'] = pojo['secret']
+        }
+        if (pojo['use2fa'] !== undefined) {
+            obj['use2fa'] = pojo['use2fa']
+        }
+        if (pojo['groupId'] !== undefined) {
+            obj['groupId'] = pojo['groupId']
+        }
+        if (pojo['healthcarePartyId'] !== undefined) {
+            obj['healthcarePartyId'] = pojo['healthcarePartyId']
+        }
+        if (pojo['patientId'] !== undefined) {
+            obj['patientId'] = pojo['patientId']
+        }
+        if (pojo['deviceId'] !== undefined) {
+            obj['deviceId'] = pojo['deviceId']
+        }
+        obj['sharingDataWith'] = new Map(Object.entries(pojo['sharingDataWith']).map(([k, v]: [any, any]) => [k, new Set(v.map((item: any) => item))]))
+        if (pojo['email'] !== undefined) {
+            obj['email'] = pojo['email']
+        }
+        if (pojo['mobilePhone'] !== undefined) {
+            obj['mobilePhone'] = pojo['mobilePhone']
+        }
+        obj['authenticationTokens'] = new Map(Object.entries(pojo['authenticationTokens']).map(([k, v]: [any, any]) => [k, AuthenticationToken.fromJSON(v)]))
+        return new User(obj)
     }
 }
 

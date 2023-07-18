@@ -20,15 +20,29 @@ export class CodingReference {
     static toJSON(instance: CodingReference): any {
         const pojo: any = {}
         pojo['id'] = instance.id
-        pojo['type'] = instance.type
-        pojo['code'] = instance.code
-        pojo['version'] = instance.version
-        pojo['context'] = instance.context
+        if (instance.type !== undefined) pojo['type'] = instance.type
+        if (instance.code !== undefined) pojo['code'] = instance.code
+        if (instance.version !== undefined) pojo['version'] = instance.version
+        if (instance.context !== undefined) pojo['context'] = instance.context
         return pojo
     }
 
     static fromJSON(pojo: any): CodingReference {
-        return new CodingReference({ id: pojo['id'], type: pojo['type'], code: pojo['code'], version: pojo['version'], context: pojo['context'] })
+        const obj = {} as ICodingReference
+        obj['id'] = pojo['id']
+        if (pojo['type'] !== undefined) {
+            obj['type'] = pojo['type']
+        }
+        if (pojo['code'] !== undefined) {
+            obj['code'] = pojo['code']
+        }
+        if (pojo['version'] !== undefined) {
+            obj['version'] = pojo['version']
+        }
+        if (pojo['context'] !== undefined) {
+            obj['context'] = pojo['context']
+        }
+        return new CodingReference(obj)
     }
 }
 

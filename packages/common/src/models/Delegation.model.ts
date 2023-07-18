@@ -9,34 +9,44 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { Delegation as DelegationDto } from "@icure/api";
-import { mapTo } from "../utils/decorators";
+import { Delegation as DelegationDto } from '@icure/api'
+import { mapTo } from '../utils/decorators'
 
 @mapTo(DelegationDto)
 export class Delegation {
-  constructor(json: IDelegation) {
-    Object.assign(this as Delegation, json);
-  }
+    constructor(json: IDelegation) {
+        Object.assign(this as Delegation, json)
+    }
 
-  "owner"?: string;
-  "delegatedTo"?: string;
-  "key"?: string;
+    'owner'?: string
+    'delegatedTo'?: string
+    'key'?: string
 
     static toJSON(instance: Delegation): any {
         const pojo: any = {}
-        pojo["owner"] = instance.owner
-        pojo["delegatedTo"] = instance.delegatedTo
-        pojo["key"] = instance.key
+        if (instance.owner !== undefined) pojo['owner'] = instance.owner
+        if (instance.delegatedTo !== undefined) pojo['delegatedTo'] = instance.delegatedTo
+        if (instance.key !== undefined) pojo['key'] = instance.key
         return pojo
     }
 
     static fromJSON(pojo: any): Delegation {
-        return new Delegation({owner: pojo["owner"], delegatedTo: pojo["delegatedTo"], key: pojo["key"]})
+        const obj = {} as IDelegation
+        if (pojo['owner'] !== undefined) {
+            obj['owner'] = pojo['owner']
+        }
+        if (pojo['delegatedTo'] !== undefined) {
+            obj['delegatedTo'] = pojo['delegatedTo']
+        }
+        if (pojo['key'] !== undefined) {
+            obj['key'] = pojo['key']
+        }
+        return new Delegation(obj)
     }
 }
 
 interface IDelegation {
-  owner?: string;
-  delegatedTo?: string;
-  key?: string;
+    owner?: string
+    delegatedTo?: string
+    key?: string
 }

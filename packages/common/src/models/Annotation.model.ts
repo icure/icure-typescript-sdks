@@ -31,28 +31,40 @@ export class Annotation {
         const pojo: any = {}
         pojo['id'] = instance.id
         pojo['tags'] = Array.from([...instance.tags].map((item) => CodingReference.toJSON(item)))
-        pojo['author'] = instance.author
-        pojo['created'] = instance.created
-        pojo['modified'] = instance.modified
+        if (instance.author !== undefined) pojo['author'] = instance.author
+        if (instance.created !== undefined) pojo['created'] = instance.created
+        if (instance.modified !== undefined) pojo['modified'] = instance.modified
         pojo['markdown'] = Object.fromEntries([...instance.markdown.entries()].map(([k, v]) => [k, v]))
-        pojo['target'] = instance.target
-        pojo['confidential'] = instance.confidential
-        pojo['encryptedSelf'] = instance.encryptedSelf
+        if (instance.target !== undefined) pojo['target'] = instance.target
+        if (instance.confidential !== undefined) pojo['confidential'] = instance.confidential
+        if (instance.encryptedSelf !== undefined) pojo['encryptedSelf'] = instance.encryptedSelf
         return pojo
     }
 
     static fromJSON(pojo: any): Annotation {
-        return new Annotation({
-            id: pojo['id'],
-            tags: new Set(pojo['tags'].map((item: any) => CodingReference.fromJSON(item))),
-            author: pojo['author'],
-            created: pojo['created'],
-            modified: pojo['modified'],
-            markdown: new Map(Object.entries(pojo['markdown']).map(([k, v]: [any, any]) => [k, v])),
-            target: pojo['target'],
-            confidential: pojo['confidential'],
-            encryptedSelf: pojo['encryptedSelf'],
-        })
+        const obj = {} as IAnnotation
+        obj['id'] = pojo['id']
+        obj['tags'] = new Set(pojo['tags'].map((item: any) => CodingReference.fromJSON(item)))
+        if (pojo['author'] !== undefined) {
+            obj['author'] = pojo['author']
+        }
+        if (pojo['created'] !== undefined) {
+            obj['created'] = pojo['created']
+        }
+        if (pojo['modified'] !== undefined) {
+            obj['modified'] = pojo['modified']
+        }
+        obj['markdown'] = new Map(Object.entries(pojo['markdown']).map(([k, v]: [any, any]) => [k, v]))
+        if (pojo['target'] !== undefined) {
+            obj['target'] = pojo['target']
+        }
+        if (pojo['confidential'] !== undefined) {
+            obj['confidential'] = pojo['confidential']
+        }
+        if (pojo['encryptedSelf'] !== undefined) {
+            obj['encryptedSelf'] = pojo['encryptedSelf']
+        }
+        return new Annotation(obj)
     }
 }
 

@@ -1,6 +1,6 @@
-import { TypedValueObject as TypedValueObjectDto } from '@icure/api';
-import { mapTo } from "../utils/decorators";
-import { TypeEnum } from "./enums/Type.enum";
+import { TypedValueObject as TypedValueObjectDto } from '@icure/api'
+import { mapTo } from '../utils/decorators'
+import { TypeEnum } from './enums/Type.enum'
 
 @mapTo(TypedValueObjectDto)
 export class TypedValueObject {
@@ -24,18 +24,40 @@ export class TypedValueObject {
 
     static toJSON(instance: TypedValueObject): any {
         const pojo: any = {}
-        pojo["type"] = instance.type
-        pojo["booleanValue"] = instance.booleanValue
-        pojo["integerValue"] = instance.integerValue
-        pojo["doubleValue"] = instance.doubleValue
-        pojo["stringValue"] = instance.stringValue
-        pojo["dateValue"] = instance.dateValue
-        pojo["encryptedSelf"] = instance.encryptedSelf
+        if (instance.type !== undefined) pojo['type'] = instance.type
+        if (instance.booleanValue !== undefined) pojo['booleanValue'] = instance.booleanValue
+        if (instance.integerValue !== undefined) pojo['integerValue'] = instance.integerValue
+        if (instance.doubleValue !== undefined) pojo['doubleValue'] = instance.doubleValue
+        if (instance.stringValue !== undefined) pojo['stringValue'] = instance.stringValue
+        if (instance.dateValue !== undefined) pojo['dateValue'] = instance.dateValue
+        if (instance.encryptedSelf !== undefined) pojo['encryptedSelf'] = instance.encryptedSelf
         return pojo
     }
 
     static fromJSON(pojo: any): TypedValueObject {
-        return new TypedValueObject({type: pojo["type"], booleanValue: pojo["booleanValue"], integerValue: pojo["integerValue"], doubleValue: pojo["doubleValue"], stringValue: pojo["stringValue"], dateValue: pojo["dateValue"], encryptedSelf: pojo["encryptedSelf"]})
+        const obj = {} as ITypedValueObject
+        if (pojo['type'] !== undefined) {
+            obj['type'] = pojo['type']
+        }
+        if (pojo['booleanValue'] !== undefined) {
+            obj['booleanValue'] = pojo['booleanValue']
+        }
+        if (pojo['integerValue'] !== undefined) {
+            obj['integerValue'] = pojo['integerValue']
+        }
+        if (pojo['doubleValue'] !== undefined) {
+            obj['doubleValue'] = pojo['doubleValue']
+        }
+        if (pojo['stringValue'] !== undefined) {
+            obj['stringValue'] = pojo['stringValue']
+        }
+        if (pojo['dateValue'] !== undefined) {
+            obj['dateValue'] = pojo['dateValue']
+        }
+        if (pojo['encryptedSelf'] !== undefined) {
+            obj['encryptedSelf'] = pojo['encryptedSelf']
+        }
+        return new TypedValueObject(obj)
     }
 }
 

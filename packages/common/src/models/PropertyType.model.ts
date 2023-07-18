@@ -15,12 +15,17 @@ export class PropertyType {
     static toJSON(instance: PropertyType): any {
         const pojo: any = {}
         pojo['identifier'] = instance.identifier
-        pojo['type'] = instance.type
+        if (instance.type !== undefined) pojo['type'] = instance.type
         return pojo
     }
 
     static fromJSON(pojo: any): PropertyType {
-        return new PropertyType({ identifier: pojo['identifier'], type: pojo['type'] })
+        const obj = {} as IPropertyType
+        obj['identifier'] = pojo['identifier']
+        if (pojo['type'] !== undefined) {
+            obj['type'] = pojo['type']
+        }
+        return new PropertyType(obj)
     }
 }
 

@@ -5,10 +5,11 @@ import { assert } from 'chai'
 import { newIdentifier } from './identifierTest'
 import { newCodingReference } from './codingReferenceTest'
 import { newSystemMetaDataEncrypted } from './systemMetaDataEncryptedTest'
+import { v4 } from 'uuid'
 
 export function newHealthcareElement(): HealthcareElement {
   return new HealthcareElement({
-    id: 'id',
+    id: v4(),
     identifiers: [newIdentifier()],
     rev: 'rev',
     created: 123,
@@ -34,7 +35,7 @@ describe('HealthcareElement model test', () => {
   it('Marshalling/Unmarshalling of HealthcareElement model - Success', () => {
     const healthcareElement = newHealthcareElement()
     const marshalledHealthcareElement = HealthcareElement.toJSON(healthcareElement)
-    const unmarshalledHealthcareElement = new HealthcareElement(JSON.parse(JSON.stringify(marshalledHealthcareElement)))
+    const unmarshalledHealthcareElement = HealthcareElement.fromJSON(JSON.parse(JSON.stringify(marshalledHealthcareElement)))
     assert.deepEqual(healthcareElement, unmarshalledHealthcareElement)
     assert.deepEqual(healthcareElement, new HealthcareElement(healthcareElement))
   })

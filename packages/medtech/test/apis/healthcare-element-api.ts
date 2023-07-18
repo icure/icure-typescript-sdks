@@ -150,7 +150,7 @@ describe('Healthcare Element API', () => {
 
     const filter = await new HealthcareElementFilter(hcp1Api!)
       .forDataOwner(hcp1User!.healthcarePartyId!)
-      .forPatients([mapPatientToPatientDto(newPatient)])
+      .forPatients([newPatient])
       .byIds([newHealthElement.id!])
       .build()
 

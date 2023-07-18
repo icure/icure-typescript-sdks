@@ -178,7 +178,7 @@ describe('Data Samples API', () => {
     const filter = await new DataSampleFilter(medtechApi)
       .forDataOwner(hcp.id!)
       .byLabelCodeDateFilter('FILTER-IC-TEST', 'TEST')
-      .forPatients([mapPatientToPatientDto(patient)]) // TODO COMPATIBILITY: should use DSPatient type
+      .forPatients([patient]) // TODO COMPATIBILITY: should use DSPatient type
       .build()
 
     const filteredDataSamples = await medtechApi.dataSampleApi.filterDataSample(filter)

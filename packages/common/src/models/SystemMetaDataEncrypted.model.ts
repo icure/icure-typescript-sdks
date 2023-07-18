@@ -27,22 +27,26 @@ export class SystemMetaDataEncrypted {
         pojo['cryptedForeignKeys'] = Object.fromEntries([...instance.cryptedForeignKeys.entries()].map(([k, v]) => [k, Array.from([...v].map((item) => Delegation.toJSON(item)))]))
         pojo['delegations'] = Object.fromEntries([...instance.delegations.entries()].map(([k, v]) => [k, Array.from([...v].map((item) => Delegation.toJSON(item)))]))
         pojo['encryptionKeys'] = Object.fromEntries([...instance.encryptionKeys.entries()].map(([k, v]) => [k, Array.from([...v].map((item) => Delegation.toJSON(item)))]))
-        pojo['securityMetadata'] = !!instance.securityMetadata ? SecurityMetadata.toJSON(instance.securityMetadata) : undefined
-        pojo['encryptedSelf'] = instance.encryptedSelf
+        if (instance.securityMetadata !== undefined) pojo['securityMetadata'] = !!instance.securityMetadata ? SecurityMetadata.toJSON(instance.securityMetadata) : undefined
+        if (instance.encryptedSelf !== undefined) pojo['encryptedSelf'] = instance.encryptedSelf
         pojo['tags'] = Array.from([...instance.tags].map((item) => CodingReference.toJSON(item)))
         return pojo
     }
 
     static fromJSON(pojo: any): SystemMetaDataEncrypted {
-        return new SystemMetaDataEncrypted({
-            secretForeignKeys: pojo['secretForeignKeys'].map((item: any) => item),
-            cryptedForeignKeys: new Map(Object.entries(pojo['cryptedForeignKeys']).map(([k, v]: [any, any]) => [k, new Set(v.map((item: any) => Delegation.fromJSON(item)))])),
-            delegations: new Map(Object.entries(pojo['delegations']).map(([k, v]: [any, any]) => [k, new Set(v.map((item: any) => Delegation.fromJSON(item)))])),
-            encryptionKeys: new Map(Object.entries(pojo['encryptionKeys']).map(([k, v]: [any, any]) => [k, new Set(v.map((item: any) => Delegation.fromJSON(item)))])),
-            securityMetadata: !!pojo['securityMetadata'] ? SecurityMetadata.fromJSON(pojo['securityMetadata']) : undefined,
-            encryptedSelf: pojo['encryptedSelf'],
-            tags: new Set(pojo['tags'].map((item: any) => CodingReference.fromJSON(item))),
-        })
+        const obj = {} as ISystemMetaDataEncrypted
+        obj['secretForeignKeys'] = pojo['secretForeignKeys'].map((item: any) => item)
+        obj['cryptedForeignKeys'] = new Map(Object.entries(pojo['cryptedForeignKeys']).map(([k, v]: [any, any]) => [k, new Set(v.map((item: any) => Delegation.fromJSON(item)))]))
+        obj['delegations'] = new Map(Object.entries(pojo['delegations']).map(([k, v]: [any, any]) => [k, new Set(v.map((item: any) => Delegation.fromJSON(item)))]))
+        obj['encryptionKeys'] = new Map(Object.entries(pojo['encryptionKeys']).map(([k, v]: [any, any]) => [k, new Set(v.map((item: any) => Delegation.fromJSON(item)))]))
+        if (pojo['securityMetadata'] !== undefined) {
+            obj['securityMetadata'] = !!pojo['securityMetadata'] ? SecurityMetadata.fromJSON(pojo['securityMetadata']) : undefined
+        }
+        if (pojo['encryptedSelf'] !== undefined) {
+            obj['encryptedSelf'] = pojo['encryptedSelf']
+        }
+        obj['tags'] = new Set(pojo['tags'].map((item: any) => CodingReference.fromJSON(item)))
+        return new SystemMetaDataEncrypted(obj)
     }
 }
 

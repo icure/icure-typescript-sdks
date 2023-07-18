@@ -21,7 +21,9 @@ import {
     PaginatedListContact,
     FilterChainService,
     PaginatedListService,
-    Service, ua2hex, Content,
+    Service,
+    ua2hex,
+    Content,
 } from '@icure/api'
 import { ErrorHandler } from '../../services/ErrorHandler'
 import { any, distinctBy, firstOrNull, isNotEmpty, sumOf } from '../../utils/functionalUtils'
@@ -34,7 +36,7 @@ import { CommonApi } from '../CommonApi'
 import { CommonFilter } from '../../filters/filters'
 import { Document } from '../../models/Document.model'
 import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
-import {UtiDetector} from "../../utils/utiDetector";
+import { UtiDetector } from '../../utils/utiDetector'
 
 export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements ServiceLikeApi<DSService, DSPatient, DSDocument> {
     private readonly contactsCache: CachedMap<ContactDto> = new CachedMap<ContactDto>(5 * 60, 10000)
@@ -301,13 +303,12 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
 
         const updatedContent = Object.fromEntries(Object.entries(existingService.content!).filter(([key, _]) => key != contentToDelete!))
 
-        await this._createOrModifyManyFor(
-            contactPatientId,
-            [{
+        await this._createOrModifyManyFor(contactPatientId, [
+            {
                 ...existingService,
                 content: updatedContent,
-            }]
-        ).catch((e) => {
+            },
+        ]).catch((e) => {
             throw this.errorHandler.createErrorFromAny(e)
         })
         // Do not actually delete existing `Document` entity: services are versioned
@@ -472,9 +473,8 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         if (!dataOwnerId) {
             throw this.errorHandler.createErrorWithMessage('The current user is not a data owner. You must be either a patient, a device or a healthcare professional to call this method.')
         }
-        const patientDto = this.patientMapper.toDto(patient)!
 
-        const filter = await new ServiceFilter(this.api).forDataOwner(dataOwnerId).forPatients([patientDto]).build()
+        const filter = await new ServiceFilter(this.api, this.patientMapper).forDataOwner(dataOwnerId).forPatients([patient]).build()
 
         return await this.concatenateFilterResults(filter)
     }
@@ -544,14 +544,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         throw 'TODO'
     }
 
-    async setAttachment(
-        id: string,
-        body: ArrayBuffer,
-        documentName?: string,
-        documentVersion?: string,
-        documentExternalUuid?: string,
-        documentLanguage?: string
-    ): Promise<DSDocument> {
+    async setAttachment(id: string, body: ArrayBuffer, documentName?: string, documentVersion?: string, documentExternalUuid?: string, documentLanguage?: string): Promise<DSDocument> {
         try {
             const currentUser = await this.userApi.getCurrentUser().catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
@@ -571,9 +564,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
             const dataOwnersWithAccessInfo = await this.contactApi.getDataOwnersWithAccessTo(batchOfService)
             if (dataOwnersWithAccessInfo.hasUnknownAnonymousDataOwners) {
                 // TODO also return the information so it can be used
-                console.warn(
-                    `Could not determine all data owners with access to sample with id ${id}. Some users may be able to access the data sample but not the attachment.`
-                )
+                console.warn(`Could not determine all data owners with access to sample with id ${id}. Some users may be able to access the data sample but not the attachment.`)
             }
 
             const documentToCreate = await this.api.baseApi.documentApi.newInstance(
@@ -606,13 +597,12 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
                     documentId: createdDocument.id,
                 }),
             }
-            await this._createOrModifyManyFor(
-                patientIdOfBatch!,
-                [{
+            await this._createOrModifyManyFor(patientIdOfBatch!, [
+                {
                     ...existingService,
                     content: newDSContent,
-                }]
-            )
+                },
+            ])
             // Do not delete existing `Document` entity, even if existing: services are versioned
 
             // Add attachment to document

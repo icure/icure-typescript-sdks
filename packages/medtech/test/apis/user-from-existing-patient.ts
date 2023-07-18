@@ -10,7 +10,7 @@ import {
   patUsername,
   setLocalStorage,
   TestMessageFactory,
-  TestUtils
+  TestUtils,
 } from '../test-utils'
 import { assert, expect, use as chaiUse } from 'chai'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
@@ -46,13 +46,8 @@ describe('A Healthcare Party', () => {
 
     if (env.backendType === 'oss') this.skip()
 
-    const hcpApi1AndUser = await TestUtils.createMedTechApiAndLoggedUserFor(
-      env.iCureUrl,
-      env.dataOwnerDetails[hcp1Username],
-      (b) => b
-          .withMsgGwUrl(env!.msgGtwUrl)
-          .withMsgGwSpecId(env!.specId)
-          .withMessageFactory(new TestMessageFactory())
+    const hcpApi1AndUser = await TestUtils.createMedTechApiAndLoggedUserFor(env.iCureUrl, env.dataOwnerDetails[hcp1Username], (b) =>
+      b.withMsgGwUrl(env!.msgGtwUrl).withMsgGwSpecId(env!.specId).withMessageFactory(new TestMessageFactory())
     )
     hcp1Api = hcpApi1AndUser.api
     hcp1User = hcpApi1AndUser.user
@@ -279,7 +274,6 @@ describe('A patient user', () => {
     encryptedPatient.patient.note = undefined
     encryptedPatient.patient.lastName = 'Ghost'
     const modifiedPatient = await patientApi.patientApi.createOrModify(encryptedPatient.patient)
-    const modifiedPatientDto = mapPatientToPatientDto(modifiedPatient)
     expect((await patientApi.patientApi.getPatientAndTryDecrypt(patient.id!)).patient.lastName).to.equal('Ghost')
     expect((await hcp1Api.patientApi.getPatient(patient.id!)).note).to.equal(patientNote) // Should not destroy encrypted data
     // ...can create medical data
@@ -297,9 +291,9 @@ describe('A patient user', () => {
     expect(await hcp1Api.healthcareElementApi.getHealthcareElement(heByPatient.id!)).to.deep.equal(heByPatientWithUpdatedAccess)
     expect(await patientApi.healthcareElementApi.getHealthcareElement(heByHcp.id!)).to.deep.equal(heByHcpWithUpdatedAccess)
     // Originally medical data even if accessible can't be found by the other...
-    const filterPatient1 = await new HealthcareElementFilter(patientApi).forDataOwner(patient.id!).forPatients([modifiedPatientDto]).build()
+    const filterPatient1 = await new HealthcareElementFilter(patientApi).forDataOwner(patient.id!).forPatients([modifiedPatient]).build()
     const patientFound1 = await patientApi.healthcareElementApi.matchHealthcareElement(filterPatient1)
-    const filterHcp1 = await new HealthcareElementFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).forPatients([modifiedPatientDto]).build()
+    const filterHcp1 = await new HealthcareElementFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).forPatients([modifiedPatient]).build()
     const hcpFound1 = await hcp1Api.healthcareElementApi.matchHealthcareElement(filterHcp1)
     expect(patientFound1).to.have.length(1)
     expect(patientFound1).to.contain(heByPatient.id)
@@ -309,17 +303,13 @@ describe('A patient user', () => {
     //. ..but by sharing the patient with each other it can be found
     await patientApi.patientApi.giveAccessToPotentiallyEncrypted((await patientApi.patientApi.getPatientAndTryDecrypt(patient.id!)).patient, hcp1.id!)
     const fullySharedPatient = await hcp1Api.patientApi.giveAccessTo(await hcp1Api.patientApi.getPatient(patient.id!), patient.id!)
-    const fullySharedPatientDto = mapPatientToPatientDto(fullySharedPatient)
     await patientApi.forceReload()
     await hcp1Api.forceReload()
     expect((await patientApi.patientApi.getPatient(patient.id!)).note).to.equal(patientNote)
     expect((await hcp1Api.patientApi.getPatient(patient.id!)).note).to.equal(patientNote)
-    const filterPatient2 = await new HealthcareElementFilter(patientApi).forDataOwner(patient.id!).forPatients([fullySharedPatientDto]).build()
+    const filterPatient2 = await new HealthcareElementFilter(patientApi).forDataOwner(patient.id!).forPatients([fullySharedPatient]).build()
     const patientFound2 = await patientApi.healthcareElementApi.matchHealthcareElement(filterPatient2)
-    const filterHcp2 = await new HealthcareElementFilter(hcp1Api)
-      .forDataOwner(hcp1User.healthcarePartyId!)
-      .forPatients([fullySharedPatientDto])
-      .build()
+    const filterHcp2 = await new HealthcareElementFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).forPatients([fullySharedPatient]).build()
     const hcpFound2 = await hcp1Api.healthcareElementApi.matchHealthcareElement(filterHcp2)
     expect(hcpFound2).to.have.length(2)
     expect(hcpFound2).to.contain(heByPatient.id)

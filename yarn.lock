@@ -1554,9 +1554,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@icure/api@npm:^7.0.0-beta.7":
-  version: 7.0.0-beta.7
-  resolution: "@icure/api@npm:7.0.0-beta.7"
+"@icure/api@npm:^7.0.0-beta.9":
+  version: 7.0.0-beta.9
+  resolution: "@icure/api@npm:7.0.0-beta.9"
   dependencies:
     date-fns: ^2.23.0
     libphonenumber-js: ^1.7.18
@@ -1565,7 +1565,7 @@ __metadata:
     text-encoding: ^0.7.0
     uuid: ^8.3.2
     uuid-encoder: ^1.1.0
-  checksum: e451515da43917944b076a553884d35de557b339f1af290238c06929e28c9acfec5c6d79e6fbd69369f870c314a8c15c6f7f46fc0f1ab454b327ec43e09c41fc
+  checksum: 5f38ceb0f76a8965359777f7e747dac42064315924b6aad8b8e55328d3d60b333920df64ee5e4e2fc856bdf26d6ac389dae3418cf31712aa87be0b1b1e8f546a
   languageName: node
   linkType: hard
 
@@ -1577,7 +1577,7 @@ __metadata:
     "@babel/plugin-proposal-decorators": ^7.22.5
     "@babel/preset-env": ^7.22.5
     "@babel/preset-typescript": ^7.22.5
-    "@icure/api": ^7.0.0-beta.7
+    "@icure/api": ^7.0.0-beta.9
     "@icure/typescript-common": ^0.0.0
     "@types/jest": ^29.5.2
     babel-jest: ^29.5.0
@@ -1592,7 +1592,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@icure/medical-device-sdk@workspace:packages/medtech"
   dependencies:
-    "@icure/api": ^7.0.0-beta.7
+    "@icure/api": ^7.0.0-beta.9
     "@icure/test-setup": ^0.0.52
     "@icure/typescript-common": ^0.0.0
     "@types/chai": ^4.3.0
@@ -1652,7 +1652,7 @@ __metadata:
     "@babel/plugin-proposal-decorators": ^7.22.5
     "@babel/preset-env": ^7.22.5
     "@babel/preset-typescript": ^7.22.5
-    "@icure/api": ^7.0.0-beta.7
+    "@icure/api": ^7.0.0-beta.9
     "@types/jest": ^29.5.2
     "@types/uuid": ^9.0.1
     babel-jest: ^29.5.0

@@ -88,45 +88,75 @@ export class Document {
     static toJSON(instance: Document): any {
         const pojo: any = {}
         pojo['id'] = instance.id
-        pojo['rev'] = instance.rev
-        pojo['created'] = instance.created
-        pojo['modified'] = instance.modified
-        pojo['author'] = instance.author
-        pojo['responsible'] = instance.responsible
-        pojo['medicalLocationId'] = instance.medicalLocationId
-        pojo['deletionDate'] = instance.deletionDate
-        pojo['objectStoreReference'] = instance.objectStoreReference
-        pojo['mainUti'] = instance.mainUti
-        pojo['name'] = instance.name
-        pojo['version'] = instance.version
+        if (instance.rev !== undefined) pojo['rev'] = instance.rev
+        if (instance.created !== undefined) pojo['created'] = instance.created
+        if (instance.modified !== undefined) pojo['modified'] = instance.modified
+        if (instance.author !== undefined) pojo['author'] = instance.author
+        if (instance.responsible !== undefined) pojo['responsible'] = instance.responsible
+        if (instance.medicalLocationId !== undefined) pojo['medicalLocationId'] = instance.medicalLocationId
+        if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
+        if (instance.objectStoreReference !== undefined) pojo['objectStoreReference'] = instance.objectStoreReference
+        if (instance.mainUti !== undefined) pojo['mainUti'] = instance.mainUti
+        if (instance.name !== undefined) pojo['name'] = instance.name
+        if (instance.version !== undefined) pojo['version'] = instance.version
         pojo['otherUtis'] = Array.from([...instance.otherUtis].map((item) => item))
-        pojo['externalUuid'] = instance.externalUuid
-        pojo['size'] = instance.size
-        pojo['hash'] = instance.hash
-        pojo['attachmentId'] = instance.attachmentId
+        if (instance.externalUuid !== undefined) pojo['externalUuid'] = instance.externalUuid
+        if (instance.size !== undefined) pojo['size'] = instance.size
+        if (instance.hash !== undefined) pojo['hash'] = instance.hash
+        if (instance.attachmentId !== undefined) pojo['attachmentId'] = instance.attachmentId
         return pojo
     }
 
     static fromJSON(pojo: any): Document {
-        return new Document({
-            id: pojo['id'],
-            rev: pojo['rev'],
-            created: pojo['created'],
-            modified: pojo['modified'],
-            author: pojo['author'],
-            responsible: pojo['responsible'],
-            medicalLocationId: pojo['medicalLocationId'],
-            deletionDate: pojo['deletionDate'],
-            objectStoreReference: pojo['objectStoreReference'],
-            mainUti: pojo['mainUti'],
-            name: pojo['name'],
-            version: pojo['version'],
-            otherUtis: new Set(pojo['otherUtis'].map((item: any) => item)),
-            externalUuid: pojo['externalUuid'],
-            size: pojo['size'],
-            hash: pojo['hash'],
-            attachmentId: pojo['attachmentId'],
-        })
+        const obj = {} as IDocument
+        obj['id'] = pojo['id']
+        if (pojo['rev'] !== undefined) {
+            obj['rev'] = pojo['rev']
+        }
+        if (pojo['created'] !== undefined) {
+            obj['created'] = pojo['created']
+        }
+        if (pojo['modified'] !== undefined) {
+            obj['modified'] = pojo['modified']
+        }
+        if (pojo['author'] !== undefined) {
+            obj['author'] = pojo['author']
+        }
+        if (pojo['responsible'] !== undefined) {
+            obj['responsible'] = pojo['responsible']
+        }
+        if (pojo['medicalLocationId'] !== undefined) {
+            obj['medicalLocationId'] = pojo['medicalLocationId']
+        }
+        if (pojo['deletionDate'] !== undefined) {
+            obj['deletionDate'] = pojo['deletionDate']
+        }
+        if (pojo['objectStoreReference'] !== undefined) {
+            obj['objectStoreReference'] = pojo['objectStoreReference']
+        }
+        if (pojo['mainUti'] !== undefined) {
+            obj['mainUti'] = pojo['mainUti']
+        }
+        if (pojo['name'] !== undefined) {
+            obj['name'] = pojo['name']
+        }
+        if (pojo['version'] !== undefined) {
+            obj['version'] = pojo['version']
+        }
+        obj['otherUtis'] = new Set(pojo['otherUtis'].map((item: any) => item))
+        if (pojo['externalUuid'] !== undefined) {
+            obj['externalUuid'] = pojo['externalUuid']
+        }
+        if (pojo['size'] !== undefined) {
+            obj['size'] = pojo['size']
+        }
+        if (pojo['hash'] !== undefined) {
+            obj['hash'] = pojo['hash']
+        }
+        if (pojo['attachmentId'] !== undefined) {
+            obj['attachmentId'] = pojo['attachmentId']
+        }
+        return new Document(obj)
     }
 }
 

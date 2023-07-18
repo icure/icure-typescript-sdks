@@ -7,7 +7,7 @@ import { Property } from '../..'
 import { SystemMetaDataEncrypted } from '../..'
 import { assert } from 'chai'
 import { newIdentifier } from './identifierTest'
-import {mapOf, NotificationTypeEnum} from "@icure/typescript-common";
+import { mapOf, NotificationTypeEnum } from '@icure/typescript-common'
 
 export function newNotification(): Notification {
   return new Notification({
@@ -20,11 +20,11 @@ export function newNotification(): Notification {
     endOfLife: new Date().getTime(),
     author: uuid(),
     responsible: uuid(),
-    properties: [new Property({ id: uuid() })],
+    properties: new Set([new Property({ id: uuid() })]),
     type: NotificationTypeEnum.OTHER,
     systemMetaData: new SystemMetaDataEncrypted({
       delegations: mapOf({ TEST_ID: new Set([new Delegation({ owner: uuid(), delegatedTo: uuid() })]) }),
-      encryptionKeys: mapOf({ TEST_ID: new Set([new Delegation({ owner: uuid(), delegatedTo: uuid() })])}),
+      encryptionKeys: mapOf({ TEST_ID: new Set([new Delegation({ owner: uuid(), delegatedTo: uuid() })]) }),
     }),
   })
 }

@@ -9,9 +9,9 @@ import { HealthcareElement } from '../../src/models/HealthcareElement.model'
 import { Content } from '../../src/models/Content.model'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import { v4 as uuid } from 'uuid'
-import {CodingReference, mapOf, User} from "@icure/typescript-common";
-import {mapPatientToPatientDto} from "../../src/mappers/Patient.mapper";
-import {FilterComposition, NoOpFilter} from "@icure/typescript-common";
+import { CodingReference, mapOf, User } from '@icure/typescript-common'
+import { mapPatientToPatientDto } from '../../src/mappers/Patient.mapper'
+import { FilterComposition, NoOpFilter } from '@icure/typescript-common'
 
 setLocalStorage(fetch)
 
@@ -125,7 +125,7 @@ describe('Data Sample Filters Tests', function () {
 
   it('Can filter Data Samples by patient', async function () {
     const samples = await hcp1Api.dataSampleApi.filterDataSample(
-      await new DataSampleFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).forPatients([mapPatientToPatientDto(patient)]).build()
+      await new DataSampleFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).forPatients([patient]).build()
     )
 
     expect(samples.rows.length).to.be.greaterThan(0)
@@ -187,7 +187,7 @@ describe('Data Sample Filters Tests', function () {
   })
 
   it('Can filter Data Samples by explicit intersection filter', async function () {
-    const filterByPatient = await new DataSampleFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).forPatients([mapPatientToPatientDto(patient)]).build()
+    const filterByPatient = await new DataSampleFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).forPatients([patient]).build()
 
     const filterByHe = await new DataSampleFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).byHealthElementIds([he1.id!]).build()
 
@@ -205,7 +205,7 @@ describe('Data Sample Filters Tests', function () {
     const filterByPatientAndByHe = await new DataSampleFilter(hcp1Api)
       .forDataOwner(hcp1User.healthcarePartyId!)
       .byHealthElementIds([he1.id!])
-      .forPatients([mapPatientToPatientDto(patient)])
+      .forPatients([patient])
       .build()
 
     const samples = await hcp1Api.dataSampleApi.filterDataSample(filterByPatientAndByHe)

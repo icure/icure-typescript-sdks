@@ -22,15 +22,29 @@ export class Property {
     static toJSON(instance: Property): any {
         const pojo: any = {}
         pojo['id'] = instance.id
-        pojo['type'] = !!instance.type ? PropertyType.toJSON(instance.type) : undefined
-        pojo['typedValue'] = !!instance.typedValue ? TypedValueObject.toJSON(instance.typedValue) : undefined
-        pojo['deleted'] = instance.deleted
-        pojo['encryptedSelf'] = instance.encryptedSelf
+        if (instance.type !== undefined) pojo['type'] = !!instance.type ? PropertyType.toJSON(instance.type) : undefined
+        if (instance.typedValue !== undefined) pojo['typedValue'] = !!instance.typedValue ? TypedValueObject.toJSON(instance.typedValue) : undefined
+        if (instance.deleted !== undefined) pojo['deleted'] = instance.deleted
+        if (instance.encryptedSelf !== undefined) pojo['encryptedSelf'] = instance.encryptedSelf
         return pojo
     }
 
     static fromJSON(pojo: any): Property {
-        return new Property({ id: pojo['id'], type: !!pojo['type'] ? PropertyType.fromJSON(pojo['type']) : undefined, typedValue: !!pojo['typedValue'] ? TypedValueObject.fromJSON(pojo['typedValue']) : undefined, deleted: pojo['deleted'], encryptedSelf: pojo['encryptedSelf'] })
+        const obj = {} as IProperty
+        obj['id'] = pojo['id']
+        if (pojo['type'] !== undefined) {
+            obj['type'] = !!pojo['type'] ? PropertyType.fromJSON(pojo['type']) : undefined
+        }
+        if (pojo['typedValue'] !== undefined) {
+            obj['typedValue'] = !!pojo['typedValue'] ? TypedValueObject.fromJSON(pojo['typedValue']) : undefined
+        }
+        if (pojo['deleted'] !== undefined) {
+            obj['deleted'] = pojo['deleted']
+        }
+        if (pojo['encryptedSelf'] !== undefined) {
+            obj['encryptedSelf'] = pojo['encryptedSelf']
+        }
+        return new Property(obj)
     }
 }
 

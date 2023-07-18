@@ -16,7 +16,7 @@ import { mapTo } from '../utils/decorators'
 @mapTo(Code)
 export class Coding {
     constructor(json: ICoding) {
-        this.id = json.id
+        this.id = json.id ?? `${json.type}|${json.code}|${json.version}`
         this.rev = json.rev
         this.type = json.type
         this.code = json.code
@@ -58,34 +58,44 @@ export class Coding {
     static toJSON(instance: Coding): any {
         const pojo: any = {}
         pojo['id'] = instance.id
-        pojo['rev'] = instance.rev
-        pojo['type'] = instance.type
-        pojo['code'] = instance.code
-        pojo['version'] = instance.version
+        if (instance.rev !== undefined) pojo['rev'] = instance.rev
+        if (instance.type !== undefined) pojo['type'] = instance.type
+        if (instance.code !== undefined) pojo['code'] = instance.code
+        if (instance.version !== undefined) pojo['version'] = instance.version
         pojo['regions'] = Array.from([...instance.regions].map((item) => item))
-        pojo['description'] = !!instance.description ? Object.fromEntries([...instance.description.entries()].map(([k, v]) => [k, v])) : undefined
+        if (instance.description !== undefined) pojo['description'] = !!instance.description ? Object.fromEntries([...instance.description.entries()].map(([k, v]) => [k, v])) : undefined
         pojo['qualifiedLinks'] = Object.fromEntries([...instance.qualifiedLinks.entries()].map(([k, v]) => [k, v.map((item) => item)]))
         pojo['searchTerms'] = Object.fromEntries([...instance.searchTerms.entries()].map(([k, v]) => [k, Array.from([...v].map((item) => item))]))
         return pojo
     }
 
     static fromJSON(pojo: any): Coding {
-        return new Coding({
-            id: pojo['id'],
-            rev: pojo['rev'],
-            type: pojo['type'],
-            code: pojo['code'],
-            version: pojo['version'],
-            regions: new Set(pojo['regions'].map((item: any) => item)),
-            description: pojo['description'] ? new Map(Object.entries(pojo['description']).map(([k, v]: [any, any]) => [k, v])) : undefined,
-            qualifiedLinks: new Map(Object.entries(pojo['qualifiedLinks']).map(([k, v]: [any, any]) => [k, v.map((item: any) => item)])),
-            searchTerms: new Map(Object.entries(pojo['searchTerms']).map(([k, v]: [any, any]) => [k, new Set(v.map((item: any) => item))])),
-        })
+        const obj = {} as ICoding
+        obj['id'] = pojo['id']
+        if (pojo['rev'] !== undefined) {
+            obj['rev'] = pojo['rev']
+        }
+        if (pojo['type'] !== undefined) {
+            obj['type'] = pojo['type']
+        }
+        if (pojo['code'] !== undefined) {
+            obj['code'] = pojo['code']
+        }
+        if (pojo['version'] !== undefined) {
+            obj['version'] = pojo['version']
+        }
+        obj['regions'] = new Set(pojo['regions'].map((item: any) => item))
+        if (pojo['description'] !== undefined) {
+            obj['description'] = pojo['description'] ? new Map(Object.entries(pojo['description']).map(([k, v]: [any, any]) => [k, v])) : undefined
+        }
+        obj['qualifiedLinks'] = new Map(Object.entries(pojo['qualifiedLinks']).map(([k, v]: [any, any]) => [k, v.map((item: any) => item)]))
+        obj['searchTerms'] = new Map(Object.entries(pojo['searchTerms']).map(([k, v]: [any, any]) => [k, new Set(v.map((item: any) => item))]))
+        return new Coding(obj)
     }
 }
 
 interface ICoding {
-    id: string
+    id?: string
     rev?: string
     type?: string
     code?: string

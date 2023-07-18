@@ -1,5 +1,5 @@
 import { Content } from '@icure/api'
-import { mapTo } from "@icure/typescript-common"
+import { mapTo } from '@icure/typescript-common'
 
 @mapTo(Content)
 export class LocalComponent {
@@ -13,13 +13,20 @@ export class LocalComponent {
 
     static toJSON(instance: LocalComponent): any {
         const pojo: any = {}
-        pojo["stringValue"] = instance.stringValue
-        pojo["documentId"] = instance.documentId
+        if (instance.stringValue !== undefined) pojo['stringValue'] = instance.stringValue
+        if (instance.documentId !== undefined) pojo['documentId'] = instance.documentId
         return pojo
     }
 
     static fromJSON(pojo: any): LocalComponent {
-        return new LocalComponent({stringValue: pojo["stringValue"], documentId: pojo["documentId"]})
+        const obj = {} as ILocalComponent
+        if (pojo['stringValue'] !== undefined) {
+            obj['stringValue'] = pojo['stringValue']
+        }
+        if (pojo['documentId'] !== undefined) {
+            obj['documentId'] = pojo['documentId']
+        }
+        return new LocalComponent(obj)
     }
 }
 

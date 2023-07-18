@@ -1,28 +1,18 @@
-import {Filter} from '../../filters/Filter'
-import {PaginatedList} from '../../models/PaginatedList.model'
-import {Connection} from '../../models/Connection.model'
-import {HealthElementLikeApi} from '../HealthElementLikeApi'
-import {
-    FilterChainHealthElement,
-    HealthElement,
-    IccCryptoXApi,
-    IccHelementXApi,
-    IccPatientXApi,
-    IccUserXApi,
-    PaginatedListHealthElement,
-    Patient,
-    User
-} from '@icure/api'
-import {Mapper} from '../Mapper'
-import {ErrorHandler} from '../../services/ErrorHandler'
-import {firstOrNull} from '../../utils/functionalUtils'
-import {IccDataOwnerXApi} from '@icure/api/icc-x-api/icc-data-owner-x-api'
-import {forceUuid} from '../../utils/uuidUtils'
-import {NoOpFilter} from "../../filters/dsl/filterDsl";
-import {FilterMapper} from "../../mappers/Filter.mapper";
-import {HealthElementFilter} from "../../filters/dsl/HealthElementFilterDsl";
-import {CommonApi} from "../CommonApi";
-import {toPaginatedList} from "../../mappers/PaginatedList.mapper";
+import { Filter } from '../../filters/Filter'
+import { PaginatedList } from '../../models/PaginatedList.model'
+import { Connection } from '../../models/Connection.model'
+import { HealthElementLikeApi } from '../HealthElementLikeApi'
+import { FilterChainHealthElement, HealthElement, IccCryptoXApi, IccHelementXApi, IccPatientXApi, IccUserXApi, PaginatedListHealthElement, Patient, User } from '@icure/api'
+import { Mapper } from '../Mapper'
+import { ErrorHandler } from '../../services/ErrorHandler'
+import { firstOrNull } from '../../utils/functionalUtils'
+import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
+import { forceUuid } from '../../utils/uuidUtils'
+import { NoOpFilter } from '../../filters/dsl/filterDsl'
+import { FilterMapper } from '../../mappers/Filter.mapper'
+import { HealthElementFilter } from '../../filters/dsl/HealthElementFilterDsl'
+import { CommonApi } from '../CommonApi'
+import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
 
 export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements HealthElementLikeApi<DSHealthElement, DSPatient> {
     constructor(
@@ -59,8 +49,8 @@ export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements Hea
 
         const patient = patientId
             ? await this.patientApi.getPatientWithUser(currentUser, patientId).catch((e) => {
-                throw this.errorHandler.createErrorFromAny(e)
-            })
+                  throw this.errorHandler.createErrorFromAny(e)
+              })
             : undefined
 
         if (!heToUpdate.every((he) => he.id != null && forceUuid(he.id))) {
@@ -71,7 +61,7 @@ export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements Hea
             throw this.errorHandler.createErrorWithMessage('Error while creating: patientId should be provided to create new healthcare elements')
         }
 
-        const hesCreated = await Promise.all(heToCreate.map((he) => this.heApi.newInstance(currentUser, patient, he, {confidential: true})))
+        const hesCreated = await Promise.all(heToCreate.map((he) => this.heApi.newInstance(currentUser, patient, he, { confidential: true })))
             .then((healthElementsToCreate) => this.heApi.createHealthElementsWithUser(currentUser, healthElementsToCreate))
             .catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
@@ -105,7 +95,7 @@ export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements Hea
         })) as User
 
         return toPaginatedList(
-            (await this.heApi
+            await this.heApi
                 .filterByWithUser(
                     currentUser,
                     nextHealthElementId,
@@ -116,7 +106,7 @@ export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements Hea
                 )
                 .catch((e) => {
                     throw this.errorHandler.createErrorFromAny(e)
-                })),
+                }),
             this.healthElementMapper.toDomain
         )!
     }
@@ -137,38 +127,21 @@ export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements Hea
             throw this.errorHandler.createErrorFromAny(e)
         })
         if (!user) {
-            throw this.errorHandler.createErrorWithMessage(
-                'There is no user currently logged in. You must call this method from an authenticated MedTechApi.'
-            )
+            throw this.errorHandler.createErrorWithMessage('There is no user currently logged in. You must call this method from an authenticated MedTechApi.')
         }
         const dataOwnerId = this.dataOwnerApi.getDataOwnerIdOf(user)
         if (!dataOwnerId) {
-            throw this.errorHandler.createErrorWithMessage(
-                'The current user is not a data owner. You must been either a patient, a device or a healthcare professional to call this method.'
-            )
+            throw this.errorHandler.createErrorWithMessage('The current user is not a data owner. You must been either a patient, a device or a healthcare professional to call this method.')
         }
-        const patientDto = this.patientMapper.toDto(patient)!
 
-        const filter = await new HealthElementFilter(this.api).forDataOwner(dataOwnerId).forPatients([patientDto]).build()
+        const filter = await new HealthElementFilter(this.api, this.patientMapper).forDataOwner(dataOwnerId).forPatients([patient]).build()
 
         return await this.concatenateFilterResults(filter)
     }
 
-    async concatenateFilterResults(
-        filter: Filter<HealthElement>,
-        nextId?: string | undefined,
-        limit?: number | undefined,
-        accumulator: Array<DSHealthElement> = []
-    ): Promise<Array<DSHealthElement>> {
+    async concatenateFilterResults(filter: Filter<HealthElement>, nextId?: string | undefined, limit?: number | undefined, accumulator: Array<DSHealthElement> = []): Promise<Array<DSHealthElement>> {
         const paginatedHealthElements = await this.filterBy(filter, nextId, limit)
-        return !paginatedHealthElements.nextKeyPair?.startKeyDocId
-            ? accumulator.concat(paginatedHealthElements.rows ?? [])
-            : this.concatenateFilterResults(
-                filter,
-                paginatedHealthElements.nextKeyPair.startKeyDocId,
-                limit,
-                accumulator.concat(paginatedHealthElements.rows ?? [])
-            )
+        return !paginatedHealthElements.nextKeyPair?.startKeyDocId ? accumulator.concat(paginatedHealthElements.rows ?? []) : this.concatenateFilterResults(filter, paginatedHealthElements.nextKeyPair.startKeyDocId, limit, accumulator.concat(paginatedHealthElements.rows ?? []))
     }
 
     async giveAccessTo(healthElement: DSHealthElement, delegatedTo: string): Promise<DSHealthElement> {
