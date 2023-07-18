@@ -1,8 +1,6 @@
 import 'mocha'
 import 'isomorphic-fetch'
-
-import { getEnvironmentInitializer, hcp1Username, hcp2Username, hcp3Username, patUsername, setLocalStorage, TestUtils } from '../test-utils'
-// import { CodingReference, Content, DataSample, Patient } from '../../index'
+import { getEnvironmentInitializer, hcp1Username, hcp2Username, hcp3Username, patUsername, setLocalStorage } from '../test-utils'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import {IccDocumentApi, Service, ua2utf8, utf8_2ua} from '@icure/api'
 import { BasicAuthenticationProvider } from '@icure/api/icc-x-api/auth/AuthenticationProvider'
@@ -10,21 +8,17 @@ import {
     AnonymousApiBuilder,
     CommonAnonymousApi,
     CommonApi,
-    CryptoStrategies, DataOwnerWithType, forceUuid,
-    mapOf,
+    CryptoStrategies,
+    forceUuid,
     ServiceLikeApiImpl
 } from '@icure/typescript-common'
 import {
     BaseApiTestContext,
-    WithAuthenticationApi,
-    WithDataOwnerApi,
-    WithHcpApi, WithHelementApi, WithMaintenanceTaskApi,
+    WithHelementApi,
     WithPatientApi,
     WithServiceApi
 } from "./TestContexts";
 import {expectArrayContainsExactlyInAnyOrder} from "../assertions";
-// import { DataSampleFilter } from '../../src/filter/DataSampleFilterDsl'
-// import { mapPatientToPatientDto } from '../../src/mappers/Patient.mapper'
 
 setLocalStorage(fetch)
 
@@ -156,7 +150,7 @@ export function testServiceLikeApi<
             const patient = await ctx.createPatient(api)
             const patientId = ctx.toPatientDto(patient).id!
 
-            const healthElementDto = ctx.toHelementDto(await ctx.createHelemntForPatient(api, patient))
+            const healthElementDto = ctx.toHelementDto(await ctx.createHelementForPatient(api, patient))
             const serviceToCreate = ctx.toDSService(new Service({
                 tags: [{ type: 'IC-TEST', code: 'TEST' }],
                 content: { en: { stringValue: 'Hello world' } },
@@ -180,7 +174,7 @@ export function testServiceLikeApi<
             const patient = await ctx.createPatient(api)
             const patientId = ctx.toPatientDto(patient).id!
 
-            const healthElementDto = ctx.toHelementDto(await ctx.createHelemntForPatient(api, patient))
+            const healthElementDto = ctx.toHelementDto(await ctx.createHelementForPatient(api, patient))
             const createdServiceDto = ctx.toServiceDto(await ctx.createServiceForPatient(api, patient))
 
             // When
@@ -249,7 +243,7 @@ export function testServiceLikeApi<
 
             const patient = await ctx.createPatient(api)
             const patientId = ctx.toPatientDto(patient).id!
-            const healthElement = ctx.toHelementDto(await ctx.createHelemntForPatient(api, patient))
+            const healthElement = ctx.toHelementDto(await ctx.createHelementForPatient(api, patient))
             const createdService = await ctx.serviceApi(api).createOrModifyFor(
                 patientId,
                 ctx.toDSService(new Service({
@@ -283,10 +277,9 @@ export function testServiceLikeApi<
             await ctx.checkServiceInaccessible(hcpApi, createdService)
             // Patient shares data sample and gets it updated and decrypted
             const sharedService = await ctx.serviceApi(patApi).giveAccessTo(createdService, hcpUser.healthcarePartyId!)
-            const sharedServiceDto = ctx.toServiceDto(sharedService)
-            expectArrayContainsExactlyInAnyOrder(Object.keys(sharedServiceDto.content), ['en'])
+            ctx.checkDefaultServiceDecrypted(sharedService)
             // Hcp can now get data sample and decrypt it
-            await ctx.checkServiceAccessibleAndDecrypted(hcpApi, createdService)
+            await ctx.checkServiceAccessibleAndDecrypted(hcpApi, sharedService, true)
         })
 
         it('HCP sharing data sample with patient', async () => {
@@ -300,11 +293,10 @@ export function testServiceLikeApi<
             await ctx.checkServiceInaccessible(patApi, createdService)
             // Hcp shares data sample and gets it updated and decrypted
             const sharedService = await ctx.serviceApi(hcpApi).giveAccessTo(createdService, patUser.patientId!)
-            const sharedServiceDto = ctx.toServiceDto(sharedService)
-            expectArrayContainsExactlyInAnyOrder(Object.keys(sharedServiceDto.content), ['en'])
+            ctx.checkDefaultServiceDecrypted(sharedService)
             // Patient can now get data sample and decrypt it
             await patApi.baseApi.cryptoApi.forceReload()
-            await ctx.checkServiceAccessibleAndDecrypted(patApi, sharedService)
+            await ctx.checkServiceAccessibleAndDecrypted(patApi, sharedService, true)
         })
 
         it('HCP sharing data sample with another HCP', async () => {
@@ -319,10 +311,9 @@ export function testServiceLikeApi<
             await ctx.checkServiceInaccessible(hcp2Api, createdService)
             // Hcp shares data sample and gets it updated and decrypted
             const sharedService = await ctx.serviceApi(hcp1Api).giveAccessTo(createdService, hcp2User.healthcarePartyId!)
-            const sharedServiceDto = ctx.toServiceDto(sharedService)
-            expectArrayContainsExactlyInAnyOrder(Object.keys(sharedServiceDto.content), ['en'])
+            ctx.checkDefaultServiceDecrypted(sharedService)
             // Hcp 2 can now get data sample and decrypt it
-            await ctx.checkServiceAccessibleAndDecrypted(hcp2Api, createdService)
+            await ctx.checkServiceAccessibleAndDecrypted(hcp2Api, sharedService, true)
         })
 
         it('Optimization - No delegation sharing if delegated already has access to data sample', async () => {

@@ -13,7 +13,7 @@ import {
     Document,
     mapMaintenanceTaskToNotification,
     ServiceFilter,
-    mapDocumentToDocumentDto
+    mapDocumentToDocumentDto, HealthElementFilter
 } from "@icure/typescript-common";
 import {AnonymousMedTechApi} from "../../src/apis/AnonymousMedTechApi";
 import {MedTechApi} from "../../src/apis/MedTechApi";
@@ -58,6 +58,7 @@ import {
     mapHealthElementToHealthcareElement
 } from "../../src/mappers/HealthcareElement.mapper";
 import {DataSampleFilter} from "../../src/filter/DataSampleFilterDsl";
+import {HealthcareElementFilter} from "../../src/filter/HealthcareElementFilterDsl";
 
 export class MedTechBaseTestContext extends BaseApiTestContext<
     AnonymousMedTechApi.Builder,
@@ -124,10 +125,11 @@ export function DataSampleApiAware<TBase extends Constructor<any>>(Base: TBase):
             return api.dataSampleApi
         }
 
-        async checkServiceAccessibleAndDecrypted(api: MedTechApi, service: DataSample): Promise<void> {
+        async checkServiceAccessibleAndDecrypted(api: MedTechApi, service: DataSample, checkDeepEquals: boolean): Promise<void> {
             const retrieved = await api.dataSampleApi.get(service.id!)
             expect(retrieved).toBeTruthy()
             expect(Array.from(retrieved.content.entries()).length).toBeGreaterThan(0)
+            if (checkDeepEquals) expect(retrieved).toEqual(service)
         }
 
         async checkServiceAccessibleButEncrypted(api: MedTechApi, service: DataSample): Promise<void> {
@@ -138,6 +140,10 @@ export function DataSampleApiAware<TBase extends Constructor<any>>(Base: TBase):
 
         async checkServiceInaccessible(api: MedTechApi, service: DataSample): Promise<void> {
             await expect(api.dataSampleApi.get(service.id!)).rejects.toBeInstanceOf(Error)
+        }
+
+        checkDefaultServiceDecrypted(service: DataSample): void {
+            expect(service.content).toEqual(mapOf({ en: new Content({ stringValue: 'Hello world' }) }))
         }
 
         createServiceForPatient(api: MedTechApi, patient: Patient): Promise<DataSample> {
@@ -243,7 +249,7 @@ export function AuthenticationApiAware<TBase extends Constructor<any>>(Base: TBa
 
 export function HelementApiAware<TBase extends Constructor<any>>(Base: TBase): TBase & Constructor<WithHelementApi<MedTechApi, HealthcareElement, Patient>> {
     return class HelementApiAwareImpl extends Base implements WithHelementApi<MedTechApi, HealthcareElement, Patient> {
-        createHelemntForPatient(api: MedTechApi, patient: Patient): Promise<HealthcareElement> {
+        createHelementForPatient(api: MedTechApi, patient: Patient): Promise<HealthcareElement> {
             return api.healthcareElementApi.createOrModify(
                 new HealthcareElement({
                     note: 'Hero Syndrome',
@@ -262,6 +268,25 @@ export function HelementApiAware<TBase extends Constructor<any>>(Base: TBase): T
 
         toHelementDto(dsHelement: HealthcareElement): HealthElement {
             return mapHealthcareElementToHealthElement(dsHelement)
+        }
+
+        async checkHelementAccessibleAndDecrypted(api: MedTechApi, helement: HealthcareElement, checkDeepEquals: boolean): Promise<void> {
+            const retrieved = await api.healthcareElementApi.get(helement.id!)
+            expect(retrieved).toBeTruthy()
+            expect(retrieved.note).toBeTruthy()
+            if (checkDeepEquals) expect(retrieved).toEqual(helement)
+        }
+
+        checkDefaultHelementDecrypted(helement: HealthcareElement): void {
+            expect(helement.note).toEqual('Hero Syndrome')
+        }
+
+        async checkHelementInaccessible(api: MedTechApi, helement: HealthcareElement): Promise<void> {
+            await expect(api.dataSampleApi.get(helement.id!)).rejects.toBeInstanceOf(Error)
+        }
+
+        newHelementFilter(api: MedTechApi): HealthElementFilter {
+            return new HealthcareElementFilter(api)
         }
     }
 }

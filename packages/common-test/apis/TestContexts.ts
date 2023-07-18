@@ -5,7 +5,7 @@ import {
     CommonAnonymousApi,
     CommonApi,
     CryptoStrategies, DataOwnerLikeApi, DataOwnerWithType,
-    HealthcarePartyLikeApi, HealthElementLikeApi,
+    HealthcarePartyLikeApi, HealthElementFilter, HealthElementLikeApi,
     KeyPair, MaintenanceTaskLikeApi, PatientLikeApi,
     RecaptchaType, ServiceFilter, ServiceLikeApi,
     SimpleCryptoStrategies,
@@ -183,9 +183,10 @@ export interface WithServiceApi<DSApi, DSService, DSPatient, DSDocument> {
     createServiceForPatient(api: DSApi, patient: DSPatient): Promise<DSService>
     createServicesForPatient(api: DSApi, patient: DSPatient): Promise<DSService[]>
     toDSService(serviceDto: Service): DSService
-    checkServiceAccessibleAndDecrypted(api: DSApi, service: DSService): Promise<void>
+    checkServiceAccessibleAndDecrypted(api: DSApi, service: DSService, checkDeepEquals: boolean): Promise<void>
     checkServiceAccessibleButEncrypted(api: DSApi, service: DSService): Promise<void>
     checkServiceInaccessible(api: DSApi, service: DSService): Promise<void>
+    checkDefaultServiceDecrypted(service: DSService): void
     newServiceFilter(api: DSApi): ServiceFilter
     toDocumentDto(dsDocument: DSDocument): Document
 }
@@ -198,7 +199,16 @@ export interface WithMaintenanceTaskApi<DSApi, DSMaintenanceTask> {
 
 export interface WithHelementApi<DSApi, DSHealthElement, DSPatient> {
     helementApi(api: DSApi): HealthElementLikeApi<DSHealthElement, DSPatient>
-    createHelemntForPatient(api: DSApi, patient: DSPatient): Promise<DSHealthElement>
+    createHelementForPatient(api: DSApi, patient: DSPatient): Promise<DSHealthElement>
     toHelementDto(dsHelement: DSHealthElement): HealthElement
     toDSHelement(helementDto: HealthElement): DSHealthElement
+    // Check the api can retrieve the helement from the server and decrypt it
+    checkHelementAccessibleAndDecrypted(api: DSApi, helement: DSHealthElement, checkDeepEquals: boolean): Promise<void>
+    // Check the api can retrieve the helement from the server but can't decrypt it
+    // checkHelementAccessibleButEncrypted(api: DSApi, helement: DSHealthElement): Promise<void>
+    // Check the api can't retrieve the helement from the server
+    checkHelementInaccessible(api: DSApi, helement: DSHealthElement): Promise<void>
+    // Check already retrieved helement is decrypted
+    checkDefaultHelementDecrypted(helement: DSHealthElement): void
+    newHelementFilter(api: DSApi): HealthElementFilter
 }
