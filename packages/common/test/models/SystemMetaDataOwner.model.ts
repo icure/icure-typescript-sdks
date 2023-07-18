@@ -34,6 +34,6 @@ export function generateSystemMetaDataOwner(domainTagType?: CodingReference): Sy
         privateKeyShamirPartitions,
         aesExchangeKeys,
         transferKeys,
-        tags: new Set([domainTagType] ?? []),
+        tags: new Set(domainTagType ? [domainTagType] : []),
     })
 }

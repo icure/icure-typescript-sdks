@@ -340,6 +340,7 @@ export function mapHealthElementToCondition(dto: HealthElement): Condition {
 export function mapConditionToHealthElement(domain: Condition): HealthElement {
     const id = toHealthElementId(domain)
     return new HealthElement({
+        id: id,
         identifiers: toHealthElementIdentifiers(domain),
         rev: toHealthElementRev(domain),
         created: toHealthElementCreated(domain),

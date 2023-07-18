@@ -18,5 +18,6 @@ export function generateSystemMetaDataOwnerEncrypted(): SystemMetaDataOwnerEncry
         transferKeys: fakeSystemMetaDataOwner.transferKeys,
         // securityMetadata: generateSecurityMetadata(),
         encryptedSelf: Math.random().toString(36).substring(2, 15),
+        tags: new Set(),
     })
 }

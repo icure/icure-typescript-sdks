@@ -6,6 +6,7 @@ import { generateCodingReference } from '../../../common/test/models/CodingRefer
 import { generateAnnotation } from '../../../common/test/models/Annotation.model'
 import { generateSystemMetaDataEncrypted } from '../../../common/test/models/SystemMetaDataEncrypted.model'
 import { v4 } from 'uuid'
+import { domainTypeTag, mapCodeStubToCodingReference } from '@icure/typescript-common'
 
 export function generateObservation(): Observation {
     const observation = {
@@ -28,7 +29,7 @@ export function generateObservation(): Observation {
         qualifiedLinks: new Map([['linkType', new Map([['linkId', 'linkValue']])]]),
         codes: new Set([generateCodingReference()]),
         tags: new Set([generateCodingReference()]),
-        systemMetaData: generateSystemMetaDataEncrypted(),
+        systemMetaData: generateSystemMetaDataEncrypted(mapCodeStubToCodingReference(domainTypeTag('Observation'))),
         notes: [generateAnnotation()],
     } satisfies Observation
 

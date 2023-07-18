@@ -7,12 +7,14 @@ export class CodingReference {
     type?: string
     code?: string
     version?: string
+    context?: string
 
     constructor(codingReference: ICodingReference) {
         this.id = codingReference.id!
         this.type = codingReference.type
         this.code = codingReference.code
         this.version = codingReference.version
+        this.context = codingReference.context
     }
 
     static toJSON(instance: CodingReference): any {
@@ -21,11 +23,12 @@ export class CodingReference {
         pojo['type'] = instance.type
         pojo['code'] = instance.code
         pojo['version'] = instance.version
+        pojo['context'] = instance.context
         return pojo
     }
 
     static fromJSON(pojo: any): CodingReference {
-        return new CodingReference({ id: pojo['id'], type: pojo['type'], code: pojo['code'], version: pojo['version'] })
+        return new CodingReference({ id: pojo['id'], type: pojo['type'], code: pojo['code'], version: pojo['version'], context: pojo['context'] })
     }
 }
 
@@ -34,4 +37,5 @@ interface ICodingReference {
     type?: string
     code?: string
     version?: string
+    context?: string
 }

@@ -1,5 +1,5 @@
-import {Practitioner} from '../../src/models/Practitioner.model'
-import {generatePractitioner} from "../models/Practitioner.model";
+import { Practitioner } from '../../src'
+import { generatePractitioner } from '../models/Practitioner.model'
 
 describe(`Practitioner serialization and deserialization`, () => {
     it('should correctly serialize and deserialize from instance to JSON and back', () => {
