@@ -4,7 +4,7 @@ import {
   AuthenticationApi,
   CommonAnonymousApi,
   CommonApi,
-  CryptoStrategies, DataOwnerLikeApi, DataOwnerWithType,
+  CryptoStrategies, DataOwnerLikeApi, DataOwnerWithType, DeviceLikeApi,
   HealthcarePartyLikeApi, HealthElementFilter, HealthElementLikeApi,
   KeyPair, MaintenanceTaskFilter, MaintenanceTaskLikeApi, MessageFactory, PatientLikeApi,
   RecaptchaType, ServiceFilter, ServiceLikeApi,
@@ -24,7 +24,7 @@ import {
   sleep,
   StorageFacade,
   User,
-  Document
+  Document, Device
 } from "@icure/api";
 import {TestVars} from "@icure/test-setup/types";
 import {DefaultStorageEntryKeysFactory} from "@icure/api/icc-x-api/storage/DefaultStorageEntryKeysFactory";
@@ -219,4 +219,10 @@ export interface WithHelementApi<DSApi, DSHealthElement, DSPatient> {
   // Check already retrieved helement is decrypted
   checkDefaultHelementDecrypted(helement: DSHealthElement): void
   newHelementFilter(api: DSApi): HealthElementFilter
+}
+
+export interface WithDeviceApi<DSApi, DSDevice> {
+  deviceApi(api: DSApi): DeviceLikeApi<DSDevice>
+  toDeviceDto(dsDevice: DSDevice): Device
+  toDSDevice(deviceDto: Device): DSDevice
 }

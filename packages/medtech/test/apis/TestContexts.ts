@@ -24,7 +24,7 @@ import {
     User as UserDto,
     DataOwnerWithType as DataOwnerWithTypeDto,
     Document as DocumentDto,
-    HealthElement
+    HealthElement, Device
 } from '@icure/api'
 import {UserApi} from "../../src/apis/UserApi"
 import {Patient} from "../../src/models/Patient.model";
@@ -44,7 +44,7 @@ import {Content} from "../../src/models/Content.model";
 import {DataSampleApi} from "../../src/apis/DataSampleApi";
 import {MaintenanceTask} from "@icure/api/icc-api/model/MaintenanceTask";
 import {
-    BaseApiTestContext, WithAuthenticationApi, WithDataOwnerApi, WithHcpApi, WithHelementApi,
+    BaseApiTestContext, WithAuthenticationApi, WithDataOwnerApi, WithDeviceApi, WithHcpApi, WithHelementApi,
     WithMaintenanceTaskApi,
     WithPatientApi,
     WithServiceApi
@@ -62,6 +62,9 @@ import {HealthcareElementFilter} from "../../src/filter/HealthcareElementFilterD
 import {TestMessageFactory} from "../test-utils";
 import {MedTechMessageFactory} from "../../src/services/MedTechMessageFactory";
 import {NotificationFilter} from "@icure/ehr-lite-sdk";
+import {MedicalDeviceApi} from "../../src/apis/MedicalDeviceApi";
+import {MedicalDevice} from "../../src/models/MedicalDevice.model";
+import {mapDeviceToMedicalDevice, mapMedicalDeviceToDevice} from "../../src/mappers/MedicalDevice.mapper";
 
 export class MedTechBaseTestContext extends BaseApiTestContext<
     AnonymousMedTechApi.Builder,
@@ -323,6 +326,22 @@ export function HelementApiAware<TBase extends Constructor<any>>(Base: TBase): T
 
         newHelementFilter(api: MedTechApi): HealthElementFilter {
             return new HealthcareElementFilter(api)
+        }
+    }
+}
+
+export function MedicalDeviceApiAware<TBase extends Constructor<any>>(Base: TBase): TBase & Constructor<WithDeviceApi<MedTechApi, MedicalDeviceApi>> {
+    return class MedicalDeviceApiAwareImpl extends Base implements WithDeviceApi<MedTechApi, MedicalDevice> {
+        deviceApi(api: MedTechApi): MedicalDeviceApi {
+            return api.medicalDeviceApi
+        }
+
+        toDSDevice(deviceDto: Device): MedicalDevice {
+            return mapDeviceToMedicalDevice(deviceDto)
+        }
+
+        toDeviceDto(dsDevice: MedicalDevice): Device {
+            return mapMedicalDeviceToDevice(dsDevice)
         }
     }
 }
