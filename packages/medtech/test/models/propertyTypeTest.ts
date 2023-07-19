@@ -2,11 +2,12 @@ import 'mocha'
 
 import { PropertyType } from '../..'
 import { assert } from 'chai'
+import { TypeEnum } from '@icure/typescript-common'
 
 export function newPropertyType(): PropertyType {
   return new PropertyType({
     identifier: 'identifier',
-    type: 'STRING',
+    type: TypeEnum.STRING,
   })
 }
 

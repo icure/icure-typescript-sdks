@@ -142,7 +142,7 @@ function toNotificationResponsible(dto: MaintenanceTask): string | undefined {
 }
 
 function toNotificationProperties(dto: MaintenanceTask): Set<Property> {
-    return new Set(dto.properties?.map(mapPropertyStubToProperty) ?? [])
+    return !!dto.properties ? new Set(dto.properties.map(mapPropertyStubToProperty)) : new Set()
 }
 
 function toNotificationType(dto: MaintenanceTask): NotificationTypeEnum | undefined {

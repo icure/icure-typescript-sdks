@@ -28,14 +28,24 @@ export class Partnership {
 
   static toJSON(instance: Partnership): any {
     const pojo: any = {}
-    pojo['type'] = instance.type
-    pojo['status'] = instance.status
-    pojo['partnerId'] = instance.partnerId
+    if (instance.type !== undefined) pojo['type'] = instance.type
+    if (instance.status !== undefined) pojo['status'] = instance.status
+    if (instance.partnerId !== undefined) pojo['partnerId'] = instance.partnerId
     return pojo
   }
 
   static fromJSON(pojo: any): Partnership {
-    return new Partnership({ type: pojo['type'], status: pojo['status'], partnerId: pojo['partnerId'] })
+    const obj = {} as IPartnership
+    if (pojo['type'] !== undefined) {
+      obj['type'] = pojo['type']
+    }
+    if (pojo['status'] !== undefined) {
+      obj['status'] = pojo['status']
+    }
+    if (pojo['partnerId'] !== undefined) {
+      obj['partnerId'] = pojo['partnerId']
+    }
+    return new Partnership(obj)
   }
 }
 

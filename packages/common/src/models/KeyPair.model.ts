@@ -14,7 +14,10 @@ export class KeyPair implements IKeyPair {
     }
 
     static fromJSON(pojo: any): KeyPair {
-        return new KeyPair({ privateKey: pojo['privateKey'], publicKey: pojo['publicKey'] })
+        const obj = {} as IKeyPair
+        obj['privateKey'] = pojo['privateKey']
+        obj['publicKey'] = pojo['publicKey']
+        return new KeyPair(obj)
     }
 }
 

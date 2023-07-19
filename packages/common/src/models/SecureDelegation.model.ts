@@ -58,28 +58,34 @@ export class SecureDelegation {
 
     static toJSON(instance: SecureDelegation): any {
         const pojo: any = {}
-        pojo['delegator'] = instance.delegator
-        pojo['delegate'] = instance.delegate
+        if (instance.delegator !== undefined) pojo['delegator'] = instance.delegator
+        if (instance.delegate !== undefined) pojo['delegate'] = instance.delegate
         pojo['secretIds'] = Array.from([...instance.secretIds].map((item) => item))
         pojo['encryptionKeys'] = Array.from([...instance.encryptionKeys].map((item) => item))
         pojo['owningEntityIds'] = Array.from([...instance.owningEntityIds].map((item) => item))
         pojo['parentDelegations'] = Array.from([...instance.parentDelegations].map((item) => item))
-        pojo['exchangeDataId'] = instance.exchangeDataId
+        if (instance.exchangeDataId !== undefined) pojo['exchangeDataId'] = instance.exchangeDataId
         pojo['permissions'] = instance.permissions
         return pojo
     }
 
     static fromJSON(pojo: any): SecureDelegation {
-        return new SecureDelegation({
-            delegator: pojo['delegator'],
-            delegate: pojo['delegate'],
-            secretIds: new Set(pojo['secretIds'].map((item: any) => item)),
-            encryptionKeys: new Set(pojo['encryptionKeys'].map((item: any) => item)),
-            owningEntityIds: new Set(pojo['owningEntityIds'].map((item: any) => item)),
-            parentDelegations: new Set(pojo['parentDelegations'].map((item: any) => item)),
-            exchangeDataId: pojo['exchangeDataId'],
-            permissions: pojo['permissions'],
-        })
+        const obj = {} as ISecureDelegation
+        if (pojo['delegator'] !== undefined) {
+            obj['delegator'] = pojo['delegator']
+        }
+        if (pojo['delegate'] !== undefined) {
+            obj['delegate'] = pojo['delegate']
+        }
+        obj['secretIds'] = new Set(pojo['secretIds'].map((item: any) => item))
+        obj['encryptionKeys'] = new Set(pojo['encryptionKeys'].map((item: any) => item))
+        obj['owningEntityIds'] = new Set(pojo['owningEntityIds'].map((item: any) => item))
+        obj['parentDelegations'] = new Set(pojo['parentDelegations'].map((item: any) => item))
+        if (pojo['exchangeDataId'] !== undefined) {
+            obj['exchangeDataId'] = pojo['exchangeDataId']
+        }
+        obj['permissions'] = pojo['permissions']
+        return new SecureDelegation(obj)
     }
 }
 

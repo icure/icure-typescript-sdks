@@ -5,10 +5,11 @@ import { assert } from 'chai'
 import { newCodingReference } from './codingReferenceTest'
 import { newProperty } from './propertyTest'
 import { newSystemMetaDataOwner } from './systemMetaDataOwnerTest'
+import { v4 } from 'uuid'
 
 export function newMedicalDevice(): MedicalDevice {
   return new MedicalDevice({
-    id: 'id',
+    id: v4(),
     rev: 'rev',
     created: 123,
     modified: 456,
@@ -35,7 +36,7 @@ describe('MedicalDevice model test', () => {
   it('Marshalling/Unmarshalling of MedicalDevice model - Success', () => {
     const medicalDevice = newMedicalDevice()
     const marshalledMedicalDevice = MedicalDevice.toJSON(medicalDevice)
-    const unmarshalledMedicalDevice = new MedicalDevice(JSON.parse(JSON.stringify(marshalledMedicalDevice)))
+    const unmarshalledMedicalDevice = MedicalDevice.fromJSON(JSON.parse(JSON.stringify(marshalledMedicalDevice)))
     assert.deepEqual(medicalDevice, unmarshalledMedicalDevice)
     assert.deepEqual(medicalDevice, new MedicalDevice(medicalDevice))
   })

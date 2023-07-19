@@ -14,38 +14,42 @@
  * Encrypted and time-limited Authentication tokens used for inter-applications authentication
  */
 export class AuthenticationToken {
-  constructor(json: IAuthenticationToken) {
-    Object.assign(this as AuthenticationToken, json);
-  }
+    constructor(json: IAuthenticationToken) {
+        Object.assign(this as AuthenticationToken, json)
+    }
 
-  /**
-   * Encrypted token
-   */
-  "token": string;
-  /**
-   * Validity starting time of the token
-   */
-  "creationTime": number;
-  /**
-   * Token validity in seconds
-   */
-  "validity": number;
+    /**
+     * Encrypted token
+     */
+    'token': string
+    /**
+     * Validity starting time of the token
+     */
+    'creationTime': number
+    /**
+     * Token validity in seconds
+     */
+    'validity': number
 
     static toJSON(instance: AuthenticationToken): any {
         const pojo: any = {}
-        pojo["token"] = instance.token
-        pojo["creationTime"] = instance.creationTime
-        pojo["validity"] = instance.validity
+        pojo['token'] = instance.token
+        pojo['creationTime'] = instance.creationTime
+        pojo['validity'] = instance.validity
         return pojo
     }
 
     static fromJSON(pojo: any): AuthenticationToken {
-        return new AuthenticationToken({token: pojo["token"], creationTime: pojo["creationTime"], validity: pojo["validity"]})
+        const obj = {} as IAuthenticationToken
+        obj['token'] = pojo['token']
+        obj['creationTime'] = pojo['creationTime']
+        obj['validity'] = pojo['validity']
+        return new AuthenticationToken(obj)
     }
 }
 
 interface IAuthenticationToken {
-  token?: string;
-  creationTime?: number;
-  validity?: number;
+    token?: string
+    creationTime?: number
+    validity?: number
 }

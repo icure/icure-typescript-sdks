@@ -9,7 +9,7 @@ import { newPatientHealthCareParty } from './patientHealthCarePartyTest'
 import { newPartnership } from './partnershipTest'
 import { newSystemMetaDataOwnerEncrypted } from './systemMetaDataOwnerEncryptedTest'
 import { newProperty } from './propertyTest'
-import {mapOf} from "@icure/typescript-common";
+import { mapOf } from '@icure/typescript-common'
 
 export function newPatient(): Patient {
   return new Patient({
@@ -38,6 +38,7 @@ export function newPatient(): Patient {
     alias: 'alias',
     active: true,
     deactivationReason: 'deceased',
+    deactivationDate: 131415,
     ssin: 'ssin',
     maidenName: 'maidenName',
     spouseName: 'spouseName',
@@ -69,7 +70,7 @@ describe('Patient model test', () => {
   it('Marshalling/Unmarshalling of Patient model - Success', () => {
     const patient = newPatient()
     const marshalledPatient = Patient.toJSON(patient)
-    const unmarshalledPatient = new Patient(JSON.parse(JSON.stringify(marshalledPatient)))
+    const unmarshalledPatient = Patient.fromJSON(JSON.parse(JSON.stringify(marshalledPatient)))
     assert.deepEqual(patient, unmarshalledPatient)
     assert.deepEqual(patient, new Patient(patient))
   })

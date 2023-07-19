@@ -34,36 +34,58 @@ export class Location {
 
     static toJSON(instance: Location): any {
         const pojo: any = {}
-        pojo['addressType'] = instance.addressType
-        pojo['description'] = instance.description
-        pojo['street'] = instance.street
-        pojo['houseNumber'] = instance.houseNumber
-        pojo['postboxNumber'] = instance.postboxNumber
-        pojo['postalCode'] = instance.postalCode
-        pojo['city'] = instance.city
-        pojo['state'] = instance.state
-        pojo['country'] = instance.country
-        pojo['notes'] = instance.notes?.map((item) => Annotation.toJSON(item))
+        if (instance.addressType !== undefined) pojo['addressType'] = instance.addressType
+        if (instance.description !== undefined) pojo['description'] = instance.description
+        if (instance.street !== undefined) pojo['street'] = instance.street
+        if (instance.houseNumber !== undefined) pojo['houseNumber'] = instance.houseNumber
+        if (instance.postboxNumber !== undefined) pojo['postboxNumber'] = instance.postboxNumber
+        if (instance.postalCode !== undefined) pojo['postalCode'] = instance.postalCode
+        if (instance.city !== undefined) pojo['city'] = instance.city
+        if (instance.state !== undefined) pojo['state'] = instance.state
+        if (instance.country !== undefined) pojo['country'] = instance.country
+        if (instance.notes !== undefined) pojo['notes'] = instance.notes?.map((item) => Annotation.toJSON(item))
         pojo['telecoms'] = instance.telecoms.map((item) => ContactPoint.toJSON(item))
-        pojo['encryptedSelf'] = instance.encryptedSelf
+        if (instance.encryptedSelf !== undefined) pojo['encryptedSelf'] = instance.encryptedSelf
         return pojo
     }
 
     static fromJSON(pojo: any): Location {
-        return new Location({
-            addressType: pojo['addressType'],
-            description: pojo['description'],
-            street: pojo['street'],
-            houseNumber: pojo['houseNumber'],
-            postboxNumber: pojo['postboxNumber'],
-            postalCode: pojo['postalCode'],
-            city: pojo['city'],
-            state: pojo['state'],
-            country: pojo['country'],
-            notes: pojo['notes']?.map((item: any) => Annotation.fromJSON(item)),
-            telecoms: pojo['telecoms'].map((item: any) => ContactPoint.fromJSON(item)),
-            encryptedSelf: pojo['encryptedSelf'],
-        })
+        const obj = {} as ILocation
+        if (pojo['addressType'] !== undefined) {
+            obj['addressType'] = pojo['addressType']
+        }
+        if (pojo['description'] !== undefined) {
+            obj['description'] = pojo['description']
+        }
+        if (pojo['street'] !== undefined) {
+            obj['street'] = pojo['street']
+        }
+        if (pojo['houseNumber'] !== undefined) {
+            obj['houseNumber'] = pojo['houseNumber']
+        }
+        if (pojo['postboxNumber'] !== undefined) {
+            obj['postboxNumber'] = pojo['postboxNumber']
+        }
+        if (pojo['postalCode'] !== undefined) {
+            obj['postalCode'] = pojo['postalCode']
+        }
+        if (pojo['city'] !== undefined) {
+            obj['city'] = pojo['city']
+        }
+        if (pojo['state'] !== undefined) {
+            obj['state'] = pojo['state']
+        }
+        if (pojo['country'] !== undefined) {
+            obj['country'] = pojo['country']
+        }
+        if (pojo['notes'] !== undefined) {
+            obj['notes'] = pojo['notes']?.map((item: any) => Annotation.fromJSON(item))
+        }
+        obj['telecoms'] = pojo['telecoms'].map((item: any) => ContactPoint.fromJSON(item))
+        if (pojo['encryptedSelf'] !== undefined) {
+            obj['encryptedSelf'] = pojo['encryptedSelf']
+        }
+        return new Location(obj)
     }
 }
 

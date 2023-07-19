@@ -2,7 +2,7 @@ import 'mocha'
 
 import { Coding } from '../..'
 import { assert } from 'chai'
-import {mapOf} from "@icure/typescript-common";
+import { mapOf } from '@icure/typescript-common'
 
 export function newCoding(): Coding {
   return new Coding({
@@ -16,7 +16,7 @@ export function newCoding(): Coding {
     }),
     qualifiedLinks: mapOf({
       from: ['to'],
-    })
+    }),
   })
 }
 
@@ -24,7 +24,7 @@ describe('Coding model test', () => {
   it('Marshalling/Unmarshalling of Coding model - Success', () => {
     const coding = newCoding()
     const marshalledCoding = Coding.toJSON(coding)
-    const unmarshalledCoding = new Coding(JSON.parse(JSON.stringify(marshalledCoding)))
+    const unmarshalledCoding = Coding.fromJSON(JSON.parse(JSON.stringify(marshalledCoding)))
     assert.deepEqual(coding, unmarshalledCoding)
     assert.deepEqual(coding, new Coding(coding))
   })

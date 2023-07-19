@@ -4,11 +4,12 @@ import { User } from '../..'
 import { assert } from 'chai'
 import { newProperty } from './propertyTest'
 import { newAuthenticationToken } from './authenticationTokenTest'
-import {mapOf} from "@icure/typescript-common";
+import { mapOf } from '@icure/typescript-common'
+import { v4 } from 'uuid'
 
 export function newUser(): User {
   return new User({
-    id: 'id',
+    id: v4(),
     rev: 'rev',
     deletionDate: 123,
     created: 456,
@@ -34,7 +35,7 @@ describe('User model test', () => {
   it('Marshalling/Unmarshalling of User model - Success', () => {
     const user = newUser()
     const marshalledUser = User.toJSON(user)
-    const unmarshalledUser = new User(JSON.parse(JSON.stringify(marshalledUser)))
+    const unmarshalledUser = User.fromJSON(JSON.parse(JSON.stringify(marshalledUser)))
     assert.deepEqual(user, unmarshalledUser)
     assert.deepEqual(user, new User(user))
   })

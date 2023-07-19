@@ -21,7 +21,7 @@ export class SystemMetaDataOwner {
 
     static toJSON(instance: SystemMetaDataOwner): any {
         const pojo: any = {}
-        pojo['publicKey'] = instance.publicKey
+        if (instance.publicKey !== undefined) pojo['publicKey'] = instance.publicKey
         pojo['hcPartyKeys'] = Object.fromEntries([...instance.hcPartyKeys.entries()].map(([k, v]) => [k, v.map((item) => item)]))
         pojo['privateKeyShamirPartitions'] = Object.fromEntries([...instance.privateKeyShamirPartitions.entries()].map(([k, v]) => [k, v]))
         pojo['aesExchangeKeys'] = Object.fromEntries([...instance.aesExchangeKeys.entries()].map(([k, v]) => [k, Object.fromEntries([...v.entries()].map(([k, v]) => [k, Object.fromEntries([...v.entries()].map(([k, v]) => [k, v]))]))]))
@@ -32,15 +32,17 @@ export class SystemMetaDataOwner {
     }
 
     static fromJSON(pojo: any): SystemMetaDataOwner {
-        return new SystemMetaDataOwner({
-            publicKey: pojo['publicKey'],
-            hcPartyKeys: new Map(Object.entries(pojo['hcPartyKeys']).map(([k, v]: [any, any]) => [k, v.map((item: any) => item)])),
-            privateKeyShamirPartitions: new Map(Object.entries(pojo['privateKeyShamirPartitions']).map(([k, v]: [any, any]) => [k, v])),
-            aesExchangeKeys: new Map(Object.entries(pojo['aesExchangeKeys']).map(([k, v]: [any, any]) => [k, new Map(Object.entries(v).map(([k, v]: [any, any]) => [k, new Map(Object.entries(v).map(([k, v]: [any, any]) => [k, v]))]))])),
-            transferKeys: new Map(Object.entries(pojo['transferKeys']).map(([k, v]: [any, any]) => [k, new Map(Object.entries(v).map(([k, v]: [any, any]) => [k, v]))])),
-            publicKeysForOaepWithSha256: pojo['publicKeysForOaepWithSha256'].map((item: any) => item),
-            tags: new Set(pojo['tags'].map((item: any) => CodingReference.fromJSON(item))),
-        })
+        const obj = {} as ISystemMetaDataOwner
+        if (pojo['publicKey'] !== undefined) {
+            obj['publicKey'] = pojo['publicKey']
+        }
+        obj['hcPartyKeys'] = new Map(Object.entries(pojo['hcPartyKeys']).map(([k, v]: [any, any]) => [k, v.map((item: any) => item)]))
+        obj['privateKeyShamirPartitions'] = new Map(Object.entries(pojo['privateKeyShamirPartitions']).map(([k, v]: [any, any]) => [k, v]))
+        obj['aesExchangeKeys'] = new Map(Object.entries(pojo['aesExchangeKeys']).map(([k, v]: [any, any]) => [k, new Map(Object.entries(v).map(([k, v]: [any, any]) => [k, new Map(Object.entries(v).map(([k, v]: [any, any]) => [k, v]))]))]))
+        obj['transferKeys'] = new Map(Object.entries(pojo['transferKeys']).map(([k, v]: [any, any]) => [k, new Map(Object.entries(v).map(([k, v]: [any, any]) => [k, v]))]))
+        obj['publicKeysForOaepWithSha256'] = pojo['publicKeysForOaepWithSha256'].map((item: any) => item)
+        obj['tags'] = new Set(pojo['tags'].map((item: any) => CodingReference.fromJSON(item)))
+        return new SystemMetaDataOwner(obj)
     }
 }
 

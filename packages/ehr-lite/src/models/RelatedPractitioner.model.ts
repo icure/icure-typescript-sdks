@@ -1,5 +1,5 @@
 import { PatientHealthCareParty } from '@icure/api'
-import { mapTo } from "@icure/typescript-common"
+import { mapTo } from '@icure/typescript-common'
 import { PractitionerTypeEnum } from './enums/PractitionerType.enum'
 
 @mapTo(PatientHealthCareParty)
@@ -16,14 +16,24 @@ export class RelatedPractitioner {
 
     static toJSON(instance: RelatedPractitioner): any {
         const pojo: any = {}
-        pojo["type"] = instance.type
-        pojo["healthcarePartyId"] = instance.healthcarePartyId
-        pojo["encryptedSelf"] = instance.encryptedSelf
+        if (instance.type !== undefined) pojo['type'] = instance.type
+        if (instance.healthcarePartyId !== undefined) pojo['healthcarePartyId'] = instance.healthcarePartyId
+        if (instance.encryptedSelf !== undefined) pojo['encryptedSelf'] = instance.encryptedSelf
         return pojo
     }
 
     static fromJSON(pojo: any): RelatedPractitioner {
-        return new RelatedPractitioner({type: pojo["type"], healthcarePartyId: pojo["healthcarePartyId"], encryptedSelf: pojo["encryptedSelf"]})
+        const obj = {} as IRelatedPractitioner
+        if (pojo['type'] !== undefined) {
+            obj['type'] = pojo['type']
+        }
+        if (pojo['healthcarePartyId'] !== undefined) {
+            obj['healthcarePartyId'] = pojo['healthcarePartyId']
+        }
+        if (pojo['encryptedSelf'] !== undefined) {
+            obj['encryptedSelf'] = pojo['encryptedSelf']
+        }
+        return new RelatedPractitioner(obj)
     }
 }
 

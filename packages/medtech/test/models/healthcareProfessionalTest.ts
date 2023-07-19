@@ -7,10 +7,11 @@ import { newCodingReference } from './codingReferenceTest'
 import { newPersonName } from './personNameTest'
 import { newProperty } from './propertyTest'
 import { newSystemMetaDataOwner } from './systemMetaDataOwnerTest'
+import { v4 } from 'uuid'
 
 export function newHealthcareProfessional(): HealthcareProfessional {
   return new HealthcareProfessional({
-    id: 'id',
+    id: v4(),
     rev: 'rev',
     created: 123,
     modified: 456,
@@ -39,7 +40,7 @@ describe('HealthcareProfessional model test', () => {
   it('Marshalling/Unmarshalling of HealthcareProfessional model - Success', () => {
     const healthcareProfessional = newHealthcareProfessional()
     const marshalledHealthcareProfessional = HealthcareProfessional.toJSON(healthcareProfessional)
-    const unmarshalledHealthcareProfessional = new HealthcareProfessional(JSON.parse(JSON.stringify(marshalledHealthcareProfessional)))
+    const unmarshalledHealthcareProfessional = HealthcareProfessional.fromJSON(JSON.parse(JSON.stringify(marshalledHealthcareProfessional)))
     assert.deepEqual(healthcareProfessional, unmarshalledHealthcareProfessional)
     assert.deepEqual(healthcareProfessional, new HealthcareProfessional(healthcareProfessional))
   })

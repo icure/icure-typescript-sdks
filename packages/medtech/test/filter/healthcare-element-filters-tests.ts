@@ -1,17 +1,17 @@
 import 'isomorphic-fetch'
 import { MedTechApi } from '../../src/apis/MedTechApi'
-import {User} from "@icure/typescript-common";
+import { User } from '@icure/typescript-common'
 import { getEnvironmentInitializer, hcp1Username, setLocalStorage, TestUtils } from '../test-utils'
 import { HealthcareElementFilter } from '../../src/filter/HealthcareElementFilterDsl'
-import {FilterComposition, NoOpFilter} from "@icure/typescript-common";
+import { FilterComposition, NoOpFilter } from '@icure/typescript-common'
 import { expect } from 'chai'
 import { HealthcareElement } from '../../src/models/HealthcareElement.model'
 import { CodingReference } from '@icure/typescript-common'
 import { Patient } from '../../src/models/Patient.model'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import { v4 as uuid } from 'uuid'
-import {mapHealthcareElementToHealthElement} from "../../src/mappers/HealthcareElement.mapper";
-import {mapPatientToPatientDto} from "../../src/mappers/Patient.mapper";
+import { mapHealthcareElementToHealthElement } from '../../src/mappers/HealthcareElement.mapper'
+import { mapPatientToPatientDto } from '../../src/mappers/Patient.mapper'
 
 setLocalStorage(fetch)
 
@@ -92,7 +92,7 @@ describe('Healthcare Element Filters Test', function () {
 
   it('Can filter Healthcare Elements by patient', async function () {
     const elements = await hcp1Api.healthcareElementApi.filterHealthcareElement(
-      await new HealthcareElementFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).forPatients([mapPatientToPatientDto(patient)]).build()
+      await new HealthcareElementFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).forPatients([patient]).build()
     )
 
     expect(!!elements).to.eq(true)

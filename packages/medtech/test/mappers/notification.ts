@@ -8,8 +8,11 @@ import {
   Delegation,
   Notification,
   SystemMetaDataEncrypted,
-  mapMaintenanceTaskToNotification, NotificationTypeEnum, mapOf, mapNotificationToMaintenanceTask,
-} from "@icure/typescript-common";
+  mapMaintenanceTaskToNotification,
+  NotificationTypeEnum,
+  mapOf,
+  mapNotificationToMaintenanceTask,
+} from '@icure/typescript-common'
 
 function identifierEquality(identifier1: Identifier, identifier2: Identifier) {
   return identifier1.id === identifier2.id
@@ -58,7 +61,7 @@ function assertNotificationIsEquivalentToMaintenanceTask(notification: Notificat
   assert(notification.responsible === maintenanceTask.responsible)
   assert(
     arrayEquality(
-      !!notification.properties ? notification.properties : [],
+      !!notification.properties ? [...notification.properties] : [],
       !!maintenanceTask.properties ? maintenanceTask.properties : [],
       propertyEquality
     )
@@ -86,6 +89,7 @@ describe('Notification mapper test', () => {
   it('Notification to MaintenanceTask - Success', () => {
     const newNotification = new Notification({
       ...commonOptions,
+      properties: new Set(commonOptions.properties),
       type: NotificationTypeEnum.KEY_PAIR_UPDATE,
       systemMetaData: new SystemMetaDataEncrypted({
         delegations: mapOf({ TEST_ID: new Set([new Delegation({ owner: uuid(), delegatedTo: uuid() })]) }),

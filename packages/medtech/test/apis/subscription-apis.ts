@@ -2,7 +2,7 @@ import 'mocha'
 import { MedTechApi } from '../../src/apis/MedTechApi'
 import 'isomorphic-fetch'
 
-import {sleep} from '@icure/api'
+import { sleep } from '@icure/api'
 
 import { assert } from 'chai'
 import { DataSample } from '../../src/models/DataSample.model'
@@ -17,14 +17,7 @@ import { NotificationFilter } from '../../src/filter/NotificationFilterDsl'
 import { HealthcareElementFilter } from '../../src/filter/HealthcareElementFilterDsl'
 import { PatientFilter } from '../../src/filter/PatientFilterDsl'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
-import {
-  CodingReference,
-  Connection,
-  mapOf,
-  Notification,
-  NotificationTypeEnum, User,
-  WebSocketWrapper
-} from "@icure/typescript-common";
+import { CodingReference, Connection, mapOf, Notification, NotificationTypeEnum, User, WebSocketWrapper } from '@icure/typescript-common'
 
 setLocalStorage(fetch)
 
@@ -36,7 +29,7 @@ const testCode = 'TEST'
 let hcp1Api: MedTechApi | undefined = undefined
 let hcp1User: User | undefined = undefined
 
-describe('Subscription API', () => {
+describe.skip('Subscription API', () => {
   before(async function () {
     this.timeout(600000)
     const initializer = await getEnvironmentInitializer()

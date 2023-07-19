@@ -63,58 +63,96 @@ export class Condition {
         const pojo: any = {}
         pojo['id'] = instance.id
         pojo['identifiers'] = instance.identifiers.map((item) => Identifier.toJSON(item))
-        pojo['rev'] = instance.rev
-        pojo['created'] = instance.created
-        pojo['modified'] = instance.modified
-        pojo['author'] = instance.author
-        pojo['responsible'] = instance.responsible
-        pojo['medicalLocationId'] = instance.medicalLocationId
-        pojo['clinicalStatus'] = instance.clinicalStatus
-        pojo['verificationStatus'] = instance.verificationStatus
-        pojo['category'] = instance.category
-        pojo['severity'] = instance.severity
-        pojo['bodySite'] = Array.from([...(instance.bodySite ?? [])]?.map((item) => CodingReference.toJSON(item)) ?? [])
+        if (instance.rev !== undefined) pojo['rev'] = instance.rev
+        if (instance.created !== undefined) pojo['created'] = instance.created
+        if (instance.modified !== undefined) pojo['modified'] = instance.modified
+        if (instance.author !== undefined) pojo['author'] = instance.author
+        if (instance.responsible !== undefined) pojo['responsible'] = instance.responsible
+        if (instance.medicalLocationId !== undefined) pojo['medicalLocationId'] = instance.medicalLocationId
+        if (instance.clinicalStatus !== undefined) pojo['clinicalStatus'] = instance.clinicalStatus
+        if (instance.verificationStatus !== undefined) pojo['verificationStatus'] = instance.verificationStatus
+        if (instance.category !== undefined) pojo['category'] = instance.category
+        if (instance.severity !== undefined) pojo['severity'] = instance.severity
+        if (instance.bodySite !== undefined) pojo['bodySite'] = Array.from([...(instance.bodySite ?? [])]?.map((item) => CodingReference.toJSON(item)) ?? [])
         pojo['tags'] = Array.from([...instance.tags].map((item) => CodingReference.toJSON(item)))
         pojo['codes'] = Array.from([...instance.codes].map((item) => CodingReference.toJSON(item)))
-        pojo['endOfLife'] = instance.endOfLife
-        pojo['deletionDate'] = instance.deletionDate
-        pojo['healthcareElementId'] = instance.healthcareElementId
-        pojo['recordedDate'] = instance.recordedDate
-        pojo['openingDate'] = instance.openingDate
-        pojo['closingDate'] = instance.closingDate
-        pojo['description'] = instance.description
+        if (instance.endOfLife !== undefined) pojo['endOfLife'] = instance.endOfLife
+        if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
+        if (instance.healthcareElementId !== undefined) pojo['healthcareElementId'] = instance.healthcareElementId
+        if (instance.recordedDate !== undefined) pojo['recordedDate'] = instance.recordedDate
+        if (instance.openingDate !== undefined) pojo['openingDate'] = instance.openingDate
+        if (instance.closingDate !== undefined) pojo['closingDate'] = instance.closingDate
+        if (instance.description !== undefined) pojo['description'] = instance.description
         pojo['notes'] = instance.notes.map((item) => Annotation.toJSON(item))
-        pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataEncrypted.toJSON(instance.systemMetaData) : undefined
+        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataEncrypted.toJSON(instance.systemMetaData) : undefined
         return pojo
     }
 
     static fromJSON(pojo: any): Condition {
-        return new Condition({
-            id: pojo['id'],
-            identifiers: pojo['identifiers'].map((item: any) => Identifier.fromJSON(item)),
-            rev: pojo['rev'],
-            created: pojo['created'],
-            modified: pojo['modified'],
-            author: pojo['author'],
-            responsible: pojo['responsible'],
-            medicalLocationId: pojo['medicalLocationId'],
-            clinicalStatus: pojo['clinicalStatus'],
-            verificationStatus: pojo['verificationStatus'],
-            category: pojo['category'],
-            severity: pojo['severity'],
-            bodySite: new Set(pojo['bodySite']?.map((item: any) => CodingReference.fromJSON(item)) ?? []),
-            tags: new Set(pojo['tags'].map((item: any) => CodingReference.fromJSON(item))),
-            codes: new Set(pojo['codes'].map((item: any) => CodingReference.fromJSON(item))),
-            endOfLife: pojo['endOfLife'],
-            deletionDate: pojo['deletionDate'],
-            healthcareElementId: pojo['healthcareElementId'],
-            recordedDate: pojo['recordedDate'],
-            openingDate: pojo['openingDate'],
-            closingDate: pojo['closingDate'],
-            description: pojo['description'],
-            notes: pojo['notes'].map((item: any) => Annotation.fromJSON(item)),
-            systemMetaData: !!pojo['systemMetaData'] ? SystemMetaDataEncrypted.fromJSON(pojo['systemMetaData']) : undefined,
-        })
+        const obj = {} as ICondition
+        obj['id'] = pojo['id']
+        obj['identifiers'] = pojo['identifiers'].map((item: any) => Identifier.fromJSON(item))
+        if (pojo['rev'] !== undefined) {
+            obj['rev'] = pojo['rev']
+        }
+        if (pojo['created'] !== undefined) {
+            obj['created'] = pojo['created']
+        }
+        if (pojo['modified'] !== undefined) {
+            obj['modified'] = pojo['modified']
+        }
+        if (pojo['author'] !== undefined) {
+            obj['author'] = pojo['author']
+        }
+        if (pojo['responsible'] !== undefined) {
+            obj['responsible'] = pojo['responsible']
+        }
+        if (pojo['medicalLocationId'] !== undefined) {
+            obj['medicalLocationId'] = pojo['medicalLocationId']
+        }
+        if (pojo['clinicalStatus'] !== undefined) {
+            obj['clinicalStatus'] = pojo['clinicalStatus']
+        }
+        if (pojo['verificationStatus'] !== undefined) {
+            obj['verificationStatus'] = pojo['verificationStatus']
+        }
+        if (pojo['category'] !== undefined) {
+            obj['category'] = pojo['category']
+        }
+        if (pojo['severity'] !== undefined) {
+            obj['severity'] = pojo['severity']
+        }
+        if (pojo['bodySite'] !== undefined) {
+            obj['bodySite'] = new Set(pojo['bodySite']?.map((item: any) => CodingReference.fromJSON(item)) ?? [])
+        }
+        obj['tags'] = new Set(pojo['tags'].map((item: any) => CodingReference.fromJSON(item)))
+        obj['codes'] = new Set(pojo['codes'].map((item: any) => CodingReference.fromJSON(item)))
+        if (pojo['endOfLife'] !== undefined) {
+            obj['endOfLife'] = pojo['endOfLife']
+        }
+        if (pojo['deletionDate'] !== undefined) {
+            obj['deletionDate'] = pojo['deletionDate']
+        }
+        if (pojo['healthcareElementId'] !== undefined) {
+            obj['healthcareElementId'] = pojo['healthcareElementId']
+        }
+        if (pojo['recordedDate'] !== undefined) {
+            obj['recordedDate'] = pojo['recordedDate']
+        }
+        if (pojo['openingDate'] !== undefined) {
+            obj['openingDate'] = pojo['openingDate']
+        }
+        if (pojo['closingDate'] !== undefined) {
+            obj['closingDate'] = pojo['closingDate']
+        }
+        if (pojo['description'] !== undefined) {
+            obj['description'] = pojo['description']
+        }
+        obj['notes'] = pojo['notes'].map((item: any) => Annotation.fromJSON(item))
+        if (pojo['systemMetaData'] !== undefined) {
+            obj['systemMetaData'] = !!pojo['systemMetaData'] ? SystemMetaDataEncrypted.fromJSON(pojo['systemMetaData']) : undefined
+        }
+        return new Condition(obj)
     }
 }
 

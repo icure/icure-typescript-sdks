@@ -24,14 +24,24 @@ export class Telecom {
 
   static toJSON(instance: Telecom): any {
     const pojo: any = {}
-    pojo['telecomType'] = instance.telecomType
-    pojo['telecomNumber'] = instance.telecomNumber
-    pojo['telecomDescription'] = instance.telecomDescription
+    if (instance.telecomType !== undefined) pojo['telecomType'] = instance.telecomType
+    if (instance.telecomNumber !== undefined) pojo['telecomNumber'] = instance.telecomNumber
+    if (instance.telecomDescription !== undefined) pojo['telecomDescription'] = instance.telecomDescription
     return pojo
   }
 
   static fromJSON(pojo: any): Telecom {
-    return new Telecom({ telecomType: pojo['telecomType'], telecomNumber: pojo['telecomNumber'], telecomDescription: pojo['telecomDescription'] })
+    const obj = {} as ITelecom
+    if (pojo['telecomType'] !== undefined) {
+      obj['telecomType'] = pojo['telecomType']
+    }
+    if (pojo['telecomNumber'] !== undefined) {
+      obj['telecomNumber'] = pojo['telecomNumber']
+    }
+    if (pojo['telecomDescription'] !== undefined) {
+      obj['telecomDescription'] = pojo['telecomDescription']
+    }
+    return new Telecom(obj)
   }
 }
 

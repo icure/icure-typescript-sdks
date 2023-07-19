@@ -18,7 +18,7 @@ describe('Property model test', () => {
   it('Marshalling/Unmarshalling of Property model - Success', () => {
     const property = newProperty()
     const marshalledProperty = Property.toJSON(property)
-    const unmarshalledProperty = new Property(JSON.parse(JSON.stringify(marshalledProperty)))
+    const unmarshalledProperty = Property.fromJSON(JSON.parse(JSON.stringify(marshalledProperty)))
     assert.deepEqual(property, unmarshalledProperty)
     assert.deepEqual(property, new Property(property))
   })

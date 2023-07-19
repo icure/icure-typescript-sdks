@@ -118,53 +118,86 @@ export class MedicalDevice {
   static toJSON(instance: MedicalDevice): any {
     const pojo: any = {}
     pojo['id'] = instance.id
-    pojo['rev'] = instance.rev
-    pojo['deletionDate'] = instance.deletionDate
+    if (instance.rev !== undefined) pojo['rev'] = instance.rev
+    if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
     pojo['identifiers'] = instance.identifiers.map((item) => Identifier.toJSON(item))
-    pojo['created'] = instance.created
-    pojo['modified'] = instance.modified
-    pojo['author'] = instance.author
-    pojo['responsible'] = instance.responsible
+    if (instance.created !== undefined) pojo['created'] = instance.created
+    if (instance.modified !== undefined) pojo['modified'] = instance.modified
+    if (instance.author !== undefined) pojo['author'] = instance.author
+    if (instance.responsible !== undefined) pojo['responsible'] = instance.responsible
     pojo['labels'] = Array.from([...instance.labels].map((item) => CodingReference.toJSON(item)))
     pojo['codes'] = Array.from([...instance.codes].map((item) => CodingReference.toJSON(item)))
-    pojo['endOfLife'] = instance.endOfLife
-    pojo['externalId'] = instance.externalId
-    pojo['name'] = instance.name
-    pojo['type'] = instance.type
-    pojo['brand'] = instance.brand
-    pojo['model'] = instance.model
-    pojo['serialNumber'] = instance.serialNumber
-    pojo['parentId'] = instance.parentId
-    pojo['picture'] = !!instance.picture ? ua2b64(instance.picture) : undefined
+    if (instance.endOfLife !== undefined) pojo['endOfLife'] = instance.endOfLife
+    if (instance.externalId !== undefined) pojo['externalId'] = instance.externalId
+    if (instance.name !== undefined) pojo['name'] = instance.name
+    if (instance.type !== undefined) pojo['type'] = instance.type
+    if (instance.brand !== undefined) pojo['brand'] = instance.brand
+    if (instance.model !== undefined) pojo['model'] = instance.model
+    if (instance.serialNumber !== undefined) pojo['serialNumber'] = instance.serialNumber
+    if (instance.parentId !== undefined) pojo['parentId'] = instance.parentId
+    if (instance.picture !== undefined) pojo['picture'] = !!instance.picture ? ua2b64(instance.picture) : undefined
     pojo['properties'] = Array.from([...instance.properties].map((item) => Property.toJSON(item)))
-    pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataOwner.toJSON(instance.systemMetaData) : undefined
+    if (instance.systemMetaData !== undefined)
+      pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataOwner.toJSON(instance.systemMetaData) : undefined
     return pojo
   }
 
   static fromJSON(pojo: any): MedicalDevice {
-    return new MedicalDevice({
-      id: pojo['id'],
-      rev: pojo['rev'],
-      deletionDate: pojo['deletionDate'],
-      identifiers: pojo['identifiers'].map((item: any) => Identifier.fromJSON(item)),
-      created: pojo['created'],
-      modified: pojo['modified'],
-      author: pojo['author'],
-      responsible: pojo['responsible'],
-      labels: new Set(pojo['labels'].map((item: any) => CodingReference.fromJSON(item))),
-      codes: new Set(pojo['codes'].map((item: any) => CodingReference.fromJSON(item))),
-      endOfLife: pojo['endOfLife'],
-      externalId: pojo['externalId'],
-      name: pojo['name'],
-      type: pojo['type'],
-      brand: pojo['brand'],
-      model: pojo['model'],
-      serialNumber: pojo['serialNumber'],
-      parentId: pojo['parentId'],
-      picture: !!pojo['picture'] ? b64_2ab(pojo['picture']) : undefined,
-      properties: new Set(pojo['properties'].map((item: any) => Property.fromJSON(item))),
-      systemMetaData: !!pojo['systemMetaData'] ? SystemMetaDataOwner.fromJSON(pojo['systemMetaData']) : undefined,
-    })
+    const obj = {} as IMedicalDevice
+    obj['id'] = pojo['id']
+    if (pojo['rev'] !== undefined) {
+      obj['rev'] = pojo['rev']
+    }
+    if (pojo['deletionDate'] !== undefined) {
+      obj['deletionDate'] = pojo['deletionDate']
+    }
+    obj['identifiers'] = pojo['identifiers'].map((item: any) => Identifier.fromJSON(item))
+    if (pojo['created'] !== undefined) {
+      obj['created'] = pojo['created']
+    }
+    if (pojo['modified'] !== undefined) {
+      obj['modified'] = pojo['modified']
+    }
+    if (pojo['author'] !== undefined) {
+      obj['author'] = pojo['author']
+    }
+    if (pojo['responsible'] !== undefined) {
+      obj['responsible'] = pojo['responsible']
+    }
+    obj['labels'] = new Set(pojo['labels'].map((item: any) => CodingReference.fromJSON(item)))
+    obj['codes'] = new Set(pojo['codes'].map((item: any) => CodingReference.fromJSON(item)))
+    if (pojo['endOfLife'] !== undefined) {
+      obj['endOfLife'] = pojo['endOfLife']
+    }
+    if (pojo['externalId'] !== undefined) {
+      obj['externalId'] = pojo['externalId']
+    }
+    if (pojo['name'] !== undefined) {
+      obj['name'] = pojo['name']
+    }
+    if (pojo['type'] !== undefined) {
+      obj['type'] = pojo['type']
+    }
+    if (pojo['brand'] !== undefined) {
+      obj['brand'] = pojo['brand']
+    }
+    if (pojo['model'] !== undefined) {
+      obj['model'] = pojo['model']
+    }
+    if (pojo['serialNumber'] !== undefined) {
+      obj['serialNumber'] = pojo['serialNumber']
+    }
+    if (pojo['parentId'] !== undefined) {
+      obj['parentId'] = pojo['parentId']
+    }
+    if (pojo['picture'] !== undefined) {
+      obj['picture'] = !!pojo['picture'] ? b64_2ab(pojo['picture']) : undefined
+    }
+    obj['properties'] = new Set(pojo['properties'].map((item: any) => Property.fromJSON(item)))
+    if (pojo['systemMetaData'] !== undefined) {
+      obj['systemMetaData'] = !!pojo['systemMetaData'] ? SystemMetaDataOwner.fromJSON(pojo['systemMetaData']) : undefined
+    }
+    return new MedicalDevice(obj)
   }
 }
 
