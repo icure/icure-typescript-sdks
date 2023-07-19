@@ -155,7 +155,7 @@ export function testHelementLikeApi<
 
       const filter = await ctx.newHelementFilter(hcp1Api)
         .forDataOwner(hcp1User.healthcarePartyId!)
-        .forPatients([ctx.toPatientDto(newPatient)])
+        .forPatients([newPatient])
         .byIds([ctx.toHelementDto(createdHelement).id])
         .build()
 

@@ -230,7 +230,7 @@ export function testServiceLikeApi<
       const filter = await ctx.newServiceFilter(api)
         .forSelf()
         .byLabelCodeDateFilter('FILTER-IC-TEST', 'TEST')
-        .forPatients([ctx.toPatientDto(patient)]) // TODO COMPATIBILITY: should use DSPatient type
+        .forPatients([patient]) // TODO COMPATIBILITY: should use DSPatient type
         .build()
 
       const filteredServices = await ctx.serviceApi(api).filterBy(filter)

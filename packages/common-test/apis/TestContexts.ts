@@ -193,7 +193,7 @@ export interface WithServiceApi<DSApi, DSService, DSPatient, DSDocument> {
   checkServiceAccessibleButEncrypted(api: DSApi, service: DSService): Promise<void>
   checkServiceInaccessible(api: DSApi, service: DSService): Promise<void>
   checkDefaultServiceDecrypted(service: DSService): void
-  newServiceFilter(api: DSApi): ServiceFilter
+  newServiceFilter(api: DSApi): ServiceFilter<DSPatient>
   toDocumentDto(dsDocument: DSDocument): Document
 }
 
@@ -218,7 +218,7 @@ export interface WithHelementApi<DSApi, DSHealthElement, DSPatient> {
   checkHelementInaccessible(api: DSApi, helement: DSHealthElement): Promise<void>
   // Check already retrieved helement is decrypted
   checkDefaultHelementDecrypted(helement: DSHealthElement): void
-  newHelementFilter(api: DSApi): HealthElementFilter
+  newHelementFilter(api: DSApi): HealthElementFilter<DSPatient>
 }
 
 export interface WithDeviceApi<DSApi, DSDevice> {

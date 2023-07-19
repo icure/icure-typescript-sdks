@@ -60,17 +60,23 @@ export function testAuthenticationApi<
   let env: TestVars
   let hcpId: string
 
+  function shouldSkip(): boolean {
+    if (env.backendType === 'oss') {
+      console.warn('Test skipped: not supported with kraken OSS')
+      return true
+    } return false
+  }
+
   describe('Authentication API', () => {
     beforeAll(async function () {
       const initializer = await getEnvironmentInitializer()
       env = await initializer.execute(getEnvVariables())
 
-      if (env.backendType === 'oss') this.skip()
-
       hcpId = env.dataOwnerDetails[hcp1Username].dataOwnerId
     }, 600_000)
 
     it("AnonymousMedTechApi shouldn't be instantiated if authServerUrl, authProcessId and specId aren't passed", async () => {
+      if (shouldSkip()) return
       await expect(
         Promise.resolve().then(() => ctx.newAnonymousApiBuilder()
           .withICureBaseUrl(env!.iCureUrl)
@@ -97,6 +103,7 @@ export function testAuthenticationApi<
     })
 
     it("Impossible to use authenticationApi if msgGtwUrl, msgGtwSpecId and authProcessId haven't been provided", async () => {
+      if (shouldSkip()) return
       const user = env.dataOwnerDetails[hcp1Username]
       const storage = await testStorageForUser(user)
       // Given
@@ -117,6 +124,7 @@ export function testAuthenticationApi<
     })
 
     it('Cannot instantiate the API if no AuthProcessId is passed', async () => {
+      if (shouldSkip()) return
       await expect(
         Promise.resolve().then(() => ctx.newAnonymousApiBuilder()
           .withICureBaseUrl(env!.iCureUrl)
@@ -129,6 +137,7 @@ export function testAuthenticationApi<
     })
 
     it("User should not be able to start authentication if he didn't provide any email and mobilePhone", async () => {
+      if (shouldSkip()) return
       // Given
       const anonymousMedTechApi = await ctx.newAnonymousApiBuilder()
         .withICureBaseUrl(env!.iCureUrl)
@@ -146,6 +155,7 @@ export function testAuthenticationApi<
     })
 
     it('User should not be able to start authentication if he provided an empty email and mobilePhone', async () => {
+      if (shouldSkip()) return
       // Given
       const anonymousMedTechApi = await ctx.newAnonymousApiBuilder()
         .withICureBaseUrl(env!.iCureUrl)
@@ -161,6 +171,7 @@ export function testAuthenticationApi<
     })
 
     it('User should not be able to start authentication if he provided an email but no AuthProcessByEmailId', async () => {
+      if (shouldSkip()) return
       // Given
       const anonymousMedTechApi = await ctx.newAnonymousApiBuilder()
         .withICureBaseUrl(env!.iCureUrl)
@@ -185,6 +196,7 @@ export function testAuthenticationApi<
     })
 
     it('User should not be able to start authentication if he provided an sms but no AuthProcessBySMSId', async () => {
+      if (shouldSkip()) return
       // Given
       const anonymousMedTechApi = await ctx.newAnonymousApiBuilder()
         .withICureBaseUrl(env!.iCureUrl)
@@ -209,6 +221,7 @@ export function testAuthenticationApi<
     })
 
     it('A User should be able to start the authentication by sms', async () => {
+      if (shouldSkip()) return
       // Given
       const anonymousMedTechApi = await ctx.newAnonymousApiBuilder()
         .withICureBaseUrl(env!.iCureUrl)
@@ -235,6 +248,7 @@ export function testAuthenticationApi<
     })
 
     it('HCP should be capable of signing up using email', async () => {
+      if (shouldSkip()) return
       // When
       const firstName = `Gigio${forceUuid()}`
       const lastName = `Bagigio${forceUuid()}`
@@ -261,6 +275,7 @@ export function testAuthenticationApi<
     })
 
     it('HCP should be capable of signing up using email with friendlyCaptchaData', async () => {
+      if (shouldSkip()) return
       const firstName = `Gigio${forceUuid()}`
       const lastName = `Bagigio${forceUuid()}`
       // TODO we need to update this method to also take the FHIR type of hcp or something else?
@@ -287,6 +302,7 @@ export function testAuthenticationApi<
     })
 
     it('Patient should be able to signing up through email', async () => {
+      if (shouldSkip()) return
       // When
       const firstName = `Gigio${forceUuid()}`
       const lastName = `Bagigio${forceUuid()}`
@@ -313,6 +329,7 @@ export function testAuthenticationApi<
     })
 
     it('Patient should be able to signing up through email with friendlyCaptchaData', async () => {
+      if (shouldSkip()) return
       // When
       const firstName = `Gigio${forceUuid()}`
       const lastName = `Bagigio${forceUuid()}`
@@ -339,6 +356,7 @@ export function testAuthenticationApi<
     })
 
     it('Patient should be able to retrieve its keys when re-login', async () => {
+      if (shouldSkip()) return
       // When
       const {api, user, token} = await ctx.signUpUserUsingEmail(
         env,
@@ -369,6 +387,7 @@ export function testAuthenticationApi<
     })
 
     it('Patient should be able to signing up through email using a different Storage implementation', async () => {
+      if (shouldSkip()) return
       // Given
       const storage = new TestStorage()
       const keyStorage = new TestKeyStorage()
@@ -398,6 +417,7 @@ export function testAuthenticationApi<
     })
 
     it('A patient may login with a new RSA keypair and access his previous data if he gave access to its new key with his previous private key', async () => {
+      if (shouldSkip()) return
       // Given
       const patApiAndUser = await ctx.signUpUserUsingEmail(
         env!,
@@ -461,6 +481,7 @@ export function testAuthenticationApi<
     })
 
     it('A patient may login with a new RSA keypair and access his previous data only when a delegate gave him access back', async () => {
+      if (shouldSkip()) return
       // Given
       const hcpApiAndUser = await ctx.apiForEnvUser(env, hcp3Username)
       const patApiAndUser = await ctx.signUpUserUsingEmail(
@@ -516,14 +537,14 @@ export function testAuthenticationApi<
         .map((x) => ctx.toMtDto(x))
         .find((mt) =>
           mt.taskType === NotificationTypeEnum.KEY_PAIR_UPDATE &&
-          Array.from(mt.properties).find((prop) => prop.typedValue?.stringValue == patApiAndUser.user.patientId!) != undefined
+          mt.properties?.find((prop) => prop.typedValue?.stringValue == patApiAndUser.user.patientId!) != undefined
         )
 
       expect(hcpNotification).toBeTruthy()
 
-      const patientId = Array.from(hcpNotification!.properties).find((prop) => prop.id == 'dataOwnerConcernedId')
+      const patientId = hcpNotification!.properties?.find((prop) => prop.id == 'dataOwnerConcernedId')
       expect(patientId).toBeTruthy()
-      const patientPubKey = Array.from(hcpNotification!.properties).find((prop) => prop.id == 'dataOwnerConcernedPubKey')
+      const patientPubKey = hcpNotification!.properties?.find((prop) => prop.id == 'dataOwnerConcernedPubKey')
       expect(patientPubKey).toBeTruthy()
 
       await ctx.dataOwnerApi(hcpApiAndUser.api).giveAccessBackTo(patientId!.typedValue!.stringValue!, patientPubKey!.typedValue!.stringValue!)

@@ -207,7 +207,7 @@ export function DataSampleApiAware<TBase extends Constructor<any>>(Base: TBase):
             return mapDataSampleToService(dsService)
         }
 
-        newServiceFilter(api: MedTechApi): ServiceFilter {
+        newServiceFilter(api: MedTechApi): DataSampleFilter {
             return new DataSampleFilter(api)
         }
 
@@ -241,7 +241,7 @@ export function NotificationApiAware<TBase extends Constructor<any>>(Base: TBase
             })
             const createdNotification = await api.notificationApi.createOrModify(notification, delegate)
             expect(createdNotification).toBeTruthy()
-            return createdNotification
+            return createdNotification!
         }
     }
 }
@@ -324,7 +324,7 @@ export function HelementApiAware<TBase extends Constructor<any>>(Base: TBase): T
             await expect(api.dataSampleApi.get(helement.id!)).rejects.toBeInstanceOf(Error)
         }
 
-        newHelementFilter(api: MedTechApi): HealthElementFilter {
+        newHelementFilter(api: MedTechApi): HealthcareElementFilter {
             return new HealthcareElementFilter(api)
         }
     }
