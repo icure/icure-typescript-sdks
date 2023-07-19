@@ -177,7 +177,7 @@ export class EHRLiteApi extends CommonApi {
     }
 }
 
-export namespace EHRLite {
+export namespace EHRLiteApi {
     export class Builder extends AuthenticatedApiBuilder<EHRLiteCryptoStrategies, EHRLiteMessageFactory, EHRLiteApi>{
         constructor(initialisationApi?: EHRLiteApi) {
             super()
@@ -250,7 +250,7 @@ export namespace EHRLite {
                         }
                     }
                 ),
-                crypto,
+                this.crypto,
                 fetch,
                 {
                     storage: props.storage,

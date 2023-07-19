@@ -1,6 +1,5 @@
 import 'isomorphic-fetch'
 import {v4 as uuid} from 'uuid'
-import {getEnvironmentInitializer, hcp1Username, setLocalStorage, TestUtils} from '../test-utils'
 import {MedTechApi} from '../../src/apis/MedTechApi'
 import {PatientFilter} from '../../src/filter/PatientFilterDsl'
 import {expect} from 'chai'
@@ -14,6 +13,8 @@ import {
     PatientByHealthcarePartyNameContainsFuzzyFilter,
     PatientByHealthcarePartySsinsFilter
 } from "@icure/typescript-common";
+import {getEnvironmentInitializer, hcp1Username, setLocalStorage} from "../../../common-test/test-utils";
+import {TestUtils} from "../test-utils";
 
 setLocalStorage(fetch)
 

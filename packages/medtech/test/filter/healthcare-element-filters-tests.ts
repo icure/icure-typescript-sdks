@@ -1,7 +1,6 @@
 import 'isomorphic-fetch'
 import { MedTechApi } from '../../src/apis/MedTechApi'
 import { User } from '@icure/typescript-common'
-import { getEnvironmentInitializer, hcp1Username, setLocalStorage, TestUtils } from '../test-utils'
 import { HealthcareElementFilter } from '../../src/filter/HealthcareElementFilterDsl'
 import { FilterComposition, NoOpFilter } from '@icure/typescript-common'
 import { expect } from 'chai'
@@ -12,6 +11,8 @@ import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import { v4 as uuid } from 'uuid'
 import { mapHealthcareElementToHealthElement } from '../../src/mappers/HealthcareElement.mapper'
 import { mapPatientToPatientDto } from '../../src/mappers/Patient.mapper'
+import {getEnvironmentInitializer, hcp1Username, setLocalStorage} from "../../../common-test/test-utils";
+import {TestUtils} from "../test-utils";
 
 setLocalStorage(fetch)
 
@@ -97,7 +98,7 @@ describe('Healthcare Element Filters Test', function () {
 
     expect(!!elements).to.eq(true)
     expect(elements.rows.length).to.be.greaterThan(0)
-  }).timeout(60000)
+  })
 
   it('Can filter Healthcare Elements by code', async function () {
     const elements = await hcp1Api.healthcareElementApi.filterHealthcareElement(
@@ -110,7 +111,7 @@ describe('Healthcare Element Filters Test', function () {
       expect(Array.from(he.labels).map((it) => it.code)).to.contain('617')
       expect(Array.from(he.labels).map((it) => it.type)).to.contain('SNOMEDCT')
     })
-  }).timeout(60000)
+  })
 
   it('Can filter Healthcare Elements by tag', async function () {
     const elements = await hcp1Api.healthcareElementApi.filterHealthcareElement(
@@ -151,7 +152,7 @@ describe('Healthcare Element Filters Test', function () {
         )
       })
     })
-  }).timeout(60000)
+  })
 
   it('Can filter Healthcare Elements by implicit intersection filter', async function () {
     const elements = await hcp1Api.healthcareElementApi.filterHealthcareElement(

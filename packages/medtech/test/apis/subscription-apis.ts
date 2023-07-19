@@ -8,7 +8,7 @@
 // import { DataSample } from '../../src/models/DataSample.model'
 // import { Content } from '../../src/models/Content.model'
 // import { Patient } from '../../src/models/Patient.model'
-// import { getEnvironmentInitializer, hcp1Username, hcp3Username, setLocalStorage, TestUtils } from '../test-utils'
+// import {(.*)} from '../../../common-test/test-utils'
 // import { v4 as uuid } from 'uuid'
 // import { HealthcareElement } from '../../src/models/HealthcareElement.model'
 // import { DataSampleFilter } from '../../src/filter/DataSampleFilterDsl'

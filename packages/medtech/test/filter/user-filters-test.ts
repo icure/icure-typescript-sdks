@@ -1,12 +1,19 @@
 import 'isomorphic-fetch'
 import { MedTechApi } from '../../src/apis/MedTechApi'
 import {User} from "@icure/typescript-common";
-import { getEnvironmentInitializer, getTempEmail, hcp1Username, patUsername, setLocalStorage, TestUtils } from '../test-utils'
 import { UserFilter } from '../../src/filter/UserFilterDsl'
 import {FilterComposition, NoOpFilter} from "@icure/typescript-common";
 import { expect } from 'chai'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import { v4 as uuid } from 'uuid'
+import {
+  getEnvironmentInitializer,
+  getTempEmail,
+  hcp1Username,
+  patUsername,
+  setLocalStorage
+} from "../../../common-test/test-utils";
+import {TestUtils} from "../test-utils";
 
 setLocalStorage(fetch)
 
@@ -60,7 +67,7 @@ describe('User Filters Test', function () {
     const users = await hcp1Api.userApi.filterUsers(filter)
 
     expect(users.rows.length).to.be.greaterThan(0)
-  }).timeout(60000)
+  })
 
   it('Can filter User by Id', async function () {
     const users = await hcp1Api.userApi.filterUsers(await new UserFilter(hcp1Api).byIds([patUser.id!, newUser.id!]).build())
@@ -68,7 +75,7 @@ describe('User Filters Test', function () {
     expect(users.rows.length).to.be.equal(2)
     expect(users.rows.map((it) => it.id)).to.contain(patUser.id!)
     expect(users.rows.map((it) => it.id)).to.contain(newUser.id!)
-  }).timeout(60000)
+  })
 
   it('Can filter User by union filter', async function () {
     const filterById = await new UserFilter(hcp1Api).byIds([newUser.id!]).build()
@@ -80,7 +87,7 @@ describe('User Filters Test', function () {
     expect(users.rows.length).to.be.greaterThan(0)
     expect(users.rows.map((it) => it.id)).to.contain(patUser.id!)
     expect(users.rows.map((it) => it.id)).to.contain(newUser.id!)
-  }).timeout(60000)
+  })
 
   it('Can filter user by implicit intersection filter', async function () {
     const filter = await new UserFilter(hcp1Api).byPatientId(patUser.patientId!).byIds([patUser.id!, newUser.id!]).build()
@@ -88,7 +95,7 @@ describe('User Filters Test', function () {
 
     expect(users.rows.length).to.be.equal(1)
     expect(users.rows.map((it) => it.id)).to.contain(patUser.id!)
-  }).timeout(60000)
+  })
 
   it('Can filter user by explicit intersection filter', async function () {
     const filterByPatientId = await new UserFilter(hcp1Api).byPatientId(patUser.patientId!).build()
@@ -99,7 +106,7 @@ describe('User Filters Test', function () {
 
     expect(users.rows.length).to.be.equal(1)
     expect(users.rows.map((it) => it.id)).to.contain(patUser.id!)
-  }).timeout(60000)
+  })
 
   it('Intersection between disjoint sets return empty result', async function () {
     const filterByPatientId = await new UserFilter(hcp1Api).byPatientId(patUser.patientId!).build()
@@ -110,7 +117,7 @@ describe('User Filters Test', function () {
     const users = await hcp1Api.userApi.filterUsers(intersectionFilter)
 
     expect(users.rows.length).to.be.equal(0)
-  }).timeout(60000)
+  })
 
   it('If a NoOpFilter is generated as result, an empty result is returned', async function () {
     const noOpFilter = await new UserFilter(hcp1Api).byIds([uuid()]).byIds([uuid()]).build()

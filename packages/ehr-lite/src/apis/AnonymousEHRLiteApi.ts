@@ -41,7 +41,7 @@ export class AnonymousEHRLiteApi extends CommonAnonymousApi<EHRLiteApi> {
     }
 }
 
-export namespace AnonymousEHRLite {
+export namespace AnonymousEHRLiteApi {
     export class Builder extends AnonymousApiBuilder<CryptoStrategies<DataOwnerWithType>, AnonymousEHRLiteApi> {
         protected doBuild(props: {
             iCureBaseUrl: string;

@@ -61,7 +61,7 @@ function assertNotificationIsEquivalentToMaintenanceTask(notification: Notificat
   assert(notification.responsible === maintenanceTask.responsible)
   assert(
     arrayEquality(
-      !!notification.properties ? [...notification.properties] : [],
+      !!notification.properties ? Array.from(notification.properties) : [],
       !!maintenanceTask.properties ? maintenanceTask.properties : [],
       propertyEquality
     )

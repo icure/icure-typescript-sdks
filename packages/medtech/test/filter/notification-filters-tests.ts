@@ -1,12 +1,13 @@
 import 'isomorphic-fetch'
 import { MedTechApi } from '../../src/apis/MedTechApi'
 import {User, Notification, NotificationTypeEnum} from "@icure/typescript-common";
-import { getEnvironmentInitializer, hcp1Username, setLocalStorage, TestUtils } from '../test-utils'
 import { NotificationFilter } from '../../src/filter/NotificationFilterDsl'
 import {FilterComposition, NoOpFilter} from "@icure/typescript-common";
 import { expect } from 'chai'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import { v4 as uuid } from 'uuid'
+import {getEnvironmentInitializer, hcp1Username, setLocalStorage} from "../../../common-test/test-utils";
+import {TestUtils} from "../test-utils";
 
 setLocalStorage(fetch)
 
