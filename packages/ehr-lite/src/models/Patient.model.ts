@@ -21,6 +21,18 @@ export class Patient {
     codes: Set<CodingReference>
     endOfLife?: number
     deletionDate?: number
+    // /**
+    //  * First name of the patient. Automatically aligned with the {@link HumanName.preferredNameFrom} {@link Patient.names}.
+    //  */
+    firstName?: string
+    // /**
+    //  * Last name of the patient. Automatically aligned with the {@link HumanName.preferredNameFrom} {@link Patient.names}.
+    //  */
+    lastName?: string
+    // /**
+    //  * All names of the patient. Currently only the preferred name, which is automatically aligned with {@link Patient.firstName}
+    //  * and {@link Patient.lastName}, is searchable.
+    //  */
     names: HumanName[]
     languages: string[]
     addresses: Location[]
@@ -96,7 +108,19 @@ export class Patient {
         this.patientProfessions = patient.patientProfessions
         this.properties = patient.properties ?? new Set()
         this.systemMetaData = patient.systemMetaData
+        this.firstName = patient.firstName
+        this.lastName = patient.lastName
     }
+
+    // /**
+    //  * Get the preferred name of a patient. Equivalent to `HumanName.preferredNameFrom(patient.names)`.
+    //  * See {@link HumanName.preferredNameFrom} for more details.
+    //  * @param patient a patient
+    //  * @return the preferred name of the patient, if any
+    //  */
+    // static preferredNameOf(patient: Patient): HumanName | undefined {
+    //     return HumanName.preferredNameFrom(patient.names)
+    // }
 
     static toJSON(instance: Patient): any {
         const pojo: any = {}
@@ -111,6 +135,8 @@ export class Patient {
         pojo['codes'] = Array.from([...instance.codes].map((item) => CodingReference.toJSON(item)))
         if (instance.endOfLife !== undefined) pojo['endOfLife'] = instance.endOfLife
         if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
+        if (instance.firstName !== undefined) pojo['firstName'] = instance.firstName
+        if (instance.lastName !== undefined) pojo['lastName'] = instance.lastName
         pojo['names'] = instance.names.map((item) => HumanName.toJSON(item))
         pojo['languages'] = instance.languages.map((item) => item)
         pojo['addresses'] = instance.addresses.map((item) => Location.toJSON(item))
@@ -171,6 +197,12 @@ export class Patient {
         }
         if (pojo['deletionDate'] !== undefined) {
             obj['deletionDate'] = pojo['deletionDate']
+        }
+        if (pojo['firstName'] !== undefined) {
+            obj['firstName'] = pojo['firstName']
+        }
+        if (pojo['lastName'] !== undefined) {
+            obj['lastName'] = pojo['lastName']
         }
         obj['names'] = pojo['names'].map((item: any) => HumanName.fromJSON(item))
         obj['languages'] = pojo['languages'].map((item: any) => item)
@@ -296,4 +328,6 @@ interface IPatient {
     patientProfessions?: CodingReference[]
     properties?: Set<Property>
     systemMetaData?: SystemMetaDataOwnerEncrypted
+    firstName?: string
+    lastName?: string
 }
