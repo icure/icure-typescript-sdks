@@ -95,6 +95,41 @@ function toHealthElementTags(domain: Condition): CodeStub[] | undefined {
     return addUniqueObjectsToArray(mappedTags, ...bodySiteCodeStubs, ...clinicalStatus, ...severity, ...verificationStatus, ...category)
 }
 
+// function toHealthElementTags(domain: Condition): CodeStub[] | undefined {
+//     const mappedTags = mergeTagsWithInternalTags('Condition', domain.tags, domain.systemMetaData)
+//
+//     const bodySite = [...(domain.bodySite ?? [])]
+//
+//     const bodySiteCodeStubs = bodySite.map(mapCodingReferenceToCodeStub).map((c) => {
+//         return new CodeStub({
+//             ...c,
+//             context: 'bodySite',
+//         })
+//     })
+//
+//     const clinicalStatus = new CodeStub({
+//         code: domain.clinicalStatus,
+//         context: 'clinicalStatus',
+//     })
+//
+//     const verificationStatus = new CodeStub({
+//         code: domain.verificationStatus,
+//         context: 'verificationStatus',
+//     })
+//
+//     const severity = new CodeStub({
+//         code: domain.severity,
+//         context: 'severity',
+//     })
+//
+//     const category = new CodeStub({
+//         code: domain.category,
+//         context: 'category',
+//     })
+//
+//     return addUniqueObjectsToArray(mappedTags, ...bodySiteCodeStubs, clinicalStatus, severity, verificationStatus, category)
+// }
+
 function toHealthElementCodes(domain: Condition): CodeStub[] | undefined {
     return !!domain.codes ? [...domain.codes].map(mapCodingReferenceToCodeStub) : undefined
 }
