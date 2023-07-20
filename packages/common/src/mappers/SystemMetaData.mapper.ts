@@ -24,16 +24,16 @@ import {
 import { SystemMetaDataOwnerEncrypted } from '../models/SystemMetaDataOwnerEncrypted.model'
 import { Delegation as DelegationDto } from '@icure/api/icc-api/model/Delegation'
 import { Delegation } from '../models/Delegation.model'
-import { ICURE_INTERNAL_FHIR_TAG_ID } from '../utils/domain'
 import { mapCodeStubToCodingReference } from './CodingReference.mapper'
 import { CodingReference } from '../models/CodingReference.model'
+import {ICURE_INTERNAL_FHIR_TAG_TYPE} from "../utils/domain";
 
 function toMapOfSetOfDelegations(delegations: { [p: string]: DelegationDto[] }): Map<string, Set<DelegationDto>> {
     return new Map(Object.entries(delegations).map(([k, v]) => [k, new Set(v.map(mapDelegationDtoToDelegation))]))
 }
 
 function extractInternalTags(dto: HealthElement | Service | MaintenanceTask | HealthcareParty | Patient | Device): Set<CodingReference> | undefined {
-    return !!dto.tags ? new Set(dto.tags.filter((t) => t.id === ICURE_INTERNAL_FHIR_TAG_ID).map(mapCodeStubToCodingReference)) : undefined
+    return !!dto.tags ? new Set(dto.tags.filter((t) => t.type === ICURE_INTERNAL_FHIR_TAG_TYPE).map(mapCodeStubToCodingReference)) : undefined
 }
 
 export function toSystemMetaDataEncrypted(dto: HealthElement | Service | MaintenanceTask): SystemMetaDataEncrypted | undefined {
