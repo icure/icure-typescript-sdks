@@ -72,63 +72,44 @@ function toHealthElementTags(domain: Condition): CodeStub[] | undefined {
         })
     })
 
-    const clinicalStatus = domain.clinicalStatus ? [new CodeStub({
-        ...ClinicalStatusEnum.toCodeStub(domain.clinicalStatus),
-        context: 'Condition.clinicalStatus',
-    })] : []
+    const clinicalStatus = domain.clinicalStatus
+        ? [
+              new CodeStub({
+                  ...ClinicalStatusEnum.toCodeStub(domain.clinicalStatus),
+                  context: 'Condition.clinicalStatus',
+              }),
+          ]
+        : []
 
-    const verificationStatus = domain.verificationStatus ? [new CodeStub({
-        ...VerificationStatusEnum.toCodeStub(domain.verificationStatus),
-        context: 'Condition.verificationStatus',
-    })] : []
+    const verificationStatus = domain.verificationStatus
+        ? [
+              new CodeStub({
+                  ...VerificationStatusEnum.toCodeStub(domain.verificationStatus),
+                  context: 'Condition.verificationStatus',
+              }),
+          ]
+        : []
 
-    const severity = domain.severity ? [new CodeStub({
-        ...SeverityEnum.toCodeStub(domain.severity),
-        context: 'Condition.severity',
-    })] : []
+    const severity = domain.severity
+        ? [
+              new CodeStub({
+                  ...SeverityEnum.toCodeStub(domain.severity),
+                  context: 'Condition.severity',
+              }),
+          ]
+        : []
 
-    const category = domain.category ? [new CodeStub({
-        ...CategoryEnum.toCodeStub(domain.category),
-        context: 'Condition.category',
-    })] : []
+    const category = domain.category
+        ? [
+              new CodeStub({
+                  ...CategoryEnum.toCodeStub(domain.category),
+                  context: 'Condition.category',
+              }),
+          ]
+        : []
 
     return addUniqueObjectsToArray(mappedTags, ...bodySiteCodeStubs, ...clinicalStatus, ...severity, ...verificationStatus, ...category)
 }
-
-// function toHealthElementTags(domain: Condition): CodeStub[] | undefined {
-//     const mappedTags = mergeTagsWithInternalTags('Condition', domain.tags, domain.systemMetaData)
-//
-//     const bodySite = [...(domain.bodySite ?? [])]
-//
-//     const bodySiteCodeStubs = bodySite.map(mapCodingReferenceToCodeStub).map((c) => {
-//         return new CodeStub({
-//             ...c,
-//             context: 'bodySite',
-//         })
-//     })
-//
-//     const clinicalStatus = new CodeStub({
-//         code: domain.clinicalStatus,
-//         context: 'clinicalStatus',
-//     })
-//
-//     const verificationStatus = new CodeStub({
-//         code: domain.verificationStatus,
-//         context: 'verificationStatus',
-//     })
-//
-//     const severity = new CodeStub({
-//         code: domain.severity,
-//         context: 'severity',
-//     })
-//
-//     const category = new CodeStub({
-//         code: domain.category,
-//         context: 'category',
-//     })
-//
-//     return addUniqueObjectsToArray(mappedTags, ...bodySiteCodeStubs, clinicalStatus, severity, verificationStatus, category)
-// }
 
 function toHealthElementCodes(domain: Condition): CodeStub[] | undefined {
     return !!domain.codes ? [...domain.codes].map(mapCodingReferenceToCodeStub) : undefined
