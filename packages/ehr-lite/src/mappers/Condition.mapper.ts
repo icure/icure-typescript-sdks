@@ -26,7 +26,7 @@ import { ClinicalStatusEnum } from '../models/enums/ClinicalStatus.enum'
 import { VerificationStatusEnum } from '../models/enums/VerificationStatus.enum'
 import { CategoryEnum } from '../models/enums/Category.enum'
 import { SeverityEnum } from '../models/enums/Severity.enum'
-import { addUniqueObjectsToArray } from '../../../common/src/utils/Array.utils'
+import { addUniqueObjectsToArray } from '@icure/typescript-common'
 
 function toHealthElementId(domain: Condition): string {
     return forceUuid(domain.id)
