@@ -13,7 +13,12 @@ import {
     Document,
     mapMaintenanceTaskToNotification,
     ServiceFilter,
-    mapDocumentToDocumentDto, HealthElementFilter, MessageFactory, NotificationTypeEnum, MaintenanceTaskFilter
+    mapDocumentToDocumentDto,
+    HealthElementFilter,
+    MessageFactory,
+    NotificationTypeEnum,
+    MaintenanceTaskFilter,
+    Annotation
 } from "@icure/typescript-common";
 import {AnonymousMedTechApi} from "../../src/apis/AnonymousMedTechApi";
 import {MedTechApi} from "../../src/apis/MedTechApi";
@@ -123,20 +128,34 @@ export function PatientApiAware<TBase extends Constructor<any>>(Base: TBase): TB
                 new Patient({
                     firstName: 'John',
                     lastName: 'Snow',
-                    note: 'Winter is coming',
+                    notes: [
+                      new Annotation({
+                          markdown: mapOf({
+                              en: 'Winter is coming',
+                              da: 'Vinteren kommer'
+                          }),
+                      })
+                    ],
                 })
             )
         }
 
         checkDefaultPatientDecrypted(patient: Patient): void {
-            expect(patient.note).toEqual('Winter is coming')
+            expect(patient.notes[0].markdown.get('en')).toEqual('Winter is coming')
+            expect(patient.notes[0].markdown.get('da')).toEqual('Vinteren kommer')
         }
 
         async checkPatientAccessibleAndDecrypted(api: MedTechApi, patient: Patient, checkDeepEquals: boolean): Promise<void> {
             const retrieved = await api.patientApi.get(patient.id!)
-            expect(retrieved).toBeTruthy()
-            expect(retrieved.note).toBeTruthy()
-            if (checkDeepEquals) expect(retrieved).toEqual(patient)
+            expect(retrieved.notes).toBeTruthy()
+            expect(retrieved.notes.length).toBeGreaterThan(0)
+            retrieved.notes.forEach((note) => {
+                expect(note.markdown).toBeTruthy()
+                expect(note.markdown.size).toBeGreaterThan(0)
+            })
+            if (checkDeepEquals) {
+                expect(retrieved).toEqual(patient)
+            }
         }
 
         async checkPatientInaccessible(api: MedTechApi, patient: Patient): Promise<void> {

@@ -7,4 +7,4 @@ import {testPatientLikeApi} from "../../../common-test/apis/patient-like-api";
 const PatientApiTestContext =
   PatientApiAware(HelementApiAware(MedTechBaseTestContext))
 
-testPatientLikeApi(new PatientApiTestContext())
+testPatientLikeApi('MedTech Patient', new PatientApiTestContext())

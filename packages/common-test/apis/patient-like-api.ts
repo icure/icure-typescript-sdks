@@ -32,6 +32,7 @@ export function testPatientLikeApi<
   DSHelement,
   DSMaintenanceTask
 >(
+  name: string,
   ctx: BaseApiTestContext<
     DSAnonymousApiBuilder,
     DSAnonymousApi,
@@ -46,7 +47,7 @@ export function testPatientLikeApi<
   let hcp1Api: DSApi
   let hcp1User: User
 
-  describe('Patient like API', () => {
+  describe(`${name} (Patient like API)`, () => {
     beforeAll(async function () {
       const initializer = await getEnvironmentInitializer()
       env = await initializer.execute(getEnvVariables())
@@ -61,7 +62,9 @@ export function testPatientLikeApi<
       const patient = await ctx.patientApi(hcp1Api).createOrModify(ctx.toDSPatient(new Patient({
         firstName: 'Giovanni',
         lastName: 'Neve',
-        note: 'L\'inverno sta arrivando',
+        notes: [{
+          markdown: { 'it': 'L\'inverno sta arrivando' }
+        }],
       })))
       const patientDto = ctx.toPatientDto(patient)
 
@@ -70,27 +73,16 @@ export function testPatientLikeApi<
       expect(forceUuid(patientDto.id)).toEqual(patientDto.id)
       expect(patientDto.firstName).toEqual('Giovanni')
       expect(patientDto.lastName).toEqual('Neve')
-      expect(patientDto.note).toEqual('L\'inverno sta arrivando')
+      expect(patientDto.notes[0].markdown['it']).toEqual('L\'inverno sta arrivando')
 
       const retrieved = await ctx.patientApi(hcp1Api).get(patientDto.id!)
       expect(retrieved).toEqual(patient)
 
       // Init
-      const hElement = await ctx.helementApi(hcp1Api).createOrModify(
-        ctx.toDSHelement(new HealthElement({
-          note: 'Hero Syndrome',
-        })),
-        patientDto.id!
-      )
-      const hElementDto = ctx.toHelementDto(hElement)
-
-      // Then
-      expect(hElementDto.id).toBeTruthy()
-      expect(forceUuid(hElementDto.id)).toEqual(hElementDto.id)
-      expect(hElementDto.note).toEqual('Hero Syndrome')
-
-      const retrievedHe = await ctx.helementApi(hcp1Api).get(hElementDto.id)
-      expect(retrievedHe).toEqual(hElement)
+      const hElement = await ctx.createHelementForPatient(hcp1Api, patient)
+      expect(hElement).toBeTruthy()
+      ctx.checkDefaultHelementDecrypted(hElement)
+      await ctx.checkHelementAccessibleAndDecrypted(hcp1Api, hElement, true)
     })
 
     it('Patient sharing its own information with HCP', async function () {
@@ -110,15 +102,15 @@ export function testPatientLikeApi<
       const hcpUser = hcpApiAndUser.user
       const modifyPatient = ctx.toDSPatient({
         ...ctx.toPatientDto(await ctx.patientApi(patApi).get(patUser.patientId!)),
-        note: 'Some note'
+        notes: [{ markdown: { 'en': 'Some note' } }]
       })
       const updatedPatient = await ctx.patientApi(patApi).createOrModify(modifyPatient)
-      expect(ctx.toPatientDto(updatedPatient).note).toEqual('Some note')
+      expect(ctx.toPatientDto(updatedPatient).notes[0].markdown.en).toEqual('Some note')
       // Initially HCP can't access the patient
       await ctx.checkPatientInaccessible(hcpApi, updatedPatient)
       // Patient shares P and gets it updated and decrypted
       const sharedPatient = await ctx.patientApi(patApi).giveAccessTo(updatedPatient, hcpUser.healthcarePartyId!)
-      expect(ctx.toPatientDto(sharedPatient).note).toEqual('Some note')
+      expect(ctx.toPatientDto(sharedPatient).notes[0].markdown.en).toEqual('Some note')
       // HCP can now access the patient
       await ctx.checkPatientAccessibleAndDecrypted(hcpApi, sharedPatient, true)
     })
