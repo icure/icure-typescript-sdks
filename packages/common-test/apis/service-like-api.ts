@@ -33,6 +33,7 @@ export function testServiceLikeApi<
   DSDocument,
   DSHelement
 >(
+  name: string,
   ctx: BaseApiTestContext<
     DSAnonymousApiBuilder,
     DSAnonymousApi,
@@ -46,7 +47,7 @@ export function testServiceLikeApi<
 ) {
   let env: TestVars
 
-  describe('Data Samples API', () => {
+  describe(`${name} (Service like API)`, () => {
     beforeAll(async function () {
       const initializer = await getEnvironmentInitializer()
       env = await initializer.execute(getEnvVariables())
@@ -505,6 +506,106 @@ export function testServiceLikeApi<
       await ctx.serviceApi(h1api).giveAccessTo(dataSample, h2user.healthcarePartyId!)
       expect(ua2utf8(await ctx.serviceApi(h2api).getAttachmentContent(dataSampleId, attachmentDocEnId))).toEqual(value1)
       expect(ua2utf8(await ctx.serviceApi(h2api).getAttachmentContent(dataSampleId, attachmentDocFrId))).toEqual(value2)
+    })
+
+    it('A shared service should still be shared after modification, even if it required to create a new contact', async () => {
+      const { api: h1api } = await ctx.apiForEnvUser(env, hcp1Username)
+      const { api: h2api, user: h2user } = await ctx.apiForEnvUser(env, hcp2Username)
+      const patient = await ctx.createPatient(h1api)
+      const service = await ctx.createServiceForPatient(h1api, patient)
+      const sharedService = await ctx.serviceApi(h1api).giveAccessTo(service, h2user.healthcarePartyId!)
+      await ctx.checkServiceAccessibleAndDecrypted(h2api, sharedService, true)
+      ;(ctx.serviceApi(h1api) as ServiceLikeApiImpl<any, any, any>).clearContactCache()
+      const modifiedService = await ctx.serviceApi(h1api).createOrModifyFor(
+        ctx.toPatientDto(patient).id,
+        ctx.toDSService({
+          ...ctx.toServiceDto(sharedService),
+          content: {
+            en: {
+              stringValue: 'Modified service',
+            }
+          }
+        })
+      )
+      expect(ctx.toServiceDto(modifiedService).content['en'].stringValue).toEqual('Modified service')
+      await ctx.checkServiceAccessibleAndDecrypted(h2api, modifiedService, true)
+    })
+
+    it('If multiple services are created at once they should be part of the same contact', async () => {
+      const { api: h1api } = await ctx.apiForEnvUser(env, hcp1Username)
+      const patient = await ctx.createPatient(h1api)
+      const services = await ctx.createServicesForPatient(h1api, patient)
+      const servicesDtos = services.map((s) => ctx.toServiceDto(s))
+      expect(servicesDtos.length).toBeGreaterThan(1)
+      expect(servicesDtos[0].contactId).toBeTruthy()
+      expect(forceUuid(servicesDtos[0].contactId)).toEqual(servicesDtos[0].contactId)
+      expect(new Set(servicesDtos.map((s) => s.contactId)).size).toEqual(1)
+      expect(new Set(servicesDtos.map((s) => s.id)).size).toEqual(servicesDtos.length)
+    })
+
+    it('If multiple services are created in quick succession but over different calls the services should NOT be part of the same contact', async () => {
+      const { api: h1api } = await ctx.apiForEnvUser(env, hcp1Username)
+      const patient = await ctx.createPatient(h1api)
+      const service1 = ctx.toServiceDto(await ctx.createServiceForPatient(h1api, patient))
+      const service2 = ctx.toServiceDto(await ctx.createServiceForPatient(h1api, patient))
+      expect(service1.contactId).toBeTruthy()
+      expect(service2.contactId).toBeTruthy()
+      expect(service1.contactId).not.toEqual(service2.contactId)
+    })
+
+    it('Should allow to share a batch fully', async () => {
+      const { api: h1api } = await ctx.apiForEnvUser(env, hcp1Username)
+      const { api: h2api, user: h2user } = await ctx.apiForEnvUser(env, hcp2Username)
+      const patient = await ctx.createPatient(h1api)
+      const services = await ctx.createServicesForPatient(h1api, patient)
+      const servicesDto = services.map((s) => ctx.toServiceDto(s))
+      for (const service of services) {
+        await ctx.checkServiceInaccessible(h2api, service)
+      }
+      const sharedServices = await ctx.serviceApi(h1api).giveAccessToMany(services, h2user.healthcarePartyId!)
+      for (const sharedService of sharedServices) {
+        const sharedServiceDto = ctx.toServiceDto(sharedService)
+        expect(Object.keys(sharedServiceDto.content ?? {}).length).toBeGreaterThan(0)
+        expect(sharedServiceDto.content).toEqual(servicesDto.find((s) => s.id === sharedServiceDto.id)!.content)
+        await ctx.checkServiceAccessibleAndDecrypted(h2api, sharedService, true)
+      }
+      expect(new Set(sharedServices.map((s) => ctx.toServiceDto(s).contactId)).size).toEqual(1)
+    })
+
+    it('Should allow to share only some services of a batch', async () => {
+      const { api: h1api } = await ctx.apiForEnvUser(env, hcp1Username)
+      const { api: h2api, user: h2user } = await ctx.apiForEnvUser(env, hcp2Username)
+      const patient = await ctx.createPatient(h1api)
+      const services = await ctx.serviceApi(h1api).createOrModifyManyFor(
+        ctx.toPatientDto(patient).id,
+        [
+          ctx.toDSService({  content: { en: { stringValue: 'Service 1' } } }),
+          ctx.toDSService({  content: { en: { stringValue: 'Service 2' } } }),
+          ctx.toDSService({  content: { en: { stringValue: 'Service 3' } } }),
+          ctx.toDSService({  content: { en: { stringValue: 'Service 4' } } }),
+        ]
+      )
+      const servicesDto = services.map((s) => ctx.toServiceDto(s))
+      expect(new Set(servicesDto.map((s) => s.contactId)).size).toEqual(1)
+      for (const service of services) {
+        await ctx.checkServiceInaccessible(h2api, service)
+      }
+      const servicesToShare = [services[0], services[2]]
+      const sharedServices = await ctx.serviceApi(h1api).giveAccessToMany(servicesToShare, h2user.healthcarePartyId!)
+      expect(sharedServices).toHaveLength(2)
+      for (const sharedService of sharedServices) {
+        const sharedServiceDto = ctx.toServiceDto(sharedService)
+        expect(Object.keys(sharedServiceDto.content ?? {}).length).toBeGreaterThan(0)
+        expect(sharedServiceDto.content).toEqual(servicesDto.find((s) => s.id === sharedServiceDto.id)!.content)
+        await ctx.checkServiceAccessibleAndDecrypted(h2api, sharedService, true)
+      }
+      expect(new Set(sharedServices.map((s) => ctx.toServiceDto(s).contactId)).size).toEqual(1)
+      await ctx.checkServiceInaccessible(h2api, services[1])
+      await ctx.checkServiceInaccessible(h2api, services[3])
+      expect(ctx.toServiceDto(await ctx.serviceApi(h1api).get(servicesDto[0].id)).contactId).not.toEqual(servicesDto[0].contactId)
+      expect(ctx.toServiceDto(await ctx.serviceApi(h1api).get(servicesDto[1].id)).contactId).toEqual(servicesDto[1].contactId)
+      expect(ctx.toServiceDto(await ctx.serviceApi(h1api).get(servicesDto[2].id)).contactId).not.toEqual(servicesDto[2].contactId)
+      expect(ctx.toServiceDto(await ctx.serviceApi(h1api).get(servicesDto[3].id)).contactId).toEqual(servicesDto[3].contactId)
     })
   })
 }

@@ -1,14 +1,28 @@
-import { BaseApiTestContext, WithHelementApi, WithPatientApi } from '../../../common-test/apis/TestContexts'
-import { AnonymousEHRLiteApi, Condition, ConditionApi, ConditionFilter, EHRLiteApi, HumanName } from '../../src'
+import {
+    BaseApiTestContext,
+    WithHelementApi,
+    WithPatientApi,
+    WithServiceApi
+} from '../../../common-test/apis/TestContexts'
+import {
+    AnonymousEHRLiteApi,
+    Condition,
+    ConditionApi,
+    ConditionFilter,
+    EHRLiteApi,
+    HumanName, LocalComponent,
+    Observation, ObservationApi, ObservationFilter
+} from '../../src'
 import { EHRLiteCryptoStrategies, SimpleEHRLiteCryptoStrategies } from '../../src/services/EHRLiteCryptoStrategies'
 import {
     domainTypeTag,
     extractDomainTypeTag,
-    KeyPair,
+    KeyPair, mapDocumentToDocumentDto,
     mapOf,
     mapUserDtoToUser,
     mapUserToUserDto,
-    User
+    User,
+    Document, CodingReference
 } from '@icure/typescript-common'
 import { EHRLiteMessageFactory } from '../../src/services/EHRLiteMessageFactory'
 import {
@@ -27,6 +41,7 @@ import { TestMessageFactory } from '../test-utils'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../../src/mappers/Patient.mapper'
 import { expectArrayContainsExactlyInAnyOrder } from '../../../common-test/assertions'
 import { mapConditionToHealthElement, mapHealthElementToCondition } from '../../src/mappers/Condition.mapper'
+import {mapObservationToService, mapServiceToObservation} from "../../src/mappers/Observation.mapper";
 
 export class EhrLiteBaseTestContext extends BaseApiTestContext<AnonymousEHRLiteApi.Builder, AnonymousEHRLiteApi, EHRLiteApi, EHRLiteCryptoStrategies, User, EHRLiteMessageFactory> {
     newAnonymousApiBuilder(): AnonymousEHRLiteApi.Builder {
@@ -201,6 +216,80 @@ export function ConditionApiAware<TBase extends Constructor<any>>(Base: TBase): 
     }
 }
 
+export function ObservationApiAware<TBase extends Constructor<any>>(Base: TBase): TBase & Constructor<WithServiceApi<EHRLiteApi, Observation, Patient, Document>> {
+    return class ObservationApiAwareImpl extends Base implements WithServiceApi<EHRLiteApi, Observation, Patient, Document> {
+        checkDefaultServiceDecrypted(service: Observation): void {
+            expect(service.localContent).toEqual(mapOf({ en: new LocalComponent({ stringValue: 'Hello world' }) }))
+        }
+
+        async checkServiceAccessibleAndDecrypted(api: EHRLiteApi, service: Observation, checkDeepEquals: boolean): Promise<void> {
+            const retrieved = await api.observationApi.get(service.id!)
+            expect(retrieved).toBeTruthy()
+            expect(Array.from(retrieved.localContent.entries()).length).toBeGreaterThan(0)
+            if (checkDeepEquals) expect(retrieved).toEqual(service)
+        }
+
+        async checkServiceAccessibleButEncrypted(api: EHRLiteApi, service: Observation): Promise<void> {
+            const retrieved = await api.observationApi.get(service.id!)
+            expect(retrieved).toBeTruthy()
+            expect(Array.from(retrieved.localContent.entries())).toHaveLength(0)
+        }
+
+        async checkServiceInaccessible(api: EHRLiteApi, service: Observation): Promise<void> {
+            await expect(api.observationApi.get(service.id!)).rejects.toBeInstanceOf(Error)
+        }
+
+        createServiceForPatient(api: EHRLiteApi, patient: Patient): Promise<Observation> {
+            return api.observationApi.createOrModifyFor(
+              patient.id!,
+              new Observation({
+                  tags: new Set([new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })]),
+                  localContent: mapOf({ en: new LocalComponent({ stringValue: 'Hello world' }) }),
+              })
+            )
+        }
+
+        createServicesForPatient(api: EHRLiteApi, patient: Patient): Promise<Observation[]> {
+            return api.observationApi.createOrModifyManyFor(
+              patient.id!,
+              [
+                  new Observation({
+                      tags: new Set([new CodingReference({ id: 'testid2', type: 'IC-TEST', code: 'TEST' })]),
+                      localContent: mapOf({ en: new LocalComponent({ stringValue: 'Hello world' }) }),
+                  }),
+                  new Observation({
+                      tags: new Set([new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })]),
+                      localContent: mapOf({ en: new LocalComponent({ stringValue: 'Good night world' }) }),
+                  }),
+              ]
+            )
+        }
+
+        newServiceFilter(api: EHRLiteApi): ObservationFilter {
+            return new ObservationFilter(api)
+        }
+
+        serviceApi(api: EHRLiteApi): ObservationApi {
+            return api.observationApi
+        }
+
+        toDSService(serviceDto: Service): Observation {
+            return mapServiceToObservation({
+                ...serviceDto,
+                tags: addDomainTypeTagIfMissing(serviceDto.tags, 'Observation')
+            })
+        }
+
+        toDocumentDto(dsDocument: Document): DocumentDto {
+            return mapDocumentToDocumentDto(dsDocument);
+        }
+
+        toServiceDto(dsService: Observation): Service {
+            return mapObservationToService(dsService)
+        }
+    }
+}
+
 // // Test contexts as mixins. See https://www.typescriptlang.org/docs/handbook/mixins.html
 // import {EHRLiteCryptoStrategies, SimpleEHRLiteCryptoStrategies} from "../../src/services/EHRLiteCryptoStrategies";
 // import {AuthenticationApi} from "../../src/apis/AuthenticationApi";
@@ -259,119 +348,6 @@ export function ConditionApiAware<TBase extends Constructor<any>>(Base: TBase): 
 // import {MedicalDeviceApi} from "../../src/apis/MedicalDeviceApi";
 // import {MedicalDevice} from "../../src/models/MedicalDevice.model";
 // import {mapDeviceToMedicalDevice, mapMedicalDeviceToDevice} from "../../src/mappers/MedicalDevice.mapper";
-//
-// export function PatientApiAware<TBase extends Constructor<any>>(Base: TBase): TBase & Constructor<WithPatientApi<EHRLiteApi, Patient>> {
-//     return class PatientApiAwareImpl extends Base implements WithPatientApi<EHRLiteApi, Patient> {
-//         patientApi(api: EHRLiteApi): PatientApi {
-//             return api.patientApi
-//         }
-//
-//         toDSPatient(patientDto: PatientDto): Patient {
-//             return mapPatientDtoToPatient(patientDto)
-//         }
-//
-//         toPatientDto(dsPatient: Patient): PatientDto {
-//             return mapPatientToPatientDto(dsPatient)
-//         }
-//
-//         createPatient(api: EHRLiteApi): Promise<Patient> {
-//             return api.patientApi.createOrModify(
-//                 new Patient({
-//                     firstName: 'John',
-//                     lastName: 'Snow',
-//                     note: 'Winter is coming',
-//                 })
-//             )
-//         }
-//
-//         checkDefaultPatientDecrypted(patient: Patient): void {
-//             expect(patient.note).toEqual('Winter is coming')
-//         }
-//
-//         async checkPatientAccessibleAndDecrypted(api: EHRLiteApi, patient: Patient, checkDeepEquals: boolean): Promise<void> {
-//             const retrieved = await api.patientApi.get(patient.id!)
-//             expect(retrieved).toBeTruthy()
-//             expect(retrieved.note).toBeTruthy()
-//             if (checkDeepEquals) expect(retrieved).toEqual(patient)
-//         }
-//
-//         async checkPatientInaccessible(api: EHRLiteApi, patient: Patient): Promise<void> {
-//             await expect(api.dataSampleApi.get(patient.id!)).rejects.toBeInstanceOf(Error)
-//         }
-//     }
-// }
-//
-// export function DataSampleApiAware<TBase extends Constructor<any>>(Base: TBase): TBase & Constructor<WithServiceApi<EHRLiteApi, DataSample, Patient, Document>> {
-//     return class DataSampleApiAwareImpl extends Base implements WithServiceApi<EHRLiteApi, DataSample, Patient, Document> {
-//         serviceApi(api: EHRLiteApi): DataSampleApi {
-//             return api.dataSampleApi
-//         }
-//
-//         async checkServiceAccessibleAndDecrypted(api: EHRLiteApi, service: DataSample, checkDeepEquals: boolean): Promise<void> {
-//             const retrieved = await api.dataSampleApi.get(service.id!)
-//             expect(retrieved).toBeTruthy()
-//             expect(Array.from(retrieved.content.entries()).length).toBeGreaterThan(0)
-//             if (checkDeepEquals) expect(retrieved).toEqual(service)
-//         }
-//
-//         async checkServiceAccessibleButEncrypted(api: EHRLiteApi, service: DataSample): Promise<void> {
-//             const retrieved = await api.dataSampleApi.get(service.id!)
-//             expect(retrieved).toBeTruthy()
-//             expect(Array.from(retrieved.content.entries())).toHaveLength(0)
-//         }
-//
-//         async checkServiceInaccessible(api: EHRLiteApi, service: DataSample): Promise<void> {
-//             await expect(api.dataSampleApi.get(service.id!)).rejects.toBeInstanceOf(Error)
-//         }
-//
-//         checkDefaultServiceDecrypted(service: DataSample): void {
-//             expect(service.content).toEqual(mapOf({ en: new Content({ stringValue: 'Hello world' }) }))
-//         }
-//
-//         createServiceForPatient(api: EHRLiteApi, patient: Patient): Promise<DataSample> {
-//             return api.dataSampleApi.createOrModifyFor(
-//                 patient.id!,
-//                 new DataSample({
-//                     labels: new Set([new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })]),
-//                     content: mapOf({ en: new Content({ stringValue: 'Hello world' }) }),
-//                 })
-//             )
-//         }
-//
-//         createServicesForPatient(api: EHRLiteApi, patient: Patient): Promise<DataSample[]> {
-//             return api.dataSampleApi.createOrModifyManyFor(
-//                 patient.id!,
-//                 [
-//                     new DataSample({
-//                         labels: new Set([new CodingReference({ id: 'testid2', type: 'IC-TEST', code: 'TEST' })]),
-//                         content: mapOf({ en: new Content({ stringValue: 'Hello world' }) }),
-//                     }),
-//                     new DataSample({
-//                         labels: new Set([new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })]),
-//                         content: mapOf({ en: new Content({ stringValue: 'Good night world' }) }),
-//                     }),
-//                 ]
-//             )
-//         }
-//
-//
-//         toDSService(serviceDto: Service): DataSample {
-//             return mapServiceToDataSample(serviceDto)
-//         }
-//
-//         toServiceDto(dsService: DataSample): Service {
-//             return mapDataSampleToService(dsService)
-//         }
-//
-//         newServiceFilter(api: EHRLiteApi): DataSampleFilter {
-//             return new DataSampleFilter(api)
-//         }
-//
-//         toDocumentDto(dsDocument: Document): DocumentDto {
-//             return mapDocumentToDocumentDto(dsDocument);
-//         }
-//     }
-// }
 //
 // export function NotificationApiAware<TBase extends Constructor<any>>(Base: TBase): TBase & Constructor<WithMaintenanceTaskApi<EHRLiteApi, Notification>> {
 //     return class NotificationApiAwareImpl extends Base implements WithMaintenanceTaskApi<EHRLiteApi, Notification> {

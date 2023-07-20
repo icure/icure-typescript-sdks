@@ -9,16 +9,31 @@ import {Document} from "../models/Document.model";
  */
 export interface ServiceLikeApi<DSService, DSPatient, DSDocument> {
     /**
-     * When modifying a data sample, you can't update the patient of it : For this, you need to delete the faulty data sample and create a new one. When modifying the data sample, you also need to keep the same batchId : It is not possible to change the batch of a data sample.
-     * Create or update a [Service] for a patient
+     *
+     * When modifying a data sample, you can't update the patient of it : For this, you need to delete the faulty data
+     * sample and create a new one. When modifying the data sample, you also need to keep the same batchId : It is not
+     * possible to change the batch of a data sample.
+     * Create or update a [Service] for a patient.
+     *
+     * If you want to create many services at once you should use the {@link createOrModifyManyFor} method, as it is
+     * more efficient, both in terms of requests and space used, since the services will be "batched" together.
+     *
+     * If you modify a data sample part of a batch it will be extracted from it.
      * @param patientId
      * @param service
      */
     createOrModifyFor(patientId: string, service: DSService): Promise<DSService>
 
     /**
-     * All the provided data samples will be created in the same batch. If you are trying to update some data samples, then those ones need to come from the same batch.                  When modifying a data sample, you can't update the patient of it : For this, you need to delete the faulty data sample and create a new one. When modifying the data sample, you also need to keep the same batchId : It is not possible to change the batch of a data sample.
-     * Create or update a batch of [Service] for a patient
+     * All the provided data samples will be created in the same batch.
+     * If you are trying to update some data samples, then those ones need to come from the same batch.
+     * When modifying a data sample, you can't update the patient of it : for this, you need to delete the faulty data
+     * sample and create a new one.
+     * When modifying the data sample, you also need to keep the same batchId : It is not possible to change the batch
+     * of a data sample.
+     * Create or update a batch of [Service] for a patient.
+     * Note that if you modify only a part of the batch, the modified data samples will be extracted from their original
+     * batch into a new one.
      * @param patientId
      * @param services
      */
@@ -64,15 +79,36 @@ export interface ServiceLikeApi<DSService, DSPatient, DSDocument> {
     matchBy(filter: Filter<Service>): Promise<Array<string>>
 
     /**
-   * Service where current user gives access to the data sample information to another dataOwner (HCP, patient or device).
-   * For this, the current user data owner should be able to access the data sample provided in argument in order to provide access to another data owner.
-
-   * @param service Data Sample the current data owner would like to share with another data owner
-   * @param delegatedTo ID of the data owner to which current user would like to give access
-   *
-   * @return The service with updated access rights
-   */
+     * Shares a service with another data owner (HCP, patient or device), allowing them to access the service
+     * information from now on.
+     * The {@link delegatedTo} data owner will be able both to retrieve and to decrypt the service.
+     * For this, the current user data owner should be able to access the data sample provided in argument in order to
+     * provide access to another data owner.
+     *
+     * Note that if the service was part of a batch this method will take the service out of the batch. If you want to
+     * share multiple services part of the same batch to the delegate you should instead use the {@link giveAccessToMany}
+     * method.
+     * @param service The Service the current data owner would like to share with another data owner
+     * @param delegatedTo ID of the data owner to which current user would like to give access
+     * @return The service with updated access rights
+     */
     giveAccessTo(service: DSService, delegatedTo: string): Promise<DSService>
+
+    /**
+     * Shares services with another data owner (HCP, patient or device), allowing them to access the services
+     * information from now on. All the services must be part of the same batch.
+     * The {@link delegatedTo} data owner will be able both to retrieve and to decrypt the services.
+     * For this, the current user data owner should be able to access the services provided in argument in order to
+     * provide access to another data owner.
+     *
+     * Note that if the services in input do not cover the full batch this method will take the service out of the
+     * batch into a new batch.
+     *
+     * @param services The services the current data owner would like to share with another data owner
+     * @param delegatedTo ID of the data owner to which current user would like to give access
+     * @return The service with updated access rights
+     */
+    giveAccessToMany(services: DSService[], delegatedTo: string): Promise<DSService[]>
 
     /**
      * Gets all the Data Samples associated to a Patient that the current dataOwner can access.
