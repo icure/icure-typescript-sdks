@@ -68,32 +68,67 @@ function toHealthElementTags(domain: Condition): CodeStub[] | undefined {
     const bodySiteCodeStubs = bodySite.map(mapCodingReferenceToCodeStub).map((c) => {
         return new CodeStub({
             ...c,
-            context: 'bodySite',
+            context: 'Condition.bodySite',
         })
     })
 
-    const clinicalStatus = new CodeStub({
-        code: domain.clinicalStatus,
-        context: 'clinicalStatus',
-    })
+    const clinicalStatus = domain.clinicalStatus ? [new CodeStub({
+        ...ClinicalStatusEnum.toCodeStub(domain.clinicalStatus),
+        context: 'Condition.clinicalStatus',
+    })] : []
 
-    const verificationStatus = new CodeStub({
-        code: domain.verificationStatus,
-        context: 'verificationStatus',
-    })
+    const verificationStatus = domain.verificationStatus ? [new CodeStub({
+        ...VerificationStatusEnum.toCodeStub(domain.verificationStatus),
+        context: 'Condition.verificationStatus',
+    })] : []
 
-    const severity = new CodeStub({
-        code: domain.severity,
-        context: 'severity',
-    })
+    const severity = domain.severity ? [new CodeStub({
+        ...SeverityEnum.toCodeStub(domain.severity),
+        context: 'Condition.severity',
+    })] : []
 
-    const category = new CodeStub({
-        code: domain.category,
-        context: 'category',
-    })
+    const category = domain.category ? [new CodeStub({
+        ...CategoryEnum.toCodeStub(domain.category),
+        context: 'Condition.category',
+    })] : []
 
-    return addUniqueObjectsToArray(mappedTags, ...bodySiteCodeStubs, clinicalStatus, severity, verificationStatus, category)
+    return addUniqueObjectsToArray(mappedTags, ...bodySiteCodeStubs, ...clinicalStatus, ...severity, ...verificationStatus, ...category)
 }
+
+// function toHealthElementTags(domain: Condition): CodeStub[] | undefined {
+//     const mappedTags = mergeTagsWithInternalTags('Condition', domain.tags, domain.systemMetaData)
+//
+//     const bodySite = [...(domain.bodySite ?? [])]
+//
+//     const bodySiteCodeStubs = bodySite.map(mapCodingReferenceToCodeStub).map((c) => {
+//         return new CodeStub({
+//             ...c,
+//             context: 'bodySite',
+//         })
+//     })
+//
+//     const clinicalStatus = new CodeStub({
+//         code: domain.clinicalStatus,
+//         context: 'clinicalStatus',
+//     })
+//
+//     const verificationStatus = new CodeStub({
+//         code: domain.verificationStatus,
+//         context: 'verificationStatus',
+//     })
+//
+//     const severity = new CodeStub({
+//         code: domain.severity,
+//         context: 'severity',
+//     })
+//
+//     const category = new CodeStub({
+//         code: domain.category,
+//         context: 'category',
+//     })
+//
+//     return addUniqueObjectsToArray(mappedTags, ...bodySiteCodeStubs, clinicalStatus, severity, verificationStatus, category)
+// }
 
 function toHealthElementCodes(domain: Condition): CodeStub[] | undefined {
     return !!domain.codes ? [...domain.codes].map(mapCodingReferenceToCodeStub) : undefined
@@ -236,23 +271,27 @@ function toConditionMedicalLocationId(dto: HealthElement): string | undefined {
 }
 
 function toConditionClinicalStatus(dto: HealthElement): ClinicalStatusEnum | undefined {
-    return dto.tags?.find((v) => v.context === 'clinicalStatus')?.code as ClinicalStatusEnum | undefined
+    const clinicalStatusTag = dto.tags?.find((v) => v.context === 'Condition.clinicalStatus')
+    return clinicalStatusTag ? ClinicalStatusEnum.fromCodeStub(clinicalStatusTag) : undefined
 }
 
 function toConditionVerificationStatus(dto: HealthElement): VerificationStatusEnum | undefined {
-    return dto.tags?.find((v) => v.context === 'verificationStatus')?.code as VerificationStatusEnum | undefined
+    const verificationStatusTag = dto.tags?.find((v) => v.context === 'Condition.verificationStatus')
+    return verificationStatusTag ? VerificationStatusEnum.fromCodeStub(verificationStatusTag) : undefined
 }
 
 function toConditionCategory(dto: HealthElement): CategoryEnum | undefined {
-    return dto.tags?.find((v) => v.context === 'category')?.code as CategoryEnum | undefined
+    const categoryTag = dto.tags?.find((v) => v.context === 'Condition.category')
+    return categoryTag ? CategoryEnum.fromCodeStub(categoryTag) : undefined
 }
 
 function toConditionSeverity(dto: HealthElement): SeverityEnum | undefined {
-    return dto.tags?.find((v) => v.context === 'severity')?.code as SeverityEnum | undefined
+    const severityTag = dto.tags?.find((v) => v.context === 'Condition.severity')
+    return severityTag ? SeverityEnum.fromCodeStub(severityTag) : undefined
 }
 
 function toConditionBodySite(dto: HealthElement): Set<CodingReference> | undefined {
-    const bodySites = dto.tags?.filter((v) => v.context === 'bodySite')
+    const bodySites = dto.tags?.filter((v) => v.context === 'Condition.bodySite')
 
     if (!bodySites) {
         return undefined
@@ -262,7 +301,7 @@ function toConditionBodySite(dto: HealthElement): Set<CodingReference> | undefin
 }
 
 function toConditionTags(dto: HealthElement): Set<CodingReference> | undefined {
-    const contexts = ['clinicalStatus', 'verificationStatus', 'category', 'severity', 'bodySite']
+    const contexts = ['clinicalStatus', 'verificationStatus', 'category', 'severity', 'bodySite'].map((v) => `Condition.${v}`)
     const tags = dto.tags?.filter((v) => (!!v.context ? !contexts.includes(v.context) : true))
 
     return filteringOutInternalTags('Condition', tags)
