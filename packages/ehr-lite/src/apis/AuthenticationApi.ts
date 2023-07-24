@@ -4,7 +4,7 @@ import { Device, HealthcareParty, KeyStorageFacade, Patient, StorageFacade } fro
 import Crypto from 'crypto'
 import { DataOwnerTypeEnum } from '../models/DataOwner.model'
 
-class AuthenticationApi extends AuthenticationApiImpl<EHRLiteApi> {
+export class AuthenticationApi extends AuthenticationApiImpl<EHRLiteApi> {
     constructor(
         messageGatewayApi: MessageGatewayApi,
         iCureBasePath: string,

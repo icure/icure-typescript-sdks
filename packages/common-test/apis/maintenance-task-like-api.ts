@@ -44,6 +44,7 @@ export function testMaintenanceTaskLikeApi<
   DSService,
   DSMaintenanceTask
 >(
+  name: string,
   ctx: BaseApiTestContext<
     DSAnonymousApiBuilder,
     DSAnonymousApi,
@@ -53,7 +54,7 @@ export function testMaintenanceTaskLikeApi<
     any
   > & WithMaintenanceTaskApi<DSApi, DSMaintenanceTask>
 ) {
-  describe('Notification API', function () {
+  describe(`${name} (MaintenanceTask-like API)`, function () {
     let env: TestVars
     let hcp1Api: DSApi
     let hcp1User: User

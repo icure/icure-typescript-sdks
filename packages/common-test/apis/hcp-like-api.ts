@@ -42,6 +42,7 @@ export function testHcpLikeApi<
   DSPatient,
   DSDataOwner extends DataOwnerWithType
 >(
+  name: string,
   ctx: BaseApiTestContext<
     DSAnonymousApiBuilder,
     DSAnonymousApi,
@@ -53,7 +54,7 @@ export function testHcpLikeApi<
     & WithHcpApi<DSApi, DSHcp>
     & WithDataOwnerApi<DSApi, DSDataOwner, DSUser>
 ) {
-  describe('Hcp-like API', () => {
+  describe(`${name} (Hcp-like API)`, () => {
     let env: TestVars
 
     beforeAll(async () => {

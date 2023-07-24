@@ -92,7 +92,19 @@ export class EHRLiteApi extends CommonApi {
 
         this._practitionerApi = practitionerApi(this)
 
-        this._authenticationApi = this.messageGatewayApi ? authenticationApi(this.errorHandler, this.sanitizer, this.messageGatewayApi, _iCureBaseUrl, _authProcessByEmailId, _authProcessBySmsId, crypto, this._storage, this._keyStorage, _cryptoStrategies) : undefined
+        this._authenticationApi = this.messageGatewayApi
+          ? authenticationApi(
+              this.errorHandler,
+              this.sanitizer,
+              this.messageGatewayApi,
+              _iCureBaseUrl,
+              _authProcessByEmailId,
+              _authProcessBySmsId,
+              _baseApi.cryptoApi.primitives.crypto,
+              this._storage,
+              this._keyStorage,
+              _cryptoStrategies
+          ) : undefined
 
         this._messageFactory = messageFactory ?? iCureEHRLiteMessageFactory
 
@@ -194,17 +206,18 @@ export namespace EHRLiteApi {
         }
 
         protected doBuild(props: {
-            iCureBaseUrl: string;
-            msgGwUrl: string;
-            msgGwSpecId: string | undefined;
-            storage: StorageFacade<string> | undefined;
-            keyStorage: KeyStorageFacade | undefined;
-            cryptoStrategies: CryptoStrategies<DataOwnerWithType>;
-            userName: string;
-            password: string;
-            crypto: Crypto | undefined;
-            authProcessByEmailId: string | undefined;
-            authProcessBySmsId: string | undefined
+            iCureBaseUrl: string,
+            msgGwUrl: string,
+            msgGwSpecId: string | undefined,
+            storage: StorageFacade<string> | undefined,
+            keyStorage: KeyStorageFacade | undefined,
+            cryptoStrategies: CryptoStrategies<DataOwnerWithType>,
+            userName: string,
+            password: string,
+            crypto: Crypto | undefined,
+            authProcessByEmailId: string | undefined,
+            authProcessBySmsId: string | undefined,
+            messageFactory: EHRLiteMessageFactory | undefined
         }): Promise<EHRLiteApi> {
             return IcureApi.initialise(
                 props.iCureBaseUrl,
@@ -270,7 +283,8 @@ export namespace EHRLiteApi {
                         props.authProcessByEmailId,
                         props.authProcessBySmsId,
                         props.storage,
-                        props.keyStorage
+                        props.keyStorage,
+                        props.messageFactory
                     )
             )
         }

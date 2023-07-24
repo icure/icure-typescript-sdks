@@ -8,4 +8,4 @@ import {testHcpLikeApi} from "../../../common-test/apis/hcp-like-api";
 const HcpApiTestContext =
   PatientApiAware(DataOwnerApiAware(HealthcareProfessionalApiAware(MedTechBaseTestContext)))
 
-testHcpLikeApi(new HcpApiTestContext())
+testHcpLikeApi('MedTech HealthcareProfessional', new HcpApiTestContext())

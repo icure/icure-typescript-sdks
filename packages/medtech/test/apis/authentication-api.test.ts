@@ -10,4 +10,4 @@ import {testAuthenticationApi} from "../../../common-test/apis/authentication-ap
 const AuthenticationApiTestContext =
     AuthenticationApiAware(DataSampleApiAware(PatientApiAware(DataOwnerApiAware(HealthcareProfessionalApiAware(NotificationApiAware(MedTechBaseTestContext))))))
 
-testAuthenticationApi(new AuthenticationApiTestContext())
+testAuthenticationApi('MedTech AuthenticationApi', new AuthenticationApiTestContext())

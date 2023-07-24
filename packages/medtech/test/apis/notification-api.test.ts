@@ -6,4 +6,4 @@ import {testMaintenanceTaskLikeApi} from "../../../common-test/apis/maintenance-
 const NotificationApiTestContext =
     NotificationApiAware(MedTechBaseTestContext)
 
-testMaintenanceTaskLikeApi(new NotificationApiTestContext())
+testMaintenanceTaskLikeApi('MedTech Notification', new NotificationApiTestContext())

@@ -41,6 +41,7 @@ export function testUserLikeApi<
   DSMessageFactory extends MessageFactory<any, any, any>,
   DSHelement
 >(
+  name: string,
   ctx: BaseApiTestContext<
     DSAnonymousApiBuilder,
     DSAnonymousApi,
@@ -49,8 +50,6 @@ export function testUserLikeApi<
     DSUser,
     DSMessageFactory
   > & WithPatientApi<DSApi, DSPatient>
-    & WithHcpApi<DSApi, DSHcp>
-    & WithDataOwnerApi<DSApi, DSDataOwner, DSUser>
     & WithServiceApi<DSApi, DSService, DSPatient, any>
     & WithMaintenanceTaskApi<DSApi, DSMaintenanceTask>
     & WithHelementApi<DSApi, DSHelement, DSPatient>
@@ -59,7 +58,7 @@ export function testUserLikeApi<
   let hcp1Api: DSApi
   let hcp1User: User
 
-  describe('UserLike API', () => {
+  describe(`${name} (User-like API)`, () => {
     beforeAll(async function () {
       const initializer = await getEnvironmentInitializer()
       env = await initializer.execute(getEnvVariables())
@@ -128,7 +127,9 @@ export function testUserLikeApi<
         ctx.toDSPatient(new Patient({
           firstName: 'Marc',
           lastName: 'Specter',
-          note: patientNote,
+          notes: [{
+            markdown: { en: patientNote }
+          }],
           addresses: [
             {
               addressType: 'home',
@@ -145,7 +146,7 @@ export function testUserLikeApi<
       ))
       expect(newPatient).toBeTruthy()
       const patientId = ctx.toPatientDto(newPatient).id
-      expect(ctx.toPatientDto(newPatient).note).toEqual(patientNote)
+      expect(ctx.toPatientDto(newPatient).notes[0].markdown.en).toEqual(patientNote)
 
       // Some Data Samples and Healthcare Elements were created for the Patient
       const newDS1 = await ctx.createServiceForPatient(hcp1Api, newPatient)
@@ -187,7 +188,7 @@ export function testUserLikeApi<
       await expect(ctx.patientApi(newPatientApi).get(patientId)).rejects.toBeInstanceOf(Error)
       const encryptedPatient = await ctx.patientApi(newPatientApi).getAndTryDecrypt(patientId)
       expect(encryptedPatient.decrypted).toBe(false)
-      expect(ctx.toPatientDto(encryptedPatient.patient).note).toBeFalsy()
+      expect(Object.keys(ctx.toPatientDto(encryptedPatient.patient).notes[0].markdown ?? {})).toHaveLength(0)
 
       // When HCP_1 gives access to PAT_1
       const newNotifications = await ctx.mtApi(hcp1Api).getPendingAfter()
@@ -235,8 +236,8 @@ export function testUserLikeApi<
       await ctx.checkHelementAccessibleAndDecrypted(newPatientApi, updatedHE2, true)
 
       // Should not destroy existing encrypted data
-      expect(ctx.toPatientDto(await ctx.patientApi(hcp1Api).get(patientId)).note).toEqual(patientNote)
-      expect(ctx.toPatientDto(await ctx.patientApi(newPatientApi).get(patientId)).note).toEqual(patientNote)
+      expect(ctx.toPatientDto(await ctx.patientApi(hcp1Api).get(patientId)).notes[0].markdown.en).toEqual(patientNote)
+      expect(ctx.toPatientDto(await ctx.patientApi(newPatientApi).get(patientId)).notes[0].markdown.en).toEqual(patientNote)
     }, 300_000)
 
     it('should not be able to create a new User from Patient if the patient has no contact information', async () => {
@@ -275,7 +276,9 @@ export function testUserLikeApi<
         ctx.toDSPatient(new Patient({
           firstName: 'Marc',
           lastName: 'Specter',
-          note: patientNote,
+          notes: [{
+            markdown: { en: patientNote }
+          }],
           addresses: [
             {
               addressType: 'home',
@@ -318,20 +321,27 @@ export function testUserLikeApi<
       // ...can modify only non-encrypted data of patient and...
       const encryptedPatient = await ctx.patientApi(patApi).getAndTryDecrypt(patientId)
       expect(encryptedPatient.decrypted).toBe(false)
+      const encryptedPatientDto = ctx.toPatientDto(encryptedPatient.patient)
       const modifyEncryptedPatientNote = ctx.toDSPatient({
-        ...ctx.toPatientDto(encryptedPatient.patient),
-        note: 'This is not allowed'
+        ...encryptedPatientDto,
+        notes: [...encryptedPatientDto.notes, {
+          markdown: {en: 'Adding more notes or changing existing ones is not allowed since the patient could not be decrypted'}
+        }]
       })
       await expect(ctx.patientApi(patApi).createOrModify(modifyEncryptedPatientNote)).rejects.toBeInstanceOf(Error)
       const modifyEncryptedPatientLastName = ctx.toDSPatient({
-        ...ctx.toPatientDto(encryptedPatient.patient),
-        lastName: 'Ghost'
+        ...encryptedPatientDto,
+        lastName: 'Ghost' // Changing non-encrypted data is allowed
       })
       const modifiedPatient = await ctx.patientApi(patApi).createOrModify(modifyEncryptedPatientLastName)
       expect(ctx.toPatientDto((await ctx.patientApi(patApi).getAndTryDecrypt(patientId)).patient).lastName).toEqual('Ghost')
       const modifiedPatientRetrievedByHcp = ctx.toPatientDto(await ctx.patientApi(hcp1Api).get(patientId))
+      // Should update non-encrypted data
       expect(modifiedPatientRetrievedByHcp.lastName).toEqual('Ghost')
-      expect(modifiedPatientRetrievedByHcp.note).toEqual(patientNote) // Should not destroy encrypted data
+      // Should not change or destroy encrypted data
+      expect(modifiedPatientRetrievedByHcp.notes).toHaveLength(1)
+      expect(Object.keys(modifiedPatientRetrievedByHcp.notes[0].markdown ?? {})).toHaveLength(1)
+      expect(modifiedPatientRetrievedByHcp.notes[0].markdown.en).toEqual(patientNote)
       // ...can create medical data
       const heByPatient = await ctx.createHelementForPatient(patApi, modifiedPatient)
       const heByPatientId = ctx.toHelementDto(heByPatient).id
@@ -363,8 +373,8 @@ export function testUserLikeApi<
       const fullySharedPatient = await ctx.patientApi(hcp1Api).giveAccessTo(await ctx.patientApi(hcp1Api).get(patientId), patientId)
       await patApi.baseApi.cryptoApi.forceReload()
       await hcp1Api.baseApi.cryptoApi.forceReload()
-      expect(ctx.toPatientDto(await ctx.patientApi(patApi).get(patientId)).note).toEqual(patientNote)
-      expect(ctx.toPatientDto(await ctx.patientApi(hcp1Api).get(patientId)).note).toEqual(patientNote)
+      expect(ctx.toPatientDto(await ctx.patientApi(patApi).get(patientId)).notes[0].markdown.en).toEqual(patientNote)
+      expect(ctx.toPatientDto(await ctx.patientApi(hcp1Api).get(patientId)).notes[0].markdown.en).toEqual(patientNote)
       const filterPatient2 = await ctx.newHelementFilter(patApi).forSelf().forPatients([fullySharedPatient]).build()
       const patientFound2 = await ctx.helementApi(patApi).matchBy(filterPatient2)
       const filterHcp2 = await ctx.newHelementFilter(hcp1Api)

@@ -598,6 +598,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
             const originalService = mappedServices.find((s) => s.id == updatedService.id)!
             const subContactsForService = updatedContact.subContacts?.filter((subContact) => subContact.services?.find((s) => s.serviceId == updatedService.id!) != undefined)
             const documentIds = Object.entries(updatedService.content ?? {}).flatMap(([_, value]) => (value.documentId ? [value.documentId!] : []))
+            // Now also share documents of the services
             if (documentIds.length) {
                 const documents = Object.fromEntries((await this.api.baseApi.documentApi.getDocuments({ids: documentIds})).map((x) => [x.id!, x]))
                 for (const docId of documentIds) {

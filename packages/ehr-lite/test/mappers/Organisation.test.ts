@@ -1,5 +1,5 @@
 import { generateOrganisation } from '../models/Organisation.model'
-import { Organisation } from '../../src/models/Organisation.model'
+import { Organisation } from '../../src'
 import { mapHealthcarePartyToOrganisation, mapOrganisationToHealthcareParty } from '../../src/mappers/Organisation.mapper'
 
 describe('Organisation', function () {

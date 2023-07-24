@@ -1,6 +1,4 @@
 import {
-  AuthenticationApiAware,
-  DataOwnerApiAware,
   DataSampleApiAware, HealthcareProfessionalApiAware, HelementApiAware,
   MedTechBaseTestContext, NotificationApiAware,
   PatientApiAware
@@ -8,6 +6,6 @@ import {
 import {testUserLikeApi} from "../../../common-test/apis/user-like-api";
 
 const UserApiTestContext =
-  HelementApiAware(AuthenticationApiAware(DataSampleApiAware(PatientApiAware(DataOwnerApiAware(HealthcareProfessionalApiAware(NotificationApiAware(MedTechBaseTestContext)))))))
+  HelementApiAware(DataSampleApiAware(PatientApiAware(HealthcareProfessionalApiAware(NotificationApiAware(MedTechBaseTestContext)))))
 
-testUserLikeApi(new UserApiTestContext())
+testUserLikeApi('MedTech User', new UserApiTestContext())

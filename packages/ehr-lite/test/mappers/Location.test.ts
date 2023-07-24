@@ -1,5 +1,5 @@
 import { generateLocation } from '../models/Location.model'
-import { Location } from '../../src/models/Location.model'
+import { Location } from '../../src'
 import { Address } from '@icure/api'
 import { mapAddressToLocation, mapLocationToAddress } from '../../src/mappers/Location.mapper'
 

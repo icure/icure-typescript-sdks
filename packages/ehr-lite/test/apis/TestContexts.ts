@@ -1,6 +1,6 @@
 import {
-    BaseApiTestContext,
-    WithHelementApi,
+    BaseApiTestContext, WithAuthenticationApi, WithDataOwnerApi, WithHcpApi,
+    WithHelementApi, WithMaintenanceTaskApi,
     WithPatientApi,
     WithServiceApi
 } from '../../../common-test/apis/TestContexts'
@@ -10,19 +10,27 @@ import {
     ConditionApi,
     ConditionFilter,
     EHRLiteApi,
-    HumanName, LocalComponent,
-    Observation, ObservationApi, ObservationFilter
+    HumanName, LocalComponent, NotificationFilter,
+    Observation, ObservationApi, ObservationFilter, Organisation, OrganisationApi, Practitioner, PractitionerApi,
+    DataOwnerWithType
 } from '../../src'
 import { EHRLiteCryptoStrategies, SimpleEHRLiteCryptoStrategies } from '../../src/services/EHRLiteCryptoStrategies'
 import {
     domainTypeTag,
     extractDomainTypeTag,
-    KeyPair, mapDocumentToDocumentDto,
+    KeyPair,
+    mapDocumentToDocumentDto,
     mapOf,
     mapUserDtoToUser,
     mapUserToUserDto,
     User,
-    Document, CodingReference
+    Document,
+    CodingReference,
+    mapNotificationToMaintenanceTask,
+    mapMaintenanceTaskToNotification,
+    MaintenanceTaskFilter,
+    NotificationTypeEnum,
+    Notification, AuthenticationApi
 } from '@icure/typescript-common'
 import { EHRLiteMessageFactory } from '../../src/services/EHRLiteMessageFactory'
 import {
@@ -34,14 +42,23 @@ import {
     Document as DocumentDto,
     HealthElement,
     Device,
-    CodeStub
+    CodeStub, MaintenanceTask
 } from '@icure/api'
-import { UserApi, Patient, PatientApi, Annotation } from '../../src'
+import { UserApi, Patient, PatientApi, Annotation, NotificationApi, DataOwnerApi } from '../../src'
 import { TestMessageFactory } from '../test-utils'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../../src/mappers/Patient.mapper'
 import { expectArrayContainsExactlyInAnyOrder } from '../../../common-test/assertions'
 import { mapConditionToHealthElement, mapHealthElementToCondition } from '../../src/mappers/Condition.mapper'
 import {mapObservationToService, mapServiceToObservation} from "../../src/mappers/Observation.mapper";
+import {
+    mapHealthcarePartyToPractitioner,
+    mapPractitionerToHealthcareParty
+} from "../../src/mappers/Practitioner.mapper";
+import {
+    mapHealthcarePartyToOrganisation,
+    mapOrganisationToHealthcareParty
+} from "../../src/mappers/Organisation.mapper";
+import dataOwnerMapper from "../../src/mappers/DataOwner.mapper";
 
 export class EhrLiteBaseTestContext extends BaseApiTestContext<AnonymousEHRLiteApi.Builder, AnonymousEHRLiteApi, EHRLiteApi, EHRLiteCryptoStrategies, User, EHRLiteMessageFactory> {
     newAnonymousApiBuilder(): AnonymousEHRLiteApi.Builder {
@@ -290,190 +307,93 @@ export function ObservationApiAware<TBase extends Constructor<any>>(Base: TBase)
     }
 }
 
-// // Test contexts as mixins. See https://www.typescriptlang.org/docs/handbook/mixins.html
-// import {EHRLiteCryptoStrategies, SimpleEHRLiteCryptoStrategies} from "../../src/services/EHRLiteCryptoStrategies";
-// import {AuthenticationApi} from "../../src/apis/AuthenticationApi";
-// import {
-//     CodingReference,
-//     KeyPair,
-//     mapOf,
-//     mapUserDtoToUser,
-//     mapUserToUserDto,
-//     User,
-//     Notification,
-//     mapNotificationToMaintenanceTask,
-//     Document,
-//     mapMaintenanceTaskToNotification,
-//     ServiceFilter,
-//     mapDocumentToDocumentDto, HealthElementFilter, MessageFactory, NotificationTypeEnum, MaintenanceTaskFilter
-// } from "@icure/typescript-common";
-// import {AnonymousEHRLiteApi} from "../../src/apis/AnonymousEHRLiteApi";
-// import {EHRLiteApi} from "../../src/apis/EHRLiteApi";
-// import {UserApi} from "../../src/apis/UserApi"
-// import {Patient} from "../../src/models/Patient.model";
-// import {HealthcareProfessional} from "../../src/models/HealthcareProfessional.model";
-// import {DataOwnerWithType} from "../../src/models/DataOwner.model";
-// import {HealthcareProfessionalApi} from "../../src/apis/HealthcareProfessionalApi";
-// import {DataOwnerApi} from "../../src/apis/DataOwnerApi";
-// import {PatientApi} from "../../src/apis/PatientApi";
-// import {NotificationApi} from "../../src/apis/NotificationApi";
-// import {
-//     mapHealthcarePartyToHealthcareProfessional,
-//     mapHealthcareProfessionalToHealthcareParty
-// } from "../../src/mappers/HealthcareProfessional.mapper";
-// import {mapPatientDtoToPatient, mapPatientToPatientDto} from "../../src/mappers/Patient.mapper";
-// import {DataSample} from "../../src/models/DataSample.model";
-// import {Content} from "../../src/models/Content.model";
-// import {DataSampleApi} from "../../src/apis/DataSampleApi";
-// import {MaintenanceTask} from "@icure/api/icc-api/model/MaintenanceTask";
-// import {
-//     BaseApiTestContext, WithAuthenticationApi, WithDataOwnerApi, WithDeviceApi, WithHcpApi, WithHelementApi,
-//     WithMaintenanceTaskApi,
-//     WithPatientApi,
-//     WithServiceApi
-// } from "../../../common-test/apis/TestContexts";
-// import {mapDataSampleToService, mapServiceToDataSample} from "../../src/mappers/DataSample.mapper";
-// import dataOwnerMapper from "../../src/mappers/DataOwner.mapper";
-// import {HealthcareElement} from "../../src/models/HealthcareElement.model";
-// import {HealthcareElementApi} from "../../src/apis/HealthcareElementApi";
-// import {
-//     mapHealthcareElementToHealthElement,
-//     mapHealthElementToHealthcareElement
-// } from "../../src/mappers/HealthcareElement.mapper";
-// import {DataSampleFilter} from "../../src/filter/DataSampleFilterDsl";
-// import {HealthcareElementFilter} from "../../src/filter/HealthcareElementFilterDsl";
-// import {TestMessageFactory} from "../test-utils";
-// import {EHRLiteMessageFactory} from "../../src/services/EHRLiteMessageFactory";
-// import {NotificationFilter} from "@icure/ehr-lite-sdk";
-// import {MedicalDeviceApi} from "../../src/apis/MedicalDeviceApi";
-// import {MedicalDevice} from "../../src/models/MedicalDevice.model";
-// import {mapDeviceToMedicalDevice, mapMedicalDeviceToDevice} from "../../src/mappers/MedicalDevice.mapper";
-//
-// export function NotificationApiAware<TBase extends Constructor<any>>(Base: TBase): TBase & Constructor<WithMaintenanceTaskApi<EHRLiteApi, Notification>> {
-//     return class NotificationApiAwareImpl extends Base implements WithMaintenanceTaskApi<EHRLiteApi, Notification> {
-//         mtApi(api: EHRLiteApi): NotificationApi {
-//             return api.notificationApi
-//         }
-//
-//         toMtDto(dsMt: Notification): MaintenanceTask {
-//             return mapNotificationToMaintenanceTask(dsMt)
-//         }
-//
-//         toDSMt(mtDto: MaintenanceTask): Notification {
-//             return mapMaintenanceTaskToNotification(mtDto)
-//         }
-//
-//         newMtFilter(api: EHRLiteApi): MaintenanceTaskFilter {
-//             return new NotificationFilter(api)
-//         }
-//
-//         async createMt(api: EHRLiteApi, delegate: string): Promise<Notification> {
-//             const notification = new Notification({
-//                 type: NotificationTypeEnum.KEY_PAIR_UPDATE,
-//             })
-//             const createdNotification = await api.notificationApi.createOrModify(notification, delegate)
-//             expect(createdNotification).toBeTruthy()
-//             return createdNotification!
-//         }
-//     }
-// }
-//
-// export function DataOwnerApiAware<TBase extends Constructor<any>>(Base: TBase): TBase & Constructor<WithDataOwnerApi<EHRLiteApi, DataOwnerWithType, User>> {
-//     return class NotificationApiAwareImpl extends Base implements WithDataOwnerApi<EHRLiteApi, DataOwnerWithType, User> {
-//         dataOwnerApi(api: EHRLiteApi): DataOwnerApi {
-//             return api.dataOwnerApi
-//         }
-//
-//         toDSDataOwner(dataOwnerDto: DataOwnerWithTypeDto): DataOwnerWithType {
-//             return dataOwnerMapper.toDomain(dataOwnerDto)
-//         }
-//
-//         toDataOwnerDto(dsDataOwner: DataOwnerWithType): DataOwnerWithTypeDto {
-//             return dataOwnerMapper.toDto(dsDataOwner)
-//         }
-//     }
-// }
-//
-// export function HealthcareProfessionalApiAware<TBase extends Constructor<any>>(Base: TBase): TBase & Constructor<WithHcpApi<EHRLiteApi, HealthcareProfessional>> {
-//     return class HealthcareProfessionalApiAwareImpl extends Base implements WithHcpApi<EHRLiteApi, HealthcareProfessional> {
-//         hcpApi(api: EHRLiteApi): HealthcareProfessionalApi {
-//             return api.healthcareProfessionalApi
-//         }
-//
-//         toDSHcp(hcpDto: HealthcareParty): HealthcareProfessional {
-//             return mapHealthcarePartyToHealthcareProfessional(hcpDto)
-//         }
-//
-//         toHcpDto(dsHcp: HealthcareProfessional): HealthcareParty {
-//             return mapHealthcareProfessionalToHealthcareParty(dsHcp)
-//         }
-//     }
-// }
-//
-// export function AuthenticationApiAware<TBase extends Constructor<any>>(Base: TBase): TBase & Constructor<WithAuthenticationApi<EHRLiteApi>> {
-//     return class AuthenticationApiAwareImpl extends Base implements WithAuthenticationApi<EHRLiteApi> {
-//         authenticationApi(api: EHRLiteApi): AuthenticationApi {
-//             return api.authenticationApi
-//         }
-//     }
-// }
-//
-// export function HelementApiAware<TBase extends Constructor<any>>(Base: TBase): TBase & Constructor<WithHelementApi<EHRLiteApi, HealthcareElement, Patient>> {
-//     return class HelementApiAwareImpl extends Base implements WithHelementApi<EHRLiteApi, HealthcareElement, Patient> {
-//         createHelementForPatient(api: EHRLiteApi, patient: Patient): Promise<HealthcareElement> {
-//             return api.healthcareElementApi.createOrModify(
-//                 new HealthcareElement({
-//                     note: 'Hero Syndrome',
-//                 }),
-//                 patient!.id!
-//             )
-//         }
-//
-//         helementApi(api: EHRLiteApi): HealthcareElementApi {
-//             return api.healthcareElementApi
-//         }
-//
-//         toDSHelement(helementDto: HealthElement): HealthcareElement {
-//             return mapHealthElementToHealthcareElement(helementDto)
-//         }
-//
-//         toHelementDto(dsHelement: HealthcareElement): HealthElement {
-//             return mapHealthcareElementToHealthElement(dsHelement)
-//         }
-//
-//         async checkHelementAccessibleAndDecrypted(api: EHRLiteApi, helement: HealthcareElement, checkDeepEquals: boolean): Promise<void> {
-//             const retrieved = await api.healthcareElementApi.get(helement.id!)
-//             expect(retrieved).toBeTruthy()
-//             expect(retrieved.note).toBeTruthy()
-//             if (checkDeepEquals) expect(retrieved).toEqual(helement)
-//         }
-//
-//         checkDefaultHelementDecrypted(helement: HealthcareElement): void {
-//             expect(helement.note).toEqual('Hero Syndrome')
-//         }
-//
-//         async checkHelementInaccessible(api: EHRLiteApi, helement: HealthcareElement): Promise<void> {
-//             await expect(api.dataSampleApi.get(helement.id!)).rejects.toBeInstanceOf(Error)
-//         }
-//
-//         newHelementFilter(api: EHRLiteApi): HealthcareElementFilter {
-//             return new HealthcareElementFilter(api)
-//         }
-//     }
-// }
-//
-// export function MedicalDeviceApiAware<TBase extends Constructor<any>>(Base: TBase): TBase & Constructor<WithDeviceApi<EHRLiteApi, MedicalDeviceApi>> {
-//     return class MedicalDeviceApiAwareImpl extends Base implements WithDeviceApi<EHRLiteApi, MedicalDevice> {
-//         deviceApi(api: EHRLiteApi): MedicalDeviceApi {
-//             return api.medicalDeviceApi
-//         }
-//
-//         toDSDevice(deviceDto: Device): MedicalDevice {
-//             return mapDeviceToMedicalDevice(deviceDto)
-//         }
-//
-//         toDeviceDto(dsDevice: MedicalDevice): Device {
-//             return mapMedicalDeviceToDevice(dsDevice)
-//         }
-//     }
-// }
+export function NotificationApiAware<TBase extends Constructor<any>>(Base: TBase): TBase & Constructor<WithMaintenanceTaskApi<EHRLiteApi, Notification>> {
+    return class NotificationApiAwareImpl extends Base implements WithMaintenanceTaskApi<EHRLiteApi, Notification> {
+        mtApi(api: EHRLiteApi): NotificationApi {
+            return api.notificationApi
+        }
+
+        toMtDto(dsMt: Notification): MaintenanceTask {
+            return mapNotificationToMaintenanceTask(dsMt)
+        }
+
+        toDSMt(mtDto: MaintenanceTask): Notification {
+            return mapMaintenanceTaskToNotification(mtDto)
+        }
+
+        newMtFilter(api: EHRLiteApi): MaintenanceTaskFilter {
+            return new NotificationFilter(api)
+        }
+
+        async createMt(api: EHRLiteApi, delegate: string): Promise<Notification> {
+            const notification = new Notification({
+                type: NotificationTypeEnum.KEY_PAIR_UPDATE,
+            })
+            const createdNotification = await api.notificationApi.createOrModify(notification, delegate)
+            expect(createdNotification).toBeTruthy()
+            return createdNotification!
+        }
+    }
+}
+
+export function PractitionerApiAware<TBase extends Constructor<any>>(Base: TBase): TBase & Constructor<WithHcpApi<EHRLiteApi, Practitioner>> {
+    return class HealthcareProfessionalApiAwareImpl extends Base implements WithHcpApi<EHRLiteApi, Practitioner> {
+        hcpApi(api: EHRLiteApi): PractitionerApi {
+            return api.practitionerApi
+        }
+
+        toDSHcp(hcpDto: HealthcareParty): Practitioner {
+            return mapHealthcarePartyToPractitioner({
+                ...hcpDto,
+                tags: addDomainTypeTagIfMissing(hcpDto.tags, 'Practitioner')
+            })
+        }
+
+        toHcpDto(dsHcp: Practitioner): HealthcareParty {
+            return mapPractitionerToHealthcareParty(dsHcp)
+        }
+    }
+}
+
+export function OrganisationApiAware<TBase extends Constructor<any>>(Base: TBase): TBase & Constructor<WithHcpApi<EHRLiteApi, Organisation>> {
+    return class HealthcareProfessionalApiAwareImpl extends Base implements WithHcpApi<EHRLiteApi, Organisation> {
+        hcpApi(api: EHRLiteApi): OrganisationApi {
+            return api.organisationApi
+        }
+
+        toDSHcp(hcpDto: HealthcareParty): Organisation {
+            return mapHealthcarePartyToOrganisation({
+                ...hcpDto,
+                tags: addDomainTypeTagIfMissing(hcpDto.tags, 'Organisation')
+            })
+        }
+
+        toHcpDto(dsHcp: Organisation): HealthcareParty {
+            return mapOrganisationToHealthcareParty(dsHcp)
+        }
+    }
+}
+
+export function AuthenticationApiAware<TBase extends Constructor<any>>(Base: TBase): TBase & Constructor<WithAuthenticationApi<EHRLiteApi>> {
+    return class AuthenticationApiAwareImpl extends Base implements WithAuthenticationApi<EHRLiteApi> {
+        authenticationApi(api: EHRLiteApi): AuthenticationApi<EHRLiteApi> {
+            return api.authenticationApi
+        }
+    }
+}
+
+export function DataOwnerApiAware<TBase extends Constructor<any>>(Base: TBase): TBase & Constructor<WithDataOwnerApi<EHRLiteApi, DataOwnerWithType, User>> {
+    return class DataOwnerApiAwareImpl extends Base implements WithDataOwnerApi<EHRLiteApi, DataOwnerWithType, User> {
+        dataOwnerApi(api: EHRLiteApi): DataOwnerApi {
+            return api.dataOwnerApi
+        }
+
+        toDSDataOwner(dataOwnerDto: DataOwnerWithTypeDto): DataOwnerWithType {
+            return dataOwnerMapper.toDomain(dataOwnerDto)
+        }
+
+        toDataOwnerDto(dsDataOwner: DataOwnerWithType): DataOwnerWithTypeDto {
+            return dataOwnerMapper.toDto(dsDataOwner)
+        }
+    }
+}

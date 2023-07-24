@@ -41,6 +41,7 @@ export function testHelementLikeApi<
   DSPatient,
   DSHelement,
 >(
+  name: string,
   ctx: BaseApiTestContext<
     DSAnonymousApiBuilder,
     DSAnonymousApi,
@@ -59,7 +60,7 @@ export function testHelementLikeApi<
   let patApi: DSApi
   let patUser: User
 
-  describe('Healthcare Element API', () => {
+  describe(`${name} (Healthcare Element like API)`, () => {
     beforeAll(async function () {
       const initializer = await getEnvironmentInitializer()
       env = await initializer.execute(getEnvVariables())

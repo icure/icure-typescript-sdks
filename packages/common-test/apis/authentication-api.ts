@@ -43,6 +43,7 @@ export function testAuthenticationApi<
   DSService,
   DSMaintenanceTask
 >(
+  name: string,
   ctx: BaseApiTestContext<
     DSAnonymousApiBuilder,
     DSAnonymousApi,
@@ -67,7 +68,7 @@ export function testAuthenticationApi<
     } return false
   }
 
-  describe('Authentication API', () => {
+  describe(`${name} (Authentication API)`, () => {
     beforeAll(async function () {
       const initializer = await getEnvironmentInitializer()
       env = await initializer.execute(getEnvVariables())
