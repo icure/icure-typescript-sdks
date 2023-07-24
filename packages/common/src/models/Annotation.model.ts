@@ -12,7 +12,6 @@ export class Annotation {
     modified?: number
     markdown: Map<ISO639_1, string>
     target?: string
-    confidential?: boolean
     encryptedSelf?: string
 
     constructor(annotation: IAnnotation) {
@@ -23,7 +22,6 @@ export class Annotation {
         this.modified = annotation.modified
         this.markdown = annotation.markdown ?? new Map()
         this.target = annotation.target
-        this.confidential = annotation.confidential
         this.encryptedSelf = annotation.encryptedSelf
     }
 
@@ -36,7 +34,6 @@ export class Annotation {
         if (instance.modified !== undefined) pojo['modified'] = instance.modified
         pojo['markdown'] = Object.fromEntries([...instance.markdown.entries()].map(([k, v]) => [k, v]))
         if (instance.target !== undefined) pojo['target'] = instance.target
-        if (instance.confidential !== undefined) pojo['confidential'] = instance.confidential
         if (instance.encryptedSelf !== undefined) pojo['encryptedSelf'] = instance.encryptedSelf
         return pojo
     }
@@ -58,9 +55,6 @@ export class Annotation {
         if (pojo['target'] !== undefined) {
             obj['target'] = pojo['target']
         }
-        if (pojo['confidential'] !== undefined) {
-            obj['confidential'] = pojo['confidential']
-        }
         if (pojo['encryptedSelf'] !== undefined) {
             obj['encryptedSelf'] = pojo['encryptedSelf']
         }
@@ -76,6 +70,5 @@ interface IAnnotation {
     modified?: number
     markdown?: Map<ISO639_1, string>
     target?: string
-    confidential?: boolean
     encryptedSelf?: string
 }
