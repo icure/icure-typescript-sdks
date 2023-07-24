@@ -7,13 +7,13 @@
 
 ## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
+Use the package manager [yarn](https://yarnpkg.com/getting-started/install) to install `@icure/ehr-lite-sdk`.
 
 ```bash
 yarn add @icure/ehr-lite-sdk
 ```
 
-or with npm
+or with [npm](https://docs.npmjs.com/getting-started)
 
 ```bash
 npm install @icure/ehr-lite-sdk
