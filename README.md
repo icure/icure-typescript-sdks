@@ -35,6 +35,7 @@ const api = await new EHRLite.Builder()
     .withStorage(storage) // Custom storage implementation
     .withUserName(email) // User email
     .withPassword(token) // User password
+    .withCryptoStrategies(new SimpleCryptoStrategies([]))
     .build()
 
 const user = await api.userApi.getLogged()
