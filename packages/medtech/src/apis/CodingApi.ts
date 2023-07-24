@@ -1,5 +1,5 @@
 import {
-  CodeLikeApiImpl,
+  CodeLikeApi, CodeLikeApiImpl,
   Coding,
   CommonApi,
   CommonFilter,
@@ -7,9 +7,9 @@ import {
   mapCodingToCode,
   PaginatedList
 } from '@icure/typescript-common'
-import { Code, PaginatedListCode } from '@icure/api'
+import {Code,} from '@icure/api'
 
-export class CodingApi extends CodeLikeApiImpl<Coding> {
+export interface CodingApi extends CodeLikeApi<Coding> {
   /**
    * @deprecated use {@link CodingApi.createOrModify} instead
    *
@@ -17,9 +17,7 @@ export class CodingApi extends CodeLikeApiImpl<Coding> {
    * Create or update a [Coding]
    * @param coding
    */
-  createOrModifyCoding(coding: Coding): Promise<Coding> {
-    return this.createOrModify(coding)
-  }
+  createOrModifyCoding(coding: Coding): Promise<Coding>;
 
   /**
    * @deprecated use {@link CodingApi.createOrModifyMany} instead
@@ -28,9 +26,7 @@ export class CodingApi extends CodeLikeApiImpl<Coding> {
    * Create or update a batch of [Coding]
    * @param codings
    */
-  createOrModifyCodings(codings: Array<Coding>): Promise<Array<Coding>> {
-    return this.createOrModifyMany(codings)
-  }
+  createOrModifyCodings(codings: Array<Coding>): Promise<Array<Coding>>;
 
   /**
    * @deprecated use {@link CodingApi.filterBy} instead
@@ -41,9 +37,7 @@ export class CodingApi extends CodeLikeApiImpl<Coding> {
    * @param nextCodingId The id of the first coding in the next page
    * @param limit The maximum number of codings that should contain the returned page. By default, a page contains 1000 codings
    */
-  filterCoding(filter: CommonFilter<Code>, nextCodingId?: string, limit?: number): Promise<PaginatedList<Coding>> {
-    return this.filterBy(filter, nextCodingId, limit)
-  }
+  filterCoding(filter: CommonFilter<Code>, nextCodingId?: string, limit?: number): Promise<PaginatedList<Coding>>;
 
   /**
    * @deprecated use {@link CodingApi.get} instead
@@ -52,9 +46,7 @@ export class CodingApi extends CodeLikeApiImpl<Coding> {
    * Get a [Coding]
    * @param codingId
    */
-  getCoding(codingId: string): Promise<Coding> {
-    return this.get(codingId)
-  }
+  getCoding(codingId: string): Promise<Coding>;
 
   /**
    * @deprecated use {@link CodingApi.matchBy} instead
@@ -63,33 +55,35 @@ export class CodingApi extends CodeLikeApiImpl<Coding> {
    * Load coding ids from the database by filtering them using the provided [filter].
    * @param filter The Filter object that describes which condition(s) the elements whose the ids should be returned must fulfill
    */
+  matchCoding(filter: CommonFilter<Code>): Promise<Array<string>>;
+}
+
+export class CodingApiImpl extends CodeLikeApiImpl<Coding> implements CodingApi {
+  createOrModifyCoding(coding: Coding): Promise<Coding> {
+    return this.createOrModify(coding)
+  }
+  createOrModifyCodings(codings: Array<Coding>): Promise<Array<Coding>> {
+    return this.createOrModifyMany(codings)
+  }
+  filterCoding(filter: CommonFilter<Code>, nextCodingId?: string, limit?: number): Promise<PaginatedList<Coding>> {
+    return this.filterBy(filter, nextCodingId, limit)
+  }
+  getCoding(codingId: string): Promise<Coding> {
+    return this.get(codingId)
+  }
   matchCoding(filter: CommonFilter<Code>): Promise<Array<string>> {
     return this.matchBy(filter)
   }
 }
 
-export const codingApi = (api: CommonApi) => {
-  return new CodingApi(
+export const codingApi = (api: CommonApi): CodingApi => {
+  return new CodingApiImpl(
     {
       toDomain(dto: Code): Coding {
         return mapCodeToCoding(dto)
       },
       toDto(domain: Coding): Code {
         return mapCodingToCode(domain)
-      },
-    },
-    {
-      toDomain(dto: PaginatedListCode): PaginatedList<Coding> {
-        return {
-          rows: dto.rows?.map(mapCodeToCoding),
-          totalSize: dto.totalSize,
-        }
-      },
-      toDto(domain: PaginatedList<Coding>): PaginatedListCode {
-        return {
-          rows: domain.rows?.map(mapCodingToCode),
-          totalSize: domain.totalSize,
-        }
       },
     },
     api.errorHandler,

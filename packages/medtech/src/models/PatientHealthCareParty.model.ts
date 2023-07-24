@@ -28,12 +28,17 @@ export class PatientHealthCareParty {
   static toJSON(instance: PatientHealthCareParty): any {
     const pojo: any = {}
     pojo['type'] = instance.type
-    pojo['healthcarePartyId'] = instance.healthcarePartyId
+    if (instance.healthcarePartyId !== undefined) pojo['healthcarePartyId'] = instance.healthcarePartyId
     return pojo
   }
 
   static fromJSON(pojo: any): PatientHealthCareParty {
-    return new PatientHealthCareParty({ type: pojo['type'], healthcarePartyId: pojo['healthcarePartyId'] })
+    const obj = {} as IPatientHealthCareParty
+    obj['type'] = pojo['type']
+    if (pojo['healthcarePartyId'] !== undefined) {
+      obj['healthcarePartyId'] = pojo['healthcarePartyId']
+    }
+    return new PatientHealthCareParty(obj)
   }
 }
 

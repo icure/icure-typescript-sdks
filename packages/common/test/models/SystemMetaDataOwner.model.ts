@@ -1,7 +1,7 @@
-import {SystemMetaDataOwner} from "../../src/models/SystemMetaDataOwner.model";
-import {generateRandomStringArray, generateRandomStringMap} from "./utils";
+import { CodingReference, SystemMetaDataOwner } from '../../src'
+import { generateRandomStringArray, generateRandomStringMap } from './utils'
 
-export function generateSystemMetaDataOwner(): SystemMetaDataOwner {
+export function generateSystemMetaDataOwner(domainTagType?: CodingReference): SystemMetaDataOwner {
     const publicKey: string = Math.random().toString(36).substring(2, 15)
 
     const hcPartyKeys: Map<string, string[]> = new Map()
@@ -34,5 +34,6 @@ export function generateSystemMetaDataOwner(): SystemMetaDataOwner {
         privateKeyShamirPartitions,
         aesExchangeKeys,
         transferKeys,
+        tags: new Set(domainTagType ? [domainTagType] : []),
     })
 }

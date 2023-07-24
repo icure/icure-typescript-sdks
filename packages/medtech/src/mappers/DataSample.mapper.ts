@@ -10,23 +10,20 @@ import {
 } from '@icure/api'
 import {
   CodingReference,
-  convertMapOfArrayOfGenericToObject,
-  convertObjectToMapOfArrayOfGeneric,
-  Delegation,
-  extractCryptedForeignKeys,
-  extractDelegations,
   extractEncryptedSelf,
-  extractEncryptionKeys,
-  extractSecretForeignKeys,
   forceUuid,
   Identifier,
   mapCodeStubToCodingReference,
   mapCodingReferenceToCodeStub,
-  mapDelegationDtoToDelegation,
-  mapDelegationToDelegationDto,
   mapIdentifierDtoToIdentifier,
   mapIdentifierToIdentifierDto,
   SystemMetaDataEncrypted,
+  toCryptedForeignKeys,
+  toDelegations,
+  toEncryptedSelf,
+  toEncryptionKeys,
+  toSecretForeignKeys,
+  toSystemMetaDataEncrypted,
 } from '@icure/typescript-common'
 import { Content } from '../models/Content.model'
 import { mapContentDtoToContent, mapContentToContentDto } from './Content.mapper'
@@ -44,7 +41,7 @@ function toServiceIdentifier(domain: DataSample): IdentifierDto[] | undefined {
 }
 
 function toServiceContactId(domain: DataSample): string | undefined {
-  return undefined
+  return domain.batchId
 }
 
 function toServiceSubContactIds(domain: DataSample): string[] | undefined {
@@ -64,28 +61,19 @@ function toServiceFormIds(domain: DataSample): string[] | undefined {
 }
 
 function toServiceSecretForeignKeys(domain: DataSample): string[] | undefined {
-  return extractSecretForeignKeys(domain.systemMetaData)
+  return !!domain.systemMetaData ? toSecretForeignKeys(domain.systemMetaData) : undefined
 }
 
 function toServiceCryptedForeignKeys(domain: DataSample): { [key: string]: DelegationDto[] } | undefined {
-  const cryptedForeignKeys = extractCryptedForeignKeys(domain.systemMetaData)
-  return !!cryptedForeignKeys
-    ? convertMapOfArrayOfGenericToObject<Delegation, DelegationDto>(cryptedForeignKeys, (arr) => arr.map(mapDelegationToDelegationDto))
-    : undefined
+  return !!domain.systemMetaData ? toCryptedForeignKeys(domain.systemMetaData) : undefined
 }
 
 function toServiceDelegations(domain: DataSample): { [key: string]: DelegationDto[] } | undefined {
-  const delegations = extractDelegations(domain.systemMetaData)
-  return !!delegations
-    ? convertMapOfArrayOfGenericToObject<Delegation, DelegationDto>(delegations, (arr) => arr.map(mapDelegationToDelegationDto))
-    : undefined
+  return !!domain.systemMetaData ? toDelegations(domain.systemMetaData) : undefined
 }
 
 function toServiceEncryptionKeys(domain: DataSample): { [key: string]: DelegationDto[] } | undefined {
-  const encryptionKeys = extractEncryptionKeys(domain.systemMetaData)
-  return !!encryptionKeys
-    ? convertMapOfArrayOfGenericToObject<Delegation, DelegationDto>(encryptionKeys, (arr) => arr.map(mapDelegationToDelegationDto))
-    : undefined
+  return !!domain.systemMetaData ? toEncryptionKeys(domain.systemMetaData) : undefined
 }
 
 function toServiceLabel(domain: DataSample): string | undefined {
@@ -184,7 +172,7 @@ function toServiceTags(domain: DataSample): CodeStub[] | undefined {
 }
 
 function toServiceEncryptedSelf(domain: DataSample): string | undefined {
-  return extractEncryptedSelf(domain.systemMetaData)
+  return !!domain.systemMetaData ? toEncryptedSelf(domain.systemMetaData) : undefined
 }
 
 function toDataSampleId(dto: Service): string | undefined {
@@ -270,19 +258,7 @@ function toDataSampleLabels(dto: Service): Set<CodingReference> {
 }
 
 function toDataSampleSystemMetaData(dto: Service): SystemMetaDataEncrypted | undefined {
-  return new SystemMetaDataEncrypted({
-    encryptedSelf: dto.encryptedSelf,
-    cryptedForeignKeys: !!dto.cryptedForeignKeys
-      ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.cryptedForeignKeys, (arr) => arr.map(mapDelegationDtoToDelegation))
-      : undefined,
-    delegations: !!dto.delegations
-      ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.delegations, (arr) => arr.map(mapDelegationDtoToDelegation))
-      : undefined,
-    encryptionKeys: !!dto.encryptionKeys
-      ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.encryptionKeys, (arr) => arr.map(mapDelegationDtoToDelegation))
-      : undefined,
-    secretForeignKeys: dto.secretForeignKeys,
-  })
+  return toSystemMetaDataEncrypted(dto)
 }
 
 export function mapServiceToDataSample(dto: Service): DataSample {

@@ -9,9 +9,14 @@ import { firstOrNull } from '../../utils/functionalUtils'
 import { forceUuid } from '../../utils/uuidUtils'
 import {NoOpFilter} from "../../filters/dsl/filterDsl";
 import {FilterMapper} from "../../mappers/Filter.mapper";
+import {toPaginatedList} from "../../mappers/PaginatedList.mapper";
 
 export class DeviceLikeApiImpl<DSDevice> implements DeviceLikeApi<DSDevice> {
-    constructor(private readonly mapper: Mapper<DSDevice, Device>, private readonly paginatedListMapper: Mapper<PaginatedList<DSDevice>, PaginatedListDevice>, private readonly errorHandler: ErrorHandler, private readonly deviceApi: IccDeviceApi) {}
+    constructor(
+        private readonly mapper: Mapper<DSDevice, Device>,
+        private readonly errorHandler: ErrorHandler,
+        private readonly deviceApi: IccDeviceApi
+    ) {}
 
     async createOrModify(device: DSDevice): Promise<DSDevice> {
         const createdDevice = firstOrNull(await this.createOrModifyMany([device]))
@@ -67,9 +72,9 @@ export class DeviceLikeApiImpl<DSDevice> implements DeviceLikeApi<DSDevice> {
 
     async filterBy(filter: Filter<DSDevice>, nextDeviceId?: string, limit?: number): Promise<PaginatedList<DSDevice>> {
         if (NoOpFilter.isNoOp(filter)) {
-            return { totalSize: 0, pageSize: 0, rows: [] }
+            return PaginatedList.empty()
         } else {
-            return this.paginatedListMapper.toDomain(
+            return toPaginatedList(
                 await this.deviceApi
                     .filterDevicesBy(
                         nextDeviceId,
@@ -80,8 +85,9 @@ export class DeviceLikeApiImpl<DSDevice> implements DeviceLikeApi<DSDevice> {
                     )
                     .catch((e) => {
                         throw this.errorHandler.createErrorFromAny(e)
-                    })
-            )!
+                    }),
+                this.mapper.toDomain
+            )
         }
     }
 

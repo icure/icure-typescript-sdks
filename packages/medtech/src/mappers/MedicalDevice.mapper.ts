@@ -1,225 +1,224 @@
-import { MedicalDevice } from "../models/MedicalDevice.model"
-import {CodeStub, Device, Identifier as IdentifierDto, PropertyStub} from "@icure/api"
+import { MedicalDevice } from '../models/MedicalDevice.model'
+import { CodeStub, Device, Identifier as IdentifierDto, PropertyStub } from '@icure/api'
 import {
-    CodingReference,
-    convertDeepNestedMapToObject, convertMapToObject,
-    convertNestedMapToObject, convertObjectToDeepNestedMap, convertObjectToMap, convertObjectToNestedMap,
-    extractAesExchangeKeys,
-    extractHcPartyKeys, extractPrivateKeyShamirPartitions, extractPublicKey, extractPublicKeysForOaepWithSha256,
-    extractTransferKeys,
-    Identifier, mapCodeStubToCodingReference,
-    mapCodingReferenceToCodeStub, mapIdentifierDtoToIdentifier,
-    mapIdentifierToIdentifierDto, mapPropertyStubToProperty,
-    mapPropertyToPropertyStub,
-    Property,
-    SystemMetaDataOwner
-} from "@icure/typescript-common";
+  CodingReference,
+  forceUuid,
+  Identifier,
+  mapCodeStubToCodingReference,
+  mapCodingReferenceToCodeStub,
+  mapIdentifierDtoToIdentifier,
+  mapIdentifierToIdentifierDto,
+  mapPropertyStubToProperty,
+  mapPropertyToPropertyStub,
+  Property,
+  SystemMetaDataOwner,
+  toAesExchangeKeys,
+  toHcPartyKeys,
+  toPrivateKeyShamirPartitions,
+  toPublicKey,
+  toPublicKeysForOaepWithSha256,
+  toSystemMetaDataOwner,
+  toTransferKeys,
+} from '@icure/typescript-common'
 
-function toDeviceId(domain: MedicalDevice): string | undefined {
-    return domain.id
+function toDeviceId(domain: MedicalDevice): string {
+  return forceUuid(domain.id)
 }
 
 function toDeviceRev(domain: MedicalDevice): string | undefined {
-    return domain.rev
+  return domain.rev
 }
 
 function toDeviceDeletionDate(domain: MedicalDevice): number | undefined {
-    return domain.deletionDate
+  return domain.deletionDate
 }
 
 function toDeviceIdentifiers(domain: MedicalDevice): IdentifierDto[] | undefined {
-    return domain.identifiers ? [...domain.identifiers].map(mapIdentifierToIdentifierDto) : undefined
+  return domain.identifiers ? [...domain.identifiers].map(mapIdentifierToIdentifierDto) : undefined
 }
 
 function toDeviceCreated(domain: MedicalDevice): number | undefined {
-    return domain.created
+  return domain.created
 }
 
 function toDeviceModified(domain: MedicalDevice): number | undefined {
-    return domain.modified
+  return domain.modified
 }
 
 function toDeviceAuthor(domain: MedicalDevice): string | undefined {
-    return domain.author
+  return domain.author
 }
 
 function toDeviceResponsible(domain: MedicalDevice): string | undefined {
-    return domain.responsible
+  return domain.responsible
 }
 
 function toDeviceTags(domain: MedicalDevice): CodeStub[] | undefined {
-    return domain.labels ? [...domain.labels].map(mapCodingReferenceToCodeStub) : undefined
+  return domain.labels ? [...domain.labels].map(mapCodingReferenceToCodeStub) : undefined
 }
 
 function toDeviceCodes(domain: MedicalDevice): CodeStub[] | undefined {
-    return domain.codes ? [...domain.codes].map(mapCodingReferenceToCodeStub) : undefined
+  return domain.codes ? [...domain.codes].map(mapCodingReferenceToCodeStub) : undefined
 }
 
 function toDeviceEndOfLife(domain: MedicalDevice): number | undefined {
-    return domain.endOfLife
+  return domain.endOfLife
 }
 
 function toDeviceMedicalLocationId(domain: MedicalDevice): string | undefined {
-    return undefined
+  return undefined
 }
 
 function toDeviceExternalId(domain: MedicalDevice): string | undefined {
-    return domain.externalId
+  return domain.externalId
 }
 
 function toDeviceName(domain: MedicalDevice): string | undefined {
-    return domain.name
+  return domain.name
 }
 
 function toDeviceType(domain: MedicalDevice): string | undefined {
-    return domain.type
+  return domain.type
 }
 
 function toDeviceBrand(domain: MedicalDevice): string | undefined {
-    return domain.brand
+  return domain.brand
 }
 
 function toDeviceModel(domain: MedicalDevice): string | undefined {
-    return domain.model
+  return domain.model
 }
 
 function toDeviceSerialNumber(domain: MedicalDevice): string | undefined {
-    return domain.serialNumber
+  return domain.serialNumber
 }
 
 function toDeviceParentId(domain: MedicalDevice): string | undefined {
-    return domain.parentId
+  return domain.parentId
 }
 
 function toDevicePicture(domain: MedicalDevice): ArrayBuffer | undefined {
-    return domain.picture
+  return domain.picture
 }
 
 function toDeviceProperties(domain: MedicalDevice): PropertyStub[] | undefined {
-    return domain.properties ? [...domain.properties].map(mapPropertyToPropertyStub) : undefined
+  return domain.properties ? [...domain.properties].map(mapPropertyToPropertyStub) : undefined
 }
 
-function toDeviceHcPartyKeys(domain: MedicalDevice): { [key: string]: string[]; } | undefined {
-    const hcPartyKeys = extractHcPartyKeys(domain.systemMetaData)
-    return hcPartyKeys ? Object.fromEntries(hcPartyKeys.entries()) : undefined
+function toDeviceHcPartyKeys(domain: MedicalDevice): { [key: string]: string[] } | undefined {
+  return !!domain.systemMetaData ? toHcPartyKeys(domain.systemMetaData) : undefined
 }
 
-function toDeviceAesExchangeKeys(domain: MedicalDevice): { [key: string]: { [key: string]: { [key: string]: string; }; }; } | undefined {
-    const aesExchangeKeys = extractAesExchangeKeys(domain.systemMetaData)
-    return !!aesExchangeKeys ? convertDeepNestedMapToObject(aesExchangeKeys) : undefined
+function toDeviceAesExchangeKeys(domain: MedicalDevice):
+  | {
+      [key: string]: { [key: string]: { [key: string]: string } }
+    }
+  | undefined {
+  return !!domain.systemMetaData ? toAesExchangeKeys(domain.systemMetaData) : undefined
 }
 
-function toDeviceTransferKeys(domain: MedicalDevice): { [key: string]: { [key: string]: string; }; } | undefined {
-    const transferKeys = extractTransferKeys(domain.systemMetaData)
-    return !!transferKeys ? convertNestedMapToObject(transferKeys) : undefined
+function toDeviceTransferKeys(domain: MedicalDevice): { [key: string]: { [key: string]: string } } | undefined {
+  return !!domain.systemMetaData ? toTransferKeys(domain.systemMetaData) : undefined
 }
 
-function toDevicePrivateKeyShamirPartitions(domain: MedicalDevice): { [key: string]: string; } | undefined {
-    const privateKeyShamirPartitions = extractPrivateKeyShamirPartitions(domain.systemMetaData)
-    return !!privateKeyShamirPartitions ? convertMapToObject(privateKeyShamirPartitions) : undefined
+function toDevicePrivateKeyShamirPartitions(domain: MedicalDevice): { [key: string]: string } | undefined {
+  return !!domain.systemMetaData ? toPrivateKeyShamirPartitions(domain.systemMetaData) : undefined
 }
 
 function toDevicePublicKey(domain: MedicalDevice): string | undefined {
-    return extractPublicKey(domain.systemMetaData)
+  return !!domain.systemMetaData ? toPublicKey(domain.systemMetaData) : undefined
 }
 
 function toDevicePublicKeysForOaepWithSha256(domain: MedicalDevice): string[] | undefined {
-    return extractPublicKeysForOaepWithSha256(domain.systemMetaData)
+  return !!domain.systemMetaData ? toPublicKeysForOaepWithSha256(domain.systemMetaData) : undefined
 }
 
 function toMedicalDeviceId(dto: Device): string | undefined {
-    return dto.id
+  return dto.id
 }
 
 function toMedicalDeviceRev(dto: Device): string | undefined {
-    return dto.rev
+  return dto.rev
 }
 
 function toMedicalDeviceDeletionDate(dto: Device): number | undefined {
-    return dto.deletionDate
+  return dto.deletionDate
 }
 
 function toMedicalDeviceIdentifiers(dto: Device): Identifier[] {
-    return dto.identifiers ? [...dto.identifiers].map(mapIdentifierDtoToIdentifier) : []
+  return dto.identifiers ? [...dto.identifiers].map(mapIdentifierDtoToIdentifier) : []
 }
 
 function toMedicalDeviceCreated(dto: Device): number | undefined {
-    return dto.created
+  return dto.created
 }
 
 function toMedicalDeviceModified(dto: Device): number | undefined {
-    return dto.modified
+  return dto.modified
 }
 
 function toMedicalDeviceAuthor(dto: Device): string | undefined {
-    return dto.author
+  return dto.author
 }
 
 function toMedicalDeviceResponsible(dto: Device): string | undefined {
-    return dto.responsible
+  return dto.responsible
 }
 
 function toMedicalDeviceLabels(dto: Device): Set<CodingReference> {
-    return dto.tags ? new Set([...dto.tags].map(mapCodeStubToCodingReference)) : new Set()
+  return dto.tags ? new Set([...dto.tags].map(mapCodeStubToCodingReference)) : new Set()
 }
 
 function toMedicalDeviceCodes(dto: Device): Set<CodingReference> {
-    return dto.codes ? new Set([...dto.codes].map(mapCodeStubToCodingReference)) : new Set()
+  return dto.codes ? new Set([...dto.codes].map(mapCodeStubToCodingReference)) : new Set()
 }
 
 function toMedicalDeviceEndOfLife(dto: Device): number | undefined {
-    return dto.endOfLife
+  return dto.endOfLife
 }
 
 function toMedicalDeviceExternalId(dto: Device): string | undefined {
-    return dto.externalId
+  return dto.externalId
 }
 
 function toMedicalDeviceName(dto: Device): string | undefined {
-    return dto.name
+  return dto.name
 }
 
 function toMedicalDeviceType(dto: Device): string | undefined {
-    return dto.type
+  return dto.type
 }
 
 function toMedicalDeviceBrand(dto: Device): string | undefined {
-    return dto.brand
+  return dto.brand
 }
 
 function toMedicalDeviceModel(dto: Device): string | undefined {
-    return dto.model
+  return dto.model
 }
 
 function toMedicalDeviceSerialNumber(dto: Device): string | undefined {
-    return dto.serialNumber
+  return dto.serialNumber
 }
 
 function toMedicalDeviceParentId(dto: Device): string | undefined {
-    return dto.parentId
+  return dto.parentId
 }
 
 function toMedicalDevicePicture(dto: Device): ArrayBuffer | undefined {
-    return dto.picture
+  return dto.picture
 }
 
 function toMedicalDeviceProperties(dto: Device): Set<Property> {
-    return dto.properties ? new Set([...dto.properties].map(mapPropertyStubToProperty)) : new Set()
+  return dto.properties ? new Set([...dto.properties].map(mapPropertyStubToProperty)) : new Set()
 }
 
 function toMedicalDeviceSystemMetaData(dto: Device): SystemMetaDataOwner | undefined {
-    return new SystemMetaDataOwner({
-        hcPartyKeys: !!dto.hcPartyKeys ? new Map(Object.entries(dto.hcPartyKeys)) : undefined,
-        publicKey: dto.publicKey,
-        aesExchangeKeys: !!dto.aesExchangeKeys ? convertObjectToDeepNestedMap(dto.aesExchangeKeys) : undefined,
-        transferKeys: !!dto.transferKeys ? convertObjectToNestedMap(dto.transferKeys) : undefined,
-        privateKeyShamirPartitions: !!dto.privateKeyShamirPartitions ? convertObjectToMap(dto.privateKeyShamirPartitions) : undefined,
-        publicKeysForOaepWithSha256: dto.publicKeysForOaepWithSha256,
-    })
+  return toSystemMetaDataOwner(dto)
 }
 
 export function mapDeviceToMedicalDevice(dto: Device): MedicalDevice {
-    return new MedicalDevice({
+  return new MedicalDevice({
     id: toMedicalDeviceId(dto),
     rev: toMedicalDeviceRev(dto),
     deletionDate: toMedicalDeviceDeletionDate(dto),
@@ -241,11 +240,11 @@ export function mapDeviceToMedicalDevice(dto: Device): MedicalDevice {
     picture: toMedicalDevicePicture(dto),
     properties: toMedicalDeviceProperties(dto),
     systemMetaData: toMedicalDeviceSystemMetaData(dto),
-    })
+  })
 }
 
 export function mapMedicalDeviceToDevice(domain: MedicalDevice): Device {
-    return new Device({
+  return new Device({
     id: toDeviceId(domain),
     rev: toDeviceRev(domain),
     deletionDate: toDeviceDeletionDate(domain),
@@ -273,5 +272,5 @@ export function mapMedicalDeviceToDevice(domain: MedicalDevice): Device {
     privateKeyShamirPartitions: toDevicePrivateKeyShamirPartitions(domain),
     publicKey: toDevicePublicKey(domain),
     publicKeysForOaepWithSha256: toDevicePublicKeysForOaepWithSha256(domain),
-    })
+  })
 }

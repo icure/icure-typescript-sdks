@@ -20,40 +20,29 @@ import { Location } from '../models/Location.model'
 import {
     Annotation,
     CodingReference,
-    convertDeepNestedMapToObject,
-    convertMapOfArrayOfGenericToObject,
-    convertMapToObject,
-    convertNestedMapToObject,
-    convertObjectToDeepNestedMap,
-    convertObjectToMap,
-    convertObjectToMapOfArrayOfGeneric,
-    convertObjectToNestedMap,
-    Delegation,
-    extractAesExchangeKeys,
-    extractCryptedForeignKeys,
-    extractDelegations,
-    extractEncryptedSelf,
-    extractEncryptionKeys,
-    extractHcPartyKeys,
-    extractPrivateKeyShamirPartitions,
-    extractPublicKey,
-    extractPublicKeysForOaepWithSha256,
-    extractSecretForeignKeys,
-    extractSecurityMetadata,
-    extractTransferKeys,
     Identifier,
     mapAnnotationDtoToAnnotation,
     mapAnnotationToAnnotationDto,
     mapCodeStubToCodingReference,
     mapCodingReferenceToCodeStub,
-    mapDelegationDtoToDelegation,
-    mapDelegationToDelegationDto,
     mapIdentifierDtoToIdentifier,
     mapIdentifierToIdentifierDto,
     mapPropertyStubToProperty,
     mapPropertyToPropertyStub,
     Property,
     SystemMetaDataOwnerEncrypted,
+    toAesExchangeKeys,
+    toCryptedForeignKeys,
+    toDelegations,
+    toEncryptedSelf,
+    toEncryptionKeys,
+    toHcPartyKeys,
+    toPrivateKeyShamirPartitions,
+    toPublicKey,
+    toPublicKeysForOaepWithSha256,
+    toSecretForeignKeys,
+    toSystemMetaDataOwnerEncrypted,
+    toTransferKeys,
 } from '@icure/typescript-common'
 import { RelatedPerson } from '../models/RelatedPerson.model'
 import { RelatedPractitioner } from '../models/RelatedPractitioner.model'
@@ -95,11 +84,11 @@ function toPatientDtoResponsible(domain: Patient): string | undefined {
 }
 
 function toPatientDtoTags(domain: Patient): CodeStub[] | undefined {
-    return !!domain.tags ? domain.tags.map(mapCodingReferenceToCodeStub) : undefined
+    return !!domain.tags ? [...domain.tags].map(mapCodingReferenceToCodeStub) : undefined
 }
 
 function toPatientDtoCodes(domain: Patient): CodeStub[] | undefined {
-    return !!domain.codes ? domain.codes.map(mapCodingReferenceToCodeStub) : undefined
+    return !!domain.codes ? [...domain.codes].map(mapCodingReferenceToCodeStub) : undefined
 }
 
 function toPatientDtoEndOfLife(domain: Patient): number | undefined {
@@ -111,11 +100,11 @@ function toPatientDtoDeletionDate(domain: Patient): number | undefined {
 }
 
 function toPatientDtoFirstName(domain: Patient): string | undefined {
-    return undefined
+    return domain.firstName
 }
 
 function toPatientDtoLastName(domain: Patient): string | undefined {
-    return undefined
+    return domain.lastName
 }
 
 function toPatientDtoNames(domain: Patient): PersonName[] | undefined {
@@ -287,12 +276,11 @@ function toPatientDtoParameters(domain: Patient): { [key: string]: string[] } | 
 }
 
 function toPatientDtoProperties(domain: Patient): PropertyStub[] | undefined {
-    return !!domain.properties ? domain.properties.map(mapPropertyToPropertyStub) : undefined
+    return !!domain.properties ? [...domain.properties].map(mapPropertyToPropertyStub) : undefined
 }
 
 function toPatientDtoHcPartyKeys(domain: Patient): { [key: string]: string[] } | undefined {
-    const hcPartyKeys = extractHcPartyKeys(domain.systemMetaData)
-    return !!hcPartyKeys ? Object.fromEntries(hcPartyKeys.entries()) : undefined
+    return !!domain.systemMetaData ? toHcPartyKeys(domain.systemMetaData) : undefined
 }
 
 function toPatientDtoAesExchangeKeys(domain: Patient):
@@ -300,49 +288,43 @@ function toPatientDtoAesExchangeKeys(domain: Patient):
           [key: string]: { [key: string]: { [key: string]: string } }
       }
     | undefined {
-    const aesExchangeKeys = extractAesExchangeKeys(domain.systemMetaData)
-    return !!aesExchangeKeys ? convertDeepNestedMapToObject(aesExchangeKeys) : undefined
+    return !!domain.systemMetaData ? toAesExchangeKeys(domain.systemMetaData) : undefined
 }
 
 function toPatientDtoTransferKeys(domain: Patient): { [key: string]: { [key: string]: string } } | undefined {
-    const transferKeys = extractTransferKeys(domain.systemMetaData)
-    return !!transferKeys ? convertNestedMapToObject(transferKeys) : undefined
+    return !!domain.systemMetaData ? toTransferKeys(domain.systemMetaData) : undefined
 }
 
 function toPatientDtoPrivateKeyShamirPartitions(domain: Patient): { [key: string]: string } | undefined {
-    const privateKeyShamirPartitions = extractPrivateKeyShamirPartitions(domain.systemMetaData)
-    return !!privateKeyShamirPartitions ? convertMapToObject(privateKeyShamirPartitions) : undefined
+    return !!domain.systemMetaData ? toPrivateKeyShamirPartitions(domain.systemMetaData) : undefined
 }
 
 function toPatientDtoPublicKey(domain: Patient): string | undefined {
-    return extractPublicKey(domain.systemMetaData)
+    return domain.systemMetaData ? toPublicKey(domain.systemMetaData) : undefined
 }
 
 function toPatientDtoPublicKeysForOaepWithSha256(domain: Patient): string[] | undefined {
-    return extractPublicKeysForOaepWithSha256(domain.systemMetaData)
+    return domain.systemMetaData ? toPublicKeysForOaepWithSha256(domain.systemMetaData) : undefined
 }
 
 function toPatientDtoSecretForeignKeys(domain: Patient): string[] | undefined {
-    return extractSecretForeignKeys(domain.systemMetaData)
+    return domain.systemMetaData ? toSecretForeignKeys(domain.systemMetaData) : undefined
 }
 
 function toPatientDtoCryptedForeignKeys(domain: Patient): { [key: string]: DelegationDto[] } | undefined {
-    const delegations = extractCryptedForeignKeys(domain.systemMetaData)
-    return !!delegations ? convertMapOfArrayOfGenericToObject<Delegation, DelegationDto>(delegations, (arr) => arr.map(mapDelegationToDelegationDto)) : undefined
+    return domain.systemMetaData ? toCryptedForeignKeys(domain.systemMetaData) : undefined
 }
 
 function toPatientDtoDelegations(domain: Patient): { [key: string]: DelegationDto[] } | undefined {
-    const delegations = extractDelegations(domain.systemMetaData)
-    return !!delegations ? convertMapOfArrayOfGenericToObject<Delegation, DelegationDto>(delegations, (arr) => arr.map(mapDelegationToDelegationDto)) : undefined
+    return domain.systemMetaData ? toDelegations(domain.systemMetaData) : undefined
 }
 
 function toPatientDtoEncryptionKeys(domain: Patient): { [key: string]: DelegationDto[] } | undefined {
-    const delegations = extractEncryptionKeys(domain.systemMetaData)
-    return !!delegations ? convertMapOfArrayOfGenericToObject<Delegation, DelegationDto>(delegations, (arr) => arr.map(mapDelegationToDelegationDto)) : undefined
+    return domain.systemMetaData ? toEncryptionKeys(domain.systemMetaData) : undefined
 }
 
 function toPatientDtoEncryptedSelf(domain: Patient): string | undefined {
-    return extractEncryptedSelf(domain.systemMetaData)
+    return domain.systemMetaData ? toEncryptedSelf(domain.systemMetaData) : undefined
 }
 
 function toPatientDtoMedicalLocationId(domain: Patient): string | undefined {
@@ -421,12 +403,12 @@ function toPatientResponsible(dto: PatientDto): string | undefined {
     return dto.responsible
 }
 
-function toPatientTags(dto: PatientDto): CodingReference[] | undefined {
-    return !!dto.tags ? dto.tags.map(mapCodeStubToCodingReference) : undefined
+function toPatientTags(dto: PatientDto): Set<CodingReference> | undefined {
+    return !!dto.tags?.length ? new Set(dto.tags.map(mapCodeStubToCodingReference)) : undefined
 }
 
-function toPatientCodes(dto: PatientDto): CodingReference[] | undefined {
-    return !!dto.codes ? dto.codes.map(mapCodeStubToCodingReference) : undefined
+function toPatientCodes(dto: PatientDto): Set<CodingReference> | undefined {
+    return !!dto.codes?.length ? new Set(dto.codes.map(mapCodeStubToCodingReference)) : undefined
 }
 
 function toPatientEndOfLife(dto: PatientDto): number | undefined {
@@ -553,24 +535,20 @@ function toPatientPatientProfessions(dto: PatientDto): CodingReference[] | undef
     return !!dto.patientProfessions ? dto.patientProfessions.map(mapCodeStubToCodingReference) : undefined
 }
 
-function toPatientProperties(dto: PatientDto): Property[] | undefined {
-    return !!dto.properties ? dto.properties.map(mapPropertyStubToProperty) : undefined
+function toPatientProperties(dto: PatientDto): Set<Property> | undefined {
+    return !!dto.properties ? new Set(dto.properties.map(mapPropertyStubToProperty)) : undefined
 }
 
 function toPatientSystemMetaData(dto: PatientDto): SystemMetaDataOwnerEncrypted | undefined {
-    return new SystemMetaDataOwnerEncrypted({
-        encryptedSelf: dto.encryptedSelf,
-        cryptedForeignKeys: !!dto.cryptedForeignKeys ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.cryptedForeignKeys, (arr) => arr.map(mapDelegationDtoToDelegation)) : undefined,
-        delegations: !!dto.delegations ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.delegations, (arr) => arr.map(mapDelegationDtoToDelegation)) : undefined,
-        encryptionKeys: !!dto.encryptionKeys ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.encryptionKeys, (arr) => arr.map(mapDelegationDtoToDelegation)) : undefined,
-        secretForeignKeys: dto.secretForeignKeys,
-        hcPartyKeys: !!dto.hcPartyKeys ? new Map(Object.entries(dto.hcPartyKeys)) : undefined,
-        publicKey: dto.publicKey,
-        aesExchangeKeys: !!dto.aesExchangeKeys ? convertObjectToDeepNestedMap(dto.aesExchangeKeys) : undefined,
-        transferKeys: !!dto.transferKeys ? convertObjectToNestedMap(dto.transferKeys) : undefined,
-        privateKeyShamirPartitions: !!dto.privateKeyShamirPartitions ? convertObjectToMap(dto.privateKeyShamirPartitions) : undefined,
-        publicKeysForOaepWithSha256: dto.publicKeysForOaepWithSha256,
-    })
+    return toSystemMetaDataOwnerEncrypted(dto)
+}
+
+function toPatientFirstName(dto: PatientDto): string | undefined {
+    return dto.firstName
+}
+
+function toPatientLastName(dto: PatientDto): string | undefined {
+    return dto.lastName
 }
 
 export function mapPatientDtoToPatient(dto: PatientDto): Patient {
@@ -586,6 +564,8 @@ export function mapPatientDtoToPatient(dto: PatientDto): Patient {
         codes: toPatientCodes(dto),
         endOfLife: toPatientEndOfLife(dto),
         deletionDate: toPatientDeletionDate(dto),
+        firstName: toPatientFirstName(dto),
+        lastName: toPatientLastName(dto),
         names: toPatientNames(dto),
         languages: toPatientLanguages(dto),
         addresses: toPatientAddresses(dto),

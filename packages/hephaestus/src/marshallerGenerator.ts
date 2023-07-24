@@ -9,10 +9,11 @@ import { modelRegex } from './index'
 export function marshallerGenerator(project: Project) {
     const sourceFiles = project.getSourceFiles().filter((sourceFile) => {
         return modelRegex.test(sourceFile.getFilePath())
-    })
+    }).filter((sourceFile) => !sourceFile.getFullText().includes('hephaestus-ignore-file'))
 
     for (const sourceFile of sourceFiles) {
         const classes = sourceFile.getClasses().filter((classDeclaration) => !classDeclaration.getDecorators().find((d) => d.getName() === 'ignoreSerialization')!)
+
         for (const classDeclaration of classes) {
             console.log('Marshalling ', classDeclaration.getName())
 

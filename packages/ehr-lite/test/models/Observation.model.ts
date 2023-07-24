@@ -1,14 +1,16 @@
-import {Observation} from "../../src/models/Observation.model";
-import {generateIdentifier} from "../../../common/test/models/Identifier.model";
-import {generateComponent} from "./Component.model";
-import {generateLocalComponent} from "./LocalComponent.model";
-import {generateCodingReference} from "../../../common/test/models/CodingReference.model";
-import {generateAnnotation} from "../../../common/test/models/Annotation.model";
-import {generateSystemMetaDataEncrypted} from "../../../common/test/models/SystemMetaDataEncrypted.model";
+import { Observation } from '../../src/models/Observation.model'
+import { generateIdentifier } from '../../../common/test/models/Identifier.model'
+import { generateComponent } from './Component.model'
+import { generateLocalComponent } from './LocalComponent.model'
+import { generateCodingReference } from '../../../common/test/models/CodingReference.model'
+import { generateAnnotation } from '../../../common/test/models/Annotation.model'
+import { generateSystemMetaDataEncrypted } from '../../../common/test/models/SystemMetaDataEncrypted.model'
+import { v4 } from 'uuid'
+import { domainTypeTag, mapCodeStubToCodingReference } from '@icure/typescript-common'
 
 export function generateObservation(): Observation {
     const observation = {
-        id: 'sampleId',
+        id: v4(),
         transactionId: 'sampleTransactionId',
         identifiers: [generateIdentifier()],
         batchId: 'sampleBatchId',
@@ -27,9 +29,9 @@ export function generateObservation(): Observation {
         qualifiedLinks: new Map([['linkType', new Map([['linkId', 'linkValue']])]]),
         codes: new Set([generateCodingReference()]),
         tags: new Set([generateCodingReference()]),
-        systemMetaData: generateSystemMetaDataEncrypted(),
+        systemMetaData: generateSystemMetaDataEncrypted(mapCodeStubToCodingReference(domainTypeTag('Observation'))),
         notes: [generateAnnotation()],
-    }
+    } satisfies Observation
 
     return new Observation(observation)
 }

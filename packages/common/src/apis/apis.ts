@@ -1,3 +1,5 @@
+import {CommonAnonymousApi} from "./CommonAnonymousApi";
+
 export * from './impl/AuthenticationApiImpl'
 export * from './impl/CodeLikeApiImpl'
 export * from './impl/CryptoStrategiesBridge'
@@ -13,6 +15,7 @@ export * from './impl/UserLikeApiImpl'
 
 export * from './AuthenticationApi'
 export * from './CodeLikeApi'
+export * from './CommonAnonymousApi'
 export * from './DataOwnerLikeApi'
 export * from './DeviceLikeApi'
 export * from './HealthcarePartyLikeApi'

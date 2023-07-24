@@ -1,5 +1,5 @@
 import { generateRelatedPerson } from '../models/RelatedPerson.model'
-import { RelatedPerson } from '../../src/models/RelatedPerson.model'
+import { RelatedPerson } from '../../src'
 import { mapPartnershipToRelatedPerson, mapRelatedPersonToPartnership } from '../../src/mappers/RelatedPerson.mapper'
 
 describe('RelatedPerson', function () {

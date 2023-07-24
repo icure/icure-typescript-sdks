@@ -1,34 +1,48 @@
-import { CodeStub, ISO639_1 } from '@icure/api';
-import { mapTo } from "../utils/decorators";
+import { CodeStub } from '@icure/api'
+import { mapTo } from '../utils/decorators'
 
 @mapTo(CodeStub)
 export class CodingReference {
-    id?: string
+    id: string
     type?: string
     code?: string
     version?: string
-    label?: Map<ISO639_1, string>
+    context?: string
 
-    constructor(codingReference?: ICodingReference | any) {
-        this.id = codingReference?.id
-        this.type = codingReference?.type
-        this.code = codingReference?.code
-        this.version = codingReference?.version
-        this.label = codingReference?.label
+    constructor(codingReference: ICodingReference) {
+        this.id = codingReference.id!
+        this.type = codingReference.type
+        this.code = codingReference.code
+        this.version = codingReference.version
+        this.context = codingReference.context
     }
 
     static toJSON(instance: CodingReference): any {
         const pojo: any = {}
-        pojo["id"] = instance.id
-        pojo["type"] = instance.type
-        pojo["code"] = instance.code
-        pojo["version"] = instance.version
-        pojo["label"] = !!instance.label ? Object.fromEntries([...instance.label.entries()].map(([k, v]) => [k, v])) : undefined
+        pojo['id'] = instance.id
+        if (instance.type !== undefined) pojo['type'] = instance.type
+        if (instance.code !== undefined) pojo['code'] = instance.code
+        if (instance.version !== undefined) pojo['version'] = instance.version
+        if (instance.context !== undefined) pojo['context'] = instance.context
         return pojo
     }
 
     static fromJSON(pojo: any): CodingReference {
-        return new CodingReference({id: pojo["id"], type: pojo["type"], code: pojo["code"], version: pojo["version"], label: pojo["label"] ? new Map(Object.entries(pojo["label"]).map(([k, v]: [any, any]) => [k, v])) : undefined})
+        const obj = {} as ICodingReference
+        obj['id'] = pojo['id']
+        if (pojo['type'] !== undefined) {
+            obj['type'] = pojo['type']
+        }
+        if (pojo['code'] !== undefined) {
+            obj['code'] = pojo['code']
+        }
+        if (pojo['version'] !== undefined) {
+            obj['version'] = pojo['version']
+        }
+        if (pojo['context'] !== undefined) {
+            obj['context'] = pojo['context']
+        }
+        return new CodingReference(obj)
     }
 }
 
@@ -37,5 +51,5 @@ interface ICodingReference {
     type?: string
     code?: string
     version?: string
-    label?: Map<ISO639_1, string>
+    context?: string
 }

@@ -11,23 +11,25 @@
  */
 
 export class Filter {
-  constructor(json: IFilter) {
-    Object.assign(this as Filter, json);
-  }
+    constructor(json: IFilter) {
+        Object.assign(this as Filter, json)
+    }
 
-  "description": string;
+    'description': string
 
     static toJSON(instance: Filter): any {
         const pojo: any = {}
-        pojo["description"] = instance.description
+        pojo['description'] = instance.description
         return pojo
     }
 
     static fromJSON(pojo: any): Filter {
-        return new Filter({description: pojo["description"]})
+        const obj = {} as IFilter
+        obj['description'] = pojo['description']
+        return new Filter(obj)
     }
 }
 
 interface IFilter {
-  description?: string;
+    description?: string
 }

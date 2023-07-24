@@ -1,6 +1,6 @@
 import {HealthcareParty} from "@icure/api";
 import {Identifier as IdentifierEntity} from "@icure/api/icc-api/model/Identifier";
-import {addUniqueObjectsToArray} from "../../utils/Array.utils";
+import {addUniqueObjectsToArray} from "@icure/typescript-common";
 
 export const NIHII_SYSTEM = 'https://www.ehealth.fgov.be/standards/fhir/core/NamingSystem/nihdi'
 export const SSIN_SYSTEM = 'https://www.ehealth.fgov.be/standards/fhir/core/NamingSystem/ssin'

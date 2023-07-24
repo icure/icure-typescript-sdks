@@ -1,9 +1,8 @@
 import { Filter } from '../filters/Filter'
 import { SharedDataType } from '../models/User.model'
 import { Connection } from '../models/Connection.model'
-import { EmailMessageFactory, SMSMessageFactory } from '../utils/msgGtwMessageFactory'
 import { PaginatedList } from '../models/PaginatedList.model'
-import {User} from "@icure/api";
+import { User } from '@icure/api'
 
 /**
  * The UserApi interface provides methods to manage users.
@@ -17,13 +16,13 @@ export interface UserLikeApi<DSUser, DSPatient> {
      */
     checkTokenValidity(id: string, token: string): Promise<boolean>
     /**
-     * Creates a User from an existing patient with a short-lived authentication token. It sends an invitation with the
-     * credentials and the link to complete the signup.
+     * Creates a User from an existing patient with a short-lived authentication token.
+     * It creates an invitation message using the {@link MessageFactory} set on initialisation of the api and sends it to
+     * the patient.
      * @param patient the Patient to create the user for.
-     * @param messageFactory a MessageFactory that generates an EmailMessage or a SMSMessage.
      * @param tokenDuration the validity duration of the short-lived token, in seconds (default 48 hours)
      */
-    createAndInvite(patient: DSPatient, messageFactory: SMSMessageFactory | EmailMessageFactory, tokenDuration?: number): Promise<DSUser>
+    createAndInviteFor(patient: DSPatient, tokenDuration?: number): Promise<DSUser>
 
     /**
      * A user must have a login, an email or a mobilePhone defined, a user should be linked to either a Healthcare Professional, a Patient or a Device. When modifying an user, you must ensure that the rev obtained when getting or creating the user is present as the rev is used to guarantee that the user has not been modified by a third party.

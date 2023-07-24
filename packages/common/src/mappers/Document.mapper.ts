@@ -5,9 +5,10 @@ import DocumentLocationEnum = DocumentDto.DocumentLocationEnum
 import DocumentTypeEnum = DocumentTemplate.DocumentTypeEnum
 import DocumentStatusEnum = DocumentDto.DocumentStatusEnum
 import { SecurityMetadata } from '../models/SecurityMetadata.model'
+import { forceUuid } from '../utils/uuidUtils'
 
-function toDocumentDtoId(domain: Document): string | undefined {
-    return domain.id
+function toDocumentDtoId(domain: Document): string {
+    return forceUuid(domain.id)
 }
 
 function toDocumentDtoRev(domain: Document): string | undefined {
@@ -103,7 +104,7 @@ function toDocumentDtoObjectStoreReference(domain: Document): string | undefined
 }
 
 function toDocumentDtoMainUti(domain: Document): string | undefined {
-    return undefined
+    return domain.mainUti
 }
 
 function toDocumentDtoOtherUtis(domain: Document): string[] | undefined {
@@ -150,8 +151,8 @@ function toDocumentDtoSecurityMetadata(domain: Document): SecurityMetadata | und
     return undefined
 }
 
-function toDocumentId(dto: DocumentDto): string | undefined {
-    return dto.id
+function toDocumentId(dto: DocumentDto): string {
+    return dto.id!
 }
 
 function toDocumentRev(dto: DocumentDto): string | undefined {

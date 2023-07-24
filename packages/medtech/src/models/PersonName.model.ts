@@ -33,28 +33,38 @@ export class PersonName {
 
   static toJSON(instance: PersonName): any {
     const pojo: any = {}
-    pojo['lastName'] = instance.lastName
+    if (instance.lastName !== undefined) pojo['lastName'] = instance.lastName
     pojo['firstNames'] = instance.firstNames.map((item) => item)
-    pojo['start'] = instance.start
-    pojo['end'] = instance.end
+    if (instance.start !== undefined) pojo['start'] = instance.start
+    if (instance.end !== undefined) pojo['end'] = instance.end
     pojo['prefix'] = instance.prefix.map((item) => item)
     pojo['suffix'] = instance.suffix.map((item) => item)
-    pojo['text'] = instance.text
-    pojo['use'] = instance.use
+    if (instance.text !== undefined) pojo['text'] = instance.text
+    if (instance.use !== undefined) pojo['use'] = instance.use
     return pojo
   }
 
   static fromJSON(pojo: any): PersonName {
-    return new PersonName({
-      lastName: pojo['lastName'],
-      firstNames: pojo['firstNames'].map((item: any) => item),
-      start: pojo['start'],
-      end: pojo['end'],
-      prefix: pojo['prefix'].map((item: any) => item),
-      suffix: pojo['suffix'].map((item: any) => item),
-      text: pojo['text'],
-      use: pojo['use'],
-    })
+    const obj = {} as IPersonName
+    if (pojo['lastName'] !== undefined) {
+      obj['lastName'] = pojo['lastName']
+    }
+    obj['firstNames'] = pojo['firstNames'].map((item: any) => item)
+    if (pojo['start'] !== undefined) {
+      obj['start'] = pojo['start']
+    }
+    if (pojo['end'] !== undefined) {
+      obj['end'] = pojo['end']
+    }
+    obj['prefix'] = pojo['prefix'].map((item: any) => item)
+    obj['suffix'] = pojo['suffix'].map((item: any) => item)
+    if (pojo['text'] !== undefined) {
+      obj['text'] = pojo['text']
+    }
+    if (pojo['use'] !== undefined) {
+      obj['use'] = pojo['use']
+    }
+    return new PersonName(obj)
   }
 }
 

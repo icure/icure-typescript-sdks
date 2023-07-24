@@ -9,11 +9,11 @@ import { Mapper } from '../Mapper'
 import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
 import { NoOpFilter } from '../../filters/dsl/filterDsl'
 import { FilterMapper } from '../../mappers/Filter.mapper'
+import {toPaginatedList} from "../../mappers/PaginatedList.mapper";
 
 export class PatientLikeApiImpl<DSPatient> implements PatientLikeApi<DSPatient> {
     constructor(
         private readonly mapper: Mapper<DSPatient, PatientDto>,
-        private readonly paginatedListMapper: Mapper<PaginatedList<DSPatient>, PaginatedListPatient>,
         private readonly errorHandler: ErrorHandler,
         private readonly patientApi: IccPatientXApi,
         private readonly userApi: IccUserXApi,
@@ -64,9 +64,9 @@ export class PatientLikeApiImpl<DSPatient> implements PatientLikeApi<DSPatient> 
 
     async filterBy(filter: Filter<DSPatient>, nextPatientId?: string, limit?: number): Promise<PaginatedList<DSPatient>> {
         if (NoOpFilter.isNoOp(filter)) {
-            return { totalSize: 0, pageSize: 0, rows: [] }
+            return PaginatedList.empty()
         } else {
-            return this.paginatedListMapper.toDomain(
+            return toPaginatedList(
                 await this.patientApi
                     .filterPatientsBy(
                         undefined,
@@ -81,7 +81,8 @@ export class PatientLikeApiImpl<DSPatient> implements PatientLikeApi<DSPatient> 
                     )
                     .catch((e) => {
                         throw this.errorHandler.createErrorFromAny(e)
-                    })
+                    }),
+                this.mapper.toDomain
             )!
         }
     }

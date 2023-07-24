@@ -3,9 +3,10 @@ import { Permission as PermissionDto, PropertyStub as PropertyStubDto, User as U
 import { mapPropertyStubToProperty, mapPropertyToPropertyStub } from './Property.mapper'
 import { Property } from '../models/Property.model'
 import { AuthenticationToken } from '../models/AuthenticationToken.model'
+import { forceUuid } from '../utils/uuidUtils'
 
 export function toUserDtoId(domain: User): string | undefined {
-    return domain.id
+    return forceUuid(domain.id)
 }
 
 export function toUserDtoRev(domain: User): string | undefined {

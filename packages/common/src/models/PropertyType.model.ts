@@ -1,26 +1,31 @@
-import { PropertyTypeStub } from '@icure/api';
-import { mapTo } from "../utils/decorators";
-import { TypeEnum } from './enums/Type.enum';
+import { PropertyTypeStub } from '@icure/api'
+import { mapTo } from '../utils/decorators'
+import { TypeEnum } from './enums/Type.enum'
 
 @mapTo(PropertyTypeStub)
 export class PropertyType {
-    identifier?: string
+    identifier: string
     type?: TypeEnum
 
-    constructor(propertyType?: IPropertyType | any) {
-        this.identifier = propertyType?.identifier
-        this.type = propertyType?.type
+    constructor(propertyType: IPropertyType) {
+        this.identifier = propertyType.identifier!
+        this.type = propertyType.type
     }
 
     static toJSON(instance: PropertyType): any {
         const pojo: any = {}
-        pojo["identifier"] = instance.identifier
-        pojo["type"] = instance.type
+        pojo['identifier'] = instance.identifier
+        if (instance.type !== undefined) pojo['type'] = instance.type
         return pojo
     }
 
     static fromJSON(pojo: any): PropertyType {
-        return new PropertyType({identifier: pojo["identifier"], type: pojo["type"]})
+        const obj = {} as IPropertyType
+        obj['identifier'] = pojo['identifier']
+        if (pojo['type'] !== undefined) {
+            obj['type'] = pojo['type']
+        }
+        return new PropertyType(obj)
     }
 }
 

@@ -6,7 +6,6 @@ import { MaintenanceTaskLikeApi } from '../MaintenanceTaskLikeApi'
 import { Mapper } from '../Mapper'
 import { ErrorHandler } from '../../services/ErrorHandler'
 import { IccMaintenanceTaskXApi } from '@icure/api/icc-x-api/icc-maintenance-task-x-api'
-import { deepEquality } from '../../utils/equality'
 import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
 import { NoOpFilter } from '../../filters/dsl/filterDsl'
 import { FilterMapper } from '../../mappers/Filter.mapper'
@@ -14,11 +13,11 @@ import { MaintenanceTaskFilter } from '../../filters/dsl/MaintenanceTaskFilterDs
 import { CommonApi } from '../CommonApi'
 import { AccessLevelEnum } from '../../models/enums/AccessLevel.enum'
 import {CommonFilter} from "../../filters/filters";
+import {toPaginatedList} from "../../mappers/PaginatedList.mapper";
 
 export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements MaintenanceTaskLikeApi<DSMaintenanceTask> {
     constructor(
         private readonly mapper: Mapper<DSMaintenanceTask, MaintenanceTask>,
-        private readonly paginatedListMapper: Mapper<PaginatedList<DSMaintenanceTask>, PaginatedListMaintenanceTask>,
         private readonly errorHandler: ErrorHandler,
         private readonly maintenanceTaskApi: IccMaintenanceTaskXApi,
         private readonly userApi: IccUserXApi,
@@ -26,30 +25,31 @@ export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements Maintenanc
         private readonly api: CommonApi
     ) {}
 
-    createOrModify(maintenanceTask: DSMaintenanceTask, delegate?: string): Promise<DSMaintenanceTask | undefined> {
+    async createOrModify(maintenanceTask: DSMaintenanceTask, delegate?: string): Promise<DSMaintenanceTask | undefined> {
+        return this.mapper.toDomain(await this._createOrModify(this.mapper.toDto(maintenanceTask), delegate))
+    }
+
+    private async _createOrModify(maintenanceTask: MaintenanceTask, delegate?: string): Promise<MaintenanceTask> {
         return this.userApi
             .getCurrentUser()
             .then((user) => {
                 if (!user) throw this.errorHandler.createErrorWithMessage('There is no user currently logged in. You must call this method from an authenticated MedTechApi')
-                const mappedMaintenanceTask = this.mapper.toDto(maintenanceTask)
-                const maintenanceTaskPromise = !mappedMaintenanceTask?.rev ? this._createNotification(mappedMaintenanceTask, user, delegate) : this._updateNotification(mappedMaintenanceTask, user)
-                return maintenanceTaskPromise.then((createdTask) => {
-                    return this.mapper.toDomain(createdTask)
-                })
+                return !maintenanceTask?.rev ? this._createNotification(maintenanceTask, user, delegate) : this._updateNotification(maintenanceTask, user)
             })
             .catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
             })
     }
 
-    delete(id: string): Promise<string | undefined> {
+    delete(id: string): Promise<string> {
         return this.userApi
             .getCurrentUser()
             .then((user) => {
                 if (!user) throw new Error('There is no user currently logged in. You must call this method from an authenticated MedTechApi')
                 return this.maintenanceTaskApi.deleteMaintenanceTaskWithUser(user, id).then((identifiers) => {
-                    if (!identifiers || identifiers.length == 0) return undefined
-                    return identifiers[0].id
+                    const res = identifiers?.[0]?.id
+                    if (!res) throw new Error(`Could not delete notification with id ${id}`)
+                    return res
                 })
             })
             .catch((e) => {
@@ -59,7 +59,7 @@ export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements Maintenanc
 
     async filterBy(filter: Filter<MaintenanceTask>, nextMaintenanceTaskId?: string, limit?: number): Promise<PaginatedList<DSMaintenanceTask>> {
         if (NoOpFilter.isNoOp(filter)) {
-            return { totalSize: 0, pageSize: 0, rows: [] }
+            return PaginatedList.empty()
         } else {
             return this.userApi.getCurrentUser().then((user) => {
                 if (!user) throw this.errorHandler.createErrorWithMessage('There is no user currently logged in. You must call this method from an authenticated MedTechApi')
@@ -73,7 +73,7 @@ export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements Maintenanc
                         })
                     )
                     .then((paginatedList) => {
-                        return this.paginatedListMapper.toDomain(paginatedList)!
+                        return toPaginatedList(paginatedList, this.mapper.toDomain)
                     })
                     .catch((e) => {
                         throw this.errorHandler.createErrorFromAny(e)
@@ -129,29 +129,13 @@ export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements Maintenanc
         throw 'TODO'
     }
 
-    updateStatus(maintenanceTask: DSMaintenanceTask, newStatus: MaintenanceTask.StatusEnum): Promise<DSMaintenanceTask | undefined> {
-        return Promise.resolve(undefined)
+    async updateStatus(maintenanceTask: DSMaintenanceTask, newStatus: MaintenanceTask.StatusEnum): Promise<DSMaintenanceTask> {
+        const mapped = this.mapper.toDto(maintenanceTask)
+        return this.mapper.toDomain(await this._createOrModify({ ...mapped, status: newStatus }))
     }
 
     private async _updateNotification(maintenanceTask: MaintenanceTask, user: User): Promise<any> {
         if (!maintenanceTask.id) throw this.errorHandler.createErrorWithMessage('Invalid maintenanceTask')
-        const existingMaintenanceTask = await this.get(maintenanceTask.id)
-        if (!existingMaintenanceTask) throw this.errorHandler.createErrorWithMessage('Cannot modify a non-existing NotificationModel')
-
-        const existingMappedMaintenanceTask = this.mapper.toDto(existingMaintenanceTask)
-
-        if (existingMappedMaintenanceTask.rev !== maintenanceTask.rev) throw this.errorHandler.createErrorWithMessage('Cannot modify rev field')
-        else if (existingMappedMaintenanceTask.created !== maintenanceTask.created) throw this.errorHandler.createErrorWithMessage('Cannot modify created field')
-        else if (existingMappedMaintenanceTask.endOfLife !== maintenanceTask.endOfLife) throw this.errorHandler.createErrorWithMessage('Cannot modify endOfLife field')
-        else if (existingMappedMaintenanceTask.deletionDate !== maintenanceTask.deletionDate) throw this.errorHandler.createErrorWithMessage('Cannot modify deletionDate field')
-        else if (existingMappedMaintenanceTask.modified !== maintenanceTask.modified) throw this.errorHandler.createErrorWithMessage('Cannot modify modified field')
-        else if (existingMappedMaintenanceTask.author !== maintenanceTask.author) throw this.errorHandler.createErrorWithMessage('Cannot modify  author field')
-        else if (existingMappedMaintenanceTask.responsible !== maintenanceTask.responsible) throw this.errorHandler.createErrorWithMessage('Cannot modify responsible field')
-        else if (existingMappedMaintenanceTask.taskType !== maintenanceTask.taskType) throw this.errorHandler.createErrorWithMessage('Cannot modify type field')
-        else if (!deepEquality(existingMappedMaintenanceTask.secretForeignKeys, maintenanceTask.secretForeignKeys)) throw this.errorHandler.createErrorWithMessage('Cannot modify dataOwner field')
-        else if (!deepEquality(existingMappedMaintenanceTask.encryptionKeys, maintenanceTask.encryptionKeys)) throw this.errorHandler.createErrorWithMessage('Cannot modify encryptionKeys field')
-        else if (!deepEquality(existingMappedMaintenanceTask.cryptedForeignKeys, maintenanceTask.cryptedForeignKeys)) throw this.errorHandler.createErrorWithMessage('Cannot modify cryptedForeignKeys field')
-        else if (!deepEquality(existingMappedMaintenanceTask.delegations, maintenanceTask.delegations)) throw this.errorHandler.createErrorWithMessage('Cannot modify delegations field')
         return this.maintenanceTaskApi.modifyMaintenanceTaskWithUser(user, maintenanceTask).catch((e) => {
             throw this.errorHandler.createErrorFromAny(e)
         })
@@ -159,6 +143,13 @@ export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements Maintenanc
 
     private async _createNotification(maintenanceTask: MaintenanceTask, user: User, delegate?: string): Promise<any> {
         if (!delegate) throw this.errorHandler.createErrorWithMessage('No delegate provided for NotificationModel creation. You must provide a delegate to create a NotificationModel. The delegate is the id of the data owner you want to notify.')
+
+        if (maintenanceTask.author != undefined && maintenanceTask.author != user.id) {
+            throw this.errorHandler.createErrorWithMessage('You can set the author only to your user id (if undefined will automatically be set by the server)')
+        }
+        if (maintenanceTask.responsible != undefined && maintenanceTask.responsible != this.dataOwnerApi.getDataOwnerIdOf(user)) {
+            throw this.errorHandler.createErrorWithMessage('You can set the responsible only to your data owner id (if undefined will automatically be set by the server)')
+        }
         return this.maintenanceTaskApi
             .newInstance(user, maintenanceTask, { additionalDelegates: { [delegate]: AccessLevelEnum.WRITE } })
             .then((task) => {

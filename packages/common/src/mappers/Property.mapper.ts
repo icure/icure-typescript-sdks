@@ -5,7 +5,7 @@ import { TypedValueObject } from '../models/TypedValueObject.model'
 import { mapPropertyTypeStubToPropertyType } from './PropertyType.mapper'
 import { mapTypedValueObjectDtoToTypedValueObject } from './TypedValueObject.mapper'
 
-function toPropertyStubId(domain: Property): string | undefined {
+function toPropertyStubId(domain: Property): string {
     return domain.id
 }
 
@@ -25,8 +25,8 @@ function toPropertyStubEncryptedSelf(domain: Property): string | undefined {
     return domain.encryptedSelf
 }
 
-function toPropertyId(dto: PropertyStub): string | undefined {
-    return dto.id
+function toPropertyId(dto: PropertyStub): string {
+    return dto.id!
 }
 
 function toPropertyType(dto: PropertyStub): PropertyType | undefined {

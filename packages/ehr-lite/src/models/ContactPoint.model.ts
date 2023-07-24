@@ -1,5 +1,5 @@
 import { Telecom } from '@icure/api'
-import { mapTo } from "@icure/typescript-common"
+import { mapTo } from '@icure/typescript-common'
 import { ContactPointTelecomTypeEnum } from './enums/ContactPointTelecomType.enum'
 
 @mapTo(Telecom)
@@ -17,15 +17,28 @@ export class ContactPoint {
 
     static toJSON(instance: ContactPoint): any {
         const pojo: any = {}
-        pojo["system"] = instance.system
-        pojo["value"] = instance.value
-        pojo["description"] = instance.description
-        pojo["encryptedSelf"] = instance.encryptedSelf
+        if (instance.system !== undefined) pojo['system'] = instance.system
+        if (instance.value !== undefined) pojo['value'] = instance.value
+        if (instance.description !== undefined) pojo['description'] = instance.description
+        if (instance.encryptedSelf !== undefined) pojo['encryptedSelf'] = instance.encryptedSelf
         return pojo
     }
 
     static fromJSON(pojo: any): ContactPoint {
-        return new ContactPoint({system: pojo["system"], value: pojo["value"], description: pojo["description"], encryptedSelf: pojo["encryptedSelf"]})
+        const obj = {} as IContactPoint
+        if (pojo['system'] !== undefined) {
+            obj['system'] = pojo['system']
+        }
+        if (pojo['value'] !== undefined) {
+            obj['value'] = pojo['value']
+        }
+        if (pojo['description'] !== undefined) {
+            obj['description'] = pojo['description']
+        }
+        if (pojo['encryptedSelf'] !== undefined) {
+            obj['encryptedSelf'] = pojo['encryptedSelf']
+        }
+        return new ContactPoint(obj)
     }
 }
 

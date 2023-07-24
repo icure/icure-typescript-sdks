@@ -1,5 +1,5 @@
 import { generateContactPoint } from '../models/ContactPoint.model'
-import { ContactPoint } from '../../src/models/ContactPoint.model'
+import { ContactPoint } from '../../src'
 import { mapContactPointToTelecom, mapTelecomToContactPoint } from '../../src/mappers/ContactPoint.mapper'
 
 describe('ContactPoint', function () {

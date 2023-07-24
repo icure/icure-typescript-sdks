@@ -1,11 +1,14 @@
-import { Filter } from '../Filter'
-import { DataOwnerFilterBuilder, FilterBuilder, NoOpFilter, SortableFilterBuilder } from './filterDsl'
-import { IntersectionFilter } from '../IntersectionFilter'
-import { ServiceByHealthcarePartyFilter } from '../service/ServiceByHealthcarePartyFilter'
-import { Identifier, Patient, Service } from '@icure/api'
-import { CommonApi } from '../../apis/CommonApi'
+import {Filter} from '../Filter'
+import {DataOwnerFilterBuilder, FilterBuilder, NoOpFilter, SortableFilterBuilder} from './filterDsl'
+import {IntersectionFilter} from '../IntersectionFilter'
+import {ServiceByHealthcarePartyFilter, ServiceByHealthcarePartyHealthElementIdsFilter} from '../service'
+import {Patient, Service} from '@icure/api'
+import {CommonApi} from '../../apis/CommonApi'
+import {Mapper} from '../../apis/Mapper'
+import {mapIdentifierToIdentifierDto} from "../../mappers/Identifier.mapper";
+import {Identifier} from "../../models/Identifier.model";
 
-interface BaseServiceFilterBuilder<F> {
+interface BaseServiceFilterBuilder<F, DSPatient> {
     /**
      * Includes all the data samples with the specified ids.
      * @param byIds the ids of the data samples.
@@ -35,7 +38,7 @@ interface BaseServiceFilterBuilder<F> {
      * Includes all the healthcare elements that were created for the patients passed as parameter.
      * @param patients
      */
-    forPatients(patients: Patient[]): F
+    forPatients(patients: DSPatient[]): F
 
     /**
      * Includes all the data samples with the specified health elements ids.
@@ -44,43 +47,47 @@ interface BaseServiceFilterBuilder<F> {
     byHealthElementIds(byHealthElementIds: string[]): F
 }
 
-export class ServiceFilter implements DataOwnerFilterBuilder<Service, ServiceFilterWithDataOwner> {
-    constructor(private api: CommonApi) {}
-
-    forDataOwner(dataOwnerId: string): ServiceFilterWithDataOwner {
-        return new ServiceFilterWithDataOwner(this.api, dataOwnerId)
+export class ServiceFilter<DSPatient> implements DataOwnerFilterBuilder<Service, ServiceFilterWithDataOwner<DSPatient>> {
+    constructor(private api: CommonApi, private patientMapper: Mapper<DSPatient, Patient>) {
     }
 
-    forSelf(): ServiceFilterWithDataOwner {
-        return new ServiceFilterWithDataOwner(this.api)
+    forDataOwner(dataOwnerId: string): ServiceFilterWithDataOwner<DSPatient> {
+        return new ServiceFilterWithDataOwner(this.api, this.patientMapper, dataOwnerId)
+    }
+
+    forSelf(): ServiceFilterWithDataOwner<DSPatient> {
+        return new ServiceFilterWithDataOwner(this.api, this.patientMapper)
     }
 }
 
-class ServiceFilterWithDataOwner extends SortableFilterBuilder<Service, ServiceFilterSortStepDecorator> implements BaseServiceFilterBuilder<ServiceFilterWithDataOwner>, FilterBuilder<Service> {
+class ServiceFilterWithDataOwner<DSPatient> extends SortableFilterBuilder<Service, ServiceFilterSortStepDecorator<DSPatient>> implements BaseServiceFilterBuilder<ServiceFilterWithDataOwner<DSPatient>, DSPatient>, FilterBuilder<Service> {
     _dataOwnerId: Promise<string>
 
-    constructor(private api: CommonApi, dataOwnerId?: string) {
+    constructor(private api: CommonApi, private patientMapper: Mapper<DSPatient, Patient>, dataOwnerId?: string) {
         super()
         this._dataOwnerId = !!dataOwnerId ? Promise.resolve(dataOwnerId) : api.baseApi.userApi.getCurrentUser().then((u) => api.baseApi.dataOwnerApi.getDataOwnerIdOf(u))
     }
 
-    get sort(): ServiceFilterSortStepDecorator {
+    get sort(): ServiceFilterSortStepDecorator<DSPatient> {
         return new ServiceFilterSortStepDecorator(this)
     }
+
     getDataOwner(): Promise<string> {
         return this._dataOwnerId
     }
 
-    byIds(byIds: string[]): ServiceFilterWithDataOwner {
-        this._builderAccumulator.addByIdsFilter(Promise.resolve({ ids: byIds, $type: 'ServiceByIdsFilter' }), 'ids')
+    byIds(byIds: string[]): ServiceFilterWithDataOwner<DSPatient> {
+        this._builderAccumulator.addByIdsFilter(Promise.resolve({ids: byIds, $type: 'ServiceByIdsFilter'}), 'ids')
         return this
     }
 
-    byIdentifiers(identifiers: Identifier[]): ServiceFilterWithDataOwner {
+    byIdentifiers(identifiers: Identifier[]): ServiceFilterWithDataOwner<DSPatient> {
+        const dtos = identifiers.map(mapIdentifierToIdentifierDto)
+
         const filter = this._dataOwnerId.then((id) => {
             return {
                 healthcarePartyId: id,
-                identifiers: identifiers,
+                identifiers: dtos,
                 $type: 'ServiceByHealthcarePartyIdentifiersFilter',
             }
         })
@@ -88,7 +95,7 @@ class ServiceFilterWithDataOwner extends SortableFilterBuilder<Service, ServiceF
         return this
     }
 
-    byLabelCodeDateFilter(tagType?: string, tagCode?: string, codeType?: string, codeCode?: string, startValueDate?: number, endValueDate?: number, descending?: boolean): ServiceFilterWithDataOwner {
+    byLabelCodeDateFilter(tagType?: string, tagCode?: string, codeType?: string, codeCode?: string, startValueDate?: number, endValueDate?: number, descending?: boolean): ServiceFilterWithDataOwner<DSPatient> {
         if (!tagType && !tagCode && !codeType && !codeCode && !startValueDate && !endValueDate) {
             throw new Error('At least one parameter must be specified')
         }
@@ -109,9 +116,10 @@ class ServiceFilterWithDataOwner extends SortableFilterBuilder<Service, ServiceF
         return this
     }
 
-    forPatients(patients: Patient[]): ServiceFilterWithDataOwner {
+    forPatients(patients: DSPatient[]): ServiceFilterWithDataOwner<DSPatient> {
         const filter = this._dataOwnerId.then((id) => {
-            return Promise.all(patients.map((p) => this.api.baseApi.cryptoApi.entities.secretIdsOf(p!, undefined)))
+            const mappedPatients = patients.map((p) => this.patientMapper.toDto(p))
+            return Promise.all(mappedPatients.map((p) => this.api.baseApi.cryptoApi.entities.secretIdsOf(p!, undefined)))
                 .then((sfksForPatients) => sfksForPatients.flat())
                 .then((sfks) => {
                     return {
@@ -125,15 +133,15 @@ class ServiceFilterWithDataOwner extends SortableFilterBuilder<Service, ServiceF
         return this
     }
 
-    byHealthElementIds(byHealthElementIds: string[]): ServiceFilterWithDataOwner {
+    byHealthElementIds(byHealthElementIds: string[]): ServiceFilterWithDataOwner<DSPatient> {
         const filter = this._dataOwnerId.then((id) => {
             return {
                 healthcarePartyId: id,
-                healthcareElementIds: byHealthElementIds,
+                healthElementIds: byHealthElementIds,
                 $type: 'ServiceByHealthcarePartyHealthElementIdsFilter',
-            }
+            } satisfies ServiceByHealthcarePartyHealthElementIdsFilter
         })
-        this._builderAccumulator.addByIdsFilter(filter, 'healthcareElementIds')
+        this._builderAccumulator.addByIdsFilter(filter, 'healthElementIds')
         return this
     }
 
@@ -151,41 +159,47 @@ class ServiceFilterWithDataOwner extends SortableFilterBuilder<Service, ServiceF
         } else if (filters.length === 1) {
             return filters[0]
         } else {
-            return { hcpId: await this._dataOwnerId, $type: 'ServiceByHealthcarePartyFilter' } as ServiceByHealthcarePartyFilter
+            return {
+                hcpId: await this._dataOwnerId,
+                $type: 'ServiceByHealthcarePartyFilter'
+            } as ServiceByHealthcarePartyFilter
         }
     }
 }
 
-type NonSortableDataOwnerFilter = BaseServiceFilterBuilder<ServiceFilterWithDataOwner> & FilterBuilder<Service>
+type NonSortableDataOwnerFilter<DSPatient> =
+    BaseServiceFilterBuilder<ServiceFilterWithDataOwner<DSPatient>, DSPatient>
+    & FilterBuilder<Service>
 
-class ServiceFilterSortStepDecorator implements BaseServiceFilterBuilder<NonSortableDataOwnerFilter> {
-    constructor(private serviceFilter: ServiceFilterWithDataOwner) {}
+class ServiceFilterSortStepDecorator<DSPatient> implements BaseServiceFilterBuilder<NonSortableDataOwnerFilter<DSPatient>, DSPatient> {
+    constructor(private serviceFilter: ServiceFilterWithDataOwner<DSPatient>) {
+    }
 
-    byIds(byIds: string[]): NonSortableDataOwnerFilter {
+    byIds(byIds: string[]): NonSortableDataOwnerFilter<DSPatient> {
         this.serviceFilter.byIds(byIds)
         this.serviceFilter._builderAccumulator.setLastElementAsSortKey()
         return this.serviceFilter
     }
 
-    byIdentifiers(identifiers: Identifier[]): NonSortableDataOwnerFilter {
+    byIdentifiers(identifiers: Identifier[]): NonSortableDataOwnerFilter<DSPatient> {
         this.serviceFilter.byIdentifiers(identifiers)
         this.serviceFilter._builderAccumulator.setLastElementAsSortKey()
         return this.serviceFilter
     }
 
-    byLabelCodeDateFilter(tagType?: string, tagCode?: string, codeType?: string, codeCode?: string, startValueDate?: number, endValueDate?: number, descending?: boolean): NonSortableDataOwnerFilter {
+    byLabelCodeDateFilter(tagType?: string, tagCode?: string, codeType?: string, codeCode?: string, startValueDate?: number, endValueDate?: number, descending?: boolean): NonSortableDataOwnerFilter<DSPatient> {
         this.serviceFilter.byLabelCodeDateFilter(tagType, tagCode, codeType, codeCode, startValueDate, endValueDate, descending)
         this.serviceFilter._builderAccumulator.setLastElementAsSortKey()
         return this.serviceFilter
     }
 
-    forPatients(patients: Patient[]): NonSortableDataOwnerFilter {
+    forPatients(patients: DSPatient[]): NonSortableDataOwnerFilter<DSPatient> {
         this.serviceFilter.forPatients(patients)
         this.serviceFilter._builderAccumulator.setLastElementAsSortKey()
         return this.serviceFilter
     }
 
-    byHealthElementIds(byHealthElementIds: string[]): NonSortableDataOwnerFilter {
+    byHealthElementIds(byHealthElementIds: string[]): NonSortableDataOwnerFilter<DSPatient> {
         this.serviceFilter.byHealthElementIds(byHealthElementIds)
         this.serviceFilter._builderAccumulator.setLastElementAsSortKey()
         return this.serviceFilter

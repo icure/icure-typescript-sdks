@@ -1,5 +1,5 @@
 import { generatePatient } from '../models/Patient.model'
-import { Patient } from '../../src/models/Patient.model'
+import { Patient } from '../../src'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../../src/mappers/Patient.mapper'
 
 describe('Patient', function () {

@@ -1,5 +1,5 @@
 import { Partnership } from '@icure/api'
-import { mapTo } from "@icure/typescript-common"
+import { mapTo } from '@icure/typescript-common'
 import { RelatedPersonStatusEnum } from './enums/RelatedPersonStatus.enum'
 import { RelatedPersonTypeEnum } from './enums/RelatedPersonType.enum'
 
@@ -17,14 +17,24 @@ export class RelatedPerson {
 
     static toJSON(instance: RelatedPerson): any {
         const pojo: any = {}
-        pojo["type"] = instance.type
-        pojo["status"] = instance.status
-        pojo["personId"] = instance.personId
+        if (instance.type !== undefined) pojo['type'] = instance.type
+        if (instance.status !== undefined) pojo['status'] = instance.status
+        if (instance.personId !== undefined) pojo['personId'] = instance.personId
         return pojo
     }
 
     static fromJSON(pojo: any): RelatedPerson {
-        return new RelatedPerson({type: pojo["type"], status: pojo["status"], personId: pojo["personId"]})
+        const obj = {} as IRelatedPerson
+        if (pojo['type'] !== undefined) {
+            obj['type'] = pojo['type']
+        }
+        if (pojo['status'] !== undefined) {
+            obj['status'] = pojo['status']
+        }
+        if (pojo['personId'] !== undefined) {
+            obj['personId'] = pojo['personId']
+        }
+        return new RelatedPerson(obj)
     }
 }
 

@@ -4,16 +4,18 @@ import { generateCodingReference } from '../../../common/test/models/CodingRefer
 import { generateLocation } from './Location.model'
 import { generateProperty } from '../../../common/test/models/Property.model'
 import { generateSystemMetaDataOwner } from '../../../common/test/models/SystemMetaDataOwner.model'
+import { v4 } from 'uuid'
+import { domainTypeTag, mapCodeStubToCodingReference } from '@icure/typescript-common'
 
 export function generateOrganisation(): Organisation {
     const org = new Organisation({
-        id: 'fakeId',
+        id: v4(),
         rev: 'fakeRev',
         created: Date.now(),
         modified: Date.now(),
         identifiers: [generateIdentifier()],
-        tags: [generateCodingReference()],
-        codes: [generateCodingReference()],
+        tags: new Set([generateCodingReference()]),
+        codes: new Set([generateCodingReference()]),
         deletionDate: Date.now(),
         name: 'Fake Organisation',
         parentId: 'fakeParentId',
@@ -25,8 +27,8 @@ export function generateOrganisation(): Organisation {
             ['en', 'This is a fake organisation'],
             ['fr', 'Ceci est un organisation factice'],
         ]),
-        properties: [generateProperty()],
-        systemMetaData: generateSystemMetaDataOwner(),
+        properties: new Set([generateProperty()]),
+        systemMetaData: generateSystemMetaDataOwner(mapCodeStubToCodingReference(domainTypeTag('Organisation'))),
     })
 
     return org

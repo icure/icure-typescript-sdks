@@ -11,44 +11,69 @@
  */
 
 export class InlineResponse403 {
-  constructor(json: IInlineResponse403) {
-    Object.assign(this as InlineResponse403, json);
-  }
+    constructor(json: IInlineResponse403) {
+        Object.assign(this as InlineResponse403, json)
+    }
 
-  "_short"?: number;
-  "_char"?: string;
-  "_int"?: number;
-  "_long"?: number;
-  "_float"?: number;
-  "_double"?: number;
-  "direct"?: boolean;
-  "readOnly"?: boolean;
+    '_short'?: number
+    '_char'?: string
+    '_int'?: number
+    '_long'?: number
+    '_float'?: number
+    '_double'?: number
+    'direct'?: boolean
+    'readOnly'?: boolean
 
     static toJSON(instance: InlineResponse403): any {
         const pojo: any = {}
-        pojo["_short"] = instance._short
-        pojo["_char"] = instance._char
-        pojo["_int"] = instance._int
-        pojo["_long"] = instance._long
-        pojo["_float"] = instance._float
-        pojo["_double"] = instance._double
-        pojo["direct"] = instance.direct
-        pojo["readOnly"] = instance.readOnly
+        if (instance._short !== undefined) pojo['_short'] = instance._short
+        if (instance._char !== undefined) pojo['_char'] = instance._char
+        if (instance._int !== undefined) pojo['_int'] = instance._int
+        if (instance._long !== undefined) pojo['_long'] = instance._long
+        if (instance._float !== undefined) pojo['_float'] = instance._float
+        if (instance._double !== undefined) pojo['_double'] = instance._double
+        if (instance.direct !== undefined) pojo['direct'] = instance.direct
+        if (instance.readOnly !== undefined) pojo['readOnly'] = instance.readOnly
         return pojo
     }
 
     static fromJSON(pojo: any): InlineResponse403 {
-        return new InlineResponse403({_short: pojo["_short"], _char: pojo["_char"], _int: pojo["_int"], _long: pojo["_long"], _float: pojo["_float"], _double: pojo["_double"], direct: pojo["direct"], readOnly: pojo["readOnly"]})
+        const obj = {} as IInlineResponse403
+        if (pojo['_short'] !== undefined) {
+            obj['_short'] = pojo['_short']
+        }
+        if (pojo['_char'] !== undefined) {
+            obj['_char'] = pojo['_char']
+        }
+        if (pojo['_int'] !== undefined) {
+            obj['_int'] = pojo['_int']
+        }
+        if (pojo['_long'] !== undefined) {
+            obj['_long'] = pojo['_long']
+        }
+        if (pojo['_float'] !== undefined) {
+            obj['_float'] = pojo['_float']
+        }
+        if (pojo['_double'] !== undefined) {
+            obj['_double'] = pojo['_double']
+        }
+        if (pojo['direct'] !== undefined) {
+            obj['direct'] = pojo['direct']
+        }
+        if (pojo['readOnly'] !== undefined) {
+            obj['readOnly'] = pojo['readOnly']
+        }
+        return new InlineResponse403(obj)
     }
 }
 
 interface IInlineResponse403 {
-  _short?: number;
-  _char?: string;
-  _int?: number;
-  _long?: number;
-  _float?: number;
-  _double?: number;
-  direct?: boolean;
-  readOnly?: boolean;
+    _short?: number
+    _char?: string
+    _int?: number
+    _long?: number
+    _float?: number
+    _double?: number
+    direct?: boolean
+    readOnly?: boolean
 }

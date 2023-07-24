@@ -7,6 +7,7 @@ export function forceUuid(id?: string): string {
         }
         return id
     } else {
+        // TODO not crypto safe, we should switch the cryptoPrimitives method
         return uuid()
     }
 }

@@ -1,22 +1,12 @@
 import { Practitioner } from '../models/Practitioner.model'
-import { Address, CodeStub, FinancialInstitutionInformation, FlatRateTarification, HealthcareParty, HealthcarePartyHistoryStatus, Identifier as IdentifierDto, PersonName, PropertyStub } from '@icure/api'
+import { Address, CodeStub, FinancialInstitutionInformation, FlatRateTarification, HealthcareParty, HealthcarePartyHistoryStatus, Identifier as IdentifierDto, ISO639_1, PersonName, PropertyStub } from '@icure/api'
 import { HumanName } from '../models/HumanName.model'
 import { Location } from '../models/Location.model'
 import {
     CodingReference,
-    convertDeepNestedMapToObject,
-    convertMapOfArrayOfGenericToObject,
     convertMapToObject,
-    convertNestedMapToObject,
-    convertObjectToDeepNestedMap,
     convertObjectToMap,
-    convertObjectToNestedMap,
-    extractAesExchangeKeys,
-    extractHcPartyKeys,
-    extractPrivateKeyShamirPartitions,
-    extractPublicKey,
-    extractPublicKeysForOaepWithSha256,
-    extractTransferKeys,
+    filteringOutInternalTags,
     Identifier,
     mapCodeStubToCodingReference,
     mapCodingReferenceToCodeStub,
@@ -24,8 +14,16 @@ import {
     mapIdentifierToIdentifierDto,
     mapPropertyStubToProperty,
     mapPropertyToPropertyStub,
+    mergeTagsWithInternalTags,
     Property,
     SystemMetaDataOwner,
+    toAesExchangeKeys,
+    toHcPartyKeys,
+    toPrivateKeyShamirPartitions,
+    toPublicKey,
+    toPublicKeysForOaepWithSha256,
+    toSystemMetaDataOwner,
+    toTransferKeys,
 } from '@icure/typescript-common'
 import { mapHumanNameToPersonName, mapPersonNameToHumanName } from './HumanName.mapper'
 import { mapAddressToLocation, mapLocationToAddress } from './Location.mapper'
@@ -57,11 +55,11 @@ function toHealthcarePartyIdentifier(domain: Practitioner): IdentifierDto[] | un
 }
 
 function toHealthcarePartyTags(domain: Practitioner): CodeStub[] | undefined {
-    return !!domain.tags ? domain.tags.map(mapCodingReferenceToCodeStub) : undefined
+    return mergeTagsWithInternalTags('Practitioner', domain.tags, domain.systemMetaData)
 }
 
 function toHealthcarePartyCodes(domain: Practitioner): CodeStub[] | undefined {
-    return !!domain.codes ? domain.codes.map(mapCodingReferenceToCodeStub) : undefined
+    return !!domain.codes ? [...domain.codes].map(mapCodingReferenceToCodeStub) : undefined
 }
 
 function toHealthcarePartyName(domain: Practitioner): string | undefined {
@@ -169,7 +167,7 @@ function toHealthcarePartyStatusHistory(domain: Practitioner): HealthcarePartyHi
 }
 
 function toHealthcarePartySpecialityCodes(domain: Practitioner): CodeStub[] | undefined {
-    return !!domain.specialityCodes ? domain.specialityCodes.map(mapCodingReferenceToCodeStub) : undefined
+    return !!domain.specialityCodes ? [...domain.specialityCodes].map(mapCodingReferenceToCodeStub) : undefined
 }
 
 function toHealthcarePartySendFormats(domain: Practitioner): { [key: string]: string } | undefined {
@@ -221,12 +219,11 @@ function toHealthcarePartyOptions(domain: Practitioner): { [key: string]: string
 }
 
 function toHealthcarePartyProperties(domain: Practitioner): PropertyStub[] | undefined {
-    return !!domain.properties ? domain.properties.map(mapPropertyToPropertyStub) : undefined
+    return !!domain.properties ? [...domain.properties].map(mapPropertyToPropertyStub) : undefined
 }
 
 function toHealthcarePartyHcPartyKeys(domain: Practitioner): { [key: string]: string[] } | undefined {
-    const hcpKeys = extractHcPartyKeys(domain.systemMetaData)
-    return !!hcpKeys ? convertMapOfArrayOfGenericToObject(hcpKeys, (arr) => arr) : undefined
+    return !!domain.systemMetaData ? toHcPartyKeys(domain.systemMetaData) : undefined
 }
 
 function toHealthcarePartyAesExchangeKeys(domain: Practitioner):
@@ -234,8 +231,7 @@ function toHealthcarePartyAesExchangeKeys(domain: Practitioner):
           [key: string]: { [key: string]: { [key: string]: string } }
       }
     | undefined {
-    const aesExchangeKeys = extractAesExchangeKeys(domain.systemMetaData)
-    return !!aesExchangeKeys ? convertDeepNestedMapToObject(aesExchangeKeys) : undefined
+    return !!domain.systemMetaData ? toAesExchangeKeys(domain.systemMetaData) : undefined
 }
 
 function toHealthcarePartyTransferKeys(domain: Practitioner):
@@ -243,21 +239,19 @@ function toHealthcarePartyTransferKeys(domain: Practitioner):
           [key: string]: { [key: string]: string }
       }
     | undefined {
-    const transferKeys = extractTransferKeys(domain.systemMetaData)
-    return !!transferKeys ? convertNestedMapToObject(transferKeys) : undefined
+    return !!domain.systemMetaData ? toTransferKeys(domain.systemMetaData) : undefined
 }
 
 function toHealthcarePartyPrivateKeyShamirPartitions(domain: Practitioner): { [key: string]: string } | undefined {
-    const privateKeyShamirPartitions = extractPrivateKeyShamirPartitions(domain.systemMetaData)
-    return !!privateKeyShamirPartitions ? convertMapToObject(privateKeyShamirPartitions) : undefined
+    return !!domain.systemMetaData ? toPrivateKeyShamirPartitions(domain.systemMetaData) : undefined
 }
 
 function toHealthcarePartyPublicKey(domain: Practitioner): string | undefined {
-    return extractPublicKey(domain.systemMetaData)
+    return !!domain.systemMetaData ? toPublicKey(domain.systemMetaData) : undefined
 }
 
 function toHealthcarePartyPublicKeysForOaepWithSha256(domain: Practitioner): string[] | undefined {
-    return extractPublicKeysForOaepWithSha256(domain.systemMetaData)
+    return !!domain.systemMetaData ? toPublicKeysForOaepWithSha256(domain.systemMetaData) : undefined
 }
 
 function toPractitionerId(dto: HealthcareParty): string | undefined {
@@ -284,12 +278,12 @@ function toPractitionerIdentifiers(dto: HealthcareParty): Identifier[] | undefin
     return identifiers.map(mapIdentifierDtoToIdentifier)
 }
 
-function toPractitionerTags(dto: HealthcareParty): CodingReference[] | undefined {
-    return !!dto.tags ? dto.tags.map(mapCodeStubToCodingReference) : undefined
+function toPractitionerTags(dto: HealthcareParty): Set<CodingReference> | undefined {
+    return filteringOutInternalTags('Practitioner', dto.tags)
 }
 
-function toPractitionerCodes(dto: HealthcareParty): CodingReference[] | undefined {
-    return !!dto.codes ? dto.codes.map(mapCodeStubToCodingReference) : undefined
+function toPractitionerCodes(dto: HealthcareParty): Set<CodingReference> | undefined {
+    return !!dto.codes ? new Set(dto.codes.map(mapCodeStubToCodingReference)) : undefined
 }
 
 function toPractitionerDeletionDate(dto: HealthcareParty): number | undefined {
@@ -344,27 +338,20 @@ function toPractitionerPicture(dto: HealthcareParty): ArrayBuffer | undefined {
     return dto.picture
 }
 
-function toPractitionerSpecialityCodes(dto: HealthcareParty): CodingReference[] | undefined {
-    return !!dto.specialityCodes ? dto.specialityCodes.map(mapCodeStubToCodingReference) : undefined
+function toPractitionerSpecialityCodes(dto: HealthcareParty): Set<CodingReference> | undefined {
+    return !!dto.specialityCodes ? new Set(dto.specialityCodes.map(mapCodeStubToCodingReference)) : undefined
 }
 
-function toPractitionerDescription(dto: HealthcareParty): Map<string, string> | undefined {
-    return !!dto.descr ? convertObjectToMap(dto.descr) : undefined
+function toPractitionerDescription(dto: HealthcareParty): Map<ISO639_1, string> | undefined {
+    return !!dto.descr ? (convertObjectToMap(dto.descr) as Map<ISO639_1, string>) : undefined
 }
 
-function toPractitionerProperties(dto: HealthcareParty): Property[] | undefined {
-    return !!dto.properties ? dto.properties.map(mapPropertyStubToProperty) : undefined
+function toPractitionerProperties(dto: HealthcareParty): Set<Property> | undefined {
+    return !!dto.properties ? new Set(dto.properties.map(mapPropertyStubToProperty)) : undefined
 }
 
 function toPractitionerSystemMetaData(dto: HealthcareParty): SystemMetaDataOwner | undefined {
-    return new SystemMetaDataOwner({
-        hcPartyKeys: !!dto.hcPartyKeys ? new Map(Object.entries(dto.hcPartyKeys)) : undefined,
-        publicKey: dto.publicKey,
-        aesExchangeKeys: !!dto.aesExchangeKeys ? convertObjectToDeepNestedMap(dto.aesExchangeKeys) : undefined,
-        transferKeys: !!dto.transferKeys ? convertObjectToNestedMap(dto.transferKeys) : undefined,
-        privateKeyShamirPartitions: !!dto.privateKeyShamirPartitions ? convertObjectToMap(dto.privateKeyShamirPartitions) : undefined,
-        publicKeysForOaepWithSha256: dto.publicKeysForOaepWithSha256,
-    })
+    return toSystemMetaDataOwner(dto)
 }
 
 export function mapHealthcarePartyToPractitioner(dto: HealthcareParty): Practitioner {

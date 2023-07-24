@@ -22,6 +22,8 @@ import {
     FilterChainService,
     PaginatedListService,
     Service,
+    ua2hex,
+    Content,
 } from '@icure/api'
 import { ErrorHandler } from '../../services/ErrorHandler'
 import { any, distinctBy, firstOrNull, isNotEmpty, sumOf } from '../../utils/functionalUtils'
@@ -31,8 +33,11 @@ import { NoOpFilter } from '../../filters/dsl/filterDsl'
 import { FilterMapper } from '../../mappers/Filter.mapper'
 import { ServiceFilter } from '../../filters/dsl/ServiceFilterDsl'
 import { CommonApi } from '../CommonApi'
-import {CommonFilter} from "../../filters/filters";
-import {Document} from "../../models/Document.model";
+import { CommonFilter } from '../../filters/filters'
+import { Document } from '../../models/Document.model'
+import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
+import { UtiDetector } from '../../utils/utiDetector'
+import {extractDomainTypeTag} from "../../utils/domain";
 
 export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements ServiceLikeApi<DSService, DSPatient, DSDocument> {
     private readonly contactsCache: CachedMap<ContactDto> = new CachedMap<ContactDto>(5 * 60, 10000)
@@ -41,7 +46,6 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         private readonly serviceMapper: Mapper<DSService, ServiceDto>,
         private readonly patientMapper: Mapper<DSPatient, PatientDto>,
         private readonly documentMapper: Mapper<DSDocument, DocumentDto>,
-        private readonly paginatedListMapper: Mapper<PaginatedList<DSService>, PaginatedListService>,
         private readonly errorHandler: ErrorHandler,
         private readonly userApi: IccUserXApi,
         private readonly contactApi: IccContactXApi,
@@ -52,12 +56,12 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         private readonly api: CommonApi
     ) {}
 
-    private clearContactCache() {
+    clearContactCache() {
         this.contactsCache.invalidateAll()
     }
 
     async createOrModifyFor(patientId: string, service: DSService): Promise<DSService> {
-        const createdOrUpdatedDataSample = (await this.createOrModifyManyFor(patientId, [service])).pop()
+        const createdOrUpdatedDataSample = (await this.createOrModifyManyFor(patientId, [service]))[0]
         if (createdOrUpdatedDataSample) {
             return createdOrUpdatedDataSample
         }
@@ -66,23 +70,28 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
     }
 
     async createOrModifyManyFor(patientId: string, services: Array<DSService>): Promise<Array<DSService>> {
+        return this._createOrModifyManyFor(
+            patientId,
+            services.map((service) => this.serviceMapper.toDto(service))
+        ).then((services) => services.map((service) => this.serviceMapper.toDomain(service)))
+    }
+
+    private async _createOrModifyManyFor(patientId: string, services: Array<Service>): Promise<Array<Service>> {
         if (services.length == 0) {
             return Promise.resolve([])
         }
 
-        const mappedServices = services.map((service) => this.serviceMapper.toDto(service))
-
-        if (distinctBy(mappedServices, (ds) => ds.contactId).size > 1) {
+        if (distinctBy(services, (ds) => ds.contactId).size > 1) {
             throw this.errorHandler.createErrorWithMessage('Only data samples of a same batch (with the same batchId) can be processed together')
         }
 
         // Arbitrary : 1 service = 1K
-        if (this._countHierarchyOfDataSamples(0, 0, mappedServices) > 1000) {
+        if (this._countHierarchyOfDataSamples(0, 0, services) > 1000) {
             throw this.errorHandler.createErrorWithMessage("Too many data samples to process. Can't process more than 1000 data samples in the same batch")
         }
 
         const currentUser = await this.userApi.getCurrentUser()
-        const [contactCached, existingContact] = await this._getContactOfService(currentUser, mappedServices[0])
+        const [contactCached, existingContact] = await this._getContactOfService(currentUser, services[0])
 
         const contactPatientId = existingContact ? (await this.contactApi.decryptPatientIdOf(existingContact))[0] : undefined
 
@@ -94,14 +103,11 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
             throw this.errorHandler.createErrorWithMessage("Can't update the patient of a batch of data samples. Delete those samples and create new ones")
         }
 
-        const existingPatient = await this.patientApi.getPatientWithUser(currentUser, patientId).catch((e) => {
-            throw this.errorHandler.createErrorFromAny(e)
-        })
         let createdOrModifiedContact: ContactDto
 
         if (contactCached && existingContact != null) {
-            const servicesToModify = mappedServices
-            const subContacts = await this._createPotentialSubContactsForHealthElements(mappedServices, currentUser)
+            const servicesToModify = services
+            const subContacts = await this._createPotentialSubContactsForHealthElements(services, currentUser)
 
             const contactToModify = {
                 ...existingContact,
@@ -121,7 +127,10 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
                 throw this.errorHandler.createErrorFromAny(e)
             })
         } else {
-            const contactToCreate = await this.createContactDtoUsing(currentUser, existingPatient, mappedServices, existingContact)
+            const existingPatient = await this.patientApi.getPatientWithUser(currentUser, patientId).catch((e) => {
+                throw this.errorHandler.createErrorFromAny(e)
+            })
+            const contactToCreate = await this.createContactDtoUsing(currentUser, existingPatient, services, existingContact, false, [])
             createdOrModifiedContact = await this.contactApi
                 .createContactWithUser(currentUser, contactToCreate)
                 .catch((e) => {
@@ -133,17 +142,22 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
                 })
         }
 
+        /*TODO
+         * currently we are using the cache to decide if we can modify a contact in place without the need to create
+         * a new one when modifying services. Should we really cache here, regardless of whether the contact was already
+         * cached?
+         */
         createdOrModifiedContact.services!.forEach((service) => this.contactsCache.put(service.id!, createdOrModifiedContact))
         return Promise.resolve(
             createdOrModifiedContact.services!.map((service) => {
                 const subContacts = createdOrModifiedContact.subContacts?.filter((subContact) => subContact.services?.find((s) => s.serviceId == service.id) != undefined)
 
-                return this.serviceMapper.toDomain({
+                return {
                     ...this.enrichWithContactMetadata(service, createdOrModifiedContact),
                     subContactIds: subContacts?.map((subContact) => subContact.id!),
                     healthElementsIds: service.healthElementsIds ?? subContacts?.filter((subContact) => subContact.healthElementId)?.map((subContact) => subContact.healthElementId!),
                     formIds: !!subContacts ? subContacts.filter((subContact) => subContact.formId).map((subContact) => subContact.formId!) : service.formIds,
-                })!
+                }
             })
         )
     }
@@ -211,6 +225,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
             cryptedForeignKeys: contact.cryptedForeignKeys,
             delegations: contact.delegations,
             encryptionKeys: contact.encryptionKeys,
+            contactId: contact.id,
         }
     }
 
@@ -224,12 +239,20 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         }
     }
 
-    async createContactDtoUsing(currentUser: UserDto, contactPatient: PatientDto, services: Array<ServiceDto>, existingContact?: ContactDto): Promise<ContactDto> {
+    private async createContactDtoUsing(
+      currentUser: UserDto,
+      contactPatient: PatientDto,
+      services: Array<ServiceDto>,
+      existingContact: ContactDto | undefined,
+      requiresNewMetadata: boolean,
+      newDelegates: string[]
+    ): Promise<ContactDto> {
         const servicesToCreate = services.map((e) => {
             return { ...e, modified: undefined }
         })
 
         let baseContact: ContactDto
+        let dataOwnersWithAccess: Awaited<ReturnType<typeof this.contactApi.getDataOwnersWithAccessTo>>
 
         const subContacts = await this._createPotentialSubContactsForHealthElements(servicesToCreate, currentUser)
 
@@ -240,21 +263,39 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
                 rev: undefined,
                 modified: Date.now(),
             }
+            delete baseContact.delegations
+            delete baseContact.encryptionKeys
+            delete baseContact.secretForeignKeys
+            delete baseContact.cryptedForeignKeys
+            dataOwnersWithAccess = await this.contactApi.getDataOwnersWithAccessTo(existingContact)
+            
         } else {
-            baseContact = await this.contactApi.newInstance(currentUser, contactPatient, new ContactDto({ id: this.cryptoApi.primitives.randomUuid() })).catch((e) => {
-                throw this.errorHandler.createErrorFromAny(e)
-            })
+            baseContact = { id: this.cryptoApi.primitives.randomUuid() }
+            dataOwnersWithAccess = { permissionsByDataOwnerId: {}, hasUnknownAnonymousDataOwners: false }
         }
-
-        return {
-            ...baseContact,
-            subContacts: subContacts,
-            services: servicesToCreate.map((service) => {
-                return { ...service, formIds: undefined, healthElementsIds: undefined }
-            }),
-            openingDate: Math.min(...servicesToCreate.filter((element) => element.openingDate != null || element.valueDate != null).map((e) => e.openingDate ?? e.valueDate!)),
-            closingDate: Math.max(...servicesToCreate.filter((element) => element.closingDate != null || element.valueDate != null).map((e) => e.closingDate ?? e.valueDate!)),
-        }
+        // TODO If requiresNewMetadata is false we may consider to instead keep the existing metadata
+        if (dataOwnersWithAccess.hasUnknownAnonymousDataOwners) throw this.errorHandler.createErrorWithMessage(
+          `Contact ${baseContact.id} is accessible to anonymous data owners that are not known by the current user. Can't modify services of the contact.`
+        )
+        const additionalDelegates = { ...dataOwnersWithAccess.permissionsByDataOwnerId }
+        delete additionalDelegates[this.dataOwnerApi.getDataOwnerIdOf(currentUser)]
+        newDelegates.forEach((d) => { additionalDelegates[d] = 'WRITE' })
+        return await this.contactApi.newInstance(
+          currentUser, 
+          contactPatient, 
+          new ContactDto({
+              ...baseContact,
+              subContacts: subContacts,
+              services: servicesToCreate.map((service) => {
+                  return { ...service, formIds: undefined, healthElementsIds: undefined }
+              }),
+              openingDate: Math.min(...servicesToCreate.filter((element) => element.openingDate != null || element.valueDate != null).map((e) => e.openingDate ?? e.valueDate!)),
+              closingDate: Math.max(...servicesToCreate.filter((element) => element.closingDate != null || element.valueDate != null).map((e) => e.closingDate ?? e.valueDate!)),
+          }),
+          { additionalDelegates }
+        ).catch((e) => {
+            throw this.errorHandler.createErrorFromAny(e)
+        })
     }
 
     async delete(id: string): Promise<string> {
@@ -263,18 +304,55 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
             return deletedDataSampleId
         }
 
-        throw this.errorHandler.createErrorWithMessage(`Could not delete data sample ${id}`)
+        throw this.errorHandler.createErrorWithMessage(`Could not delete service ${id}`)
     }
 
-    deleteAttachment(id: string, documentId: string): Promise<string> {
-        return Promise.resolve('')
+    async deleteAttachment(id: string, documentId: string): Promise<string> {
+        const currentUser = await this.userApi.getCurrentUser().catch((e) => {
+            throw this.errorHandler.createErrorFromAny(e)
+        })
+
+        const existingContact = (await this._findContactsForServiceIds(currentUser, [id]))[0]
+        if (existingContact == undefined) {
+            throw this.errorHandler.createErrorWithMessage(`Could not find batch information of the service ${id}`)
+        }
+
+        const existingService = existingContact!.services!.find((s) => s.id == id)
+        if (existingService == undefined || existingService.content == undefined) {
+            throw this.errorHandler.createErrorWithMessage(`Could not find batch information of the service ${id}`)
+        }
+
+        const contactPatientId = (await this.contactApi.decryptPatientIdOf(existingContact!))[0]
+        if (contactPatientId == undefined) {
+            throw this.errorHandler.createErrorWithMessage(`Cannot set an attachment to a service not linked to a patient`)
+        }
+
+        const contentToDelete = Object.entries(existingService.content!).find(([_, content]) => content.documentId == documentId)?.[0]
+
+        if (contentToDelete == undefined) {
+            throw this.errorHandler.createErrorWithMessage(`Could not find attachment ${documentId} in the service ${id}`)
+        }
+
+        const updatedContent = Object.fromEntries(Object.entries(existingService.content!).filter(([key, _]) => key != contentToDelete!))
+
+        await this._createOrModifyManyFor(contactPatientId, [
+            {
+                ...existingService,
+                content: updatedContent,
+            },
+        ]).catch((e) => {
+            throw this.errorHandler.createErrorFromAny(e)
+        })
+        // Do not actually delete existing `Document` entity: services are versioned
+
+        return documentId
     }
 
     async deleteMany(ids: Array<string>): Promise<Array<string>> {
         const currentUser = await this.userApi.getCurrentUser().catch((e) => {
             throw this.errorHandler.createErrorFromAny(e)
         })
-        const existingContact = firstOrNull(await this._findContactsForDataSampleIds(currentUser, ids))
+        const existingContact = firstOrNull(await this._findContactsForServiceIds(currentUser, ids))
         if (existingContact == undefined) {
             throw this.errorHandler.createErrorWithMessage(`Could not find batch information of the data sample ${ids}`)
         }
@@ -311,15 +389,16 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
                 patient,
                 new ContactDto({
                     id: this.cryptoApi.primitives.randomUuid(),
-                    services: services.map(
-                        (service) =>
-                            new ServiceDto({
-                                id: service.id,
-                                created: service.created,
-                                modified: currentTime,
-                                endOfLife: currentTime,
-                            })
-                    ),
+                    services: services.map((service) => {
+                        const domainTypeTag = extractDomainTypeTag(service.tags)
+                        return new ServiceDto({
+                            id: service.id,
+                            created: service.created,
+                            modified: currentTime,
+                            endOfLife: currentTime,
+                            tags: domainTypeTag ? [domainTypeTag] : undefined,
+                        })
+                    }),
                 })
             )
             .catch((e) => {
@@ -332,7 +411,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         })
     }
 
-    private async _findContactsForDataSampleIds(currentUser: UserDto, serviceIds: Array<string>): Promise<Array<ContactDto>> {
+    private async _findContactsForServiceIds(currentUser: UserDto, serviceIds: Array<string>): Promise<Array<ContactDto>> {
         const cachedContacts = this.contactsCache.getAllPresent(serviceIds)
         const dataSampleIdsToSearch = serviceIds.filter((element) => Object.keys(cachedContacts).find((key) => key == element) == undefined)
 
@@ -357,6 +436,10 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
             }
 
             // Caching
+            /*TODO
+             * currently we are using the cache to decide if we can modify a contact in place without the need to create
+             * a new one when modifying services. Should we really cache here then?
+             */
             notCachedContacts.forEach((contact) => {
                 contact.services?.filter((service) => service.id != undefined && dataSampleIdsToSearch.includes(service.id)).forEach((service) => this.contactsCache.put(service.id!, contact))
             })
@@ -382,7 +465,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
 
     async filterBy(filter: CommonFilter<Service>, nextServiceId?: string, limit?: number): Promise<PaginatedList<DSService>> {
         if (NoOpFilter.isNoOp(filter)) {
-            return { pageSize: 0, totalSize: 0, rows: [] }
+            return PaginatedList.empty()
         }
         const currentUser = await this.userApi.getCurrentUser().catch((e) => {
             throw this.errorHandler.createErrorFromAny(e)
@@ -401,7 +484,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
             .catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
             })
-        return this.paginatedListMapper.toDomain(paginatedListService)!
+        return toPaginatedList(paginatedListService, this.serviceMapper.toDomain)!
     }
 
     async get(id: string): Promise<DSService> {
@@ -427,9 +510,8 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         if (!dataOwnerId) {
             throw this.errorHandler.createErrorWithMessage('The current user is not a data owner. You must be either a patient, a device or a healthcare professional to call this method.')
         }
-        const patientDto = this.patientMapper.toDto(patient)!
 
-        const filter = await new ServiceFilter(this.api).forDataOwner(dataOwnerId).forPatients([patientDto]).build()
+        const filter = await new ServiceFilter(this.api, this.patientMapper).forDataOwner(dataOwnerId).forPatients([patient]).build()
 
         return await this.concatenateFilterResults(filter)
     }
@@ -440,29 +522,102 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
     }
 
     async giveAccessTo(service: DSService, delegatedTo: string): Promise<DSService> {
+        return this.giveAccessToMany([service], delegatedTo).then((services) => services[0])
+    }
+    async giveAccessToMany(services: DSService[], delegatedTo: string): Promise<DSService[]> {
+        if (!services.length) return []
         const currentUser = await this.userApi.getCurrentUser().catch((e) => {
             throw this.errorHandler.createErrorFromAny(e)
         })
-        const mappedService = this.serviceMapper.toDto(service)
-        const dataOwnerId = this.dataOwnerApi.getDataOwnerIdOf(currentUser)
-        const contactOfDataSample = (await this._getContactOfService(currentUser, mappedService))[1]
+        const mappedServices = services.map(this.serviceMapper.toDto)
 
-        if (contactOfDataSample == undefined) throw this.errorHandler.createErrorWithMessage(`Could not find the batch of the service ${mappedService.id}. User ${currentUser.id} may not have access to it.`)
-
-        const updatedContact = await this.contactApi.shareWith(delegatedTo, contactOfDataSample)
-
-        if (updatedContact == undefined || updatedContact.services == undefined) {
-            throw this.errorHandler.createErrorWithMessage(`Impossible to give access to ${delegatedTo} to data sample ${mappedService.id} information`)
+        if (distinctBy(mappedServices, (s) => s.contactId).size > 1) {
+            throw this.errorHandler.createErrorWithMessage('Only data samples of a same batch (with the same batchId) can be processed together')
+        }
+        if (distinctBy(mappedServices, (s) => s.id).size < services.length) {
+            throw this.errorHandler.createErrorWithMessage('Some services have the same id')
         }
 
-        const subContacts = updatedContact.subContacts?.filter((subContact) => subContact.services?.find((s) => s.serviceId == mappedService.id) != undefined)
+        const contactOfServices = (await this._getContactOfService(currentUser, mappedServices[0]))[1]
 
-        return this.serviceMapper.toDomain({
-            ...this.enrichWithContactMetadata(updatedContact.services.find((service) => service.id == service.id)!, updatedContact),
-            subContactIds: subContacts?.map((subContact) => subContact.id!),
-            healthElementsIds: mappedService.healthElementsIds ?? subContacts?.filter((subContact) => subContact.healthElementId)?.map((subContact) => subContact.healthElementId!),
-            formIds: !!subContacts ? subContacts.filter((subContact) => subContact.formId).map((subContact) => subContact.formId!) : mappedService.formIds,
-        })!
+        if (!contactOfServices) throw this.errorHandler.createErrorWithMessage(`Could not find batch ${mappedServices[0].contactId}. User ${currentUser.id} may not have access to it.`)
+
+        if (!mappedServices.every((s) => contactOfServices.services?.some((service) => service.id == s.id))) {
+            throw this.errorHandler.createErrorWithMessage(`Batch for service ${mappedServices[0].id} does not contain all input services`)
+        }
+
+        let updatedContact: ContactDto
+        if ((contactOfServices.services ?? []).every((cs) => mappedServices.some((is) => is.id == cs.id))) {
+            // The request to share data includes all services of the batch
+
+            updatedContact = await this.contactApi.shareWith(delegatedTo, contactOfServices).catch((e) => {
+                this.contactsCache.invalidateAll(mappedServices.map((s) => s.id!))
+                throw e
+            })
+        } else {
+            // We have to share only some services of the batch: create new batch with only the services to share
+            // TODO currently we need to get the patient...
+            const patientId = await this.extractPatientId(services[0])
+            if (!patientId) throw this.errorHandler.createErrorWithMessage(`Could not find patient id for service ${mappedServices[0].id}`)
+            const existingPatient = await this.patientApi.getPatientWithUser(currentUser, patientId).catch((e) => {
+                throw this.errorHandler.createErrorFromAny(e)
+            })
+            if (!existingPatient) throw this.errorHandler.createErrorWithMessage(`Could not find patient with id ${patientId}`)
+            const contactToCreate = await this.createContactDtoUsing(
+              currentUser,
+              existingPatient,
+              mappedServices,
+              contactOfServices,
+              true,
+              [delegatedTo]
+            )
+            updatedContact = await this.contactApi
+              .createContactWithUser(currentUser, contactToCreate)
+              .catch((e) => {
+                  throw this.errorHandler.createErrorFromAny(e)
+              })
+              .then((x) => {
+                  if (!x) throw this.errorHandler.createErrorWithMessage(`Unexpected response for created contact: ${x}`)
+                  return x
+              })
+        }
+        if (updatedContact == undefined || updatedContact.services == undefined) {
+            this.contactsCache.invalidateAll(mappedServices.map((s) => s.id!))
+            throw this.errorHandler.createErrorWithMessage(`Impossible to give access to ${delegatedTo} to services of batch ${contactOfServices.id}`)
+        }
+
+        /*TODO
+         * currently we are using the cache to decide if we can modify a contact in place without the need to create
+         * a new one when modifying services. Should we really cache here, regardless of whether the contact was already
+         * cached?
+         */
+        (updatedContact.services ?? []).forEach((s) => { this.contactsCache.put(s.id!, updatedContact) })
+
+        const res: DSService[] = []
+        for (const updatedService of updatedContact.services) {
+            const originalService = mappedServices.find((s) => s.id == updatedService.id)!
+            const subContactsForService = updatedContact.subContacts?.filter((subContact) => subContact.services?.find((s) => s.serviceId == updatedService.id!) != undefined)
+            const documentIds = Object.entries(updatedService.content ?? {}).flatMap(([_, value]) => (value.documentId ? [value.documentId!] : []))
+            // Now also share documents of the services
+            if (documentIds.length) {
+                const documents = Object.fromEntries((await this.api.baseApi.documentApi.getDocuments({ids: documentIds})).map((x) => [x.id!, x]))
+                for (const docId of documentIds) {
+                    try {
+                        await this.api.baseApi.documentApi.shareWith(delegatedTo, documents[docId])
+                    } catch (e) {
+                        console.error(`Failed to give access to attachment with document id ${docId}`, e)
+                    }
+                }
+            }
+
+            res.push(this.serviceMapper.toDomain({
+                ...this.enrichWithContactMetadata(updatedContact.services.find((service) => service.id == service.id)!, updatedContact),
+                subContactIds: subContactsForService?.map((subContact) => subContact.id!),
+                healthElementsIds: originalService.healthElementsIds ?? subContactsForService?.filter((subContact) => subContact.healthElementId)?.map((subContact) => subContact.healthElementId!),
+                formIds: !!subContactsForService ? subContactsForService.filter((subContact) => subContact.formId).map((subContact) => subContact.formId!) : originalService.formIds,
+            })!)
+        }
+        return res
     }
 
     matchBy(filter: CommonFilter<Service>): Promise<Array<string>> {
@@ -487,15 +642,98 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         throw 'TODO'
     }
 
-    getAttachmentContent(id: string, documentId: string): Promise<ArrayBuffer> {
-        throw 'Not implemented yet'
+    async setAttachment(id: string, body: ArrayBuffer, documentName?: string, documentVersion?: string, documentExternalUuid?: string, documentLanguage?: string): Promise<DSDocument> {
+        try {
+            const currentUser = await this.userApi.getCurrentUser().catch((e) => {
+                throw this.errorHandler.createErrorFromAny(e)
+            })
+            const existingService = this.serviceMapper.toDto(await this.get(id))
+
+            const [, batchOfService] = await this._getContactOfService(currentUser, existingService)
+            if (batchOfService == undefined) {
+                throw this.errorHandler.createErrorWithMessage(`Could not find the batch of service ${id}`)
+            }
+
+            const patientIdOfBatch = (await this.contactApi.decryptPatientIdOf(batchOfService))[0]
+            if (patientIdOfBatch == undefined) {
+                throw this.errorHandler.createErrorWithMessage(`Can not set an attachment to a service not linked to a patient`)
+            }
+
+            const dataOwnersWithAccessInfo = await this.contactApi.getDataOwnersWithAccessTo(batchOfService)
+            if (dataOwnersWithAccessInfo.hasUnknownAnonymousDataOwners) {
+                /*TODO
+                 * We technically could just copy-paste the encryption metadata in the document in order to allow the
+                 * operation anyway, but we first need to carefully consider the implications of doing so.
+                 */
+                throw this.errorHandler.createErrorWithMessage(`Could not determine all data owners with access to service with id ${id}. Cannot create attachment.`)
+            }
+
+            const documentToCreate = await this.api.baseApi.documentApi.newInstance(
+                currentUser,
+                undefined,
+                new DocumentDto({
+                    id: this.api.baseApi.cryptoApi.primitives.randomUuid(),
+                    name: documentName,
+                    version: documentVersion,
+                    externalUuid: documentExternalUuid,
+                    hash: ua2hex(await this.api.baseApi.cryptoApi.primitives.sha256(body)),
+                    size: body.byteLength,
+                    mainUti: UtiDetector.getUtiFor(documentName),
+                }),
+                {
+                    additionalDelegates: dataOwnersWithAccessInfo.permissionsByDataOwnerId,
+                }
+            )
+
+            const createdDocument = await this.api.baseApi.documentApi.createDocument(documentToCreate).catch((e) => {
+                throw this.errorHandler.createErrorFromAny(e)
+            })
+
+            // Update data sample with documentId
+            const contentIso = documentLanguage ?? 'en'
+            const newDSContent = {
+                ...existingService.content,
+                [contentIso]: new Content({
+                    ...(existingService.content?.[contentIso] ?? {}),
+                    documentId: createdDocument.id,
+                }),
+            }
+            await this._createOrModifyManyFor(patientIdOfBatch!, [
+                {
+                    ...existingService,
+                    content: newDSContent,
+                },
+            ])
+            // Do not delete existing `Document` entity, even if existing: services are versioned
+
+            // Add attachment to document
+            const docWithAttachment = await this.api.baseApi.documentApi.encryptAndSetDocumentAttachment(createdDocument, body)
+
+            return this.documentMapper.toDomain(docWithAttachment)
+        } catch (e) {
+            if (e instanceof Error) {
+                throw this.errorHandler.createError(e)
+            }
+            throw e
+        }
     }
 
-    getAttachmentDocument(id: string, documentId: string): Promise<Document> {
-        throw 'Not implemented yet'
+    async getAttachmentContent(id: string, documentId: string): Promise<ArrayBuffer> {
+        const documentOfAttachment = await this._getDataSampleAttachmentDocumentFromICure(id, documentId)
+
+        return this.api.baseApi.documentApi.getAndDecryptDocumentAttachment(documentOfAttachment)
     }
 
-    setAttachment(id: string, body: ArrayBuffer, documentName?: string, documentVersion?: string, documentExternalUuid?: string, documentLanguage?: string): Promise<Document> {
-        throw 'Not implemented yet'
+    async getAttachmentDocument(id: string, documentId: string): Promise<DSDocument> {
+        return this.documentMapper.toDomain(await this._getDataSampleAttachmentDocumentFromICure(id, documentId))
+    }
+
+    private async _getDataSampleAttachmentDocumentFromICure(serviceId: string, documentId: string): Promise<DocumentDto> {
+        const existingService = await this._getServiceFromICure(serviceId)
+        if (Object.entries(existingService.content ?? {}).find(([, content]) => content.documentId == documentId) == null) {
+            throw this.errorHandler.createErrorWithMessage(`Id ${documentId} does not reference any document in the data sample ${serviceId}`)
+        }
+
+        return this.api.baseApi.documentApi.getDocument(documentId)
     }
 }

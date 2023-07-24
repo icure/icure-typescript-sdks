@@ -38,8 +38,8 @@ function toCodeAuthor(domain: Coding): string | undefined {
     return undefined
 }
 
-function toCodeRegions(domain: Coding): string[] | undefined {
-    return domain.regions
+function toCodeRegions(domain: Coding): string[] {
+    return [...domain.regions]
 }
 
 function toCodePeriodicity(domain: Coding): Periodicity[] | undefined {
@@ -78,8 +78,8 @@ function toCodeDisabled(domain: Coding): boolean | undefined {
     return undefined
 }
 
-function toCodingId(dto: Code): string | undefined {
-    return dto.id
+function toCodingId(dto: Code): string {
+    return dto.id!
 }
 
 function toCodingRev(dto: Code): string | undefined {
@@ -98,8 +98,8 @@ function toCodingVersion(dto: Code): string | undefined {
     return dto.version
 }
 
-function toCodingRegions(dto: Code): string[] | undefined {
-    return dto.regions
+function toCodingRegions(dto: Code): Set<string> {
+    return new Set(dto.regions ?? [])
 }
 
 function toCodingDescription(dto: Code): Map<string, string> | undefined {

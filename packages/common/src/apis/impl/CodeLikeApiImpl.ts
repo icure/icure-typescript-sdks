@@ -8,10 +8,14 @@ import {PaginatedList} from '../../models/PaginatedList.model'
 import {NoOpFilter} from '../../filters/dsl/filterDsl'
 import {FilterMapper} from "../../mappers/Filter.mapper";
 import {CommonFilter} from "../../filters/filters";
+import {toPaginatedList} from "../../mappers/PaginatedList.mapper";
 
 export class CodeLikeApiImpl<DSCode> implements CodeLikeApi<DSCode> {
-    constructor(private readonly mapper: Mapper<DSCode, Code>, private readonly paginatedMapper: Mapper<PaginatedList<DSCode>, PaginatedListCode>, private readonly errorHandler: ErrorHandler, private readonly codeApi: IccCodeXApi) {
-    }
+    constructor(
+        private readonly mapper: Mapper<DSCode, Code>,
+        private readonly errorHandler: ErrorHandler,
+        private readonly codeApi: IccCodeXApi
+    ) { }
 
     private static isCodeId(id?: string): boolean {
         const codeRegex = new RegExp(`[a-zA-Z0-9]{0,80}\\|[a-zA-Z0-9.-]{0,80}\\|[a-zA-Z0-9.]{0,80}`)
@@ -66,7 +70,7 @@ export class CodeLikeApiImpl<DSCode> implements CodeLikeApi<DSCode> {
                 rows: [],
             } as PaginatedList<DSCode>
         } else {
-            return this.paginatedMapper.toDomain(
+            return toPaginatedList(
                 await this.codeApi
                     .filterCodesBy(
                         undefined,
@@ -81,7 +85,8 @@ export class CodeLikeApiImpl<DSCode> implements CodeLikeApi<DSCode> {
                     )
                     .catch((e) => {
                         throw this.errorHandler.createErrorFromAny(e)
-                    })
+                    }),
+                this.mapper.toDomain
             )!
         }
     }

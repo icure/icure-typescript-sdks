@@ -1,5 +1,5 @@
 import { Content } from '@icure/api'
-import { mapTo, Measure, TimeSeries } from "@icure/typescript-common"
+import { mapTo, Measure, TimeSeries } from '@icure/typescript-common'
 import { Observation } from './Observation.model'
 
 @mapTo(Content)
@@ -28,20 +28,48 @@ export class Component {
 
     static toJSON(instance: Component): any {
         const pojo: any = {}
-        pojo["numberValue"] = instance.numberValue
-        pojo["booleanValue"] = instance.booleanValue
-        pojo["instantValue"] = instance.instantValue
-        pojo["fuzzyDateValue"] = instance.fuzzyDateValue
-        pojo["measureValue"] = !!instance.measureValue ? Measure.toJSON(instance.measureValue) : undefined
-        pojo["timeSeries"] = !!instance.timeSeries ? TimeSeries.toJSON(instance.timeSeries) : undefined
-        pojo["compoundValue"] = instance.compoundValue?.map(item => Observation.toJSON(item))
-        pojo["ratio"] = instance.ratio?.map(item => Measure.toJSON(item))
-        pojo["range"] = instance.range?.map(item => Measure.toJSON(item))
+        if (instance.numberValue !== undefined) pojo['numberValue'] = instance.numberValue
+        if (instance.booleanValue !== undefined) pojo['booleanValue'] = instance.booleanValue
+        if (instance.instantValue !== undefined) pojo['instantValue'] = instance.instantValue
+        if (instance.fuzzyDateValue !== undefined) pojo['fuzzyDateValue'] = instance.fuzzyDateValue
+        if (instance.measureValue !== undefined) pojo['measureValue'] = !!instance.measureValue ? Measure.toJSON(instance.measureValue) : undefined
+        if (instance.timeSeries !== undefined) pojo['timeSeries'] = !!instance.timeSeries ? TimeSeries.toJSON(instance.timeSeries) : undefined
+        if (instance.compoundValue !== undefined) pojo['compoundValue'] = instance.compoundValue?.map((item) => Observation.toJSON(item))
+        if (instance.ratio !== undefined) pojo['ratio'] = instance.ratio?.map((item) => Measure.toJSON(item))
+        if (instance.range !== undefined) pojo['range'] = instance.range?.map((item) => Measure.toJSON(item))
         return pojo
     }
 
     static fromJSON(pojo: any): Component {
-        return new Component({numberValue: pojo["numberValue"], booleanValue: pojo["booleanValue"], instantValue: pojo["instantValue"], fuzzyDateValue: pojo["fuzzyDateValue"], measureValue: !!pojo["measureValue"] ? Measure.fromJSON(pojo["measureValue"]) : undefined, timeSeries: !!pojo["timeSeries"] ? TimeSeries.fromJSON(pojo["timeSeries"]) : undefined, compoundValue: pojo["compoundValue"]?.map((item: any) => Observation.fromJSON(item)), ratio: pojo["ratio"]?.map((item: any) => Measure.fromJSON(item)), range: pojo["range"]?.map((item: any) => Measure.fromJSON(item))})
+        const obj = {} as IComponent
+        if (pojo['numberValue'] !== undefined) {
+            obj['numberValue'] = pojo['numberValue']
+        }
+        if (pojo['booleanValue'] !== undefined) {
+            obj['booleanValue'] = pojo['booleanValue']
+        }
+        if (pojo['instantValue'] !== undefined) {
+            obj['instantValue'] = pojo['instantValue']
+        }
+        if (pojo['fuzzyDateValue'] !== undefined) {
+            obj['fuzzyDateValue'] = pojo['fuzzyDateValue']
+        }
+        if (pojo['measureValue'] !== undefined) {
+            obj['measureValue'] = !!pojo['measureValue'] ? Measure.fromJSON(pojo['measureValue']) : undefined
+        }
+        if (pojo['timeSeries'] !== undefined) {
+            obj['timeSeries'] = !!pojo['timeSeries'] ? TimeSeries.fromJSON(pojo['timeSeries']) : undefined
+        }
+        if (pojo['compoundValue'] !== undefined) {
+            obj['compoundValue'] = pojo['compoundValue']?.map((item: any) => Observation.fromJSON(item))
+        }
+        if (pojo['ratio'] !== undefined) {
+            obj['ratio'] = pojo['ratio']?.map((item: any) => Measure.fromJSON(item))
+        }
+        if (pojo['range'] !== undefined) {
+            obj['range'] = pojo['range']?.map((item: any) => Measure.fromJSON(item))
+        }
+        return new Component(obj)
     }
 }
 

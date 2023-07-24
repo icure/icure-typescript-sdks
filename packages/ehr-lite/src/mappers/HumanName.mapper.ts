@@ -3,11 +3,11 @@ import { PersonName } from '@icure/api'
 import { HumanNameUseEnum } from '../models/enums/HumanNameUse.enum'
 
 function toPersonNameLastName(domain: HumanName): string | undefined {
-    return domain.lastName
+    return domain.family
 }
 
 function toPersonNameFirstNames(domain: HumanName): string[] | undefined {
-    return domain.firstNames
+    return domain.given
 }
 
 function toPersonNameStart(domain: HumanName): number | undefined {
@@ -34,11 +34,11 @@ function toPersonNameUse(domain: HumanName): PersonName.UseEnum | undefined {
     return domain.use as PersonName.UseEnum | undefined
 }
 
-function toHumanNameLastName(dto: PersonName): string | undefined {
+function toHumanNameFamily(dto: PersonName): string | undefined {
     return dto.lastName
 }
 
-function toHumanNameFirstNames(dto: PersonName): string[] | undefined {
+function toHumanNameGiven(dto: PersonName): string[] | undefined {
     return dto.firstNames
 }
 
@@ -68,8 +68,8 @@ function toHumanNameUse(dto: PersonName): HumanNameUseEnum | undefined {
 
 export function mapPersonNameToHumanName(dto: PersonName): HumanName {
     return new HumanName({
-        lastName: toHumanNameLastName(dto),
-        firstNames: toHumanNameFirstNames(dto),
+        family: toHumanNameFamily(dto),
+        given: toHumanNameGiven(dto),
         start: toHumanNameStart(dto),
         end: toHumanNameEnd(dto),
         prefix: toHumanNamePrefix(dto),

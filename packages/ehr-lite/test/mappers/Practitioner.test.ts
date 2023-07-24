@@ -1,5 +1,5 @@
 import { generatePractitioner } from '../models/Practitioner.model'
-import { Practitioner } from '../../src/models/Practitioner.model'
+import { Practitioner } from '../../src'
 import { mapHealthcarePartyToPractitioner, mapPractitionerToHealthcareParty } from '../../src/mappers/Practitioner.mapper'
 
 describe('Practitioner', function () {

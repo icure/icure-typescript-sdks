@@ -34,48 +34,79 @@ export class Address {
   encryptedSelf?: string
 
   constructor(json: IAddress) {
-    const { addressType, telecoms, ...simpleProperties } = json
-
-    Object.assign(this as Address, simpleProperties)
-
-    this.addressType = addressType as AddressAddressTypeEnum
-    this.telecoms = telecoms?.map((t) => new Telecom(t)) ?? []
+    this.addressType = json.addressType
+    this.description = json.description
+    this.street = json.street
+    this.houseNumber = json.houseNumber
+    this.postboxNumber = json.postboxNumber
+    this.postalCode = json.postalCode
+    this.city = json.city
+    this.state = json.state
+    this.country = json.country
+    this.note = json.note
+    this.telecoms = json.telecoms ?? []
+    this.notes = json.notes
+    this.encryptedSelf = json.encryptedSelf
   }
 
   static toJSON(instance: Address): any {
     const pojo: any = {}
-    pojo['addressType'] = instance.addressType
-    pojo['description'] = instance.description
-    pojo['street'] = instance.street
-    pojo['houseNumber'] = instance.houseNumber
-    pojo['postboxNumber'] = instance.postboxNumber
-    pojo['postalCode'] = instance.postalCode
-    pojo['city'] = instance.city
-    pojo['state'] = instance.state
-    pojo['country'] = instance.country
-    pojo['note'] = instance.note
+    if (instance.addressType !== undefined) pojo['addressType'] = instance.addressType
+    if (instance.description !== undefined) pojo['description'] = instance.description
+    if (instance.street !== undefined) pojo['street'] = instance.street
+    if (instance.houseNumber !== undefined) pojo['houseNumber'] = instance.houseNumber
+    if (instance.postboxNumber !== undefined) pojo['postboxNumber'] = instance.postboxNumber
+    if (instance.postalCode !== undefined) pojo['postalCode'] = instance.postalCode
+    if (instance.city !== undefined) pojo['city'] = instance.city
+    if (instance.state !== undefined) pojo['state'] = instance.state
+    if (instance.country !== undefined) pojo['country'] = instance.country
+    if (instance.note !== undefined) pojo['note'] = instance.note
     pojo['telecoms'] = instance.telecoms.map((item) => Telecom.toJSON(item))
-    pojo['notes'] = instance.notes?.map((item) => Annotation.toJSON(item))
-    pojo['encryptedSelf'] = instance.encryptedSelf
+    if (instance.notes !== undefined) pojo['notes'] = instance.notes?.map((item) => Annotation.toJSON(item))
+    if (instance.encryptedSelf !== undefined) pojo['encryptedSelf'] = instance.encryptedSelf
     return pojo
   }
 
   static fromJSON(pojo: any): Address {
-    return new Address({
-      addressType: pojo['addressType'],
-      description: pojo['description'],
-      street: pojo['street'],
-      houseNumber: pojo['houseNumber'],
-      postboxNumber: pojo['postboxNumber'],
-      postalCode: pojo['postalCode'],
-      city: pojo['city'],
-      state: pojo['state'],
-      country: pojo['country'],
-      note: pojo['note'],
-      telecoms: pojo['telecoms'].map((item: any) => Telecom.fromJSON(item)),
-      notes: pojo['notes']?.map((item: any) => Annotation.fromJSON(item)),
-      encryptedSelf: pojo['encryptedSelf'],
-    })
+    const obj = {} as IAddress
+    if (pojo['addressType'] !== undefined) {
+      obj['addressType'] = pojo['addressType']
+    }
+    if (pojo['description'] !== undefined) {
+      obj['description'] = pojo['description']
+    }
+    if (pojo['street'] !== undefined) {
+      obj['street'] = pojo['street']
+    }
+    if (pojo['houseNumber'] !== undefined) {
+      obj['houseNumber'] = pojo['houseNumber']
+    }
+    if (pojo['postboxNumber'] !== undefined) {
+      obj['postboxNumber'] = pojo['postboxNumber']
+    }
+    if (pojo['postalCode'] !== undefined) {
+      obj['postalCode'] = pojo['postalCode']
+    }
+    if (pojo['city'] !== undefined) {
+      obj['city'] = pojo['city']
+    }
+    if (pojo['state'] !== undefined) {
+      obj['state'] = pojo['state']
+    }
+    if (pojo['country'] !== undefined) {
+      obj['country'] = pojo['country']
+    }
+    if (pojo['note'] !== undefined) {
+      obj['note'] = pojo['note']
+    }
+    obj['telecoms'] = pojo['telecoms'].map((item: any) => Telecom.fromJSON(item))
+    if (pojo['notes'] !== undefined) {
+      obj['notes'] = pojo['notes']?.map((item: any) => Annotation.fromJSON(item))
+    }
+    if (pojo['encryptedSelf'] !== undefined) {
+      obj['encryptedSelf'] = pojo['encryptedSelf']
+    }
+    return new Address(obj)
   }
 }
 

@@ -3,27 +3,24 @@ import { Annotation as AnnotationDto, CodeStub, Content, Delegation as Delegatio
 import {
     Annotation,
     CodingReference,
-    convertMapOfArrayOfGenericToObject,
     convertNestedMapToObject,
-    convertObjectToMapOfArrayOfGeneric,
     convertObjectToNestedMap,
-    Delegation,
-    extractCryptedForeignKeys,
-    extractDelegations,
     extractEncryptedSelf,
-    extractEncryptionKeys,
-    extractSecretForeignKeys,
-    extractSecurityMetadata,
+    filteringOutInternalTags,
     Identifier,
     mapAnnotationDtoToAnnotation,
     mapAnnotationToAnnotationDto,
     mapCodeStubToCodingReference,
     mapCodingReferenceToCodeStub,
-    mapDelegationDtoToDelegation,
-    mapDelegationToDelegationDto,
     mapIdentifierDtoToIdentifier,
     mapIdentifierToIdentifierDto,
+    mergeTagsWithInternalTags,
     SystemMetaDataEncrypted,
+    toCryptedForeignKeys,
+    toDelegations,
+    toEncryptionKeys,
+    toSecretForeignKeys,
+    toSystemMetaDataEncrypted,
 } from '@icure/typescript-common'
 import { Component } from '../models/Component.model'
 import { LocalComponent } from '../models/LocalComponent.model'
@@ -63,22 +60,19 @@ function toServiceFormIds(domain: Observation): string[] | undefined {
 }
 
 function toServiceSecretForeignKeys(domain: Observation): string[] | undefined {
-    return extractSecretForeignKeys(domain.systemMetaData)
+    return !!domain.systemMetaData ? toSecretForeignKeys(domain.systemMetaData) : undefined
 }
 
 function toServiceCryptedForeignKeys(domain: Observation): { [key: string]: DelegationDto[] } | undefined {
-    const cryptedForeignKeys = extractCryptedForeignKeys(domain.systemMetaData)
-    return !!cryptedForeignKeys ? convertMapOfArrayOfGenericToObject<Delegation, DelegationDto>(cryptedForeignKeys, (arr) => arr.map(mapDelegationToDelegationDto)) : undefined
+    return !!domain.systemMetaData ? toCryptedForeignKeys(domain.systemMetaData) : undefined
 }
 
 function toServiceDelegations(domain: Observation): { [key: string]: DelegationDto[] } | undefined {
-    const delegations = extractDelegations(domain.systemMetaData)
-    return !!delegations ? convertMapOfArrayOfGenericToObject<Delegation, DelegationDto>(delegations, (arr) => arr.map(mapDelegationToDelegationDto)) : undefined
+    return !!domain.systemMetaData ? toDelegations(domain.systemMetaData) : undefined
 }
 
 function toServiceEncryptionKeys(domain: Observation): { [key: string]: DelegationDto[] } | undefined {
-    const encryptionKeys = extractEncryptionKeys(domain.systemMetaData)
-    return !!encryptionKeys ? convertMapOfArrayOfGenericToObject<Delegation, DelegationDto>(encryptionKeys, (arr) => arr.map(mapDelegationToDelegationDto)) : undefined
+    return !!domain.systemMetaData ? toEncryptionKeys(domain.systemMetaData) : undefined
 }
 
 function toServiceLabel(domain: Observation): string | undefined {
@@ -93,11 +87,7 @@ function toServiceIndex(domain: Observation): number | undefined {
     return domain.index
 }
 
-function toServiceContent(domain: Observation):
-    | {
-          [key: string]: Content
-      }
-    | undefined {
+function toServiceContent(domain: Observation): { [key: string]: Content } | undefined {
     const nonLocalizedContent = !!domain.component ? mapComponentToContent(domain.component) : undefined
     const localizedContentEntries: [ISO639_1, Content][] = [...(domain.localContent?.entries() ?? [])]?.map(([key, value]) => {
         return [key, mapLocalComponentToContent(value)]
@@ -184,7 +174,7 @@ function toServiceCodes(domain: Observation): CodeStub[] | undefined {
 }
 
 function toServiceTags(domain: Observation): CodeStub[] | undefined {
-    return !!domain.tags ? [...domain.tags].map(mapCodingReferenceToCodeStub) : undefined
+    return mergeTagsWithInternalTags('Observation', domain.tags, domain.systemMetaData)
 }
 
 function toServiceEncryptedSelf(domain: Observation): string | undefined {
@@ -270,17 +260,11 @@ function toObservationCodes(dto: Service): Set<CodingReference> | undefined {
 }
 
 function toObservationTags(dto: Service): Set<CodingReference> | undefined {
-    return !!dto.tags ? new Set(dto.tags.map(mapCodeStubToCodingReference)) : undefined
+    return filteringOutInternalTags('Observation', dto.tags)
 }
 
 function toObservationSystemMetaData(dto: Service): SystemMetaDataEncrypted | undefined {
-    return new SystemMetaDataEncrypted({
-        encryptedSelf: dto.encryptedSelf,
-        cryptedForeignKeys: !!dto.cryptedForeignKeys ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.cryptedForeignKeys, (arr) => arr.map(mapDelegationDtoToDelegation)) : undefined,
-        delegations: !!dto.delegations ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.delegations, (arr) => arr.map(mapDelegationDtoToDelegation)) : undefined,
-        encryptionKeys: !!dto.encryptionKeys ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.encryptionKeys, (arr) => arr.map(mapDelegationDtoToDelegation)) : undefined,
-        secretForeignKeys: dto.secretForeignKeys,
-    })
+    return toSystemMetaDataEncrypted(dto)
 }
 
 function toObservationNotes(dto: Service): Annotation[] | undefined {

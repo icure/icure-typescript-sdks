@@ -1,32 +1,10 @@
-import {
-    AuthenticationApiImpl,
-    AuthenticationResult,
-    CryptoStrategies,
-    DataOwnerWithType,
-    ErrorHandler,
-    extractDomainType,
-    mapUserToUserDto,
-    MessageGatewayApi,
-    Notification,
-    NotificationTypeEnum,
-    Sanitizer
-} from '@icure/typescript-common'
-import { EHRLite, EHRLiteApi } from './EHRLiteApi'
-import {
-    Device,
-    HealthcareParty,
-    IccCryptoXApi,
-    KeyStorageFacade,
-    Patient,
-    StorageFacade,
-    User as UserDto
-} from '@icure/api'
-import { v4 as uuid } from 'uuid'
+import { AuthenticationApiImpl, CryptoStrategies, DataOwnerWithType, ErrorHandler, extractDomainType, MessageGatewayApi, Sanitizer } from '@icure/typescript-common'
+import { EHRLiteApi } from './EHRLiteApi'
+import { Device, HealthcareParty, KeyStorageFacade, Patient, StorageFacade } from '@icure/api'
 import Crypto from 'crypto'
-import { mapPatientToPatientDto } from '../mappers/Patient.mapper'
-import {DataOwnerTypeEnum} from "../models/DataOwner.model";
+import { DataOwnerTypeEnum } from '../models/DataOwner.model'
 
-class AuthenticationApi extends AuthenticationApiImpl<EHRLiteApi> {
+export class AuthenticationApi extends AuthenticationApiImpl<EHRLiteApi> {
     constructor(
         messageGatewayApi: MessageGatewayApi,
         iCureBasePath: string,
@@ -44,14 +22,7 @@ class AuthenticationApi extends AuthenticationApiImpl<EHRLiteApi> {
     }
 
     protected initApi(username: string, password: string): Promise<EHRLiteApi> {
-        const builder = EHRLite.api()
-            .withICureBaseUrl(this.iCureBasePath)
-            .withUserName(username)
-            .withPassword(password)
-            .withCrypto(this.crypto)
-            .withStorage(this.storage)
-            .withKeyStorage(this.keyStorage)
-            .withCryptoStrategies(this.cryptoStrategies)
+        const builder = new EHRLiteApi.Builder().withICureBaseUrl(this.iCureBasePath).withUserName(username).withPassword(password).withCrypto(this.crypto).withStorage(this.storage).withKeyStorage(this.keyStorage).withCryptoStrategies(this.cryptoStrategies)
         if (this.authProcessBySmsId) {
             builder.withAuthProcessBySmsId(this.authProcessBySmsId)
         }
@@ -80,8 +51,6 @@ class AuthenticationApi extends AuthenticationApiImpl<EHRLiteApi> {
     protected validatePatient(patientDto: Patient): void {
         return
     }
-
-
 }
 
 export const authenticationApi = (

@@ -1,14 +1,11 @@
-import { Mapper } from '@icure/typescript-common/dist/apis/Mapper'
-import { DataOwnerWithType, extractDataOwnerDomainType } from '@icure/typescript-common'
-import { DataOwnerTypeEnum as DataOwnerTypeEnumDto } from '@icure/api/icc-api/model/DataOwnerTypeEnum'
-import { DataOwnerTypeEnum } from '../models/DataOwner.model'
-import { DataOwnerWithType as DataOwnerWithTypeDto, HealthcareParty, Patient as PatientDto } from '@icure/api'
-import { Patient } from '../models/Patient.model'
-import { Practitioner } from '../models/Practitioner.model'
-import { Organisation } from '../models/Organisation.model'
-import { mapPatientDtoToPatient, mapPatientToPatientDto } from './Patient.mapper'
-import { mapHealthcarePartyToPractitioner, mapPractitionerToHealthcareParty } from './Practitioner.mapper'
-import { mapHealthcarePartyToOrganisation, mapOrganisationToHealthcareParty } from './Organisation.mapper'
+import {Mapper} from '@icure/typescript-common'
+import {DataOwnerWithType, extractDataOwnerDomainType} from '@icure/typescript-common'
+import {DataOwnerTypeEnum as DataOwnerTypeEnumDto} from '@icure/api/icc-api/model/DataOwnerTypeEnum'
+import {DataOwnerTypeEnum} from '../models/DataOwner.model'
+import {DataOwnerWithType as DataOwnerWithTypeDto} from '@icure/api'
+import {mapPatientDtoToPatient, mapPatientToPatientDto} from './Patient.mapper'
+import {mapHealthcarePartyToPractitioner, mapPractitionerToHealthcareParty} from './Practitioner.mapper'
+import {mapHealthcarePartyToOrganisation, mapOrganisationToHealthcareParty} from './Organisation.mapper'
 
 class DataOwnerMapper implements Mapper<DataOwnerWithType, DataOwnerWithTypeDto> {
     toDomain(dto: DataOwnerWithTypeDto): DataOwnerWithType {

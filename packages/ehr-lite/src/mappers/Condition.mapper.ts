@@ -3,33 +3,33 @@ import { Condition } from '../models/Condition.model'
 import {
     Annotation,
     CodingReference,
-    convertObjectToMapOfArrayOfGeneric,
-    Delegation,
-    extractCryptedForeignKeys,
-    extractDelegations,
-    extractEncryptedSelf,
-    extractEncryptionKeys,
-    extractSecretForeignKeys,
-    extractSecurityMetadata,
+    filteringOutInternalTags,
+    forceUuid,
     Identifier,
     mapAnnotationDtoToAnnotation,
     mapAnnotationToAnnotationDto,
     mapCodeStubToCodingReference,
     mapCodingReferenceToCodeStub,
-    mapDelegationDtoToDelegation,
-    mapDelegationToDelegationDto,
     mapIdentifierDtoToIdentifier,
     mapIdentifierToIdentifierDto,
+    mergeTagsWithInternalTags,
     SystemMetaDataEncrypted,
+    toCryptedForeignKeys,
+    toDelegations,
+    toEncryptedSelf,
+    toEncryptionKeys,
+    toSecretForeignKeys,
+    toSystemMetaDataEncrypted,
 } from '@icure/typescript-common'
 import { Annotation as AnnotationDto } from '@icure/api/icc-api/model/Annotation'
 import { ClinicalStatusEnum } from '../models/enums/ClinicalStatus.enum'
 import { VerificationStatusEnum } from '../models/enums/VerificationStatus.enum'
 import { CategoryEnum } from '../models/enums/Category.enum'
 import { SeverityEnum } from '../models/enums/Severity.enum'
+import { addUniqueObjectsToArray } from '@icure/typescript-common'
 
-function toHealthElementId(domain: Condition): string | undefined {
-    return domain.id
+function toHealthElementId(domain: Condition): string {
+    return forceUuid(domain.id)
 }
 
 function toHealthElementIdentifiers(domain: Condition): IdentifierDto[] | undefined {
@@ -61,43 +61,54 @@ function toHealthElementMedicalLocationId(domain: Condition): string | undefined
 }
 
 function toHealthElementTags(domain: Condition): CodeStub[] | undefined {
-    if (!domain.tags) {
-        return undefined
-    }
+    const mappedTags = mergeTagsWithInternalTags('Condition', domain.tags, domain.systemMetaData)
 
-    const tags = [...(domain.tags ?? [])]
     const bodySite = [...(domain.bodySite ?? [])]
 
     const bodySiteCodeStubs = bodySite.map(mapCodingReferenceToCodeStub).map((c) => {
         return new CodeStub({
             ...c,
-            context: 'bodySite',
+            context: 'Condition.bodySite',
         })
     })
 
-    const clinicalStatus = new CodeStub({
-        code: domain.clinicalStatus,
-        context: 'clinicalStatus',
-    })
+    const clinicalStatus = domain.clinicalStatus
+        ? [
+              new CodeStub({
+                  ...ClinicalStatusEnum.toCodeStub(domain.clinicalStatus),
+                  context: 'Condition.clinicalStatus',
+              }),
+          ]
+        : []
 
-    const verificationStatus = new CodeStub({
-        code: domain.verificationStatus,
-        context: 'verificationStatus',
-    })
+    const verificationStatus = domain.verificationStatus
+        ? [
+              new CodeStub({
+                  ...VerificationStatusEnum.toCodeStub(domain.verificationStatus),
+                  context: 'Condition.verificationStatus',
+              }),
+          ]
+        : []
 
-    const severity = new CodeStub({
-        code: domain.severity,
-        context: 'severity',
-    })
+    const severity = domain.severity
+        ? [
+              new CodeStub({
+                  ...SeverityEnum.toCodeStub(domain.severity),
+                  context: 'Condition.severity',
+              }),
+          ]
+        : []
 
-    const category = new CodeStub({
-        code: domain.category,
-        context: 'category',
-    })
+    const category = domain.category
+        ? [
+              new CodeStub({
+                  ...CategoryEnum.toCodeStub(domain.category),
+                  context: 'Condition.category',
+              }),
+          ]
+        : []
 
-    const tagsCodeStubs = tags.map(mapCodingReferenceToCodeStub)
-
-    return [...tagsCodeStubs, ...bodySiteCodeStubs, clinicalStatus, severity, verificationStatus, category]
+    return addUniqueObjectsToArray(mappedTags, ...bodySiteCodeStubs, ...clinicalStatus, ...severity, ...verificationStatus, ...category)
 }
 
 function toHealthElementCodes(domain: Condition): CodeStub[] | undefined {
@@ -112,8 +123,8 @@ function toHealthElementDeletionDate(domain: Condition): number | undefined {
     return domain.deletionDate
 }
 
-function toHealthElementHealthElementId(domain: Condition): string | undefined {
-    return domain.healthcareElementId
+function toHealthElementHealthElementId(domain: Condition, initialisedId: string): string {
+    return domain.healthcareElementId ?? initialisedId
 }
 
 function toHealthElementValueDate(domain: Condition): number | undefined {
@@ -177,7 +188,7 @@ function toHealthElementCareTeam(domain: Condition): CareTeamMember[] | undefine
 }
 
 function toHealthElementSecretForeignKeys(domain: Condition): string[] | undefined {
-    return extractSecretForeignKeys(domain.systemMetaData)
+    return !!domain.systemMetaData ? toSecretForeignKeys(domain.systemMetaData) : undefined
 }
 
 function toHealthElementCryptedForeignKeys(domain: Condition):
@@ -185,13 +196,7 @@ function toHealthElementCryptedForeignKeys(domain: Condition):
           [key: string]: DelegationDto[]
       }
     | undefined {
-    const cryptedForeignKeys = extractCryptedForeignKeys(domain.systemMetaData)
-
-    if (!cryptedForeignKeys) {
-        return undefined
-    }
-
-    return Object.fromEntries([...cryptedForeignKeys].map(([key, value]) => [key, value.map(mapDelegationToDelegationDto)]))
+    return !!domain.systemMetaData ? toCryptedForeignKeys(domain.systemMetaData) : undefined
 }
 
 function toHealthElementDelegations(domain: Condition):
@@ -199,13 +204,7 @@ function toHealthElementDelegations(domain: Condition):
           [key: string]: DelegationDto[]
       }
     | undefined {
-    const delegations = extractDelegations(domain.systemMetaData)
-
-    if (!delegations) {
-        return undefined
-    }
-
-    return Object.fromEntries([...delegations].map(([key, value]) => [key, value.map(mapDelegationToDelegationDto)]))
+    return !!domain.systemMetaData ? toDelegations(domain.systemMetaData) : undefined
 }
 
 function toHealthElementEncryptionKeys(domain: Condition):
@@ -213,25 +212,19 @@ function toHealthElementEncryptionKeys(domain: Condition):
           [key: string]: DelegationDto[]
       }
     | undefined {
-    const encryptionKeys = extractEncryptionKeys(domain.systemMetaData)
-
-    if (!encryptionKeys) {
-        return undefined
-    }
-
-    return Object.fromEntries([...encryptionKeys].map(([key, value]) => [key, value.map(mapDelegationToDelegationDto)]))
+    return !!domain.systemMetaData ? toEncryptionKeys(domain.systemMetaData) : undefined
 }
 
 function toHealthElementEncryptedSelf(domain: Condition): string | undefined {
-    return extractEncryptedSelf(domain.systemMetaData)
+    return !!domain.systemMetaData ? toEncryptedSelf(domain.systemMetaData) : undefined
 }
 
 function toConditionId(dto: HealthElement): string | undefined {
     return dto.id
 }
 
-function toConditionIdentifiers(dto: HealthElement): Set<Identifier> | undefined {
-    return !!dto.identifiers ? new Set([...dto.identifiers].map(mapIdentifierDtoToIdentifier)) : undefined
+function toConditionIdentifiers(dto: HealthElement): Identifier[] | undefined {
+    return !!dto.identifiers ? [...dto.identifiers].map(mapIdentifierDtoToIdentifier) : undefined
 }
 
 function toConditionRev(dto: HealthElement): string | undefined {
@@ -259,23 +252,27 @@ function toConditionMedicalLocationId(dto: HealthElement): string | undefined {
 }
 
 function toConditionClinicalStatus(dto: HealthElement): ClinicalStatusEnum | undefined {
-    return dto.tags?.find((v) => v.context === 'clinicalStatus')?.code as ClinicalStatusEnum | undefined
+    const clinicalStatusTag = dto.tags?.find((v) => v.context === 'Condition.clinicalStatus')
+    return clinicalStatusTag ? ClinicalStatusEnum.fromCodeStub(clinicalStatusTag) : undefined
 }
 
 function toConditionVerificationStatus(dto: HealthElement): VerificationStatusEnum | undefined {
-    return dto.tags?.find((v) => v.context === 'verificationStatus')?.code as VerificationStatusEnum | undefined
+    const verificationStatusTag = dto.tags?.find((v) => v.context === 'Condition.verificationStatus')
+    return verificationStatusTag ? VerificationStatusEnum.fromCodeStub(verificationStatusTag) : undefined
 }
 
 function toConditionCategory(dto: HealthElement): CategoryEnum | undefined {
-    return dto.tags?.find((v) => v.context === 'category')?.code as CategoryEnum | undefined
+    const categoryTag = dto.tags?.find((v) => v.context === 'Condition.category')
+    return categoryTag ? CategoryEnum.fromCodeStub(categoryTag) : undefined
 }
 
 function toConditionSeverity(dto: HealthElement): SeverityEnum | undefined {
-    return dto.tags?.find((v) => v.context === 'severity')?.code as SeverityEnum | undefined
+    const severityTag = dto.tags?.find((v) => v.context === 'Condition.severity')
+    return severityTag ? SeverityEnum.fromCodeStub(severityTag) : undefined
 }
 
 function toConditionBodySite(dto: HealthElement): Set<CodingReference> | undefined {
-    const bodySites = dto.tags?.filter((v) => v.context === 'bodySite')
+    const bodySites = dto.tags?.filter((v) => v.context === 'Condition.bodySite')
 
     if (!bodySites) {
         return undefined
@@ -285,14 +282,10 @@ function toConditionBodySite(dto: HealthElement): Set<CodingReference> | undefin
 }
 
 function toConditionTags(dto: HealthElement): Set<CodingReference> | undefined {
-    const contexts = ['clinicalStatus', 'verificationStatus', 'category', 'severity', 'bodySite']
+    const contexts = ['clinicalStatus', 'verificationStatus', 'category', 'severity', 'bodySite'].map((v) => `Condition.${v}`)
     const tags = dto.tags?.filter((v) => (!!v.context ? !contexts.includes(v.context) : true))
 
-    if (!tags) {
-        return undefined
-    }
-
-    return new Set([...tags].map(mapCodeStubToCodingReference))
+    return filteringOutInternalTags('Condition', tags)
 }
 
 function toConditionCodes(dto: HealthElement): Set<CodingReference> | undefined {
@@ -332,13 +325,7 @@ function toConditionNotes(dto: HealthElement): Annotation[] | undefined {
 }
 
 function toConditionSystemMetaData(dto: HealthElement): SystemMetaDataEncrypted | undefined {
-    return new SystemMetaDataEncrypted({
-        encryptedSelf: dto.encryptedSelf,
-        secretForeignKeys: dto.secretForeignKeys,
-        cryptedForeignKeys: !!dto.cryptedForeignKeys ? new Map(Object.entries(dto.cryptedForeignKeys).map(([k, v]) => [k, v.map(mapDelegationDtoToDelegation)])) : undefined,
-        delegations: !!dto.delegations ? new Map(Object.entries(dto.delegations).map(([k, v]) => [k, v.map(mapDelegationDtoToDelegation)])) : undefined,
-        encryptionKeys: !!dto.encryptionKeys ? convertObjectToMapOfArrayOfGeneric<DelegationDto, Delegation>(dto.encryptionKeys, (arr) => arr.map(mapDelegationDtoToDelegation)) : undefined,
-    })
+    return toSystemMetaDataEncrypted(dto)
 }
 
 export function mapHealthElementToCondition(dto: HealthElement): Condition {
@@ -371,8 +358,9 @@ export function mapHealthElementToCondition(dto: HealthElement): Condition {
 }
 
 export function mapConditionToHealthElement(domain: Condition): HealthElement {
+    const id = toHealthElementId(domain)
     return new HealthElement({
-        id: toHealthElementId(domain),
+        id: id,
         identifiers: toHealthElementIdentifiers(domain),
         rev: toHealthElementRev(domain),
         created: toHealthElementCreated(domain),
@@ -384,7 +372,7 @@ export function mapConditionToHealthElement(domain: Condition): HealthElement {
         codes: toHealthElementCodes(domain),
         endOfLife: toHealthElementEndOfLife(domain),
         deletionDate: toHealthElementDeletionDate(domain),
-        healthElementId: toHealthElementHealthElementId(domain),
+        healthElementId: toHealthElementHealthElementId(domain, id),
         valueDate: toHealthElementValueDate(domain),
         openingDate: toHealthElementOpeningDate(domain),
         closingDate: toHealthElementClosingDate(domain),
