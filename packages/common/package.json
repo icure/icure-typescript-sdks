@@ -26,7 +26,7 @@
     "scripts": {
         "marshall": "nx run hephaestus:start --tsconfig ../common/tsconfig.json --model-regex '^.*/common/src/models/.*.model.ts$' --mapper-location ../common/src/mappers --marshaller-generator --mapper-generator",
         "prepare": "rimraf dist && yarn run build && jq '{name:.name, version:.version, description:.description, main:\"index.js\", types:\"index.d.ts\", dependencies:.dependencies, author:.author, license:.license, bugs:.bugs, homepage:.homepage}' < package.json > dist/package.json",
-        "publish": "yarn run prepare && cd dist && npm publish --registry=http://localhost:4873 && cd ..",
+        "publish": "yarn run prepare && cd dist && npm publish && cd ..",
         "test": "jest --runInBand --no-cache test",
         "build": "tsc"
     }

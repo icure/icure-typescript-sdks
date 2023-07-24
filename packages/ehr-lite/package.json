@@ -24,7 +24,7 @@
         "build": "tsc",
         "test": "jest --runInBand --no-cache test",
         "prepare": "rimraf dist && yarn run build && jq '{name:.name, version:.version, description:.description, main:\"index.js\", types:\"index.d.ts\", dependencies:.dependencies, author:.author, license:.license, bugs:.bugs, homepage:.homepage}' < package.json > dist/package.json",
-        "publish": "yarn run prepare && cd dist && npm publish --registry=http://localhost:4873 && cd ..",
+        "publish": "yarn run prepare && cd dist && npm publish && cd ..",
         "marshall": "nx run hephaestus:start --tsconfig ../ehr-lite/tsconfig.json --model-regex '^.*/ehr-lite/src/models/.*.model.ts$' --mapper-location src/mappers --marshaller-generator --mapper-generator"
     }
 }
