@@ -17,6 +17,7 @@ import {getEnvVariables, TestVars} from "@icure/test-setup/types";
 import {getEnvironmentInitializer, hcp1Username, hcp2Username, patUsername, setLocalStorage} from "../test-utils";
 import {HealthElement, Patient, User} from "@icure/api";
 import {HealthcareElement} from "@icure/medical-device-sdk";
+import 'isomorphic-fetch'
 
 setLocalStorage(fetch)
 

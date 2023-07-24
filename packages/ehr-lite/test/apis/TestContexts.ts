@@ -12,7 +12,7 @@ import {
     EHRLiteApi,
     HumanName, LocalComponent, NotificationFilter,
     Observation, ObservationApi, ObservationFilter, Organisation, OrganisationApi, Practitioner, PractitionerApi,
-    DataOwnerWithType
+    DataOwnerWithType, AuthenticationApi
 } from '../../src'
 import { EHRLiteCryptoStrategies, SimpleEHRLiteCryptoStrategies } from '../../src/services/EHRLiteCryptoStrategies'
 import {
@@ -30,7 +30,7 @@ import {
     mapMaintenanceTaskToNotification,
     MaintenanceTaskFilter,
     NotificationTypeEnum,
-    Notification, AuthenticationApi
+    Notification
 } from '@icure/typescript-common'
 import { EHRLiteMessageFactory } from '../../src/services/EHRLiteMessageFactory'
 import {
@@ -47,7 +47,6 @@ import {
 import { UserApi, Patient, PatientApi, Annotation, NotificationApi, DataOwnerApi } from '../../src'
 import { TestMessageFactory } from '../test-utils'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../../src/mappers/Patient.mapper'
-import { expectArrayContainsExactlyInAnyOrder } from '../../../common-test/assertions'
 import { mapConditionToHealthElement, mapHealthElementToCondition } from '../../src/mappers/Condition.mapper'
 import {mapObservationToService, mapServiceToObservation} from "../../src/mappers/Observation.mapper";
 import {
@@ -59,6 +58,7 @@ import {
     mapOrganisationToHealthcareParty
 } from "../../src/mappers/Organisation.mapper";
 import dataOwnerMapper from "../../src/mappers/DataOwner.mapper";
+import {TestVars} from "@icure/test-setup/types";
 
 export class EhrLiteBaseTestContext extends BaseApiTestContext<AnonymousEHRLiteApi.Builder, AnonymousEHRLiteApi, EHRLiteApi, EHRLiteCryptoStrategies, User, EHRLiteMessageFactory> {
     newAnonymousApiBuilder(): AnonymousEHRLiteApi.Builder {
@@ -88,6 +88,14 @@ export class EhrLiteBaseTestContext extends BaseApiTestContext<AnonymousEHRLiteA
     newTestMessageFactory(): EHRLiteMessageFactory {
         return new TestMessageFactory()
     }
+
+    hcpProcessId(env: TestVars): string {
+        return "practitioner" + env.testGroupId;
+    }
+
+    patProcessId(env: TestVars): string {
+        return env.patAuthProcessId;
+    }
 }
 
 type Constructor<T> = new (...args: any[]) => T
@@ -116,7 +124,7 @@ function addDomainTypeTagIfMissing(
 ): CodeStub[] {
     const found = extractDomainTypeTag(tags)
     if (found) {
-        expect(found.context).toEqual(domainType)
+        expect(found.code).toEqual(domainType)
         return tags
     } else return [
       ...(tags ?? []),
@@ -376,7 +384,7 @@ export function OrganisationApiAware<TBase extends Constructor<any>>(Base: TBase
 
 export function AuthenticationApiAware<TBase extends Constructor<any>>(Base: TBase): TBase & Constructor<WithAuthenticationApi<EHRLiteApi>> {
     return class AuthenticationApiAwareImpl extends Base implements WithAuthenticationApi<EHRLiteApi> {
-        authenticationApi(api: EHRLiteApi): AuthenticationApi<EHRLiteApi> {
+        authenticationApi(api: EHRLiteApi): AuthenticationApi {
             return api.authenticationApi
         }
     }

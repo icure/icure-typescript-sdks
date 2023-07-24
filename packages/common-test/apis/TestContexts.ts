@@ -24,7 +24,7 @@ import {
   sleep,
   StorageFacade,
   User,
-  Document, Device
+  Document, Device, retry
 } from "@icure/api";
 import {TestVars} from "@icure/test-setup/types";
 import {DefaultStorageEntryKeysFactory} from "@icure/api/icc-x-api/storage/DefaultStorageEntryKeysFactory";
@@ -48,6 +48,8 @@ export abstract class BaseApiTestContext<
   abstract userApi(api: DSApi): UserLikeApi<DSUser, any>
   abstract toUserDto(dsUser: DSUser): User
   abstract toDSUser(userDto: User): DSUser
+  abstract hcpProcessId(env: TestVars): string
+  abstract patProcessId(env: TestVars): string
 
   async apiForEnvUser(
     env: TestVars,
@@ -102,7 +104,7 @@ export abstract class BaseApiTestContext<
       .withMsgGwUrl(env.msgGtwUrl)
       .withMsgGwSpecId(env.specId)
       .withCrypto(webcrypto as any)
-      .withAuthProcessByEmailId(userType === "hcp" ? env.hcpAuthProcessId : env.patAuthProcessId)
+      .withAuthProcessByEmailId(userType === "hcp" ? this.hcpProcessId(env) : this.patProcessId(env))
       .withCryptoStrategies(this.newSimpleCryptoStrategies())
 
     if (storage) {
@@ -139,7 +141,7 @@ export abstract class BaseApiTestContext<
       throw Error(`Couldn't sign up user by email for current test`)
     }
 
-    const foundUser = await this.userApi(result.api).getLogged()
+    const foundUser = await retry(() => this.userApi(result.api).getLogged(), 10, 1000)
     assert(result)
     assert(result!.token != null)
     assert(result!.userId != null)

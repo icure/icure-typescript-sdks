@@ -1,16 +1,16 @@
 {
-  "name": "typescript-websocket-sdk",
-  "version": "1.0.0",
-  "main": "./dist/index.js",
-  "author": "iCure",
-  "license": "MIT",
-  "dependencies": {
-    "@icure/api": "7.0.0-beta.4",
-    "@icure/typescript-common": "*",
-    "loglevel": "^1.8.1",
-    "ws": "^8.13.0"
-  },
-  "devDependencies": {
-    "@types/ws": "^8.5.4"
-  }
+    "name": "typescript-websocket-sdk",
+    "version": "1.0.0",
+    "main": "./dist/index.js",
+    "author": "iCure",
+    "license": "MIT",
+    "dependencies": {
+        "@icure/api": "7.0.0-beta.10",
+        "@icure/typescript-common": "*",
+        "loglevel": "^1.8.1",
+        "ws": "^8.13.0"
+    },
+    "devDependencies": {
+        "@types/ws": "^8.5.4"
+    }
 }

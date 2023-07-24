@@ -70,6 +70,7 @@ import {NotificationFilter} from "@icure/ehr-lite-sdk";
 import {MedicalDeviceApi} from "../../src/apis/MedicalDeviceApi";
 import {MedicalDevice} from "../../src/models/MedicalDevice.model";
 import {mapDeviceToMedicalDevice, mapMedicalDeviceToDevice} from "../../src/mappers/MedicalDevice.mapper";
+import {TestVars} from "@icure/test-setup/types";
 
 export class MedTechBaseTestContext extends BaseApiTestContext<
     AnonymousMedTechApi.Builder,
@@ -105,6 +106,14 @@ export class MedTechBaseTestContext extends BaseApiTestContext<
 
     newTestMessageFactory(): MessageFactory<any, any, any> {
         return new TestMessageFactory()
+    }
+
+    hcpProcessId(env: TestVars): string {
+        return env.hcpAuthProcessId;
+    }
+
+    patProcessId(env: TestVars): string {
+        return env.patAuthProcessId;
     }
 }
 

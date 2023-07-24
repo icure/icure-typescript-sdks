@@ -9,6 +9,7 @@ import {BaseApiTestContext, WithDataOwnerApi, WithDeviceApi, WithHcpApi, WithPat
 import {getEnvironmentInitializer, hcp1Username, setLocalStorage} from "../test-utils";
 import {getEnvVariables, TestVars} from "@icure/test-setup/types";
 import {Device} from "@icure/api";
+import 'isomorphic-fetch'
 
 setLocalStorage(fetch)
 

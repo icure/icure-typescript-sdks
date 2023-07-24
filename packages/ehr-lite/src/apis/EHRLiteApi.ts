@@ -1,34 +1,14 @@
-import { Apis, DataOwnerWithType as DataOwnerWithTypeDto, IccCryptoXApi, IcureApi, KeyStorageFacade, KeyStorageImpl, LocalStorageImpl, StorageFacade } from '@icure/api'
+import { Apis, DataOwnerWithType as DataOwnerWithTypeDto, IccCryptoXApi, IcureApi, KeyStorageFacade, StorageFacade } from '@icure/api'
 import {
     AuthenticatedApiBuilder,
-    AuthenticationApi,
-    CodeLikeApi,
-    Coding,
     CommonApi,
     CryptoStrategies,
     CryptoStrategiesBridge,
-    DataOwnerLikeApi,
-    Document,
-    ErrorHandlerImpl,
     extractDomainType,
-    formatICureApiUrl,
-    HealthcarePartyLikeApi,
-    HealthElementLikeApi,
-    ICURE_CLOUD_URL,
-    MaintenanceTaskLikeApiImpl,
-    MessageGatewayApi,
-    MSG_GW_CLOUD_URL,
-    Notification,
-    PatientLikeApi,
-    SanitizerImpl,
-    ServiceLikeApi,
-    User,
-    UserLikeApi,
 } from '@icure/typescript-common'
 import { DataOwnerTypeEnum, DataOwnerWithType } from '../models/DataOwner.model'
 import {DataOwnerApi, dataOwnerApi} from './DataOwnerApi'
 import {CodingApi, codingApi} from './CodingApi'
-import { Patient } from '../models/Patient.model'
 import {ConditionApi, conditionApi} from './ConditionApi'
 import {ObservationApi, observationApi} from './ObservationApi'
 import {OrganisationApi, organisationApi} from './OrganisationApi'
@@ -38,10 +18,9 @@ import {UserApi, userApi} from './UserApi'
 import {NotificationApi, notificationApi} from './NotificationApi'
 import { DataOwnerTypeEnum as DataOwnerTypeEnumDto } from '@icure/api/icc-api/model/DataOwnerTypeEnum'
 import dataOwnerMapper from '../mappers/DataOwner.mapper'
-import { authenticationApi } from './AuthenticationApi'
+import { authenticationApi, AuthenticationApi } from './AuthenticationApi'
 import {EHRLiteCryptoStrategies} from "../services/EHRLiteCryptoStrategies";
 import {EHRLiteMessageFactory, iCureEHRLiteMessageFactory} from "../services/EHRLiteMessageFactory";
-import {MedTechApi} from "@icure/medical-device-sdk";
 
 export class EHRLiteApi extends CommonApi {
     private readonly _codingApi: CodingApi
@@ -56,7 +35,7 @@ export class EHRLiteApi extends CommonApi {
 
     private readonly _cryptoApi: IccCryptoXApi
 
-    private readonly _authenticationApi?: AuthenticationApi<EHRLiteApi>
+    private readonly _authenticationApi?: AuthenticationApi
 
     private readonly _messageFactory: EHRLiteMessageFactory
 
@@ -145,7 +124,13 @@ export class EHRLiteApi extends CommonApi {
         return this._userApi
     }
 
-    get authenticationApi(): AuthenticationApi<EHRLiteApi> | undefined {
+    get authenticationApi(): AuthenticationApi {
+        if (!this._authenticationApi) {
+            throw Error(
+              "authenticationApi couldn't be initialized. Make sure you provided the following arguments : msgGwUrl, msgGwSpecId, and at least one of authProcessByEmailId and authProcessBySMSId"
+            )
+        }
+
         return this._authenticationApi
     }
 

@@ -5,7 +5,7 @@ import { v4 as uuid } from 'uuid'
 import { EnvInitializer } from '@icure/test-setup/decorators'
 import {getEnvVariables, TestVars} from '@icure/test-setup/types'
 import { TestEnvironmentBuilder } from '@icure/test-setup/builder'
-import {BasicApis} from "@icure/api";
+import {BasicApis, retry} from "@icure/api";
 import {webcrypto} from "crypto";
 import {domainTypeTag} from "@icure/typescript-common";
 
@@ -41,6 +41,7 @@ export async function getEnvironmentInitializer(): Promise<EnvInitializer> {
       execute: async (env: TestVars): Promise<TestVars> => {
         const updatedEnvs = await baseInitializer.execute(env)
         const masterApi = await BasicApis(updatedEnvs.iCureUrl, updatedEnvs.masterHcp.user, updatedEnvs.masterHcp.password, webcrypto as any, fetch)
+        await retry(() => masterApi.userApi.getCurrentUser(), 10, 1000) // Ensure the user is available
         const hcp1 = await masterApi.healthcarePartyApi.getHealthcareParty(updatedEnvs.dataOwnerDetails[hcp1Username].dataOwnerId)
         await masterApi.healthcarePartyApi.modifyHealthcareParty({
           ...hcp1,

@@ -13,17 +13,11 @@
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
-    "prepare": "rimraf dist && npm run build && jq '{name:.name, version:.version, description:.description, main:\"index.js\", types:\"index.d.ts\", dependencies:.dependencies, author:.author, license:.license, bugs:.bugs, homepage:.homepage}' < package.json > dist/package.json",
-    "publish": "yarn version && yarn run prepare && cd dist && yarn publish --no-git-tag-version --new-version `git describe --abbrev=0 --tags` && cd ..",
-    "precommit": "pretty-quick --staged",
-    "make-doc": "yarn run typedoc --excludeInternal --out docs index.ts && perl -pi -e 's#\\[\\@icure/medical-device-sdk]\\(../README.md\\) / \\[Exports\\]\\(../modules.md\\)#[\\@icure/medical-device-sdk](../modules.md)#' `find ./docs -name '*.md'` && perl -pi -e 's#\\[\\@icure/medical-device-sdk\\]\\(README.md\\) / Exports##' docs/modules.md && rm docs/README.md && cd make-docs && yarn install && yarn run start",
-    "sync-doc": "rsync --delete --exclude 'yarn.*' --exclude '*.ts' --exclude '*.json' --exclude README.md --exclude .nojekyll -va docs/ ../medtech-docs/sdks/references/",
-    "test": "nyc mocha \"test/**/*.ts\" --require ts-node/register --require source-map-support/register --timeout=60000 --recursive || [[ $CLEANUP == 1 ]] && yarn clean",
-    "test-arm": "export COMPOSE_FILE_URL=https://raw.githubusercontent.com/icure/icure-e2e-test-setup/arm64/docker-compose-cloud.yaml && nyc mocha \"test/**/*.ts\" --require ts-node/register --require source-map-support/register --timeout=60000 --recursive",
-    "test-oss": "export COMPOSE_FILE_URL=https://raw.githubusercontent.com/icure/icure-e2e-test-setup/master/docker-compose.yaml && export BACKEND_TYPE=oss && nyc mocha test/**/*.ts --require ts-node/register --require source-map-support/register --timeout=60000 --recursive || [[ $CLEANUP == 1 ]] && yarn clean",
-    "clean": "npx ts-node test-scripts/cleanup.ts",
-    "marshall": "nx run hephaestus:start --tsconfig ../medtech/tsconfig.json --model-regex '^.*/medtech/src/models/.*.model.ts$' --mapper-location ../medtech/src/mappers --marshaller-generator --mapper-generator"
+    "marshall": "nx run hephaestus:start --tsconfig ../medtech/tsconfig.json --model-regex '^.*/medtech/src/models/.*.model.ts$' --mapper-location ../medtech/src/mappers --marshaller-generator --mapper-generator",
+    "prepare": "rimraf dist && yarn run build && jq '{name:.name, version:.version, description:.description, main:\"index.js\", types:\"index.d.ts\", dependencies:.dependencies, author:.author, license:.license, bugs:.bugs, homepage:.homepage}' < package.json > dist/package.json",
+    "publish": "yarn run prepare && cd dist && npm publish --registry=http://localhost:4873 && cd ..",
+    "test": "jest --runInBand --no-cache test",
+    "build": "tsc"
   },
   "prettier": {
     "semi": false,
@@ -51,7 +45,7 @@
     "homepage": "https://github.com/icure/icure-medical-device-js-sdk"
   },
   "dependencies": {
-    "@icure/api": "^7.0.0-beta.9",
+    "@icure/api": "^7.0.0",
     "@icure/typescript-common": "^0.0.0",
     "browser-or-node": "^2.1.1",
     "date-fns": "^2.28.0",
