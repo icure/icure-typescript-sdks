@@ -1,5 +1,5 @@
 import { generateHumanName } from '../models/HumanName.model'
-import { HumanName } from '../../src/models/HumanName.model'
+import { HumanName } from '../../src'
 import { mapHumanNameToPersonName, mapPersonNameToHumanName } from '../../src/mappers/HumanName.mapper'
 
 describe('HumanName', function () {

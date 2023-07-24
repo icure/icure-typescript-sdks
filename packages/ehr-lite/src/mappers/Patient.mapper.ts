@@ -100,11 +100,11 @@ function toPatientDtoDeletionDate(domain: Patient): number | undefined {
 }
 
 function toPatientDtoFirstName(domain: Patient): string | undefined {
-    return undefined
+    return domain.firstName
 }
 
 function toPatientDtoLastName(domain: Patient): string | undefined {
-    return undefined
+    return domain.lastName
 }
 
 function toPatientDtoNames(domain: Patient): PersonName[] | undefined {
@@ -543,6 +543,14 @@ function toPatientSystemMetaData(dto: PatientDto): SystemMetaDataOwnerEncrypted 
     return toSystemMetaDataOwnerEncrypted(dto)
 }
 
+function toPatientFirstName(dto: PatientDto): string | undefined {
+    return dto.firstName
+}
+
+function toPatientLastName(dto: PatientDto): string | undefined {
+    return dto.lastName
+}
+
 export function mapPatientDtoToPatient(dto: PatientDto): Patient {
     return new Patient({
         id: toPatientId(dto),
@@ -556,6 +564,8 @@ export function mapPatientDtoToPatient(dto: PatientDto): Patient {
         codes: toPatientCodes(dto),
         endOfLife: toPatientEndOfLife(dto),
         deletionDate: toPatientDeletionDate(dto),
+        firstName: toPatientFirstName(dto),
+        lastName: toPatientLastName(dto),
         names: toPatientNames(dto),
         languages: toPatientLanguages(dto),
         addresses: toPatientAddresses(dto),

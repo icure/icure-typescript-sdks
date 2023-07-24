@@ -1,6 +1,5 @@
 import 'isomorphic-fetch'
 import { MedTechApi } from '../../src/apis/MedTechApi'
-import { getEnvironmentInitializer, hcp1Username, patUsername, setLocalStorage, TestUtils } from '../test-utils'
 import { expect } from 'chai'
 import { HealthcareProfessional } from '../../src/models/HealthcareProfessional.model'
 import { v4 as uuid } from 'uuid'
@@ -9,6 +8,8 @@ import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import {User} from "@icure/typescript-common";
 import {FilterComposition, NoOpFilter} from "@icure/typescript-common";
 import {HealthcareProfessionalFilter} from "../../src/filter/HealthcareProfessionalFilterDsl";
+import {getEnvironmentInitializer, hcp1Username, patUsername, setLocalStorage} from "../../../common-test/test-utils";
+import {TestUtils} from "../test-utils";
 
 setLocalStorage(fetch)
 
@@ -72,7 +73,7 @@ describe('HealthcareProfessional Filters Test', function () {
     expect(!!hcps).to.equal(true)
     expect(hcps.rows.length).to.be.greaterThanOrEqual(2)
     hcps.rows.forEach((hcp) => {
-      expect([...hcp.codes][0].code).to.eq(`cardiologist-${id}`)
+      expect(Array.from(hcp.codes)[0].code).to.eq(`cardiologist-${id}`)
     })
   })
 
@@ -108,7 +109,7 @@ describe('HealthcareProfessional Filters Test', function () {
     expect(!!hcps).to.equal(true)
     expect(hcps.rows.length).to.be.greaterThanOrEqual(1)
     hcps.rows.forEach((hcp) => {
-      expect([...hcp.labels][0].code).to.eq(`physician-${id}`)
+      expect(Array.from(hcp.labels)[0].code).to.eq(`physician-${id}`)
     })
   })
 
@@ -122,7 +123,7 @@ describe('HealthcareProfessional Filters Test', function () {
     expect(!!hcps).to.equal(true)
     expect(hcps.rows.length).to.be.greaterThanOrEqual(1)
     hcps.rows.forEach((hcp) => {
-      expect([...hcp.codes][0].code).to.eq(`gastroenterologist-${id}`)
+      expect(Array.from(hcp.codes)[0].code).to.eq(`gastroenterologist-${id}`)
     })
   })
 
@@ -156,7 +157,7 @@ describe('HealthcareProfessional Filters Test', function () {
     expect(hcps.rows.length).to.be.greaterThanOrEqual(2)
     hcps.rows.forEach((hcp) => {
       expect(hcp).to.satisfy((h: HealthcareProfessional) => {
-        return [...h.codes][0].code === `gastroenterologist-${id}` || h.id === hcp2.id
+        return Array.from(h.codes)[0].code === `gastroenterologist-${id}` || h.id === hcp2.id
       })
     })
   })
@@ -172,7 +173,7 @@ describe('HealthcareProfessional Filters Test', function () {
     expect(!!hcps).to.equal(true)
     expect(hcps.rows.length).to.be.equal(1)
     hcps.rows.forEach((hcp) => {
-      expect([...hcp.codes][0].code).to.eq(`cardiologist-${id}`)
+      expect(Array.from(hcp.codes)[0].code).to.eq(`cardiologist-${id}`)
       expect(hcp.id).to.eq(hcp2.id)
     })
   })
@@ -191,7 +192,7 @@ describe('HealthcareProfessional Filters Test', function () {
     expect(hcps.rows.length).to.be.equal(1)
     hcps.rows.forEach((hcp) => {
       expect(hcp.id).to.eq(hcp3.id)
-      expect([...hcp.codes][0].code).to.eq(`cardiologist-${id}`)
+      expect(Array.from(hcp.codes)[0].code).to.eq(`cardiologist-${id}`)
     })
   })
 

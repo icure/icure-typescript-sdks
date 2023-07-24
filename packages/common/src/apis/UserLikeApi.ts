@@ -22,7 +22,7 @@ export interface UserLikeApi<DSUser, DSPatient> {
      * @param patient the Patient to create the user for.
      * @param tokenDuration the validity duration of the short-lived token, in seconds (default 48 hours)
      */
-    createAndInvite(patient: DSPatient, tokenDuration?: number): Promise<DSUser>
+    createAndInviteFor(patient: DSPatient, tokenDuration?: number): Promise<DSUser>
 
     /**
      * A user must have a login, an email or a mobilePhone defined, a user should be linked to either a Healthcare Professional, a Patient or a Device. When modifying an user, you must ensure that the rev obtained when getting or creating the user is present as the rev is used to guarantee that the user has not been modified by a third party.

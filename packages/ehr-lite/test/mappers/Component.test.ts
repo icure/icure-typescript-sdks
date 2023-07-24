@@ -1,5 +1,5 @@
 import { generateComponent } from '../models/Component.model'
-import { Component } from '../../src/models/Component.model'
+import { Component } from '../../src'
 import { mapComponentToContent, mapContentToComponent } from '../../src/mappers/Component.mapper'
 
 describe('Component', function () {

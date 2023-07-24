@@ -1,5 +1,5 @@
 import { generateLocalComponent } from '../models/LocalComponent.model'
-import { LocalComponent } from '../../src/models/LocalComponent.model'
+import { LocalComponent } from '../../src'
 import { mapContentToLocalComponent, mapLocalComponentToContent } from '../../src/mappers/LocalComponent.mapper'
 
 describe('LocalComponent', function () {

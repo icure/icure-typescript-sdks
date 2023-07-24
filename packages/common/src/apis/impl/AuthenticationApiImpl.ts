@@ -105,22 +105,19 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
         password: string
     }> {
         const userApi = (await BasicApis(this.iCureBasePath, login, validationCode)).userApi
-
         const user = await userApi.getCurrentUser()
         if (!user) {
             throw this.errorHandler.createErrorWithMessage(`Your validation code ${validationCode} expired. Start a new authentication process for your user`)
         }
-
         const token = await userApi.getToken(user.id!, forceUuid(), 3600 * 24 * 365 * 10)
         if (!token) {
             throw this.errorHandler.createErrorWithMessage(`Your validation code ${validationCode} expired. Start a new authentication process for your user`)
         }
-
         return { user, password: token }
     }
 
     protected async _initUserAuthTokenAndCrypto(login: string, token: string): Promise<AuthenticationResult<DSApi>> {
-        const { user, password } = await retry(() => this._generateAndAssignAuthenticationToken(login, token))
+        const { user, password } = await retry(() => this._generateAndAssignAuthenticationToken(login, token), 5, 500, 2)
         const authenticatedApi = await  this.initApi(login, password)
 
         const userKeyPairs: KeyPair<string>[] = []
@@ -163,7 +160,7 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
                             status: 'pending',
                             author: loggedUser.id,
                             responsible: loggedUser.patientId,
-                            type: NotificationTypeEnum.NEW_USER_OWN_DATA_ACCESS,
+                            taskType: NotificationTypeEnum.NEW_USER_OWN_DATA_ACCESS,
                         },
                         {
                             additionalDelegates: { [delegate]: 'WRITE' }

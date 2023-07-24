@@ -46,7 +46,7 @@ export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements Us
         })
     }
 
-    async createAndInvite(patient: DSPatient, tokenDuration?: number): Promise<DSUser> {
+    async createAndInviteFor(patient: DSPatient, tokenDuration?: number): Promise<DSUser> {
         if (!this.messageGatewayApi) {
             throw this.errorHandler.createErrorWithMessage('Can not invite a user, as no msgGtwUrl and/or specId have been provided : Make sure to call .withMsgGtwUrl and .withMsgGtwSpecId when creating your MedTechApi')
         }

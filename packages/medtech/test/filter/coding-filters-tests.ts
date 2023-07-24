@@ -1,12 +1,14 @@
 import 'isomorphic-fetch'
 import { MedTechApi } from '../../src/apis/MedTechApi'
-import { getEnvironmentInitializer, hcp1Username, setLocalStorage, TestUtils } from '../test-utils'
+import { getEnvironmentInitializer, hcp1Username, setLocalStorage } from '../../../common-test/test-utils'
 import { expect } from 'chai'
 import { v4 as uuid } from 'uuid'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import { Coding, mapOf, User } from '@icure/typescript-common'
 import { CodingFilter } from '@icure/ehr-lite-sdk'
 import { FilterComposition, NoOpFilter } from '@icure/typescript-common'
+import { describe, it, before } from 'mocha'
+import {TestUtils} from "../test-utils";
 
 setLocalStorage(fetch)
 
@@ -95,7 +97,7 @@ describe('Coding Filters Test', function () {
       expect(code).to.satisfy((c: Coding) => {
         return (
           c.id === code1.id! ||
-          (([...c.regions] ?? []).includes('gb') &&
+          (Array.from(c.regions).includes('gb') &&
             Object.keys(Object.fromEntries((c.description ?? new Map()).entries())).includes('en') &&
             c.type === 'SNOMED')
         )
@@ -112,7 +114,7 @@ describe('Coding Filters Test', function () {
       expect(code.id).to.be.oneOf([code1.id!, code2.id!, code3.id!])
       expect(code).to.satisfy((c: Coding) => {
         return (
-          ([...c.regions] ?? []).includes('gb') &&
+          Array.from(c.regions).includes('gb') &&
           Object.keys(Object.fromEntries((c.description ?? new Map()).entries())).includes('en') &&
           c.type === 'SNOMED'
         )
@@ -131,7 +133,7 @@ describe('Coding Filters Test', function () {
       expect(code.id).to.be.oneOf([code1.id!, code2.id!, code3.id!])
       expect(code).to.satisfy((c: Coding) => {
         return (
-          ([...c.regions] ?? []).includes('gb') &&
+          Array.from(c.regions).includes('gb') &&
           Object.keys(Object.fromEntries((c.description ?? new Map()).entries())).includes('en') &&
           c.type === 'SNOMED'
         )

@@ -18,9 +18,9 @@ export interface MaintenanceTaskLikeApi<DSMaintenanceTask> {
     /**
      * This method deletes the MaintenanceTask with the provided id.
      * @param id the id of the MaintenanceTask to delete
-     * @return a Promise containing the id of the MaintenanceTask or undefined if something goes wrong.
+     * @return a Promise containing the id of the MaintenanceTask
      */
-    delete(id: string): Promise<string | undefined>
+    delete(id: string): Promise<string>
 
     /**
      * Filters are complex selectors that are built by combining basic building blocks. You can learn more on how to build filters here {@link https://docs.icure.com/sdks/how-to/how-to-filter-data-with-advanced-search-criteria}. This method returns a paginated list of MaintenanceTask (with a cursor that lets you query the following items).

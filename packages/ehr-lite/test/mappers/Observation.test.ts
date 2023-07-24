@@ -1,5 +1,5 @@
 import { generateObservation } from '../models/Observation.model'
-import { Observation } from '../../src/models/Observation.model'
+import { Observation } from '../../src'
 import { mapObservationToService, mapServiceToObservation } from '../../src/mappers/Observation.mapper'
 
 describe('Observation', function () {

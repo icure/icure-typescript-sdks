@@ -2,9 +2,9 @@ import 'mocha'
 import 'isomorphic-fetch'
 import { assert } from 'chai'
 import { XHR } from '@icure/api'
-import { setLocalStorage } from '../test-utils'
 import XHRError = XHR.XHRError
 import {ErrorHandlerImpl} from "@icure/typescript-common";
+import {setLocalStorage} from "../../../common-test/test-utils";
 
 setLocalStorage(fetch)
 

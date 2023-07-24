@@ -1,5 +1,4 @@
 import 'isomorphic-fetch'
-import { getEnvironmentInitializer, hcp1Username, setLocalStorage, TestUtils } from '../test-utils'
 import { MedTechApi } from '../../src/apis/MedTechApi'
 import {User} from "@icure/typescript-common";
 import {FilterComposition, NoOpFilter} from "@icure/typescript-common";
@@ -8,6 +7,8 @@ import { MedicalDevice } from '../../src/models/MedicalDevice.model'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import { v4 as uuid } from 'uuid'
 import { MedicalDeviceFilter } from '../../src/filter/MedicalDeviceFilterDsl'
+import {getEnvironmentInitializer, hcp1Username, setLocalStorage} from "../../../common-test/test-utils";
+import {TestUtils} from "../test-utils";
 
 setLocalStorage(fetch)
 

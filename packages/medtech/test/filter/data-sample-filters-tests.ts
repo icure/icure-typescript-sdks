@@ -1,6 +1,5 @@
 import 'isomorphic-fetch'
 import { MedTechApi } from '../../src/apis/MedTechApi'
-import { getEnvironmentInitializer, hcp1Username, setLocalStorage, TestUtils } from '../test-utils'
 import { DataSampleFilter } from '../../src/filter/DataSampleFilterDsl'
 import { expect } from 'chai'
 import { DataSample } from '../../src/models/DataSample.model'
@@ -12,6 +11,8 @@ import { v4 as uuid } from 'uuid'
 import { CodingReference, mapOf, User } from '@icure/typescript-common'
 import { mapPatientToPatientDto } from '../../src/mappers/Patient.mapper'
 import { FilterComposition, NoOpFilter } from '@icure/typescript-common'
+import {getEnvironmentInitializer, hcp1Username, setLocalStorage} from "../../../common-test/test-utils";
+import {TestUtils} from "../test-utils";
 
 setLocalStorage(fetch)
 
@@ -152,7 +153,7 @@ describe('Data Sample Filters Tests', function () {
       expect(Array.from(sample.labels).map((it) => it.code)).to.contain('617')
       expect(Array.from(sample.labels).map((it) => it.type)).to.contain('SNOMEDCT')
     })
-  }).timeout(60000)
+  })
 
   it('Can filter Data Samples by codes', async function () {
     const samples = await hcp1Api.dataSampleApi.filterDataSample(
@@ -167,7 +168,7 @@ describe('Data Sample Filters Tests', function () {
       expect(Array.from(sample.codes).map((it) => it.code)).to.contain('617')
       expect(Array.from(sample.codes).map((it) => it.type)).to.contain('SNOMEDCT')
     })
-  }).timeout(60000)
+  })
 
   it('Can filter Data Samples by union filter', async function () {
     const byHEFilter = await new DataSampleFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).byHealthElementIds([he1.id!]).build()
