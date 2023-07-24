@@ -1,6 +1,6 @@
-import {Property} from "../../src/models/Property.model";
-import {generatePropertyType} from "./PropertyType.model";
-import {generateTypedValueObject} from "./TypedValueObject.model";
+import { Property } from '../../src/models/Property.model'
+import { generatePropertyType } from './PropertyType.model'
+import { generateTypedValueObject } from './TypedValueObject.model'
 
 export function generateProperty(): Property {
     const property = {

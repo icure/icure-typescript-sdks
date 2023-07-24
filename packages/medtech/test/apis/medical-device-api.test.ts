@@ -1,9 +1,6 @@
-import {
-  MedicalDeviceApiAware, MedTechBaseTestContext
-} from "./TestContexts";
-import {testDeviceLikeApi} from "../../../common-test/apis/device-like-api";
+import { MedicalDeviceApiAware, MedTechBaseTestContext } from './TestContexts'
+import { testDeviceLikeApi } from '../../../common-test/apis/device-like-api'
 
-const MedicalDeviceApiTestContext =
-  MedicalDeviceApiAware(MedTechBaseTestContext)
+const MedicalDeviceApiTestContext = MedicalDeviceApiAware(MedTechBaseTestContext)
 
 testDeviceLikeApi(new MedicalDeviceApiTestContext())

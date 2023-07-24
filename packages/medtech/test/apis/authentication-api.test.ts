@@ -1,13 +1,6 @@
-import {
-    AuthenticationApiAware,
-    DataOwnerApiAware,
-    DataSampleApiAware, HealthcareProfessionalApiAware,
-    MedTechBaseTestContext, NotificationApiAware,
-    PatientApiAware
-} from "./TestContexts";
-import {testAuthenticationApi} from "../../../common-test/apis/authentication-api";
+import { AuthenticationApiAware, DataOwnerApiAware, DataSampleApiAware, HealthcareProfessionalApiAware, MedTechBaseTestContext, NotificationApiAware, PatientApiAware } from './TestContexts'
+import { testAuthenticationApi } from '../../../common-test/apis/authentication-api'
 
-const AuthenticationApiTestContext =
-    AuthenticationApiAware(DataSampleApiAware(PatientApiAware(DataOwnerApiAware(HealthcareProfessionalApiAware(NotificationApiAware(MedTechBaseTestContext))))))
+const AuthenticationApiTestContext = AuthenticationApiAware(DataSampleApiAware(PatientApiAware(DataOwnerApiAware(HealthcareProfessionalApiAware(NotificationApiAware(MedTechBaseTestContext))))))
 
 testAuthenticationApi('MedTech AuthenticationApi', new AuthenticationApiTestContext())

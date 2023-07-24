@@ -1,5 +1,5 @@
-import {Identifier} from "../../src/models/Identifier.model";
-import {generateCodingReference} from "./CodingReference.model";
+import { Identifier } from '../../src/models/Identifier.model'
+import { generateCodingReference } from './CodingReference.model'
 
 export function generateIdentifier(): Identifier {
     const identifier = {

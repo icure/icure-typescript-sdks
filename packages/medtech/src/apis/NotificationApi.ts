@@ -1,13 +1,5 @@
-import {
-    CommonApi,
-    CommonFilter,
-    Connection, MaintenanceTaskLikeApi, MaintenanceTaskLikeApiImpl,
-    mapMaintenanceTaskToNotification,
-    mapNotificationToMaintenanceTask,
-    Notification,
-    PaginatedList,
-} from '@icure/typescript-common'
-import {MaintenanceTask} from '@icure/api'
+import { CommonApi, CommonFilter, Connection, MaintenanceTaskLikeApi, MaintenanceTaskLikeApiImpl, mapMaintenanceTaskToNotification, mapNotificationToMaintenanceTask, Notification, PaginatedList } from '@icure/typescript-common'
+import { MaintenanceTask } from '@icure/api'
 
 export interface NotificationApi extends MaintenanceTaskLikeApi<Notification> {
     /**
@@ -18,7 +10,7 @@ export interface NotificationApi extends MaintenanceTaskLikeApi<Notification> {
      * @param delegate the id of the Healthcare Party to delegate.
      * @return a Promise containing the Notification or undefined if something goes wrong.
      */
-    createOrModifyNotification(notification: Notification, delegate?: string): Promise<Notification | undefined>;
+    createOrModifyNotification(notification: Notification, delegate?: string): Promise<Notification | undefined>
 
     /**
      * @deprecated use {@link NotificationApi.delete} instead.
@@ -27,7 +19,7 @@ export interface NotificationApi extends MaintenanceTaskLikeApi<Notification> {
      * @param notificationId the id of the Notification to delete
      * @return a Promise containing the id of the Notification or undefined if something goes wrong.
      */
-    deleteNotification(notificationId: string): Promise<string | undefined>;
+    deleteNotification(notificationId: string): Promise<string | undefined>
 
     /**
      * @deprecated use {@link NotificationApi.filter} instead.
@@ -39,7 +31,7 @@ export interface NotificationApi extends MaintenanceTaskLikeApi<Notification> {
      * @param limit The number of patients to return in the queried page
      * @return a Promise containing the PaginatedList of Notification objects
      */
-    filterNotifications(filter: CommonFilter<MaintenanceTask>, nextNotificationId?: string, limit?: number): Promise<PaginatedList<Notification>>;
+    filterNotifications(filter: CommonFilter<MaintenanceTask>, nextNotificationId?: string, limit?: number): Promise<PaginatedList<Notification>>
 
     /**
      * @deprecated use {@link NotificationApi.get} instead.
@@ -48,7 +40,7 @@ export interface NotificationApi extends MaintenanceTaskLikeApi<Notification> {
      * @param notificationId the id of the Notification to retrieve.
      * @return a Promise containing the Notification or undefined if something goes wrong.
      */
-    getNotification(notificationId: string): Promise<Notification | undefined>;
+    getNotification(notificationId: string): Promise<Notification | undefined>
 
     /**
      * @deprecated use {@link NotificationApi.getPendingAfter} instead.
@@ -58,7 +50,7 @@ export interface NotificationApi extends MaintenanceTaskLikeApi<Notification> {
      * @param fromDate : Default value is now less 30 days
      * @return an Array of the Notifications matching those criteria
      */
-    getPendingNotificationsAfter(fromDate?: number): Promise<Array<Notification>>;
+    getPendingNotificationsAfter(fromDate?: number): Promise<Array<Notification>>
 
     /**
      * @deprecated use {@link NotificationApi.updateNotificationStatus} instead.
@@ -68,7 +60,7 @@ export interface NotificationApi extends MaintenanceTaskLikeApi<Notification> {
      * @param newStatus the new status
      * @return the updated Notification
      */
-    updateNotificationStatus(notification: Notification, newStatus: MaintenanceTask.StatusEnum): Promise<Notification | undefined>;
+    updateNotificationStatus(notification: Notification, newStatus: MaintenanceTask.StatusEnum): Promise<Notification | undefined>
 
     /**
      * @deprecated use {@link NotificationApi.subscribeToEvents} instead.
@@ -83,12 +75,7 @@ export interface NotificationApi extends MaintenanceTaskLikeApi<Notification> {
      *    - connectionMaxRetry : how many time retrying to reconnect to the iCure WebSocket;
      *    - connectionRetryIntervalInMs : How long base interval will be between two retry. The retry attempt is exponential and using a random value (connectionRetryIntervalMs * (random between 1 and 2))^nbAttempts)
      */
-    subscribeToNotificationEvents(
-        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
-        filter: CommonFilter<MaintenanceTask>,
-        eventFired: (dataSample: Notification) => Promise<void>,
-        options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }
-    ): Promise<Connection>;
+    subscribeToNotificationEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: CommonFilter<MaintenanceTask>, eventFired: (dataSample: Notification) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection>
 }
 
 /**
@@ -113,16 +100,10 @@ class NotificationApiImpl extends MaintenanceTaskLikeApiImpl<Notification> imple
     updateNotificationStatus(notification: Notification, newStatus: MaintenanceTask.StatusEnum): Promise<Notification | undefined> {
         return this.updateStatus(notification, newStatus)
     }
-    subscribeToNotificationEvents(
-        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
-        filter: CommonFilter<MaintenanceTask>,
-        eventFired: (dataSample: Notification) => Promise<void>,
-        options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }
-    ): Promise<Connection> {
+    subscribeToNotificationEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: CommonFilter<MaintenanceTask>, eventFired: (dataSample: Notification) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection> {
         return this.subscribeToEvents(eventTypes, filter, eventFired, options)
     }
 }
-
 
 export const notificationApi = (api: CommonApi): NotificationApi => {
     return new NotificationApiImpl(
@@ -138,6 +119,6 @@ export const notificationApi = (api: CommonApi): NotificationApi => {
         api.baseApi.maintenanceTaskApi,
         api.baseApi.userApi,
         api.baseApi.dataOwnerApi,
-        api
+        api,
     )
 }

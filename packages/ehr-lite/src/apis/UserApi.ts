@@ -1,18 +1,11 @@
 import { User as UserDto, Patient as PatientDto, HealthcareParty as HealthcarePartyDto } from '@icure/api'
-import {
-    CommonApi,
-    mapUserDtoToUser,
-    mapUserToUserDto,
-    User,
-    UserLikeApi,
-    UserLikeApiImpl
-} from '@icure/typescript-common'
+import { CommonApi, mapUserDtoToUser, mapUserToUserDto, User, UserLikeApi, UserLikeApiImpl } from '@icure/typescript-common'
 import { Patient } from '../models/Patient.model'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
-import {Practitioner} from "../models/Practitioner.model";
-import {Organisation} from "../models/Organisation.model";
-import {EHRLiteMessageFactory} from "../services/EHRLiteMessageFactory";
-import {mapDomainToHealthcareParty, mapHealthcarePartyToDomain} from "../mappers/HealthcareParty.mapper";
+import { Practitioner } from '../models/Practitioner.model'
+import { Organisation } from '../models/Organisation.model'
+import { EHRLiteMessageFactory } from '../services/EHRLiteMessageFactory'
+import { mapDomainToHealthcareParty, mapHealthcarePartyToDomain } from '../mappers/HealthcareParty.mapper'
 
 export interface UserApi extends UserLikeApi<User, Patient> {}
 
@@ -42,7 +35,7 @@ export const userApi = (api: CommonApi, messageFactory: EHRLiteMessageFactory): 
             },
             toDto(domain: Practitioner | Organisation): HealthcarePartyDto {
                 return mapDomainToHealthcareParty(domain)
-            }
+            },
         },
         api.errorHandler,
         api.sanitizer,
@@ -50,5 +43,5 @@ export const userApi = (api: CommonApi, messageFactory: EHRLiteMessageFactory): 
         api.baseApi.dataOwnerApi,
         api,
         messageFactory,
-        api.messageGatewayApi
+        api.messageGatewayApi,
     )

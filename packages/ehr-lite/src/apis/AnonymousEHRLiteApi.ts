@@ -1,9 +1,9 @@
-import {AnonymousApiBuilder, AuthenticationApi, CryptoStrategies, DataOwnerWithType} from '@icure/typescript-common'
-import {KeyStorageFacade, StorageFacade} from '@icure/api'
-import {CryptoPrimitives} from '@icure/api/icc-x-api/crypto/CryptoPrimitives'
-import {EHRLiteApi} from './EHRLiteApi'
-import {authenticationApi} from './AuthenticationApi'
-import {CommonAnonymousApi} from "@icure/typescript-common";
+import { AnonymousApiBuilder, AuthenticationApi, CryptoStrategies, DataOwnerWithType } from '@icure/typescript-common'
+import { KeyStorageFacade, StorageFacade } from '@icure/api'
+import { CryptoPrimitives } from '@icure/api/icc-x-api/crypto/CryptoPrimitives'
+import { EHRLiteApi } from './EHRLiteApi'
+import { authenticationApi } from './AuthenticationApi'
+import { CommonAnonymousApi } from '@icure/typescript-common'
 
 export class AnonymousEHRLiteApi extends CommonAnonymousApi<EHRLiteApi> {
     private readonly _authenticationApi: AuthenticationApi<EHRLiteApi>
@@ -16,24 +16,11 @@ export class AnonymousEHRLiteApi extends CommonAnonymousApi<EHRLiteApi> {
         keyStorage: KeyStorageFacade,
         private readonly cryptoPrimitives: CryptoPrimitives,
         private readonly cryptoStrategies: CryptoStrategies<DataOwnerWithType>,
-        authProcessInfo:
-            | { authProcessBySmsId: string, authProcessByEmailId?: string }
-            | { authProcessBySmsId?: string, authProcessByEmailId: string }
+        authProcessInfo: { authProcessBySmsId: string; authProcessByEmailId?: string } | { authProcessBySmsId?: string; authProcessByEmailId: string },
     ) {
         super(msgGwUrl, msgGwSpecId, storage, keyStorage, undefined, undefined)
 
-        this._authenticationApi = authenticationApi(
-            this._errorHandler,
-            this._sanitizer,
-            this._messageGatewayApi,
-            iCureUrlPath,
-            authProcessInfo.authProcessByEmailId,
-            authProcessInfo.authProcessBySmsId,
-            cryptoPrimitives.crypto,
-            storage,
-            keyStorage,
-            this.cryptoStrategies
-        )
+        this._authenticationApi = authenticationApi(this._errorHandler, this._sanitizer, this._messageGatewayApi, iCureUrlPath, authProcessInfo.authProcessByEmailId, authProcessInfo.authProcessBySmsId, cryptoPrimitives.crypto, storage, keyStorage, this.cryptoStrategies)
     }
 
     get authenticationApi(): AuthenticationApi<EHRLiteApi> {
@@ -44,28 +31,21 @@ export class AnonymousEHRLiteApi extends CommonAnonymousApi<EHRLiteApi> {
 export namespace AnonymousEHRLiteApi {
     export class Builder extends AnonymousApiBuilder<CryptoStrategies<DataOwnerWithType>, AnonymousEHRLiteApi> {
         protected doBuild(props: {
-            iCureBaseUrl: string;
-            msgGwUrl: string;
-            msgGwSpecId: string;
-            storage: StorageFacade<string>;
-            keyStorage: KeyStorageFacade;
-            primitives: CryptoPrimitives;
-            cryptoStrategies: CryptoStrategies<DataOwnerWithType>;
-            authProcessInfo: { authProcessBySmsId: string; authProcessByEmailId?: string } | {
-                authProcessBySmsId?: string;
-                authProcessByEmailId: string
-            }
+            iCureBaseUrl: string
+            msgGwUrl: string
+            msgGwSpecId: string
+            storage: StorageFacade<string>
+            keyStorage: KeyStorageFacade
+            primitives: CryptoPrimitives
+            cryptoStrategies: CryptoStrategies<DataOwnerWithType>
+            authProcessInfo:
+                | { authProcessBySmsId: string; authProcessByEmailId?: string }
+                | {
+                      authProcessBySmsId?: string
+                      authProcessByEmailId: string
+                  }
         }): Promise<AnonymousEHRLiteApi> {
-            return Promise.resolve(new AnonymousEHRLiteApi(
-                props.iCureBaseUrl,
-                props.msgGwUrl,
-                props.msgGwSpecId,
-                props.storage,
-                props.keyStorage,
-                props.primitives,
-                props.cryptoStrategies,
-                props.authProcessInfo
-            ))
+            return Promise.resolve(new AnonymousEHRLiteApi(props.iCureBaseUrl, props.msgGwUrl, props.msgGwSpecId, props.storage, props.keyStorage, props.primitives, props.cryptoStrategies, props.authProcessInfo))
         }
     }
 }

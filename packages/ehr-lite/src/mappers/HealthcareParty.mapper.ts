@@ -1,10 +1,10 @@
-import {HealthcareParty} from "@icure/api";
-import {Practitioner} from "../models/Practitioner.model";
-import {Organisation} from "../models/Organisation.model";
-import {extractDataOwnerDomainType} from "@icure/typescript-common";
-import {DataOwnerTypeEnum} from "../models/DataOwner.model";
-import {mapHealthcarePartyToPractitioner, mapPractitionerToHealthcareParty} from "./Practitioner.mapper";
-import {mapHealthcarePartyToOrganisation, mapOrganisationToHealthcareParty} from "./Organisation.mapper";
+import { HealthcareParty } from '@icure/api'
+import { Practitioner } from '../models/Practitioner.model'
+import { Organisation } from '../models/Organisation.model'
+import { extractDataOwnerDomainType } from '@icure/typescript-common'
+import { DataOwnerTypeEnum } from '../models/DataOwner.model'
+import { mapHealthcarePartyToPractitioner, mapPractitionerToHealthcareParty } from './Practitioner.mapper'
+import { mapHealthcarePartyToOrganisation, mapOrganisationToHealthcareParty } from './Organisation.mapper'
 
 export const mapHealthcarePartyToDomain = (healthcareParty: HealthcareParty): Practitioner | Organisation => {
     const domainType = extractDataOwnerDomainType(healthcareParty)

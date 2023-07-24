@@ -22,12 +22,12 @@ yarn run start --tsconfig path/to/tsconfig.json [--model-regex your_model_regex]
 
 The available command-line options are as follows:
 
-- `--tsconfig`: Path to your project's `tsconfig.json` file. This option is mandatory.
-- `--model-regex`: Regular expression used to determine which files are considered as models. By default, Hephaestus considers any file that matches `^(.*[\\/])?([\w-]+)\.model\.ts$` as a model.
-- `--mapper-regex`: Regular expression used to determine which files are considered as mappers. By default, Hephaestus considers any file that matches `^(.*[\\/])?([\w-]+)\.mapper\.ts$` as a mapper.
-- `--mapper-generator`: Tells Hephaestus to generate mappers for your models. If you use this option, you also need to provide the `--mapper-location`.
-- `--mapper-location`: Path where the generated mappers should be placed. This option is mandatory if `--mapper-generator` is used.
-- `--marshaller-generator`: Tells Hephaestus to generate marshallers for your models.
+-   `--tsconfig`: Path to your project's `tsconfig.json` file. This option is mandatory.
+-   `--model-regex`: Regular expression used to determine which files are considered as models. By default, Hephaestus considers any file that matches `^(.*[\\/])?([\w-]+)\.model\.ts$` as a model.
+-   `--mapper-regex`: Regular expression used to determine which files are considered as mappers. By default, Hephaestus considers any file that matches `^(.*[\\/])?([\w-]+)\.mapper\.ts$` as a mapper.
+-   `--mapper-generator`: Tells Hephaestus to generate mappers for your models. If you use this option, you also need to provide the `--mapper-location`.
+-   `--mapper-location`: Path where the generated mappers should be placed. This option is mandatory if `--mapper-generator` is used.
+-   `--marshaller-generator`: Tells Hephaestus to generate marshallers for your models.
 
 ## Examples
 

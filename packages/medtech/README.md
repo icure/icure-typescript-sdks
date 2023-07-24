@@ -5,20 +5,25 @@ This generator creates TypeScript/JavaScript client that utilizes fetch-api.
 ### Building
 
 To build and compile the typescript sources to javascript use:
+
 ```
 npm install
 npm run build
 ```
 
 ### Running tests
+
 To run all the tests use:
+
 ```
 yarn run test
 ```
-By default, the SDK will be tested using the iCure Kraken Cloud version. 
- The corresponding jar will be downloaded on developer computer and will run on a local docker, along with the CouchDB 
- instance and a mock Message Gateway instance. To change these settings, 
- you can use the following environment variables:
+
+By default, the SDK will be tested using the iCure Kraken Cloud version.
+The corresponding jar will be downloaded on developer computer and will run on a local docker, along with the CouchDB
+instance and a mock Message Gateway instance. To change these settings,
+you can use the following environment variables:
+
 ```bash
 # Set it to docker to run the tests on a local docker
 # Set it to acceptance to run the tests on the remote acceptance instance
@@ -56,6 +61,7 @@ CLEANUP=1
 ```
 
 #### Advanced Settings
+
 You can customize further your tests by setting these environment variables.
 
 ```bash
@@ -85,3 +91,4 @@ _unPublished (not recommended):_
 
 ```
 npm install PATH_TO_GENERATED_PACKAGE --save
+```

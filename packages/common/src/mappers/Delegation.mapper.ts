@@ -1,5 +1,5 @@
 import { Delegation as DelegationDto } from '@icure/api'
-import {Delegation} from "../models/Delegation.model";
+import { Delegation } from '../models/Delegation.model'
 
 function toDelegationDtoOwner(domain: Delegation): string | undefined {
     return domain.owner
@@ -31,17 +31,17 @@ function toDelegationKey(dto: DelegationDto): string | undefined {
 
 export function mapDelegationDtoToDelegation(dto: DelegationDto): Delegation {
     return new Delegation({
-    owner: toDelegationOwner(dto),
-    delegatedTo: toDelegationDelegatedTo(dto),
-    key: toDelegationKey(dto),
+        owner: toDelegationOwner(dto),
+        delegatedTo: toDelegationDelegatedTo(dto),
+        key: toDelegationKey(dto),
     })
 }
 
 export function mapDelegationToDelegationDto(domain: Delegation): DelegationDto {
     return new DelegationDto({
-    owner: toDelegationDtoOwner(domain),
-    delegatedTo: toDelegationDtoDelegatedTo(domain),
-    key: toDelegationDtoKey(domain),
-    tags: toDelegationDtoTags(domain),
+        owner: toDelegationDtoOwner(domain),
+        delegatedTo: toDelegationDtoDelegatedTo(domain),
+        key: toDelegationDtoKey(domain),
+        tags: toDelegationDtoTags(domain),
     })
 }

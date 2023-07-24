@@ -1,5 +1,5 @@
-import {CodingReference} from "../../src";
-import {ISO639_1} from "@icure/api";
+import { CodingReference } from '../../src'
+import { ISO639_1 } from '@icure/api'
 
 export function generateCodingReference(context?: string): CodingReference {
     const codingReference = {

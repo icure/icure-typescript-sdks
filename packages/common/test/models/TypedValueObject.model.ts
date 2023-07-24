@@ -1,13 +1,6 @@
-import {TypeEnum} from "../../src/models/enums/Type.enum";
-import {TypedValueObject} from "../../src/models/TypedValueObject.model";
-import {
-    generateRandomBoolean,
-    generateRandomDate,
-    generateRandomDouble,
-    generateRandomEncryptedSelf,
-    generateRandomInteger,
-    generateRandomString
-} from "./utils";
+import { TypeEnum } from '../../src/models/enums/Type.enum'
+import { TypedValueObject } from '../../src/models/TypedValueObject.model'
+import { generateRandomBoolean, generateRandomDate, generateRandomDouble, generateRandomEncryptedSelf, generateRandomInteger, generateRandomString } from './utils'
 
 export function generateRandomTypeEnum(): TypeEnum {
     // This is a placeholder. Replace this with the appropriate logic to generate a valid TypeEnum

@@ -1,5 +1,5 @@
-import {Location} from '../../src/models/Location.model'
-import {generateLocation} from "../models/Location.model";
+import { Location } from '../../src/models/Location.model'
+import { generateLocation } from '../models/Location.model'
 
 describe(`Location serialization and deserialization`, () => {
     it('should correctly serialize and deserialize from instance to JSON and back', () => {

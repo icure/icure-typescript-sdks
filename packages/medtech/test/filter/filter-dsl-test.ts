@@ -1,20 +1,14 @@
 import 'isomorphic-fetch'
-import {v4 as uuid} from 'uuid'
-import {MedTechApi} from '../../src/apis/MedTechApi'
-import {PatientFilter} from '../../src/filter/PatientFilterDsl'
-import {expect} from 'chai'
-import {format} from 'date-fns'
-import {IntersectionFilter, Patient} from '@icure/api'
-import {getEnvVariables, TestVars} from '@icure/test-setup/types'
-import {
-    NoOpFilter,
-    PatientByHealthcarePartyDateOfBirthBetweenFilter,
-    PatientByHealthcarePartyFilter,
-    PatientByHealthcarePartyNameContainsFuzzyFilter,
-    PatientByHealthcarePartySsinsFilter
-} from "@icure/typescript-common";
-import {getEnvironmentInitializer, hcp1Username, setLocalStorage} from "../../../common-test/test-utils";
-import {TestUtils} from "../test-utils";
+import { v4 as uuid } from 'uuid'
+import { MedTechApi } from '../../src/apis/MedTechApi'
+import { PatientFilter } from '../../src/filter/PatientFilterDsl'
+import { expect } from 'chai'
+import { format } from 'date-fns'
+import { IntersectionFilter, Patient } from '@icure/api'
+import { getEnvVariables, TestVars } from '@icure/test-setup/types'
+import { NoOpFilter, PatientByHealthcarePartyDateOfBirthBetweenFilter, PatientByHealthcarePartyFilter, PatientByHealthcarePartyNameContainsFuzzyFilter, PatientByHealthcarePartySsinsFilter } from '@icure/typescript-common'
+import { getEnvironmentInitializer, hcp1Username, setLocalStorage } from '../../../common-test/test-utils'
+import { TestUtils } from '../test-utils'
 
 setLocalStorage(fetch)
 
@@ -75,10 +69,8 @@ describe('Coding Filters Test', function () {
 
         const intersectionFilter = filter as IntersectionFilter<Patient>
         expect(intersectionFilter.filters).to.be.of.length(2)
-        expect(intersectionFilter.filters.find((f) => (f as PatientByHealthcarePartyDateOfBirthBetweenFilter).minDateOfBirth === 20221010)).to.not.be
-            .undefined
-        expect(intersectionFilter.filters.find((f) => (f as PatientByHealthcarePartyDateOfBirthBetweenFilter).maxDateOfBirth === ageToFuzzyDate(age))).to
-            .not.be.undefined
+        expect(intersectionFilter.filters.find((f) => (f as PatientByHealthcarePartyDateOfBirthBetweenFilter).minDateOfBirth === 20221010)).to.not.be.undefined
+        expect(intersectionFilter.filters.find((f) => (f as PatientByHealthcarePartyDateOfBirthBetweenFilter).maxDateOfBirth === ageToFuzzyDate(age))).to.not.be.undefined
     })
 
     it('Multiple simple filters of the same type can be added', async () => {
@@ -90,10 +82,8 @@ describe('Coding Filters Test', function () {
 
         const intersectionFilter = filter as IntersectionFilter<Patient>
         expect(intersectionFilter.filters).to.be.of.length(2)
-        expect(intersectionFilter.filters.find((f) => (f as PatientByHealthcarePartyNameContainsFuzzyFilter).searchString === firstQuery)).to.not.be
-            .undefined
-        expect(intersectionFilter.filters.find((f) => (f as PatientByHealthcarePartyNameContainsFuzzyFilter).searchString === secondQuery)).to.not.be
-            .undefined
+        expect(intersectionFilter.filters.find((f) => (f as PatientByHealthcarePartyNameContainsFuzzyFilter).searchString === firstQuery)).to.not.be.undefined
+        expect(intersectionFilter.filters.find((f) => (f as PatientByHealthcarePartyNameContainsFuzzyFilter).searchString === secondQuery)).to.not.be.undefined
     })
 
     it('When the same filter with by id strategy is added more than once, the intersection of the results is taken', async () => {
@@ -148,13 +138,7 @@ describe('Coding Filters Test', function () {
         const firstId = uuid()
         const secondId = uuid()
         const thirdId = uuid()
-        const filter = await new PatientFilter(hcp1Api)
-            .forSelf()
-            .containsFuzzy(uuid())
-            .withSsins([firstId, secondId, thirdId])
-            .sort.withSsins([thirdId, secondId])
-            .ofAge(42)
-            .build()
+        const filter = await new PatientFilter(hcp1Api).forSelf().containsFuzzy(uuid()).withSsins([firstId, secondId, thirdId]).sort.withSsins([thirdId, secondId]).ofAge(42).build()
 
         expect(filter.$type).to.be.eq('IntersectionFilter')
 

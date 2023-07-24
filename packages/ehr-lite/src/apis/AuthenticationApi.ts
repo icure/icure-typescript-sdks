@@ -16,7 +16,7 @@ export class AuthenticationApi extends AuthenticationApiImpl<EHRLiteApi> {
         private readonly storage: StorageFacade<string>,
         private readonly keyStorage: KeyStorageFacade,
         private readonly cryptoStrategies: CryptoStrategies<DataOwnerWithType>,
-        private readonly fetchImpl: (input: RequestInfo, init?: RequestInit) => Promise<Response> = typeof window !== 'undefined' ? window.fetch : typeof self !== 'undefined' ? self.fetch : fetch
+        private readonly fetchImpl: (input: RequestInfo, init?: RequestInit) => Promise<Response> = typeof window !== 'undefined' ? window.fetch : typeof self !== 'undefined' ? self.fetch : fetch,
     ) {
         super(messageGatewayApi, errorHandler, sanitizer, iCureBasePath, authProcessByEmailId, authProcessBySmsId)
     }
@@ -64,5 +64,5 @@ export const authenticationApi = (
     storage: StorageFacade<string>,
     keyStorage: KeyStorageFacade,
     cryptoStrategies: CryptoStrategies<DataOwnerWithType>,
-    fetchImpl?: (input: RequestInfo, init?: RequestInit) => Promise<Response>
+    fetchImpl?: (input: RequestInfo, init?: RequestInit) => Promise<Response>,
 ) => new AuthenticationApi(messageGatewayApi, iCureBasePath, authProcessByEmailId, authProcessBySmsId, errorHandler, sanitizer, crypto, storage, keyStorage, cryptoStrategies, fetchImpl)

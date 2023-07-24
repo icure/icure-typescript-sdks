@@ -1,5 +1,5 @@
-import {Annotation} from '../../src/models/Annotation.model'
-import {generateAnnotation} from "../models/Annotation.model";
+import { Annotation } from '../../src/models/Annotation.model'
+import { generateAnnotation } from '../models/Annotation.model'
 
 describe(`Annotation serialization and deserialization`, () => {
     it('should correctly serialize and deserialize from instance to JSON and back', () => {

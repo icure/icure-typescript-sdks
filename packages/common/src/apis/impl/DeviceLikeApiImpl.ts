@@ -2,20 +2,20 @@ import { Filter } from '../../filters/Filter'
 import { PaginatedList } from '../../models/PaginatedList.model'
 import { DeviceLikeApi } from '../DeviceLikeApi'
 import { ErrorHandler } from '../../services/ErrorHandler'
-import {Device, FilterChainDevice, IccDeviceApi, ListOfIds, PaginatedListDevice} from '@icure/api'
+import { Device, FilterChainDevice, IccDeviceApi, ListOfIds, PaginatedListDevice } from '@icure/api'
 import { Mapper } from '../Mapper'
 import { firstOrNull } from '../../utils/functionalUtils'
 
 import { forceUuid } from '../../utils/uuidUtils'
-import {NoOpFilter} from "../../filters/dsl/filterDsl";
-import {FilterMapper} from "../../mappers/Filter.mapper";
-import {toPaginatedList} from "../../mappers/PaginatedList.mapper";
+import { NoOpFilter } from '../../filters/dsl/filterDsl'
+import { FilterMapper } from '../../mappers/Filter.mapper'
+import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
 
 export class DeviceLikeApiImpl<DSDevice> implements DeviceLikeApi<DSDevice> {
     constructor(
         private readonly mapper: Mapper<DSDevice, Device>,
         private readonly errorHandler: ErrorHandler,
-        private readonly deviceApi: IccDeviceApi
+        private readonly deviceApi: IccDeviceApi,
     ) {}
 
     async createOrModify(device: DSDevice): Promise<DSDevice> {
@@ -81,12 +81,12 @@ export class DeviceLikeApiImpl<DSDevice> implements DeviceLikeApi<DSDevice> {
                         limit,
                         new FilterChainDevice({
                             filter: FilterMapper.toAbstractFilterDto<Device>(filter, 'Device'),
-                        })
+                        }),
                     )
                     .catch((e) => {
                         throw this.errorHandler.createErrorFromAny(e)
                     }),
-                this.mapper.toDomain
+                this.mapper.toDomain,
             )
         }
     }
@@ -95,7 +95,7 @@ export class DeviceLikeApiImpl<DSDevice> implements DeviceLikeApi<DSDevice> {
         return this.mapper.toDomain(
             await this.deviceApi.getDevice(id).catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
-            })
+            }),
         )
     }
 

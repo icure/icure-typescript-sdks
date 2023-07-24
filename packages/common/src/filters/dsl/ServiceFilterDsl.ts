@@ -1,12 +1,12 @@
-import {Filter} from '../Filter'
-import {DataOwnerFilterBuilder, FilterBuilder, NoOpFilter, SortableFilterBuilder} from './filterDsl'
-import {IntersectionFilter} from '../IntersectionFilter'
-import {ServiceByHealthcarePartyFilter, ServiceByHealthcarePartyHealthElementIdsFilter} from '../service'
-import {Patient, Service} from '@icure/api'
-import {CommonApi} from '../../apis/CommonApi'
-import {Mapper} from '../../apis/Mapper'
-import {mapIdentifierToIdentifierDto} from "../../mappers/Identifier.mapper";
-import {Identifier} from "../../models/Identifier.model";
+import { Filter } from '../Filter'
+import { DataOwnerFilterBuilder, FilterBuilder, NoOpFilter, SortableFilterBuilder } from './filterDsl'
+import { IntersectionFilter } from '../IntersectionFilter'
+import { ServiceByHealthcarePartyFilter, ServiceByHealthcarePartyHealthElementIdsFilter } from '../service'
+import { Patient, Service } from '@icure/api'
+import { CommonApi } from '../../apis/CommonApi'
+import { Mapper } from '../../apis/Mapper'
+import { mapIdentifierToIdentifierDto } from '../../mappers/Identifier.mapper'
+import { Identifier } from '../../models/Identifier.model'
 
 interface BaseServiceFilterBuilder<F, DSPatient> {
     /**
@@ -48,8 +48,10 @@ interface BaseServiceFilterBuilder<F, DSPatient> {
 }
 
 export class ServiceFilter<DSPatient> implements DataOwnerFilterBuilder<Service, ServiceFilterWithDataOwner<DSPatient>> {
-    constructor(private api: CommonApi, private patientMapper: Mapper<DSPatient, Patient>) {
-    }
+    constructor(
+        private api: CommonApi,
+        private patientMapper: Mapper<DSPatient, Patient>,
+    ) {}
 
     forDataOwner(dataOwnerId: string): ServiceFilterWithDataOwner<DSPatient> {
         return new ServiceFilterWithDataOwner(this.api, this.patientMapper, dataOwnerId)
@@ -63,7 +65,11 @@ export class ServiceFilter<DSPatient> implements DataOwnerFilterBuilder<Service,
 class ServiceFilterWithDataOwner<DSPatient> extends SortableFilterBuilder<Service, ServiceFilterSortStepDecorator<DSPatient>> implements BaseServiceFilterBuilder<ServiceFilterWithDataOwner<DSPatient>, DSPatient>, FilterBuilder<Service> {
     _dataOwnerId: Promise<string>
 
-    constructor(private api: CommonApi, private patientMapper: Mapper<DSPatient, Patient>, dataOwnerId?: string) {
+    constructor(
+        private api: CommonApi,
+        private patientMapper: Mapper<DSPatient, Patient>,
+        dataOwnerId?: string,
+    ) {
         super()
         this._dataOwnerId = !!dataOwnerId ? Promise.resolve(dataOwnerId) : api.baseApi.userApi.getCurrentUser().then((u) => api.baseApi.dataOwnerApi.getDataOwnerIdOf(u))
     }
@@ -77,7 +83,7 @@ class ServiceFilterWithDataOwner<DSPatient> extends SortableFilterBuilder<Servic
     }
 
     byIds(byIds: string[]): ServiceFilterWithDataOwner<DSPatient> {
-        this._builderAccumulator.addByIdsFilter(Promise.resolve({ids: byIds, $type: 'ServiceByIdsFilter'}), 'ids')
+        this._builderAccumulator.addByIdsFilter(Promise.resolve({ ids: byIds, $type: 'ServiceByIdsFilter' }), 'ids')
         return this
     }
 
@@ -161,19 +167,16 @@ class ServiceFilterWithDataOwner<DSPatient> extends SortableFilterBuilder<Servic
         } else {
             return {
                 hcpId: await this._dataOwnerId,
-                $type: 'ServiceByHealthcarePartyFilter'
+                $type: 'ServiceByHealthcarePartyFilter',
             } as ServiceByHealthcarePartyFilter
         }
     }
 }
 
-type NonSortableDataOwnerFilter<DSPatient> =
-    BaseServiceFilterBuilder<ServiceFilterWithDataOwner<DSPatient>, DSPatient>
-    & FilterBuilder<Service>
+type NonSortableDataOwnerFilter<DSPatient> = BaseServiceFilterBuilder<ServiceFilterWithDataOwner<DSPatient>, DSPatient> & FilterBuilder<Service>
 
 class ServiceFilterSortStepDecorator<DSPatient> implements BaseServiceFilterBuilder<NonSortableDataOwnerFilter<DSPatient>, DSPatient> {
-    constructor(private serviceFilter: ServiceFilterWithDataOwner<DSPatient>) {
-    }
+    constructor(private serviceFilter: ServiceFilterWithDataOwner<DSPatient>) {}
 
     byIds(byIds: string[]): NonSortableDataOwnerFilter<DSPatient> {
         this.serviceFilter.byIds(byIds)

@@ -52,33 +52,16 @@ import {
     User as UserDto,
     UserByIdsFilter as UserByIdsFilterDto,
 } from '@icure/api'
-import {UsersByPatientIdFilter as UsersByPatientIdFilterDto} from '@icure/api/icc-x-api/filters/UsersByPatientIdFilter'
-import {ComplementFilter} from '../filters/ComplementFilter'
-import {UnionFilter} from '../filters/UnionFilter'
-import {IntersectionFilter} from '../filters/IntersectionFilter'
-import {AllCodesFilter, CodeByIdsFilter, CodeByRegionTypeLabelFilter} from '../filters/code'
-import {
-    ServiceByHealthcarePartyFilter,
-    ServiceByHealthcarePartyHealthElementIdsFilter,
-    ServiceByHealthcarePartyIdentifiersFilter,
-    ServiceByHealthcarePartyPatientFilter,
-    ServiceByHealthcarePartyTagCodeDateFilter
-} from '../filters/service'
-import {AllDevicesFilter, DeviceByIdsFilter} from '../filters/device'
-import {
-    HealthElementByHealthcarePartyFilter,
-    HealthElementByHealthcarePartyIdentifiersFilter,
-    HealthElementByHealthcarePartyLabelCodeFilter,
-    HealthElementByHealthcarePartyPatientFilter,
-    HealthElementByIdsFilter
-} from '../filters/healthelement'
-import {
-    AllHealthcarePartiesFilter,
-    HealthcarePartyByIdsFilter,
-    HealthcarePartyByLabelCodeFilter,
-    HealthcarePartyByNameFilter
-} from '../filters/hcp'
-import {AllUsersFilter, UserByIdsFilter, UsersByPatientIdFilter} from '../filters/user'
+import { UsersByPatientIdFilter as UsersByPatientIdFilterDto } from '@icure/api/icc-x-api/filters/UsersByPatientIdFilter'
+import { ComplementFilter } from '../filters/ComplementFilter'
+import { UnionFilter } from '../filters/UnionFilter'
+import { IntersectionFilter } from '../filters/IntersectionFilter'
+import { AllCodesFilter, CodeByIdsFilter, CodeByRegionTypeLabelFilter } from '../filters/code'
+import { ServiceByHealthcarePartyFilter, ServiceByHealthcarePartyHealthElementIdsFilter, ServiceByHealthcarePartyIdentifiersFilter, ServiceByHealthcarePartyPatientFilter, ServiceByHealthcarePartyTagCodeDateFilter } from '../filters/service'
+import { AllDevicesFilter, DeviceByIdsFilter } from '../filters/device'
+import { HealthElementByHealthcarePartyFilter, HealthElementByHealthcarePartyIdentifiersFilter, HealthElementByHealthcarePartyLabelCodeFilter, HealthElementByHealthcarePartyPatientFilter, HealthElementByIdsFilter } from '../filters/healthelement'
+import { AllHealthcarePartiesFilter, HealthcarePartyByIdsFilter, HealthcarePartyByLabelCodeFilter, HealthcarePartyByNameFilter } from '../filters/hcp'
+import { AllUsersFilter, UserByIdsFilter, UsersByPatientIdFilter } from '../filters/user'
 import {
     PatientByHealthcarePartyDateOfBirthBetweenFilter,
     PatientByHealthcarePartyFilter,
@@ -86,14 +69,10 @@ import {
     PatientByHealthcarePartyIdentifiersFilter,
     PatientByHealthcarePartyNameContainsFuzzyFilter,
     PatientByHealthcarePartySsinsFilter,
-    PatientByIdsFilter
+    PatientByIdsFilter,
 } from '../filters/patient'
-import {
-    MaintenanceTasksAfterDateFilter,
-    MaintenanceTasksByHcPartyAndTypeFilter,
-    MaintenanceTasksByIdFilter
-} from '../filters/maintenancetask'
-import {Filter} from '../filters/Filter'
+import { MaintenanceTasksAfterDateFilter, MaintenanceTasksByHcPartyAndTypeFilter, MaintenanceTasksByIdFilter } from '../filters/maintenancetask'
+import { Filter } from '../filters/Filter'
 
 export namespace FilterMapper {
     export function toAbstractFilterDto<ServiceDto>(filter: Filter<ServiceDto>, input: 'Service'): AbstractFilterService
@@ -106,26 +85,26 @@ export namespace FilterMapper {
     export function toAbstractFilterDto<MaintenanceTaskDto>(filter: Filter<MaintenanceTaskDto>, input: 'MaintenanceTask'): AbstractFilterMaintenanceTask
     export function toAbstractFilterDto<T>(
         filter: Filter<T>,
-        input: 'Service' | 'Code' | 'Device' | 'HealthcareParty' | 'HealthElement' | 'Patient' | 'User' | 'MaintenanceTask'
+        input: 'Service' | 'Code' | 'Device' | 'HealthcareParty' | 'HealthElement' | 'Patient' | 'User' | 'MaintenanceTask',
     ): AbstractFilter<ServiceDto | CodeDto | DeviceDto | HealthcarePartyDto | HealthElementDto | PatientDto | UserDto | MaintenanceTaskDto> {
         const res =
             input === 'Service'
                 ? toAbstractFilterServiceDto(filter)
                 : input === 'Code'
-                    ? toAbstractFilterCodeDto(filter)
-                    : input === 'Device'
-                        ? toAbstractFilterDeviceDto(filter)
-                        : input === 'HealthcareParty'
-                            ? toAbstractFilterHealthcarePartyDto(filter)
-                            : input === 'HealthElement'
-                                ? toAbstractFilterHealthElementDto(filter)
-                                : input === 'Patient'
-                                    ? toAbstractFilterPatientDto(filter)
-                                    : input === 'User'
-                                        ? toAbstractFilterUserDto(filter)
-                                        : input === 'MaintenanceTask'
-                                            ? toAbstractFilterMaintenanceTaskDto(filter)
-                                            : null
+                ? toAbstractFilterCodeDto(filter)
+                : input === 'Device'
+                ? toAbstractFilterDeviceDto(filter)
+                : input === 'HealthcareParty'
+                ? toAbstractFilterHealthcarePartyDto(filter)
+                : input === 'HealthElement'
+                ? toAbstractFilterHealthElementDto(filter)
+                : input === 'Patient'
+                ? toAbstractFilterPatientDto(filter)
+                : input === 'User'
+                ? toAbstractFilterUserDto(filter)
+                : input === 'MaintenanceTask'
+                ? toAbstractFilterMaintenanceTaskDto(filter)
+                : null
         if (!res) {
             throw Error('Filter is not recognized')
         }
@@ -288,10 +267,11 @@ export namespace FilterMapper {
 
     const toAllDevicesFilterDto = (filter: AllDevicesFilter) => new AllDevicesFilterDto({})
 
-    const toDeviceByIdsFilterDto = (filter: DeviceByIdsFilter) => new DeviceByIdsFilterDto({
-        desc: filter.description,
-        ids: filter.ids
-    })
+    const toDeviceByIdsFilterDto = (filter: DeviceByIdsFilter) =>
+        new DeviceByIdsFilterDto({
+            desc: filter.description,
+            ids: filter.ids,
+        })
 
     function toAbstractFilterHealthcarePartyDto(filter: Filter<HealthcarePartyDto>): AbstractFilter<HealthcarePartyDto> {
         if (filter['$type'] === 'ComplementFilter') {
@@ -326,16 +306,18 @@ export namespace FilterMapper {
 
     const toAllHealthcarePartiesFilterDto = (filter: AllHealthcarePartiesFilter) => new AllHealthcarePartiesFilterDto({})
 
-    const toHealthcarePartyByIdsFilterDto = (filter: HealthcarePartyByIdsFilter) => new HealthcarePartyByIdsFilterDto({
-        desc: filter.description,
-        ids: filter.ids
-    })
+    const toHealthcarePartyByIdsFilterDto = (filter: HealthcarePartyByIdsFilter) =>
+        new HealthcarePartyByIdsFilterDto({
+            desc: filter.description,
+            ids: filter.ids,
+        })
 
-    const toHealthcarePartyByNameFilterDto = (filter: HealthcarePartyByNameFilter) => new HealthcarePartyByNameFilterDto({
-        desc: filter.description,
-        name: filter.name,
-        descending: filter.descending
-    })
+    const toHealthcarePartyByNameFilterDto = (filter: HealthcarePartyByNameFilter) =>
+        new HealthcarePartyByNameFilterDto({
+            desc: filter.description,
+            name: filter.name,
+            descending: filter.descending,
+        })
 
     const toHealthcarePartyByTagCodeFilterDto = (filter: HealthcarePartyByLabelCodeFilter) =>
         new HealthcarePartyByTagCodeFilterDto({
@@ -380,10 +362,11 @@ export namespace FilterMapper {
 
     const toIntersectionFilterHealthElementDto = (filter: IntersectionFilter<HealthElementDto>) => new IntersectionFilterDto<HealthElementDto>(filter.filters.map((it) => toAbstractFilterHealthElementDto(it)))
 
-    const toHealthElementByHcPartyFilterDto = (filter: HealthElementByHealthcarePartyFilter) => new HealthElementByHcPartyFilterDto({
-        desc: filter.description,
-        hcpId: filter.healthcarePartyId
-    })
+    const toHealthElementByHcPartyFilterDto = (filter: HealthElementByHealthcarePartyFilter) =>
+        new HealthElementByHcPartyFilterDto({
+            desc: filter.description,
+            hcpId: filter.healthcarePartyId,
+        })
 
     const toHealthElementByHcPartyIdentifiersFilterDto = (filter: HealthElementByHealthcarePartyIdentifiersFilter) =>
         new HealthElementByHcPartyIdentifiersFilterDto({
@@ -410,10 +393,11 @@ export namespace FilterMapper {
             status: filter.status,
         })
 
-    const toHealthElementByIdsFilterDto = (filter: HealthElementByIdsFilter) => new HealthElementByIdsFilterDto({
-        desc: filter.description,
-        ids: filter.ids
-    })
+    const toHealthElementByIdsFilterDto = (filter: HealthElementByIdsFilter) =>
+        new HealthElementByIdsFilterDto({
+            desc: filter.description,
+            ids: filter.ids,
+        })
 
     function toAbstractFilterUserDto(filter: Filter<UserDto>): AbstractFilter<UserDto> {
         if (filter['$type'] === 'ComplementFilter') {
@@ -443,17 +427,19 @@ export namespace FilterMapper {
 
     const toIntersectionFilterUserDto = (filter: IntersectionFilter<UserDto>) => new IntersectionFilterDto<UserDto>(filter.filters.map((it) => toAbstractFilterUserDto(it)))
 
-    const toAllUsersFilterDto = (filter: AllUsersFilter) => new AllUsersFilterDto({desc: filter.description})
+    const toAllUsersFilterDto = (filter: AllUsersFilter) => new AllUsersFilterDto({ desc: filter.description })
 
-    const toUserByIdsFilterDto = (filter: UserByIdsFilter) => new UserByIdsFilterDto({
-        desc: filter.description,
-        ids: filter.ids
-    })
+    const toUserByIdsFilterDto = (filter: UserByIdsFilter) =>
+        new UserByIdsFilterDto({
+            desc: filter.description,
+            ids: filter.ids,
+        })
 
-    const toUsersByPatientIdFilterDto = (filter: UsersByPatientIdFilter) => new UsersByPatientIdFilterDto({
-        desc: filter.description,
-        patientId: filter.patientId
-    })
+    const toUsersByPatientIdFilterDto = (filter: UsersByPatientIdFilter) =>
+        new UsersByPatientIdFilterDto({
+            desc: filter.description,
+            patientId: filter.patientId,
+        })
 
     function toAbstractFilterPatientDto(filter: Filter<PatientDto>): AbstractFilter<PatientDto> {
         if (filter['$type'] === 'ComplementFilter') {
@@ -495,10 +481,11 @@ export namespace FilterMapper {
 
     const toIntersectionFilterPatientDto = (filter: IntersectionFilter<PatientDto>) => new IntersectionFilterDto<PatientDto>(filter.filters.map((it) => toAbstractFilterPatientDto(it)))
 
-    const toPatientByHcPartyFilterDto = (filter: PatientByHealthcarePartyFilter) => new PatientByHcPartyFilterDto({
-        desc: filter.description,
-        healthcarePartyId: filter.healthcarePartyId
-    })
+    const toPatientByHcPartyFilterDto = (filter: PatientByHealthcarePartyFilter) =>
+        new PatientByHcPartyFilterDto({
+            desc: filter.description,
+            healthcarePartyId: filter.healthcarePartyId,
+        })
 
     const toPatientByHcPartyAndIdentifiersFilterDto = (filter: PatientByHealthcarePartyIdentifiersFilter) =>
         new PatientByHcPartyAndIdentifiersFilterDto({
@@ -520,10 +507,11 @@ export namespace FilterMapper {
             maxDateOfBirth: filter.maxDateOfBirth,
         })
 
-    const toPatientByIdsFilterDto = (filter: PatientByIdsFilter) => new PatientByIdsFilterDto({
-        desc: filter.description,
-        ids: filter.ids
-    })
+    const toPatientByIdsFilterDto = (filter: PatientByIdsFilter) =>
+        new PatientByIdsFilterDto({
+            desc: filter.description,
+            ids: filter.ids,
+        })
 
     const toPatientByHcPartyNameContainsFuzzyFilterDto = (filter: PatientByHealthcarePartyNameContainsFuzzyFilter) =>
         new PatientByHcPartyNameContainsFuzzyFilterDto({

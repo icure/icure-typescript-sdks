@@ -2,7 +2,7 @@ import { Filter } from '../filters/Filter'
 import { SharingResult } from '../utils/interfaces'
 import { PaginatedList } from '../models/PaginatedList.model'
 import { Connection } from '../models/Connection.model'
-import {Patient} from "@icure/api";
+import { Patient } from '@icure/api'
 
 /**
  * The PatientApi interface provides methods to manage patients.

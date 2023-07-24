@@ -1,5 +1,5 @@
-import {Component} from '../../src/models/Component.model'
-import {generateComponent} from "../models/Component.model";
+import { Component } from '../../src/models/Component.model'
+import { generateComponent } from '../models/Component.model'
 
 describe(`Component serialization and deserialization`, () => {
     it('should correctly serialize and deserialize from instance to JSON and back', () => {

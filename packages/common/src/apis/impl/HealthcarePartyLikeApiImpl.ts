@@ -2,18 +2,18 @@ import { Filter } from '../../filters/Filter'
 import { PaginatedList } from '../../models/PaginatedList.model'
 import { HealthcarePartyLikeApi } from '../HealthcarePartyLikeApi'
 import { ErrorHandler } from '../../services/ErrorHandler'
-import {FilterChainHealthcareParty, HealthcareParty, IccHcpartyXApi, PaginatedListHealthcareParty} from '@icure/api'
+import { FilterChainHealthcareParty, HealthcareParty, IccHcpartyXApi, PaginatedListHealthcareParty } from '@icure/api'
 import { Mapper } from '../Mapper'
 import { firstOrNull } from '../../utils/functionalUtils'
-import {NoOpFilter} from "../../filters/dsl/filterDsl";
-import {FilterMapper} from "../../mappers/Filter.mapper";
-import {toPaginatedList} from "../../mappers/PaginatedList.mapper";
+import { NoOpFilter } from '../../filters/dsl/filterDsl'
+import { FilterMapper } from '../../mappers/Filter.mapper'
+import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
 
 export class HealthcarePartyLikeApiImpl<DSHealthcareParty> implements HealthcarePartyLikeApi<DSHealthcareParty> {
     constructor(
         private readonly mapper: Mapper<DSHealthcareParty, HealthcareParty>,
         private readonly errorHandler: ErrorHandler,
-        private readonly healthcarePartyApi: IccHcpartyXApi
+        private readonly healthcarePartyApi: IccHcpartyXApi,
     ) {}
 
     async createOrModify(healthcareParty: DSHealthcareParty): Promise<DSHealthcareParty> {
@@ -38,7 +38,7 @@ export class HealthcarePartyLikeApiImpl<DSHealthcareParty> implements Healthcare
         const deletedHcpRev = firstOrNull(
             await this.healthcarePartyApi.deleteHealthcareParties(id).catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
-            })
+            }),
         )?.rev
         if (deletedHcpRev) {
             return deletedHcpRev
@@ -57,12 +57,12 @@ export class HealthcarePartyLikeApiImpl<DSHealthcareParty> implements Healthcare
                         limit,
                         new FilterChainHealthcareParty({
                             filter: FilterMapper.toAbstractFilterDto<HealthcareParty>(filter, 'HealthcareParty'),
-                        })
+                        }),
                     )
                     .catch((e) => {
                         throw this.errorHandler.createErrorFromAny(e)
                     }),
-                this.mapper.toDomain
+                this.mapper.toDomain,
             )!
         }
     }
@@ -71,7 +71,7 @@ export class HealthcarePartyLikeApiImpl<DSHealthcareParty> implements Healthcare
         return this.mapper.toDomain(
             await this.healthcarePartyApi.getHealthcareParty(id, false).catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
-            })
+            }),
         )
     }
 
@@ -79,11 +79,9 @@ export class HealthcarePartyLikeApiImpl<DSHealthcareParty> implements Healthcare
         if (NoOpFilter.isNoOp(filter)) {
             return []
         } else {
-            return await this.healthcarePartyApi
-                .matchHealthcarePartiesBy(FilterMapper.toAbstractFilterDto<HealthcareParty>(filter, 'HealthcareParty'))
-                .catch((e) => {
-                    throw this.errorHandler.createErrorFromAny(e)
-                })
+            return await this.healthcarePartyApi.matchHealthcarePartiesBy(FilterMapper.toAbstractFilterDto<HealthcareParty>(filter, 'HealthcareParty')).catch((e) => {
+                throw this.errorHandler.createErrorFromAny(e)
+            })
         }
     }
 }

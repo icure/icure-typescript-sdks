@@ -1,14 +1,7 @@
-import {PaginatedListPatient, Patient as PatientDto} from '@icure/api'
-import {
-    CommonApi,
-    CommonFilter,
-    Connection,
-    PaginatedList,
-    PatientLikeApi,
-    PatientLikeApiImpl
-} from '@icure/typescript-common'
-import {Patient} from '../models/Patient.model'
-import {mapPatientDtoToPatient, mapPatientToPatientDto} from '../mappers/Patient.mapper'
+import { PaginatedListPatient, Patient as PatientDto } from '@icure/api'
+import { CommonApi, CommonFilter, Connection, PaginatedList, PatientLikeApi, PatientLikeApiImpl } from '@icure/typescript-common'
+import { Patient } from '../models/Patient.model'
+import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
 
 export interface PatientApi extends PatientLikeApi<Patient> {
     /**
@@ -18,7 +11,7 @@ export interface PatientApi extends PatientLikeApi<Patient> {
      * Create or update a [Patient]
      * @param patient
      */
-    createOrModifyPatient(patient: Patient): Promise<Patient>;
+    createOrModifyPatient(patient: Patient): Promise<Patient>
 
     /**
      * @deprecated Use {@link PatientApi.delete} instead.
@@ -27,7 +20,7 @@ export interface PatientApi extends PatientLikeApi<Patient> {
      * Delete a [Patient]
      * @param patientId
      */
-    deletePatient(patientId: string): Promise<string>;
+    deletePatient(patientId: string): Promise<string>
 
     /**
      * @deprecated Use {@link PatientApi.filterBy} instead.
@@ -47,7 +40,7 @@ export interface PatientApi extends PatientLikeApi<Patient> {
      * @param nextPatientId The id of the first patient in the next page
      * @param limit The maximum number of patients that should contain the returned page. By default, a page contains 1000 patients
      */
-    filterPatients(filter: CommonFilter<PatientDto>, nextPatientId?: string, limit?: number): Promise<PaginatedList<Patient>>;
+    filterPatients(filter: CommonFilter<PatientDto>, nextPatientId?: string, limit?: number): Promise<PaginatedList<Patient>>
 
     /**
      * @deprecated Use {@link PatientApi.get} instead.
@@ -56,7 +49,7 @@ export interface PatientApi extends PatientLikeApi<Patient> {
      * Get a [Patient]
      * @param patientId
      */
-    getPatient(patientId: string): Promise<Patient>;
+    getPatient(patientId: string): Promise<Patient>
 
     /**
      * @deprecated Use {@link PatientApi.matchBy} instead.
@@ -65,7 +58,7 @@ export interface PatientApi extends PatientLikeApi<Patient> {
      * Load patient ids from the database by filtering them using the provided [filter].
      * @param filter The Filter object that describes which condition(s) the elements whose the ids should be returned must fulfill
      */
-    matchPatients(filter: CommonFilter<PatientDto>): Promise<Array<string>>;
+    matchPatients(filter: CommonFilter<PatientDto>): Promise<Array<string>>
 
     /**
      * @deprecated Use {@link PatientApi.giveAccessTo} instead.
@@ -75,7 +68,7 @@ export interface PatientApi extends PatientLikeApi<Patient> {
      * @param patient Patient the current data owner would like to share with another data owner
      * @param delegatedTo ID of the data owner to which current user would like to give access
      */
-    giveAccessToPotentiallyEncrypted(patient: Patient, delegatedTo: string): Promise<Patient>;
+    giveAccessToPotentiallyEncrypted(patient: Patient, delegatedTo: string): Promise<Patient>
 
     /**
      * @deprecated Use {@link PatientApi.subscribeToEvents} instead.
@@ -90,12 +83,7 @@ export interface PatientApi extends PatientLikeApi<Patient> {
      *    - connectionMaxRetry : how many time retrying to reconnect to the iCure WebSocket;
      *    - connectionRetryIntervalInMs : How long base interval will be between two retry. The retry attempt is exponential and using a random value (connectionRetryIntervalMs * (random between 1 and 2))^nbAttempts)
      */
-    subscribeToPatientEvents(
-        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
-        filter: CommonFilter<PatientDto>,
-        eventFired: (patient: Patient) => Promise<void>,
-        options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }
-    ): Promise<Connection>;
+    subscribeToPatientEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: CommonFilter<PatientDto>, eventFired: (patient: Patient) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection>
 
     /**
      * @deprecated Use {@link PatientApi.getAndTryDecrypt} instead.
@@ -106,7 +94,7 @@ export interface PatientApi extends PatientLikeApi<Patient> {
      * gave them access to their own data: instead of giving an error if the data can't be decrypted (like what happens
      * in getPatient) you will be able to get at least partial information.
      */
-    getPatientAndTryDecrypt(patientId: string): Promise<{ patient: Patient; decrypted: boolean }>;
+    getPatientAndTryDecrypt(patientId: string): Promise<{ patient: Patient; decrypted: boolean }>
 }
 
 /**
@@ -131,19 +119,13 @@ class PatientApiImpl extends PatientLikeApiImpl<Patient> implements PatientApi {
     giveAccessToPotentiallyEncrypted(patient: Patient, delegatedTo: string): Promise<Patient> {
         return this.giveAccessTo(patient, delegatedTo)
     }
-    subscribeToPatientEvents(
-        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
-        filter: CommonFilter<PatientDto>,
-        eventFired: (patient: Patient) => Promise<void>,
-        options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }
-    ): Promise<Connection> {
+    subscribeToPatientEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: CommonFilter<PatientDto>, eventFired: (patient: Patient) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection> {
         return this.subscribeToEvents(eventTypes, filter, eventFired, options)
     }
     getPatientAndTryDecrypt(patientId: string): Promise<{ patient: Patient; decrypted: boolean }> {
         return this.getAndTryDecrypt(patientId)
     }
 }
-
 
 export const patientApi = (api: CommonApi): PatientApi => {
     return new PatientApiImpl(
@@ -158,6 +140,6 @@ export const patientApi = (api: CommonApi): PatientApi => {
         api.errorHandler,
         api.baseApi.patientApi,
         api.baseApi.userApi,
-        api.baseApi.dataOwnerApi
+        api.baseApi.dataOwnerApi,
     )
 }

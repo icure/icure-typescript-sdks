@@ -1,6 +1,6 @@
 import { Filter } from '../filters/Filter'
 import { PaginatedList } from '../models/PaginatedList.model'
-import {Device} from "@icure/api";
+import { Device } from '@icure/api'
 
 /**
  * The DeviceApi interface provides methods to manage medical devices.

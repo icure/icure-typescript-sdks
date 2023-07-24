@@ -1,5 +1,5 @@
-import {addDays, format} from 'date-fns'
-import {Filter} from '../Filter'
+import { addDays, format } from 'date-fns'
+import { Filter } from '../Filter'
 import {
     PatientByHealthcarePartyDateOfBirthBetweenFilter,
     PatientByHealthcarePartyFilter,
@@ -7,18 +7,17 @@ import {
     PatientByHealthcarePartyIdentifiersFilter,
     PatientByHealthcarePartyNameContainsFuzzyFilter,
     PatientByHealthcarePartySsinsFilter,
-    PatientByIdsFilter
+    PatientByIdsFilter,
 } from '../patient'
-import {IntersectionFilter} from '../IntersectionFilter'
-import {DataOwnerFilterBuilder, FilterBuilder, NoOpFilter, SortableFilterBuilder} from './filterDsl'
-import {Patient} from "@icure/api";
-import {CommonApi} from "../../apis/CommonApi";
-import {Identifier} from "../../models/Identifier.model";
-import {mapIdentifierToIdentifierDto} from "../../mappers/Identifier.mapper";
+import { IntersectionFilter } from '../IntersectionFilter'
+import { DataOwnerFilterBuilder, FilterBuilder, NoOpFilter, SortableFilterBuilder } from './filterDsl'
+import { Patient } from '@icure/api'
+import { CommonApi } from '../../apis/CommonApi'
+import { Identifier } from '../../models/Identifier.model'
+import { mapIdentifierToIdentifierDto } from '../../mappers/Identifier.mapper'
 
 export class PatientFilter implements DataOwnerFilterBuilder<Patient, PatientFilterWithDataOwner> {
-    constructor(private api: CommonApi) {
-    }
+    constructor(private api: CommonApi) {}
 
     forDataOwner(dataOwnerId: string): PatientFilterWithDataOwner {
         return new PatientFilterWithDataOwner(this.api, dataOwnerId)
@@ -77,12 +76,13 @@ interface BasePatientFilterBuilder<F> {
     containsFuzzy(searchString: string): F
 }
 
-class PatientFilterWithDataOwner
-    extends SortableFilterBuilder<Patient, PatientFilterSortStepDecorator>
-    implements BasePatientFilterBuilder<PatientFilterWithDataOwner>, FilterBuilder<Patient> {
+class PatientFilterWithDataOwner extends SortableFilterBuilder<Patient, PatientFilterSortStepDecorator> implements BasePatientFilterBuilder<PatientFilterWithDataOwner>, FilterBuilder<Patient> {
     _dataOwnerId: Promise<string>
 
-    constructor(private api: CommonApi, dataOwnerId?: string) {
+    constructor(
+        private api: CommonApi,
+        dataOwnerId?: string,
+    ) {
         super()
         this._dataOwnerId = !!dataOwnerId ? Promise.resolve(dataOwnerId) : api.baseApi.userApi.getCurrentUser().then((u) => api.baseApi.dataOwnerApi.getDataOwnerIdOf(u))
     }
@@ -96,7 +96,7 @@ class PatientFilterWithDataOwner
     }
 
     byIds(byIds: string[]): PatientFilterWithDataOwner {
-        this._builderAccumulator.addByIdsFilter(Promise.resolve({ids: byIds, $type: 'PatientByIdsFilter'}), 'ids')
+        this._builderAccumulator.addByIdsFilter(Promise.resolve({ ids: byIds, $type: 'PatientByIdsFilter' }), 'ids')
         return this
     }
 
@@ -194,7 +194,7 @@ class PatientFilterWithDataOwner
         } else {
             return {
                 healthcarePartyId: await this._dataOwnerId,
-                $type: 'PatientByHealthcarePartyFilter'
+                $type: 'PatientByHealthcarePartyFilter',
             } as PatientByHealthcarePartyFilter
         }
     }
@@ -203,8 +203,7 @@ class PatientFilterWithDataOwner
 type NonSortablePatientFilter = BasePatientFilterBuilder<PatientFilterWithDataOwner> & FilterBuilder<Patient>
 
 class PatientFilterSortStepDecorator implements BasePatientFilterBuilder<NonSortablePatientFilter> {
-    constructor(private patientFilter: PatientFilterWithDataOwner) {
-    }
+    constructor(private patientFilter: PatientFilterWithDataOwner) {}
 
     byIds(byIds: string[]): NonSortablePatientFilter {
         this.patientFilter.byIds(byIds)

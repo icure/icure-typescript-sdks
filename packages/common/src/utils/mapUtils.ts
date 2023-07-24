@@ -3,15 +3,18 @@ export function mapOf<K extends string, V>(mapObj: Partial<{ [key in K]: V }>): 
 }
 
 export function toMap<V>(entries: [key: string, value: V][]): { [key: string]: V } {
-    return entries.reduce((m, [k, v]) => {
-        m[k] = v
-        return m
-    }, {} as { [key: string]: V })
+    return entries.reduce(
+        (m, [k, v]) => {
+            m[k] = v
+            return m
+        },
+        {} as { [key: string]: V },
+    )
 }
 
 export function mapReduce<I, O>(
     map: { [key: string]: I } | undefined,
-    mapper: (obj: I) => O | undefined
+    mapper: (obj: I) => O | undefined,
 ):
     | {
           [key: string]: O
@@ -22,10 +25,13 @@ export function mapReduce<I, O>(
     }
     return Object.entries(map)
         .map(([k, v]) => [k, mapper(v)!] as [string, O])
-        .reduce((m, [k, v]) => {
-            m[k] = v
-            return m
-        }, {} as { [key: string]: O })
+        .reduce(
+            (m, [k, v]) => {
+                m[k] = v
+                return m
+            },
+            {} as { [key: string]: O },
+        )
 }
 
 export function mapSet<I, O>(set: Set<I> | undefined, mapper: (obj: I) => O | undefined): Set<O> | undefined {
@@ -53,7 +59,7 @@ export function map<I, O>(arr: I[] | undefined, mapper: (obj: I) => O | undefine
 
 export function toMapTransform<I, O>(
     map: { [key: string]: I } | undefined,
-    mapper: (obj: I) => O | undefined
+    mapper: (obj: I) => O | undefined,
 ):
     | {
           [key: string]: O
@@ -71,10 +77,13 @@ export function toMapArrayTransform<I, O>(map: { [key: string]: Iterable<I> } | 
     }
     return Object.entries(map)
         .map(([k, v]) => [k, Array.from(Array.from(v).map((it) => mapper(it)!))] as [string, O[]])
-        .reduce((m, [k, v]) => {
-            m[k] = v
-            return m
-        }, {} as { [key: string]: O[] })
+        .reduce(
+            (m, [k, v]) => {
+                m[k] = v
+                return m
+            },
+            {} as { [key: string]: O[] },
+        )
 }
 
 export function toMapSetTransform<I, O>(map: { [key: string]: Iterable<I> } | undefined, mapper: (obj: I) => O | undefined): { [key: string]: Set<O> } | undefined {
@@ -83,10 +92,13 @@ export function toMapSetTransform<I, O>(map: { [key: string]: Iterable<I> } | un
     }
     return Object.entries(map)
         .map(([k, v]) => [k, new Set(Array.from(v).map((it) => mapper(it)!))] as [string, Set<O>])
-        .reduce((m, [k, v]) => {
-            m[k] = v
-            return m
-        }, {} as { [key: string]: Set<O> })
+        .reduce(
+            (m, [k, v]) => {
+                m[k] = v
+                return m
+            },
+            {} as { [key: string]: Set<O> },
+        )
 }
 
 export function toMapSet<I>(map: { [key: string]: Iterable<I> } | undefined): { [key: string]: Set<I> } | undefined {

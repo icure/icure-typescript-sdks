@@ -1,5 +1,5 @@
-import {ContactPoint} from "../../src/models/ContactPoint.model";
-import {ContactPointTelecomTypeEnum} from "../../src/models/enums/ContactPointTelecomType.enum";
+import { ContactPoint } from '../../src/models/ContactPoint.model'
+import { ContactPointTelecomTypeEnum } from '../../src/models/enums/ContactPointTelecomType.enum'
 
 export function generateContactPoint(): ContactPoint {
     const contactPoint = {

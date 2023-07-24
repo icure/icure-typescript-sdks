@@ -1,5 +1,5 @@
-import {generateMeasure} from "../models/Measure.model";
-import {mapMeasureDtoToMeasure, mapMeasureToMeasureDto, Measure} from "../../src";
+import { generateMeasure } from '../models/Measure.model'
+import { mapMeasureDtoToMeasure, mapMeasureToMeasureDto, Measure } from '../../src'
 
 describe('Measure', function () {
     it('should correctly map to MeasureEntity and back to Measure', () => {

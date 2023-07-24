@@ -1,5 +1,5 @@
-import {PropertyType} from '../../src/models/PropertyType.model'
-import {generatePropertyType} from "../models/PropertyType.model";
+import { PropertyType } from '../../src/models/PropertyType.model'
+import { generatePropertyType } from '../models/PropertyType.model'
 
 describe(`PropertyType serialization and deserialization`, () => {
     it('should correctly serialize and deserialize from instance to JSON and back', () => {

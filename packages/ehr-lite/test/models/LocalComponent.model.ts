@@ -1,4 +1,4 @@
-import {LocalComponent} from "../../src/models/LocalComponent.model";
+import { LocalComponent } from '../../src/models/LocalComponent.model'
 
 export function generateLocalComponent(): LocalComponent {
     const localComponent = {

@@ -1539,21 +1539,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@icure/api@npm:7.0.0-beta.10":
-  version: 7.0.0-beta.10
-  resolution: "@icure/api@npm:7.0.0-beta.10"
-  dependencies:
-    date-fns: ^2.23.0
-    libphonenumber-js: ^1.7.18
-    lodash: ^4.17.21
-    moment: ^2.22.1
-    text-encoding: ^0.7.0
-    uuid: ^8.3.2
-    uuid-encoder: ^1.1.0
-  checksum: a8bb55dcd58b463ae83819875c1c62ae7945d61e15e802c56d36cb6ab4f5360c29d78b4e27ff3b1dffdd34bb29014097f44a84aa83f4067e605a40350cf95544
-  languageName: node
-  linkType: hard
-
 "@icure/api@npm:7.0.0-beta.4":
   version: 7.0.0-beta.4
   resolution: "@icure/api@npm:7.0.0-beta.4"
@@ -1668,7 +1653,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@icure/typescript-common@*, @icure/typescript-common@^0.0.0, @icure/typescript-common@workspace:packages/common":
+"@icure/typescript-common@^0.0.0, @icure/typescript-common@workspace:packages/common":
   version: 0.0.0-use.local
   resolution: "@icure/typescript-common@workspace:packages/common"
   dependencies:
@@ -7911,18 +7896,6 @@ __metadata:
   checksum: 40eb4e207aac1b734e09400cf03f543642cc7b11000895198dd5a0d3166315759ccf4ac30a2915153597c5c186101c72bac2f1fc12b428184a9274d3a0e44c5e
   languageName: node
   linkType: hard
-
-"typescript-websocket-sdk@workspace:packages/websocket":
-  version: 0.0.0-use.local
-  resolution: "typescript-websocket-sdk@workspace:packages/websocket"
-  dependencies:
-    "@icure/api": 7.0.0-beta.10
-    "@icure/typescript-common": "*"
-    "@types/ws": ^8.5.4
-    loglevel: ^1.8.1
-    ws: ^8.13.0
-  languageName: unknown
-  linkType: soft
 
 "typescript@npm:^4.5.5":
   version: 4.9.5

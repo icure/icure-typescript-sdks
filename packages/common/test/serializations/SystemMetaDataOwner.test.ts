@@ -1,5 +1,5 @@
-import {SystemMetaDataOwner} from '../../src/models/SystemMetaDataOwner.model'
-import {generateSystemMetaDataOwner} from "../models/SystemMetaDataOwner.model";
+import { SystemMetaDataOwner } from '../../src/models/SystemMetaDataOwner.model'
+import { generateSystemMetaDataOwner } from '../models/SystemMetaDataOwner.model'
 
 describe(`SystemMetaDataOwner serialization and deserialization`, () => {
     it('should correctly serialize and deserialize from instance to JSON and back', () => {

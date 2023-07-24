@@ -12,8 +12,8 @@ import { FilterMapper } from '../../mappers/Filter.mapper'
 import { MaintenanceTaskFilter } from '../../filters/dsl/MaintenanceTaskFilterDsl'
 import { CommonApi } from '../CommonApi'
 import { AccessLevelEnum } from '../../models/enums/AccessLevel.enum'
-import {CommonFilter} from "../../filters/filters";
-import {toPaginatedList} from "../../mappers/PaginatedList.mapper";
+import { CommonFilter } from '../../filters/filters'
+import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
 
 export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements MaintenanceTaskLikeApi<DSMaintenanceTask> {
     constructor(
@@ -22,7 +22,7 @@ export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements Maintenanc
         private readonly maintenanceTaskApi: IccMaintenanceTaskXApi,
         private readonly userApi: IccUserXApi,
         private readonly dataOwnerApi: IccDataOwnerXApi,
-        private readonly api: CommonApi
+        private readonly api: CommonApi,
     ) {}
 
     async createOrModify(maintenanceTask: DSMaintenanceTask, delegate?: string): Promise<DSMaintenanceTask | undefined> {
@@ -70,7 +70,7 @@ export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements Maintenanc
                         limit,
                         new FilterChainMaintenanceTask({
                             filter: FilterMapper.toAbstractFilterDto(filter, 'MaintenanceTask'),
-                        })
+                        }),
                     )
                     .then((paginatedList) => {
                         return toPaginatedList(paginatedList, this.mapper.toDomain)
@@ -124,7 +124,7 @@ export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements Maintenanc
         options?: {
             connectionMaxRetry?: number
             connectionRetryIntervalMs?: number
-        }
+        },
     ): Promise<Connection> {
         throw 'TODO'
     }

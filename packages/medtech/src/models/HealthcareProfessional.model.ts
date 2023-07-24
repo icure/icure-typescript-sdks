@@ -17,223 +17,222 @@ import { PersonName } from './PersonName.model'
 
 @mapTo(HealthcareParty)
 export class HealthcareProfessional {
-  constructor(json: IHealthcareProfessional) {
-    this.id = forceUuid(json.id)
-    this.rev = json.rev
-    this.created = json.created
-    this.modified = json.modified
-    this.labels = json.labels ?? new Set()
-    this.codes = json.codes ?? new Set()
-    this.names = json.names ?? []
-    this.addresses = json.addresses ?? []
-    this.properties = json.properties ?? new Set()
-    this.notes = json.notes
-    this.deletionDate = json.deletionDate
-    this.name = json.name
-    this.lastName = json.lastName
-    this.firstName = json.firstName
-    this.gender = json.gender
-    this.civility = json.civility
-    this.speciality = json.speciality
-    this.parentId = json.parentId
-    this.languages = json.languages ?? []
-    this.picture = json.picture
-    this.specialityCodes = json.specialityCodes ?? new Set()
-    this.systemMetaData = json.systemMetaData
-  }
+    constructor(json: IHealthcareProfessional) {
+        this.id = forceUuid(json.id)
+        this.rev = json.rev
+        this.created = json.created
+        this.modified = json.modified
+        this.labels = json.labels ?? new Set()
+        this.codes = json.codes ?? new Set()
+        this.names = json.names ?? []
+        this.addresses = json.addresses ?? []
+        this.properties = json.properties ?? new Set()
+        this.notes = json.notes
+        this.deletionDate = json.deletionDate
+        this.name = json.name
+        this.lastName = json.lastName
+        this.firstName = json.firstName
+        this.gender = json.gender
+        this.civility = json.civility
+        this.speciality = json.speciality
+        this.parentId = json.parentId
+        this.languages = json.languages ?? []
+        this.picture = json.picture
+        this.specialityCodes = json.specialityCodes ?? new Set()
+        this.systemMetaData = json.systemMetaData
+    }
 
-  /**
-   * the Id of the healthcare party. We encourage using either a v4 UUID or a HL7 Id.
-   */
-  'id': string
-  /**
-   * the revision of the healthcare party in the database, used for conflict management / optimistic locking.
-   */
-  'rev'?: string
-  /**
-   * creation timestamp of the object.
-   */
-  'created'?: number
-  /**
-   * last modification timestamp of the object.
-   */
-  'modified'?: number
-  /**
-   * A label is an item from a codification system that qualifies a doctor as being member of a certain class, whatever the value it might have taken. If the label qualifies the content of a field, it means that whatever the content of the field, the label will always apply. LOINC is a codification system typically used for labels.
-   * Example: HealthcareProfessional is an organisation
-   */
-  'labels': Set<CodingReference>
-  /**
-   * A code is an item from a codification system that qualifies the content of this doctor.
-   * Example: doctor's specialty
-   */
-  'codes': Set<CodingReference>
-  /**
-   * the soft delete timestamp. When a user is ”deleted“, this is set to a non null value: the moment of the deletion
-   */
-  'deletionDate'?: number
-  /**
-   * The full name of the healthcare party, used mainly when the healthcare party is an organization
-   */
-  'name'?: string
-  /**
-   * the lastname (surname) of the healthcare party. This is the official lastname that should be used for official administrative purposes.
-   */
-  'lastName'?: string
-  /**
-   * the firstname (name) of the healthcare party.
-   */
-  'firstName'?: string
-  /**
-   * the list of all names of the healthcare party, also containing the official full name information. Ordered by preference of use. First element is therefore the official name used for the healthcare party in the application
-   */
-  'names': Array<PersonName>
-  /**
-   * the gender of the healthcare party: male, female, indeterminate, changed, changedToMale, changedToFemale, unknown
-   */
-  'gender'?: HealthcareProfessionalGenderEnum
-  /**
-   * Mr., Ms., Pr., Dr. ...
-   */
-  'civility'?: string
-  /**
-   * Medical specialty of the healthcare party
-   */
-  'speciality'?: string
-  /**
-   * Id of parent of the user representing the healthcare party.
-   */
-  'parentId'?: string
-  /**
-   * The list of addresses (with address type).
-   */
-  'addresses': Array<Address>
-  /**
-   * The list of languages spoken by the patient ordered by fluency (alpha-2 code http://www.loc.gov/standards/iso639-2/ascii_8bits.html).
-   */
-  'languages': Array<string>
-  /**
-   * A picture usually saved in JPEG format.
-   */
-  'picture'?: ArrayBuffer
-  /**
-   * Medical specialty of the healthcare party codified using FHIR or Kmehr codificaiton scheme
-   */
-  'specialityCodes': Set<CodingReference>
-  /**
-   * Text notes.
-   */
-  'notes'?: string
-  'properties': Set<Property>
-  'systemMetaData'?: SystemMetaDataOwner
+    /**
+     * the Id of the healthcare party. We encourage using either a v4 UUID or a HL7 Id.
+     */
+    'id': string
+    /**
+     * the revision of the healthcare party in the database, used for conflict management / optimistic locking.
+     */
+    'rev'?: string
+    /**
+     * creation timestamp of the object.
+     */
+    'created'?: number
+    /**
+     * last modification timestamp of the object.
+     */
+    'modified'?: number
+    /**
+     * A label is an item from a codification system that qualifies a doctor as being member of a certain class, whatever the value it might have taken. If the label qualifies the content of a field, it means that whatever the content of the field, the label will always apply. LOINC is a codification system typically used for labels.
+     * Example: HealthcareProfessional is an organisation
+     */
+    'labels': Set<CodingReference>
+    /**
+     * A code is an item from a codification system that qualifies the content of this doctor.
+     * Example: doctor's specialty
+     */
+    'codes': Set<CodingReference>
+    /**
+     * the soft delete timestamp. When a user is ”deleted“, this is set to a non null value: the moment of the deletion
+     */
+    'deletionDate'?: number
+    /**
+     * The full name of the healthcare party, used mainly when the healthcare party is an organization
+     */
+    'name'?: string
+    /**
+     * the lastname (surname) of the healthcare party. This is the official lastname that should be used for official administrative purposes.
+     */
+    'lastName'?: string
+    /**
+     * the firstname (name) of the healthcare party.
+     */
+    'firstName'?: string
+    /**
+     * the list of all names of the healthcare party, also containing the official full name information. Ordered by preference of use. First element is therefore the official name used for the healthcare party in the application
+     */
+    'names': Array<PersonName>
+    /**
+     * the gender of the healthcare party: male, female, indeterminate, changed, changedToMale, changedToFemale, unknown
+     */
+    'gender'?: HealthcareProfessionalGenderEnum
+    /**
+     * Mr., Ms., Pr., Dr. ...
+     */
+    'civility'?: string
+    /**
+     * Medical specialty of the healthcare party
+     */
+    'speciality'?: string
+    /**
+     * Id of parent of the user representing the healthcare party.
+     */
+    'parentId'?: string
+    /**
+     * The list of addresses (with address type).
+     */
+    'addresses': Array<Address>
+    /**
+     * The list of languages spoken by the patient ordered by fluency (alpha-2 code http://www.loc.gov/standards/iso639-2/ascii_8bits.html).
+     */
+    'languages': Array<string>
+    /**
+     * A picture usually saved in JPEG format.
+     */
+    'picture'?: ArrayBuffer
+    /**
+     * Medical specialty of the healthcare party codified using FHIR or Kmehr codificaiton scheme
+     */
+    'specialityCodes': Set<CodingReference>
+    /**
+     * Text notes.
+     */
+    'notes'?: string
+    'properties': Set<Property>
+    'systemMetaData'?: SystemMetaDataOwner
 
-  static toJSON(instance: HealthcareProfessional): any {
-    const pojo: any = {}
-    pojo['id'] = instance.id
-    if (instance.rev !== undefined) pojo['rev'] = instance.rev
-    if (instance.created !== undefined) pojo['created'] = instance.created
-    if (instance.modified !== undefined) pojo['modified'] = instance.modified
-    pojo['labels'] = Array.from([...instance.labels].map((item) => CodingReference.toJSON(item)))
-    pojo['codes'] = Array.from([...instance.codes].map((item) => CodingReference.toJSON(item)))
-    if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
-    if (instance.name !== undefined) pojo['name'] = instance.name
-    if (instance.lastName !== undefined) pojo['lastName'] = instance.lastName
-    if (instance.firstName !== undefined) pojo['firstName'] = instance.firstName
-    pojo['names'] = instance.names.map((item) => PersonName.toJSON(item))
-    if (instance.gender !== undefined) pojo['gender'] = instance.gender
-    if (instance.civility !== undefined) pojo['civility'] = instance.civility
-    if (instance.speciality !== undefined) pojo['speciality'] = instance.speciality
-    if (instance.parentId !== undefined) pojo['parentId'] = instance.parentId
-    pojo['addresses'] = instance.addresses.map((item) => Address.toJSON(item))
-    pojo['languages'] = instance.languages.map((item) => item)
-    if (instance.picture !== undefined) pojo['picture'] = !!instance.picture ? ua2b64(instance.picture) : undefined
-    pojo['specialityCodes'] = Array.from([...instance.specialityCodes].map((item) => CodingReference.toJSON(item)))
-    if (instance.notes !== undefined) pojo['notes'] = instance.notes
-    pojo['properties'] = Array.from([...instance.properties].map((item) => Property.toJSON(item)))
-    if (instance.systemMetaData !== undefined)
-      pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataOwner.toJSON(instance.systemMetaData) : undefined
-    return pojo
-  }
+    static toJSON(instance: HealthcareProfessional): any {
+        const pojo: any = {}
+        pojo['id'] = instance.id
+        if (instance.rev !== undefined) pojo['rev'] = instance.rev
+        if (instance.created !== undefined) pojo['created'] = instance.created
+        if (instance.modified !== undefined) pojo['modified'] = instance.modified
+        pojo['labels'] = Array.from([...instance.labels].map((item) => CodingReference.toJSON(item)))
+        pojo['codes'] = Array.from([...instance.codes].map((item) => CodingReference.toJSON(item)))
+        if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
+        if (instance.name !== undefined) pojo['name'] = instance.name
+        if (instance.lastName !== undefined) pojo['lastName'] = instance.lastName
+        if (instance.firstName !== undefined) pojo['firstName'] = instance.firstName
+        pojo['names'] = instance.names.map((item) => PersonName.toJSON(item))
+        if (instance.gender !== undefined) pojo['gender'] = instance.gender
+        if (instance.civility !== undefined) pojo['civility'] = instance.civility
+        if (instance.speciality !== undefined) pojo['speciality'] = instance.speciality
+        if (instance.parentId !== undefined) pojo['parentId'] = instance.parentId
+        pojo['addresses'] = instance.addresses.map((item) => Address.toJSON(item))
+        pojo['languages'] = instance.languages.map((item) => item)
+        if (instance.picture !== undefined) pojo['picture'] = !!instance.picture ? ua2b64(instance.picture) : undefined
+        pojo['specialityCodes'] = Array.from([...instance.specialityCodes].map((item) => CodingReference.toJSON(item)))
+        if (instance.notes !== undefined) pojo['notes'] = instance.notes
+        pojo['properties'] = Array.from([...instance.properties].map((item) => Property.toJSON(item)))
+        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataOwner.toJSON(instance.systemMetaData) : undefined
+        return pojo
+    }
 
-  static fromJSON(pojo: any): HealthcareProfessional {
-    const obj = {} as IHealthcareProfessional
-    obj['id'] = pojo['id']
-    if (pojo['rev'] !== undefined) {
-      obj['rev'] = pojo['rev']
+    static fromJSON(pojo: any): HealthcareProfessional {
+        const obj = {} as IHealthcareProfessional
+        obj['id'] = pojo['id']
+        if (pojo['rev'] !== undefined) {
+            obj['rev'] = pojo['rev']
+        }
+        if (pojo['created'] !== undefined) {
+            obj['created'] = pojo['created']
+        }
+        if (pojo['modified'] !== undefined) {
+            obj['modified'] = pojo['modified']
+        }
+        obj['labels'] = new Set(pojo['labels'].map((item: any) => CodingReference.fromJSON(item)))
+        obj['codes'] = new Set(pojo['codes'].map((item: any) => CodingReference.fromJSON(item)))
+        if (pojo['deletionDate'] !== undefined) {
+            obj['deletionDate'] = pojo['deletionDate']
+        }
+        if (pojo['name'] !== undefined) {
+            obj['name'] = pojo['name']
+        }
+        if (pojo['lastName'] !== undefined) {
+            obj['lastName'] = pojo['lastName']
+        }
+        if (pojo['firstName'] !== undefined) {
+            obj['firstName'] = pojo['firstName']
+        }
+        obj['names'] = pojo['names'].map((item: any) => PersonName.fromJSON(item))
+        if (pojo['gender'] !== undefined) {
+            obj['gender'] = pojo['gender']
+        }
+        if (pojo['civility'] !== undefined) {
+            obj['civility'] = pojo['civility']
+        }
+        if (pojo['speciality'] !== undefined) {
+            obj['speciality'] = pojo['speciality']
+        }
+        if (pojo['parentId'] !== undefined) {
+            obj['parentId'] = pojo['parentId']
+        }
+        obj['addresses'] = pojo['addresses'].map((item: any) => Address.fromJSON(item))
+        obj['languages'] = pojo['languages'].map((item: any) => item)
+        if (pojo['picture'] !== undefined) {
+            obj['picture'] = !!pojo['picture'] ? b64_2ab(pojo['picture']) : undefined
+        }
+        obj['specialityCodes'] = new Set(pojo['specialityCodes'].map((item: any) => CodingReference.fromJSON(item)))
+        if (pojo['notes'] !== undefined) {
+            obj['notes'] = pojo['notes']
+        }
+        obj['properties'] = new Set(pojo['properties'].map((item: any) => Property.fromJSON(item)))
+        if (pojo['systemMetaData'] !== undefined) {
+            obj['systemMetaData'] = !!pojo['systemMetaData'] ? SystemMetaDataOwner.fromJSON(pojo['systemMetaData']) : undefined
+        }
+        return new HealthcareProfessional(obj)
     }
-    if (pojo['created'] !== undefined) {
-      obj['created'] = pojo['created']
-    }
-    if (pojo['modified'] !== undefined) {
-      obj['modified'] = pojo['modified']
-    }
-    obj['labels'] = new Set(pojo['labels'].map((item: any) => CodingReference.fromJSON(item)))
-    obj['codes'] = new Set(pojo['codes'].map((item: any) => CodingReference.fromJSON(item)))
-    if (pojo['deletionDate'] !== undefined) {
-      obj['deletionDate'] = pojo['deletionDate']
-    }
-    if (pojo['name'] !== undefined) {
-      obj['name'] = pojo['name']
-    }
-    if (pojo['lastName'] !== undefined) {
-      obj['lastName'] = pojo['lastName']
-    }
-    if (pojo['firstName'] !== undefined) {
-      obj['firstName'] = pojo['firstName']
-    }
-    obj['names'] = pojo['names'].map((item: any) => PersonName.fromJSON(item))
-    if (pojo['gender'] !== undefined) {
-      obj['gender'] = pojo['gender']
-    }
-    if (pojo['civility'] !== undefined) {
-      obj['civility'] = pojo['civility']
-    }
-    if (pojo['speciality'] !== undefined) {
-      obj['speciality'] = pojo['speciality']
-    }
-    if (pojo['parentId'] !== undefined) {
-      obj['parentId'] = pojo['parentId']
-    }
-    obj['addresses'] = pojo['addresses'].map((item: any) => Address.fromJSON(item))
-    obj['languages'] = pojo['languages'].map((item: any) => item)
-    if (pojo['picture'] !== undefined) {
-      obj['picture'] = !!pojo['picture'] ? b64_2ab(pojo['picture']) : undefined
-    }
-    obj['specialityCodes'] = new Set(pojo['specialityCodes'].map((item: any) => CodingReference.fromJSON(item)))
-    if (pojo['notes'] !== undefined) {
-      obj['notes'] = pojo['notes']
-    }
-    obj['properties'] = new Set(pojo['properties'].map((item: any) => Property.fromJSON(item)))
-    if (pojo['systemMetaData'] !== undefined) {
-      obj['systemMetaData'] = !!pojo['systemMetaData'] ? SystemMetaDataOwner.fromJSON(pojo['systemMetaData']) : undefined
-    }
-    return new HealthcareProfessional(obj)
-  }
 }
 
 interface IHealthcareProfessional {
-  id?: string
-  rev?: string
-  created?: number
-  modified?: number
-  labels?: Set<CodingReference>
-  codes?: Set<CodingReference>
-  deletionDate?: number
-  name?: string
-  lastName?: string
-  firstName?: string
-  names?: Array<PersonName>
-  gender?: HealthcareProfessionalGenderEnum
-  civility?: string
-  speciality?: string
-  parentId?: string
-  addresses?: Array<Address>
-  languages?: Array<string>
-  picture?: ArrayBuffer
-  specialityCodes?: Set<CodingReference>
-  notes?: string
-  properties?: Set<Property>
-  systemMetaData?: SystemMetaDataOwner
+    id?: string
+    rev?: string
+    created?: number
+    modified?: number
+    labels?: Set<CodingReference>
+    codes?: Set<CodingReference>
+    deletionDate?: number
+    name?: string
+    lastName?: string
+    firstName?: string
+    names?: Array<PersonName>
+    gender?: HealthcareProfessionalGenderEnum
+    civility?: string
+    speciality?: string
+    parentId?: string
+    addresses?: Array<Address>
+    languages?: Array<string>
+    picture?: ArrayBuffer
+    specialityCodes?: Set<CodingReference>
+    notes?: string
+    properties?: Set<Property>
+    systemMetaData?: SystemMetaDataOwner
 }
 
 export type HealthcareProfessionalGenderEnum = 'male' | 'female' | 'indeterminate' | 'changed' | 'changedToMale' | 'changedToFemale' | 'unknown'

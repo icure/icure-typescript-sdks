@@ -1,6 +1,6 @@
 import { Filter } from '../filters/Filter'
 import { PaginatedList } from '../models/PaginatedList.model'
-import {HealthcareParty} from "@icure/api";
+import { HealthcareParty } from '@icure/api'
 
 /**
  * The HealthcarePartyApi interface provides methods to manage healthcare professionals.

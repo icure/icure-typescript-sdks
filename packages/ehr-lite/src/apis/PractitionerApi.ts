@@ -1,10 +1,4 @@
-import {
-    CommonApi,
-    ErrorHandler,
-    HealthcarePartyLikeApi,
-    HealthcarePartyLikeApiImpl,
-    PaginatedList
-} from '@icure/typescript-common'
+import { CommonApi, ErrorHandler, HealthcarePartyLikeApi, HealthcarePartyLikeApiImpl, PaginatedList } from '@icure/typescript-common'
 import { Practitioner } from '../models/Practitioner.model'
 import { HealthcareParty, IccHcpartyXApi, PaginatedListHealthcareParty } from '@icure/api'
 import { mapHealthcarePartyToPractitioner, mapPractitionerToHealthcareParty } from '../mappers/Practitioner.mapper'
@@ -23,5 +17,5 @@ export const practitionerApi = (api: CommonApi): PractitionerApi =>
             },
         },
         api.errorHandler,
-        api.baseApi.healthcarePartyApi
+        api.baseApi.healthcarePartyApi,
     )

@@ -1,5 +1,5 @@
-import {generatePropertyType} from "../models/PropertyType.model";
-import {mapPropertyTypeStubToPropertyType, mapPropertyTypeToPropertyTypeStub, PropertyType} from "../../src";
+import { generatePropertyType } from '../models/PropertyType.model'
+import { mapPropertyTypeStubToPropertyType, mapPropertyTypeToPropertyTypeStub, PropertyType } from '../../src'
 
 describe('PropertyType', function () {
     it('should correctly map to PropertyTypeStub and back to PropertyType', () => {

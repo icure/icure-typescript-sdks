@@ -1,30 +1,23 @@
-import {PaginatedList} from '../../models/PaginatedList.model'
-import {SharedDataType} from '../../models/User.model'
-import {Connection} from '../../models/Connection.model'
-import {UserLikeApi} from '../UserLikeApi'
-import {ErrorHandler} from '../../services/ErrorHandler'
-import {
-    FilterChainUser,
-    HealthcareParty as HealthcarePartyDto,
-    IccUserXApi,
-    Patient as PatientDto,
-    retry,
-    User as UserDto
-} from '@icure/api'
-import {Mapper} from '../Mapper'
-import {MessageGatewayApi} from '../MessageGatewayApi'
-import {Sanitizer} from '../../services/Sanitizer'
-import {forceUuid} from '../../utils/uuidUtils'
-import {findTelecomOfAddresses} from '../../utils/addressUtils'
-import {UserFilter} from '../../filters/dsl/UserFilterDsl'
-import {CommonApi} from '../CommonApi'
-import {NoOpFilter} from '../../filters/dsl/filterDsl'
-import {FilterMapper} from '../../mappers/Filter.mapper'
-import {CommonFilter} from '../../filters/filters'
-import {MessageFactory} from '../../services/MessageFactory'
-import {IccDataOwnerXApi} from '@icure/api/icc-x-api/icc-data-owner-x-api'
-import {DataOwnerTypeEnum} from '@icure/api/icc-api/model/DataOwnerTypeEnum'
-import {toPaginatedList} from "../../mappers/PaginatedList.mapper";
+import { PaginatedList } from '../../models/PaginatedList.model'
+import { SharedDataType } from '../../models/User.model'
+import { Connection } from '../../models/Connection.model'
+import { UserLikeApi } from '../UserLikeApi'
+import { ErrorHandler } from '../../services/ErrorHandler'
+import { FilterChainUser, HealthcareParty as HealthcarePartyDto, IccUserXApi, Patient as PatientDto, retry, User as UserDto } from '@icure/api'
+import { Mapper } from '../Mapper'
+import { MessageGatewayApi } from '../MessageGatewayApi'
+import { Sanitizer } from '../../services/Sanitizer'
+import { forceUuid } from '../../utils/uuidUtils'
+import { findTelecomOfAddresses } from '../../utils/addressUtils'
+import { UserFilter } from '../../filters/dsl/UserFilterDsl'
+import { CommonApi } from '../CommonApi'
+import { NoOpFilter } from '../../filters/dsl/filterDsl'
+import { FilterMapper } from '../../mappers/Filter.mapper'
+import { CommonFilter } from '../../filters/filters'
+import { MessageFactory } from '../../services/MessageFactory'
+import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
+import { DataOwnerTypeEnum } from '@icure/api/icc-api/model/DataOwnerTypeEnum'
+import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
 
 export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements UserLikeApi<DSUser, DSPatient> {
     constructor(
@@ -37,7 +30,7 @@ export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements Us
         private readonly dataOwnerApi: IccDataOwnerXApi,
         private readonly api: CommonApi,
         private readonly messageFactory: MessageFactory<DSUser, DSHealthcareParty, DSPatient>,
-        private readonly messageGatewayApi?: MessageGatewayApi
+        private readonly messageGatewayApi?: MessageGatewayApi,
     ) {}
 
     checkTokenValidity(id: string, token: string): Promise<boolean> {
@@ -88,7 +81,7 @@ export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements Us
                 patientId: patientDto.id,
                 email: favouredEmail?.telecomNumber,
                 mobilePhone: favouredMobile?.telecomNumber,
-            })
+            }),
         )
         if (!createdUser || !createdUser.id || !createdUser.login) throw this.errorHandler.createErrorWithMessage('Something went wrong during User creation')
 
@@ -162,12 +155,12 @@ export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements Us
                         limit,
                         new FilterChainUser({
                             filter: FilterMapper.toAbstractFilterDto<UserDto>(filter, 'User'),
-                        })
+                        }),
                     )
                     .catch((e) => {
                         throw this.errorHandler.createErrorFromAny(e)
                     }),
-                this.userMapper.toDomain
+                this.userMapper.toDomain,
             )!
         }
     }
@@ -176,7 +169,7 @@ export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements Us
         return this.userMapper.toDomain(
             await this.userApi.getCurrentUser().catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
-            })
+            }),
         )!
     }
 
@@ -184,7 +177,7 @@ export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements Us
         return this.userMapper.toDomain(
             await this.userApi.getUserByEmail(this.sanitizer.validateEmail(email)).catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
-            })
+            }),
         )!
     }
 
@@ -192,7 +185,7 @@ export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements Us
         return this.userMapper.toDomain(
             await this.userApi.getCurrentUser().catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
-            })
+            }),
         )!
     }
 
@@ -295,7 +288,7 @@ export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements Us
         options?: {
             connectionMaxRetry?: number
             connectionRetryIntervalMs?: number
-        }
+        },
     ): Promise<Connection> {
         throw 'TODO'
     }

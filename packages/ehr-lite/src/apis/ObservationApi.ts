@@ -1,22 +1,13 @@
-import {
-    ServiceLikeApiImpl,
-    Document,
-    mapDocumentDtoToDocument,
-    mapDocumentToDocumentDto,
-    CommonApi,
-    ServiceLikeApi
-} from '@icure/typescript-common'
-import {Patient} from '../models/Patient.model'
-import {Observation} from '../models/Observation.model'
-import {Document as DocumentDto, Patient as PatientDto, Service} from '@icure/api'
-import {mapObservationToService, mapServiceToObservation} from '../mappers/Observation.mapper'
-import {mapPatientDtoToPatient, mapPatientToPatientDto} from '../mappers/Patient.mapper'
+import { ServiceLikeApiImpl, Document, mapDocumentDtoToDocument, mapDocumentToDocumentDto, CommonApi, ServiceLikeApi } from '@icure/typescript-common'
+import { Patient } from '../models/Patient.model'
+import { Observation } from '../models/Observation.model'
+import { Document as DocumentDto, Patient as PatientDto, Service } from '@icure/api'
+import { mapObservationToService, mapServiceToObservation } from '../mappers/Observation.mapper'
+import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
 
-export interface ObservationApi extends ServiceLikeApi<Observation, Patient, Document> {
-}
+export interface ObservationApi extends ServiceLikeApi<Observation, Patient, Document> {}
 
-class ObservationApiImpl extends ServiceLikeApiImpl<Observation, Patient, Document> implements ObservationApi {
-}
+class ObservationApiImpl extends ServiceLikeApiImpl<Observation, Patient, Document> implements ObservationApi {}
 
 export const observationApi = (api: CommonApi): ObservationApi =>
     new ObservationApiImpl(
@@ -51,5 +42,5 @@ export const observationApi = (api: CommonApi): ObservationApi =>
         api.baseApi.healthcareElementApi,
         api.baseApi.cryptoApi,
         api.baseApi.dataOwnerApi,
-        api
+        api,
     )

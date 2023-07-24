@@ -1,13 +1,13 @@
-import {CodeStub} from "@icure/api";
+import { CodeStub } from '@icure/api'
 
 export enum ClinicalStatusEnum {
-    ACTIVE = "active" ,
-    RECURRENCE = "recurrence",
-    RELAPSE = "relapse",
-    INACTIVE = "inactive",
-    REMISSION = "remission",
-    RESOLVED = "resolved",
-    UNKNOWN = "unknown",
+    ACTIVE = 'active',
+    RECURRENCE = 'recurrence',
+    RELAPSE = 'relapse',
+    INACTIVE = 'inactive',
+    REMISSION = 'remission',
+    RESOLVED = 'resolved',
+    UNKNOWN = 'unknown',
 }
 
 export namespace ClinicalStatusEnum {
@@ -15,13 +15,13 @@ export namespace ClinicalStatusEnum {
         return new CodeStub({
             type: 'http://terminology.hl7.org/CodeSystem/condition-clinical',
             code: clinicalStatus,
-            version: '2.0.0'
+            version: '2.0.0',
         })
     }
 
     export function fromCodeStub(codeStub: CodeStub): ClinicalStatusEnum {
         // TODO consider version in future
-        if (codeStub.type !== 'http://terminology.hl7.org/CodeSystem/condition-clinical') throw new Error("Unexpected codeStub.type for clinicalStatus: " + codeStub.type)
+        if (codeStub.type !== 'http://terminology.hl7.org/CodeSystem/condition-clinical') throw new Error('Unexpected codeStub.type for clinicalStatus: ' + codeStub.type)
         if (codeStub.code === 'active') {
             return ClinicalStatusEnum.ACTIVE
         } else if (codeStub.code === 'recurrence') {
@@ -36,6 +36,6 @@ export namespace ClinicalStatusEnum {
             return ClinicalStatusEnum.RESOLVED
         } else if (codeStub.code === 'unknown') {
             return ClinicalStatusEnum.UNKNOWN
-        } else throw new Error("Unexpected codeStub.code for clinicalStatus: " + codeStub.code)
+        } else throw new Error('Unexpected codeStub.code for clinicalStatus: ' + codeStub.code)
     }
 }

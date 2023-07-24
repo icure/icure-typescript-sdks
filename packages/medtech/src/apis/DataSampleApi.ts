@@ -1,18 +1,9 @@
-import {
-    CommonApi,
-    CommonFilter,
-    Connection,
-    Document,
-    mapDocumentDtoToDocument,
-    mapDocumentToDocumentDto,
-    PaginatedList, ServiceLikeApi,
-    ServiceLikeApiImpl,
-} from '@icure/typescript-common'
-import {Document as DocumentDto, Patient as PatientDto, Service} from '@icure/api'
-import {DataSample} from '../models/DataSample.model'
-import {Patient} from '../models/Patient.model'
-import {mapDataSampleToService, mapServiceToDataSample} from '../mappers/DataSample.mapper'
-import {mapPatientDtoToPatient, mapPatientToPatientDto} from '../mappers/Patient.mapper'
+import { CommonApi, CommonFilter, Connection, Document, mapDocumentDtoToDocument, mapDocumentToDocumentDto, PaginatedList, ServiceLikeApi, ServiceLikeApiImpl } from '@icure/typescript-common'
+import { Document as DocumentDto, Patient as PatientDto, Service } from '@icure/api'
+import { DataSample } from '../models/DataSample.model'
+import { Patient } from '../models/Patient.model'
+import { mapDataSampleToService, mapServiceToDataSample } from '../mappers/DataSample.mapper'
+import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
 
 /**
  * The DataSampleApi interface provides methods to manage data samples.
@@ -117,12 +108,7 @@ export interface DataSampleApi extends ServiceLikeApi<DataSample, Patient, Docum
      *    - connectionMaxRetry : how many time retrying to reconnect to the iCure WebSocket;
      *    - connectionRetryIntervalInMs : How long base interval will be between two retry. The retry attempt is exponential and using a random value (connectionRetryIntervalMs * (random between 1 and 2))^nbAttempts)
      */
-    subscribeToDataSampleEvents(
-        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
-        filter: CommonFilter<DataSample>,
-        eventFired: (dataSample: DataSample) => Promise<void>,
-        options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }
-    ): Promise<Connection>
+    subscribeToDataSampleEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: CommonFilter<DataSample>, eventFired: (dataSample: DataSample) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection>
 
     /**
      * @deprecated use {@link DataSampleApi.setAttachment} instead
@@ -136,14 +122,7 @@ export interface DataSampleApi extends ServiceLikeApi<DataSample, Patient, Docum
      * @param documentExternalUuid
      * @param documentLanguage
      */
-    setDataSampleAttachment(
-        dataSampleId: string,
-        body: ArrayBuffer,
-        documentName?: string,
-        documentVersion?: string,
-        documentExternalUuid?: string,
-        documentLanguage?: string
-    ): Promise<Document>
+    setDataSampleAttachment(dataSampleId: string, body: ArrayBuffer, documentName?: string, documentVersion?: string, documentExternalUuid?: string, documentLanguage?: string): Promise<Document>
     /**
      * @deprecated use {@link DataSampleApi.getAttachmentContent} instead
      *
@@ -190,22 +169,10 @@ class DataSampleApiImpl extends ServiceLikeApiImpl<DataSample, Patient, Document
     getDataSamplesForPatient(patient: Patient): Promise<Array<DataSample>> {
         return this.getForPatient(patient)
     }
-    subscribeToDataSampleEvents(
-        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
-        filter: CommonFilter<DataSample>,
-        eventFired: (dataSample: DataSample) => Promise<void>,
-        options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }
-    ): Promise<Connection> {
+    subscribeToDataSampleEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: CommonFilter<DataSample>, eventFired: (dataSample: DataSample) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection> {
         return this.subscribeToEvents(eventTypes, filter, eventFired, options)
     }
-    setDataSampleAttachment(
-        dataSampleId: string,
-        body: ArrayBuffer,
-        documentName?: string,
-        documentVersion?: string,
-        documentExternalUuid?: string,
-        documentLanguage?: string
-    ): Promise<Document> {
+    setDataSampleAttachment(dataSampleId: string, body: ArrayBuffer, documentName?: string, documentVersion?: string, documentExternalUuid?: string, documentLanguage?: string): Promise<Document> {
         return this.setAttachment(dataSampleId, body, documentName, documentVersion, documentExternalUuid, documentLanguage)
     }
     getDataSampleAttachmentContent(dataSampleId: string, documentId: string): Promise<ArrayBuffer> {
@@ -215,7 +182,6 @@ class DataSampleApiImpl extends ServiceLikeApiImpl<DataSample, Patient, Document
         return this.getAttachmentDocument(dataSampleId, documentId)
     }
 }
-
 
 export const dataSampleApi = (api: CommonApi): DataSampleApi => {
     return new DataSampleApiImpl(
@@ -250,6 +216,6 @@ export const dataSampleApi = (api: CommonApi): DataSampleApi => {
         api.baseApi.healthcareElementApi,
         api.baseApi.cryptoApi,
         api.baseApi.dataOwnerApi,
-        api
+        api,
     )
 }

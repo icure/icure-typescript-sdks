@@ -1,5 +1,5 @@
-import {Measure} from "../../src/models/Measure.model";
-import {generateCodingReference} from "./CodingReference.model";
+import { Measure } from '../../src/models/Measure.model'
+import { generateCodingReference } from './CodingReference.model'
 
 export function generateMeasure(): Measure {
     const measure = {

@@ -13,11 +13,7 @@ export * from './src/apis/DataOwnerApi'
 export * from './src/apis/MedTechApi'
 // export * from './src/filter'
 
-export {
-    CryptoStrategies,
-    CryptoStrategiesBridge,
-    SimpleCryptoStrategies,
-} from '@icure/typescript-common'
+export { CryptoStrategies, CryptoStrategiesBridge, SimpleCryptoStrategies } from '@icure/typescript-common'
 
 export { mapOf } from '@icure/typescript-common'
 
@@ -25,7 +21,7 @@ export * from '@icure/api/icc-x-api/utils/binary-utils'
 export * from '@icure/api/icc-x-api/utils/formatting-util'
 export * from '@icure/api/icc-x-api/utils/uuid-encoder'
 
-export {KeyStorageFacade, StorageFacade, LocalStorageImpl, KeyStorageImpl} from '@icure/api'
+export { KeyStorageFacade, StorageFacade, LocalStorageImpl, KeyStorageImpl } from '@icure/api'
 
 export const ICURE_CLOUD_URL = 'https://kraken.icure.cloud'
 export const ICURE_FREE_URL = 'http://localhost:16043'

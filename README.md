@@ -22,10 +22,7 @@ npm install @icure/ehr-lite-sdk
 ## Usage example
 
 ```typescript
-import {
-    EHRLite,
-    ICURE_CLOUD_URL,
-} from "@icure/ehr-lite-sdk";
+import { EHRLite, ICURE_CLOUD_URL } from '@icure/ehr-lite-sdk'
 
 const api = await new EHRLite.Builder()
     .withICureBaseUrl(ICURE_CLOUD_URL)

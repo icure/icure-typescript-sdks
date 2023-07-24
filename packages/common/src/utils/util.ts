@@ -7,24 +7,24 @@
  * @param code the http status code to be checked against the code range
  */
 export function isCodeInRange(codeRange: string, code: number): boolean {
-  // This is how the default value is encoded in OAG
-  if (codeRange === '0') {
-    return true
-  }
-  if (codeRange == code.toString()) {
-    return true
-  } else {
-    const codeString = code.toString()
-    if (codeString.length != codeRange.length) {
-      return false
+    // This is how the default value is encoded in OAG
+    if (codeRange === '0') {
+        return true
     }
-    for (let i = 0; i < codeString.length; i++) {
-      if (codeRange.charAt(i) != 'X' && codeRange.charAt(i) != codeString.charAt(i)) {
-        return false
-      }
+    if (codeRange == code.toString()) {
+        return true
+    } else {
+        const codeString = code.toString()
+        if (codeString.length != codeRange.length) {
+            return false
+        }
+        for (let i = 0; i < codeString.length; i++) {
+            if (codeRange.charAt(i) != 'X' && codeRange.charAt(i) != codeString.charAt(i)) {
+                return false
+            }
+        }
+        return true
     }
-    return true
-  }
 }
 
 /**
@@ -33,21 +33,19 @@ export function isCodeInRange(codeRange: string, code: number): boolean {
  * @param consumes array
  */
 export function canConsumeForm(contentTypes: string[]): boolean {
-  return contentTypes.indexOf('multipart/form-data') !== -1
+    return contentTypes.indexOf('multipart/form-data') !== -1
 }
 
 export function formatICureApiUrl(iCureUrl: string): string {
-  let formattedEndUrl = removeSlashEndOfApiUrl(iCureUrl)
+    let formattedEndUrl = removeSlashEndOfApiUrl(iCureUrl)
 
-  if (formattedEndUrl.match('^https?://[a-zA-Z0-9.-]+(:[0-9]+)?$') != null) {
-    return formattedEndUrl
-  }
+    if (formattedEndUrl.match('^https?://[a-zA-Z0-9.-]+(:[0-9]+)?$') != null) {
+        return formattedEndUrl
+    }
 
-  throw Error(
-      `Invalid API URL: Should respect the format ^https?://[a-zA-Z0-9.-]+{2,}(:d+)?$. Consider using only the constants of index.ts, except if you received any other information from the iCure Team`
-  )
+    throw Error(`Invalid API URL: Should respect the format ^https?://[a-zA-Z0-9.-]+{2,}(:d+)?$. Consider using only the constants of index.ts, except if you received any other information from the iCure Team`)
 }
 
 function removeSlashEndOfApiUrl(apiUrl: string): string {
-  return apiUrl.endsWith('/') ? apiUrl.substring(0, apiUrl.length - 1) : apiUrl
+    return apiUrl.endsWith('/') ? apiUrl.substring(0, apiUrl.length - 1) : apiUrl
 }

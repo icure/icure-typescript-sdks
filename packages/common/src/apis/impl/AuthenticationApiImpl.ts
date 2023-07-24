@@ -1,15 +1,5 @@
 import { AuthenticationApi } from '../AuthenticationApi'
-import {
-    BasicApis, Device,
-    HealthcareParty,
-    IccCryptoXApi,
-    IccPatientXApi,
-    IccUserXApi,
-    Patient,
-    retry,
-    ua2hex,
-    User
-} from '@icure/api'
+import { BasicApis, Device, HealthcareParty, IccCryptoXApi, IccPatientXApi, IccUserXApi, Patient, retry, ua2hex, User } from '@icure/api'
 import { Sanitizer } from '../../services/Sanitizer'
 import { ErrorHandler } from '../../services/ErrorHandler'
 import { MessageGatewayApi } from '../MessageGatewayApi'
@@ -18,9 +8,9 @@ import { AuthenticationResult } from '../../models/AuthenticationResult.model'
 import { AuthenticationProcess } from '../../models/AuthenticationProcess.model'
 import { RecaptchaType } from '../../models/RecaptchaType.model'
 import { CommonApi } from '../CommonApi'
-import {UserLikeApi} from "../UserLikeApi";
-import {forceUuid} from "../../utils/uuidUtils";
-import {NotificationTypeEnum} from "../../models/Notification.model";
+import { UserLikeApi } from '../UserLikeApi'
+import { forceUuid } from '../../utils/uuidUtils'
+import { NotificationTypeEnum } from '../../models/Notification.model'
 
 export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements AuthenticationApi<DSApi> {
     protected constructor(
@@ -29,7 +19,7 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
         private readonly sanitizer: Sanitizer,
         protected readonly iCureBasePath: string,
         protected readonly authProcessByEmailId: string | undefined,
-        protected readonly authProcessBySmsId: string | undefined
+        protected readonly authProcessBySmsId: string | undefined,
     ) {}
 
     async completeAuthentication(process: AuthenticationProcess, validationCode: string): Promise<AuthenticationResult<DSApi>> {
@@ -56,16 +46,15 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
         healthcareProfessionalId: string = '',
         bypassTokenCheck: boolean = false,
         validationCodeLength: number = 6,
-        recaptchaType: RecaptchaType = 'recaptcha'
+        recaptchaType: RecaptchaType = 'recaptcha',
     ): Promise<AuthenticationProcess> {
-
         if (!email && !phoneNumber) {
             throw this.errorHandler.createErrorWithMessage(`In order to start authentication of a user, you should at least provide its email OR its phone number`)
         }
 
         if ((!!email && !this.authProcessByEmailId) || (!!phoneNumber && !this.authProcessBySmsId)) {
             throw this.errorHandler.createErrorWithMessage(
-                `In order to start a user authentication with an email, you need to instantiate the API with a authProcessByEmailId. If you want to start the authentication with a phone number, then you need to instantiate the API with a authProcessBySmsId`
+                `In order to start a user authentication with an email, you need to instantiate the API with a authProcessByEmailId. If you want to start the authentication with a phone number, then you need to instantiate the API with a authProcessBySmsId`,
             )
         }
 
@@ -83,7 +72,7 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
                 mobilePhone: phoneNumber,
                 hcpId: healthcareProfessionalId,
             },
-            validationCodeLength
+            validationCodeLength,
         )
 
         if (!!requestId) {
@@ -99,7 +88,7 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
 
     private async _generateAndAssignAuthenticationToken(
         login: string,
-        validationCode: string
+        validationCode: string,
     ): Promise<{
         user: User
         password: string
@@ -118,7 +107,7 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
 
     protected async _initUserAuthTokenAndCrypto(login: string, token: string): Promise<AuthenticationResult<DSApi>> {
         const { user, password } = await retry(() => this._generateAndAssignAuthenticationToken(login, token), 5, 500, 2)
-        const authenticatedApi = await  this.initApi(login, password)
+        const authenticatedApi = await this.initApi(login, password)
 
         const userKeyPairs: KeyPair<string>[] = []
         for (const keyPair of Object.values(authenticatedApi.baseApi.cryptoApi.userKeysManager.getDecryptionKeys())) {
@@ -163,8 +152,8 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
                             taskType: NotificationTypeEnum.NEW_USER_OWN_DATA_ACCESS,
                         },
                         {
-                            additionalDelegates: { [delegate]: 'WRITE' }
-                        }
+                            additionalDelegates: { [delegate]: 'WRITE' },
+                        },
                     ),
                 )
                 //TODO Return which delegates were warned to share back info & add retry mechanism

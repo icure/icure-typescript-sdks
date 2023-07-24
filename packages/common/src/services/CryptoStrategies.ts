@@ -39,7 +39,7 @@ export interface CryptoStrategies<DSDataOwnerWithType extends DataOwnerWithType>
     recoverAndVerifyKeys(
         self: DSDataOwnerWithType,
         missingKeys: string[],
-        unverifiedKeys: string[]
+        unverifiedKeys: string[],
     ): Promise<{
         recoveredKeyPairs: KeyPair[]
         verifiedKeys: { [publicKey: string]: CryptoStrategies.KeyVerificationBehaviour }

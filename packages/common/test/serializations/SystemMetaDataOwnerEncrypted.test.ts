@@ -1,5 +1,5 @@
-import {SystemMetaDataOwnerEncrypted} from '../../src/models/SystemMetaDataOwnerEncrypted.model'
-import {generateSystemMetaDataOwnerEncrypted} from "../models/SystemMetaDataOwnerEncrypted.model";
+import { SystemMetaDataOwnerEncrypted } from '../../src/models/SystemMetaDataOwnerEncrypted.model'
+import { generateSystemMetaDataOwnerEncrypted } from '../models/SystemMetaDataOwnerEncrypted.model'
 
 describe(`SystemMetaDataOwnerEncrypted serialization and deserialization`, () => {
     it('should correctly serialize and deserialize from instance to JSON and back', () => {

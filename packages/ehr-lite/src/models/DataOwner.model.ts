@@ -1,6 +1,6 @@
-import {Practitioner} from "./Practitioner.model";
-import {Patient} from "./Patient.model";
-import {Organisation} from "./Organisation.model";
+import { Practitioner } from './Practitioner.model'
+import { Patient } from './Patient.model'
+import { Organisation } from './Organisation.model'
 
 export type DataOwner = Practitioner | Organisation | Patient
 
@@ -10,10 +10,7 @@ export enum DataOwnerTypeEnum {
     ORGANISATION = 'Organisation',
 }
 
-export type DataOwnerWithType =
-    | { type: DataOwnerTypeEnum.PRACTITIONER, dataOwner: Practitioner }
-    | { type: DataOwnerTypeEnum.ORGANISATION, dataOwner: Organisation }
-    | { type: DataOwnerTypeEnum.PATIENT, dataOwner: Patient }
+export type DataOwnerWithType = { type: DataOwnerTypeEnum.PRACTITIONER; dataOwner: Practitioner } | { type: DataOwnerTypeEnum.ORGANISATION; dataOwner: Organisation } | { type: DataOwnerTypeEnum.PATIENT; dataOwner: Patient }
 
 /*
 class UseDataOwner implements DataOwnerLikeApi<DataOwnerWithType, DataOwnerType> {

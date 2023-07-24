@@ -1,5 +1,5 @@
-import {Filter} from "../Filter";
-import {Patient} from "@icure/api";
+import { Filter } from '../Filter'
+import { Patient } from '@icure/api'
 
 export interface PatientByHealthcarePartyGenderEducationProfessionFilter extends Filter<Patient> {
     description?: string
@@ -7,5 +7,5 @@ export interface PatientByHealthcarePartyGenderEducationProfessionFilter extends
     gender?: Patient.GenderEnum
     education?: string
     profession?: string
-  '$type': 'PatientByHealthcarePartyGenderEducationProfessionFilter'
+    $type: 'PatientByHealthcarePartyGenderEducationProfessionFilter'
 }

@@ -1,6 +1,6 @@
 import { Filter } from '../filters/Filter'
 import { PaginatedList } from '../models/PaginatedList.model'
-import {Code} from "@icure/api";
+import { Code } from '@icure/api'
 
 /**
  * The CodeApi interface provides methods to manage code and terminologies (like ATC, ICD-10, LOINC, SNOMED-CT,… ).

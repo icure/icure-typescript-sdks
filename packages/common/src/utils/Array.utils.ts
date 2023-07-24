@@ -1,4 +1,4 @@
-import {deepEqual} from "./Object.utils";
+import { deepEqual } from './Object.utils'
 
 export function addUniqueObjectsToArray<T>(arr: T[], ...objs: T[]): T[] {
     const newArr = [...arr]

@@ -1,22 +1,18 @@
-import { ClassComponent } from "./ClassComponent";
+import { ClassComponent } from './ClassComponent'
 
 export class ClassEntityComponent extends ClassComponent {
-  readonly name: string;
+    readonly name: string
 
-  constructor(name: string, nullable: boolean) {
-    super(nullable);
-    this.name = name;
-  }
+    constructor(name: string, nullable: boolean) {
+        super(nullable)
+        this.name = name
+    }
 
-  computeDeserializer(value: string): string {
-    return this.nullable
-      ? `!!${value} ? ${this.name}.fromJSON(${value}) : undefined`
-      : `${this.name}.fromJSON(${value})`;
-  }
+    computeDeserializer(value: string): string {
+        return this.nullable ? `!!${value} ? ${this.name}.fromJSON(${value}) : undefined` : `${this.name}.fromJSON(${value})`
+    }
 
-  computeSerializer(value: string): string {
-    return this.nullable
-      ? `!!${value} ? ${this.name}.toJSON(${value}) : undefined`
-      : `${this.name}.toJSON(${value})`;
-  }
+    computeSerializer(value: string): string {
+        return this.nullable ? `!!${value} ? ${this.name}.toJSON(${value}) : undefined` : `${this.name}.toJSON(${value})`
+    }
 }

@@ -1,5 +1,5 @@
-import {generateProperty} from "../models/Property.model";
-import {mapPropertyStubToProperty, mapPropertyToPropertyStub, Property} from "../../src";
+import { generateProperty } from '../models/Property.model'
+import { mapPropertyStubToProperty, mapPropertyToPropertyStub, Property } from '../../src'
 
 describe('Property', function () {
     it('should correctly map to PropertyStub and back to Property', () => {

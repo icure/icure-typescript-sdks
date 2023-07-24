@@ -1,4 +1,4 @@
-import {deepEqual} from "@icure/typescript-common";
+import { deepEqual } from '@icure/typescript-common'
 
 export function addUniqueObjectToSet<T>(set: Set<T>, obj: T): Set<T> {
     for (const item of set) {

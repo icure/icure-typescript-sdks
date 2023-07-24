@@ -1,6 +1,6 @@
 // Test contexts as mixins. See https://www.typescriptlang.org/docs/handbook/mixins.html
-import {MedTechCryptoStrategies, SimpleMedTechCryptoStrategies} from "../../src/services/MedTechCryptoStrategies";
-import {AuthenticationApi} from "../../src/apis/AuthenticationApi";
+import { MedTechCryptoStrategies, SimpleMedTechCryptoStrategies } from '../../src/services/MedTechCryptoStrategies'
+import { AuthenticationApi } from '../../src/apis/AuthenticationApi'
 import {
     CodingReference,
     KeyPair,
@@ -18,68 +18,42 @@ import {
     MessageFactory,
     NotificationTypeEnum,
     MaintenanceTaskFilter,
-    Annotation
-} from "@icure/typescript-common";
-import {AnonymousMedTechApi} from "../../src/apis/AnonymousMedTechApi";
-import {MedTechApi} from "../../src/apis/MedTechApi";
-import {
-    HealthcareParty,
-    Patient as PatientDto,
-    Service,
-    User as UserDto,
-    DataOwnerWithType as DataOwnerWithTypeDto,
-    Document as DocumentDto,
-    HealthElement, Device
-} from '@icure/api'
-import {UserApi} from "../../src/apis/UserApi"
-import {Patient} from "../../src/models/Patient.model";
-import {HealthcareProfessional} from "../../src/models/HealthcareProfessional.model";
-import {DataOwnerWithType} from "../../src/models/DataOwner.model";
-import {HealthcareProfessionalApi} from "../../src/apis/HealthcareProfessionalApi";
-import {DataOwnerApi} from "../../src/apis/DataOwnerApi";
-import {PatientApi} from "../../src/apis/PatientApi";
-import {NotificationApi} from "../../src/apis/NotificationApi";
-import {
-    mapHealthcarePartyToHealthcareProfessional,
-    mapHealthcareProfessionalToHealthcareParty
-} from "../../src/mappers/HealthcareProfessional.mapper";
-import {mapPatientDtoToPatient, mapPatientToPatientDto} from "../../src/mappers/Patient.mapper";
-import {DataSample} from "../../src/models/DataSample.model";
-import {Content} from "../../src/models/Content.model";
-import {DataSampleApi} from "../../src/apis/DataSampleApi";
-import {MaintenanceTask} from "@icure/api/icc-api/model/MaintenanceTask";
-import {
-    BaseApiTestContext, WithAuthenticationApi, WithDataOwnerApi, WithDeviceApi, WithHcpApi, WithHelementApi,
-    WithMaintenanceTaskApi,
-    WithPatientApi,
-    WithServiceApi
-} from "../../../common-test/apis/TestContexts";
-import {mapDataSampleToService, mapServiceToDataSample} from "../../src/mappers/DataSample.mapper";
-import dataOwnerMapper from "../../src/mappers/DataOwner.mapper";
-import {HealthcareElement} from "../../src/models/HealthcareElement.model";
-import {HealthcareElementApi} from "../../src/apis/HealthcareElementApi";
-import {
-    mapHealthcareElementToHealthElement,
-    mapHealthElementToHealthcareElement
-} from "../../src/mappers/HealthcareElement.mapper";
-import {DataSampleFilter} from "../../src/filter/DataSampleFilterDsl";
-import {HealthcareElementFilter} from "../../src/filter/HealthcareElementFilterDsl";
-import {TestMessageFactory} from "../test-utils";
-import {MedTechMessageFactory} from "../../src/services/MedTechMessageFactory";
-import {NotificationFilter} from "@icure/ehr-lite-sdk";
-import {MedicalDeviceApi} from "../../src/apis/MedicalDeviceApi";
-import {MedicalDevice} from "../../src/models/MedicalDevice.model";
-import {mapDeviceToMedicalDevice, mapMedicalDeviceToDevice} from "../../src/mappers/MedicalDevice.mapper";
-import {TestVars} from "@icure/test-setup/types";
+    Annotation,
+} from '@icure/typescript-common'
+import { AnonymousMedTechApi } from '../../src/apis/AnonymousMedTechApi'
+import { MedTechApi } from '../../src/apis/MedTechApi'
+import { HealthcareParty, Patient as PatientDto, Service, User as UserDto, DataOwnerWithType as DataOwnerWithTypeDto, Document as DocumentDto, HealthElement, Device } from '@icure/api'
+import { UserApi } from '../../src/apis/UserApi'
+import { Patient } from '../../src/models/Patient.model'
+import { HealthcareProfessional } from '../../src/models/HealthcareProfessional.model'
+import { DataOwnerWithType } from '../../src/models/DataOwner.model'
+import { HealthcareProfessionalApi } from '../../src/apis/HealthcareProfessionalApi'
+import { DataOwnerApi } from '../../src/apis/DataOwnerApi'
+import { PatientApi } from '../../src/apis/PatientApi'
+import { NotificationApi } from '../../src/apis/NotificationApi'
+import { mapHealthcarePartyToHealthcareProfessional, mapHealthcareProfessionalToHealthcareParty } from '../../src/mappers/HealthcareProfessional.mapper'
+import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../../src/mappers/Patient.mapper'
+import { DataSample } from '../../src/models/DataSample.model'
+import { Content } from '../../src/models/Content.model'
+import { DataSampleApi } from '../../src/apis/DataSampleApi'
+import { MaintenanceTask } from '@icure/api/icc-api/model/MaintenanceTask'
+import { BaseApiTestContext, WithAuthenticationApi, WithDataOwnerApi, WithDeviceApi, WithHcpApi, WithHelementApi, WithMaintenanceTaskApi, WithPatientApi, WithServiceApi } from '../../../common-test/apis/TestContexts'
+import { mapDataSampleToService, mapServiceToDataSample } from '../../src/mappers/DataSample.mapper'
+import dataOwnerMapper from '../../src/mappers/DataOwner.mapper'
+import { HealthcareElement } from '../../src/models/HealthcareElement.model'
+import { HealthcareElementApi } from '../../src/apis/HealthcareElementApi'
+import { mapHealthcareElementToHealthElement, mapHealthElementToHealthcareElement } from '../../src/mappers/HealthcareElement.mapper'
+import { DataSampleFilter } from '../../src/filter/DataSampleFilterDsl'
+import { HealthcareElementFilter } from '../../src/filter/HealthcareElementFilterDsl'
+import { TestMessageFactory } from '../test-utils'
+import { MedTechMessageFactory } from '../../src/services/MedTechMessageFactory'
+import { NotificationFilter } from '@icure/ehr-lite-sdk'
+import { MedicalDeviceApi } from '../../src/apis/MedicalDeviceApi'
+import { MedicalDevice } from '../../src/models/MedicalDevice.model'
+import { mapDeviceToMedicalDevice, mapMedicalDeviceToDevice } from '../../src/mappers/MedicalDevice.mapper'
+import { TestVars } from '@icure/test-setup/types'
 
-export class MedTechBaseTestContext extends BaseApiTestContext<
-    AnonymousMedTechApi.Builder,
-    AnonymousMedTechApi,
-    MedTechApi,
-    MedTechCryptoStrategies,
-    User,
-    MedTechMessageFactory
-> {
+export class MedTechBaseTestContext extends BaseApiTestContext<AnonymousMedTechApi.Builder, AnonymousMedTechApi, MedTechApi, MedTechCryptoStrategies, User, MedTechMessageFactory> {
     newAnonymousApiBuilder(): AnonymousMedTechApi.Builder {
         return new AnonymousMedTechApi.Builder()
     }
@@ -109,15 +83,15 @@ export class MedTechBaseTestContext extends BaseApiTestContext<
     }
 
     hcpProcessId(env: TestVars): string {
-        return env.hcpAuthProcessId;
+        return env.hcpAuthProcessId
     }
 
     patProcessId(env: TestVars): string {
-        return env.patAuthProcessId;
+        return env.patAuthProcessId
     }
 }
 
-type Constructor<T> = new (...args: any[]) => T;
+type Constructor<T> = new (...args: any[]) => T
 export function PatientApiAware<TBase extends Constructor<any>>(Base: TBase): TBase & Constructor<WithPatientApi<MedTechApi, Patient>> {
     return class PatientApiAwareImpl extends Base implements WithPatientApi<MedTechApi, Patient> {
         patientApi(api: MedTechApi): PatientApi {
@@ -138,14 +112,14 @@ export function PatientApiAware<TBase extends Constructor<any>>(Base: TBase): TB
                     firstName: 'John',
                     lastName: 'Snow',
                     notes: [
-                      new Annotation({
-                          markdown: mapOf({
-                              en: 'Winter is coming',
-                              da: 'Vinteren kommer'
-                          }),
-                      })
+                        new Annotation({
+                            markdown: mapOf({
+                                en: 'Winter is coming',
+                                da: 'Vinteren kommer',
+                            }),
+                        }),
                     ],
-                })
+                }),
             )
         }
 
@@ -206,26 +180,22 @@ export function DataSampleApiAware<TBase extends Constructor<any>>(Base: TBase):
                 new DataSample({
                     labels: new Set([new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })]),
                     content: mapOf({ en: new Content({ stringValue: 'Hello world' }) }),
-                })
+                }),
             )
         }
 
         createServicesForPatient(api: MedTechApi, patient: Patient): Promise<DataSample[]> {
-            return api.dataSampleApi.createOrModifyManyFor(
-                patient.id!,
-                [
-                    new DataSample({
-                        labels: new Set([new CodingReference({ id: 'testid2', type: 'IC-TEST', code: 'TEST' })]),
-                        content: mapOf({ en: new Content({ stringValue: 'Hello world' }) }),
-                    }),
-                    new DataSample({
-                        labels: new Set([new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })]),
-                        content: mapOf({ en: new Content({ stringValue: 'Good night world' }) }),
-                    }),
-                ]
-            )
+            return api.dataSampleApi.createOrModifyManyFor(patient.id!, [
+                new DataSample({
+                    labels: new Set([new CodingReference({ id: 'testid2', type: 'IC-TEST', code: 'TEST' })]),
+                    content: mapOf({ en: new Content({ stringValue: 'Hello world' }) }),
+                }),
+                new DataSample({
+                    labels: new Set([new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })]),
+                    content: mapOf({ en: new Content({ stringValue: 'Good night world' }) }),
+                }),
+            ])
         }
-
 
         toDSService(serviceDto: Service): DataSample {
             return mapServiceToDataSample(serviceDto)
@@ -240,7 +210,7 @@ export function DataSampleApiAware<TBase extends Constructor<any>>(Base: TBase):
         }
 
         toDocumentDto(dsDocument: Document): DocumentDto {
-            return mapDocumentToDocumentDto(dsDocument);
+            return mapDocumentToDocumentDto(dsDocument)
         }
     }
 }
@@ -321,7 +291,7 @@ export function HelementApiAware<TBase extends Constructor<any>>(Base: TBase): T
                 new HealthcareElement({
                     note: 'Hero Syndrome',
                 }),
-                patient!.id!
+                patient!.id!,
             )
         }
 

@@ -10,33 +10,33 @@ import { newIdentifier } from './identifierTest'
 import { mapOf, NotificationTypeEnum } from '@icure/typescript-common'
 
 export function newNotification(): Notification {
-  return new Notification({
-    id: uuid(),
-    status: MaintenanceTask.StatusEnum.Pending,
-    identifiers: [newIdentifier()],
-    created: new Date().getTime(),
-    modified: new Date().getTime(),
-    deletionDate: new Date().getTime(),
-    endOfLife: new Date().getTime(),
-    author: uuid(),
-    responsible: uuid(),
-    properties: new Set([new Property({ id: uuid() })]),
-    type: NotificationTypeEnum.OTHER,
-    systemMetaData: new SystemMetaDataEncrypted({
-      delegations: mapOf({ TEST_ID: new Set([new Delegation({ owner: uuid(), delegatedTo: uuid() })]) }),
-      encryptionKeys: mapOf({ TEST_ID: new Set([new Delegation({ owner: uuid(), delegatedTo: uuid() })]) }),
-    }),
-  })
+    return new Notification({
+        id: uuid(),
+        status: MaintenanceTask.StatusEnum.Pending,
+        identifiers: [newIdentifier()],
+        created: new Date().getTime(),
+        modified: new Date().getTime(),
+        deletionDate: new Date().getTime(),
+        endOfLife: new Date().getTime(),
+        author: uuid(),
+        responsible: uuid(),
+        properties: new Set([new Property({ id: uuid() })]),
+        type: NotificationTypeEnum.OTHER,
+        systemMetaData: new SystemMetaDataEncrypted({
+            delegations: mapOf({ TEST_ID: new Set([new Delegation({ owner: uuid(), delegatedTo: uuid() })]) }),
+            encryptionKeys: mapOf({ TEST_ID: new Set([new Delegation({ owner: uuid(), delegatedTo: uuid() })]) }),
+        }),
+    })
 }
 
 describe('Notification model test', () => {
-  it('Instantiation of Notification model - Success', () => {
-    const notification = newNotification()
-    assert(notification)
-  })
+    it('Instantiation of Notification model - Success', () => {
+        const notification = newNotification()
+        assert(notification)
+    })
 
-  it('All the fields can be null', () => {
-    const newNotification = new Notification({})
-    assert(newNotification)
-  })
+    it('All the fields can be null', () => {
+        const newNotification = new Notification({})
+        assert(newNotification)
+    })
 })

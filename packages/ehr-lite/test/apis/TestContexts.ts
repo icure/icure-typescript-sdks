@@ -1,18 +1,22 @@
-import {
-    BaseApiTestContext, WithAuthenticationApi, WithDataOwnerApi, WithHcpApi,
-    WithHelementApi, WithMaintenanceTaskApi,
-    WithPatientApi,
-    WithServiceApi
-} from '../../../common-test/apis/TestContexts'
+import { BaseApiTestContext, WithAuthenticationApi, WithDataOwnerApi, WithHcpApi, WithHelementApi, WithMaintenanceTaskApi, WithPatientApi, WithServiceApi } from '../../../common-test/apis/TestContexts'
 import {
     AnonymousEHRLiteApi,
     Condition,
     ConditionApi,
     ConditionFilter,
     EHRLiteApi,
-    HumanName, LocalComponent, NotificationFilter,
-    Observation, ObservationApi, ObservationFilter, Organisation, OrganisationApi, Practitioner, PractitionerApi,
-    DataOwnerWithType, AuthenticationApi
+    HumanName,
+    LocalComponent,
+    NotificationFilter,
+    Observation,
+    ObservationApi,
+    ObservationFilter,
+    Organisation,
+    OrganisationApi,
+    Practitioner,
+    PractitionerApi,
+    DataOwnerWithType,
+    AuthenticationApi,
 } from '../../src'
 import { EHRLiteCryptoStrategies, SimpleEHRLiteCryptoStrategies } from '../../src/services/EHRLiteCryptoStrategies'
 import {
@@ -30,35 +34,19 @@ import {
     mapMaintenanceTaskToNotification,
     MaintenanceTaskFilter,
     NotificationTypeEnum,
-    Notification
+    Notification,
 } from '@icure/typescript-common'
 import { EHRLiteMessageFactory } from '../../src/services/EHRLiteMessageFactory'
-import {
-    HealthcareParty,
-    Patient as PatientDto,
-    Service,
-    User as UserDto,
-    DataOwnerWithType as DataOwnerWithTypeDto,
-    Document as DocumentDto,
-    HealthElement,
-    Device,
-    CodeStub, MaintenanceTask
-} from '@icure/api'
+import { HealthcareParty, Patient as PatientDto, Service, User as UserDto, DataOwnerWithType as DataOwnerWithTypeDto, Document as DocumentDto, HealthElement, Device, CodeStub, MaintenanceTask } from '@icure/api'
 import { UserApi, Patient, PatientApi, Annotation, NotificationApi, DataOwnerApi } from '../../src'
 import { TestMessageFactory } from '../test-utils'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../../src/mappers/Patient.mapper'
 import { mapConditionToHealthElement, mapHealthElementToCondition } from '../../src/mappers/Condition.mapper'
-import {mapObservationToService, mapServiceToObservation} from "../../src/mappers/Observation.mapper";
-import {
-    mapHealthcarePartyToPractitioner,
-    mapPractitionerToHealthcareParty
-} from "../../src/mappers/Practitioner.mapper";
-import {
-    mapHealthcarePartyToOrganisation,
-    mapOrganisationToHealthcareParty
-} from "../../src/mappers/Organisation.mapper";
-import dataOwnerMapper from "../../src/mappers/DataOwner.mapper";
-import {TestVars} from "@icure/test-setup/types";
+import { mapObservationToService, mapServiceToObservation } from '../../src/mappers/Observation.mapper'
+import { mapHealthcarePartyToPractitioner, mapPractitionerToHealthcareParty } from '../../src/mappers/Practitioner.mapper'
+import { mapHealthcarePartyToOrganisation, mapOrganisationToHealthcareParty } from '../../src/mappers/Organisation.mapper'
+import dataOwnerMapper from '../../src/mappers/DataOwner.mapper'
+import { TestVars } from '@icure/test-setup/types'
 
 export class EhrLiteBaseTestContext extends BaseApiTestContext<AnonymousEHRLiteApi.Builder, AnonymousEHRLiteApi, EHRLiteApi, EHRLiteCryptoStrategies, User, EHRLiteMessageFactory> {
     newAnonymousApiBuilder(): AnonymousEHRLiteApi.Builder {
@@ -90,11 +78,11 @@ export class EhrLiteBaseTestContext extends BaseApiTestContext<AnonymousEHRLiteA
     }
 
     hcpProcessId(env: TestVars): string {
-        return "practitioner" + env.testGroupId;
+        return 'practitioner' + env.testGroupId
     }
 
     patProcessId(env: TestVars): string {
-        return env.patAuthProcessId;
+        return env.patAuthProcessId
     }
 }
 
@@ -118,18 +106,12 @@ function annotation2(): Annotation {
 }
 
 // Returns copy with added tags
-function addDomainTypeTagIfMissing(
-  tags: CodeStub[] | undefined,
-  domainType: string
-): CodeStub[] {
+function addDomainTypeTagIfMissing(tags: CodeStub[] | undefined, domainType: string): CodeStub[] {
     const found = extractDomainTypeTag(tags)
     if (found) {
         expect(found.code).toEqual(domainType)
         return tags
-    } else return [
-      ...(tags ?? []),
-      domainTypeTag(domainType)
-    ]
+    } else return [...(tags ?? []), domainTypeTag(domainType)]
 }
 
 export function PatientApiAware<TBase extends Constructor<any>>(Base: TBase): TBase & Constructor<WithPatientApi<EHRLiteApi, Patient>> {
@@ -168,7 +150,7 @@ export function PatientApiAware<TBase extends Constructor<any>>(Base: TBase): TB
                         }),
                     ],
                     notes: [annotation1(), annotation2()],
-                })
+                }),
             )
         }
 
@@ -216,7 +198,7 @@ export function ConditionApiAware<TBase extends Constructor<any>>(Base: TBase): 
                 new Condition({
                     notes: [annotation1()],
                 }),
-                patient.id
+                patient.id,
             )
         }
 
@@ -231,7 +213,7 @@ export function ConditionApiAware<TBase extends Constructor<any>>(Base: TBase): 
         toDSHelement(helementDto: HealthElement): Condition {
             return mapHealthElementToCondition({
                 ...helementDto,
-                tags: addDomainTypeTagIfMissing(helementDto.tags, 'Condition')
+                tags: addDomainTypeTagIfMissing(helementDto.tags, 'Condition'),
             })
         }
 
@@ -266,28 +248,25 @@ export function ObservationApiAware<TBase extends Constructor<any>>(Base: TBase)
 
         createServiceForPatient(api: EHRLiteApi, patient: Patient): Promise<Observation> {
             return api.observationApi.createOrModifyFor(
-              patient.id!,
-              new Observation({
-                  tags: new Set([new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })]),
-                  localContent: mapOf({ en: new LocalComponent({ stringValue: 'Hello world' }) }),
-              })
+                patient.id!,
+                new Observation({
+                    tags: new Set([new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })]),
+                    localContent: mapOf({ en: new LocalComponent({ stringValue: 'Hello world' }) }),
+                }),
             )
         }
 
         createServicesForPatient(api: EHRLiteApi, patient: Patient): Promise<Observation[]> {
-            return api.observationApi.createOrModifyManyFor(
-              patient.id!,
-              [
-                  new Observation({
-                      tags: new Set([new CodingReference({ id: 'testid2', type: 'IC-TEST', code: 'TEST' })]),
-                      localContent: mapOf({ en: new LocalComponent({ stringValue: 'Hello world' }) }),
-                  }),
-                  new Observation({
-                      tags: new Set([new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })]),
-                      localContent: mapOf({ en: new LocalComponent({ stringValue: 'Good night world' }) }),
-                  }),
-              ]
-            )
+            return api.observationApi.createOrModifyManyFor(patient.id!, [
+                new Observation({
+                    tags: new Set([new CodingReference({ id: 'testid2', type: 'IC-TEST', code: 'TEST' })]),
+                    localContent: mapOf({ en: new LocalComponent({ stringValue: 'Hello world' }) }),
+                }),
+                new Observation({
+                    tags: new Set([new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })]),
+                    localContent: mapOf({ en: new LocalComponent({ stringValue: 'Good night world' }) }),
+                }),
+            ])
         }
 
         newServiceFilter(api: EHRLiteApi): ObservationFilter {
@@ -301,12 +280,12 @@ export function ObservationApiAware<TBase extends Constructor<any>>(Base: TBase)
         toDSService(serviceDto: Service): Observation {
             return mapServiceToObservation({
                 ...serviceDto,
-                tags: addDomainTypeTagIfMissing(serviceDto.tags, 'Observation')
+                tags: addDomainTypeTagIfMissing(serviceDto.tags, 'Observation'),
             })
         }
 
         toDocumentDto(dsDocument: Document): DocumentDto {
-            return mapDocumentToDocumentDto(dsDocument);
+            return mapDocumentToDocumentDto(dsDocument)
         }
 
         toServiceDto(dsService: Observation): Service {
@@ -353,7 +332,7 @@ export function PractitionerApiAware<TBase extends Constructor<any>>(Base: TBase
         toDSHcp(hcpDto: HealthcareParty): Practitioner {
             return mapHealthcarePartyToPractitioner({
                 ...hcpDto,
-                tags: addDomainTypeTagIfMissing(hcpDto.tags, 'Practitioner')
+                tags: addDomainTypeTagIfMissing(hcpDto.tags, 'Practitioner'),
             })
         }
 
@@ -372,7 +351,7 @@ export function OrganisationApiAware<TBase extends Constructor<any>>(Base: TBase
         toDSHcp(hcpDto: HealthcareParty): Organisation {
             return mapHealthcarePartyToOrganisation({
                 ...hcpDto,
-                tags: addDomainTypeTagIfMissing(hcpDto.tags, 'Organisation')
+                tags: addDomainTypeTagIfMissing(hcpDto.tags, 'Organisation'),
             })
         }
 

@@ -24,7 +24,7 @@ export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements Hea
         private readonly patientApi: IccPatientXApi,
         private readonly dataOwnerApi: IccDataOwnerXApi,
         private readonly cryptoApi: IccCryptoXApi,
-        private readonly api: CommonApi
+        private readonly api: CommonApi,
     ) {}
 
     async createOrModify(healthElement: DSHealthElement, patientId?: string): Promise<DSHealthElement> {
@@ -77,7 +77,7 @@ export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements Hea
         const deletedHeRev = firstOrNull(
             await this.heApi.deleteHealthElements(id).catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
-            })
+            }),
         )?.rev
         if (deletedHeRev) {
             return deletedHeRev
@@ -102,12 +102,12 @@ export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements Hea
                     limit,
                     new FilterChainHealthElement({
                         filter: FilterMapper.toAbstractFilterDto<HealthElement>(filter, 'HealthElement'),
-                    })
+                    }),
                 )
                 .catch((e) => {
                     throw this.errorHandler.createErrorFromAny(e)
                 }),
-            this.healthElementMapper.toDomain
+            this.healthElementMapper.toDomain,
         )!
     }
 
@@ -118,7 +118,7 @@ export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements Hea
         return this.healthElementMapper.toDomain(
             await this.heApi.getHealthElementWithUser(currentUser, id).catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
-            })
+            }),
         )
     }
 
@@ -166,7 +166,7 @@ export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements Hea
         options?: {
             connectionMaxRetry?: number
             connectionRetryIntervalMs?: number
-        }
+        },
     ): Promise<Connection> {
         throw 'TODO'
     }

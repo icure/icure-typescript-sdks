@@ -1,5 +1,5 @@
-import {Identifier} from '../../src/models/Identifier.model'
-import {generateIdentifier} from "../models/Identifier.model";
+import { Identifier } from '../../src/models/Identifier.model'
+import { generateIdentifier } from '../models/Identifier.model'
 
 describe(`Identifier serialization and deserialization`, () => {
     it('should correctly serialize and deserialize from instance to JSON and back', () => {

@@ -13,7 +13,7 @@ export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithTyp
     constructor(
         private readonly dsStrategies: CryptoStrategies<DSDataOwnerWithType>,
         private readonly dataOwnerMapper: Mapper<DSDataOwnerWithType, DataOwnerWithTypeDto>,
-        private readonly cryptoActorStubToDomainTypeMapper: (stub: CryptoActorStubWithType) => DSDataOwnerWithType['type']
+        private readonly cryptoActorStubToDomainTypeMapper: (stub: CryptoActorStubWithType) => DSDataOwnerWithType['type'],
     ) {}
 
     async generateNewKeyForDataOwner(self: DataOwnerWithTypeDto, cryptoPrimitives: CryptoPrimitives): Promise<KeyPair<CryptoKey> | boolean> {
@@ -34,7 +34,7 @@ export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithTyp
             unknownKeys: string[]
             unavailableKeys: string[]
         }[],
-        cryptoPrimitives: CryptoPrimitives
+        cryptoPrimitives: CryptoPrimitives,
     ): Promise<{
         [dataOwnerId: string]: {
             recoveredKeys: {
@@ -73,8 +73,8 @@ export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithTyp
                         recoveredKeyPairs.map(async (x): Promise<[string, KeyPair<CryptoKey>]> => {
                             if (!existingKeys.has(x.publicKey)) throw new Error('Internal error: recovered key should be an existing key')
                             return [x.publicKey.slice(-32), await cryptoPrimitives.RSA.importKeyPair('pkcs8', hex2ua(x.privateKey), 'spki', hex2ua(x.publicKey))]
-                        })
-                    )
+                        }),
+                    ),
                 ),
                 keyAuthenticity: Object.fromEntries(
                     Object.entries(verifiedKeys)
@@ -85,7 +85,7 @@ export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithTyp
                             } else if (b === KeyVerificationBehaviour.MARK_UNVERIFIED) {
                                 return [k.slice(-32), false]
                             } else throw new Error(`Unexpected key verification behaviour ${b}`)
-                        })
+                        }),
                 ),
             },
         })

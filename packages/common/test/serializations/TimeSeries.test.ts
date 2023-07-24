@@ -1,5 +1,5 @@
-import {TimeSeries} from '../../src/models/TimeSeries.model'
-import {generateTimeSeries} from "../models/TimeSeries.model";
+import { TimeSeries } from '../../src/models/TimeSeries.model'
+import { generateTimeSeries } from '../models/TimeSeries.model'
 
 describe(`TimeSeries serialization and deserialization`, () => {
     it('should correctly serialize and deserialize from instance to JSON and back', () => {

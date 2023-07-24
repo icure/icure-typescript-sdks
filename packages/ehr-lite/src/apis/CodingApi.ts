@@ -1,12 +1,5 @@
-import {Code} from '@icure/api'
-import {
-    CodeLikeApi,
-    CodeLikeApiImpl,
-    Coding,
-    CommonApi,
-    mapCodeToCoding,
-    mapCodingToCode
-} from '@icure/typescript-common'
+import { Code } from '@icure/api'
+import { CodeLikeApi, CodeLikeApiImpl, Coding, CommonApi, mapCodeToCoding, mapCodingToCode } from '@icure/typescript-common'
 
 export interface CodingApi extends CodeLikeApi<Coding> {}
 class CodingApiImpl extends CodeLikeApiImpl<Coding> {}
@@ -22,5 +15,5 @@ export const codingApi = (api: CommonApi): CodingApi =>
             },
         },
         api.errorHandler,
-        api.baseApi.codeApi
+        api.baseApi.codeApi,
     )

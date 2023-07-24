@@ -7,9 +7,12 @@ import { fromJSONGenerator } from './generators/fromJSONGenerator'
 import { modelRegex } from './index'
 
 export function marshallerGenerator(project: Project) {
-    const sourceFiles = project.getSourceFiles().filter((sourceFile) => {
-        return modelRegex.test(sourceFile.getFilePath())
-    }).filter((sourceFile) => !sourceFile.getFullText().includes('hephaestus-ignore-file'))
+    const sourceFiles = project
+        .getSourceFiles()
+        .filter((sourceFile) => {
+            return modelRegex.test(sourceFile.getFilePath())
+        })
+        .filter((sourceFile) => !sourceFile.getFullText().includes('hephaestus-ignore-file'))
 
     for (const sourceFile of sourceFiles) {
         const classes = sourceFile.getClasses().filter((classDeclaration) => !classDeclaration.getDecorators().find((d) => d.getName() === 'ignoreSerialization')!)
@@ -18,7 +21,7 @@ export function marshallerGenerator(project: Project) {
             console.log('Marshalling ', classDeclaration.getName())
 
             const classComponents: [string, ClassComponent][] = classDeclaration.getProperties().map((property) => {
-                return [property.getName().replace(/['"]/gi, ""), classComponentFactory(property.getType())]
+                return [property.getName().replace(/['"]/gi, ''), classComponentFactory(property.getType())]
             })
 
             const bundle = new ClassBundle(classDeclaration.getName()!, new Map(classComponents))

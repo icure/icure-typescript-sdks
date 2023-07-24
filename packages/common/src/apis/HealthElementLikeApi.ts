@@ -1,7 +1,7 @@
 import { Filter } from '../filters/Filter'
 import { Connection } from '../models/Connection.model'
 import { PaginatedList } from '../models/PaginatedList.model'
-import {HealthElement} from "@icure/api";
+import { HealthElement } from '@icure/api'
 
 /**
  * The HealthElementApi interface provides methods to manage healthcare elements.

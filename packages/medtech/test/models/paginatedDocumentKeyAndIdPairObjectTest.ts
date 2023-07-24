@@ -4,20 +4,18 @@ import { PaginatedDocumentKeyAndIdPairObject } from '../..'
 import { assert } from 'chai'
 
 export function newPaginatedDocumentKeyAndIdPairObject(): PaginatedDocumentKeyAndIdPairObject {
-  return new PaginatedDocumentKeyAndIdPairObject({
-    startKey: 'startKey',
-    startKeyDocId: 'startKeyDocId',
-  })
+    return new PaginatedDocumentKeyAndIdPairObject({
+        startKey: 'startKey',
+        startKeyDocId: 'startKeyDocId',
+    })
 }
 
 describe('PaginatedDocumentKeyAndIdPairObject model test', () => {
-  it('Marshalling/Unmarshalling of PaginatedDocumentKeyAndIdPairObject model - Success', () => {
-    const paginatedDocumentKeyAndIdPairObject = newPaginatedDocumentKeyAndIdPairObject()
-    const marshalledPaginatedDocumentKeyAndIdPairObject = PaginatedDocumentKeyAndIdPairObject.toJSON(paginatedDocumentKeyAndIdPairObject)
-    const unmarshalledPaginatedDocumentKeyAndIdPairObject = new PaginatedDocumentKeyAndIdPairObject(
-      JSON.parse(JSON.stringify(marshalledPaginatedDocumentKeyAndIdPairObject))
-    )
-    assert.deepEqual(paginatedDocumentKeyAndIdPairObject, unmarshalledPaginatedDocumentKeyAndIdPairObject)
-    assert.deepEqual(paginatedDocumentKeyAndIdPairObject, new PaginatedDocumentKeyAndIdPairObject(paginatedDocumentKeyAndIdPairObject))
-  })
+    it('Marshalling/Unmarshalling of PaginatedDocumentKeyAndIdPairObject model - Success', () => {
+        const paginatedDocumentKeyAndIdPairObject = newPaginatedDocumentKeyAndIdPairObject()
+        const marshalledPaginatedDocumentKeyAndIdPairObject = PaginatedDocumentKeyAndIdPairObject.toJSON(paginatedDocumentKeyAndIdPairObject)
+        const unmarshalledPaginatedDocumentKeyAndIdPairObject = new PaginatedDocumentKeyAndIdPairObject(JSON.parse(JSON.stringify(marshalledPaginatedDocumentKeyAndIdPairObject)))
+        assert.deepEqual(paginatedDocumentKeyAndIdPairObject, unmarshalledPaginatedDocumentKeyAndIdPairObject)
+        assert.deepEqual(paginatedDocumentKeyAndIdPairObject, new PaginatedDocumentKeyAndIdPairObject(paginatedDocumentKeyAndIdPairObject))
+    })
 })

@@ -1,4 +1,4 @@
-import {Code as CodeDto, HealthcareParty as HealthcarePartyDto} from "@icure/api";
+import { Code as CodeDto, HealthcareParty as HealthcarePartyDto } from '@icure/api'
 
 export interface Mapper<DSEntity, DTO> {
     toDomain(dto: DTO): DSEntity
@@ -91,7 +91,6 @@ class EhrTypeMappers implements TypeMappers<EhrTypes> {
 interface OrganizationApi extends SomeApiOrFilter<EhrTypes, 'organization'> {
 
 }*/
-
 
 /*
 type DomainTypeMap = {

@@ -1,16 +1,7 @@
-import {
-    CommonApi,
-    CommonFilter,
-    HealthcarePartyLikeApi,
-    HealthcarePartyLikeApiImpl,
-    PaginatedList
-} from '@icure/typescript-common'
-import {HealthcareParty} from '@icure/api'
-import {HealthcareProfessional} from '../models/HealthcareProfessional.model'
-import {
-    mapHealthcarePartyToHealthcareProfessional,
-    mapHealthcareProfessionalToHealthcareParty
-} from '../mappers/HealthcareProfessional.mapper'
+import { CommonApi, CommonFilter, HealthcarePartyLikeApi, HealthcarePartyLikeApiImpl, PaginatedList } from '@icure/typescript-common'
+import { HealthcareParty } from '@icure/api'
+import { HealthcareProfessional } from '../models/HealthcareProfessional.model'
+import { mapHealthcarePartyToHealthcareProfessional, mapHealthcareProfessionalToHealthcareParty } from '../mappers/HealthcareProfessional.mapper'
 
 export interface HealthcareProfessionalApi extends HealthcarePartyLikeApi<HealthcareProfessional> {
     /**
@@ -20,7 +11,7 @@ export interface HealthcareProfessionalApi extends HealthcarePartyLikeApi<Health
      * Create a new Healthcare professional or modify an existing one.
      * @param healthcareProfessional The healthcare professional that must be created in the database.
      */
-    createOrModifyHealthcareProfessional(healthcareProfessional: HealthcareProfessional): Promise<HealthcareProfessional>;
+    createOrModifyHealthcareProfessional(healthcareProfessional: HealthcareProfessional): Promise<HealthcareProfessional>
 
     /**
      * @deprecated use {@link HealthcareProfessionalApi.delete} instead.
@@ -29,7 +20,7 @@ export interface HealthcareProfessionalApi extends HealthcarePartyLikeApi<Health
      * Delete an existing healthcare professional.
      * @param hcpId The UUID that uniquely identifies the healthcare professional to be deleted.
      */
-    deleteHealthcareProfessional(hcpId: string): Promise<string>;
+    deleteHealthcareProfessional(hcpId: string): Promise<string>
 
     /**
      * @deprecated use {@link HealthcareProfessionalApi.filterBy} instead.
@@ -40,7 +31,7 @@ export interface HealthcareProfessionalApi extends HealthcarePartyLikeApi<Health
      * @param nextHcpId The id of the first Healthcare professional in the next page
      * @param limit The number of healthcare professionals to return in the queried page
      */
-    filterHealthcareProfessionalBy(filter: CommonFilter<HealthcareParty>, nextHcpId?: string, limit?: number): Promise<PaginatedList<HealthcareProfessional>>;
+    filterHealthcareProfessionalBy(filter: CommonFilter<HealthcareParty>, nextHcpId?: string, limit?: number): Promise<PaginatedList<HealthcareProfessional>>
 
     /**
      * @deprecated use {@link HealthcareProfessionalApi.get} instead.
@@ -49,7 +40,7 @@ export interface HealthcareProfessionalApi extends HealthcarePartyLikeApi<Health
      * Get a Healthcare professional by id.
      * @param hcpId The UUID that identifies the healthcare professional uniquely
      */
-    getHealthcareProfessional(hcpId: string): Promise<HealthcareProfessional>;
+    getHealthcareProfessional(hcpId: string): Promise<HealthcareProfessional>
 
     /**
      * @deprecated use {@link HealthcareProfessionalApi.matchBy} instead.
@@ -58,7 +49,7 @@ export interface HealthcareProfessionalApi extends HealthcarePartyLikeApi<Health
      * Load healthcare professional ids from the database by filtering them using the provided Filter.
      * @param filter The Filter object that describes which condition(s) the elements whose the ids should be returned must fulfill
      */
-    matchHealthcareProfessionalBy(filter: CommonFilter<HealthcareParty>): Promise<Array<string>>;
+    matchHealthcareProfessionalBy(filter: CommonFilter<HealthcareParty>): Promise<Array<string>>
 }
 
 class HealthcareProfessionalApiImpl extends HealthcarePartyLikeApiImpl<HealthcareProfessional> implements HealthcareProfessionalApi {
@@ -90,6 +81,6 @@ export const healthcareProfessionalApi = (api: CommonApi): HealthcareProfessiona
             },
         },
         api.errorHandler,
-        api.baseApi.healthcarePartyApi
+        api.baseApi.healthcarePartyApi,
     )
 }

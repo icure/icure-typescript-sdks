@@ -1,3 +1,3 @@
-import {CodeFilter} from "@icure/typescript-common";
+import { CodeFilter } from '@icure/typescript-common'
 
 export class CodingFilter extends CodeFilter {}

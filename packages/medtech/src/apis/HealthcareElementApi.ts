@@ -1,19 +1,9 @@
-import {HealthElement, PaginatedListHealthElement, Patient as PatientDto} from '@icure/api'
-import {
-    CommonApi,
-    CommonFilter,
-    Connection,
-    HealthElementLikeApi,
-    HealthElementLikeApiImpl,
-    PaginatedList
-} from '@icure/typescript-common'
-import {
-    mapHealthcareElementToHealthElement,
-    mapHealthElementToHealthcareElement
-} from '../mappers/HealthcareElement.mapper'
-import {Patient} from '../models/Patient.model'
-import {mapPatientDtoToPatient, mapPatientToPatientDto} from '../mappers/Patient.mapper'
-import {HealthcareElement} from '../models/HealthcareElement.model'
+import { HealthElement, PaginatedListHealthElement, Patient as PatientDto } from '@icure/api'
+import { CommonApi, CommonFilter, Connection, HealthElementLikeApi, HealthElementLikeApiImpl, PaginatedList } from '@icure/typescript-common'
+import { mapHealthcareElementToHealthElement, mapHealthElementToHealthcareElement } from '../mappers/HealthcareElement.mapper'
+import { Patient } from '../models/Patient.model'
+import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
+import { HealthcareElement } from '../models/HealthcareElement.model'
 
 export interface HealthcareElementApi extends HealthElementLikeApi<HealthcareElement, Patient> {
     /**
@@ -30,7 +20,7 @@ export interface HealthcareElementApi extends HealthElementLikeApi<HealthcareEle
      * @param healthcareElement Healthcare element to create in iCure Database
      * @param patientId Id of the patient to which the healthcare element is linked
      */
-    createOrModifyHealthcareElement(healthcareElement: HealthcareElement, patientId?: string): Promise<HealthcareElement>;
+    createOrModifyHealthcareElement(healthcareElement: HealthcareElement, patientId?: string): Promise<HealthcareElement>
 
     /**
      * @deprecated use {@link HealthcareElementApi.createOrModifyMany} instead.
@@ -46,7 +36,7 @@ export interface HealthcareElementApi extends HealthElementLikeApi<HealthcareEle
      * @param healthcareElements
      * @param patientId Id of the patient to which the healthcare elements are linked
      */
-    createOrModifyHealthcareElements(healthcareElements: Array<HealthcareElement>, patientId?: string): Promise<Array<HealthcareElement>>;
+    createOrModifyHealthcareElements(healthcareElements: Array<HealthcareElement>, patientId?: string): Promise<Array<HealthcareElement>>
 
     /**
      * @deprecated use {@link HealthcareElementApi.delete} instead.
@@ -54,7 +44,7 @@ export interface HealthcareElementApi extends HealthElementLikeApi<HealthcareEle
      * Delete a Healthcare Element from the iCure database
      * @param id Id of the healthcare element to delete
      */
-    deleteHealthcareElement(id: string): Promise<string>;
+    deleteHealthcareElement(id: string): Promise<string>
 
     /**
      * @deprecated use {@link HealthcareElementApi.filterBy} instead.
@@ -72,7 +62,7 @@ export interface HealthcareElementApi extends HealthElementLikeApi<HealthcareEle
      * @param nextHealthElementId The id of the first Healthcare professional in the next page
      * @param limit The maximum number of healthcare elements that should contain the returned page. By default, a page contains 1000 healthcare elements
      */
-    filterHealthcareElement(filter: CommonFilter<HealthElement>, nextHealthElementId?: string, limit?: number): Promise<PaginatedList<HealthcareElement>>;
+    filterHealthcareElement(filter: CommonFilter<HealthElement>, nextHealthElementId?: string, limit?: number): Promise<PaginatedList<HealthcareElement>>
 
     /**
      * @deprecated use {@link HealthcareElementApi.get} instead.
@@ -80,7 +70,7 @@ export interface HealthcareElementApi extends HealthElementLikeApi<HealthcareEle
      * Retrieves the information of a specific Healthcare Element
      * @param id Id of the healthcare element to retrieve
      */
-    getHealthcareElement(id: string): Promise<HealthcareElement>;
+    getHealthcareElement(id: string): Promise<HealthcareElement>
 
     /**
      * @deprecated use {@link HealthcareElementApi.matchBy} instead.
@@ -91,7 +81,7 @@ export interface HealthcareElementApi extends HealthElementLikeApi<HealthcareEle
      *
      * @param filter Filtering conditions that the returned healthcare element ids are satisfying.
      */
-    matchHealthcareElement(filter: CommonFilter<HealthElement>): Promise<Array<string>>;
+    matchHealthcareElement(filter: CommonFilter<HealthElement>): Promise<Array<string>>
 
     /**
      * @deprecated use {@link HealthcareElementApi.getAllForPatient} instead.
@@ -101,7 +91,7 @@ export interface HealthcareElementApi extends HealthElementLikeApi<HealthcareEle
      *
      * @return an array containing the Healthcare Elements
      */
-    getHealthcareElementsForPatient(patient: Patient): Promise<Array<HealthcareElement>>;
+    getHealthcareElementsForPatient(patient: Patient): Promise<Array<HealthcareElement>>
 
     /**
      * @deprecated use {@link HealthcareElementApi.subscribeToEvents} instead.
@@ -120,8 +110,8 @@ export interface HealthcareElementApi extends HealthElementLikeApi<HealthcareEle
         eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
         filter: CommonFilter<HealthElement>,
         eventFired: (dataSample: HealthcareElement) => Promise<void>,
-        options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }
-    ): Promise<Connection>;
+        options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number },
+    ): Promise<Connection>
 }
 
 class HealthcareElementApiImpl extends HealthElementLikeApiImpl<HealthcareElement, Patient> implements HealthcareElementApi {
@@ -150,13 +140,11 @@ class HealthcareElementApiImpl extends HealthElementLikeApiImpl<HealthcareElemen
         eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
         filter: CommonFilter<HealthElement>,
         eventFired: (dataSample: HealthcareElement) => Promise<void>,
-        options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }
+        options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number },
     ): Promise<Connection> {
         return this.subscribeToEvents(eventTypes, filter, eventFired, options)
     }
 }
-
-
 
 export const healthcareElementApi = (api: CommonApi): HealthcareElementApi => {
     return new HealthcareElementApiImpl(
@@ -182,6 +170,6 @@ export const healthcareElementApi = (api: CommonApi): HealthcareElementApi => {
         api.baseApi.patientApi,
         api.baseApi.dataOwnerApi,
         api.baseApi.cryptoApi,
-        api
+        api,
     )
 }

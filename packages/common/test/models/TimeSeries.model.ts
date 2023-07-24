@@ -1,9 +1,5 @@
-import {TimeSeries} from "../../src/models/TimeSeries.model";
-import {
-    generateRandomNumberArray,
-    generateRandomNumberMatrix,
-    generateRandomStringArray
-} from "./utils";
+import { TimeSeries } from '../../src/models/TimeSeries.model'
+import { generateRandomNumberArray, generateRandomNumberMatrix, generateRandomStringArray } from './utils'
 
 export function generateTimeSeries(): TimeSeries {
     return new TimeSeries({

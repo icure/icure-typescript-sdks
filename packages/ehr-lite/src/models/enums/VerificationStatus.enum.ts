@@ -1,12 +1,12 @@
-import {CodeStub} from "@icure/api";
+import { CodeStub } from '@icure/api'
 
 export enum VerificationStatusEnum {
-    UNCONFIRMED = "unconfirmed",
-    PROVISIONAL = "provisional",
-    DIFFERENTIAL = "differential",
-    CONFIRMED = "confirmed",
-    REFUTED = "refuted",
-    ENTERED_IN_ERROR = "entered-in-error",
+    UNCONFIRMED = 'unconfirmed',
+    PROVISIONAL = 'provisional',
+    DIFFERENTIAL = 'differential',
+    CONFIRMED = 'confirmed',
+    REFUTED = 'refuted',
+    ENTERED_IN_ERROR = 'entered-in-error',
 }
 
 export namespace VerificationStatusEnum {
@@ -14,13 +14,13 @@ export namespace VerificationStatusEnum {
         return new CodeStub({
             type: 'http://terminology.hl7.org/CodeSystem/condition-ver-status',
             code: verificationStatus,
-            version: '0.5.0'
+            version: '0.5.0',
         })
     }
 
     export function fromCodeStub(codeStub: CodeStub): VerificationStatusEnum {
         // TODO consider version in future
-        if (codeStub.type !== 'http://terminology.hl7.org/CodeSystem/condition-ver-status') throw new Error("Unexpected codeStub.type for verificationStatus: " + codeStub.type)
+        if (codeStub.type !== 'http://terminology.hl7.org/CodeSystem/condition-ver-status') throw new Error('Unexpected codeStub.type for verificationStatus: ' + codeStub.type)
         if (codeStub.code === 'unconfirmed') {
             return VerificationStatusEnum.UNCONFIRMED
         } else if (codeStub.code === 'provisional') {
@@ -33,6 +33,6 @@ export namespace VerificationStatusEnum {
             return VerificationStatusEnum.REFUTED
         } else if (codeStub.code === 'entered-in-error') {
             return VerificationStatusEnum.ENTERED_IN_ERROR
-        } else throw new Error("Unexpected codeStub.code for verificationStatus: " + codeStub.code)
+        } else throw new Error('Unexpected codeStub.code for verificationStatus: ' + codeStub.code)
     }
 }

@@ -1,12 +1,8 @@
-import {Address, Telecom} from "@icure/api";
-import TelecomTypeEnum = Telecom.TelecomTypeEnum;
-import AddressTypeEnum = Address.AddressTypeEnum;
+import { Address, Telecom } from '@icure/api'
+import TelecomTypeEnum = Telecom.TelecomTypeEnum
+import AddressTypeEnum = Address.AddressTypeEnum
 
-export function findTelecomOfAddresses(
-    addresses: Array<Address>,
-    telecomType: TelecomTypeEnum,
-    addressType?: AddressTypeEnum,
-): Telecom | undefined {
+export function findTelecomOfAddresses(addresses: Array<Address>, telecomType: TelecomTypeEnum, addressType?: AddressTypeEnum): Telecom | undefined {
     return findTelecomOfAddressesLike(
         addresses,
         telecomType,

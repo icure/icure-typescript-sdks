@@ -1,5 +1,5 @@
-import {HumanName} from "../../src/models/HumanName.model";
-import {HumanNameUseEnum} from "../../src/models/enums/HumanNameUse.enum";
+import { HumanName } from '../../src/models/HumanName.model'
+import { HumanNameUseEnum } from '../../src/models/enums/HumanNameUse.enum'
 
 export function generateHumanName(): HumanName {
     const humanName = {

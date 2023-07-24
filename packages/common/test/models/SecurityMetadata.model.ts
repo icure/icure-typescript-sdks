@@ -1,6 +1,6 @@
-import {SecurityMetadata} from "../../src/models/SecurityMetadata.model";
-import {SecureDelegation} from "../../src/models/SecureDelegation.model";
-import {generateSecureDelegation} from "./SecureDelegation.model";
+import { SecurityMetadata } from '../../src/models/SecurityMetadata.model'
+import { SecureDelegation } from '../../src/models/SecureDelegation.model'
+import { generateSecureDelegation } from './SecureDelegation.model'
 
 export function generateSecurityMetadata(): SecurityMetadata {
     const secureDelegation1: SecureDelegation = generateSecureDelegation()

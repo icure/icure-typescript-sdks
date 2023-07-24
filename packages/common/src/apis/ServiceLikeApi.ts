@@ -1,8 +1,8 @@
 import { Filter } from '../filters/Filter'
 import { Connection } from '../models/Connection.model'
 import { PaginatedList } from '../models/PaginatedList.model'
-import {Service} from "@icure/api";
-import {Document} from "../models/Document.model";
+import { Service } from '@icure/api'
+import { Document } from '../models/Document.model'
 
 /**
  * The ServiceApi interface provides methods to manage data samples.
@@ -167,12 +167,5 @@ export interface ServiceLikeApi<DSService, DSPatient, DSDocument> {
      * @param documentExternalUuid
      * @param documentLanguage
      */
-    setAttachment(
-      id: string,
-      body: ArrayBuffer,
-      documentName?: string,
-      documentVersion?: string,
-      documentExternalUuid?: string,
-      documentLanguage?: string
-    ): Promise<DSDocument>
+    setAttachment(id: string, body: ArrayBuffer, documentName?: string, documentVersion?: string, documentExternalUuid?: string, documentLanguage?: string): Promise<DSDocument>
 }

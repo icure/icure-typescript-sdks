@@ -1,5 +1,5 @@
-import {generateTimeSeries} from "../models/TimeSeries.model";
-import {mapTimeSeriesDtoToTimeSeries, mapTimeSeriesToTimeSeriesDto, TimeSeries} from "../../src";
+import { generateTimeSeries } from '../models/TimeSeries.model'
+import { mapTimeSeriesDtoToTimeSeries, mapTimeSeriesToTimeSeriesDto, TimeSeries } from '../../src'
 
 describe('TimeSeries', function () {
     it('should correctly map to TimeSeriesEntity and back to TimeSeries', () => {

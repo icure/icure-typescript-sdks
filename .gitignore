@@ -41,5 +41,4 @@ Thumbs.db
 .yarn/*
 !.yarn/plugins
 !.yarn/releases
-
 **/test/scratch

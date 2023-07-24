@@ -1,4 +1,4 @@
-import {v4 as uuid, validate as isUuid} from "uuid";
+import { v4 as uuid, validate as isUuid } from 'uuid'
 
 export function forceUuid(id?: string): string {
     if (id) {

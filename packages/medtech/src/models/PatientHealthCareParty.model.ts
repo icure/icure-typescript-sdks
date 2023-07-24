@@ -18,41 +18,33 @@ import { mapTo } from '@icure/typescript-common'
  */
 @mapTo(PatientHealthCarePartyDto)
 export class PatientHealthCareParty {
-  constructor(json: IPatientHealthCareParty) {
-    Object.assign(this as PatientHealthCareParty, json as IPatientHealthCareParty)
-  }
-
-  'type': PatientHealthCarePartyTypeEnum
-  'healthcarePartyId'?: string
-
-  static toJSON(instance: PatientHealthCareParty): any {
-    const pojo: any = {}
-    pojo['type'] = instance.type
-    if (instance.healthcarePartyId !== undefined) pojo['healthcarePartyId'] = instance.healthcarePartyId
-    return pojo
-  }
-
-  static fromJSON(pojo: any): PatientHealthCareParty {
-    const obj = {} as IPatientHealthCareParty
-    obj['type'] = pojo['type']
-    if (pojo['healthcarePartyId'] !== undefined) {
-      obj['healthcarePartyId'] = pojo['healthcarePartyId']
+    constructor(json: IPatientHealthCareParty) {
+        Object.assign(this as PatientHealthCareParty, json as IPatientHealthCareParty)
     }
-    return new PatientHealthCareParty(obj)
-  }
+
+    'type': PatientHealthCarePartyTypeEnum
+    'healthcarePartyId'?: string
+
+    static toJSON(instance: PatientHealthCareParty): any {
+        const pojo: any = {}
+        pojo['type'] = instance.type
+        if (instance.healthcarePartyId !== undefined) pojo['healthcarePartyId'] = instance.healthcarePartyId
+        return pojo
+    }
+
+    static fromJSON(pojo: any): PatientHealthCareParty {
+        const obj = {} as IPatientHealthCareParty
+        obj['type'] = pojo['type']
+        if (pojo['healthcarePartyId'] !== undefined) {
+            obj['healthcarePartyId'] = pojo['healthcarePartyId']
+        }
+        return new PatientHealthCareParty(obj)
+    }
 }
 
 interface IPatientHealthCareParty {
-  type?: PatientHealthCarePartyTypeEnum
-  healthcarePartyId?: string
+    type?: PatientHealthCarePartyTypeEnum
+    healthcarePartyId?: string
 }
 
-export type PatientHealthCarePartyTypeEnum =
-  | 'doctor'
-  | 'referral'
-  | 'medicalhouse'
-  | 'retirementhome'
-  | 'hospital'
-  | 'other'
-  | 'referringphysician'
-  | 'managingorganization'
+export type PatientHealthCarePartyTypeEnum = 'doctor' | 'referral' | 'medicalhouse' | 'retirementhome' | 'hospital' | 'other' | 'referringphysician' | 'managingorganization'

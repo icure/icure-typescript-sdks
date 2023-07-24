@@ -1,5 +1,5 @@
-import {Filter} from "../Filter";
-import {HealthElement} from "@icure/api";
+import { Filter } from '../Filter'
+import { HealthElement } from '@icure/api'
 
 export interface HealthElementByHealthcarePartyLabelCodeFilter extends Filter<HealthElement> {
     codeCode?: string
@@ -9,5 +9,5 @@ export interface HealthElementByHealthcarePartyLabelCodeFilter extends Filter<He
     status?: number
     tagCode?: string
     tagType?: string
-  '$type': 'HealthElementByHealthcarePartyLabelCodeFilter'
+    $type: 'HealthElementByHealthcarePartyLabelCodeFilter'
 }

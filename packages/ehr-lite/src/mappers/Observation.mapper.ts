@@ -247,7 +247,7 @@ function toObservationLocalContent(dto: Service): Map<ISO639_1, LocalComponent> 
     return new Map(
         localizedContent.map(([key, value]) => {
             return [key, mapContentToLocalComponent(value)] as [ISO639_1, LocalComponent]
-        })
+        }),
     )
 }
 
