@@ -216,10 +216,6 @@ function toAnnotationDtoMarkdown(domain: Annotation):
     return !!domain.markdown ? Object.fromEntries(domain.markdown) : undefined
 }
 
-function toAnnotationDtoConfidential(domain: Annotation): boolean | undefined {
-    return domain.confidential
-}
-
 function toAnnotationDtoTags(domain: Annotation): CodeStub[] | undefined {
     return [...domain.tags].map((t) => mapCodingReferenceToCodeStub(t))
 }
@@ -259,11 +255,6 @@ function toAnnotationMarkdown(dto: AnnotationDto): Map<ISO639_1, string> {
 function toAnnotationTarget(dto: AnnotationDto): string | undefined {
     return dto.location
 }
-
-function toAnnotationConfidential(dto: AnnotationDto): boolean | undefined {
-    return dto.confidential
-}
-
 function toAnnotationEncryptedSelf(dto: AnnotationDto): string | undefined {
     return dto.encryptedSelf
 }
@@ -277,7 +268,6 @@ export function mapAnnotationDtoToAnnotation(dto: AnnotationDto): Annotation {
         modified: toAnnotationModified(dto),
         markdown: toAnnotationMarkdown(dto),
         target: toAnnotationTarget(dto),
-        confidential: toAnnotationConfidential(dto),
         encryptedSelf: toAnnotationEncryptedSelf(dto),
     })
 }
@@ -290,7 +280,6 @@ export function mapAnnotationToAnnotationDto(domain: Annotation): AnnotationDto 
         modified: toAnnotationDtoModified(domain),
         text: toAnnotationDtoText(domain),
         markdown: toAnnotationDtoMarkdown(domain),
-        confidential: toAnnotationDtoConfidential(domain),
         tags: toAnnotationDtoTags(domain),
         location: toAnnotationDtoLocation(domain),
         encryptedSelf: toAnnotationDtoEncryptedSelf(domain),

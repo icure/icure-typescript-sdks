@@ -5,8 +5,8 @@ import {ServiceByHealthcarePartyFilter, ServiceByHealthcarePartyHealthElementIds
 import {Patient, Service} from '@icure/api'
 import {CommonApi} from '../../apis/CommonApi'
 import {Mapper} from '../../apis/Mapper'
-import {Identifier} from "../../models/Identifier.model";
 import {mapIdentifierToIdentifierDto} from "../../mappers/Identifier.mapper";
+import {Identifier} from "../../models/Identifier.model";
 
 interface BaseServiceFilterBuilder<F, DSPatient> {
     /**

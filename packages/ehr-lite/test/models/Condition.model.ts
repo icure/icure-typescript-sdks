@@ -24,7 +24,7 @@ export function generateCondition(): Condition {
         verificationStatus: VerificationStatusEnum.CONFIRMED,
         category: CategoryEnum['ENCOUNTER_DIAGNOSIS'],
         severity: SeverityEnum.MODERATE,
-        bodySite: new Set([generateCodingReference('bodySite')]),
+        bodySite: new Set([generateCodingReference('Condition.bodySite')]),
         tags: new Set([generateCodingReference(), generateCodingReference()]),
         codes: new Set([generateCodingReference(), generateCodingReference()]),
         endOfLife: 1621845600,
