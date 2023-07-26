@@ -1,7 +1,7 @@
 import { PaginatedList } from '../../models/PaginatedList.model'
 import { DeviceLikeApi } from '../DeviceLikeApi'
 import { ErrorHandler } from '../../services/ErrorHandler'
-import { ConnectionImpl, Device, FilterChainDevice, IccAuthApi, IccDeviceApi, ListOfIds, subscribeToEntityEvents } from '@icure/api'
+import { Connection, ConnectionImpl, Device, FilterChainDevice, IccAuthApi, IccDeviceApi, ListOfIds, subscribeToEntityEvents } from '@icure/api'
 import { Mapper } from '../Mapper'
 import { firstOrNull } from '../../utils/functionalUtils'
 
@@ -10,7 +10,6 @@ import { NoOpFilter } from '../../filters/dsl/filterDsl'
 import { FilterMapper } from '../../mappers/Filter.mapper'
 import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
 import { CommonFilter } from '../../filters/filters'
-import { Connection } from '../../models/Connection.model'
 import { iccRestApiPath } from '@icure/api/icc-api/api/IccRestApiPath'
 
 export class DeviceLikeApiImpl<DSDevice> implements DeviceLikeApi<DSDevice> {

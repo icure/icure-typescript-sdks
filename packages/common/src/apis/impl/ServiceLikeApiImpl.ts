@@ -1,5 +1,4 @@
 import { PaginatedList } from '../../models/PaginatedList.model'
-import { Connection } from '../../models/Connection.model'
 import { ServiceLikeApi } from '../ServiceLikeApi'
 import { Mapper } from '../Mapper'
 import {
@@ -25,6 +24,7 @@ import {
     IccAuthApi,
     ConnectionImpl,
     subscribeToEntityEvents,
+    Connection,
 } from '@icure/api'
 import { ErrorHandler } from '../../services/ErrorHandler'
 import { any, distinctBy, firstOrNull, isNotEmpty, sumOf } from '../../utils/functionalUtils'
