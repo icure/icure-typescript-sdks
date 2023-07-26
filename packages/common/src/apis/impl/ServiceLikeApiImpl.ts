@@ -106,21 +106,23 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         let createdOrModifiedContact: ContactDto
 
         if (contactCached && existingContact != null) {
-            const servicesToModify = services
+            const modifiedServices = services.map((service) => {
+                return {
+                    ...service,
+                    formIds: undefined,
+                    healthElementsIds: undefined,
+                }
+            })
+            const existingUnmodifiedServices = (existingContact.services ?? []).filter((service) => !modifiedServices.some((modifiedService) => modifiedService.id === service.id))
+            const allUpdatedServices = [...existingUnmodifiedServices, ...modifiedServices]
             const subContacts = await this._createPotentialSubContactsForHealthElements(services, currentUser)
 
             const contactToModify = {
                 ...existingContact,
-                services: servicesToModify.map((service) => {
-                    return {
-                        ...service,
-                        formIds: undefined,
-                        healthElementsIds: undefined,
-                    }
-                }),
+                services: allUpdatedServices,
                 subContacts: subContacts,
-                openingDate: Math.min(...servicesToModify.filter((element) => element.openingDate != null || element.valueDate != null).map((e) => e.openingDate ?? e.valueDate!)),
-                closingDate: Math.max(...servicesToModify.filter((element) => element.closingDate != null || element.valueDate != null).map((e) => e.closingDate ?? e.valueDate!)),
+                openingDate: Math.min(...allUpdatedServices.filter((element) => element.openingDate != null || element.valueDate != null).map((e) => e.openingDate ?? e.valueDate!)),
+                closingDate: Math.max(...allUpdatedServices.filter((element) => element.closingDate != null || element.valueDate != null).map((e) => e.closingDate ?? e.valueDate!)),
             }
 
             createdOrModifiedContact = await this.contactApi.modifyContactWithUser(currentUser, contactToModify).catch((e) => {

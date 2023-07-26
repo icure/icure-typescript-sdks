@@ -578,5 +578,31 @@ export function testServiceLikeApi<
             expect(ctx.toServiceDto(await ctx.serviceApi(h1api).get(servicesDto[2].id)).contactId).not.toEqual(servicesDto[2].contactId)
             expect(ctx.toServiceDto(await ctx.serviceApi(h1api).get(servicesDto[3].id)).contactId).toEqual(servicesDto[3].contactId)
         })
+
+        it('Changing part of a batch while batch is not closed allowed should not extract the service in a new batch', async () => {
+            const { api } = await ctx.apiForEnvUser(env, hcp1Username)
+            const patient = await ctx.createPatient(api)
+            const patientId = ctx.toPatientDto(patient).id
+            const services = await ctx.createServicesForPatient(api, patient)
+            const servicesDto = services.map((s) => ctx.toServiceDto(s))
+            const updatedService = await ctx.serviceApi(api).createOrModifyFor(
+                patientId,
+                ctx.toDSService({
+                    ...servicesDto[0],
+                    content: { en: { stringValue: 'Updated content' } },
+                }),
+            )
+            const updatedServiceDto = ctx.toServiceDto(updatedService)
+            expect(updatedServiceDto.id).toEqual(servicesDto[0].id)
+            expect(updatedServiceDto.contactId).toEqual(servicesDto[0].contactId)
+            expect(updatedServiceDto.contactId).toEqual(servicesDto[1].contactId)
+            expect(updatedServiceDto.content.en.stringValue).toEqual('Updated content')
+            expect(await ctx.serviceApi(api).get(servicesDto[0].id)).toEqual(updatedService)
+            // Other service should still exist and be equivalent.
+            const retrievedUnmodifiedService = await ctx.serviceApi(api).get(servicesDto[1].id)
+            const retrievedUnmodifiedServiceDto = ctx.toServiceDto(retrievedUnmodifiedService)
+            // Compare without considering encrypted self: random IV will make it different
+            expect({ ...retrievedUnmodifiedServiceDto, encryptedSelf: undefined }).toEqual({ ...servicesDto[1], encryptedSelf: undefined })
+        })
     })
 }
