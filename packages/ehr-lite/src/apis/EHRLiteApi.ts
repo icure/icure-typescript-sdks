@@ -57,7 +57,7 @@ export class EHRLiteApi extends CommonApi {
 
         this._conditionApi = conditionApi(this)
 
-        this._observationApi = observationApi(this)
+        this._observationApi = observationApi(this, _iCureBaseUrl)
 
         this._organisationApi = organisationApi(this)
 

@@ -73,7 +73,7 @@ export class MedTechApi extends CommonApi {
             authProcessByEmailId && authProcessBySmsId && this._messageGatewayApi
                 ? new AuthenticationApi(this._messageGatewayApi, basePath, authProcessByEmailId, authProcessBySmsId, this.errorHandler, this.sanitizer, api.cryptoApi.primitives.crypto, this.storage, this.keyStorage, this.cryptoStrategies)
                 : undefined
-        this._dataSampleApi = dataSampleApi(this)
+        this._dataSampleApi = dataSampleApi(this, basePath)
         this._codingApi = codingApi(this)
         this._medicalDeviceApi = medicalDeviceApi(this)
         this._patientApi = patientApi(this)

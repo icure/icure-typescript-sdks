@@ -20,10 +20,11 @@ import {
     ContactByServiceIdsFilter,
     PaginatedListContact,
     FilterChainService,
-    PaginatedListService,
-    Service,
     ua2hex,
     Content,
+    IccAuthApi,
+    ConnectionImpl,
+    subscribeToEntityEvents,
 } from '@icure/api'
 import { ErrorHandler } from '../../services/ErrorHandler'
 import { any, distinctBy, firstOrNull, isNotEmpty, sumOf } from '../../utils/functionalUtils'
@@ -34,10 +35,10 @@ import { FilterMapper } from '../../mappers/Filter.mapper'
 import { ServiceFilter } from '../../filters/dsl/ServiceFilterDsl'
 import { CommonApi } from '../CommonApi'
 import { CommonFilter } from '../../filters/filters'
-import { Document } from '../../models/Document.model'
 import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
 import { UtiDetector } from '../../utils/utiDetector'
 import { extractDomainTypeTag } from '../../utils/domain'
+import { iccRestApiPath } from '@icure/api/icc-api/api/IccRestApiPath'
 
 export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements ServiceLikeApi<DSService, DSPatient, DSDocument> {
     private readonly contactsCache: CachedMap<ContactDto> = new CachedMap<ContactDto>(5 * 60, 10000)
@@ -53,7 +54,9 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         private readonly healthElementApi: IccHelementXApi,
         private readonly cryptoApi: IccCryptoXApi,
         private readonly dataOwnerApi: IccDataOwnerXApi,
+        private readonly authApi: IccAuthApi,
         private readonly api: CommonApi,
+        private readonly basePath: string,
     ) {}
 
     clearContactCache() {
@@ -76,7 +79,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         ).then((services) => services.map((service) => this.serviceMapper.toDomain(service)))
     }
 
-    private async _createOrModifyManyFor(patientId: string, services: Array<Service>): Promise<Array<Service>> {
+    private async _createOrModifyManyFor(patientId: string, services: Array<ServiceDto>): Promise<Array<ServiceDto>> {
         if (services.length == 0) {
             return Promise.resolve([])
         }
@@ -459,7 +462,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         return (await this.cryptoApi.entities.owningEntityIdsOf(this.serviceMapper.toDto(service)!, undefined))[0]
     }
 
-    async filterBy(filter: CommonFilter<Service>, nextServiceId?: string, limit?: number): Promise<PaginatedList<DSService>> {
+    async filterBy(filter: CommonFilter<ServiceDto>, nextServiceId?: string, limit?: number): Promise<PaginatedList<DSService>> {
         if (NoOpFilter.isNoOp(filter)) {
             return PaginatedList.empty()
         }
@@ -512,7 +515,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         return await this.concatenateFilterResults(filter)
     }
 
-    async concatenateFilterResults(filter: CommonFilter<Service>, nextId?: string | undefined, limit?: number | undefined, accumulator: Array<DSService> = []): Promise<Array<DSService>> {
+    async concatenateFilterResults(filter: CommonFilter<ServiceDto>, nextId?: string | undefined, limit?: number | undefined, accumulator: Array<DSService> = []): Promise<Array<DSService>> {
         const paginatedDataSamples = await this.filterBy(filter, nextId, limit)
         return !paginatedDataSamples.nextKeyPair?.startKeyDocId ? accumulator.concat(paginatedDataSamples.rows ?? []) : this.concatenateFilterResults(filter, paginatedDataSamples.nextKeyPair.startKeyDocId, limit, accumulator.concat(paginatedDataSamples.rows ?? []))
     }
@@ -613,7 +616,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         return res
     }
 
-    matchBy(filter: CommonFilter<Service>): Promise<Array<string>> {
+    matchBy(filter: CommonFilter<ServiceDto>): Promise<Array<string>> {
         if (NoOpFilter.isNoOp(filter)) {
             return Promise.resolve([])
         } else {
@@ -623,16 +626,26 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         }
     }
 
-    subscribeToEvents(
+    async subscribeToEvents(
         eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
-        filter: CommonFilter<Service>,
+        filter: CommonFilter<ServiceDto>,
         eventFired: (service: DSService) => Promise<void>,
         options?: {
             connectionMaxRetry?: number
             connectionRetryIntervalMs?: number
         },
     ): Promise<Connection> {
-        throw 'TODO'
+        const currentUser = await this.userApi.getCurrentUser()
+        return subscribeToEntityEvents(
+            iccRestApiPath(this.basePath),
+            this.authApi,
+            'Service',
+            eventTypes,
+            FilterMapper.toAbstractFilterDto(filter, 'Service'),
+            (event) => eventFired(this.serviceMapper.toDomain(event)),
+            options ?? {},
+            async (encrypted: ServiceDto) => (await this.contactApi.decryptServices(currentUser.healthcarePartyId!, [encrypted]))[0],
+        ).then((ws) => new ConnectionImpl(ws))
     }
 
     async setAttachment(id: string, body: ArrayBuffer, documentName?: string, documentVersion?: string, documentExternalUuid?: string, documentLanguage?: string): Promise<DSDocument> {

@@ -9,7 +9,7 @@ export interface ObservationApi extends ServiceLikeApi<Observation, Patient, Doc
 
 class ObservationApiImpl extends ServiceLikeApiImpl<Observation, Patient, Document> implements ObservationApi {}
 
-export const observationApi = (api: CommonApi): ObservationApi =>
+export const observationApi = (api: CommonApi, basePath: string): ObservationApi =>
     new ObservationApiImpl(
         {
             toDomain(dto: Service): Observation {
@@ -42,5 +42,7 @@ export const observationApi = (api: CommonApi): ObservationApi =>
         api.baseApi.healthcareElementApi,
         api.baseApi.cryptoApi,
         api.baseApi.dataOwnerApi,
+        api.baseApi.authApi,
         api,
+        basePath,
     )

@@ -183,7 +183,7 @@ class DataSampleApiImpl extends ServiceLikeApiImpl<DataSample, Patient, Document
     }
 }
 
-export const dataSampleApi = (api: CommonApi): DataSampleApi => {
+export const dataSampleApi = (api: CommonApi, basePath: string): DataSampleApi => {
     return new DataSampleApiImpl(
         {
             toDomain(dto: Service): DataSample {
@@ -216,6 +216,8 @@ export const dataSampleApi = (api: CommonApi): DataSampleApi => {
         api.baseApi.healthcareElementApi,
         api.baseApi.cryptoApi,
         api.baseApi.dataOwnerApi,
+        api.baseApi.authApi,
         api,
+        basePath,
     )
 }
