@@ -75,7 +75,7 @@ export class MedTechApi extends CommonApi {
                 : undefined
         this._dataSampleApi = dataSampleApi(this, basePath)
         this._codingApi = codingApi(this)
-        this._medicalDeviceApi = medicalDeviceApi(this)
+        this._medicalDeviceApi = medicalDeviceApi(this, basePath)
         this._patientApi = patientApi(this)
         this._userApi = userApi(this, this._messageFactory)
         this._healthcareElementApi = healthcareElementApi(this)

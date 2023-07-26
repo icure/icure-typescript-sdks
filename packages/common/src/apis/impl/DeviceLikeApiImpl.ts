@@ -1,8 +1,7 @@
-import { Filter } from '../../filters/Filter'
 import { PaginatedList } from '../../models/PaginatedList.model'
 import { DeviceLikeApi } from '../DeviceLikeApi'
 import { ErrorHandler } from '../../services/ErrorHandler'
-import { Device, FilterChainDevice, IccDeviceApi, ListOfIds, PaginatedListDevice } from '@icure/api'
+import { ConnectionImpl, Device, FilterChainDevice, IccAuthApi, IccDeviceApi, ListOfIds, subscribeToEntityEvents } from '@icure/api'
 import { Mapper } from '../Mapper'
 import { firstOrNull } from '../../utils/functionalUtils'
 
@@ -10,12 +9,17 @@ import { forceUuid } from '../../utils/uuidUtils'
 import { NoOpFilter } from '../../filters/dsl/filterDsl'
 import { FilterMapper } from '../../mappers/Filter.mapper'
 import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
+import { CommonFilter } from '../../filters/filters'
+import { Connection } from '../../models/Connection.model'
+import { iccRestApiPath } from '@icure/api/icc-api/api/IccRestApiPath'
 
 export class DeviceLikeApiImpl<DSDevice> implements DeviceLikeApi<DSDevice> {
     constructor(
         private readonly mapper: Mapper<DSDevice, Device>,
         private readonly errorHandler: ErrorHandler,
         private readonly deviceApi: IccDeviceApi,
+        private readonly authApi: IccAuthApi,
+        private readonly basePath: string,
     ) {}
 
     async createOrModify(device: DSDevice): Promise<DSDevice> {
@@ -70,7 +74,7 @@ export class DeviceLikeApiImpl<DSDevice> implements DeviceLikeApi<DSDevice> {
             .map((d) => d.rev!)
     }
 
-    async filterBy(filter: Filter<DSDevice>, nextDeviceId?: string, limit?: number): Promise<PaginatedList<DSDevice>> {
+    async filterBy(filter: CommonFilter<Device>, nextDeviceId?: string, limit?: number): Promise<PaginatedList<DSDevice>> {
         if (NoOpFilter.isNoOp(filter)) {
             return PaginatedList.empty()
         } else {
@@ -99,7 +103,7 @@ export class DeviceLikeApiImpl<DSDevice> implements DeviceLikeApi<DSDevice> {
         )
     }
 
-    async matchBy(filter: Filter<DSDevice>): Promise<Array<string>> {
+    async matchBy(filter: CommonFilter<Device>): Promise<Array<string>> {
         if (NoOpFilter.isNoOp(filter)) {
             return []
         } else {
@@ -107,5 +111,17 @@ export class DeviceLikeApiImpl<DSDevice> implements DeviceLikeApi<DSDevice> {
                 throw this.errorHandler.createErrorFromAny(e)
             })
         }
+    }
+
+    async subscribeToEvents(
+        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
+        filter: CommonFilter<Device>,
+        eventFired: (device: DSDevice) => Promise<void>,
+        options?: {
+            connectionMaxRetry?: number
+            connectionRetryIntervalMs?: number
+        },
+    ): Promise<Connection> {
+        return subscribeToEntityEvents(iccRestApiPath(this.basePath), this.authApi, 'Device', eventTypes, FilterMapper.toAbstractFilterDto(filter, 'Service'), (event: Device) => eventFired(this.mapper.toDomain(event)), options ?? {}).then((ws) => new ConnectionImpl(ws))
     }
 }
