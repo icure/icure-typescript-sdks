@@ -259,6 +259,10 @@ function toAnnotationEncryptedSelf(dto: AnnotationDto): string | undefined {
     return dto.encryptedSelf
 }
 
+function toAnnotationDtoConfidential(domain: Annotation): boolean | undefined {
+    throw new Error('Not implemented')
+}
+
 export function mapAnnotationDtoToAnnotation(dto: AnnotationDto): Annotation {
     return new Annotation({
         id: toAnnotationId(dto),
@@ -280,6 +284,7 @@ export function mapAnnotationToAnnotationDto(domain: Annotation): AnnotationDto 
         modified: toAnnotationDtoModified(domain),
         text: toAnnotationDtoText(domain),
         markdown: toAnnotationDtoMarkdown(domain),
+        confidential: toAnnotationDtoConfidential(domain),
         tags: toAnnotationDtoTags(domain),
         location: toAnnotationDtoLocation(domain),
         encryptedSelf: toAnnotationDtoEncryptedSelf(domain),

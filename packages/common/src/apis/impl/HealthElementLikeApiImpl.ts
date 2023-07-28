@@ -1,8 +1,6 @@
-import { Filter } from '../../filters/Filter'
 import { PaginatedList } from '../../models/PaginatedList.model'
-import { Connection } from '../../models/Connection.model'
 import { HealthElementLikeApi } from '../HealthElementLikeApi'
-import { FilterChainHealthElement, HealthElement, IccCryptoXApi, IccHelementXApi, IccPatientXApi, IccUserXApi, PaginatedListHealthElement, Patient, User } from '@icure/api'
+import { Connection, ConnectionImpl, FilterChainHealthElement, HealthElement, IccAuthApi, IccCryptoXApi, IccHelementXApi, IccPatientXApi, IccUserXApi, Patient, subscribeToEntityEvents, User } from '@icure/api'
 import { Mapper } from '../Mapper'
 import { ErrorHandler } from '../../services/ErrorHandler'
 import { firstOrNull } from '../../utils/functionalUtils'
@@ -13,6 +11,8 @@ import { FilterMapper } from '../../mappers/Filter.mapper'
 import { HealthElementFilter } from '../../filters/dsl/HealthElementFilterDsl'
 import { CommonApi } from '../CommonApi'
 import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
+import { iccRestApiPath } from '@icure/api/icc-api/api/IccRestApiPath'
+import { CommonFilter } from '../../filters/filters'
 
 export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements HealthElementLikeApi<DSHealthElement, DSPatient> {
     constructor(
@@ -24,6 +24,8 @@ export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements Hea
         private readonly patientApi: IccPatientXApi,
         private readonly dataOwnerApi: IccDataOwnerXApi,
         private readonly cryptoApi: IccCryptoXApi,
+        private readonly authApi: IccAuthApi,
+        private readonly basePath: string,
         private readonly api: CommonApi,
     ) {}
 
@@ -85,7 +87,7 @@ export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements Hea
         throw this.errorHandler.createErrorWithMessage(`An error occurred when deleting this HealthElement. Id: ${id}`)
     }
 
-    async filterBy(filter: Filter<HealthElement>, nextHealthElementId?: string, limit?: number): Promise<PaginatedList<DSHealthElement>> {
+    async filterBy(filter: CommonFilter<HealthElement>, nextHealthElementId?: string, limit?: number): Promise<PaginatedList<DSHealthElement>> {
         if (NoOpFilter.isNoOp(filter)) {
             return PaginatedList.empty()
         }
@@ -139,7 +141,7 @@ export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements Hea
         return await this.concatenateFilterResults(filter)
     }
 
-    async concatenateFilterResults(filter: Filter<HealthElement>, nextId?: string | undefined, limit?: number | undefined, accumulator: Array<DSHealthElement> = []): Promise<Array<DSHealthElement>> {
+    async concatenateFilterResults(filter: CommonFilter<HealthElement>, nextId?: string | undefined, limit?: number | undefined, accumulator: Array<DSHealthElement> = []): Promise<Array<DSHealthElement>> {
         const paginatedHealthElements = await this.filterBy(filter, nextId, limit)
         return !paginatedHealthElements.nextKeyPair?.startKeyDocId ? accumulator.concat(paginatedHealthElements.rows ?? []) : this.concatenateFilterResults(filter, paginatedHealthElements.nextKeyPair.startKeyDocId, limit, accumulator.concat(paginatedHealthElements.rows ?? []))
     }
@@ -149,7 +151,7 @@ export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements Hea
         return this.healthElementMapper.toDomain(shared)
     }
 
-    async matchBy(filter: Filter<DSHealthElement>): Promise<Array<string>> {
+    async matchBy(filter: CommonFilter<HealthElement>): Promise<Array<string>> {
         if (NoOpFilter.isNoOp(filter)) {
             return []
         } else {
@@ -159,15 +161,26 @@ export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements Hea
         }
     }
 
-    subscribeToEvents(
+    async subscribeToEvents(
         eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
-        filter: Filter<DSHealthElement>,
+        filter: CommonFilter<HealthElement>,
         eventFired: (dataSample: DSHealthElement) => Promise<void>,
         options?: {
             connectionMaxRetry?: number
             connectionRetryIntervalMs?: number
         },
     ): Promise<Connection> {
-        throw 'TODO'
+        const currentUser = await this.userApi.getCurrentUser()
+
+        return subscribeToEntityEvents(
+            iccRestApiPath(this.basePath),
+            this.authApi,
+            'HealthElement',
+            eventTypes,
+            FilterMapper.toAbstractFilterDto(filter, 'HealthElement'),
+            (event) => eventFired(this.healthElementMapper.toDomain(event)),
+            options ?? {},
+            async (encrypted) => (await this.heApi.decryptWithUser(currentUser, [encrypted]))[0],
+        ).then((ws) => new ConnectionImpl(ws))
     }
 }

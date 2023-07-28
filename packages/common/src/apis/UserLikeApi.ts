@@ -1,8 +1,7 @@
-import { Filter } from '../filters/Filter'
 import { SharedDataType } from '../models/User.model'
-import { Connection } from '../models/Connection.model'
 import { PaginatedList } from '../models/PaginatedList.model'
-import { User } from '@icure/api'
+import { Connection, User } from '@icure/api'
+import { CommonFilter } from '../filters/filters'
 
 /**
  * The UserApi interface provides methods to manage users.
@@ -50,7 +49,7 @@ export interface UserLikeApi<DSUser, DSPatient> {
      * @param nextUserId The id of the first User in the next page
      * @param limit The number of users to return in the queried page
      */
-    filterBy(filter: Filter<User>, nextUserId?: string, limit?: number): Promise<PaginatedList<DSUser>>
+    filterBy(filter: CommonFilter<User>, nextUserId?: string, limit?: number): Promise<PaginatedList<DSUser>>
     /**
      * When you make a call to the server, an authentication token is used to identify you. This call returns the complete User object that corresponds to your authentication credentials.
      * Get the details of the logged User.
@@ -77,7 +76,7 @@ export interface UserLikeApi<DSUser, DSPatient> {
      * Load user ids from the database by filtering them using the provided Filter.
      * @param filter The Filter object that describes which condition(s) the elements whose the ids should be returned must fulfill
      */
-    matchBy(filter: Filter<User>): Promise<Array<string>>
+    matchBy(filter: CommonFilter<User>): Promise<Array<string>>
 
     /**
      * Opens a WebSocket Connection in order to receive all the Users corresponding to specific filter criteria.
@@ -90,7 +89,7 @@ export interface UserLikeApi<DSUser, DSPatient> {
      *    - connectionMaxRetry : how many time retrying to reconnect to the iCure WebSocket;
      *    - connectionRetryIntervalInMs : How long base interval will be between two retry. The retry attempt is exponential and using a random value (connectionRetryIntervalMs * (random between 1 and 2))^nbAttempts)
      */
-    subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: Filter<DSUser>, eventFired: (user: DSUser) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection>
+    subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: CommonFilter<User>, eventFired: (user: DSUser) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection>
 
     /**
      * Add autoDelegations values to the user.

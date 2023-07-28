@@ -31,9 +31,6 @@ export const extractDomainTypeTag = (tags?: CodeStub[]): CodeStub | undefined =>
 
 export const extractDomainType = (tags: CodeStub[] | undefined) => {
     const domainTypeTag = extractDomainTypeTag(tags)
-
-    console.log('domainTypeTag', domainTypeTag?.code)
-
     return domainTypeTag?.code
 }
 

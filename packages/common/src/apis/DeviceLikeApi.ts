@@ -1,7 +1,6 @@
 import { PaginatedList } from '../models/PaginatedList.model'
-import { Device } from '@icure/api'
+import { Connection, Device } from '@icure/api'
 import { CommonFilter } from '../filters/filters'
-import { Connection } from '../models/Connection.model'
 
 /**
  * The DeviceApi interface provides methods to manage medical devices.

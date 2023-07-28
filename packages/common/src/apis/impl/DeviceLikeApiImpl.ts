@@ -6,7 +6,7 @@ import { Mapper } from '../Mapper'
 import { firstOrNull } from '../../utils/functionalUtils'
 
 import { forceUuid } from '../../utils/uuidUtils'
-import { NoOpFilter } from '../../filters/dsl/filterDsl'
+import { NoOpFilter } from '../../filters/dsl'
 import { FilterMapper } from '../../mappers/Filter.mapper'
 import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
 import { CommonFilter } from '../../filters/filters'
@@ -121,6 +121,7 @@ export class DeviceLikeApiImpl<DSDevice> implements DeviceLikeApi<DSDevice> {
             connectionRetryIntervalMs?: number
         },
     ): Promise<Connection> {
-        return subscribeToEntityEvents(iccRestApiPath(this.basePath), this.authApi, 'Device', eventTypes, FilterMapper.toAbstractFilterDto(filter, 'Device'), (event) => eventFired(this.mapper.toDomain(event)), options ?? {}).then((ws) => new ConnectionImpl(ws))
+        const tFilter = FilterMapper.toAbstractFilterDto(filter, 'Device')
+        return subscribeToEntityEvents(iccRestApiPath(this.basePath), this.authApi, 'Device', eventTypes, tFilter, (event) => eventFired(this.mapper.toDomain(event)), options ?? {}).then((ws) => new ConnectionImpl(ws))
     }
 }

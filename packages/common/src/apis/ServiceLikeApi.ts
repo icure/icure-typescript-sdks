@@ -1,6 +1,5 @@
-import { Connection } from '../models/Connection.model'
 import { PaginatedList } from '../models/PaginatedList.model'
-import { Service } from '@icure/api'
+import { Connection, Service } from '@icure/api'
 import { CommonFilter } from '../filters/filters'
 
 /**

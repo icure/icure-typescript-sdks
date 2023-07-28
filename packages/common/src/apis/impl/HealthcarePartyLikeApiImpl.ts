@@ -1,19 +1,22 @@
-import { Filter } from '../../filters/Filter'
 import { PaginatedList } from '../../models/PaginatedList.model'
 import { HealthcarePartyLikeApi } from '../HealthcarePartyLikeApi'
 import { ErrorHandler } from '../../services/ErrorHandler'
-import { FilterChainHealthcareParty, HealthcareParty, IccHcpartyXApi, PaginatedListHealthcareParty } from '@icure/api'
+import { AbstractFilter, Connection, ConnectionImpl, FilterChainHealthcareParty, HealthcareParty, IccAuthApi, IccHcpartyXApi, subscribeToEntityEvents } from '@icure/api'
 import { Mapper } from '../Mapper'
 import { firstOrNull } from '../../utils/functionalUtils'
-import { NoOpFilter } from '../../filters/dsl/filterDsl'
+import { NoOpFilter } from '../../filters/dsl'
 import { FilterMapper } from '../../mappers/Filter.mapper'
 import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
+import { iccRestApiPath } from '@icure/api/icc-api/api/IccRestApiPath'
+import { CommonFilter } from '../../filters/filters'
 
 export class HealthcarePartyLikeApiImpl<DSHealthcareParty> implements HealthcarePartyLikeApi<DSHealthcareParty> {
     constructor(
         private readonly mapper: Mapper<DSHealthcareParty, HealthcareParty>,
         private readonly errorHandler: ErrorHandler,
         private readonly healthcarePartyApi: IccHcpartyXApi,
+        private readonly authApi: IccAuthApi,
+        private readonly basePath: string,
     ) {}
 
     async createOrModify(healthcareParty: DSHealthcareParty): Promise<DSHealthcareParty> {
@@ -46,7 +49,7 @@ export class HealthcarePartyLikeApiImpl<DSHealthcareParty> implements Healthcare
         throw this.errorHandler.createErrorWithMessage(`Could not delete healthcare party ${id}`)
     }
 
-    async filterBy(filter: Filter<DSHealthcareParty>, nextHealthcarePartyId?: string, limit?: number): Promise<PaginatedList<DSHealthcareParty>> {
+    async filterBy(filter: CommonFilter<HealthcareParty>, nextHealthcarePartyId?: string, limit?: number): Promise<PaginatedList<DSHealthcareParty>> {
         if (NoOpFilter.isNoOp(filter)) {
             return PaginatedList.empty()
         } else {
@@ -75,7 +78,7 @@ export class HealthcarePartyLikeApiImpl<DSHealthcareParty> implements Healthcare
         )
     }
 
-    async matchBy(filter: Filter<DSHealthcareParty>): Promise<Array<string>> {
+    async matchBy(filter: CommonFilter<HealthcareParty>): Promise<Array<string>> {
         if (NoOpFilter.isNoOp(filter)) {
             return []
         } else {
@@ -83,5 +86,19 @@ export class HealthcarePartyLikeApiImpl<DSHealthcareParty> implements Healthcare
                 throw this.errorHandler.createErrorFromAny(e)
             })
         }
+    }
+
+    async subscribeToEvents(
+        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
+        filter: CommonFilter<HealthcareParty>,
+        eventFired: (hcp: DSHealthcareParty) => Promise<void>,
+        options?: {
+            connectionMaxRetry?: number
+            connectionRetryIntervalMs?: number
+        },
+    ): Promise<Connection> {
+        const tFilter: AbstractFilter<HealthcareParty> = FilterMapper.toAbstractFilterDto(filter, 'HealthcareParty')
+
+        return subscribeToEntityEvents(iccRestApiPath(this.basePath), this.authApi, 'HealthcareParty', eventTypes, tFilter, (event: HealthcareParty) => eventFired(this.mapper.toDomain(event)), options ?? {}).then((ws) => new ConnectionImpl(ws))
     }
 }
