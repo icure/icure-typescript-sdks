@@ -97,8 +97,8 @@ export class HealthcarePartyLikeApiImpl<DSHealthcareParty> implements Healthcare
             connectionRetryIntervalMs?: number
         },
     ): Promise<Connection> {
-        const tFilter: AbstractFilter<HealthcareParty> = FilterMapper.toAbstractFilterDto(filter, 'HealthcareParty')
-
-        return subscribeToEntityEvents(iccRestApiPath(this.basePath), this.authApi, 'HealthcareParty', eventTypes, tFilter, (event: HealthcareParty) => eventFired(this.mapper.toDomain(event)), options ?? {}).then((ws) => new ConnectionImpl(ws))
+        return subscribeToEntityEvents(iccRestApiPath(this.basePath), this.authApi, 'HealthcareParty', eventTypes, FilterMapper.toAbstractFilterDto(filter, 'HealthcareParty'), (event: HealthcareParty) => eventFired(this.mapper.toDomain(event)), options ?? {}).then(
+            (ws) => new ConnectionImpl(ws),
+        )
     }
 }

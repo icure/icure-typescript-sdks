@@ -121,7 +121,6 @@ export class DeviceLikeApiImpl<DSDevice> implements DeviceLikeApi<DSDevice> {
             connectionRetryIntervalMs?: number
         },
     ): Promise<Connection> {
-        const tFilter = FilterMapper.toAbstractFilterDto(filter, 'Device')
-        return subscribeToEntityEvents(iccRestApiPath(this.basePath), this.authApi, 'Device', eventTypes, tFilter, (event) => eventFired(this.mapper.toDomain(event)), options ?? {}).then((ws) => new ConnectionImpl(ws))
+        return subscribeToEntityEvents(iccRestApiPath(this.basePath), this.authApi, 'Device', eventTypes, FilterMapper.toAbstractFilterDto(filter, 'Device'), (event) => eventFired(this.mapper.toDomain(event)), options ?? {}).then((ws) => new ConnectionImpl(ws))
     }
 }

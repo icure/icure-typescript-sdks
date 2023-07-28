@@ -1,5 +1,5 @@
-import { CommonApi, CommonFilter, Connection, Document, mapDocumentDtoToDocument, mapDocumentToDocumentDto, PaginatedList, ServiceLikeApi, ServiceLikeApiImpl } from '@icure/typescript-common'
-import { Document as DocumentDto, Patient as PatientDto, Service } from '@icure/api'
+import { CommonApi, CommonFilter, Document, mapDocumentDtoToDocument, mapDocumentToDocumentDto, PaginatedList, ServiceLikeApi, ServiceLikeApiImpl } from '@icure/typescript-common'
+import { Connection, Document as DocumentDto, Patient as PatientDto, Service } from '@icure/api'
 import { DataSample } from '../models/DataSample.model'
 import { Patient } from '../models/Patient.model'
 import { mapDataSampleToService, mapServiceToDataSample } from '../mappers/DataSample.mapper'

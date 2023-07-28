@@ -1,5 +1,5 @@
 import { CommonApi, CommonFilter, DeviceLikeApi, DeviceLikeApiImpl, PaginatedList } from '@icure/typescript-common'
-import { Device, PaginatedListDevice } from '@icure/api'
+import { Device } from '@icure/api'
 import { MedicalDevice } from '../models/MedicalDevice.model'
 import { mapDeviceToMedicalDevice, mapMedicalDeviceToDevice } from '../mappers/MedicalDevice.mapper'
 

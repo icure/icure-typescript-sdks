@@ -11,7 +11,7 @@ export interface UserApi extends UserLikeApi<User, Patient> {}
 
 class UserApiImpl extends UserLikeApiImpl<User, Patient, Practitioner | Organisation> implements UserApi {}
 
-export const userApi = (api: CommonApi, messageFactory: EHRLiteMessageFactory): UserApi =>
+export const userApi = (api: CommonApi, messageFactory: EHRLiteMessageFactory, basePath: string): UserApi =>
     new UserApiImpl(
         {
             toDomain(dto: UserDto): User {
@@ -41,7 +41,9 @@ export const userApi = (api: CommonApi, messageFactory: EHRLiteMessageFactory): 
         api.sanitizer,
         api.baseApi.userApi,
         api.baseApi.dataOwnerApi,
+        api.baseApi.authApi,
         api,
         messageFactory,
+        basePath,
         api.messageGatewayApi,
     )
