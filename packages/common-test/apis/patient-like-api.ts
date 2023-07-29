@@ -1,10 +1,10 @@
-import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, forceUuid } from '@icure/typescript-common'
-import { BaseApiTestContext, WithAuthenticationApi, WithDataOwnerApi, WithHcpApi, WithHelementApi, WithMaintenanceTaskApi, WithPatientApi, WithServiceApi } from './TestContexts'
+import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, forceUuid, PatientFilter } from '@icure/typescript-common'
+import { BaseApiTestContext, WithHelementApi, WithPatientApi } from './TestContexts'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import { getEnvironmentInitializer, hcp1Username, hcp2Username, patUsername, setLocalStorage } from '../test-utils'
-import { HealthElement, Patient, User } from '@icure/api'
-import { HealthcareElement } from '@icure/medical-device-sdk'
+import { Patient, sleep, User } from '@icure/api'
 import 'isomorphic-fetch'
+import { doXOnYAndSubscribe } from '../websocket-utils'
 
 setLocalStorage(fetch)
 
@@ -156,5 +156,61 @@ export function testPatientLikeApi<
             await ctx.checkPatientAccessibleAndDecrypted(pApi, sharedPatient, true)
             await ctx.checkPatientInaccessible(h2api, patient)
         })
+
+        const subscribeAndCreatePatient = async (options: {}, eventTypes: ('CREATE' | 'DELETE' | 'UPDATE')[]) => {
+            const { api, user } = await ctx.apiForEnvUser(env, hcp1Username)
+
+            const connectionPromise = async (options: {}, dataOwnerId: string, eventListener: (patient: Patient) => Promise<void>) => {
+                await sleep(2000)
+                return ctx.patientApi(api).subscribeToEvents(eventTypes, await new PatientFilter(api).forSelf().containsFuzzy('John').build(), eventListener, options)
+            }
+
+            const events: Patient[] = []
+            const statuses: string[] = []
+
+            let eventReceivedPromiseResolve!: (value: void | PromiseLike<void>) => void
+            let eventReceivedPromiseReject!: (reason?: any) => void
+            const eventReceivedPromise = new Promise<void>((res, rej) => {
+                eventReceivedPromiseResolve = res
+                eventReceivedPromiseReject = rej
+            })
+
+            await doXOnYAndSubscribe(
+                api!!,
+                options,
+                connectionPromise(options, user.healthcarePartyId!, async (patient) => {
+                    events.push(patient)
+                    eventReceivedPromiseResolve()
+                }),
+                async () => {
+                    await ctx.createPatient(api)
+                },
+                (status) => {
+                    statuses.push(status)
+                },
+                eventReceivedPromiseReject,
+                eventReceivedPromise,
+            )
+
+            events?.forEach((event) => console.log(`Event : ${event}`))
+            statuses?.forEach((status) => console.log(`Status : ${status}`))
+
+            expect(events.length).toEqual(1)
+            expect(statuses.length).toEqual(2)
+        }
+
+        it('Can subscribe PatientLike CREATE without option', async () => {
+            await subscribeAndCreatePatient({}, ['CREATE'])
+        }, 60_000)
+
+        it('Can subscribe PatientLike CREATE with options', async () => {
+            await subscribeAndCreatePatient(
+                {
+                    connectionRetryIntervalMs: 10_000,
+                    connectionMaxRetry: 5,
+                },
+                ['CREATE'],
+            )
+        }, 60_000)
     })
 }

@@ -1,12 +1,12 @@
-import 'mocha'
 import 'isomorphic-fetch'
 import { getEnvironmentInitializer, hcp1Username, hcp2Username, hcp3Username, patUsername, setLocalStorage } from '../test-utils'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
-import { IccDocumentApi, Service, ua2utf8, utf8_2ua } from '@icure/api'
+import { IccDocumentApi, Service, sleep, ua2utf8, utf8_2ua } from '@icure/api'
 import { BasicAuthenticationProvider } from '@icure/api/icc-x-api/auth/AuthenticationProvider'
 import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, forceUuid, ServiceLikeApiImpl } from '@icure/typescript-common'
 import { BaseApiTestContext, WithHelementApi, WithPatientApi, WithServiceApi } from './TestContexts'
 import { expectArrayContainsExactlyInAnyOrder } from '../assertions'
+import { doXOnYAndSubscribe } from '../websocket-utils'
 
 setLocalStorage(fetch)
 
@@ -604,5 +604,116 @@ export function testServiceLikeApi<
             // Compare without considering encrypted self: random IV will make it different
             expect({ ...retrievedUnmodifiedServiceDto, encryptedSelf: undefined }).toEqual({ ...servicesDto[1], encryptedSelf: undefined })
         })
+
+        const subscribeAndCreateContactOrService = async (options: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }, eventTypes: ('CREATE' | 'DELETE' | 'UPDATE')[], supplier: () => Promise<void>) => {
+            const { api, user } = await ctx.apiForEnvUser(env, hcp1Username)
+            const connectionPromise = async (options: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }, dataOwnerId: string, eventListener: (ds: Service) => Promise<void>) =>
+                ctx.serviceApi(api).subscribeToEvents(eventTypes, await ctx.newServiceFilter(api).forSelf().build(), eventListener, options)
+
+            const events: Service[] = []
+            const statuses: string[] = []
+
+            let eventReceivedPromiseResolve!: (value: void | PromiseLike<void>) => void
+            let eventReceivedPromiseReject!: (reason?: any) => void
+            const eventReceivedPromise = new Promise<void>((res, rej) => {
+                eventReceivedPromiseResolve = res
+                eventReceivedPromiseReject = rej
+            })
+
+            await doXOnYAndSubscribe(
+                api!,
+                options,
+                connectionPromise({}, user.healthcarePartyId!, async (ds) => {
+                    events.push(ds)
+                    eventReceivedPromiseResolve()
+                }),
+                supplier,
+                (status) => {
+                    statuses.push(status)
+                },
+                eventReceivedPromiseReject,
+                eventReceivedPromise,
+            )
+
+            events?.forEach((event) => console.log(`Event : ${event}`))
+            statuses?.forEach((status) => console.log(`Status : ${status}`))
+
+            expect(events.length).toEqual(1)
+            expect(statuses.length).toEqual(2)
+        }
+
+        const createService = async () => {
+            const { api, user } = await ctx.apiForEnvUser(env, hcp1Username)
+
+            const newPatient = await ctx.createPatient(api)
+            const newService = await ctx.createServiceForPatient(api, newPatient)
+
+            return {
+                service: ctx.toServiceDto(newService),
+                patient: ctx.toPatientDto(newPatient),
+            }
+        }
+
+        const deleteService = async () => {
+            const { api, user } = await ctx.apiForEnvUser(env, hcp1Username)
+            const { service } = await createService()
+
+            await sleep(200)
+
+            await ctx.serviceApi(api).delete(service.id!)
+        }
+
+        it('Can subscribe ServiceLike CREATE without options', async () => {
+            await subscribeAndCreateContactOrService({}, ['CREATE'], async () => {
+                await createService()
+            })
+        }, 60_000)
+
+        it('Can subscribe ServiceLike CREATE with options', async () => {
+            await subscribeAndCreateContactOrService(
+                {
+                    connectionRetryIntervalMs: 10_000,
+                    connectionMaxRetry: 5,
+                },
+                ['CREATE'],
+                async () => {
+                    await createService()
+                },
+            )
+        }, 60_000)
+
+        it('Can subscribe ServiceLike CREATE without options with another instance of api', async () => {
+            await subscribeAndCreateContactOrService({}, ['CREATE'], async () => {
+                await createService()
+            })
+        }, 60_000)
+
+        it('Can subscribe ServiceLike CREATE with options with another instance of api', async () => {
+            await subscribeAndCreateContactOrService(
+                {
+                    connectionRetryIntervalMs: 10_000,
+                    connectionMaxRetry: 5,
+                },
+                ['CREATE'],
+                async () => {
+                    await createService()
+                },
+            )
+        }, 60_000)
+
+        it('Can subscribe ServiceLike DELETE without options', async () => {
+            await subscribeAndCreateContactOrService({}, ['DELETE'], async () => deleteService())
+        }, 60_000)
+
+        it('Can subscribe ServiceLike DELETE with options', async () => {
+            await subscribeAndCreateContactOrService(
+                {
+                    connectionRetryIntervalMs: 10_000,
+                    connectionMaxRetry: 5,
+                },
+                ['DELETE'],
+                async () => deleteService(),
+            )
+        }, 60_000)
     })
 }

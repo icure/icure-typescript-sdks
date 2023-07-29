@@ -1,13 +1,11 @@
 import 'isomorphic-fetch'
-import { getEnvironmentInitializer, hcp1Username, hcp2Username, hcp3Username, patUsername, setLocalStorage, TestUtils } from '../test-utils'
-import { webcrypto } from 'crypto'
+import { getEnvironmentInitializer, hcp1Username, hcp2Username, setLocalStorage } from '../test-utils'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
-import { TestKeyStorage, TestStorage, testStorageForUser } from '../test-storage'
-import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, forceUuid, NotificationTypeEnum } from '@icure/typescript-common'
-import { assert } from 'chai'
-import { BaseApiTestContext, WithAuthenticationApi, WithDataOwnerApi, WithHcpApi, WithHelementApi, WithMaintenanceTaskApi, WithPatientApi, WithServiceApi } from './TestContexts'
+import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, forceUuid } from '@icure/typescript-common'
+import { BaseApiTestContext, WithHelementApi, WithPatientApi } from './TestContexts'
 import { expectArrayContainsExactlyInAnyOrder } from '../assertions'
-import { HealthElement, User } from '@icure/api'
+import { CodeStub, HealthElement, Patient, User } from '@icure/api'
+import { doXOnYAndSubscribe } from '../websocket-utils'
 
 setLocalStorage(fetch)
 
@@ -194,5 +192,79 @@ export function testHelementLikeApi<DSAnonymousApiBuilder extends AnonymousApiBu
             await ctx.checkHelementAccessibleAndDecrypted(patApi, shared, true)
             await ctx.checkHelementInaccessible(hcp2Api, shared)
         })
+
+        const testType = 'IC-TEST'
+        const testCode = 'TEST'
+
+        const subscribeAndCreateHealthElement = async (options: {}, eventTypes: ('CREATE' | 'DELETE' | 'UPDATE')[]) => {
+            const { api, user } = await ctx.apiForEnvUser(env, hcp1Username)
+            const connectionPromise = async (options: {}, dataOwnerId: string, eventListener: (healthcareElement: HealthElement) => Promise<void>) =>
+                ctx.helementApi(api).subscribeToEvents(eventTypes, await ctx.newHelementFilter(api).forSelf().byLabelCodeFilter(testType, testCode).build(), eventListener, options)
+
+            const events: HealthElement[] = []
+            const statuses: string[] = []
+
+            let eventReceivedPromiseResolve!: (value: void | PromiseLike<void>) => void
+            let eventReceivedPromiseReject!: (reason?: any) => void
+            const eventReceivedPromise = new Promise<void>((res, rej) => {
+                eventReceivedPromiseResolve = res
+                eventReceivedPromiseReject = rej
+            })
+
+            await doXOnYAndSubscribe(
+                api!!,
+                options,
+                connectionPromise({}, user.healthcarePartyId!, async (healthcareElement) => {
+                    events.push(healthcareElement)
+                    eventReceivedPromiseResolve()
+                }),
+                async () => {
+                    const patient = await ctx.patientApi(api).createOrModify(
+                        ctx.toDSPatient(
+                            new Patient({
+                                firstName: 'John',
+                                lastName: 'Snow',
+                                note: 'Winter is coming',
+                            }),
+                        ),
+                    )
+
+                    await ctx.helementApi(api).createOrModify(
+                        ctx.toDSHelement(
+                            new HealthElement({
+                                note: 'Hero Syndrome',
+                                tags: [new CodeStub({ id: 'id', code: testCode, type: testType })],
+                            }),
+                        ),
+                        (await ctx.toPatientDto(patient)).id,
+                    )
+                },
+                (status) => {
+                    statuses.push(status)
+                },
+                eventReceivedPromiseReject,
+                eventReceivedPromise,
+            )
+
+            events?.forEach((event) => console.log(`Event : ${event}`))
+            statuses?.forEach((status) => console.log(`Status : ${status}`))
+
+            expect(events.length).toEqual(1)
+            expect(statuses.length).toEqual(2)
+        }
+
+        it('Can subscribe HealthElementLike CREATE without options', async () => {
+            await subscribeAndCreateHealthElement({}, ['CREATE'])
+        }, 60_000)
+
+        it('Can subscribe HealthElementLike CREATE with options', async () => {
+            await subscribeAndCreateHealthElement(
+                {
+                    connectionRetryIntervalMs: 10_000,
+                    connectionMaxRetry: 5,
+                },
+                ['CREATE'],
+            )
+        }, 60_000)
     })
 }
