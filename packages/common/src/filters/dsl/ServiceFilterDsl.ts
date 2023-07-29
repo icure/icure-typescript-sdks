@@ -51,14 +51,15 @@ export class ServiceFilter<DSPatient> implements DataOwnerFilterBuilder<Service,
     constructor(
         private api: CommonApi,
         private patientMapper: Mapper<DSPatient, Patient>,
+        private additionalFilters?: Promise<Filter<Service>>[],
     ) {}
 
     forDataOwner(dataOwnerId: string): ServiceFilterWithDataOwner<DSPatient> {
-        return new ServiceFilterWithDataOwner(this.api, this.patientMapper, dataOwnerId)
+        return new ServiceFilterWithDataOwner(this.api, this.patientMapper, this.additionalFilters ?? [], dataOwnerId)
     }
 
     forSelf(): ServiceFilterWithDataOwner<DSPatient> {
-        return new ServiceFilterWithDataOwner(this.api, this.patientMapper)
+        return new ServiceFilterWithDataOwner(this.api, this.patientMapper, this.additionalFilters ?? [])
     }
 }
 
@@ -68,6 +69,7 @@ class ServiceFilterWithDataOwner<DSPatient> extends SortableFilterBuilder<Servic
     constructor(
         private api: CommonApi,
         private patientMapper: Mapper<DSPatient, Patient>,
+        private additionalFilters: Promise<Filter<Service>>[],
         dataOwnerId?: string,
     ) {
         super()
@@ -153,6 +155,8 @@ class ServiceFilterWithDataOwner<DSPatient> extends SortableFilterBuilder<Servic
 
     async build(): Promise<Filter<Service>> {
         const filters = await this._builderAccumulator.getAndSortFilters()
+
+        filters.push(...(await Promise.all(this.additionalFilters)))
 
         if (filters.some((f) => NoOpFilter.isNoOp(f))) {
             console.warn('Warning: the filter you built cannot be resolved and will return no entity')

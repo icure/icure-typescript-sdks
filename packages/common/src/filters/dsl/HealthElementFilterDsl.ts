@@ -1,4 +1,4 @@
-import { HealthElement, Identifier as IdentifierDto, IntersectionFilter, Patient } from '@icure/api'
+import { HealthElement, Identifier as IdentifierDto, IntersectionFilter, Patient, Service } from '@icure/api'
 import { Filter } from '../Filter'
 import { DataOwnerFilterBuilder, FilterBuilder, NoOpFilter, SortableFilterBuilder } from './filterDsl'
 import { CommonApi } from '../../apis/CommonApi'
@@ -11,14 +11,15 @@ export class HealthElementFilter<DSPatient> implements DataOwnerFilterBuilder<He
     constructor(
         private api: CommonApi,
         private patientMapper: Mapper<DSPatient, Patient>,
+        private additionalFilters?: Promise<Filter<HealthElement>>[],
     ) {}
 
     forDataOwner(dataOwnerId: string): HealthElementFilterWithDataOwner<DSPatient> {
-        return new HealthElementFilterWithDataOwner(this.api, this.patientMapper, dataOwnerId)
+        return new HealthElementFilterWithDataOwner(this.api, this.patientMapper, this.additionalFilters ?? [], dataOwnerId)
     }
 
     forSelf(): HealthElementFilterWithDataOwner<DSPatient> {
-        return new HealthElementFilterWithDataOwner(this.api, this.patientMapper)
+        return new HealthElementFilterWithDataOwner(this.api, this.patientMapper, this.additionalFilters ?? [])
     }
 }
 
@@ -58,6 +59,7 @@ export class HealthElementFilterWithDataOwner<DSPatient> extends SortableFilterB
     constructor(
         private api: CommonApi,
         private patientMapper: Mapper<DSPatient, Patient>,
+        private additionalFilters: Promise<Filter<HealthElement>>[],
         dataOwnerId?: string,
     ) {
         super()
@@ -126,6 +128,8 @@ export class HealthElementFilterWithDataOwner<DSPatient> extends SortableFilterB
 
     async build(): Promise<Filter<HealthElement>> {
         const filters = await this._builderAccumulator.getAndSortFilters()
+
+        filters.push(...(await Promise.all(this.additionalFilters)))
 
         if (filters.some((f) => NoOpFilter.isNoOp(f))) {
             console.warn('Warning: the filter you built cannot be resolved and will return no entity')
