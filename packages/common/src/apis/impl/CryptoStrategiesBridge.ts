@@ -45,12 +45,14 @@ export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithTyp
             }
         }
     }> {
-        if (keysData.length !== 1) {
-            throw new Error('Internal error: data owners of MedTech api should have no hierarchy.')
-        }
-        const missingKeys = keysData[0].unavailableKeys
-        const unverifiedKeys = keysData[0].unknownKeys
-        const { recoveredKeyPairs, verifiedKeys } = await this.dsStrategies.recoverAndVerifyKeys(this.dataOwnerMapper.toDomain(keysData[0].dataOwner), missingKeys, unverifiedKeys)
+        // Users created from msg-gw actually have a parent
+        // if (keysData.length !== 1) {
+        //     throw new Error('Internal error: data owners of MedTech api should have no hierarchy.')
+        // }
+        const selfData = keysData[keysData.length - 1]
+        const missingKeys = selfData.unavailableKeys
+        const unverifiedKeys = selfData.unknownKeys
+        const { recoveredKeyPairs, verifiedKeys } = await this.dsStrategies.recoverAndVerifyKeys(this.dataOwnerMapper.toDomain(selfData.dataOwner), missingKeys, unverifiedKeys)
         const missingKeysSet = new Set(missingKeys)
         const unverifiedKeysSet = new Set(unverifiedKeys)
         if (recoveredKeyPairs.some(({ publicKey }) => !missingKeysSet.has(publicKey))) {
@@ -65,9 +67,19 @@ export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithTyp
         if (recoveredKeyPairs.some((recoveredKeyPair) => verifiedKeys[recoveredKeyPair.publicKey] && verifiedKeys[recoveredKeyPair.publicKey] !== KeyVerificationBehaviour.MARK_VERIFIED)) {
             throw new Error('Recovered keys should considered as verified.')
         }
-        const existingKeys = hexPublicKeysOf(keysData[0].dataOwner)
+        const existingKeys = hexPublicKeysOf(selfData.dataOwner)
+        const recoveredEmpty = Object.fromEntries(
+            keysData.map((data) => [
+                data.dataOwner.dataOwner.id!,
+                {
+                    recoveredKeys: {},
+                    keyAuthenticity: {},
+                },
+            ]),
+        )
         return Promise.resolve({
-            [keysData[0].dataOwner.dataOwner.id!]: {
+            ...recoveredEmpty,
+            [selfData.dataOwner.dataOwner.id!]: {
                 recoveredKeys: Object.fromEntries(
                     await Promise.all(
                         recoveredKeyPairs.map(async (x): Promise<[string, KeyPair<CryptoKey>]> => {
