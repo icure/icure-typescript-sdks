@@ -12,7 +12,7 @@ export enum VerificationStatusEnum {
 export namespace VerificationStatusEnum {
     export function toCodeStub(verificationStatus: VerificationStatusEnum): CodeStub {
         return new CodeStub({
-            type: 'http://terminology.hl7.org/CodeSystem/condition-ver-status',
+            type: 'hl7/condition-ver-status',
             code: verificationStatus,
             version: '0.5.0',
         })
@@ -20,7 +20,7 @@ export namespace VerificationStatusEnum {
 
     export function fromCodeStub(codeStub: CodeStub): VerificationStatusEnum {
         // TODO consider version in future
-        if (codeStub.type !== 'http://terminology.hl7.org/CodeSystem/condition-ver-status') throw new Error('Unexpected codeStub.type for verificationStatus: ' + codeStub.type)
+        if (codeStub.type !== 'http://terminology.hl7.org/CodeSystem/condition-ver-status' && codeStub.type !== 'hl7/condition-ver-status') throw new Error('Unexpected codeStub.type for verificationStatus: ' + codeStub.type)
         if (codeStub.code === 'unconfirmed') {
             return VerificationStatusEnum.UNCONFIRMED
         } else if (codeStub.code === 'provisional') {

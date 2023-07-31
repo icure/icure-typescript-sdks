@@ -13,7 +13,7 @@ export enum ClinicalStatusEnum {
 export namespace ClinicalStatusEnum {
     export function toCodeStub(clinicalStatus: ClinicalStatusEnum): CodeStub {
         return new CodeStub({
-            type: 'http://terminology.hl7.org/CodeSystem/condition-clinical',
+            type: 'hl7/condition-clinical',
             code: clinicalStatus,
             version: '2.0.0',
         })
@@ -21,7 +21,7 @@ export namespace ClinicalStatusEnum {
 
     export function fromCodeStub(codeStub: CodeStub): ClinicalStatusEnum {
         // TODO consider version in future
-        if (codeStub.type !== 'http://terminology.hl7.org/CodeSystem/condition-clinical') throw new Error('Unexpected codeStub.type for clinicalStatus: ' + codeStub.type)
+        if (codeStub.type !== 'http://terminology.hl7.org/CodeSystem/condition-clinical' && codeStub.type !== 'hl7/condition-clinical') throw new Error('Unexpected codeStub.type for clinicalStatus: ' + codeStub.type)
         if (codeStub.code === 'active') {
             return ClinicalStatusEnum.ACTIVE
         } else if (codeStub.code === 'recurrence') {
