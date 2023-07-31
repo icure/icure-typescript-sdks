@@ -38,7 +38,7 @@ export function generatePractitioner(): Practitioner {
             ['fr', 'Ceci est un praticien factice'],
         ]),
         properties: new Set([generateProperty(), generateProperty()]),
-        systemMetaData: generateSystemMetaDataOwner(mapCodeStubToCodingReference(domainTypeTag('Practitioner'))),
+        systemMetaData: generateSystemMetaDataOwner(mapCodeStubToCodingReference(domainTypeTag('practitioner'))),
     } satisfies Practitioner
 
     return new Practitioner(practitioner)

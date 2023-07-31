@@ -35,17 +35,17 @@ export async function getEnvironmentInitializer(): Promise<EnvInitializer> {
                 const hcp1 = await masterApi.healthcarePartyApi.getHealthcareParty(updatedEnvs.dataOwnerDetails[hcp1Username].dataOwnerId)
                 await masterApi.healthcarePartyApi.modifyHealthcareParty({
                     ...hcp1,
-                    tags: [...hcp1.tags, domainTypeTag('Practitioner')],
+                    tags: [...hcp1.tags, domainTypeTag('practitioner')],
                 })
                 const hcp2 = await masterApi.healthcarePartyApi.getHealthcareParty(updatedEnvs.dataOwnerDetails[hcp2Username].dataOwnerId)
                 await masterApi.healthcarePartyApi.modifyHealthcareParty({
                     ...hcp2,
-                    tags: [...hcp2.tags, domainTypeTag('Practitioner')],
+                    tags: [...hcp2.tags, domainTypeTag('practitioner')],
                 })
                 const hcp3 = await masterApi.healthcarePartyApi.getHealthcareParty(updatedEnvs.dataOwnerDetails[hcp3Username].dataOwnerId)
                 await masterApi.healthcarePartyApi.modifyHealthcareParty({
                     ...hcp3,
-                    tags: [...hcp3.tags, domainTypeTag('Organisation')],
+                    tags: [...hcp3.tags, domainTypeTag('organisation')],
                 })
                 return updatedEnvs
             },

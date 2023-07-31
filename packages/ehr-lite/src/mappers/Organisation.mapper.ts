@@ -52,7 +52,7 @@ function toHealthcarePartyIdentifier(domain: Organisation): IdentifierDto[] | un
 }
 
 function toHealthcarePartyTags(domain: Organisation): CodeStub[] | undefined {
-    return mergeTagsWithInternalTags('Organisation', domain.tags, domain.systemMetaData)
+    return mergeTagsWithInternalTags('organisation', domain.tags, domain.systemMetaData)
 }
 
 function toHealthcarePartyCodes(domain: Organisation): CodeStub[] | undefined {
@@ -276,7 +276,7 @@ function toOrganisationIdentifiers(dto: HealthcareParty): Identifier[] | undefin
 }
 
 function toOrganisationTags(dto: HealthcareParty): Set<CodingReference> | undefined {
-    return filteringOutInternalTags('Organisation', dto.tags)
+    return filteringOutInternalTags('organisation', dto.tags)
 }
 
 function toOrganisationCodes(dto: HealthcareParty): Set<CodingReference> | undefined {

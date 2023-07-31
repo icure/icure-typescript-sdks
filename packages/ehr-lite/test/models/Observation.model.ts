@@ -29,7 +29,7 @@ export function generateObservation(): Observation {
         qualifiedLinks: new Map([['linkType', new Map([['linkId', 'linkValue']])]]),
         codes: new Set([generateCodingReference()]),
         tags: new Set([generateCodingReference()]),
-        systemMetaData: generateSystemMetaDataEncrypted(mapCodeStubToCodingReference(domainTypeTag('Observation'))),
+        systemMetaData: generateSystemMetaDataEncrypted(mapCodeStubToCodingReference(domainTypeTag('observation'))),
         notes: [generateAnnotation()],
     } satisfies Observation
 

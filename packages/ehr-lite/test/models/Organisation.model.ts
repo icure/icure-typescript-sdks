@@ -28,7 +28,7 @@ export function generateOrganisation(): Organisation {
             ['fr', 'Ceci est un organisation factice'],
         ]),
         properties: new Set([generateProperty()]),
-        systemMetaData: generateSystemMetaDataOwner(mapCodeStubToCodingReference(domainTypeTag('Organisation'))),
+        systemMetaData: generateSystemMetaDataOwner(mapCodeStubToCodingReference(domainTypeTag('organisation'))),
     })
 
     return org

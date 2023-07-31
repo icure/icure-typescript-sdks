@@ -17,14 +17,14 @@ class DataOwnerMapper implements Mapper<DataOwnerWithType, DataOwnerWithTypeDto>
                 }
             }
             case DataOwnerTypeEnumDto.Hcp: {
-                const domainType = extractDataOwnerDomainType(dto.dataOwner)
+                const domainType = extractDataOwnerDomainType(dto.dataOwner).toLowerCase()
 
-                if (domainType === DataOwnerTypeEnum.PRACTITIONER) {
+                if (domainType.toLowerCase() === DataOwnerTypeEnum.PRACTITIONER) {
                     return {
                         type: DataOwnerTypeEnum.PRACTITIONER,
                         dataOwner: mapHealthcarePartyToPractitioner(dto.dataOwner),
                     }
-                } else if (domainType === DataOwnerTypeEnum.ORGANISATION) {
+                } else if (domainType.toLowerCase() === DataOwnerTypeEnum.ORGANISATION) {
                     return {
                         type: DataOwnerTypeEnum.ORGANISATION,
                         dataOwner: mapHealthcarePartyToOrganisation(dto.dataOwner),

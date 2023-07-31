@@ -35,7 +35,7 @@ export function generateCondition(): Condition {
         closingDate: 1621845600,
         description: 'Sample condition description',
         notes: [generateAnnotation(), generateAnnotation()],
-        systemMetaData: generateSystemMetaDataEncrypted(mapCodeStubToCodingReference(domainTypeTag('Condition'))),
+        systemMetaData: generateSystemMetaDataEncrypted(mapCodeStubToCodingReference(domainTypeTag('condition'))),
     } satisfies Condition
 
     return new Condition(condition)

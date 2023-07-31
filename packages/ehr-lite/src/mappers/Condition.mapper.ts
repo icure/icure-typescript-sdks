@@ -61,7 +61,7 @@ function toHealthElementMedicalLocationId(domain: Condition): string | undefined
 }
 
 function toHealthElementTags(domain: Condition): CodeStub[] | undefined {
-    const mappedTags = mergeTagsWithInternalTags('Condition', domain.tags, domain.systemMetaData)
+    const mappedTags = mergeTagsWithInternalTags('condition', domain.tags, domain.systemMetaData)
 
     const bodySite = [...(domain.bodySite ?? [])]
 
@@ -285,7 +285,7 @@ function toConditionTags(dto: HealthElement): Set<CodingReference> | undefined {
     const contexts = ['clinicalStatus', 'verificationStatus', 'category', 'severity', 'bodySite'].map((v) => `Condition.${v}`)
     const tags = dto.tags?.filter((v) => (!!v.context ? !contexts.includes(v.context) : true))
 
-    return filteringOutInternalTags('Condition', tags)
+    return filteringOutInternalTags('condition', tags)
 }
 
 function toConditionCodes(dto: HealthElement): Set<CodingReference> | undefined {

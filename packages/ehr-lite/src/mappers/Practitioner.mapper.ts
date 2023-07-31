@@ -55,7 +55,7 @@ function toHealthcarePartyIdentifier(domain: Practitioner): IdentifierDto[] | un
 }
 
 function toHealthcarePartyTags(domain: Practitioner): CodeStub[] | undefined {
-    return mergeTagsWithInternalTags('Practitioner', domain.tags, domain.systemMetaData)
+    return mergeTagsWithInternalTags('practitioner', domain.tags, domain.systemMetaData)
 }
 
 function toHealthcarePartyCodes(domain: Practitioner): CodeStub[] | undefined {
@@ -279,7 +279,7 @@ function toPractitionerIdentifiers(dto: HealthcareParty): Identifier[] | undefin
 }
 
 function toPractitionerTags(dto: HealthcareParty): Set<CodingReference> | undefined {
-    return filteringOutInternalTags('Practitioner', dto.tags)
+    return filteringOutInternalTags('practitioner', dto.tags)
 }
 
 function toPractitionerCodes(dto: HealthcareParty): Set<CodingReference> | undefined {

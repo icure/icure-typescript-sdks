@@ -174,7 +174,7 @@ function toServiceCodes(domain: Observation): CodeStub[] | undefined {
 }
 
 function toServiceTags(domain: Observation): CodeStub[] | undefined {
-    return mergeTagsWithInternalTags('Observation', domain.tags, domain.systemMetaData)
+    return mergeTagsWithInternalTags('observation', domain.tags, domain.systemMetaData)
 }
 
 function toServiceEncryptedSelf(domain: Observation): string | undefined {
@@ -260,7 +260,7 @@ function toObservationCodes(dto: Service): Set<CodingReference> | undefined {
 }
 
 function toObservationTags(dto: Service): Set<CodingReference> | undefined {
-    return filteringOutInternalTags('Observation', dto.tags)
+    return filteringOutInternalTags('observation', dto.tags)
 }
 
 function toObservationSystemMetaData(dto: Service): SystemMetaDataEncrypted | undefined {
