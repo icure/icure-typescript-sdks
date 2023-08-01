@@ -233,7 +233,7 @@ export function testHelementLikeApi<DSAnonymousApiBuilder extends AnonymousApiBu
                         ctx.toDSHelement(
                             new HealthElement({
                                 note: 'Hero Syndrome',
-                                tags: [new CodeStub({ id: 'id', code: testCode, type: testType })],
+                                tags: [new CodeStub({ code: testCode, type: testType })],
                             }),
                         ),
                         (await ctx.toPatientDto(patient)).id,

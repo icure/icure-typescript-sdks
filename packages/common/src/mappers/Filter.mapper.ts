@@ -59,7 +59,7 @@ import { IntersectionFilter } from '../filters/IntersectionFilter'
 import { AllCodesFilter, CodeByIdsFilter, CodeByRegionTypeLabelFilter } from '../filters/code'
 import { ServiceByHealthcarePartyFilter, ServiceByHealthcarePartyHealthElementIdsFilter, ServiceByHealthcarePartyIdentifiersFilter, ServiceByHealthcarePartyPatientFilter, ServiceByHealthcarePartyTagCodeDateFilter } from '../filters/service'
 import { AllDevicesFilter, DeviceByIdsFilter } from '../filters/device'
-import { HealthElementByHealthcarePartyFilter, HealthElementByHealthcarePartyIdentifiersFilter, HealthElementByHealthcarePartyLabelCodeFilter, HealthElementByHealthcarePartyPatientFilter, HealthElementByIdsFilter } from '../filters/healthelement'
+import { HealthElementByHealthcarePartyFilter, HealthElementByHealthcarePartyIdentifiersFilter, HealthElementByHealthcarePartyTagCodeFilter, HealthElementByHealthcarePartyPatientFilter, HealthElementByIdsFilter } from '../filters/healthelement'
 import { AllHealthcarePartiesFilter, HealthcarePartyByIdsFilter, HealthcarePartyByLabelCodeFilter, HealthcarePartyByNameFilter } from '../filters/hcp'
 import { AllUsersFilter, UserByIdsFilter, UsersByPatientIdFilter } from '../filters/user'
 import {
@@ -347,8 +347,8 @@ export namespace FilterMapper {
         if (filter['$type'] === 'HealthElementByHealthcarePartyPatientFilter') {
             return toHealthElementByHcPartySecretForeignKeysFilterDto(filter as HealthElementByHealthcarePartyPatientFilter)
         }
-        if (filter['$type'] === 'HealthElementByHealthcarePartyLabelCodeFilter') {
-            return toHealthElementByHcPartyTagCodeFilterDto(filter as HealthElementByHealthcarePartyLabelCodeFilter)
+        if (filter['$type'] === 'HealthElementByHealthcarePartyTagCodeFilter') {
+            return toHealthElementByHcPartyTagCodeFilterDto(filter as HealthElementByHealthcarePartyTagCodeFilter)
         }
         if (filter['$type'] === 'HealthElementByIdsFilter') {
             return toHealthElementByIdsFilterDto(filter as HealthElementByIdsFilter)
@@ -382,7 +382,7 @@ export namespace FilterMapper {
             patientSecretForeignKeys: filter.patientSecretForeignKeys,
         })
 
-    const toHealthElementByHcPartyTagCodeFilterDto = (filter: HealthElementByHealthcarePartyLabelCodeFilter) =>
+    const toHealthElementByHcPartyTagCodeFilterDto = (filter: HealthElementByHealthcarePartyTagCodeFilter) =>
         new HealthElementByHcPartyTagCodeFilterDto({
             desc: filter.description,
             healthcarePartyId: filter.healthcarePartyId,

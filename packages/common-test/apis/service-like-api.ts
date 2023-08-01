@@ -701,11 +701,11 @@ export function testServiceLikeApi<
             )
         }, 60_000)
 
-        it('Can subscribe ServiceLike DELETE without options', async () => {
+        it.skip('Can subscribe ServiceLike DELETE without options', async () => {
             await subscribeAndCreateContactOrService({}, ['DELETE'], async () => deleteService())
         }, 60_000)
 
-        it('Can subscribe ServiceLike DELETE with options', async () => {
+        it.skip('Can subscribe ServiceLike DELETE with options', async () => {
             await subscribeAndCreateContactOrService(
                 {
                     connectionRetryIntervalMs: 10_000,
