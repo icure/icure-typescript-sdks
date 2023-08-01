@@ -11,15 +11,14 @@ export class HealthElementFilter<DSPatient> implements DataOwnerFilterBuilder<He
     constructor(
         private api: CommonApi,
         private patientMapper: Mapper<DSPatient, Patient>,
-        private additionalFilters?: Promise<Filter<HealthElement>>[],
     ) {}
 
     forDataOwner(dataOwnerId: string): HealthElementFilterWithDataOwner<DSPatient> {
-        return new HealthElementFilterWithDataOwner(this.api, this.patientMapper, this.additionalFilters ?? [], dataOwnerId)
+        return new HealthElementFilterWithDataOwner(this.api, this.patientMapper, dataOwnerId)
     }
 
     forSelf(): HealthElementFilterWithDataOwner<DSPatient> {
-        return new HealthElementFilterWithDataOwner(this.api, this.patientMapper, this.additionalFilters ?? [])
+        return new HealthElementFilterWithDataOwner(this.api, this.patientMapper)
     }
 }
 
@@ -59,7 +58,6 @@ export class HealthElementFilterWithDataOwner<DSPatient> extends SortableFilterB
     constructor(
         private api: CommonApi,
         private patientMapper: Mapper<DSPatient, Patient>,
-        private additionalFilters: Promise<Filter<HealthElement>>[],
         dataOwnerId?: string,
     ) {
         super()
@@ -103,7 +101,7 @@ export class HealthElementFilterWithDataOwner<DSPatient> extends SortableFilterB
                 tagCode: labelCode,
                 codeType,
                 codeCode,
-                $type: 'HealthElementByHealthcarePartyLabelCodeFilter',
+                $type: 'HealthElementByHealthcarePartyTagCodeFilter',
             }),
         )
         return this
@@ -128,8 +126,6 @@ export class HealthElementFilterWithDataOwner<DSPatient> extends SortableFilterB
 
     async build(): Promise<Filter<HealthElement>> {
         const filters = await this._builderAccumulator.getAndSortFilters()
-
-        filters.push(...(await Promise.all(this.additionalFilters)))
 
         if (filters.some((f) => NoOpFilter.isNoOp(f))) {
             console.warn('Warning: the filter you built cannot be resolved and will return no entity')
