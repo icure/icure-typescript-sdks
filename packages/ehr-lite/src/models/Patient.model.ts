@@ -24,15 +24,24 @@ export class Patient {
     // /**
     //  * First name of the patient. Automatically aligned with the {@link HumanName.preferredNameFrom} {@link Patient.names}.
     //  */
+    /**
+     * First name of the patient
+     */
     firstName?: string
     // /**
     //  * Last name of the patient. Automatically aligned with the {@link HumanName.preferredNameFrom} {@link Patient.names}.
     //  */
+    /**
+     * Last name of the patient
+     */
     lastName?: string
     // /**
     //  * All names of the patient. Currently only the preferred name, which is automatically aligned with {@link Patient.firstName}
     //  * and {@link Patient.lastName}, is searchable.
     //  */
+    /**
+     * All names of the patient. Note that these names are not searchable / filterable.
+     */
     names: HumanName[]
     languages: string[]
     addresses: Location[]
