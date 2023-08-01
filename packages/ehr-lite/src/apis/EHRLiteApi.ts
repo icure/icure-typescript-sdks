@@ -236,6 +236,7 @@ export namespace EHRLiteApi {
                     storage: props.storage,
                     keyStorage: props.keyStorage,
                     createMaintenanceTasksOnNewKey: true,
+                    disableParentKeysInitialisation: true,
                 },
             ).then((api) => new EHRLiteApi(api, props.iCureBaseUrl, props.userName, props.password, props.cryptoStrategies, props.msgGwUrl, props.msgGwSpecId, props.authProcessByEmailId, props.authProcessBySmsId, props.storage, props.keyStorage, props.messageFactory))
         }

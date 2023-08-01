@@ -251,6 +251,7 @@ export namespace MedTechApi {
                     storage: props.storage,
                     keyStorage: props.keyStorage,
                     createMaintenanceTasksOnNewKey: true,
+                    disableParentKeysInitialisation: true,
                 },
             ).then((api) => new MedTechApi(api, props.iCureBaseUrl, props.userName, props.password, props.cryptoStrategies, props.msgGwUrl, props.msgGwSpecId, props.authProcessByEmailId, props.authProcessBySmsId, props.storage, props.keyStorage, props.messageFactory))
         }
