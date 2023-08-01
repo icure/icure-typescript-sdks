@@ -51,25 +51,23 @@ export class ServiceFilter<DSPatient> implements DataOwnerFilterBuilder<Service,
     constructor(
         private api: CommonApi,
         private patientMapper: Mapper<DSPatient, Patient>,
-        private additionalFilters?: Promise<Filter<Service>>[],
     ) {}
 
     forDataOwner(dataOwnerId: string): ServiceFilterWithDataOwner<DSPatient> {
-        return new ServiceFilterWithDataOwner(this.api, this.patientMapper, this.additionalFilters ?? [], dataOwnerId)
+        return new ServiceFilterWithDataOwner(this.api, this.patientMapper, dataOwnerId)
     }
 
     forSelf(): ServiceFilterWithDataOwner<DSPatient> {
-        return new ServiceFilterWithDataOwner(this.api, this.patientMapper, this.additionalFilters ?? [])
+        return new ServiceFilterWithDataOwner(this.api, this.patientMapper)
     }
 }
 
-class ServiceFilterWithDataOwner<DSPatient> extends SortableFilterBuilder<Service, ServiceFilterSortStepDecorator<DSPatient>> implements BaseServiceFilterBuilder<ServiceFilterWithDataOwner<DSPatient>, DSPatient>, FilterBuilder<Service> {
+export class ServiceFilterWithDataOwner<DSPatient> extends SortableFilterBuilder<Service, ServiceFilterSortStepDecorator<DSPatient>> implements BaseServiceFilterBuilder<ServiceFilterWithDataOwner<DSPatient>, DSPatient>, FilterBuilder<Service> {
     _dataOwnerId: Promise<string>
 
     constructor(
         private api: CommonApi,
         private patientMapper: Mapper<DSPatient, Patient>,
-        private additionalFilters: Promise<Filter<Service>>[],
         dataOwnerId?: string,
     ) {
         super()
@@ -155,8 +153,6 @@ class ServiceFilterWithDataOwner<DSPatient> extends SortableFilterBuilder<Servic
 
     async build(): Promise<Filter<Service>> {
         const filters = await this._builderAccumulator.getAndSortFilters()
-
-        filters.push(...(await Promise.all(this.additionalFilters)))
 
         if (filters.some((f) => NoOpFilter.isNoOp(f))) {
             console.warn('Warning: the filter you built cannot be resolved and will return no entity')

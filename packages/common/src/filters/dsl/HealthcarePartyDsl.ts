@@ -30,10 +30,7 @@ interface BaseHealthcarePartyFilterBuilder<F> {
 }
 
 export class HealthcarePartyFilter extends SortableFilterBuilder<HealthcareParty, HealthcarePartyFilterSortStepDecorator> implements BaseHealthcarePartyFilterBuilder<HealthcarePartyFilter>, FilterBuilder<HealthcareParty> {
-    constructor(
-        _: CommonApi,
-        private readonly additionalFilters: Promise<Filter<HealthcareParty>>[],
-    ) {
+    constructor(_: CommonApi) {
         super()
     }
 
@@ -75,8 +72,6 @@ export class HealthcarePartyFilter extends SortableFilterBuilder<HealthcareParty
 
     async build(): Promise<Filter<HealthcareParty>> {
         const filters = await this._builderAccumulator.getAndSortFilters()
-
-        filters.push(...(await Promise.all(this.additionalFilters)))
 
         if (filters.some((f) => NoOpFilter.isNoOp(f))) {
             console.warn('Warning: the filter you built cannot be resolved and will return no entity')

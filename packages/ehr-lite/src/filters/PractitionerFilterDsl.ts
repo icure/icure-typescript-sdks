@@ -4,6 +4,8 @@ export class PractitionerFilter extends HealthcarePartyFilter {
     constructor(api: CommonApi) {
         const hcpDomainTag = domainTypeTag('Practitioner')
 
-        super(api, [new HealthcarePartyFilter(api, []).byLabelCodeFilter(hcpDomainTag.type, hcpDomainTag.code).build()])
+        super(api)
+
+        this.byLabelCodeFilter(hcpDomainTag.type, hcpDomainTag.code)
     }
 }

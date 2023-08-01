@@ -1,12 +1,12 @@
-import { CommonApi, domainTypeTag, ServiceFilter } from '@icure/typescript-common'
+import { CommonApi, domainTypeTag, ServiceFilter, ServiceFilterWithDataOwner } from '@icure/typescript-common'
 import { Patient as PatientDto } from '@icure/api'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
 import { Patient } from '../models/Patient.model'
 
 export class ObservationFilter extends ServiceFilter<Patient> {
-    constructor(api: CommonApi) {
-        const obsDomainTag = domainTypeTag('Observation')
+    private readonly obsDomainTag = domainTypeTag('Observation')
 
+    constructor(api: CommonApi) {
         const patientMapper = {
             toDto(domain: Patient): PatientDto {
                 return mapPatientToPatientDto(domain)
@@ -16,6 +16,14 @@ export class ObservationFilter extends ServiceFilter<Patient> {
             },
         }
 
-        super(api, patientMapper, [new ServiceFilter(api, patientMapper, []).forSelf().byLabelCodeDateFilter(obsDomainTag.type, obsDomainTag.code).build()])
+        super(api, patientMapper)
+    }
+
+    forSelf(): ServiceFilterWithDataOwner<Patient> {
+        return super.forSelf().byLabelCodeDateFilter(this.obsDomainTag.type, this.obsDomainTag.code)
+    }
+
+    forDataOwner(dataOwnerId: string): ServiceFilterWithDataOwner<Patient> {
+        return super.forDataOwner(dataOwnerId).byLabelCodeDateFilter(this.obsDomainTag.type, this.obsDomainTag.code)
     }
 }
