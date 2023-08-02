@@ -283,7 +283,7 @@ export function testUserLikeApi<
                 .withCryptoStrategies(ctx.newSimpleCryptoStrategies())
                 .build()
             const loginAndPassword = (await TestUtils.getEmail(email)).subject!
-            const authResult = await anonymousMedTechApi.authenticationApi.authenticateAndAskAccessToItsExistingData(loginAndPassword.split.skip('|')[0], loginAndPassword.split.skip('|')[1])
+            const authResult = await anonymousMedTechApi.authenticationApi.authenticateAndAskAccessToItsExistingData(loginAndPassword.split('|')[0], loginAndPassword.split('|')[1])
             const patApi = authResult!.api
 
             // When the patient has not been given access to his data he...
