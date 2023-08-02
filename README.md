@@ -5,38 +5,14 @@
     <h1 align="center">iCure EHR-Lite</h1>
 </p>
 
-## Installation
+This is the project where you will find various SDKs and TypeScript tools for iCure.
 
-Use the package manager [yarn](https://yarnpkg.com/getting-started/install) to install `@icure/ehr-lite-sdk`.
+## Packages
 
-```bash
-yarn add @icure/ehr-lite-sdk
-```
-
-or with [npm](https://docs.npmjs.com/getting-started)
-
-```bash
-npm install @icure/ehr-lite-sdk
-```
-
-## Usage example
-
-```typescript
-import { EHRLite, ICURE_CLOUD_URL } from '@icure/ehr-lite-sdk'
-
-const api = await new EHRLite.Builder()
-    .withICureBaseUrl(ICURE_CLOUD_URL)
-    .withCrypto(crypto) // WebCrypto implementation
-    .withMsgGwSpecId(process.env.REACT_APP_EXTERNAL_SERVICES_SPEC_ID!) // External services spec id
-    .withAuthProcessByEmailId(process.env.REACT_APP_EMAIL_AUTHENTICATION_PROCESS_ID!) // Email authentication process id
-    .withStorage(storage) // Custom storage implementation
-    .withUserName(email) // User email
-    .withPassword(token) // User password
-    .withCryptoStrategies(new SimpleCryptoStrategies([]))
-    .build()
-
-const user = await api.userApi.getLogged()
-```
+-   [EHR-Lite](./packages/ehr-lite), Electronic Health Record SDK
+-   [Medtech](./packages/medtech), Medical device SDK
+-   [Common](./packages/common), Common library
+-   [Hephaestus](./packages/hephaestus), project tooling and scripts
 
 ## Contributing
 
