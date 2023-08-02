@@ -1,10 +1,9 @@
-import { CommonApi, CommonFilter, Connection, mapUserDtoToUser, mapUserToUserDto, PaginatedList, User, UserLikeApi, UserLikeApiImpl } from '@icure/typescript-common'
-import { HealthcareParty as HealthcarePartyDto, PaginatedListUser, Patient as PatientDto, User as UserDto } from '@icure/api'
+import { CommonApi, CommonFilter, mapUserDtoToUser, mapUserToUserDto, MessageFactory, PaginatedList, User, UserLikeApi, UserLikeApiImpl } from '@icure/typescript-common'
+import { Connection, HealthcareParty as HealthcarePartyDto, Patient as PatientDto, User as UserDto } from '@icure/api'
 import { Patient } from '../models/Patient.model'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
 import { mapHealthcarePartyToHealthcareProfessional, mapHealthcareProfessionalToHealthcareParty } from '../mappers/HealthcareProfessional.mapper'
 import { HealthcareProfessional } from '../models/HealthcareProfessional.model'
-import { MessageFactory } from '@icure/typescript-common'
 
 export interface UserApi extends UserLikeApi<User, Patient> {
     /**
@@ -96,7 +95,15 @@ export interface UserApi extends UserLikeApi<User, Patient> {
      *    - connectionMaxRetry : how many time retrying to reconnect to the iCure WebSocket;
      *    - connectionRetryIntervalInMs : How long base interval will be between two retry. The retry attempt is exponential and using a random value (connectionRetryIntervalMs * (random between 1 and 2))^nbAttempts)
      */
-    subscribeToUserEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: CommonFilter<UserDto>, eventFired: (user: User) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection>
+    subscribeToUserEvents(
+        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
+        filter: CommonFilter<UserDto>,
+        eventFired: (user: User) => Promise<void>,
+        options?: {
+            connectionMaxRetry?: number
+            connectionRetryIntervalMs?: number
+        },
+    ): Promise<Connection>
 }
 
 /**
@@ -106,33 +113,49 @@ class UserApiImpl extends UserLikeApiImpl<User, Patient, HealthcareProfessional>
     createAndInviteUser(patient: Patient, tokenDuration?: number): Promise<User> {
         return this.createAndInviteFor(patient, tokenDuration)
     }
+
     createOrModifyUser(user: User): Promise<User> {
         return this.createOrModify(user)
     }
+
     deleteUser(userId: string): Promise<string> {
         return this.delete(userId)
     }
+
     filterUsers(filter: CommonFilter<UserDto>, nextUserId?: string, limit?: number): Promise<PaginatedList<User>> {
         return this.filterBy(filter, nextUserId, limit)
     }
+
     getLoggedUser(): Promise<User> {
         return this.getLogged()
     }
+
     getUser(userId: string): Promise<User> {
         return this.get(userId)
     }
+
     getUserByEmail(email: string): Promise<User> {
         return this.getByEmail(email)
     }
+
     matchUsers(filter: CommonFilter<UserDto>): Promise<Array<string>> {
         return this.matchBy(filter)
     }
-    subscribeToUserEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: CommonFilter<UserDto>, eventFired: (user: User) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection> {
+
+    subscribeToUserEvents(
+        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
+        filter: CommonFilter<UserDto>,
+        eventFired: (user: User) => Promise<void>,
+        options?: {
+            connectionMaxRetry?: number
+            connectionRetryIntervalMs?: number
+        },
+    ): Promise<Connection> {
         return this.subscribeToEvents(eventTypes, filter, eventFired, options)
     }
 }
 
-export const userApi = (api: CommonApi, messageFactory: MessageFactory<User, HealthcareProfessional, Patient>) => {
+export const userApi = (api: CommonApi, messageFactory: MessageFactory<User, HealthcareProfessional, Patient>, basePath: string) => {
     return new UserApiImpl(
         {
             toDomain(dto: UserDto): User {
@@ -162,8 +185,10 @@ export const userApi = (api: CommonApi, messageFactory: MessageFactory<User, Hea
         api.sanitizer,
         api.baseApi.userApi,
         api.baseApi.dataOwnerApi,
+        api.baseApi.authApi,
         api,
         messageFactory,
+        basePath,
         api.messageGatewayApi,
     )
 }

@@ -1,5 +1,5 @@
-import { HealthElement, PaginatedListHealthElement, Patient as PatientDto } from '@icure/api'
-import { CommonApi, CommonFilter, Connection, HealthElementLikeApi, HealthElementLikeApiImpl, PaginatedList } from '@icure/typescript-common'
+import { Connection, HealthElement, Patient as PatientDto } from '@icure/api'
+import { CommonApi, CommonFilter, HealthElementLikeApi, HealthElementLikeApiImpl, PaginatedList } from '@icure/typescript-common'
 import { mapHealthcareElementToHealthElement, mapHealthElementToHealthcareElement } from '../mappers/HealthcareElement.mapper'
 import { Patient } from '../models/Patient.model'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
@@ -118,24 +118,31 @@ class HealthcareElementApiImpl extends HealthElementLikeApiImpl<HealthcareElemen
     createOrModifyHealthcareElement(healthcareElement: HealthcareElement, patientId?: string): Promise<HealthcareElement> {
         return this.createOrModify(healthcareElement, patientId)
     }
+
     createOrModifyHealthcareElements(healthcareElements: Array<HealthcareElement>, patientId?: string): Promise<Array<HealthcareElement>> {
         return this.createOrModifyMany(healthcareElements, patientId)
     }
+
     deleteHealthcareElement(id: string): Promise<string> {
         return this.delete(id)
     }
+
     filterHealthcareElement(filter: CommonFilter<HealthElement>, nextHealthElementId?: string, limit?: number): Promise<PaginatedList<HealthcareElement>> {
         return this.filterBy(filter, nextHealthElementId, limit)
     }
+
     getHealthcareElement(id: string): Promise<HealthcareElement> {
         return this.get(id)
     }
+
     matchHealthcareElement(filter: CommonFilter<HealthElement>): Promise<Array<string>> {
         return this.matchBy(filter)
     }
+
     getHealthcareElementsForPatient(patient: Patient): Promise<Array<HealthcareElement>> {
         return this.getAllForPatient(patient)
     }
+
     subscribeToHealthcareElementEvents(
         eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
         filter: CommonFilter<HealthElement>,
@@ -146,7 +153,7 @@ class HealthcareElementApiImpl extends HealthElementLikeApiImpl<HealthcareElemen
     }
 }
 
-export const healthcareElementApi = (api: CommonApi): HealthcareElementApi => {
+export const healthcareElementApi = (api: CommonApi, basePath: string): HealthcareElementApi => {
     return new HealthcareElementApiImpl(
         {
             toDomain(dto: HealthElement): HealthcareElement {
@@ -170,6 +177,8 @@ export const healthcareElementApi = (api: CommonApi): HealthcareElementApi => {
         api.baseApi.patientApi,
         api.baseApi.dataOwnerApi,
         api.baseApi.cryptoApi,
+        api.baseApi.authApi,
+        basePath,
         api,
     )
 }

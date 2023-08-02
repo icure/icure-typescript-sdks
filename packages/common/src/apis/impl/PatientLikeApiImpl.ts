@@ -1,15 +1,15 @@
-import { Filter } from '../../filters/Filter'
 import { PaginatedList } from '../../models/PaginatedList.model'
 import { SharingResult, SharingStatus } from '../../utils/interfaces'
-import { Connection } from '../../models/Connection.model'
 import { PatientLikeApi } from '../PatientLikeApi'
-import { FilterChainPatient, IccPatientXApi, IccUserXApi, PaginatedListPatient, Patient as PatientDto } from '@icure/api'
+import { Connection, ConnectionImpl, FilterChainPatient, IccAuthApi, IccPatientXApi, IccUserXApi, Patient as PatientDto, subscribeToEntityEvents } from '@icure/api'
 import { ErrorHandler } from '../../services/ErrorHandler'
 import { Mapper } from '../Mapper'
 import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
-import { NoOpFilter } from '../../filters/dsl/filterDsl'
+import { NoOpFilter } from '../../filters/dsl'
 import { FilterMapper } from '../../mappers/Filter.mapper'
 import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
+import { iccRestApiPath } from '@icure/api/icc-api/api/IccRestApiPath'
+import { CommonFilter } from '../../filters/filters'
 
 export class PatientLikeApiImpl<DSPatient> implements PatientLikeApi<DSPatient> {
     constructor(
@@ -18,32 +18,12 @@ export class PatientLikeApiImpl<DSPatient> implements PatientLikeApi<DSPatient> 
         private readonly patientApi: IccPatientXApi,
         private readonly userApi: IccUserXApi,
         private readonly dataOwnerApi: IccDataOwnerXApi,
+        private readonly authApi: IccAuthApi,
+        private readonly basePath: string,
     ) {}
 
     async createOrModify(patient: DSPatient): Promise<DSPatient> {
         return this.mapper.toDomain(await this._createOrModifyPatient(patient))
-    }
-
-    private async _createOrModifyPatient(patient: DSPatient): Promise<PatientDto> {
-        const currentUser = await this.userApi.getCurrentUser().catch((e) => {
-            throw this.errorHandler.createErrorFromAny(e)
-        })
-
-        const patientDto = this.mapper.toDto(patient)
-
-        const createdOrUpdatedPatient = patientDto.rev
-            ? await this.patientApi.modifyPatientWithUser(currentUser, patientDto).catch((e) => {
-                  throw this.errorHandler.createErrorFromAny(e)
-              })
-            : await this.patientApi.createPatientWithUser(currentUser, await this.patientApi.newInstance(currentUser, patientDto)).catch((e) => {
-                  throw this.errorHandler.createErrorFromAny(e)
-              })
-
-        if (createdOrUpdatedPatient) {
-            return createdOrUpdatedPatient
-        }
-
-        throw this.errorHandler.createErrorWithMessage(`Could not create / modify patient ${patientDto.id} with user ${currentUser.id}`)
     }
 
     async delete(patientId: string): Promise<string> {
@@ -62,7 +42,7 @@ export class PatientLikeApiImpl<DSPatient> implements PatientLikeApi<DSPatient> 
         throw this.errorHandler.createErrorWithMessage(`Could not delete patient ${patientId}`)
     }
 
-    async filterBy(filter: Filter<DSPatient>, nextPatientId?: string, limit?: number): Promise<PaginatedList<DSPatient>> {
+    async filterBy(filter: CommonFilter<PatientDto>, nextPatientId?: string, limit?: number): Promise<PaginatedList<DSPatient>> {
         if (NoOpFilter.isNoOp(filter)) {
             return PaginatedList.empty()
         } else {
@@ -95,38 +75,8 @@ export class PatientLikeApiImpl<DSPatient> implements PatientLikeApi<DSPatient> 
         return await this._getPatient(id, false)
     }
 
-    private async _getPatient(
-        patientId: string,
-        requireDecrypted: boolean,
-    ): Promise<{
-        patient: DSPatient
-        decrypted: boolean
-    }> {
-        const currentUser = await this.userApi.getCurrentUser().catch((e) => {
-            throw this.errorHandler.createErrorFromAny(e)
-        })
-        const foundPatient = await this.patientApi.getPotentiallyEncryptedPatientWithUser(currentUser, patientId).catch((e) => {
-            throw this.errorHandler.createErrorFromAny(e)
-        })
-
-        if (foundPatient) {
-            if (!foundPatient.decrypted && requireDecrypted) {
-                throw this.errorHandler.createErrorWithMessage(`Could not decrypt patient ${patientId} with current user ${currentUser.id}`)
-            }
-
-            return { patient: this.mapper.toDomain(foundPatient.patient)!, decrypted: foundPatient.decrypted }
-        }
-
-        throw this.errorHandler.createErrorWithMessage(`Could not find patient ${patientId} with current user ${currentUser.id}`)
-    }
-
     async giveAccessTo(patient: DSPatient, delegatedTo: string): Promise<DSPatient> {
         return this.mapper.toDomain(await this._giveAccessTo(this.mapper.toDto(patient)!, delegatedTo))!
-    }
-
-    private async _giveAccessTo(patient: PatientDto, delegatedTo: string): Promise<PatientDto> {
-        const secretIds = await this.patientApi.decryptSecretIdsOf(patient)
-        return this.patientApi.shareWith(delegatedTo, patient, secretIds)
     }
 
     async giveAccessToAllDataOf(patientId: string): Promise<SharingResult<DSPatient>> {
@@ -156,7 +106,7 @@ export class PatientLikeApiImpl<DSPatient> implements PatientLikeApi<DSPatient> 
             })
     }
 
-    matchBy(filter: Filter<PatientDto>): Promise<Array<string>> {
+    matchBy(filter: CommonFilter<PatientDto>): Promise<Array<string>> {
         if (NoOpFilter.isNoOp(filter)) {
             return Promise.resolve([])
         } else {
@@ -166,15 +116,78 @@ export class PatientLikeApiImpl<DSPatient> implements PatientLikeApi<DSPatient> 
         }
     }
 
-    subscribeToEvents(
+    async subscribeToEvents(
         eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
-        filter: Filter<DSPatient>,
+        filter: CommonFilter<PatientDto>,
         eventFired: (patient: DSPatient) => Promise<void>,
         options?: {
             connectionMaxRetry?: number
             connectionRetryIntervalMs?: number
         },
     ): Promise<Connection> {
-        throw 'TODO'
+        const currentUser = await this.userApi.getCurrentUser()
+
+        return subscribeToEntityEvents(
+            iccRestApiPath(this.basePath),
+            this.authApi,
+            'Patient',
+            eventTypes,
+            FilterMapper.toAbstractFilterDto(filter, 'Patient'),
+            (event) => eventFired(this.mapper.toDomain(event)),
+            options ?? {},
+            async (encrypted) => (await this.patientApi.decrypt(currentUser, [encrypted]))[0],
+        ).then((ws) => new ConnectionImpl(ws))
+    }
+
+    private async _createOrModifyPatient(patient: DSPatient): Promise<PatientDto> {
+        const currentUser = await this.userApi.getCurrentUser().catch((e) => {
+            throw this.errorHandler.createErrorFromAny(e)
+        })
+
+        const patientDto = this.mapper.toDto(patient)
+
+        const createdOrUpdatedPatient = patientDto.rev
+            ? await this.patientApi.modifyPatientWithUser(currentUser, patientDto).catch((e) => {
+                  throw this.errorHandler.createErrorFromAny(e)
+              })
+            : await this.patientApi.createPatientWithUser(currentUser, await this.patientApi.newInstance(currentUser, patientDto)).catch((e) => {
+                  throw this.errorHandler.createErrorFromAny(e)
+              })
+
+        if (createdOrUpdatedPatient) {
+            return createdOrUpdatedPatient
+        }
+
+        throw this.errorHandler.createErrorWithMessage(`Could not create / modify patient ${patientDto.id} with user ${currentUser.id}`)
+    }
+
+    private async _getPatient(
+        patientId: string,
+        requireDecrypted: boolean,
+    ): Promise<{
+        patient: DSPatient
+        decrypted: boolean
+    }> {
+        const currentUser = await this.userApi.getCurrentUser().catch((e) => {
+            throw this.errorHandler.createErrorFromAny(e)
+        })
+        const foundPatient = await this.patientApi.getPotentiallyEncryptedPatientWithUser(currentUser, patientId).catch((e) => {
+            throw this.errorHandler.createErrorFromAny(e)
+        })
+
+        if (foundPatient) {
+            if (!foundPatient.decrypted && requireDecrypted) {
+                throw this.errorHandler.createErrorWithMessage(`Could not decrypt patient ${patientId} with current user ${currentUser.id}`)
+            }
+
+            return { patient: this.mapper.toDomain(foundPatient.patient)!, decrypted: foundPatient.decrypted }
+        }
+
+        throw this.errorHandler.createErrorWithMessage(`Could not find patient ${patientId} with current user ${currentUser.id}`)
+    }
+
+    private async _giveAccessTo(patient: PatientDto, delegatedTo: string): Promise<PatientDto> {
+        const secretIds = await this.patientApi.decryptSecretIdsOf(patient)
+        return this.patientApi.shareWith(delegatedTo, patient, secretIds)
     }
 }

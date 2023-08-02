@@ -6,7 +6,7 @@ import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patie
 export interface PatientApi extends PatientLikeApi<Patient> {}
 class PatientApiImpl extends PatientLikeApiImpl<Patient> {}
 
-export const patientApi = (api: CommonApi): PatientApi =>
+export const patientApi = (api: CommonApi, basePath: string): PatientApi =>
     new PatientApiImpl(
         {
             toDomain(dto: PatientDto): Patient {
@@ -20,4 +20,6 @@ export const patientApi = (api: CommonApi): PatientApi =>
         api.baseApi.patientApi,
         api.baseApi.userApi,
         api.baseApi.dataOwnerApi,
+        api.baseApi.authApi,
+        basePath,
     )

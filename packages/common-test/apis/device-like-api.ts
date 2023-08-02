@@ -1,16 +1,17 @@
-import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, forceUuid } from '@icure/typescript-common'
-import { BaseApiTestContext, WithDataOwnerApi, WithDeviceApi, WithHcpApi, WithPatientApi } from './TestContexts'
+import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, DeviceFilter, forceUuid } from '@icure/typescript-common'
+import { BaseApiTestContext, WithDeviceApi } from './TestContexts'
 import { getEnvironmentInitializer, hcp1Username, setLocalStorage } from '../test-utils'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
-import { Device } from '@icure/api'
+import { Device, sleep } from '@icure/api'
 import 'isomorphic-fetch'
+import { doXOnYAndSubscribe } from '../websocket-utils'
 
 setLocalStorage(fetch)
 
 export function testDeviceLikeApi<DSAnonymousApiBuilder extends AnonymousApiBuilder<DSCryptoStrategies, DSAnonymousApi>, DSAnonymousApi extends CommonAnonymousApi<DSApi>, DSApi extends CommonApi, DSCryptoStrategies extends CryptoStrategies<any>, DSUser, DSDevice>(
     ctx: BaseApiTestContext<DSAnonymousApiBuilder, DSAnonymousApi, DSApi, DSCryptoStrategies, DSUser, any> & WithDeviceApi<DSApi, DSDevice>,
 ) {
-    describe('Hcp-like API', () => {
+    describe('Device-like API', () => {
         let env: TestVars
 
         beforeAll(async () => {
@@ -78,5 +79,72 @@ export function testDeviceLikeApi<DSAnonymousApiBuilder extends AnonymousApiBuil
             expect(updatedMedicalDeviceDto.created).toEqual(createdMedicalDeviceDto.created)
             expect(updatedMedicalDeviceDto.modified).toBeGreaterThan(createdMedicalDeviceDto.modified)
         })
+
+        const subscribeAndCreateDevice = async (options: {}, eventTypes: ('CREATE' | 'DELETE' | 'UPDATE')[]) => {
+            const apiAndUser = await ctx.apiForEnvUser(env, hcp1Username)
+            const api = apiAndUser.api
+            const user = apiAndUser.user
+
+            const connectionPromise = async (options: {}, dataOwnerId: string, eventListener: (patient: Device) => Promise<void>) => {
+                await sleep(2000)
+                return ctx.deviceApi(api).subscribeToEvents(eventTypes, await new DeviceFilter(api).build(), eventListener, options)
+            }
+
+            const events: Device[] = []
+            const statuses: string[] = []
+
+            let eventReceivedPromiseResolve!: (value: void | PromiseLike<void>) => void
+            let eventReceivedPromiseReject!: (reason?: any) => void
+            const eventReceivedPromise = new Promise<void>((res, rej) => {
+                eventReceivedPromiseResolve = res
+                eventReceivedPromiseReject = rej
+            })
+
+            await doXOnYAndSubscribe(
+                api!!,
+                options,
+                connectionPromise(options, user.healthcarePartyId!, async (patient) => {
+                    events.push(patient)
+                    eventReceivedPromiseResolve()
+                }),
+                async () => {
+                    await ctx.deviceApi(api).createOrModify(
+                        ctx.toDSDevice(
+                            new Device({
+                                serialNumber: '123456789',
+                                name: 'What-If Machine',
+                                brand: 'Farnsworth',
+                                model: '2ACV16',
+                            }),
+                        ),
+                    )
+                },
+                (status) => {
+                    statuses.push(status)
+                },
+                eventReceivedPromiseReject,
+                eventReceivedPromise,
+            )
+
+            events?.forEach((event) => console.log(`Event : ${event}`))
+            statuses?.forEach((status) => console.log(`Status : ${status}`))
+
+            expect(events.length).toEqual(1)
+            expect(statuses.length).toEqual(2)
+        }
+
+        it('Can subscribe to DeviceLike - CREATE without option', async () => {
+            await subscribeAndCreateDevice({}, ['CREATE'])
+        }, 60_000)
+
+        it('Can subscribe to DeviceLike - CREATE with options', async () => {
+            await subscribeAndCreateDevice(
+                {
+                    connectionRetryIntervalMs: 10_000,
+                    connectionMaxRetry: 5,
+                },
+                ['CREATE'],
+            )
+        }, 60_000)
     })
 }

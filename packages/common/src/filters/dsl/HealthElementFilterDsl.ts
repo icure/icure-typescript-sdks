@@ -1,8 +1,8 @@
-import { HealthElement, Identifier as IdentifierDto, IntersectionFilter, Patient } from '@icure/api'
+import { HealthElement, Identifier as IdentifierDto, IntersectionFilter, Patient, Service } from '@icure/api'
 import { Filter } from '../Filter'
 import { DataOwnerFilterBuilder, FilterBuilder, NoOpFilter, SortableFilterBuilder } from './filterDsl'
 import { CommonApi } from '../../apis/CommonApi'
-import { HealthElementByHealthcarePartyFilter } from '../healthelement'
+import { HealthElementByHealthcarePartyFilter, HealthElementByHealthcarePartyTagCodeFilter } from '../healthelement'
 import { Mapper } from '../../apis/Mapper'
 import { Identifier } from '../../models/Identifier.model'
 import { mapIdentifierToIdentifierDto } from '../../mappers/Identifier.mapper'
@@ -95,15 +95,18 @@ export class HealthElementFilterWithDataOwner<DSPatient> extends SortableFilterB
         if (!labelType && !labelCode && !codeType && !codeCode) {
             throw Error('To instantiate the filter, you must specify at least one of these parameters: labelType, labelCode, codeType, or codeCode')
         }
-        this._builderAccumulator.addFilter(
-            Promise.resolve({
+
+        const filter = this._dataOwnerId.then((id) => {
+            return {
+                healthcarePartyId: id,
                 tagType: labelType,
                 tagCode: labelCode,
                 codeType,
                 codeCode,
-                $type: 'HealthElementByHealthcarePartyLabelCodeFilter',
-            }),
-        )
+                $type: 'HealthElementByHealthcarePartyTagCodeFilter',
+            } satisfies HealthElementByHealthcarePartyTagCodeFilter
+        })
+        this._builderAccumulator.addFilter(filter)
         return this
     }
 

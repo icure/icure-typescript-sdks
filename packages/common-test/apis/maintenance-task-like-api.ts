@@ -1,13 +1,12 @@
 import 'isomorphic-fetch'
 import { getEnvironmentInitializer, hcp1Username, hcp2Username, hcp3Username, patUsername, setLocalStorage, TestUtils } from '../test-utils'
-import { webcrypto } from 'crypto'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
-import { TestKeyStorage, TestStorage, testStorageForUser } from '../test-storage'
 import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, forceUuid, MaintenanceTaskLikeApiImpl, NotificationTypeEnum } from '@icure/typescript-common'
 import { assert } from 'chai'
 import { BaseApiTestContext, WithAuthenticationApi, WithDataOwnerApi, WithHcpApi, WithMaintenanceTaskApi, WithPatientApi, WithServiceApi } from './TestContexts'
 import { expectArrayContainsExactlyInAnyOrder } from '../assertions'
 import { MaintenanceTask, User } from '@icure/api'
+import { doXOnYAndSubscribe } from '../websocket-utils'
 
 setLocalStorage(fetch)
 
@@ -318,11 +317,67 @@ export function testMaintenanceTaskLikeApi<
             expect(ctx.toMtDto(updatedNotification).status).toEqual('completed')
         })
 
-        // it('close all pending notifications', async() => {
-        //   const notifications = await ctx.mtApi(hcp1Api).getPendingNotifications()
-        //   expect(notifications.length).to.gt(0);
-        //
-        //   console.log(notifications.map((notif) => notif.id).join(","))
-        // }).timeout(600000);
+        const subscribeAndCreateMaintenanceTask = async (options: {}, eventTypes: ('CREATE' | 'DELETE' | 'UPDATE')[]) => {
+            const { api, user } = await ctx.apiForEnvUser(env, hcp1Username)
+
+            const connectionPromise = async (options: {}, dataOwnerId: string, eventListener: (notification: MaintenanceTask) => Promise<void>) =>
+                ctx.mtApi(api).subscribeToEvents(eventTypes, await ctx.newMtFilter(api).forSelf().withType(MaintenanceTask.TaskTypeEnum.KeyPairUpdate).build(), eventListener, options)
+
+            const events: MaintenanceTask[] = []
+            const statuses: string[] = []
+
+            let eventReceivedPromiseResolve!: (value: void | PromiseLike<void>) => void
+            let eventReceivedPromiseReject!: (reason?: any) => void
+            const eventReceivedPromise = new Promise<void>((res, rej) => {
+                eventReceivedPromiseResolve = res
+                eventReceivedPromiseReject = rej
+            })
+            await doXOnYAndSubscribe(
+                api!!,
+                options,
+                connectionPromise({}, user.healthcarePartyId!, async (notification) => {
+                    events.push(notification)
+                    eventReceivedPromiseResolve()
+                }),
+                async () => {
+                    const createdMaintenanceTask = await ctx.mtApi(hcp2Api).createOrModify(
+                        ctx.toDSMt(
+                            new MaintenanceTask({
+                                taskType: NotificationTypeEnum.KEY_PAIR_UPDATE,
+                                status: 'pending',
+                            }),
+                        ),
+                        hcp1User?.healthcarePartyId!,
+                    )
+                    assert(!!createdMaintenanceTask)
+                    return createdMaintenanceTask
+                },
+                (status) => {
+                    statuses.push(status)
+                },
+                eventReceivedPromiseReject,
+                eventReceivedPromise,
+            )
+
+            events?.forEach((event) => console.log(`Event : ${event}`))
+            statuses?.forEach((status) => console.log(`Status : ${status}`))
+
+            expect(events.length).toEqual(1)
+            expect(statuses.length).toEqual(2)
+        }
+
+        it('Can subscribe MaintenanceTaskLike CREATE without options', async () => {
+            await subscribeAndCreateMaintenanceTask({}, ['CREATE'])
+        }, 60_000)
+
+        it('Can subscribe MaintenanceTaskLike CREATE with options', async () => {
+            await subscribeAndCreateMaintenanceTask(
+                {
+                    connectionRetryIntervalMs: 10_000,
+                    connectionMaxRetry: 5,
+                },
+                ['CREATE'],
+            )
+        }, 60_000)
     })
 }

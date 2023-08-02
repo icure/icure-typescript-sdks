@@ -1,19 +1,17 @@
-import { Filter } from '../../filters/Filter'
 import { PaginatedList } from '../../models/PaginatedList.model'
-import { Connection } from '../../models/Connection.model'
-import { FilterChainMaintenanceTask, IccUserXApi, MaintenanceTask, PaginatedListMaintenanceTask, User } from '@icure/api'
+import { Connection, ConnectionImpl, FilterChainMaintenanceTask, IccAuthApi, IccUserXApi, MaintenanceTask, subscribeToEntityEvents, User } from '@icure/api'
 import { MaintenanceTaskLikeApi } from '../MaintenanceTaskLikeApi'
 import { Mapper } from '../Mapper'
 import { ErrorHandler } from '../../services/ErrorHandler'
 import { IccMaintenanceTaskXApi } from '@icure/api/icc-x-api/icc-maintenance-task-x-api'
 import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
-import { NoOpFilter } from '../../filters/dsl/filterDsl'
+import { MaintenanceTaskFilter, NoOpFilter } from '../../filters/dsl'
 import { FilterMapper } from '../../mappers/Filter.mapper'
-import { MaintenanceTaskFilter } from '../../filters/dsl/MaintenanceTaskFilterDsl'
 import { CommonApi } from '../CommonApi'
 import { AccessLevelEnum } from '../../models/enums/AccessLevel.enum'
 import { CommonFilter } from '../../filters/filters'
 import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
+import { iccRestApiPath } from '@icure/api/icc-api/api/IccRestApiPath'
 
 export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements MaintenanceTaskLikeApi<DSMaintenanceTask> {
     constructor(
@@ -22,23 +20,13 @@ export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements Maintenanc
         private readonly maintenanceTaskApi: IccMaintenanceTaskXApi,
         private readonly userApi: IccUserXApi,
         private readonly dataOwnerApi: IccDataOwnerXApi,
+        private readonly authApi: IccAuthApi,
         private readonly api: CommonApi,
+        private readonly basePath: string,
     ) {}
 
     async createOrModify(maintenanceTask: DSMaintenanceTask, delegate?: string): Promise<DSMaintenanceTask | undefined> {
         return this.mapper.toDomain(await this._createOrModify(this.mapper.toDto(maintenanceTask), delegate))
-    }
-
-    private async _createOrModify(maintenanceTask: MaintenanceTask, delegate?: string): Promise<MaintenanceTask> {
-        return this.userApi
-            .getCurrentUser()
-            .then((user) => {
-                if (!user) throw this.errorHandler.createErrorWithMessage('There is no user currently logged in. You must call this method from an authenticated MedTechApi')
-                return !maintenanceTask?.rev ? this._createNotification(maintenanceTask, user, delegate) : this._updateNotification(maintenanceTask, user)
-            })
-            .catch((e) => {
-                throw this.errorHandler.createErrorFromAny(e)
-            })
     }
 
     delete(id: string): Promise<string> {
@@ -57,7 +45,7 @@ export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements Maintenanc
             })
     }
 
-    async filterBy(filter: Filter<MaintenanceTask>, nextMaintenanceTaskId?: string, limit?: number): Promise<PaginatedList<DSMaintenanceTask>> {
+    async filterBy(filter: CommonFilter<MaintenanceTask>, nextMaintenanceTaskId?: string, limit?: number): Promise<PaginatedList<DSMaintenanceTask>> {
         if (NoOpFilter.isNoOp(filter)) {
             return PaginatedList.empty()
         } else {
@@ -112,12 +100,12 @@ export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements Maintenanc
         return (await this.concatenateFilterResults(filter)).filter((it) => this.mapper.toDto(it).status === 'pending')
     }
 
-    async concatenateFilterResults(filter: Filter<Notification>, nextId?: string | undefined, limit?: number | undefined, accumulator: Array<DSMaintenanceTask> = []): Promise<Array<DSMaintenanceTask>> {
+    async concatenateFilterResults(filter: CommonFilter<MaintenanceTask>, nextId?: string | undefined, limit?: number | undefined, accumulator: Array<DSMaintenanceTask> = []): Promise<Array<DSMaintenanceTask>> {
         const paginatedNotifications = await this.filterBy(filter, nextId, limit)
         return !paginatedNotifications.nextKeyPair?.startKeyDocId ? accumulator.concat(paginatedNotifications.rows ?? []) : this.concatenateFilterResults(filter, paginatedNotifications.nextKeyPair.startKeyDocId, limit, accumulator.concat(paginatedNotifications.rows ?? []))
     }
 
-    subscribeToEvents(
+    async subscribeToEvents(
         eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
         filter: CommonFilter<MaintenanceTask>,
         eventFired: (dataSample: DSMaintenanceTask) => Promise<void>,
@@ -126,12 +114,35 @@ export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements Maintenanc
             connectionRetryIntervalMs?: number
         },
     ): Promise<Connection> {
-        throw 'TODO'
+        const currentUser = await this.userApi.getCurrentUser()
+
+        return subscribeToEntityEvents(
+            iccRestApiPath(this.basePath),
+            this.authApi,
+            'MaintenanceTask',
+            eventTypes,
+            FilterMapper.toAbstractFilterDto(filter, 'MaintenanceTask'),
+            (event) => eventFired(this.mapper.toDomain(event)),
+            options ?? {},
+            async (encrypted) => (await this.maintenanceTaskApi.decrypt(currentUser, [encrypted]))[0],
+        ).then((ws) => new ConnectionImpl(ws))
     }
 
     async updateStatus(maintenanceTask: DSMaintenanceTask, newStatus: MaintenanceTask.StatusEnum): Promise<DSMaintenanceTask> {
         const mapped = this.mapper.toDto(maintenanceTask)
         return this.mapper.toDomain(await this._createOrModify({ ...mapped, status: newStatus }))
+    }
+
+    private async _createOrModify(maintenanceTask: MaintenanceTask, delegate?: string): Promise<MaintenanceTask> {
+        return this.userApi
+            .getCurrentUser()
+            .then((user) => {
+                if (!user) throw this.errorHandler.createErrorWithMessage('There is no user currently logged in. You must call this method from an authenticated MedTechApi')
+                return !maintenanceTask?.rev ? this._createNotification(maintenanceTask, user, delegate) : this._updateNotification(maintenanceTask, user)
+            })
+            .catch((e) => {
+                throw this.errorHandler.createErrorFromAny(e)
+            })
     }
 
     private async _updateNotification(maintenanceTask: MaintenanceTask, user: User): Promise<any> {

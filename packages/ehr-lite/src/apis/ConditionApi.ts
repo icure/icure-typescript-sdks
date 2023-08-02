@@ -8,7 +8,7 @@ import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patie
 export interface ConditionApi extends HealthElementLikeApi<Condition, Patient> {}
 class ConditionApiImpl extends HealthElementLikeApiImpl<Condition, Patient> {}
 
-export const conditionApi = (api: CommonApi): ConditionApi =>
+export const conditionApi = (api: CommonApi, basePath: string): ConditionApi =>
     new ConditionApiImpl(
         {
             toDomain(dto: HealthElement): Condition {
@@ -32,5 +32,7 @@ export const conditionApi = (api: CommonApi): ConditionApi =>
         api.baseApi.patientApi,
         api.baseApi.dataOwnerApi,
         api.baseApi.cryptoApi,
+        api.baseApi.authApi,
+        basePath,
         api,
     )

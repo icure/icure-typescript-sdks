@@ -1,7 +1,6 @@
-import { Filter } from '../filters/Filter'
-import { Connection } from '../models/Connection.model'
-import { MaintenanceTask } from '@icure/api'
+import { Connection, MaintenanceTask } from '@icure/api'
 import { PaginatedList } from '../models/PaginatedList.model'
+import { CommonFilter } from '../filters/filters'
 
 /**
  * The MaintenanceTaskApi interface provides methods to subscribe to notifications.
@@ -30,7 +29,7 @@ export interface MaintenanceTaskLikeApi<DSMaintenanceTask> {
      * @param limit The number of patients to return in the queried page
      * @return a Promise containing the PaginatedList of MaintenanceTask objects
      */
-    filterBy(filter: Filter<MaintenanceTask>, nextMaintenanceTaskId?: string, limit?: number): Promise<PaginatedList<DSMaintenanceTask>>
+    filterBy(filter: CommonFilter<MaintenanceTask>, nextMaintenanceTaskId?: string, limit?: number): Promise<PaginatedList<DSMaintenanceTask>>
 
     /**
      * This method returns a Promise containing the MaintenanceTask with the specified id.
@@ -66,5 +65,5 @@ export interface MaintenanceTaskLikeApi<DSMaintenanceTask> {
      *    - connectionMaxRetry : how many time retrying to reconnect to the iCure WebSocket;
      *    - connectionRetryIntervalInMs : How long base interval will be between two retry. The retry attempt is exponential and using a random value (connectionRetryIntervalMs * (random between 1 and 2))^nbAttempts)
      */
-    subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: Filter<MaintenanceTask>, eventFired: (dataSample: DSMaintenanceTask) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection>
+    subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: CommonFilter<MaintenanceTask>, eventFired: (dataSample: DSMaintenanceTask) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection>
 }

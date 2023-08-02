@@ -2,9 +2,12 @@ import 'isomorphic-fetch'
 import { getEnvironmentInitializer, getTempEmail, hcp1Username, hcp2Username, hcp3Username, setLocalStorage, TestUtils } from '../test-utils'
 import { webcrypto } from 'crypto'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
-import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, MessageFactory, NotificationTypeEnum } from '@icure/typescript-common'
+import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, MessageFactory, NotificationTypeEnum, UserFilter } from '@icure/typescript-common'
 import { BaseApiTestContext, WithDataOwnerApi, WithHcpApi, WithHelementApi, WithMaintenanceTaskApi, WithPatientApi, WithServiceApi } from './TestContexts'
 import { Patient, sleep, User } from '@icure/api'
+import { assert } from 'chai'
+import { doXOnYAndSubscribe } from '../websocket-utils'
+import { v4 } from 'uuid'
 setLocalStorage(fetch)
 
 export function testUserLikeApi<
@@ -356,5 +359,71 @@ export function testUserLikeApi<
             expect(patientFound2).toContain(heByPatientId)
             expect(patientFound2).toContain(heByHcpId)
         })
+
+        const subscribeAndCreateUser = async (options: {}, eventTypes: ('CREATE' | 'DELETE' | 'UPDATE')[]) => {
+            const { api, user } = await ctx.apiForEnvUser(env, hcp1Username)
+
+            const connectionPromise = async (options: {}, dataOwnerId: string, eventListener: (user: User) => Promise<void>) => {
+                await sleep(2000)
+                return ctx.userApi(api).subscribeToEvents(eventTypes, await new UserFilter(api).build(), eventListener, options)
+            }
+
+            await sleep(2000)
+            await sleep(2000)
+
+            const events: User[] = []
+            const statuses: string[] = []
+
+            let eventReceivedPromiseResolve!: (value: void | PromiseLike<void>) => void
+            let eventReceivedPromiseReject!: (reason?: any) => void
+            const eventReceivedPromise = new Promise<void>((res, rej) => {
+                eventReceivedPromiseResolve = res
+                eventReceivedPromiseReject = rej
+            })
+
+            await doXOnYAndSubscribe(
+                api!!,
+                options,
+                connectionPromise(options, user.healthcarePartyId!, async (user) => {
+                    events.push(user)
+                    eventReceivedPromiseResolve()
+                }),
+                async () => {
+                    const user = await ctx.userApi(api).createOrModify(
+                        ctx.toDSUser(
+                            new User({
+                                login: `${v4()}`,
+                                status: 'ACTIVE',
+                            }),
+                        ),
+                    )
+                },
+                (status) => {
+                    statuses.push(status)
+                },
+                eventReceivedPromiseReject,
+                eventReceivedPromise,
+            )
+
+            events?.forEach((event) => console.log(`Event : ${event}`))
+            statuses?.forEach((status) => console.log(`Status : ${status}`))
+
+            expect(events.length).toEqual(1)
+            expect(statuses.length).toEqual(2)
+        }
+
+        it('CREATE User without options', async () => {
+            await subscribeAndCreateUser({}, ['CREATE'])
+        }, 60_000)
+
+        it('CREATE User with options', async () => {
+            await subscribeAndCreateUser(
+                {
+                    connectionRetryIntervalMs: 10_000,
+                    connectionMaxRetry: 5,
+                },
+                ['CREATE'],
+            )
+        }, 60_000)
     })
 }

@@ -21,7 +21,6 @@ export {
     PropertyType,
     Coding,
     Document,
-    Connection,
     PaginatedList,
     SystemMetaDataOwnerEncrypted,
     CodingReference,

@@ -1,5 +1,5 @@
 import { CommonApi, CommonFilter, DeviceLikeApi, DeviceLikeApiImpl, PaginatedList } from '@icure/typescript-common'
-import { Device, PaginatedListDevice } from '@icure/api'
+import { Device } from '@icure/api'
 import { MedicalDevice } from '../models/MedicalDevice.model'
 import { mapDeviceToMedicalDevice, mapMedicalDeviceToDevice } from '../mappers/MedicalDevice.mapper'
 
@@ -94,7 +94,7 @@ class MedicalDeviceApiImpl extends DeviceLikeApiImpl<MedicalDevice> implements M
     }
 }
 
-export const medicalDeviceApi = (api: CommonApi): MedicalDeviceApi => {
+export const medicalDeviceApi = (api: CommonApi, basePath: string): MedicalDeviceApi => {
     return new MedicalDeviceApiImpl(
         {
             toDomain(dto: Device): MedicalDevice {
@@ -106,5 +106,7 @@ export const medicalDeviceApi = (api: CommonApi): MedicalDeviceApi => {
         },
         api.errorHandler,
         api.baseApi.deviceApi,
+        api.baseApi.authApi,
+        basePath,
     )
 }

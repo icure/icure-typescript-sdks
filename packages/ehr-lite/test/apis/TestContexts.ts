@@ -149,6 +149,8 @@ export function PatientApiAware<TBase extends Constructor<any>>(Base: TBase): TB
                             family: 'Doenatello',
                         }),
                     ],
+                    firstName: 'Johnjoe',
+                    lastName: 'Doenatello',
                     notes: [annotation1(), annotation2()],
                 }),
             )

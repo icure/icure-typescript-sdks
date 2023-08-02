@@ -62,7 +62,7 @@ export class ServiceFilter<DSPatient> implements DataOwnerFilterBuilder<Service,
     }
 }
 
-class ServiceFilterWithDataOwner<DSPatient> extends SortableFilterBuilder<Service, ServiceFilterSortStepDecorator<DSPatient>> implements BaseServiceFilterBuilder<ServiceFilterWithDataOwner<DSPatient>, DSPatient>, FilterBuilder<Service> {
+export class ServiceFilterWithDataOwner<DSPatient> extends SortableFilterBuilder<Service, ServiceFilterSortStepDecorator<DSPatient>> implements BaseServiceFilterBuilder<ServiceFilterWithDataOwner<DSPatient>, DSPatient>, FilterBuilder<Service> {
     _dataOwnerId: Promise<string>
 
     constructor(

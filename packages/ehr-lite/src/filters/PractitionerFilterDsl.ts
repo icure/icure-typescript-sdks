@@ -1,5 +1,11 @@
-import { HealthcarePartyFilter } from '@icure/typescript-common'
+import { CommonApi, domainTypeTag, HealthcarePartyFilter } from '@icure/typescript-common'
 
-export class PractitionerFilter extends HealthcarePartyFilter {}
+export class PractitionerFilter extends HealthcarePartyFilter {
+    constructor(api: CommonApi) {
+        const hcpDomainTag = domainTypeTag('practitioner')
 
-//TODO: Add an additional filter to ensure we get practitioner type HealthcareParties
+        super(api)
+
+        this.byLabelCodeFilter(hcpDomainTag.type, hcpDomainTag.code)
+    }
+}

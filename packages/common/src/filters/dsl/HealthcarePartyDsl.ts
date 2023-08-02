@@ -1,10 +1,7 @@
 import { FilterBuilder, NoOpFilter, SortableFilterBuilder } from './filterDsl'
-import { HealthcarePartyByLabelCodeFilter } from '../hcp/HealthcarePartyByLabelCodeFilter'
+import { AllHealthcarePartiesFilter, HealthcarePartyByIdsFilter, HealthcarePartyByLabelCodeFilter, HealthcarePartyByNameFilter } from '../hcp'
 import { Filter } from '../Filter'
 import { IntersectionFilter } from '../IntersectionFilter'
-import { AllHealthcarePartiesFilter } from '../hcp/AllHealthcarePartiesFilter'
-import { HealthcarePartyByNameFilter } from '../hcp/HealthcarePartyByNameFilter'
-import { HealthcarePartyByIdsFilter } from '../hcp/HealthcarePartyByIdsFilter'
 import { HealthcareParty } from '@icure/api'
 import { CommonApi } from '../../apis/CommonApi'
 
@@ -42,7 +39,13 @@ export class HealthcarePartyFilter extends SortableFilterBuilder<HealthcareParty
     }
 
     byIds(byIds: string[]): HealthcarePartyFilter {
-        this._builderAccumulator.addByIdsFilter(Promise.resolve({ ids: byIds, $type: 'HealthcarePartyByIdsFilter' }), 'ids')
+        this._builderAccumulator.addByIdsFilter(
+            Promise.resolve({
+                ids: byIds,
+                $type: 'HealthcarePartyByIdsFilter',
+            }),
+            'ids',
+        )
         return this
     }
 

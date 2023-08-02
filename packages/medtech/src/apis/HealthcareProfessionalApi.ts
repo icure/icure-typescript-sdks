@@ -70,7 +70,7 @@ class HealthcareProfessionalApiImpl extends HealthcarePartyLikeApiImpl<Healthcar
     }
 }
 
-export const healthcareProfessionalApi = (api: CommonApi): HealthcareProfessionalApi => {
+export const healthcareProfessionalApi = (api: CommonApi, basePath: string): HealthcareProfessionalApi => {
     return new HealthcareProfessionalApiImpl(
         {
             toDomain(dto: HealthcareParty): HealthcareProfessional {
@@ -82,5 +82,7 @@ export const healthcareProfessionalApi = (api: CommonApi): HealthcareProfessiona
         },
         api.errorHandler,
         api.baseApi.healthcarePartyApi,
+        api.baseApi.authApi,
+        basePath,
     )
 }

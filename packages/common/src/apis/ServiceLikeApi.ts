@@ -1,8 +1,6 @@
-import { Filter } from '../filters/Filter'
-import { Connection } from '../models/Connection.model'
 import { PaginatedList } from '../models/PaginatedList.model'
-import { Service } from '@icure/api'
-import { Document } from '../models/Document.model'
+import { Connection, Service } from '@icure/api'
+import { CommonFilter } from '../filters/filters'
 
 /**
  * The ServiceApi interface provides methods to manage data samples.
@@ -62,7 +60,7 @@ export interface ServiceLikeApi<DSService, DSPatient, DSDocument> {
      * @param nextServiceId The id of the first data sample in the next page
      * @param limit The maximum number of data samples that should contain the returned page. By default, a page contains 1000 data samples
      */
-    filterBy(filter: Filter<Service>, nextServiceId?: string, limit?: number): Promise<PaginatedList<DSService>>
+    filterBy(filter: CommonFilter<Service>, nextServiceId?: string, limit?: number): Promise<PaginatedList<DSService>>
 
     /**
      * Each data sample is uniquely identified by a data sample id which is a UUID. This [id] is the preferred method to retrieve one specific data sample.
@@ -76,7 +74,7 @@ export interface ServiceLikeApi<DSService, DSPatient, DSDocument> {
      * Find data samples ids using the provided Filter.
      * @param filter The Filter object that describes which condition(s) the elements whose the ids should be returned must fulfill
      */
-    matchBy(filter: Filter<Service>): Promise<Array<string>>
+    matchBy(filter: CommonFilter<Service>): Promise<Array<string>>
 
     /**
      * Shares a service with another data owner (HCP, patient or device), allowing them to access the service
@@ -129,7 +127,15 @@ export interface ServiceLikeApi<DSService, DSPatient, DSDocument> {
      *    - connectionMaxRetry : how many time retrying to reconnect to the iCure WebSocket;
      *    - connectionRetryIntervalInMs : How long base interval will be between two retry. The retry attempt is exponential and using a random value (connectionRetryIntervalMs * (random between 1 and 2))^nbAttempts)
      */
-    subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: Filter<DSService>, eventFired: (service: DSService) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection>
+    subscribeToEvents(
+        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
+        filter: CommonFilter<Service>,
+        eventFired: (service: DSService) => Promise<void>,
+        options?: {
+            connectionMaxRetry?: number
+            connectionRetryIntervalMs?: number
+        },
+    ): Promise<Connection>
 
     extractPatientId(service: DSService): Promise<string | undefined>
 

@@ -31,17 +31,15 @@ export const extractDomainTypeTag = (tags?: CodeStub[]): CodeStub | undefined =>
 
 export const extractDomainType = (tags: CodeStub[] | undefined) => {
     const domainTypeTag = extractDomainTypeTag(tags)
-
-    console.log('domainTypeTag', domainTypeTag?.code)
-
     return domainTypeTag?.code
 }
 
 export const domainTypeTag = (domainType: string): CodeStub => {
+    const domainTypeString = domainType.toLowerCase()
     return new CodeStub({
-        id: ICURE_INTERNAL_FHIR_TAG_ID(domainType),
+        id: ICURE_INTERNAL_FHIR_TAG_ID(domainTypeString),
         version: ICURE_INTERNAL_FHIR_TAG_VERSION,
-        code: domainType,
+        code: domainTypeString,
         type: ICURE_INTERNAL_FHIR_TAG_TYPE,
     })
 }

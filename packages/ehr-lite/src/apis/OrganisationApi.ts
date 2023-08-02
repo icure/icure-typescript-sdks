@@ -6,7 +6,7 @@ import { mapHealthcarePartyToOrganisation, mapOrganisationToHealthcareParty } fr
 export interface OrganisationApi extends HealthcarePartyLikeApi<Organisation> {}
 class OrganisationApiImpl extends HealthcarePartyLikeApiImpl<Organisation> {}
 
-export const organisationApi = (api: CommonApi): OrganisationApi =>
+export const organisationApi = (api: CommonApi, basePath: string): OrganisationApi =>
     new OrganisationApiImpl(
         {
             toDomain(dto: HealthcareParty): Organisation {
@@ -18,4 +18,6 @@ export const organisationApi = (api: CommonApi): OrganisationApi =>
         },
         api.errorHandler,
         api.baseApi.healthcarePartyApi,
+        api.baseApi.authApi,
+        basePath,
     )

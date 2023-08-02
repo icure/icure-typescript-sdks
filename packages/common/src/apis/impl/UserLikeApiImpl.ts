@@ -1,23 +1,22 @@
 import { PaginatedList } from '../../models/PaginatedList.model'
 import { SharedDataType } from '../../models/User.model'
-import { Connection } from '../../models/Connection.model'
 import { UserLikeApi } from '../UserLikeApi'
 import { ErrorHandler } from '../../services/ErrorHandler'
-import { FilterChainUser, HealthcareParty as HealthcarePartyDto, IccUserXApi, Patient as PatientDto, retry, User as UserDto } from '@icure/api'
+import { Connection, ConnectionImpl, FilterChainUser, HealthcareParty as HealthcarePartyDto, IccAuthApi, IccUserXApi, Patient as PatientDto, retry, subscribeToEntityEvents, User as UserDto } from '@icure/api'
 import { Mapper } from '../Mapper'
 import { MessageGatewayApi } from '../MessageGatewayApi'
 import { Sanitizer } from '../../services/Sanitizer'
 import { forceUuid } from '../../utils/uuidUtils'
 import { findTelecomOfAddresses } from '../../utils/addressUtils'
-import { UserFilter } from '../../filters/dsl/UserFilterDsl'
+import { NoOpFilter, UserFilter } from '../../filters/dsl'
 import { CommonApi } from '../CommonApi'
-import { NoOpFilter } from '../../filters/dsl/filterDsl'
 import { FilterMapper } from '../../mappers/Filter.mapper'
 import { CommonFilter } from '../../filters/filters'
 import { MessageFactory } from '../../services/MessageFactory'
 import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
 import { DataOwnerTypeEnum } from '@icure/api/icc-api/model/DataOwnerTypeEnum'
 import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
+import { iccRestApiPath } from '@icure/api/icc-api/api/IccRestApiPath'
 
 export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements UserLikeApi<DSUser, DSPatient> {
     constructor(
@@ -28,8 +27,10 @@ export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements Us
         private readonly sanitizer: Sanitizer,
         private readonly userApi: IccUserXApi,
         private readonly dataOwnerApi: IccDataOwnerXApi,
+        private readonly authApi: IccAuthApi,
         private readonly api: CommonApi,
         private readonly messageFactory: MessageFactory<DSUser, DSHealthcareParty, DSPatient>,
+        private readonly basePath: string,
         private readonly messageGatewayApi?: MessageGatewayApi,
     ) {}
 
@@ -214,7 +215,10 @@ export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements Us
             const delegationsToAdd = dataOwnerIds.filter((item) => !currentAutoDelegationsForType.includes(item))
             if (delegationsToAdd.length > 0) {
                 newDataSharing = Object.entries(user.autoDelegations ?? []).reduce((accumulator, [key, values]) => {
-                    return { ...accumulator, [key]: [...new Set(Array.of(...values, ...(type === key ? delegationsToAdd : [])))] }
+                    return {
+                        ...accumulator,
+                        [key]: [...new Set(Array.of(...values, ...(type === key ? delegationsToAdd : [])))],
+                    }
                 }, {})
             } else {
                 return this.userMapper.toDomain(user)!!
@@ -290,6 +294,6 @@ export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements Us
             connectionRetryIntervalMs?: number
         },
     ): Promise<Connection> {
-        throw 'TODO'
+        return subscribeToEntityEvents(iccRestApiPath(this.basePath), this.authApi, 'User', eventTypes, FilterMapper.toAbstractFilterDto(filter, 'User'), (event) => eventFired(this.userMapper.toDomain(event)), options ?? {}).then((ws) => new ConnectionImpl(ws))
     }
 }

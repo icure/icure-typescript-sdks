@@ -1,13 +1,12 @@
 import 'isomorphic-fetch'
-import { getEnvironmentInitializer, hcp1Username, hcp3Username, setLocalStorage, TestUtils } from '../test-utils'
+import { getEnvironmentInitializer, hcp1Username, setLocalStorage } from '../test-utils'
 import { webcrypto } from 'crypto'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
-import { TestKeyStorage, TestStorage, testStorageForUser } from '../test-storage'
-import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, forceUuid, NotificationTypeEnum } from '@icure/typescript-common'
+import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, forceUuid, HealthcarePartyFilter } from '@icure/typescript-common'
 import { assert } from 'chai'
-import { BaseApiTestContext, WithAuthenticationApi, WithDataOwnerApi, WithHcpApi, WithMaintenanceTaskApi, WithPatientApi, WithServiceApi } from './TestContexts'
-import { expectArrayContainsExactlyInAnyOrder } from '../assertions'
-import { HealthcareParty, jwk2spki, User } from '@icure/api'
+import { BaseApiTestContext, WithDataOwnerApi, WithHcpApi, WithPatientApi } from './TestContexts'
+import { HealthcareParty, jwk2spki, sleep, User } from '@icure/api'
+import { doXOnYAndSubscribe } from '../websocket-utils'
 
 setLocalStorage(fetch)
 
@@ -32,7 +31,14 @@ export function testHcpLikeApi<
         it('should be capable of creating a healthcare professional from scratch', async () => {
             const { api } = await ctx.apiForEnvUser(env, hcp1Username)
             const rawKeyPair: CryptoKeyPair = await api.baseApi.cryptoApi.primitives.RSA.generateKeyPair()
-            const keyPair = await api.baseApi.cryptoApi.primitives.RSA.exportKeys(rawKeyPair as { publicKey: CryptoKey; privateKey: CryptoKey }, 'jwk', 'jwk')
+            const keyPair = await api.baseApi.cryptoApi.primitives.RSA.exportKeys(
+                rawKeyPair as {
+                    publicKey: CryptoKey
+                    privateKey: CryptoKey
+                },
+                'jwk',
+                'jwk',
+            )
             const hcp = await ctx.hcpApi(api).createOrModify(
                 ctx.toDSHcp(
                     new HealthcareParty({
@@ -115,5 +121,69 @@ export function testHcpLikeApi<
             const retrievedPatient = await ctx.patientApi(hcpApi).get(ctx.toPatientDto(createdPatient).id)
             expect(retrievedPatient).toEqual(createdPatient)
         })
+
+        const subscribeAndCreateHealthcareParty = async (options: {}, eventTypes: ('CREATE' | 'DELETE' | 'UPDATE')[]) => {
+            const { api, user } = await ctx.apiForEnvUser(env, hcp1Username)
+            const connectionPromise = async (options: {}, dataOwnerId: string, eventListener: (patient: HealthcareParty) => Promise<void>) => {
+                await sleep(2000)
+                return ctx.hcpApi(api).subscribeToEvents(eventTypes, await new HealthcarePartyFilter(api).build(), eventListener, options)
+            }
+
+            const events: HealthcareParty[] = []
+            const statuses: string[] = []
+
+            let eventReceivedPromiseResolve!: (value: void | PromiseLike<void>) => void
+            let eventReceivedPromiseReject!: (reason?: any) => void
+            const eventReceivedPromise = new Promise<void>((res, rej) => {
+                eventReceivedPromiseResolve = res
+                eventReceivedPromiseReject = rej
+            })
+
+            await doXOnYAndSubscribe(
+                api!!,
+                options,
+                connectionPromise(options, user.healthcarePartyId!, async (patient) => {
+                    events.push(patient)
+                    eventReceivedPromiseResolve()
+                }),
+                async () => {
+                    await ctx.hcpApi(api).createOrModify(
+                        ctx.toDSHcp(
+                            new HealthcareParty({
+                                name: `Med-ts-ic-test-${forceUuid()}`,
+                                firstName: 'Homer',
+                                lastName: 'Simpson',
+                                parentId: user.healthcarePartyId,
+                            }),
+                        ),
+                    )
+                },
+                (status) => {
+                    statuses.push(status)
+                },
+                eventReceivedPromiseReject,
+                eventReceivedPromise,
+            )
+
+            events?.forEach((event) => console.log(`Event : ${event}`))
+            statuses?.forEach((status) => console.log(`Status : ${status}`))
+
+            expect(events.length).toEqual(1)
+            expect(statuses.length).toEqual(2)
+        }
+
+        it('Can subscribe to HealthcarePartyLike CREATE without option', async () => {
+            await subscribeAndCreateHealthcareParty({}, ['CREATE'])
+        }, 60_000)
+
+        it('Can subscribe to HealthcarePartyLike CREATE with options', async () => {
+            await subscribeAndCreateHealthcareParty(
+                {
+                    connectionRetryIntervalMs: 10_000,
+                    connectionMaxRetry: 5,
+                },
+                ['CREATE'],
+            )
+        }, 60_000)
     })
 }

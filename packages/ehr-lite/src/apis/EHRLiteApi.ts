@@ -55,15 +55,15 @@ export class EHRLiteApi extends CommonApi {
 
         this._codingApi = codingApi(this)
 
-        this._conditionApi = conditionApi(this)
+        this._conditionApi = conditionApi(this, _iCureBaseUrl)
 
-        this._observationApi = observationApi(this)
+        this._observationApi = observationApi(this, _iCureBaseUrl)
 
-        this._organisationApi = organisationApi(this)
+        this._organisationApi = organisationApi(this, _iCureBaseUrl)
 
-        this._patientApi = patientApi(this)
+        this._patientApi = patientApi(this, _iCureBaseUrl)
 
-        this._practitionerApi = practitionerApi(this)
+        this._practitionerApi = practitionerApi(this, _iCureBaseUrl)
 
         this._authenticationApi = this.messageGatewayApi
             ? authenticationApi(this.errorHandler, this.sanitizer, this.messageGatewayApi, _iCureBaseUrl, _authProcessByEmailId, _authProcessBySmsId, _baseApi.cryptoApi.primitives.crypto, this._storage, this._keyStorage, _cryptoStrategies)
@@ -71,9 +71,9 @@ export class EHRLiteApi extends CommonApi {
 
         this._messageFactory = messageFactory ?? iCureEHRLiteMessageFactory
 
-        this._userApi = userApi(this, this._messageFactory)
+        this._userApi = userApi(this, this._messageFactory, _iCureBaseUrl)
 
-        this._notificationApi = notificationApi(this)
+        this._notificationApi = notificationApi(this, _iCureBaseUrl)
     }
 
     get codingApi(): CodingApi {

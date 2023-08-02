@@ -1,7 +1,6 @@
-import { Filter } from '../filters/Filter'
-import { Connection } from '../models/Connection.model'
 import { PaginatedList } from '../models/PaginatedList.model'
-import { HealthElement } from '@icure/api'
+import { Connection, HealthElement } from '@icure/api'
+import { CommonFilter } from '../filters/filters'
 
 /**
  * The HealthElementApi interface provides methods to manage healthcare elements.
@@ -50,7 +49,7 @@ export interface HealthElementLikeApi<DSHealthElement, DSPatient> {
      * @param nextHealthElementId The id of the first Healthcare professional in the next page
      * @param limit The maximum number of healthcare elements that should contain the returned page. By default, a page contains 1000 healthcare elements
      */
-    filterBy(filter: Filter<HealthElement>, nextHealthElementId?: string, limit?: number): Promise<PaginatedList<DSHealthElement>>
+    filterBy(filter: CommonFilter<HealthElement>, nextHealthElementId?: string, limit?: number): Promise<PaginatedList<DSHealthElement>>
 
     /**
      * Retrieves the information of a specific Healthcare Element
@@ -65,7 +64,7 @@ export interface HealthElementLikeApi<DSHealthElement, DSPatient> {
      *
      * @param filter Filtering conditions that the returned healthcare element ids are satisfying.
      */
-    matchBy(filter: Filter<HealthElement>): Promise<Array<string>>
+    matchBy(filter: CommonFilter<HealthElement>): Promise<Array<string>>
 
     /**
    * Service where current user gives access to the healthcare Element information to another dataOwner (HCP, patient or device).
@@ -95,5 +94,5 @@ export interface HealthElementLikeApi<DSHealthElement, DSPatient> {
      *    - connectionMaxRetry : how many time retrying to reconnect to the iCure WebSocket;
      *    - connectionRetryIntervalInMs : How long base interval will be between two retry. The retry attempt is exponential and using a random value (connectionRetryIntervalMs * (random between 1 and 2))^nbAttempts)
      */
-    subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: Filter<DSHealthElement>, eventFired: (dataSample: DSHealthElement) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection>
+    subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: CommonFilter<HealthElement>, eventFired: (dataSample: DSHealthElement) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection>
 }

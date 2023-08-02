@@ -1,8 +1,7 @@
-import { Filter } from '../filters/Filter'
 import { SharingResult } from '../utils/interfaces'
 import { PaginatedList } from '../models/PaginatedList.model'
-import { Connection } from '../models/Connection.model'
-import { Patient } from '@icure/api'
+import { Connection, Patient } from '@icure/api'
+import { CommonFilter } from '../filters/filters'
 
 /**
  * The PatientApi interface provides methods to manage patients.
@@ -14,12 +13,14 @@ export interface PatientLikeApi<DSPatient> {
      * @param patient
      */
     createOrModify(patient: DSPatient): Promise<DSPatient>
+
     /**
      * Deletes the patient identified by the provided unique [patientId].
      * Delete a [Patient]
      * @param patientId
      */
     delete(patientId: string): Promise<string>
+
     /**
      * Filters are complex selectors that are built by combining basic building blocks. You can learn more on how to build filters here {@link https://docs.icure.com/sdks/how-to/how-to-filter-data-with-advanced-search-criteria}.
      *
@@ -29,19 +30,21 @@ export interface PatientLikeApi<DSPatient> {
      * @param nextPatientId The id of the first patient in the next page
      * @param limit The maximum number of patients that should contain the returned page. By default, a page contains 1000 patients
      */
-    filterBy(filter: Filter<Patient>, nextPatientId?: string, limit?: number): Promise<PaginatedList<DSPatient>>
+    filterBy(filter: CommonFilter<Patient>, nextPatientId?: string, limit?: number): Promise<PaginatedList<DSPatient>>
+
     /**
      * Each patient is uniquely identified by a patient id. The patient id is a UUID. This [patientId] is the preferred method to retrieve one specific patient.
      * Get a [Patient]
      * @param patientId
      */
     get(patientId: string): Promise<DSPatient>
+
     /**
      * Filters are complex selectors that are built by combining basic building blocks. You can learn more on how to build filters here {@link https://docs.icure.com/sdks/how-to/how-to-filter-data-with-advanced-search-criteria}. This method returns the list of the ids of the users matching the [filter].
      * Load patient ids from the database by filtering them using the provided [filter].
      * @param filter The Filter object that describes which condition(s) the elements whose the ids should be returned must fulfill
      */
-    matchBy(filter: Filter<Patient>): Promise<Array<string>>
+    matchBy(filter: CommonFilter<Patient>): Promise<Array<string>>
 
     /**
      * Service where current user gives access to the patient information to another dataOwner (HCP, patient or device).
@@ -73,7 +76,15 @@ export interface PatientLikeApi<DSPatient> {
      *    - connectionMaxRetry : how many time retrying to reconnect to the iCure WebSocket;
      *    - connectionRetryIntervalInMs : How long base interval will be between two retry. The retry attempt is exponential and using a random value (connectionRetryIntervalMs * (random between 1 and 2))^nbAttempts)
      */
-    subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: Filter<DSPatient>, eventFired: (patient: DSPatient) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection>
+    subscribeToEvents(
+        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
+        filter: CommonFilter<Patient>,
+        eventFired: (patient: DSPatient) => Promise<void>,
+        options?: {
+            connectionMaxRetry?: number
+            connectionRetryIntervalMs?: number
+        },
+    ): Promise<Connection>
 
     /**
      * Gets a patient and tries to decrypt its content. If it is not possible to decrypt the content only the unencrypted
