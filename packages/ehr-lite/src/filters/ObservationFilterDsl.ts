@@ -4,7 +4,7 @@ import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patie
 import { Patient } from '../models/Patient.model'
 
 export class ObservationFilter extends ServiceFilter<Patient> {
-    private readonly obsDomainTag = domainTypeTag('Observation')
+    private readonly obsDomainTag = domainTypeTag('observation')
 
     constructor(api: CommonApi) {
         const patientMapper = {

@@ -2,7 +2,7 @@ import { CommonApi, domainTypeTag, HealthcarePartyFilter } from '@icure/typescri
 
 export class PractitionerFilter extends HealthcarePartyFilter {
     constructor(api: CommonApi) {
-        const hcpDomainTag = domainTypeTag('Practitioner')
+        const hcpDomainTag = domainTypeTag('practitioner')
 
         super(api)
 

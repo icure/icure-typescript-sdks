@@ -1568,7 +1568,7 @@ __metadata:
     uuid: ^8.3.2
     uuid-encoder: ^1.1.0
     ws: ^8.13.0
-  checksum: f9ddc3d571fffd5fff59b376284b48b620695ceca63f0ae999c415de3e27197a5955f6f913bd0dee46d0120ab120d9346538d54cdf62a032733a9004f480a152
+  checksum: 70b03c407525824e500fea9b3dd14a4a5fc4606a6a43cef1aec8ffec65f4c3109ff2f491fe17acb13dc29ac0e1346209a79e19c47a3322f21ff997491f7b1fa4
   languageName: node
   linkType: hard
 
@@ -1581,7 +1581,7 @@ __metadata:
     "@babel/preset-env": ^7.22.5
     "@babel/preset-typescript": ^7.22.5
     "@icure/api": ^7.1.2
-    "@icure/typescript-common": ^1.0.0-RC.1
+    "@icure/typescript-common": ^1.0.0-RC.2
     "@types/jest": ^29.5.2
     babel-jest: ^29.5.0
     jest: ^29.5.0
@@ -1656,7 +1656,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@icure/typescript-common@^1.0.0-RC.1, @icure/typescript-common@workspace:packages/common":
+"@icure/typescript-common@^1.0.0-RC.1, @icure/typescript-common@^1.0.0-RC.2, @icure/typescript-common@workspace:packages/common":
   version: 0.0.0-use.local
   resolution: "@icure/typescript-common@workspace:packages/common"
   dependencies:

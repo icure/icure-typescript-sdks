@@ -4,7 +4,7 @@ import { Patient as PatientDto } from '@icure/api'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
 
 export class ConditionFilter extends HealthElementFilter<Patient> {
-    private readonly heDomainTag = domainTypeTag('Condition')
+    private readonly heDomainTag = domainTypeTag('condition')
 
     constructor(api: CommonApi) {
         const patientMapper = {
