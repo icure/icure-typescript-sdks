@@ -15,7 +15,7 @@
     "main": "dist/index.js",
     "typings": "dist/index.d.ts",
     "dependencies": {
-        "@icure/api": "^7.1.1",
+        "@icure/api": "^7.1.2",
         "@icure/typescript-common": "^1.0.0-RC.1",
         "reflect-metadata": "^0.1.13",
         "uuid": "^9.0.0"

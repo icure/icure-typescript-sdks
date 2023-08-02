@@ -1554,9 +1554,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@icure/api@npm:^7.1.1":
-  version: 7.1.1
-  resolution: "@icure/api@npm:7.1.1"
+"@icure/api@npm:^7.1.2":
+  version: 7.1.2
+  resolution: "@icure/api@npm:7.1.2"
   dependencies:
     browser-or-node: ^2.1.1
     date-fns: ^2.23.0
@@ -1568,7 +1568,7 @@ __metadata:
     uuid: ^8.3.2
     uuid-encoder: ^1.1.0
     ws: ^8.13.0
-  checksum: afa2de142ea477ab4967d4bdd46a2fa5789f044734ba995b93f4e7c8bb8776b8fde54f21828d8b8701c69b66f3afe3c1d179e767192fb3e6dbb26d43a92018f1
+  checksum: f9ddc3d571fffd5fff59b376284b48b620695ceca63f0ae999c415de3e27197a5955f6f913bd0dee46d0120ab120d9346538d54cdf62a032733a9004f480a152
   languageName: node
   linkType: hard
 
@@ -1580,8 +1580,8 @@ __metadata:
     "@babel/plugin-proposal-decorators": ^7.22.5
     "@babel/preset-env": ^7.22.5
     "@babel/preset-typescript": ^7.22.5
-    "@icure/api": ^7.1.1
-    "@icure/typescript-common": ^0.0.0
+    "@icure/api": ^7.1.2
+    "@icure/typescript-common": ^1.0.0-RC.1
     "@types/jest": ^29.5.2
     babel-jest: ^29.5.0
     jest: ^29.5.0
@@ -1599,9 +1599,9 @@ __metadata:
     "@babel/plugin-proposal-decorators": ^7.22.5
     "@babel/preset-env": ^7.22.5
     "@babel/preset-typescript": ^7.22.5
-    "@icure/api": ^7.1.1
+    "@icure/api": ^7.1.2
     "@icure/test-setup": ^0.0.52
-    "@icure/typescript-common": ^0.0.0
+    "@icure/typescript-common": ^1.0.0-RC.1
     "@types/chai": ^4.3.0
     "@types/chai-as-promised": ^7.1.1
     "@types/isomorphic-fetch": ^0.0.36
@@ -1656,7 +1656,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@icure/typescript-common@^0.0.0, @icure/typescript-common@workspace:packages/common":
+"@icure/typescript-common@^1.0.0-RC.1, @icure/typescript-common@workspace:packages/common":
   version: 0.0.0-use.local
   resolution: "@icure/typescript-common@workspace:packages/common"
   dependencies:
@@ -1664,7 +1664,7 @@ __metadata:
     "@babel/plugin-proposal-decorators": ^7.22.5
     "@babel/preset-env": ^7.22.5
     "@babel/preset-typescript": ^7.22.5
-    "@icure/api": ^7.1.1
+    "@icure/api": ^7.1.2
     "@types/jest": ^29.5.2
     "@types/uuid": ^9.0.1
     babel-jest: ^29.5.0
