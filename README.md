@@ -2,7 +2,7 @@
     <a href="https://docs.icure.com">
         <img alt="icure-your-data-platform-for-medtech-and-ehr" src="https://icure.com/assets/icons/logo.svg">
     </a>
-    <h1 align="center">iCure EHR-Lite</h1>
+    <h1 align="center">iCure SDKs</h1>
 </p>
 
 This is the project where you will find various SDKs and TypeScript tools for iCure.
