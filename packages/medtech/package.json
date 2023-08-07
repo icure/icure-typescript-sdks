@@ -1,6 +1,6 @@
 {
     "name": "@icure/medical-device-sdk",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "description": "iCure SDK for medical device applications",
     "author": "iCure",
     "keywords": [
@@ -15,7 +15,7 @@
     "scripts": {
         "marshall": "nx run hephaestus:start --tsconfig ../medtech/tsconfig.json --model-regex '^.*/medtech/src/models/.*.model.ts$' --mapper-location ../medtech/src/mappers --marshaller-generator --mapper-generator",
         "prepare": "rimraf dist && yarn run build && jq '{name:.name, version:.version, description:.description, main:\"index.js\", types:\"index.d.ts\", dependencies:.dependencies, author:.author, license:.license, bugs:.bugs, homepage:.homepage}' < package.json > dist/package.json",
-        "publish": "yarn run prepare && cd dist && npm publish --registry=http://localhost:4873 && cd ..",
+        "publish": "yarn run prepare && cd dist && npm publish && cd ..",
         "test": "jest --runInBand --no-cache test",
         "build": "tsc"
     },
@@ -41,7 +41,7 @@
     },
     "dependencies": {
         "@icure/api": "^7.1.2",
-        "@icure/typescript-common": "^1.0.0",
+        "@icure/typescript-common": "^1.0.1",
         "browser-or-node": "^2.1.1",
         "date-fns": "^2.28.0",
         "es6-promise": "^4.2.4",
