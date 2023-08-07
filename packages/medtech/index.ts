@@ -11,7 +11,7 @@ export * from './src/apis/PatientApi'
 export * from './src/apis/UserApi'
 export * from './src/apis/DataOwnerApi'
 export * from './src/apis/MedTechApi'
-// export * from './src/filter'
+export * from './src/filter'
 
 export { CryptoStrategies, CryptoStrategiesBridge, SimpleCryptoStrategies } from '@icure/typescript-common'
 
