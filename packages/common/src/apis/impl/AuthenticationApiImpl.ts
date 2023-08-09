@@ -1,5 +1,5 @@
 import { AuthenticationApi } from '../AuthenticationApi'
-import { BasicApis, Device, HealthcareParty, IccCryptoXApi, IccPatientXApi, IccUserXApi, Patient, retry, ua2hex, User } from '@icure/api'
+import { BasicApis, Device, HealthcareParty, Patient, retry, StorageFacade, ua2hex, User } from '@icure/api'
 import { Sanitizer } from '../../services/Sanitizer'
 import { ErrorHandler } from '../../services/ErrorHandler'
 import { MessageGatewayApi } from '../MessageGatewayApi'
@@ -8,9 +8,10 @@ import { AuthenticationResult } from '../../models/AuthenticationResult.model'
 import { AuthenticationProcess } from '../../models/AuthenticationProcess.model'
 import { RecaptchaType } from '../../models/RecaptchaType.model'
 import { CommonApi } from '../CommonApi'
-import { UserLikeApi } from '../UserLikeApi'
 import { forceUuid } from '../../utils/uuidUtils'
 import { NotificationTypeEnum } from '../../models/Notification.model'
+
+const DEVICE_ID_KEY = 'ICURE.DEVICE_ID'
 
 export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements AuthenticationApi<DSApi> {
     protected constructor(
@@ -20,9 +21,10 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
         protected readonly iCureBasePath: string,
         protected readonly authProcessByEmailId: string | undefined,
         protected readonly authProcessBySmsId: string | undefined,
+        protected readonly storage: StorageFacade<string>,
     ) {}
 
-    async completeAuthentication(process: AuthenticationProcess, validationCode: string): Promise<AuthenticationResult<DSApi>> {
+    async completeAuthentication(process: AuthenticationProcess, validationCode: string, tokenDurationInSeconds?: number): Promise<AuthenticationResult<DSApi>> {
         const result = await this.messageGatewayApi.validateProcess(process.requestId, validationCode).catch((e) => {
             if (process.bypassTokenCheck) {
                 return true
@@ -31,7 +33,7 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
         })
 
         if (result) {
-            return this._initUserAuthTokenAndCrypto(process.login, validationCode)
+            return this._initUserAuthTokenAndCrypto(process.login, validationCode, tokenDurationInSeconds)
         }
 
         throw this.errorHandler.createErrorWithMessage(`iCure could not complete authentication process with requestId ${process.requestId}. Try again later.`)
@@ -86,48 +88,8 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
         throw this.errorHandler.createErrorWithMessage(`iCure could not start the authentication process ${processId} for user ${email ?? phoneNumber}. Try again later`)
     }
 
-    private async _generateAndAssignAuthenticationToken(
-        login: string,
-        validationCode: string,
-    ): Promise<{
-        user: User
-        password: string
-    }> {
-        const userApi = (await BasicApis(this.iCureBasePath, login, validationCode)).userApi
-        const user = await userApi.getCurrentUser()
-        if (!user) {
-            throw this.errorHandler.createErrorWithMessage(`Your validation code ${validationCode} expired. Start a new authentication process for your user`)
-        }
-        const token = await userApi.getToken(user.id!, forceUuid(), 3600 * 24 * 365 * 10)
-        if (!token) {
-            throw this.errorHandler.createErrorWithMessage(`Your validation code ${validationCode} expired. Start a new authentication process for your user`)
-        }
-        return { user, password: token }
-    }
-
-    protected async _initUserAuthTokenAndCrypto(login: string, token: string): Promise<AuthenticationResult<DSApi>> {
-        const { user, password } = await retry(() => this._generateAndAssignAuthenticationToken(login, token), 5, 500, 2)
-        const authenticatedApi = await this.initApi(login, password)
-
-        const userKeyPairs: KeyPair<string>[] = []
-        for (const keyPair of Object.values(authenticatedApi.baseApi.cryptoApi.userKeysManager.getDecryptionKeys())) {
-            userKeyPairs.push({
-                publicKey: ua2hex(await authenticatedApi.baseApi.cryptoApi.primitives.RSA.exportKey(keyPair.publicKey, 'spki')),
-                privateKey: ua2hex(await authenticatedApi.baseApi.cryptoApi.primitives.RSA.exportKey(keyPair.privateKey, 'pkcs8')),
-            })
-        }
-
-        return new AuthenticationResult({
-            api: authenticatedApi,
-            keyPairs: userKeyPairs,
-            token: password,
-            groupId: user.groupId!,
-            userId: user.id,
-        })
-    }
-
-    async authenticateAndAskAccessToItsExistingData(userLogin: string, shortLivedToken: string): Promise<AuthenticationResult<DSApi>> {
-        const authenticationResult = await this._initUserAuthTokenAndCrypto(userLogin, shortLivedToken)
+    async authenticateAndAskAccessToItsExistingData(userLogin: string, shortLivedToken: string, tokenDurationInSeconds?: number): Promise<AuthenticationResult<DSApi>> {
+        const authenticationResult = await this._initUserAuthTokenAndCrypto(userLogin, shortLivedToken, tokenDurationInSeconds)
         const baseApi = authenticationResult.api.baseApi
         const loggedUser = await baseApi.userApi.getCurrentUser()
         if (!loggedUser) {
@@ -181,8 +143,68 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
         return authenticationResult
     }
 
+    protected async _initUserAuthTokenAndCrypto(login: string, token: string, tokenDurationInSeconds?: number): Promise<AuthenticationResult<DSApi>> {
+        const { user, password } = await retry(() => this._generateAndAssignAuthenticationToken(login, token, tokenDurationInSeconds), 5, 500, 2)
+        const authenticatedApi = await this.initApi(login, password)
+
+        const userKeyPairs: KeyPair<string>[] = []
+        for (const keyPair of Object.values(authenticatedApi.baseApi.cryptoApi.userKeysManager.getDecryptionKeys())) {
+            userKeyPairs.push({
+                publicKey: ua2hex(await authenticatedApi.baseApi.cryptoApi.primitives.RSA.exportKey(keyPair.publicKey, 'spki')),
+                privateKey: ua2hex(await authenticatedApi.baseApi.cryptoApi.primitives.RSA.exportKey(keyPair.privateKey, 'pkcs8')),
+            })
+        }
+
+        return new AuthenticationResult({
+            api: authenticatedApi,
+            keyPairs: userKeyPairs,
+            token: password,
+            groupId: user.groupId!,
+            userId: user.id,
+        })
+    }
+
+    private async getOrCreateDeviceId(): Promise<string> {
+        const deviceId = await this.storage.getItem(DEVICE_ID_KEY)
+
+        try {
+            if (!!deviceId && forceUuid(deviceId)) {
+                return deviceId
+            }
+        } catch (e) {
+            console.error(`Found an invalid deviceId in the storage. It will be replaced by a new one`)
+        }
+
+        const newDeviceId = forceUuid()
+        await this.storage.setItem(DEVICE_ID_KEY, newDeviceId)
+        return newDeviceId
+    }
+
     protected abstract initApi(username: string, password: string): Promise<DSApi>
+
     protected abstract validatePatient(patientDto: Patient): void
+
     protected abstract validateHcp(hcpDto: HealthcareParty): void
+
     protected abstract validateDevice(deviceDto: Device): void
+
+    private async _generateAndAssignAuthenticationToken(
+        login: string,
+        validationCode: string,
+        tokenDurationInSeconds: number = 30 * 24 * 60 * 60,
+    ): Promise<{
+        user: User
+        password: string
+    }> {
+        const userApi = (await BasicApis(this.iCureBasePath, login, validationCode)).userApi
+        const user = await userApi.getCurrentUser()
+        if (!user) {
+            throw this.errorHandler.createErrorWithMessage(`Your validation code ${validationCode} expired. Start a new authentication process for your user`)
+        }
+        const token = await userApi.getToken(user.id!, await this.getOrCreateDeviceId(), tokenDurationInSeconds)
+        if (!token) {
+            throw this.errorHandler.createErrorWithMessage(`Your validation code ${validationCode} expired. Start a new authentication process for your user`)
+        }
+        return { user, password: token }
+    }
 }

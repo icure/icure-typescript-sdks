@@ -49,11 +49,12 @@ export interface AuthenticationApi<DSApi extends CommonApi> {
      * - In the case of a login, re-generate keys if needed (new keys different from previous ones);
      * @param process The AuthenticationProcess previously provided in the startAuthentication service
      * @param validationCode The validation code the user received by email/mobile phone
+     * @param tokenDurationInSeconds The duration of the token to create (in seconds)
      *
      * @return The result of the authentication and the related MedTechApi object corresponding to the newly authenticated
      * user.
      */
-    completeAuthentication(process: AuthenticationProcess, validationCode: string): Promise<AuthenticationResult<DSApi>>
+    completeAuthentication(process: AuthenticationProcess, validationCode: string, tokenDurationInSeconds?: number): Promise<AuthenticationResult<DSApi>>
 
     /**
      * Completes the authentication process of a user created from a Patient.
@@ -62,9 +63,10 @@ export interface AuthenticationApi<DSApi extends CommonApi> {
      * - Send a NotificationModel to all the delegated HCP to ask for access to the data of the Patient
      * @param userLogin The login of the user
      * @param shortLivedToken The short-lived authentication token created by the HCP
+     * @param tokenDurationInSeconds The duration of the token to create (in seconds)
      *
      * @return The result of the authentication and the related MedTechApi object corresponding to the newly authenticated
      * user.
      */
-    authenticateAndAskAccessToItsExistingData(userLogin: string, shortLivedToken: string): Promise<AuthenticationResult<DSApi>>
+    authenticateAndAskAccessToItsExistingData(userLogin: string, shortLivedToken: string, tokenDurationInSeconds?: number): Promise<AuthenticationResult<DSApi>>
 }
