@@ -11,6 +11,8 @@ import { CommonApi } from '../CommonApi'
 import { forceUuid } from '../../utils/uuidUtils'
 import { NotificationTypeEnum } from '../../models/Notification.model'
 
+const DEVICE_ID_KEY = 'ICURE.DEVICE_ID'
+
 export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements AuthenticationApi<DSApi> {
     protected constructor(
         private readonly messageGatewayApi: MessageGatewayApi,
@@ -162,9 +164,8 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
         })
     }
 
-    private async createOrGetDeviceId(): Promise<string> {
-        const deviceIdKey = 'ICURE.DEVICE_ID'
-        const deviceId = await this.storage.getItem(deviceIdKey)
+    private async getOrCreateDeviceId(): Promise<string> {
+        const deviceId = await this.storage.getItem(DEVICE_ID_KEY)
 
         try {
             if (!!deviceId && forceUuid(deviceId)) {
@@ -175,7 +176,7 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
         }
 
         const newDeviceId = forceUuid()
-        await this.storage.setItem(deviceIdKey, newDeviceId)
+        await this.storage.setItem(DEVICE_ID_KEY, newDeviceId)
         return newDeviceId
     }
 
@@ -200,7 +201,7 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
         if (!user) {
             throw this.errorHandler.createErrorWithMessage(`Your validation code ${validationCode} expired. Start a new authentication process for your user`)
         }
-        const token = await userApi.getToken(user.id!, await this.createOrGetDeviceId(), tokenDurationInSeconds)
+        const token = await userApi.getToken(user.id!, await this.getOrCreateDeviceId(), tokenDurationInSeconds)
         if (!token) {
             throw this.errorHandler.createErrorWithMessage(`Your validation code ${validationCode} expired. Start a new authentication process for your user`)
         }
