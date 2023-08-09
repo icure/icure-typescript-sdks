@@ -13,12 +13,12 @@ export class AuthenticationApi extends AuthenticationApiImpl<EHRLiteApi> {
         errorHandler: ErrorHandler,
         sanitizer: Sanitizer,
         private readonly crypto: Crypto,
-        private readonly storage: StorageFacade<string>,
+        storage: StorageFacade<string>,
         private readonly keyStorage: KeyStorageFacade,
         private readonly cryptoStrategies: CryptoStrategies<DataOwnerWithType>,
         private readonly fetchImpl: (input: RequestInfo, init?: RequestInit) => Promise<Response> = typeof window !== 'undefined' ? window.fetch : typeof self !== 'undefined' ? self.fetch : fetch,
     ) {
-        super(messageGatewayApi, errorHandler, sanitizer, iCureBasePath, authProcessByEmailId, authProcessBySmsId)
+        super(messageGatewayApi, errorHandler, sanitizer, iCureBasePath, authProcessByEmailId, authProcessBySmsId, storage)
     }
 
     protected initApi(username: string, password: string): Promise<EHRLiteApi> {

@@ -19,16 +19,16 @@ export class AuthenticationApi extends AuthenticationApiImpl<MedTechApi> {
         errorHandler: ErrorHandler,
         sanitizer: Sanitizer,
         private readonly crypto: Crypto,
-        private readonly storage: StorageFacade<string>,
+        storage: StorageFacade<string>,
         private readonly keyStorage: KeyStorageFacade,
         private readonly cryptoStrategies: CryptoStrategies<DataOwnerWithType>,
         private readonly fetchImpl: (input: RequestInfo, init?: RequestInit) => Promise<Response> = typeof window !== 'undefined' ? window.fetch : typeof self !== 'undefined' ? self.fetch : fetch,
     ) {
-        super(messageGatewayApi, errorHandler, sanitizer, iCureBasePath, authProcessByEmailId, authProcessBySmsId)
+        super(messageGatewayApi, errorHandler, sanitizer, iCureBasePath, authProcessByEmailId, authProcessBySmsId, storage)
     }
 
-    async completeAuthentication(process: AuthenticationProcess, validationCode: string): Promise<MedTechAuthenticationResult> {
-        const res = await super.completeAuthentication(process, validationCode)
+    async completeAuthentication(process: AuthenticationProcess, validationCode: string, tokenDurationInSeconds?: number): Promise<MedTechAuthenticationResult> {
+        const res = await super.completeAuthentication(process, validationCode, tokenDurationInSeconds)
         return { ...res, medTechApi: res.api }
     }
 
