@@ -1554,21 +1554,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@icure/api@npm:7.1.7":
-  version: 7.1.7
-  resolution: "@icure/api@npm:7.1.7"
+"@icure/api@npm:7.1.8":
+  version: 7.1.8
+  resolution: "@icure/api@npm:7.1.8"
   dependencies:
     browser-or-node: ^2.1.1
     date-fns: ^2.23.0
     libphonenumber-js: ^1.7.18
     lodash: ^4.17.21
-    loglevel: ^1.8.1
     moment: ^2.22.1
     text-encoding: ^0.7.0
     uuid: ^8.3.2
     uuid-encoder: ^1.1.0
     ws: ^8.13.0
-  checksum: 0cc41eeffedcf35c3d3c6928a416f00948e26fc6bcae53e1814b81a5dc65a43f8ed2cfc92312faffb0af6f098a893fa877d23483130c5ae0a563c592c5a3061c
+  checksum: b04ac332b7919f961e024e766b300be284a8222305d677e853c3d7acc5e6451781f4e6968b3736e1c5cf73871ef7ed3462a359da63caf61e60474bead7bf6470
   languageName: node
   linkType: hard
 
@@ -1580,8 +1579,8 @@ __metadata:
     "@babel/plugin-proposal-decorators": ^7.22.5
     "@babel/preset-env": ^7.22.5
     "@babel/preset-typescript": ^7.22.5
-    "@icure/api": 7.1.7
-    "@icure/typescript-common": 1.1.0
+    "@icure/api": 7.1.8
+    "@icure/typescript-common": 1.1.1
     "@types/jest": ^29.5.2
     babel-jest: ^29.5.0
     jest: ^29.5.0
@@ -1599,9 +1598,9 @@ __metadata:
     "@babel/plugin-proposal-decorators": ^7.22.5
     "@babel/preset-env": ^7.22.5
     "@babel/preset-typescript": ^7.22.5
-    "@icure/api": 7.1.7
+    "@icure/api": 7.1.8
     "@icure/test-setup": ^0.0.52
-    "@icure/typescript-common": 1.1.0
+    "@icure/typescript-common": 1.1.1
     "@types/chai": ^4.3.0
     "@types/chai-as-promised": ^7.1.1
     "@types/isomorphic-fetch": ^0.0.36
@@ -1656,7 +1655,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@icure/typescript-common@1.1.0, @icure/typescript-common@workspace:packages/common":
+"@icure/typescript-common@1.1.1, @icure/typescript-common@workspace:packages/common":
   version: 0.0.0-use.local
   resolution: "@icure/typescript-common@workspace:packages/common"
   dependencies:
@@ -1664,7 +1663,7 @@ __metadata:
     "@babel/plugin-proposal-decorators": ^7.22.5
     "@babel/preset-env": ^7.22.5
     "@babel/preset-typescript": ^7.22.5
-    "@icure/api": 7.1.7
+    "@icure/api": 7.1.8
     "@types/jest": ^29.5.2
     "@types/uuid": ^9.0.1
     babel-jest: ^29.5.0

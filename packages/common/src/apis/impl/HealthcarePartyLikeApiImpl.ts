@@ -1,7 +1,7 @@
 import { PaginatedList } from '../../models/PaginatedList.model'
 import { HealthcarePartyLikeApi } from '../HealthcarePartyLikeApi'
 import { ErrorHandler } from '../../services/ErrorHandler'
-import { AbstractFilter, Connection, ConnectionImpl, FilterChainHealthcareParty, HealthcareParty, IccAuthApi, IccHcpartyXApi, subscribeToEntityEvents } from '@icure/api'
+import { AbstractFilter, Connection, ConnectionImpl, FilterChainHealthcareParty, HealthcareParty, IccAuthApi, IccHcpartyXApi, subscribeToEntityEvents, SubscriptionOptions } from '@icure/api'
 import { Mapper } from '../Mapper'
 import { firstOrNull } from '../../utils/functionalUtils'
 import { NoOpFilter } from '../../filters/dsl'
@@ -88,15 +88,7 @@ export class HealthcarePartyLikeApiImpl<DSHealthcareParty> implements Healthcare
         }
     }
 
-    async subscribeToEvents(
-        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
-        filter: CommonFilter<HealthcareParty>,
-        eventFired: (hcp: DSHealthcareParty) => Promise<void>,
-        options?: {
-            connectionMaxRetry?: number
-            connectionRetryIntervalMs?: number
-        },
-    ): Promise<Connection> {
+    async subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: CommonFilter<HealthcareParty>, eventFired: (hcp: DSHealthcareParty) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
         return subscribeToEntityEvents(iccRestApiPath(this.basePath), this.authApi, 'HealthcareParty', eventTypes, FilterMapper.toAbstractFilterDto(filter, 'HealthcareParty'), (event: HealthcareParty) => eventFired(this.mapper.toDomain(event)), options ?? {}).then(
             (ws) => new ConnectionImpl(ws),
         )

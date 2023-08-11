@@ -1,5 +1,5 @@
 import { PaginatedList } from '../models/PaginatedList.model'
-import { Connection, HealthcareParty } from '@icure/api'
+import { Connection, HealthcareParty, SubscriptionOptions } from '@icure/api'
 import { CommonFilter } from '../filters/filters'
 
 /**
@@ -45,13 +45,5 @@ export interface HealthcarePartyLikeApi<DSHealthcareParty> {
      */
     matchBy(filter: CommonFilter<HealthcareParty>): Promise<Array<string>>
 
-    subscribeToEvents(
-        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
-        filter: CommonFilter<HealthcareParty>,
-        eventFired: (hcp: DSHealthcareParty) => Promise<void>,
-        options?: {
-            connectionMaxRetry?: number
-            connectionRetryIntervalMs?: number
-        },
-    ): Promise<Connection>
+    subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: CommonFilter<HealthcareParty>, eventFired: (hcp: DSHealthcareParty) => Promise<void>, options?: SubscriptionOptions): Promise<Connection>
 }
