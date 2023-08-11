@@ -1,7 +1,7 @@
 import { PaginatedList } from '../../models/PaginatedList.model'
 import { DeviceLikeApi } from '../DeviceLikeApi'
 import { ErrorHandler } from '../../services/ErrorHandler'
-import { Connection, ConnectionImpl, Device, FilterChainDevice, IccAuthApi, IccDeviceApi, ListOfIds, subscribeToEntityEvents } from '@icure/api'
+import { Connection, ConnectionImpl, Device, FilterChainDevice, IccAuthApi, IccDeviceApi, ListOfIds, subscribeToEntityEvents, SubscriptionOptions } from '@icure/api'
 import { Mapper } from '../Mapper'
 import { firstOrNull } from '../../utils/functionalUtils'
 
@@ -112,15 +112,7 @@ export class DeviceLikeApiImpl<DSDevice> implements DeviceLikeApi<DSDevice> {
         }
     }
 
-    async subscribeToEvents(
-        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
-        filter: CommonFilter<Device>,
-        eventFired: (device: DSDevice) => Promise<void>,
-        options?: {
-            connectionMaxRetry?: number
-            connectionRetryIntervalMs?: number
-        },
-    ): Promise<Connection> {
+    async subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: CommonFilter<Device>, eventFired: (device: DSDevice) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
         return subscribeToEntityEvents(iccRestApiPath(this.basePath), this.authApi, 'Device', eventTypes, FilterMapper.toAbstractFilterDto(filter, 'Device'), (event) => eventFired(this.mapper.toDomain(event)), options ?? {}).then((ws) => new ConnectionImpl(ws))
     }
 }

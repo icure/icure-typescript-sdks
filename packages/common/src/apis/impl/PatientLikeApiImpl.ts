@@ -1,7 +1,7 @@
 import { PaginatedList } from '../../models/PaginatedList.model'
 import { SharingResult, SharingStatus } from '../../utils/interfaces'
 import { PatientLikeApi } from '../PatientLikeApi'
-import { Connection, ConnectionImpl, FilterChainPatient, IccAuthApi, IccPatientXApi, IccUserXApi, Patient as PatientDto, subscribeToEntityEvents } from '@icure/api'
+import { Connection, ConnectionImpl, FilterChainPatient, IccAuthApi, IccPatientXApi, IccUserXApi, Patient as PatientDto, subscribeToEntityEvents, SubscriptionOptions } from '@icure/api'
 import { ErrorHandler } from '../../services/ErrorHandler'
 import { Mapper } from '../Mapper'
 import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
@@ -116,15 +116,7 @@ export class PatientLikeApiImpl<DSPatient> implements PatientLikeApi<DSPatient> 
         }
     }
 
-    async subscribeToEvents(
-        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
-        filter: CommonFilter<PatientDto>,
-        eventFired: (patient: DSPatient) => Promise<void>,
-        options?: {
-            connectionMaxRetry?: number
-            connectionRetryIntervalMs?: number
-        },
-    ): Promise<Connection> {
+    async subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: CommonFilter<PatientDto>, eventFired: (patient: DSPatient) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
         const currentUser = await this.userApi.getCurrentUser()
 
         return subscribeToEntityEvents(
