@@ -38,7 +38,7 @@ import {
     PatientByHcPartyAndSsinsFilter as PatientByHcPartyAndSsinsFilterDto,
     PatientByHcPartyDateOfBirthBetweenFilter as PatientByHcPartyDateOfBirthBetweenFilterDto,
     PatientByHcPartyFilter as PatientByHcPartyFilterDto,
-    PatientByHcPartyGenderEducationProfession as PatientByHcPartyGenderEducationProfessionDto,
+    PatientByHcPartyGenderEducationProfessionFilter as PatientByHcPartyGenderEducationProfessionFilterDto,
     PatientByHcPartyNameContainsFuzzyFilter as PatientByHcPartyNameContainsFuzzyFilterDto,
     PatientByIdsFilter as PatientByIdsFilterDto,
     Service as ServiceDto,
@@ -520,7 +520,7 @@ export namespace FilterMapper {
             searchString: filter.searchString,
         })
     const toPatientByHcPartyGenderEducationProfessionDto = (filter: PatientByHealthcarePartyGenderEducationProfessionFilter) =>
-        new PatientByHcPartyGenderEducationProfessionDto({
+        new PatientByHcPartyGenderEducationProfessionFilterDto({
             desc: filter.description,
             healthcarePartyId: filter.healthcarePartyId,
             gender: filter.gender,

@@ -99,7 +99,7 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
             if (!patientDataOwner) throw this.errorHandler.createErrorWithMessage(`Impossible to find the patient ${loggedUser.patientId} apparently linked to the user ${loggedUser.id}. Are you sure this patientId is correct ?`)
             this.validatePatient(patientDataOwner)
 
-            const delegatesInfo = await baseApi.cryptoApi.entities.getDataOwnersWithAccessTo(patientDataOwner)
+            const delegatesInfo = await baseApi.cryptoApi.xapi.getDataOwnersWithAccessTo(patientDataOwner)
             const delegates = Object.keys(delegatesInfo.permissionsByDataOwnerId)
 
             for (const delegate of delegates) {

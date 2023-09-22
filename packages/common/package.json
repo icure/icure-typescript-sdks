@@ -7,7 +7,7 @@
     "description": "Common typescript code for iCure projects",
     "license": "MIT",
     "dependencies": {
-        "@icure/api": "7.1.7",
+        "@icure/test-setup": "^0.0.61",
         "reflect-metadata": "^0.1.13",
         "uuid": "^9.0.0"
     },

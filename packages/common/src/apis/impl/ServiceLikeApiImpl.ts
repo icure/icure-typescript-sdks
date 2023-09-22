@@ -19,6 +19,7 @@ import {
     ListOfIds,
     PaginatedListContact,
     Patient as PatientDto,
+    Service,
     Service as ServiceDto,
     ServiceLink,
     SubContact,
@@ -162,7 +163,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
     }
 
     async extractPatientId(service: DSService): Promise<string | undefined> {
-        return (await this.cryptoApi.entities.owningEntityIdsOf(this.serviceMapper.toDto(service)!, undefined))[0]
+        return (await this.cryptoApi.xapi.owningEntityIdsOf({ entity: this.serviceMapper.toDto(service), type: 'Contact' }, undefined))[0]
     }
 
     async filterBy(filter: CommonFilter<ServiceDto>, nextServiceId?: string, limit?: number): Promise<PaginatedList<DSService>> {

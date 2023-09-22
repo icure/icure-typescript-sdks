@@ -125,7 +125,7 @@ export class ServiceFilterWithDataOwner<DSPatient> extends SortableFilterBuilder
     forPatients(patients: DSPatient[]): ServiceFilterWithDataOwner<DSPatient> {
         const filter = this._dataOwnerId.then((id) => {
             const mappedPatients = patients.map((p) => this.patientMapper.toDto(p))
-            return Promise.all(mappedPatients.map((p) => this.api.baseApi.cryptoApi.entities.secretIdsOf(p!, undefined)))
+            return Promise.all(mappedPatients.map((p) => this.api.baseApi.cryptoApi.xapi.secretIdsOf({ entity: p, type: 'Patient' }, undefined)))
                 .then((sfksForPatients) => sfksForPatients.flat())
                 .then((sfks) => {
                     return {
