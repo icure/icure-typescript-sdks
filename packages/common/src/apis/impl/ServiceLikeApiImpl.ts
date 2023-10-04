@@ -583,6 +583,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
             delegations: contact.delegations,
             encryptionKeys: contact.encryptionKeys,
             contactId: contact.id,
+            securityMetadata: contact.securityMetadata,
         }
     }
 
@@ -617,6 +618,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
             delete baseContact.encryptionKeys
             delete baseContact.secretForeignKeys
             delete baseContact.cryptedForeignKeys
+            delete baseContact.securityMetadata
             dataOwnersWithAccess = await this.contactApi.getDataOwnersWithAccessTo(existingContact)
         } else {
             baseContact = { id: this.cryptoApi.primitives.randomUuid() }

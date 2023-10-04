@@ -11,6 +11,7 @@
  */
 import { Document as DocumentDto } from '@icure/api'
 import { mapTo } from '../utils/decorators'
+import { SystemMetaDataEncrypted } from './SystemMetaDataEncrypted.model'
 
 @mapTo(DocumentDto)
 export class Document {
@@ -32,6 +33,7 @@ export class Document {
         this.name = json.name
         this.version = json.version
         this.otherUtis = json.otherUtis ?? new Set()
+        this.systemMetaData = json.systemMetaData
     }
 
     /**
@@ -85,6 +87,8 @@ export class Document {
      */
     'attachmentId'?: string
 
+    systemMetaData?: SystemMetaDataEncrypted
+
     static toJSON(instance: Document): any {
         const pojo: any = {}
         pojo['id'] = instance.id
@@ -104,6 +108,7 @@ export class Document {
         if (instance.size !== undefined) pojo['size'] = instance.size
         if (instance.hash !== undefined) pojo['hash'] = instance.hash
         if (instance.attachmentId !== undefined) pojo['attachmentId'] = instance.attachmentId
+        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataEncrypted.toJSON(instance.systemMetaData) : undefined
         return pojo
     }
 
@@ -156,6 +161,9 @@ export class Document {
         if (pojo['attachmentId'] !== undefined) {
             obj['attachmentId'] = pojo['attachmentId']
         }
+        if (pojo['systemMetaData'] !== undefined) {
+            obj['systemMetaData'] = !!pojo['systemMetaData'] ? SystemMetaDataEncrypted.fromJSON(pojo['systemMetaData']) : undefined
+        }
         return new Document(obj)
     }
 }
@@ -178,4 +186,5 @@ interface IDocument {
     size?: number
     hash?: string
     attachmentId?: string
+    systemMetaData?: SystemMetaDataEncrypted
 }

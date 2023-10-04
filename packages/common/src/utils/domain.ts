@@ -35,7 +35,7 @@ export const extractDomainType = (tags: CodeStub[] | undefined) => {
 }
 
 export const domainTypeTag = (domainType: string): CodeStub => {
-    const domainTypeString = domainType.toLowerCase()
+    const domainTypeString = domainType.toUpperCase()
     return new CodeStub({
         id: ICURE_INTERNAL_FHIR_TAG_ID(domainTypeString),
         version: ICURE_INTERNAL_FHIR_TAG_VERSION,
@@ -46,7 +46,8 @@ export const domainTypeTag = (domainType: string): CodeStub => {
 
 export const filteringOutInternalTags = (fhirType: string, tags: CodeStub[] | undefined, throwOnMissing: boolean = true): Set<CodingReference> | undefined => {
     const domainTypeTag = extractDomainTypeTag(tags)
-    if ((!domainTypeTag || domainTypeTag.code?.toLowerCase() !== fhirType) && throwOnMissing) throw new Error(`${fhirType} domain tag type is missing`)
+    const fhirTypeUpperCased = fhirType.toUpperCase()
+    if ((!domainTypeTag || domainTypeTag.code?.toUpperCase() !== fhirTypeUpperCased) && throwOnMissing) throw new Error(`${fhirTypeUpperCased} domain tag type is missing`)
     const filteredTags = tags?.filter((tag) => tag.type !== ICURE_INTERNAL_FHIR_TAG_TYPE)
     return !!filteredTags?.length ? new Set(filteredTags.map(mapCodeStubToCodingReference)) : undefined
 }

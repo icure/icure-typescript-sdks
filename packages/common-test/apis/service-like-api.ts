@@ -221,12 +221,7 @@ export function testServiceLikeApi<
             )
             const createdServiceDto = ctx.toServiceDto(createdService)
 
-            const filter = await ctx
-                .newServiceFilter(api)
-                .forSelf()
-                .byLabelCodeDateFilter('FILTER-IC-TEST', 'TEST')
-                .forPatients([patient]) // TODO COMPATIBILITY: should use DSPatient type
-                .build()
+            const filter = await ctx.newServiceFilter(api).forSelf().byLabelCodeDateFilter('FILTER-IC-TEST', 'TEST').forPatients([patient]).build()
 
             const filteredServices = await ctx.serviceApi(api).filterBy(filter)
             expect(filteredServices.rows).toHaveLength(1)
@@ -701,11 +696,11 @@ export function testServiceLikeApi<
             )
         }, 60_000)
 
-        it.skip('Can subscribe ServiceLike DELETE without options', async () => {
+        it('Can subscribe ServiceLike DELETE without options', async () => {
             await subscribeAndCreateContactOrService({}, ['DELETE'], async () => deleteService())
         }, 60_000)
 
-        it.skip('Can subscribe ServiceLike DELETE with options', async () => {
+        it('Can subscribe ServiceLike DELETE with options', async () => {
             await subscribeAndCreateContactOrService(
                 {
                     connectionRetryIntervalMs: 10_000,

@@ -14,6 +14,7 @@ import {
     PersonName,
     PropertyStub,
     SchoolingInfo,
+    SecurityMetadata as SecurityMetadataDto,
 } from '@icure/api'
 import { HumanName } from '../models/HumanName.model'
 import { Location } from '../models/Location.model'
@@ -41,6 +42,7 @@ import {
     toPublicKey,
     toPublicKeysForOaepWithSha256,
     toSecretForeignKeys,
+    toSecurityMetadataDto,
     toSystemMetaDataOwnerEncrypted,
     toTransferKeys,
 } from '@icure/typescript-common'
@@ -551,6 +553,10 @@ function toPatientLastName(dto: PatientDto): string | undefined {
     return dto.lastName
 }
 
+function toPatientDtoSecurityMetadata(domain: Patient): SecurityMetadataDto | undefined {
+    return toSecurityMetadataDto(domain.systemMetaData)
+}
+
 export function mapPatientDtoToPatient(dto: PatientDto): Patient {
     return new Patient({
         id: toPatientId(dto),
@@ -681,5 +687,6 @@ export function mapPatientToPatientDto(domain: Patient): PatientDto {
         mainSourceOfIncome: toPatientDtoMainSourceOfIncome(domain),
         schoolingInfos: toPatientDtoSchoolingInfos(domain),
         employementInfos: toPatientDtoEmployementInfos(domain),
+        securityMetadata: toPatientDtoSecurityMetadata(domain),
     })
 }

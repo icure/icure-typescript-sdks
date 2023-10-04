@@ -1554,15 +1554,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@icure/api@npm:7.1.7":
-  version: 7.1.7
-  resolution: "@icure/api@npm:7.1.7"
+"@icure/api@npm:7.1.13":
+  version: 7.1.13
+  resolution: "@icure/api@npm:7.1.13"
   dependencies:
     browser-or-node: ^2.1.1
     date-fns: ^2.23.0
     libphonenumber-js: ^1.7.18
     lodash: ^4.17.21
-    loglevel: ^1.8.1
     moment: ^2.22.1
     text-encoding: ^0.7.0
     uuid: ^8.3.2
@@ -1572,9 +1571,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@icure/api@npm:8.0.2":
-  version: 8.0.2
-  resolution: "@icure/api@npm:8.0.2"
+"@icure/api@npm:8.0.4":
+  version: 8.0.4
+  resolution: "@icure/api@npm:8.0.4"
   dependencies:
     browser-or-node: ^2.1.1
     date-fns: ^2.23.0
@@ -1584,7 +1583,7 @@ __metadata:
     text-encoding: ^0.7.0
     uuid: ^8.3.2
     uuid-encoder: ^1.1.0
-  checksum: b4afdaa658ef2ff9c5ecb5816d1455d4bdc45860c78a8652ba627d88ea89a3d6a073b9b5a32a4607c788baaf4e183096f6400483df9307c28375e111fe582170
+  checksum: e3588aea22dd62a0d761306f51555c19a494134981559ea1897eba10cde12bd93db94ffa26bc3f8a540c5159a5cce9144f6e0fa25744185de662da58aa9b18f7
   languageName: node
   linkType: hard
 
@@ -1614,6 +1613,7 @@ __metadata:
     "@babel/plugin-proposal-decorators": ^7.22.5
     "@babel/preset-env": ^7.22.5
     "@babel/preset-typescript": ^7.22.5
+    "@icure/test-setup": ^0.0.52
     "@icure/typescript-common": 1.1.0
     "@types/chai": ^4.3.0
     "@types/chai-as-promised": ^7.1.1
@@ -1666,6 +1666,20 @@ __metadata:
     node-localstorage: ^2.2.1
     uuid: ^3.3.2
   checksum: 47d2908ec3286549fc1b0575a001f40913d7b84ff1267beb65f82218f7f4af32211522422dfab14fd5461db88d02edeeb687f82c7958704967dfafb00bc59c4f
+  languageName: node
+  linkType: hard
+
+"@icure/test-setup@npm:^0.0.61":
+  version: 0.0.61
+  resolution: "@icure/test-setup@npm:0.0.61"
+  dependencies:
+    "@icure/api": 7.1.13
+    "@types/react-dom": ^18.0.6
+    date-fns: ^2.3.0
+    isomorphic-fetch: ^3.0.0
+    node-localstorage: ^2.2.1
+    uuid: ^3.3.2
+  checksum: 76373460adda062142401e66b2abaf00a090945434fdf4b5328cb8c25446373990a41a7b42c44b17e9b724071582daf5c4ce1fd5641cc9d1e852762f65cf513f
   languageName: node
   linkType: hard
 
@@ -4661,7 +4675,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "icure-typescript-sdks@workspace:."
   dependencies:
-    "@icure/api": 8.0.2
+    "@icure/api": 8.0.4
     nx: 16.3.2
     prettier: ^2.8.8
     pretty-quick: ^3.1.3

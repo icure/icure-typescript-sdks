@@ -50,6 +50,10 @@ export const extractPublicKeysForOaepWithSha256 = (value?: SystemMetaDataOwner |
     return value?.publicKeysForOaepWithSha256
 }
 
+export const extractSecurityMetaData = (value?: SystemMetaDataEncrypted | SystemMetaDataOwnerEncrypted) => {
+    return value?.securityMetadata
+}
+
 export function convertMapToObject(map: Map<string, string>): { [key: string]: string } {
     return Array.from(map).reduce(
         (obj, [key, value]) => {

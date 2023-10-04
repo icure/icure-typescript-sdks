@@ -25,7 +25,21 @@ export async function getEnvironmentInitializer(): Promise<EnvInitializer> {
         const env = getEnvVariables()
         const scratchDir = 'test/scratch'
         const baseEnvironment = env.testEnvironment === 'docker' ? new TestEnvironmentBuilder().setUpDockerEnvironment(scratchDir, ['mock']) : new TestEnvironmentBuilder()
-        const baseInitializer = await baseEnvironment.withGroup(fetch).withMasterUser(fetch).addHcp({ login: hcp1Username }).addHcp({ login: hcp2Username }).addHcp({ login: hcp3Username }).addPatient({ login: patUsername }).withSafeguard().withEnvironmentSummary().build()
+        const baseInitializer = await baseEnvironment
+            .withGroup(fetch, {
+                patient: ['BASIC_USER', 'BASIC_DATA_OWNER'],
+                hcp: ['BASIC_USER', 'BASIC_DATA_OWNER', 'PATIENT_USER_MANAGER', 'HIERARCHICAL_DATA_OWNER'],
+                device: ['BASIC_USER', 'BASIC_DATA_OWNER'],
+                user: ['BASIC_USER'],
+            })
+            .withMasterUser(fetch)
+            .addHcp({ login: hcp1Username })
+            .addHcp({ login: hcp2Username })
+            .addHcp({ login: hcp3Username })
+            .addPatient({ login: patUsername })
+            .withSafeguard()
+            .withEnvironmentSummary()
+            .build()
         cachedInitializer = {
             ...baseInitializer,
             execute: async (env: TestVars): Promise<TestVars> => {

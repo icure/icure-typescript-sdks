@@ -1,6 +1,7 @@
-import { CareTeamMember, CodeStub, Delegation as DelegationDto, Episode, HealthElement, Identifier as IdentifierDto, PlanOfAction } from '@icure/api'
+import { CareTeamMember, CodeStub, Delegation as DelegationDto, Episode, HealthElement, Identifier as IdentifierDto, PlanOfAction, SecurityMetadata as SecurityMetadataDto } from '@icure/api'
 import { Condition } from '../models/Condition.model'
 import {
+    addUniqueObjectsToArray,
     Annotation,
     CodingReference,
     filteringOutInternalTags,
@@ -19,6 +20,7 @@ import {
     toEncryptedSelf,
     toEncryptionKeys,
     toSecretForeignKeys,
+    toSecurityMetadataDto,
     toSystemMetaDataEncrypted,
 } from '@icure/typescript-common'
 import { Annotation as AnnotationDto } from '@icure/api/icc-api/model/Annotation'
@@ -26,7 +28,6 @@ import { ClinicalStatusEnum } from '../models/enums/ClinicalStatus.enum'
 import { VerificationStatusEnum } from '../models/enums/VerificationStatus.enum'
 import { CategoryEnum } from '../models/enums/Category.enum'
 import { SeverityEnum } from '../models/enums/Severity.enum'
-import { addUniqueObjectsToArray } from '@icure/typescript-common'
 
 function toHealthElementId(domain: Condition): string {
     return forceUuid(domain.id)
@@ -328,6 +329,10 @@ function toConditionSystemMetaData(dto: HealthElement): SystemMetaDataEncrypted 
     return toSystemMetaDataEncrypted(dto)
 }
 
+function toHealthElementSecurityMetadata(domain: Condition): SecurityMetadataDto | undefined {
+    return toSecurityMetadataDto(domain.systemMetaData)
+}
+
 export function mapHealthElementToCondition(dto: HealthElement): Condition {
     return new Condition({
         id: toConditionId(dto),
@@ -393,5 +398,6 @@ export function mapConditionToHealthElement(domain: Condition): HealthElement {
         delegations: toHealthElementDelegations(domain),
         encryptionKeys: toHealthElementEncryptionKeys(domain),
         encryptedSelf: toHealthElementEncryptedSelf(domain),
+        securityMetadata: toHealthElementSecurityMetadata(domain),
     })
 }

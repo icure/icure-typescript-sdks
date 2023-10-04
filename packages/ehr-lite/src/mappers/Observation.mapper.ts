@@ -1,5 +1,5 @@
 import { Observation } from '../models/Observation.model'
-import { Annotation as AnnotationDto, CodeStub, Content, Delegation as DelegationDto, Identifier as IdentifierDto, ISO639_1, Service } from '@icure/api'
+import { Annotation as AnnotationDto, CodeStub, Content, Delegation as DelegationDto, Identifier as IdentifierDto, ISO639_1, SecurityMetadata as SecurityMetadataDto, Service } from '@icure/api'
 import {
     Annotation,
     CodingReference,
@@ -20,6 +20,7 @@ import {
     toDelegations,
     toEncryptionKeys,
     toSecretForeignKeys,
+    toSecurityMetadataDto,
     toSystemMetaDataEncrypted,
 } from '@icure/typescript-common'
 import { Component } from '../models/Component.model'
@@ -271,6 +272,10 @@ function toObservationNotes(dto: Service): Annotation[] | undefined {
     return !!dto.notes ? dto.notes.map(mapAnnotationDtoToAnnotation) : undefined
 }
 
+function toServiceSecurityMetadata(domain: Observation): SecurityMetadataDto | undefined {
+    return toSecurityMetadataDto(domain.systemMetaData)
+}
+
 export function mapServiceToObservation(dto: Service): Observation {
     return new Observation({
         id: toObservationId(dto),
@@ -335,5 +340,6 @@ export function mapObservationToService(domain: Observation): Service {
         codes: toServiceCodes(domain),
         tags: toServiceTags(domain),
         encryptedSelf: toServiceEncryptedSelf(domain),
+        securityMetadata: toServiceSecurityMetadata(domain),
     })
 }

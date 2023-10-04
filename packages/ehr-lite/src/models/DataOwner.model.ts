@@ -5,9 +5,9 @@ import { Organisation } from './Organisation.model'
 export type DataOwner = Practitioner | Organisation | Patient
 
 export enum DataOwnerTypeEnum {
-    PATIENT = 'patient',
-    PRACTITIONER = 'practitioner',
-    ORGANISATION = 'organisation',
+    PATIENT = 'PATIENT',
+    PRACTITIONER = 'PRACTITIONER',
+    ORGANISATION = 'ORGANISATION',
 }
 
 export type DataOwnerWithType = { type: DataOwnerTypeEnum.PRACTITIONER; dataOwner: Practitioner } | { type: DataOwnerTypeEnum.ORGANISATION; dataOwner: Organisation } | { type: DataOwnerTypeEnum.PATIENT; dataOwner: Patient }
