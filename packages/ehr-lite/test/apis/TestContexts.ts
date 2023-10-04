@@ -215,7 +215,7 @@ export function ConditionApiAware<TBase extends Constructor<any>>(Base: TBase): 
         toDSHelement(helementDto: HealthElement): Condition {
             return mapHealthElementToCondition({
                 ...helementDto,
-                tags: addDomainTypeTagIfMissing(helementDto.tags, 'condition'),
+                tags: addDomainTypeTagIfMissing(helementDto.tags, 'condition'.toUpperCase()),
             })
         }
 
@@ -282,7 +282,7 @@ export function ObservationApiAware<TBase extends Constructor<any>>(Base: TBase)
         toDSService(serviceDto: Service): Observation {
             return mapServiceToObservation({
                 ...serviceDto,
-                tags: addDomainTypeTagIfMissing(serviceDto.tags, 'observation'),
+                tags: addDomainTypeTagIfMissing(serviceDto.tags, 'observation'.toUpperCase()),
             })
         }
 
@@ -334,7 +334,7 @@ export function PractitionerApiAware<TBase extends Constructor<any>>(Base: TBase
         toDSHcp(hcpDto: HealthcareParty): Practitioner {
             return mapHealthcarePartyToPractitioner({
                 ...hcpDto,
-                tags: addDomainTypeTagIfMissing(hcpDto.tags, 'practitioner'),
+                tags: addDomainTypeTagIfMissing(hcpDto.tags, 'practitioner'.toUpperCase()),
             })
         }
 
@@ -353,7 +353,7 @@ export function OrganisationApiAware<TBase extends Constructor<any>>(Base: TBase
         toDSHcp(hcpDto: HealthcareParty): Organisation {
             return mapHealthcarePartyToOrganisation({
                 ...hcpDto,
-                tags: addDomainTypeTagIfMissing(hcpDto.tags, 'organisation'),
+                tags: addDomainTypeTagIfMissing(hcpDto.tags, 'organisation'.toUpperCase()),
             })
         }
 
