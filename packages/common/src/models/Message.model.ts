@@ -1,7 +1,10 @@
+import { Message as MessageDto } from '@icure/api'
+import { mapTo } from '../utils/decorators'
 import { CodingReference } from './CodingReference.model'
 import { MessageReadStatus } from './MessageReadStatus.model'
 import { SystemMetaDataEncrypted } from './SystemMetaDataEncrypted.model'
 
+@mapTo(MessageDto)
 export class Message {
     id?: string
     rev?: string

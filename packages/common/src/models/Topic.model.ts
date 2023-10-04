@@ -1,10 +1,10 @@
-import { Form } from '@icure/api'
+import { Topic as TopicDto } from '@icure/api'
 import { mapTo } from '../utils/decorators'
 import { forceUuid } from '../utils/uuidUtils'
 import { CodingReference } from './CodingReference.model'
 import { SystemMetaDataEncrypted } from './SystemMetaDataEncrypted.model'
 
-@mapTo(Form)
+@mapTo(TopicDto)
 export class Topic {
     id?: string
     rev?: string

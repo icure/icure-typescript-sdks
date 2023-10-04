@@ -1,5 +1,5 @@
 import { DataSample } from '../models/DataSample.model'
-import { Annotation as AnnotationDto, CodeStub, Content as ContentDto, Delegation as DelegationDto, Identifier as IdentifierDto, ISO639_1, Service } from '@icure/api'
+import { Annotation as AnnotationDto, CodeStub, Content as ContentDto, Delegation as DelegationDto, Identifier as IdentifierDto, ISO639_1, Service, SecurityMetadata as SecurityMetadataDto } from '@icure/api'
 import {
     CodingReference,
     extractEncryptedSelf,
@@ -15,6 +15,7 @@ import {
     toEncryptedSelf,
     toEncryptionKeys,
     toSecretForeignKeys,
+    toSecurityMetadataDto,
     toSystemMetaDataEncrypted,
 } from '@icure/typescript-common'
 import { Content } from '../models/Content.model'
@@ -249,6 +250,10 @@ function toDataSampleSystemMetaData(dto: Service): SystemMetaDataEncrypted | und
     return toSystemMetaDataEncrypted(dto)
 }
 
+function toServiceSecurityMetadata(domain: DataSample): SecurityMetadataDto | undefined {
+    return toSecurityMetadataDto(domain.systemMetaData)
+}
+
 export function mapServiceToDataSample(dto: Service): DataSample {
     return new DataSample({
         id: toDataSampleId(dto),
@@ -313,5 +318,6 @@ export function mapDataSampleToService(domain: DataSample): Service {
         codes: toServiceCodes(domain),
         tags: toServiceTags(domain),
         encryptedSelf: toServiceEncryptedSelf(domain),
+        securityMetadata: toServiceSecurityMetadata(domain),
     })
 }

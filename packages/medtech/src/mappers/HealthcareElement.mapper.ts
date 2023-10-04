@@ -1,5 +1,5 @@
 import { HealthcareElement } from '../models/HealthcareElement.model'
-import { Annotation as AnnotationDto, CareTeamMember, CodeStub, Delegation as DelegationDto, Episode, HealthElement, Identifier as IdentifierDto, PlanOfAction } from '@icure/api'
+import { Annotation as AnnotationDto, CareTeamMember, CodeStub, Delegation as DelegationDto, Episode, HealthElement, Identifier as IdentifierDto, PlanOfAction, SecurityMetadata as SecurityMetadataDto } from '@icure/api'
 import {
     Annotation,
     CodingReference,
@@ -17,6 +17,7 @@ import {
     toEncryptedSelf,
     toEncryptionKeys,
     toSecretForeignKeys,
+    toSecurityMetadataDto,
     toSystemMetaDataEncrypted,
 } from '@icure/typescript-common'
 
@@ -233,6 +234,10 @@ function toHealthcareElementNotes(dto: HealthElement): Annotation[] | undefined 
     return dto.notes?.map(mapAnnotationDtoToAnnotation)
 }
 
+function toHealthElementSecurityMetadata(domain: HealthcareElement): SecurityMetadataDto | undefined {
+    return toSecurityMetadataDto(domain.systemMetaData)
+}
+
 export function mapHealthElementToHealthcareElement(dto: HealthElement): HealthcareElement {
     return new HealthcareElement({
         id: toHealthcareElementId(dto),
@@ -294,5 +299,6 @@ export function mapHealthcareElementToHealthElement(domain: HealthcareElement): 
         delegations: toHealthElementDelegations(domain),
         encryptionKeys: toHealthElementEncryptionKeys(domain),
         encryptedSelf: toHealthElementEncryptedSelf(domain),
+        securityMetadata: toHealthElementSecurityMetadata(domain),
     })
 }
