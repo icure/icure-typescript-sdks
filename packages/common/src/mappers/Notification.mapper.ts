@@ -146,7 +146,7 @@ function toNotificationProperties(dto: MaintenanceTask): Set<Property> {
 }
 
 function toNotificationType(dto: MaintenanceTask): NotificationTypeEnum | undefined {
-    return !!dto.taskType && Object.values(NotificationTypeEnum).includes(dto.taskType as unknown as NotificationTypeEnum) ? NotificationTypeEnum[dto.taskType as keyof typeof NotificationTypeEnum] : NotificationTypeEnum.OTHER
+    return dto.taskType
 }
 
 function toNotificationSystemMetaData(dto: MaintenanceTask): SystemMetaDataEncrypted | undefined {

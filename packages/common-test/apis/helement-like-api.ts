@@ -113,7 +113,7 @@ export function testHelementLikeApi<DSAnonymousApiBuilder extends AnonymousApiBu
                 .newHelementFilter(hcp1Api)
                 .forDataOwner(hcp1User.healthcarePartyId!)
                 .forPatients([newPatient])
-                .byIds([ctx.toHelementDto(createdHelement).id])
+                .byIds([ctx.toHelementDto(createdHelement).id!])
                 .build()
 
             const retrievedHelement = await ctx.helementApi(hcp1Api).get(ctx.toHelementDto(createdHelement).id!)
@@ -198,8 +198,9 @@ export function testHelementLikeApi<DSAnonymousApiBuilder extends AnonymousApiBu
 
         const subscribeAndCreateHealthElement = async (options: {}, eventTypes: ('CREATE' | 'DELETE' | 'UPDATE')[]) => {
             const { api, user } = await ctx.apiForEnvUser(env, hcp1Username)
+            // TODO fix event listener type
             const connectionPromise = async (options: {}, dataOwnerId: string, eventListener: (healthcareElement: HealthElement) => Promise<void>) =>
-                ctx.helementApi(api).subscribeToEvents(eventTypes, await ctx.newHelementFilter(api).forSelf().byLabelCodeFilter(testType, testCode).build(), eventListener, options)
+                ctx.helementApi(api).subscribeToEvents(eventTypes, await ctx.newHelementFilter(api).forSelf().byLabelCodeFilter(testType, testCode).build(), eventListener as unknown as any, options)
 
             const events: HealthElement[] = []
             const statuses: string[] = []

@@ -22,7 +22,7 @@ import {
     SimpleCryptoStrategies,
     UserLikeApi,
 } from '@icure/typescript-common'
-import { testStorageWithKeys } from '../../medtech/test/TestStorage'
+import { testStorageWithKeys } from '../test-storage'
 import { webcrypto } from 'crypto'
 import { getTempEmail, TestUtils } from '../test-utils'
 import { assert } from 'chai'
@@ -57,7 +57,7 @@ export abstract class BaseApiTestContext<
         const storage = await testStorageWithKeys(new DefaultStorageEntryKeysFactory(), [
             {
                 dataOwnerId: credentials.dataOwnerId,
-                pairs: [{ keyPair: { publicKey: credentials.publicKey, privateKey: credentials.privateKey } }],
+                pairs: [{ keyPair: { publicKey: credentials.publicKey, privateKey: credentials.privateKey }, shaVersion: 'sha-1' }],
             },
         ])
         const builderApi = this.newApiBuilder()

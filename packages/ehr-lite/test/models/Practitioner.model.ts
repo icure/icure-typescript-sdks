@@ -19,7 +19,7 @@ export function generatePractitioner(): Practitioner {
         // identifiers: [],
         tags: new Set([generateCodingReference()]),
         codes: new Set([generateCodingReference()]),
-        deletionDate: null,
+        deletionDate: undefined,
         name: 'dummyName',
         lastName: 'dummyLastName',
         firstName: 'dummyFirstName',

@@ -7,7 +7,7 @@ import { mapHealthcarePartyToPractitioner, mapPractitionerToHealthcareParty } fr
 import { mapHealthcarePartyToOrganisation, mapOrganisationToHealthcareParty } from './Organisation.mapper'
 
 export const mapHealthcarePartyToDomain = (healthcareParty: HealthcareParty): Practitioner | Organisation => {
-    const domainType = extractDataOwnerDomainType(healthcareParty).toLowerCase()
+    const domainType = extractDataOwnerDomainType(healthcareParty).toUpperCase()
 
     if (domainType === DataOwnerTypeEnum.PRACTITIONER) {
         return mapHealthcarePartyToPractitioner(healthcareParty)

@@ -108,7 +108,7 @@ function annotation2(): Annotation {
 // Returns copy with added tags
 function addDomainTypeTagIfMissing(tags: CodeStub[] | undefined, domainType: string): CodeStub[] {
     const found = extractDomainTypeTag(tags)
-    if (found) {
+    if (tags && found) {
         expect(found.code).toEqual(domainType)
         return tags
     } else return [...(tags ?? []), domainTypeTag(domainType)]

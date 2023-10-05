@@ -1539,21 +1539,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@icure/api@npm:7.0.0-beta.4":
-  version: 7.0.0-beta.4
-  resolution: "@icure/api@npm:7.0.0-beta.4"
-  dependencies:
-    date-fns: ^2.23.0
-    libphonenumber-js: ^1.7.18
-    lodash: ^4.17.21
-    moment: ^2.22.1
-    text-encoding: ^0.7.0
-    uuid: ^8.3.2
-    uuid-encoder: ^1.1.0
-  checksum: 82d14a7096f8fa45565509525598941b9c24bc6fb94a34f7d49f10cd3d228ced6dede450126a3a14784269cb9448d40c8f17cc587244be53370d9a9a10cac55b
-  languageName: node
-  linkType: hard
-
 "@icure/api@npm:7.1.13":
   version: 7.1.13
   resolution: "@icure/api@npm:7.1.13"
@@ -1571,9 +1556,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@icure/api@npm:8.0.4":
-  version: 8.0.4
-  resolution: "@icure/api@npm:8.0.4"
+"@icure/api@npm:8.0.0-RC.4":
+  version: 8.0.0-RC.4
+  resolution: "@icure/api@npm:8.0.0-RC.4"
   dependencies:
     browser-or-node: ^2.1.1
     date-fns: ^2.23.0
@@ -1583,7 +1568,7 @@ __metadata:
     text-encoding: ^0.7.0
     uuid: ^8.3.2
     uuid-encoder: ^1.1.0
-  checksum: e3588aea22dd62a0d761306f51555c19a494134981559ea1897eba10cde12bd93db94ffa26bc3f8a540c5159a5cce9144f6e0fa25744185de662da58aa9b18f7
+  checksum: 8197ced26aa9ca129fd4b0614d0065194aeed90ce9c3630f59fc795c5feb1276d10635cce989aa21033f948775da092a7ff5e7b9619397038ddd988b7750da96
   languageName: node
   linkType: hard
 
@@ -1613,7 +1598,6 @@ __metadata:
     "@babel/plugin-proposal-decorators": ^7.22.5
     "@babel/preset-env": ^7.22.5
     "@babel/preset-typescript": ^7.22.5
-    "@icure/test-setup": ^0.0.52
     "@icure/typescript-common": 1.1.0
     "@types/chai": ^4.3.0
     "@types/chai-as-promised": ^7.1.1
@@ -1655,20 +1639,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@icure/test-setup@npm:^0.0.52":
-  version: 0.0.52
-  resolution: "@icure/test-setup@npm:0.0.52"
-  dependencies:
-    "@icure/api": 7.0.0-beta.4
-    "@types/react-dom": ^18.0.6
-    date-fns: ^2.3.0
-    isomorphic-fetch: ^3.0.0
-    node-localstorage: ^2.2.1
-    uuid: ^3.3.2
-  checksum: 47d2908ec3286549fc1b0575a001f40913d7b84ff1267beb65f82218f7f4af32211522422dfab14fd5461db88d02edeeb687f82c7958704967dfafb00bc59c4f
-  languageName: node
-  linkType: hard
-
 "@icure/test-setup@npm:^0.0.61":
   version: 0.0.61
   resolution: "@icure/test-setup@npm:0.0.61"
@@ -1691,7 +1661,6 @@ __metadata:
     "@babel/plugin-proposal-decorators": ^7.22.5
     "@babel/preset-env": ^7.22.5
     "@babel/preset-typescript": ^7.22.5
-    "@icure/test-setup": ^0.0.61
     "@types/jest": ^29.5.2
     "@types/uuid": ^9.0.1
     babel-jest: ^29.5.0
@@ -4675,7 +4644,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "icure-typescript-sdks@workspace:."
   dependencies:
-    "@icure/api": 8.0.4
+    "@icure/api": 8.0.0-RC.4
+    "@icure/test-setup": ^0.0.61
     nx: 16.3.2
     prettier: ^2.8.8
     pretty-quick: ^3.1.3

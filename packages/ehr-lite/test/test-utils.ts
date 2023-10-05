@@ -1,6 +1,6 @@
-import { EHRLiteMessageFactory } from '../dist/ehr-lite/src/services/EhrLiteMessageFactory'
 import { EmailMessage, SMSMessage, User } from '@icure/typescript-common'
 import { Patient, Organisation, Practitioner } from '../src'
+import { EHRLiteMessageFactory } from '../src/services/EHRLiteMessageFactory'
 
 export class TestMessageFactory implements EHRLiteMessageFactory {
     readonly preferredMessageType = 'email'

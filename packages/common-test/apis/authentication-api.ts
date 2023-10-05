@@ -435,7 +435,7 @@ export function testAuthenticationApi<
             const startTimestamp = new Date().getTime() - 100000
             const hcpNotification = (await ctx.mtApi(hcpApiAndUser.api).getPendingAfter(startTimestamp))
                 .map((x) => ctx.toMtDto(x))
-                .find((mt) => mt.taskType === NotificationTypeEnum.KEY_PAIR_UPDATE && mt.properties?.find((prop) => prop.typedValue?.stringValue == patApiAndUser.user.patientId!) != undefined)
+                .find((mt) => mt.taskType === NotificationTypeEnum.KeyPairUpdate && mt.properties?.find((prop) => prop.typedValue?.stringValue == patApiAndUser.user.patientId!) != undefined)
 
             expect(hcpNotification).toBeTruthy()
 

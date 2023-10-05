@@ -3,12 +3,6 @@
     "version": "3.0.2",
     "description": "iCure SDK for medical device applications",
     "author": "iCure",
-    "keywords": [
-        "fetch",
-        "typescript",
-        "openapi-client",
-        "openapi-generator"
-    ],
     "license": "Unlicense",
     "main": "./dist/index.js",
     "typings": "./dist/index.d.ts",
@@ -18,26 +12,6 @@
         "publish": "yarn run prepare && cd dist && npm publish && cd ..",
         "test": "jest --runInBand --no-cache test",
         "build": "tsc"
-    },
-    "nyc": {
-        "extension": [
-            ".ts",
-            ".tsx"
-        ],
-        "exclude": [
-            "**/*.d.ts"
-        ],
-        "reporter": [
-            "html",
-            "lcov"
-        ],
-        "all": true,
-        "author": "iCure SA",
-        "license": "MIT",
-        "bugs": {
-            "url": "https://github.com/icure/icure-medical-device-js-sdk/issues"
-        },
-        "homepage": "https://github.com/icure/icure-medical-device-js-sdk"
     },
     "dependencies": {
         "@icure/typescript-common": "1.1.0",
@@ -54,7 +28,6 @@
         "@babel/plugin-proposal-decorators": "^7.22.5",
         "@babel/preset-env": "^7.22.5",
         "@babel/preset-typescript": "^7.22.5",
-        "@icure/test-setup": "^0.0.52",
         "@types/chai": "^4.3.0",
         "@types/chai-as-promised": "^7.1.1",
         "@types/isomorphic-fetch": "^0.0.36",

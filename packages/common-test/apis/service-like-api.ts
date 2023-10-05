@@ -64,7 +64,7 @@ export function testServiceLikeApi<
             const deletedServiceDto = ctx.toServiceDto(await ctx.serviceApi(api).get(deletedServiceId))
             expect(deletedServiceDto.endOfLife).toBeTruthy()
             expect(deletedServiceDto.endOfLife).toBeGreaterThan(timeBeforeDeletion)
-            expect(deletedServiceDto.created).toBeLessThan(deletedServiceDto.endOfLife)
+            expect(deletedServiceDto.created).toBeLessThan(deletedServiceDto.endOfLife!)
         })
 
         it('Delete Data Sample - part of same batch - Success', async () => {
@@ -427,10 +427,10 @@ export function testServiceLikeApi<
             const attachmentDocFrDto = ctx.toDocumentDto(attachmentDocFr)
             expect(attachmentDocFrDto.size).toEqual(attachmentFr.length)
             const updatedDataSampleDto = ctx.toServiceDto(await ctx.serviceApi(h1api).get(serviceDto.id!))
-            expect(updatedDataSampleDto.content['en']!.stringValue).toEqual(valueEn)
-            expect(updatedDataSampleDto.content['en']!.documentId).toEqual(attachmentDocEnDto.id)
-            expect(updatedDataSampleDto.content['fr']!.stringValue).toEqual(valueFr)
-            expect(updatedDataSampleDto.content['fr']!.documentId).toEqual(attachmentDocFrDto.id)
+            expect(updatedDataSampleDto.content!['en']!.stringValue).toEqual(valueEn)
+            expect(updatedDataSampleDto.content!['en']!.documentId).toEqual(attachmentDocEnDto.id)
+            expect(updatedDataSampleDto.content!['fr']!.stringValue).toEqual(valueFr)
+            expect(updatedDataSampleDto.content!['fr']!.documentId).toEqual(attachmentDocFrDto.id)
             const attachmentEnContent = await ctx.serviceApi(h1api).getAttachmentContent(serviceDto.id!, attachmentDocEnDto.id!)
             expect(ua2utf8(attachmentEnContent)).toEqual(attachmentEn)
             const attachmentFrContent = await ctx.serviceApi(h1api).getAttachmentContent(serviceDto.id!, attachmentDocFrDto.id!)
@@ -484,7 +484,7 @@ export function testServiceLikeApi<
             await ctx.checkServiceAccessibleAndDecrypted(h2api, sharedService, true)
             ;(ctx.serviceApi(h1api) as ServiceLikeApiImpl<any, any, any>).clearContactCache()
             const modifiedService = await ctx.serviceApi(h1api).createOrModifyFor(
-                ctx.toPatientDto(patient).id,
+                ctx.toPatientDto(patient).id!,
                 ctx.toDSService({
                     ...ctx.toServiceDto(sharedService),
                     content: {
@@ -494,7 +494,7 @@ export function testServiceLikeApi<
                     },
                 }),
             )
-            expect(ctx.toServiceDto(modifiedService).content['en'].stringValue).toEqual('Modified service')
+            expect(ctx.toServiceDto(modifiedService).content!['en'].stringValue).toEqual('Modified service')
             await ctx.checkServiceAccessibleAndDecrypted(h2api, modifiedService, true)
         })
 
@@ -545,7 +545,7 @@ export function testServiceLikeApi<
             const patient = await ctx.createPatient(h1api)
             const services = await ctx
                 .serviceApi(h1api)
-                .createOrModifyManyFor(ctx.toPatientDto(patient).id, [
+                .createOrModifyManyFor(ctx.toPatientDto(patient).id!, [
                     ctx.toDSService({ content: { en: { stringValue: 'Service 1' } } }),
                     ctx.toDSService({ content: { en: { stringValue: 'Service 2' } } }),
                     ctx.toDSService({ content: { en: { stringValue: 'Service 3' } } }),
@@ -568,10 +568,10 @@ export function testServiceLikeApi<
             expect(new Set(sharedServices.map((s) => ctx.toServiceDto(s).contactId)).size).toEqual(1)
             await ctx.checkServiceInaccessible(h2api, services[1])
             await ctx.checkServiceInaccessible(h2api, services[3])
-            expect(ctx.toServiceDto(await ctx.serviceApi(h1api).get(servicesDto[0].id)).contactId).not.toEqual(servicesDto[0].contactId)
-            expect(ctx.toServiceDto(await ctx.serviceApi(h1api).get(servicesDto[1].id)).contactId).toEqual(servicesDto[1].contactId)
-            expect(ctx.toServiceDto(await ctx.serviceApi(h1api).get(servicesDto[2].id)).contactId).not.toEqual(servicesDto[2].contactId)
-            expect(ctx.toServiceDto(await ctx.serviceApi(h1api).get(servicesDto[3].id)).contactId).toEqual(servicesDto[3].contactId)
+            expect(ctx.toServiceDto(await ctx.serviceApi(h1api).get(servicesDto[0].id!)).contactId).not.toEqual(servicesDto[0].contactId)
+            expect(ctx.toServiceDto(await ctx.serviceApi(h1api).get(servicesDto[1].id!)).contactId).toEqual(servicesDto[1].contactId)
+            expect(ctx.toServiceDto(await ctx.serviceApi(h1api).get(servicesDto[2].id!)).contactId).not.toEqual(servicesDto[2].contactId)
+            expect(ctx.toServiceDto(await ctx.serviceApi(h1api).get(servicesDto[3].id!)).contactId).toEqual(servicesDto[3].contactId)
         })
 
         it('Changing part of a batch while batch is not closed allowed should not extract the service in a new batch', async () => {
@@ -581,7 +581,7 @@ export function testServiceLikeApi<
             const services = await ctx.createServicesForPatient(api, patient)
             const servicesDto = services.map((s) => ctx.toServiceDto(s))
             const updatedService = await ctx.serviceApi(api).createOrModifyFor(
-                patientId,
+                patientId!,
                 ctx.toDSService({
                     ...servicesDto[0],
                     content: { en: { stringValue: 'Updated content' } },
@@ -591,10 +591,10 @@ export function testServiceLikeApi<
             expect(updatedServiceDto.id).toEqual(servicesDto[0].id)
             expect(updatedServiceDto.contactId).toEqual(servicesDto[0].contactId)
             expect(updatedServiceDto.contactId).toEqual(servicesDto[1].contactId)
-            expect(updatedServiceDto.content.en.stringValue).toEqual('Updated content')
-            expect(await ctx.serviceApi(api).get(servicesDto[0].id)).toEqual(updatedService)
+            expect(updatedServiceDto.content!.en.stringValue).toEqual('Updated content')
+            expect(await ctx.serviceApi(api).get(servicesDto[0].id!)).toEqual(updatedService)
             // Other service should still exist and be equivalent.
-            const retrievedUnmodifiedService = await ctx.serviceApi(api).get(servicesDto[1].id)
+            const retrievedUnmodifiedService = await ctx.serviceApi(api).get(servicesDto[1].id!)
             const retrievedUnmodifiedServiceDto = ctx.toServiceDto(retrievedUnmodifiedService)
             // Compare without considering encrypted self: random IV will make it different
             expect({ ...retrievedUnmodifiedServiceDto, encryptedSelf: undefined }).toEqual({ ...servicesDto[1], encryptedSelf: undefined })
@@ -602,8 +602,9 @@ export function testServiceLikeApi<
 
         const subscribeAndCreateContactOrService = async (options: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }, eventTypes: ('CREATE' | 'DELETE' | 'UPDATE')[], supplier: () => Promise<void>) => {
             const { api, user } = await ctx.apiForEnvUser(env, hcp1Username)
+            // TODO fix eventListener typing
             const connectionPromise = async (options: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }, dataOwnerId: string, eventListener: (ds: Service) => Promise<void>) =>
-                ctx.serviceApi(api).subscribeToEvents(eventTypes, await ctx.newServiceFilter(api).forSelf().build(), eventListener, options)
+                ctx.serviceApi(api).subscribeToEvents(eventTypes, await ctx.newServiceFilter(api).forSelf().build(), eventListener as unknown as any, options)
 
             const events: Service[] = []
             const statuses: string[] = []

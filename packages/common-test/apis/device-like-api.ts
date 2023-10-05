@@ -72,12 +72,12 @@ export function testDeviceLikeApi<DSAnonymousApiBuilder extends AnonymousApiBuil
             expect(updatedMedicalDeviceDto.id).toBeTruthy()
             expect(forceUuid(updatedMedicalDeviceDto.id)).toEqual(updatedMedicalDeviceDto.id)
             expect(updatedMedicalDeviceDto.serialNumber).toEqual(newSerialNumber)
-            expect(updatedMedicalDeviceDto.rev.startsWith('2-')).toBe(true)
+            expect(updatedMedicalDeviceDto.rev!.startsWith('2-')).toBe(true)
             expect(updatedMedicalDeviceDto.name).toEqual('What-If Machine')
             expect(updatedMedicalDeviceDto.brand).toEqual('Farnsworth')
             expect(updatedMedicalDeviceDto.model).toEqual('2ACV16')
             expect(updatedMedicalDeviceDto.created).toEqual(createdMedicalDeviceDto.created)
-            expect(updatedMedicalDeviceDto.modified).toBeGreaterThan(createdMedicalDeviceDto.modified)
+            expect(updatedMedicalDeviceDto.modified).toBeGreaterThan(createdMedicalDeviceDto.modified!)
         })
 
         const subscribeAndCreateDevice = async (options: {}, eventTypes: ('CREATE' | 'DELETE' | 'UPDATE')[]) => {
@@ -87,7 +87,8 @@ export function testDeviceLikeApi<DSAnonymousApiBuilder extends AnonymousApiBuil
 
             const connectionPromise = async (options: {}, dataOwnerId: string, eventListener: (patient: Device) => Promise<void>) => {
                 await sleep(2000)
-                return ctx.deviceApi(api).subscribeToEvents(eventTypes, await new DeviceFilter(api).build(), eventListener, options)
+                // TODO fix eventListenerTyping
+                return ctx.deviceApi(api).subscribeToEvents(eventTypes, await new DeviceFilter(api).build(), eventListener as unknown as any, options)
             }
 
             const events: Device[] = []

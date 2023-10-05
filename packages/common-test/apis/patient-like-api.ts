@@ -56,7 +56,7 @@ export function testPatientLikeApi<
             expect(forceUuid(patientDto.id)).toEqual(patientDto.id)
             expect(patientDto.firstName).toEqual('Giovanni')
             expect(patientDto.lastName).toEqual('Neve')
-            expect(patientDto.notes[0].markdown['it']).toEqual("L'inverno sta arrivando")
+            expect(patientDto.notes![0].markdown!['it']).toEqual("L'inverno sta arrivando")
 
             const retrieved = await ctx.patientApi(hcp1Api).get(patientDto.id!)
             expect(retrieved).toEqual(patient)
@@ -69,7 +69,7 @@ export function testPatientLikeApi<
         })
 
         it('Patient sharing its own information with HCP', async function () {
-            if (env.backendType === 'oss') this.skip()
+            if (env.backendType === 'oss') return
             const patApiAndUser = await ctx.signUpUserUsingEmail(env, 'Giacomo', 'Passero', 'patient', hcp1User.healthcarePartyId!)
             const patApi = patApiAndUser.api
             const patUser = patApiAndUser.user
@@ -82,12 +82,12 @@ export function testPatientLikeApi<
                 notes: [{ markdown: { en: 'Some note' } }],
             })
             const updatedPatient = await ctx.patientApi(patApi).createOrModify(modifyPatient)
-            expect(ctx.toPatientDto(updatedPatient).notes[0].markdown.en).toEqual('Some note')
+            expect(ctx.toPatientDto(updatedPatient).notes![0].markdown!.en).toEqual('Some note')
             // Initially HCP can't access the patient
             await ctx.checkPatientInaccessible(hcpApi, updatedPatient)
             // Patient shares P and gets it updated and decrypted
             const sharedPatient = await ctx.patientApi(patApi).giveAccessTo(updatedPatient, hcpUser.healthcarePartyId!)
-            expect(ctx.toPatientDto(sharedPatient).notes[0].markdown.en).toEqual('Some note')
+            expect(ctx.toPatientDto(sharedPatient).notes![0].markdown!.en).toEqual('Some note')
             // HCP can now access the patient
             await ctx.checkPatientAccessibleAndDecrypted(hcpApi, sharedPatient, true)
         })
@@ -162,7 +162,8 @@ export function testPatientLikeApi<
 
             const connectionPromise = async (options: {}, dataOwnerId: string, eventListener: (patient: Patient) => Promise<void>) => {
                 await sleep(2000)
-                return ctx.patientApi(api).subscribeToEvents(eventTypes, await new PatientFilter(api).forSelf().containsFuzzy('John').build(), eventListener, options)
+                // TODO fix eventListener typing
+                return ctx.patientApi(api).subscribeToEvents(eventTypes, await new PatientFilter(api).forSelf().containsFuzzy('John').build(), eventListener as unknown as any, options)
             }
 
             const events: Patient[] = []
