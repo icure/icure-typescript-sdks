@@ -29,7 +29,7 @@ export function testHcpLikeApi<
         }, 600_000)
 
         it('should be capable of creating a healthcare professional from scratch', async () => {
-            const { api } = await ctx.apiForEnvUser(env, hcp1Username)
+            const { api } = await ctx.masterApi(env)
             const rawKeyPair: CryptoKeyPair = await api.baseApi.cryptoApi.primitives.RSA.generateKeyPair('sha-256')
             const keyPair = await api.baseApi.cryptoApi.primitives.RSA.exportKeys(
                 rawKeyPair as {
@@ -75,7 +75,7 @@ export function testHcpLikeApi<
         })
 
         it('should be capable of initializing crypto of a healthcare professional from scratch', async () => {
-            const { api } = await ctx.apiForEnvUser(env, hcp1Username)
+            const { api } = await ctx.masterApi(env)
             const hcp = await ctx.hcpApi(api).createOrModify(
                 ctx.toDSHcp(
                     new HealthcareParty({
@@ -123,7 +123,7 @@ export function testHcpLikeApi<
         })
 
         const subscribeAndCreateHealthcareParty = async (options: {}, eventTypes: ('CREATE' | 'DELETE' | 'UPDATE')[]) => {
-            const { api, user } = await ctx.apiForEnvUser(env, hcp1Username)
+            const { api, user } = await ctx.masterApi(env)
             const connectionPromise = async (options: {}, dataOwnerId: string, eventListener: (patient: HealthcareParty) => Promise<void>) => {
                 await sleep(2000)
                 // TODO fix eventListener typing

@@ -183,14 +183,15 @@ export function testHelementLikeApi<DSAnonymousApiBuilder extends AnonymousApiBu
             expect(heDto.id).not.toEqual(elementId)
         })
 
-        it('Give access to will fail if the healthcare version does not match the latest', async () => {
+        it('Give access to using an older version of helement should not lose information', async () => {
             const patient = await ctx.createPatient(hcp1Api)
             const healthcareElement = await ctx.createHelementForPatient(hcp1Api, patient)
-            const shared = await ctx.helementApi(hcp1Api).giveAccessTo(healthcareElement, patUser.patientId!)
-            await expect(ctx.helementApi(hcp1Api).giveAccessTo(healthcareElement, hcp2User.healthcarePartyId!)).rejects.toBeInstanceOf(Error)
-            await ctx.checkHelementAccessibleAndDecrypted(hcp1Api, shared, true)
-            await ctx.checkHelementAccessibleAndDecrypted(patApi, shared, true)
-            await ctx.checkHelementInaccessible(hcp2Api, shared)
+            await ctx.helementApi(hcp1Api).giveAccessTo(healthcareElement, patUser.patientId!)
+            const shared2 = await ctx.helementApi(hcp1Api).giveAccessTo(healthcareElement, hcp2User.healthcarePartyId!)
+            await ctx.checkHelementAccessibleAndDecrypted(hcp1Api, shared2, true)
+            await ctx.checkHelementAccessibleAndDecrypted(hcp2Api, shared2, true)
+            // Still accessible to patient even though the last time we shared we didn't pass the helement with delegation to patient.
+            await ctx.checkHelementAccessibleAndDecrypted(patApi, shared2, true)
         })
 
         const testType = 'IC-TEST'

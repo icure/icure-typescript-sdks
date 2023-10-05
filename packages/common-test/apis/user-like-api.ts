@@ -361,7 +361,7 @@ export function testUserLikeApi<
         })
 
         const subscribeAndCreateUser = async (options: {}, eventTypes: ('CREATE' | 'DELETE' | 'UPDATE')[]) => {
-            const { api, user } = await ctx.apiForEnvUser(env, hcp1Username)
+            const { api, user } = await ctx.masterApi(env)
 
             const connectionPromise = async (options: {}, dataOwnerId: string, eventListener: (user: User) => Promise<void>) => {
                 await sleep(2000)

@@ -146,15 +146,16 @@ export function testPatientLikeApi<
             await expect(ctx.patientApi(hcp2Api).giveAccessTo(createdPatient, env.dataOwnerDetails[patUsername].dataOwnerId!)).rejects.toBeInstanceOf(Error)
         })
 
-        it('Give access to will fail if the patient version does not match the latest', async () => {
+        it('Give access using an older version of patient should not lose information', async () => {
             const { api: h2api, user: h2 } = await ctx.apiForEnvUser(env, hcp2Username)
             const { api: pApi, user: p } = await ctx.apiForEnvUser(env, patUsername)
             const patient = await ctx.createPatient(hcp1Api)
-            const sharedPatient = await ctx.patientApi(hcp1Api!).giveAccessTo(patient, p.patientId!)
-            await expect(ctx.patientApi(hcp1Api!).giveAccessTo(patient, h2.healthcarePartyId!)).rejects.toBeInstanceOf(Error)
+            await ctx.patientApi(hcp1Api!).giveAccessTo(patient, p.patientId!)
+            const sharedPatient = await ctx.patientApi(hcp1Api!).giveAccessTo(patient, h2.healthcarePartyId!)
             await ctx.checkPatientAccessibleAndDecrypted(hcp1Api, sharedPatient, true)
+            await ctx.checkPatientAccessibleAndDecrypted(h2api, sharedPatient, true)
+            // Still accessible to patient even though the last time we shared we didn't pass the helement with delegation to patient.
             await ctx.checkPatientAccessibleAndDecrypted(pApi, sharedPatient, true)
-            await ctx.checkPatientInaccessible(h2api, patient)
         })
 
         const subscribeAndCreatePatient = async (options: {}, eventTypes: ('CREATE' | 'DELETE' | 'UPDATE')[]) => {
