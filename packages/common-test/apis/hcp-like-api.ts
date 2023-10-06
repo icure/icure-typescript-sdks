@@ -29,8 +29,8 @@ export function testHcpLikeApi<
         }, 600_000)
 
         it('should be capable of creating a healthcare professional from scratch', async () => {
-            const { api } = await ctx.apiForEnvUser(env, hcp1Username)
-            const rawKeyPair: CryptoKeyPair = await api.baseApi.cryptoApi.primitives.RSA.generateKeyPair()
+            const { api } = await ctx.masterApi(env)
+            const rawKeyPair: CryptoKeyPair = await api.baseApi.cryptoApi.primitives.RSA.generateKeyPair('sha-256')
             const keyPair = await api.baseApi.cryptoApi.primitives.RSA.exportKeys(
                 rawKeyPair as {
                     publicKey: CryptoKey
@@ -43,7 +43,7 @@ export function testHcpLikeApi<
                 ctx.toDSHcp(
                     new HealthcareParty({
                         name: `Med-ts-ic-test-${forceUuid()}`,
-                        publicKey: jwk2spki(keyPair.publicKey),
+                        publicKeysForOaepWithSha256: [jwk2spki(keyPair.publicKey)],
                     }),
                 ),
             )
@@ -75,7 +75,7 @@ export function testHcpLikeApi<
         })
 
         it('should be capable of initializing crypto of a healthcare professional from scratch', async () => {
-            const { api } = await ctx.apiForEnvUser(env, hcp1Username)
+            const { api } = await ctx.masterApi(env)
             const hcp = await ctx.hcpApi(api).createOrModify(
                 ctx.toDSHcp(
                     new HealthcareParty({
@@ -118,15 +118,16 @@ export function testHcpLikeApi<
             // Then, HCP can create and retrievedata
             const createdPatient = await ctx.createPatient(hcpApi)
             expect(createdPatient).toBeTruthy()
-            const retrievedPatient = await ctx.patientApi(hcpApi).get(ctx.toPatientDto(createdPatient).id)
+            const retrievedPatient = await ctx.patientApi(hcpApi).get(ctx.toPatientDto(createdPatient).id!)
             expect(retrievedPatient).toEqual(createdPatient)
         })
 
         const subscribeAndCreateHealthcareParty = async (options: {}, eventTypes: ('CREATE' | 'DELETE' | 'UPDATE')[]) => {
-            const { api, user } = await ctx.apiForEnvUser(env, hcp1Username)
+            const { api, user } = await ctx.masterApi(env)
             const connectionPromise = async (options: {}, dataOwnerId: string, eventListener: (patient: HealthcareParty) => Promise<void>) => {
                 await sleep(2000)
-                return ctx.hcpApi(api).subscribeToEvents(eventTypes, await new HealthcarePartyFilter(api).build(), eventListener, options)
+                // TODO fix eventListener typing
+                return ctx.hcpApi(api).subscribeToEvents(eventTypes, await new HealthcarePartyFilter(api).build(), eventListener as unknown as any, options)
             }
 
             const events: HealthcareParty[] = []

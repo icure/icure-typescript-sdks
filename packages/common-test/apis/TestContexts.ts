@@ -22,12 +22,12 @@ import {
     SimpleCryptoStrategies,
     UserLikeApi,
 } from '@icure/typescript-common'
-import { testStorageWithKeys } from '../../medtech/test/TestStorage'
+import { testStorageWithKeys } from '../test-storage'
 import { webcrypto } from 'crypto'
 import { getTempEmail, TestUtils } from '../test-utils'
 import { assert } from 'chai'
 import { DataOwnerWithType as DataOwnerWithTypeDto, HealthcareParty, HealthElement, KeyStorageFacade, MaintenanceTask, Patient, Service, sleep, StorageFacade, User, Document, Device, retry } from '@icure/api'
-import { TestVars } from '@icure/test-setup/types'
+import { TestVars, UserDetails } from '@icure/test-setup/types'
 import { DefaultStorageEntryKeysFactory } from '@icure/api/icc-x-api/storage/DefaultStorageEntryKeysFactory'
 
 export abstract class BaseApiTestContext<
@@ -52,12 +52,19 @@ export abstract class BaseApiTestContext<
     abstract hcpProcessId(env: TestVars): string
     abstract patProcessId(env: TestVars): string
 
+    async masterApi(env: TestVars, additionalBuilderSteps: (builder: AuthenticatedApiBuilder<DSCryptoStrategies, any, DSApi>) => AuthenticatedApiBuilder<DSCryptoStrategies, any, DSApi> = (x) => x): Promise<{ api: DSApi; user: User }> {
+        return this.apiForCredentials(env, env.masterHcp!, additionalBuilderSteps)
+    }
+
     async apiForEnvUser(env: TestVars, username: string, additionalBuilderSteps: (builder: AuthenticatedApiBuilder<DSCryptoStrategies, any, DSApi>) => AuthenticatedApiBuilder<DSCryptoStrategies, any, DSApi> = (x) => x): Promise<{ api: DSApi; user: User }> {
-        const credentials = env.dataOwnerDetails[username]
+        return this.apiForCredentials(env, env.dataOwnerDetails[username], additionalBuilderSteps)
+    }
+
+    private async apiForCredentials(env: TestVars, credentials: UserDetails, additionalBuilderSteps: (builder: AuthenticatedApiBuilder<DSCryptoStrategies, any, DSApi>) => AuthenticatedApiBuilder<DSCryptoStrategies, any, DSApi> = (x) => x): Promise<{ api: DSApi; user: User }> {
         const storage = await testStorageWithKeys(new DefaultStorageEntryKeysFactory(), [
             {
                 dataOwnerId: credentials.dataOwnerId,
-                pairs: [{ keyPair: { publicKey: credentials.publicKey, privateKey: credentials.privateKey } }],
+                pairs: [{ keyPair: { publicKey: credentials.publicKey, privateKey: credentials.privateKey }, shaVersion: 'sha-1' }],
             },
         ])
         const builderApi = this.newApiBuilder()

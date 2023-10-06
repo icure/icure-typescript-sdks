@@ -1,6 +1,6 @@
 import { MedTechApi } from '../src/apis/MedTechApi'
 import { webcrypto } from 'crypto'
-import { testStorageWithKeys } from './TestStorage'
+import { testStorageWithKeys } from '../../common-test/TestStorage'
 import { DefaultStorageEntryKeysFactory } from '@icure/api/icc-x-api/storage/DefaultStorageEntryKeysFactory'
 import { UserDetails } from '@icure/test-setup/types'
 import { EmailMessage, SMSMessage, User } from '@icure/typescript-common'

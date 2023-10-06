@@ -44,8 +44,13 @@ export async function getEnvironmentInitializer(): Promise<EnvInitializer> {
             ...baseInitializer,
             execute: async (env: TestVars): Promise<TestVars> => {
                 const updatedEnvs = await baseInitializer.execute(env)
-                const masterApi = await BasicApis(updatedEnvs.iCureUrl, updatedEnvs.masterHcp.user, updatedEnvs.masterHcp.password, webcrypto as any, fetch)
+                const masterApi = await BasicApis(updatedEnvs.iCureUrl, updatedEnvs.masterHcp!.user, updatedEnvs.masterHcp!.password, webcrypto as any, fetch)
                 await retry(() => masterApi.userApi.getCurrentUser(), 10, 1000) // Ensure the user is available
+                const masterHcp = await masterApi.healthcarePartyApi.getHealthcareParty(updatedEnvs.masterHcp!.dataOwnerId)
+                await masterApi.healthcarePartyApi.modifyHealthcareParty({
+                    ...masterHcp,
+                    tags: [...masterHcp.tags, domainTypeTag('organisation')],
+                })
                 const hcp1 = await masterApi.healthcarePartyApi.getHealthcareParty(updatedEnvs.dataOwnerDetails[hcp1Username].dataOwnerId)
                 await masterApi.healthcarePartyApi.modifyHealthcareParty({
                     ...hcp1,

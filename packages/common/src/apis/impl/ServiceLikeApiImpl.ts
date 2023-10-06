@@ -381,7 +381,6 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
                     externalUuid: documentExternalUuid,
                     hash: ua2hex(await this.api.baseApi.cryptoApi.primitives.sha256(body)),
                     size: body.byteLength,
-                    mainUti: UtiDetector.getUtiFor(documentName),
                 }),
                 {
                     additionalDelegates: dataOwnersWithAccessInfo.permissionsByDataOwnerId,
@@ -410,7 +409,8 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
             // Do not delete existing `Document` entity, even if existing: services are versioned
 
             // Add attachment to document
-            const docWithAttachment = await this.api.baseApi.documentApi.encryptAndSetDocumentAttachment(createdDocument, body)
+            const mainUti = UtiDetector.getUtiFor(documentName)
+            const docWithAttachment = await this.api.baseApi.documentApi.encryptAndSetDocumentAttachment(createdDocument, body, mainUti ? [mainUti] : undefined)
 
             return this.documentMapper.toDomain(docWithAttachment)
         } catch (e) {
