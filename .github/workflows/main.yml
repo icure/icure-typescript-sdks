@@ -16,7 +16,7 @@ jobs:
 
             - name: Creating licenses report
               run: |
-                  sh licenses-report.sh | jq -r '.[] | ["\(.dependency):\(.version)", .license, .repository] | @csv' > ~/${{ github.event.repository.name }}.csv
+                  zsh licenses-report.sh | jq -r '.[] | ["\(.dependency):\(.version)", .license, .repository] | @csv' > ~/${{ github.event.repository.name }}.csv
 
             - name: Checkout repo
               uses: actions/checkout@v2
