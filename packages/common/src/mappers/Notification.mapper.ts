@@ -145,7 +145,10 @@ function toNotificationProperties(dto: MaintenanceTask): Set<Property> {
     return !!dto.properties ? new Set(dto.properties.map(mapPropertyStubToProperty)) : new Set()
 }
 
+// If dto.taskType is not part of NotificationTypeEnum throws an error, else returns dto.taskType
 function toNotificationType(dto: MaintenanceTask): NotificationTypeEnum | undefined {
+    if (!dto.taskType) return undefined
+    if (!Object.values(NotificationTypeEnum).includes(dto.taskType)) throw new Error(`Unknown Notification Type: ${dto.taskType}`)
     return dto.taskType
 }
 

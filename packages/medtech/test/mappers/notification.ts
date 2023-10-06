@@ -94,16 +94,17 @@ describe('Notification mapper test', () => {
         assertNotificationIsEquivalentToMaintenanceTask(newNotification, newTask)
     })
 
-    it('If MaintenanceTask type is not in notificationTypeEnum, type OTHER is set in Notification', () => {
+    it('If MaintenanceTask type is not in notificationTypeEnum, type OTHER is set in Notification', async () => {
         const newTask = new MaintenanceTask({
             id: uuid(),
             taskType: 'THIS DOES NOT BELONG TO THE ENUM',
         })
         assert(newTask)
-        const newNotification = mapMaintenanceTaskToNotification(newTask)
-        assert(newNotification)
-        assert(newNotification.id === newTask.id)
-        assert(newNotification.type === NotificationTypeEnum.Other)
-        // TODO would change to throw exception.
+        await Promise.resolve()
+            .then(() => mapMaintenanceTaskToNotification(newTask))
+            .then(
+                () => assert(false),
+                (e) => assert(e.message.includes('THIS DOES NOT BELONG TO THE ENUM')),
+            )
     })
 })
