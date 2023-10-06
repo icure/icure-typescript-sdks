@@ -97,7 +97,7 @@ export interface HealthcareElementApi extends HealthElementLikeApi<HealthcareEle
      * @deprecated use {@link HealthcareElementApi.subscribeToEvents} instead.
      *
      * Opens a WebSocket Connection in order to receive all the Healthcare Element corresponding to specific filter criteria.
-     * @param eventTypes Type of event you would like to listen. It can be CREATE, UPDATE or DELETE
+     * @param eventTypes Type of event you would like to listen. It can be CREATE or UPDATE
      * @param filter Filter criteria to filter to the healthcare element you would like to receive
      * @param eventFired Action applied each time you receive a healthcare element through the WebSocket
      * @param options Options to configure the WebSocket.
@@ -106,12 +106,7 @@ export interface HealthcareElementApi extends HealthElementLikeApi<HealthcareEle
      *    - connectionMaxRetry : how many time retrying to reconnect to the iCure WebSocket;
      *    - connectionRetryIntervalInMs : How long base interval will be between two retry. The retry attempt is exponential and using a random value (connectionRetryIntervalMs * (random between 1 and 2))^nbAttempts)
      */
-    subscribeToHealthcareElementEvents(
-        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
-        filter: CommonFilter<HealthElement>,
-        eventFired: (dataSample: HealthcareElement) => Promise<void>,
-        options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number },
-    ): Promise<Connection>
+    subscribeToHealthcareElementEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<HealthElement>, eventFired: (dataSample: HealthcareElement) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection>
 }
 
 class HealthcareElementApiImpl extends HealthElementLikeApiImpl<HealthcareElement, Patient> implements HealthcareElementApi {
@@ -143,12 +138,7 @@ class HealthcareElementApiImpl extends HealthElementLikeApiImpl<HealthcareElemen
         return this.getAllForPatient(patient)
     }
 
-    subscribeToHealthcareElementEvents(
-        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
-        filter: CommonFilter<HealthElement>,
-        eventFired: (dataSample: HealthcareElement) => Promise<void>,
-        options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number },
-    ): Promise<Connection> {
+    subscribeToHealthcareElementEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<HealthElement>, eventFired: (dataSample: HealthcareElement) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection> {
         return this.subscribeToEvents(eventTypes, filter, eventFired, options)
     }
 }

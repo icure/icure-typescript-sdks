@@ -99,7 +99,7 @@ export interface DataSampleApi extends ServiceLikeApi<DataSample, Patient, Docum
      * @deprecated use {@link DataSampleApi.subscribeToEvents} instead
      *
      * Opens a WebSocket Connection in order to receive all the Data Samples corresponding to specific filter criteria.
-     * @param eventTypes Type of event you would like to listen. It can be CREATE, UPDATE or DELETE
+     * @param eventTypes Type of event you would like to listen. It can be CREATE or UPDATE
      * @param filter Filter criteria to filter to the data samples you would like to receive
      * @param eventFired Action applied each time you receive a data sample through the WebSocket
      * @param options Options to configure the WebSocket.
@@ -108,7 +108,7 @@ export interface DataSampleApi extends ServiceLikeApi<DataSample, Patient, Docum
      *    - connectionMaxRetry : how many time retrying to reconnect to the iCure WebSocket;
      *    - connectionRetryIntervalInMs : How long base interval will be between two retry. The retry attempt is exponential and using a random value (connectionRetryIntervalMs * (random between 1 and 2))^nbAttempts)
      */
-    subscribeToDataSampleEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: CommonFilter<DataSample>, eventFired: (dataSample: DataSample) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection>
+    subscribeToDataSampleEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<DataSample>, eventFired: (dataSample: DataSample) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection>
 
     /**
      * @deprecated use {@link DataSampleApi.setAttachment} instead
@@ -169,7 +169,7 @@ class DataSampleApiImpl extends ServiceLikeApiImpl<DataSample, Patient, Document
     getDataSamplesForPatient(patient: Patient): Promise<Array<DataSample>> {
         return this.getForPatient(patient)
     }
-    subscribeToDataSampleEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: CommonFilter<DataSample>, eventFired: (dataSample: DataSample) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection> {
+    subscribeToDataSampleEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<DataSample>, eventFired: (dataSample: DataSample) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection> {
         return this.subscribeToEvents(eventTypes, filter, eventFired, options)
     }
     setDataSampleAttachment(dataSampleId: string, body: ArrayBuffer, documentName?: string, documentVersion?: string, documentExternalUuid?: string, documentLanguage?: string): Promise<Document> {

@@ -317,7 +317,7 @@ export function testMaintenanceTaskLikeApi<
             expect(ctx.toMtDto(updatedNotification).status).toEqual('completed')
         })
 
-        const subscribeAndCreateMaintenanceTask = async (options: {}, eventTypes: ('CREATE' | 'DELETE' | 'UPDATE')[]) => {
+        const subscribeAndCreateMaintenanceTask = async (options: {}, eventTypes: ('CREATE' | 'UPDATE')[]) => {
             const { api, user } = await ctx.apiForEnvUser(env, hcp1Username)
             // TODO fix eventListener typing
             const connectionPromise = async (options: {}, dataOwnerId: string, eventListener: (notification: MaintenanceTask) => Promise<void>) =>

@@ -197,7 +197,7 @@ export function testHelementLikeApi<DSAnonymousApiBuilder extends AnonymousApiBu
         const testType = 'IC-TEST'
         const testCode = 'TEST'
 
-        const subscribeAndCreateHealthElement = async (options: {}, eventTypes: ('CREATE' | 'DELETE' | 'UPDATE')[]) => {
+        const subscribeAndCreateHealthElement = async (options: {}, eventTypes: ('CREATE' | 'UPDATE')[]) => {
             const { api, user } = await ctx.apiForEnvUser(env, hcp1Username)
             // TODO fix event listener type
             const connectionPromise = async (options: {}, dataOwnerId: string, eventListener: (healthcareElement: HealthElement) => Promise<void>) =>

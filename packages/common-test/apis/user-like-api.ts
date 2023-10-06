@@ -360,7 +360,7 @@ export function testUserLikeApi<
             expect(patientFound2).toContain(heByHcpId)
         })
 
-        const subscribeAndCreateUser = async (options: {}, eventTypes: ('CREATE' | 'DELETE' | 'UPDATE')[]) => {
+        const subscribeAndCreateUser = async (options: {}, eventTypes: ('CREATE' | 'UPDATE')[]) => {
             const { api, user } = await ctx.masterApi(env)
 
             const connectionPromise = async (options: {}, dataOwnerId: string, eventListener: (user: User) => Promise<void>) => {

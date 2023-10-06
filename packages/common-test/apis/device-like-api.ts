@@ -80,7 +80,7 @@ export function testDeviceLikeApi<DSAnonymousApiBuilder extends AnonymousApiBuil
             expect(updatedMedicalDeviceDto.modified).toBeGreaterThan(createdMedicalDeviceDto.modified!)
         })
 
-        const subscribeAndCreateDevice = async (options: {}, eventTypes: ('CREATE' | 'DELETE' | 'UPDATE')[]) => {
+        const subscribeAndCreateDevice = async (options: {}, eventTypes: ('CREATE' | 'UPDATE')[]) => {
             const apiAndUser = await ctx.apiForEnvUser(env, hcp1Username)
             const api = apiAndUser.api
             const user = apiAndUser.user

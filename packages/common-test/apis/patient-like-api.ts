@@ -158,7 +158,7 @@ export function testPatientLikeApi<
             await ctx.checkPatientAccessibleAndDecrypted(pApi, sharedPatient, true)
         })
 
-        const subscribeAndCreatePatient = async (options: {}, eventTypes: ('CREATE' | 'DELETE' | 'UPDATE')[]) => {
+        const subscribeAndCreatePatient = async (options: {}, eventTypes: ('CREATE' | 'UPDATE')[]) => {
             const { api, user } = await ctx.apiForEnvUser(env, hcp1Username)
 
             const connectionPromise = async (options: {}, dataOwnerId: string, eventListener: (patient: Patient) => Promise<void>) => {

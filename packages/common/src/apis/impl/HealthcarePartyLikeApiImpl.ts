@@ -89,7 +89,7 @@ export class HealthcarePartyLikeApiImpl<DSHealthcareParty> implements Healthcare
     }
 
     async subscribeToEvents(
-        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
+        eventTypes: ('CREATE' | 'UPDATE')[],
         filter: CommonFilter<HealthcareParty>,
         eventFired: (hcp: DSHealthcareParty) => Promise<void>,
         options?: {

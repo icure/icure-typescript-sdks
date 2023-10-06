@@ -162,7 +162,7 @@ export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements Hea
     }
 
     async subscribeToEvents(
-        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
+        eventTypes: ('CREATE' | 'UPDATE')[],
         filter: CommonFilter<HealthElement>,
         eventFired: (dataSample: DSHealthElement) => Promise<void>,
         options?: {

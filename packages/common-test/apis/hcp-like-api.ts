@@ -122,7 +122,7 @@ export function testHcpLikeApi<
             expect(retrievedPatient).toEqual(createdPatient)
         })
 
-        const subscribeAndCreateHealthcareParty = async (options: {}, eventTypes: ('CREATE' | 'DELETE' | 'UPDATE')[]) => {
+        const subscribeAndCreateHealthcareParty = async (options: {}, eventTypes: ('CREATE' | 'UPDATE')[]) => {
             const { api, user } = await ctx.masterApi(env)
             const connectionPromise = async (options: {}, dataOwnerId: string, eventListener: (patient: HealthcareParty) => Promise<void>) => {
                 await sleep(2000)

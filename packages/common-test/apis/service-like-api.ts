@@ -600,7 +600,7 @@ export function testServiceLikeApi<
             expect({ ...retrievedUnmodifiedServiceDto, encryptedSelf: undefined }).toEqual({ ...servicesDto[1], encryptedSelf: undefined })
         })
 
-        const subscribeAndCreateContactOrService = async (options: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }, eventTypes: ('CREATE' | 'DELETE' | 'UPDATE')[], supplier: () => Promise<void>) => {
+        const subscribeAndCreateContactOrService = async (options: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }, eventTypes: ('CREATE' | 'UPDATE')[], supplier: () => Promise<void>) => {
             const { api, user } = await ctx.apiForEnvUser(env, hcp1Username)
             // TODO fix eventListener typing
             const connectionPromise = async (options: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }, dataOwnerId: string, eventListener: (ds: Service) => Promise<void>) =>
@@ -697,19 +697,20 @@ export function testServiceLikeApi<
             )
         }, 60_000)
 
-        it('Can subscribe ServiceLike DELETE without options', async () => {
-            await subscribeAndCreateContactOrService({}, ['DELETE'], async () => deleteService())
-        }, 60_000)
-
-        it('Can subscribe ServiceLike DELETE with options', async () => {
-            await subscribeAndCreateContactOrService(
-                {
-                    connectionRetryIntervalMs: 10_000,
-                    connectionMaxRetry: 5,
-                },
-                ['DELETE'],
-                async () => deleteService(),
-            )
-        }, 60_000)
+        // Delete is not supported yet
+        // it('Can subscribe ServiceLike DELETE without options', async () => {
+        //     await subscribeAndCreateContactOrService({}, ['DELETE'], async () => deleteService())
+        // }, 60_000)
+        //
+        // it('Can subscribe ServiceLike DELETE with options', async () => {
+        //     await subscribeAndCreateContactOrService(
+        //         {
+        //             connectionRetryIntervalMs: 10_000,
+        //             connectionMaxRetry: 5,
+        //         },
+        //         ['DELETE'],
+        //         async () => deleteService(),
+        //     )
+        // }, 60_000)
     })
 }

@@ -67,7 +67,7 @@ export interface PatientLikeApi<DSPatient> {
 
     /**
      * Opens a WebSocket Connection in order to receive all the Patients corresponding to specific filter criteria.
-     * @param eventTypes Type of event you would like to listen. It can be CREATE, UPDATE or DELETE
+     * @param eventTypes Type of event you would like to listen. It can be CREATE or UPDATE
      * @param filter Filter criteria to filter to the Patients you would like to receive
      * @param eventFired Action applied each time you receive a Patient through the WebSocket
      * @param options Options to configure the WebSocket.
@@ -77,7 +77,7 @@ export interface PatientLikeApi<DSPatient> {
      *    - connectionRetryIntervalInMs : How long base interval will be between two retry. The retry attempt is exponential and using a random value (connectionRetryIntervalMs * (random between 1 and 2))^nbAttempts)
      */
     subscribeToEvents(
-        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
+        eventTypes: ('CREATE' | 'UPDATE')[],
         filter: CommonFilter<Patient>,
         eventFired: (patient: DSPatient) => Promise<void>,
         options?: {
