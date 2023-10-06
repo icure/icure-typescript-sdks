@@ -9,7 +9,7 @@
         "openapi-client",
         "openapi-generator"
     ],
-    "license": "Unlicense",
+    "license": "Apache-2.0",
     "main": "./dist/index.js",
     "typings": "./dist/index.d.ts",
     "scripts": {
