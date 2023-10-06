@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 
 # Initialize an empty JSON array for the report
 report='[]'
