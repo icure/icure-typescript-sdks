@@ -69,7 +69,7 @@ describe('Notification mapper test', () => {
         const newNotification = new Notification({
             ...commonOptions,
             properties: new Set(commonOptions.properties),
-            type: NotificationTypeEnum.KEY_PAIR_UPDATE,
+            type: NotificationTypeEnum.KeyPairUpdate,
             systemMetaData: new SystemMetaDataEncrypted({
                 delegations: mapOf({ TEST_ID: new Set([new Delegation({ owner: uuid(), delegatedTo: uuid() })]) }),
                 encryptionKeys: mapOf({ TEST_KEY: new Set([new Delegation({ owner: uuid(), delegatedTo: uuid() })]) }),
@@ -84,7 +84,7 @@ describe('Notification mapper test', () => {
     it('MaintenanceTask to Notification - Success', () => {
         const newTask = new MaintenanceTask({
             ...commonOptions,
-            taskType: NotificationTypeEnum.NEW_USER_OWN_DATA_ACCESS,
+            taskType: NotificationTypeEnum.NewUserOwnDataAccess,
             delegations: { TEST_ID: [new Delegation({ owner: uuid(), delegatedTo: uuid() })] },
             encryptionKeys: { TEST_KEY: [new Delegation({ owner: uuid(), delegatedTo: uuid() })] },
         })
@@ -103,6 +103,7 @@ describe('Notification mapper test', () => {
         const newNotification = mapMaintenanceTaskToNotification(newTask)
         assert(newNotification)
         assert(newNotification.id === newTask.id)
-        assert(newNotification.type === NotificationTypeEnum.OTHER)
+        assert(newNotification.type === NotificationTypeEnum.Other)
+        // TODO would change to throw exception.
     })
 })

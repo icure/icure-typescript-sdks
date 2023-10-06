@@ -5,6 +5,7 @@ import { getEnvironmentInitializer, hcp1Username, hcp2Username, patUsername, set
 import { Patient, sleep, User } from '@icure/api'
 import 'isomorphic-fetch'
 import { doXOnYAndSubscribe } from '../websocket-utils'
+import { describe, it, beforeAll } from '@jest/globals'
 
 setLocalStorage(fetch)
 
