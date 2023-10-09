@@ -3,7 +3,7 @@ import { PaginatedList } from '../models/PaginatedList.model'
 import { Connection, Topic as TopicDto } from '@icure/api'
 import { CodingReference } from '../models/CodingReference.model'
 import { Reference } from '../types/Reference'
-import { TopicRole } from '../models/enums/TopicRole'
+import { TopicRole } from '../models/enums/TopicRole.enum'
 
 export interface TopicLikeApi<DSTopic, DSHcp, DSPatient, DSService, DSHealthElement> {
     /**

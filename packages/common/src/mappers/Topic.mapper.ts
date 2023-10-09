@@ -3,7 +3,7 @@ import { CodeStub, Delegation, SecurityMetadata as SecurityMetadataDto, Topic as
 import { CodingReference } from '../models/CodingReference.model'
 import { SystemMetaDataEncrypted } from '../models/SystemMetaDataEncrypted.model'
 import { mapCodeStubToCodingReference } from './CodingReference.mapper'
-import { TopicRole } from '../models/enums/TopicRole'
+import { TopicRole } from '../models/enums/TopicRole.enum'
 import { toCryptedForeignKeys, toDelegations, toEncryptedSelf, toEncryptionKeys, toSecretForeignKeys, toSecurityMetadataDto, toSystemMetaDataEncrypted } from './SystemMetaData.mapper'
 
 function toTopicDtoId(domain: Topic): string | undefined {

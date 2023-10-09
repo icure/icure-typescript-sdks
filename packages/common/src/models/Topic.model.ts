@@ -3,7 +3,7 @@ import { mapTo } from '../utils/decorators'
 import { forceUuid } from '../utils/uuidUtils'
 import { CodingReference } from './CodingReference.model'
 import { SystemMetaDataEncrypted } from './SystemMetaDataEncrypted.model'
-import { TopicRole } from './enums/TopicRole'
+import { TopicRole } from './enums/TopicRole.enum'
 
 @mapTo(TopicDto)
 export class Topic {
