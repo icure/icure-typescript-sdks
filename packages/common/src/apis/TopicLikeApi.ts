@@ -1,43 +1,58 @@
 import { CommonFilter } from '../filters/filters'
 import { PaginatedList } from '../models/PaginatedList.model'
-import { Connection } from '@icure/api'
+import { Connection, Topic as TopicDto } from '@icure/api'
 import { CodingReference } from '../models/CodingReference.model'
 import { Reference } from '../types/Reference'
+import { TopicRole } from '../models/enums/TopicRole'
 
 export interface TopicLikeApi<DSTopic, DSHcp, DSPatient, DSService, DSHealthElement> {
     /**
-     * A Topic is a discussion between healthcare professionals about a patient, a healthcare element, some services, ...
+     * A Topic is a discussion between healthcare professionals about a patient, some healthcare elements, some services, ...
+     *
      * This service allows you to create a topic and to add participants to it.
+     *
+     * The topic will be created with the current user as a participant and will be considered as owner of the topic. They couldn't leave the topic except if they transfer the ownership to another participant.
+     *
+     * Services and healthElements are optional and can be added later. If you want to add them at the after Topic's creation, you can use the {@link addServices} and {@link addHealthElement} methods.
+     * Services and healthElements have to be shared with the participants independently of the Topic creation.
      *
      * @param participants dataOwners that will be added to the topic
      * @param description description of the topic
      * @param patient patient linked to the topic
-     * @param healthElement healthElement linked to the topic
-     * @param services services linked to the topic
+     * @param healthElements healthElements linked to the topic
+     * @param services services linked to the topic.
      * @param tags
      * @param codes
      * @returns the created topic
      */
-    create(participants: Reference<DSHcp>[], description?: string, patient?: Reference<DSPatient>, healthElement?: Reference<DSHealthElement>, services?: Array<Reference<DSService>>, tags?: Array<CodingReference>, codes?: Array<CodingReference>): Promise<DSTopic>
+    create(
+        participants: { participant: Reference<DSHcp>; role: TopicRole }[],
+        description?: string,
+        patient?: Reference<DSPatient>,
+        healthElements?: Set<Reference<DSHealthElement>>,
+        services?: Set<Reference<DSService>>,
+        tags?: Set<CodingReference>,
+        codes?: Set<CodingReference>,
+    ): Promise<DSTopic>
 
     /**
-     * Add participants to a topic
+     * Add participant to a topic
      *
      * @param topic Topic to which participants will be added
-     * @param participants Healthcare professionals that will be added to the topic
+     * @param participant Healthcare professionals that will be added to the topic
      *
      * @returns the updated topic
      */
-    addParticipants(topic: DSTopic, participants: Reference<DSHcp>[]): Promise<DSTopic>
+    addParticipant(topic: DSTopic, participant: { ref: Reference<DSHcp>; role: TopicRole }): Promise<DSTopic>
 
     /**
      * Remove participants from a topic
      * @param topic Topic from which participants will be removed
-     * @param participants Healthcare professionals that will be removed from the topic
+     * @param participant Healthcare professionals that will be removed from the topic
      *
      * @returns the updated topic
      */
-    removeParticipants(topic: DSTopic, participants: Reference<DSHcp>[]): Promise<DSTopic>
+    removeParticipant(topic: DSTopic, participant: Reference<DSHcp>): Promise<DSTopic>
 
     /**
      * Add a service to a topic
@@ -46,7 +61,16 @@ export interface TopicLikeApi<DSTopic, DSHcp, DSPatient, DSService, DSHealthElem
      *
      * @returns the updated topic
      */
-    addServices(topic: DSTopic, services: DSService[]): Promise<DSTopic>
+    addServices(topic: DSTopic, services: Reference<DSService>[]): Promise<DSTopic>
+
+    /**
+     * Add a healthElements to a topic
+     * @param topic Topic to which the service will be added
+     * @param healthElements HealthElements that will be added to the topic
+     *
+     * @returns the updated topic
+     */
+    addHealthElements(topic: DSTopic, healthElements: Reference<DSHealthElement>[]): Promise<DSTopic>
 
     /**
      * Remove a service from a topic
@@ -56,6 +80,15 @@ export interface TopicLikeApi<DSTopic, DSHcp, DSPatient, DSService, DSHealthElem
      * @returns the updated topic
      */
     removeServices(topic: DSTopic, services: DSService[]): Promise<DSTopic>
+
+    /**
+     * Remove a healthElements from a topic
+     * @param topic Topic from which the service will be removed
+     * @param healthElements HealthElements that will be removed from the topic
+     *
+     * @returns the updated topic
+     */
+    removeHealthElements(topic: DSTopic, healthElements: DSHealthElement[]): Promise<DSTopic>
 
     /**
      * Unsubscribe the current user from a topic, the user will not receive any more messages from this topic neither will be able to send messages to it
@@ -74,12 +107,9 @@ export interface TopicLikeApi<DSTopic, DSHcp, DSPatient, DSService, DSHealthElem
      */
     get(id: string): Promise<DSTopic>
 
-    //TODO: Add proper type when filter is implemented
-    filterBy(filter: CommonFilter<any>, nextTopicId?: string, limit?: number): Promise<PaginatedList<DSTopic>>
+    filterBy(filter: CommonFilter<TopicDto>, nextTopicId?: string, limit?: number): Promise<PaginatedList<DSTopic>>
 
-    //TODO: Add proper type when filter is implemented
-    matchBy(filter: CommonFilter<any>, nextTopicId?: string, limit?: number): Promise<PaginatedList<DSTopic>>
+    matchBy(filter: CommonFilter<TopicDto>): Promise<Array<String>>
 
-    //TODO: Add proper type when filter is implemented
-    subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: CommonFilter<any>, eventFired: (topic: DSTopic) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection>
+    subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: CommonFilter<TopicDto>, eventFired: (topic: DSTopic) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection>
 }

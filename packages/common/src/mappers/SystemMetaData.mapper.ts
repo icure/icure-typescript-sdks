@@ -1,4 +1,4 @@
-import { CodeStub, Device, HealthcareParty, HealthElement, MaintenanceTask, Patient, Service, SecurityMetadata as SecurityMetadataDto, Document as DocumentDto } from '@icure/api'
+import { Device, HealthcareParty, HealthElement, MaintenanceTask, Patient, Service, SecurityMetadata as SecurityMetadataDto, Document as DocumentDto, Message as MessageDto, Topic as TopicDto } from '@icure/api'
 import { SystemMetaDataEncrypted } from '../models/SystemMetaDataEncrypted.model'
 import { mapDelegationDtoToDelegation, mapDelegationToDelegationDto } from './Delegation.mapper'
 import { SystemMetaDataOwner } from '../models/SystemMetaDataOwner.model'
@@ -37,7 +37,7 @@ function extractInternalTags(dto: HealthElement | Service | MaintenanceTask | He
     return !!dto.tags ? new Set(dto.tags.filter((t) => t.type === ICURE_INTERNAL_FHIR_TAG_TYPE).map(mapCodeStubToCodingReference)) : undefined
 }
 
-export function toSystemMetaDataEncrypted(dto: HealthElement | Service | MaintenanceTask | DocumentDto): SystemMetaDataEncrypted | undefined {
+export function toSystemMetaDataEncrypted(dto: HealthElement | Service | MaintenanceTask | DocumentDto | MessageDto | TopicDto): SystemMetaDataEncrypted | undefined {
     return new SystemMetaDataEncrypted({
         encryptedSelf: dto.encryptedSelf,
         secretForeignKeys: dto.secretForeignKeys,

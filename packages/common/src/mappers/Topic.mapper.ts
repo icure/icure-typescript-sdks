@@ -1,189 +1,160 @@
 import { Topic } from '../models/Topic.model'
-import { CodeStub, Delegation, Form } from '@icure/api'
-import { SystemMetaDataEncrypted } from '../models/SystemMetaDataEncrypted.model'
+import { CodeStub, Delegation, SecurityMetadata as SecurityMetadataDto, Topic as TopicDto, TopicRole as TopicRoleDto } from '@icure/api'
 import { CodingReference } from '../models/CodingReference.model'
+import { SystemMetaDataEncrypted } from '../models/SystemMetaDataEncrypted.model'
+import { mapCodeStubToCodingReference } from './CodingReference.mapper'
+import { TopicRole } from '../models/enums/TopicRole'
+import { toCryptedForeignKeys, toDelegations, toEncryptedSelf, toEncryptionKeys, toSecretForeignKeys, toSecurityMetadataDto, toSystemMetaDataEncrypted } from './SystemMetaData.mapper'
 
-function toFormId(domain: Topic): string | undefined {
+function toTopicDtoId(domain: Topic): string | undefined {
+    return domain.id
+}
+
+function toTopicDtoRev(domain: Topic): string | undefined {
+    return domain.rev
+}
+
+function toTopicDtoCreated(domain: Topic): number | undefined {
+    return domain.created
+}
+
+function toTopicDtoModified(domain: Topic): number | undefined {
+    return domain.modified
+}
+
+function toTopicDtoDescription(domain: Topic): string | undefined {
+    return domain.descr
+}
+
+function toTopicDtoTags(domain: Topic): CodeStub[] | undefined {
+    return Array.from(domain.tags ?? []).map((item) => mapCodeStubToCodingReference(item))
+}
+
+function toTopicDtoCodes(domain: Topic): CodeStub[] | undefined {
+    return Array.from(domain.codes ?? []).map((item) => mapCodeStubToCodingReference(item))
+}
+
+function toTopicDtoAuthor(domain: Topic): string | undefined {
+    return domain.author
+}
+
+function toTopicDtoResponsible(domain: Topic): string | undefined {
     throw new Error('Not implemented')
 }
 
-function toFormRev(domain: Topic): string | undefined {
-    throw new Error('Not implemented')
+function toTopicDtoMedicalLocationId(domain: Topic): string | undefined {
+    return domain.medicalLocationId
 }
 
-function toFormCreated(domain: Topic): number | undefined {
-    throw new Error('Not implemented')
+function toTopicDtoEndOfLife(domain: Topic): number | undefined {
+    return domain.endOfLife
 }
 
-function toFormModified(domain: Topic): number | undefined {
-    throw new Error('Not implemented')
+function toTopicDtoDeletionDate(domain: Topic): number | undefined {
+    return domain.deletionDate
 }
 
-function toFormAuthor(domain: Topic): string | undefined {
-    throw new Error('Not implemented')
+function toTopicDtoActiveParticipants(domain: Topic): { [key: string]: TopicRoleDto } | undefined {
+    return Object.fromEntries([...(domain.activeParticipants.entries() ?? [])].map(([k, v]) => [k, v as TopicRoleDto]))
 }
 
-function toFormResponsible(domain: Topic): string | undefined {
-    throw new Error('Not implemented')
+function toTopicDtoSecurityMetadata(domain: Topic): SecurityMetadataDto | undefined {
+    return toSecurityMetadataDto(domain.systemMetadata)
 }
 
-function toFormMedicalLocationId(domain: Topic): string | undefined {
-    throw new Error('Not implemented')
+function toTopicDtoSecretForeignKeys(domain: Topic): string[] | undefined {
+    return toSecretForeignKeys(domain.systemMetadata)
 }
 
-function toFormTags(domain: Topic): CodeStub[] | undefined {
-    throw new Error('Not implemented')
+function toTopicDtoCryptedForeignKeys(domain: Topic): { [key: string]: Delegation[] } | undefined {
+    return toCryptedForeignKeys(domain.systemMetadata)
 }
 
-function toFormCodes(domain: Topic): CodeStub[] | undefined {
-    throw new Error('Not implemented')
+function toTopicDtoDelegations(domain: Topic): { [key: string]: Delegation[] } | undefined {
+    return toDelegations(domain.systemMetadata)
 }
 
-function toFormEndOfLife(domain: Topic): number | undefined {
-    throw new Error('Not implemented')
+function toTopicDtoEncryptionKeys(domain: Topic): { [key: string]: Delegation[] } | undefined {
+    return toEncryptionKeys(domain.systemMetadata)
 }
 
-function toFormDeletionDate(domain: Topic): number | undefined {
-    throw new Error('Not implemented')
+function toTopicDtoEncryptedSelf(domain: Topic): string | undefined {
+    return toEncryptedSelf(domain.systemMetadata)
 }
 
-function toFormOpeningDate(domain: Topic): number | undefined {
-    throw new Error('Not implemented')
+function toTopicId(dto: TopicDto): string | undefined {
+    return dto.id
 }
 
-function toFormStatus(domain: Topic): string | undefined {
-    throw new Error('Not implemented')
+function toTopicRev(dto: TopicDto): string | undefined {
+    return dto.rev
 }
 
-function toFormVersion(domain: Topic): number | undefined {
-    throw new Error('Not implemented')
+function toTopicCreated(dto: TopicDto): number | undefined {
+    return dto.created
 }
 
-function toFormLogicalUuid(domain: Topic): string | undefined {
-    throw new Error('Not implemented')
+function toTopicModified(dto: TopicDto): number | undefined {
+    return dto.modified
 }
 
-function toFormDescr(domain: Topic): string | undefined {
-    throw new Error('Not implemented')
+function toTopicAuthor(dto: TopicDto): string | undefined {
+    return dto.author
 }
 
-function toFormUniqueId(domain: Topic): string | undefined {
-    throw new Error('Not implemented')
+function toTopicResponsible(dto: TopicDto): string | undefined {
+    return dto.responsible
 }
 
-function toFormFormTemplateId(domain: Topic): string | undefined {
-    throw new Error('Not implemented')
+function toTopicMedicalLocationId(dto: TopicDto): string | undefined {
+    return dto.medicalLocationId
 }
 
-function toFormContactId(domain: Topic): string | undefined {
-    throw new Error('Not implemented')
+function toTopicTags(dto: TopicDto): Set<CodingReference> | undefined {
+    return !!dto.tags ? new Set(dto.tags.map((item) => mapCodeStubToCodingReference(item))) : undefined
 }
 
-function toFormHealthElementId(domain: Topic): string | undefined {
-    throw new Error('Not implemented')
+function toTopicCodes(dto: TopicDto): Set<CodingReference> | undefined {
+    return !!dto.codes ? new Set(dto.codes.map((item) => mapCodeStubToCodingReference(item))) : undefined
 }
 
-function toFormPlanOfActionId(domain: Topic): string | undefined {
-    throw new Error('Not implemented')
+function toTopicEndOfLife(dto: TopicDto): number | undefined {
+    return dto.endOfLife
 }
 
-function toFormParent(domain: Topic): string | undefined {
-    throw new Error('Not implemented')
+function toTopicDeletionDate(dto: TopicDto): number | undefined {
+    return dto.deletionDate
 }
 
-function toFormSecretForeignKeys(domain: Topic): string[] | undefined {
-    throw new Error('Not implemented')
+function toTopicDescr(dto: TopicDto): string | undefined {
+    return dto.description
 }
 
-function toFormCryptedForeignKeys(domain: Topic): { [key: string]: Delegation[] } | undefined {
-    throw new Error('Not implemented')
+function toTopicActiveParticipants(dto: TopicDto): Map<string, TopicRole> {
+    return new Map(Object.entries(dto.activeParticipants ?? {}).map(([k, v]) => [k, v as TopicRole]))
 }
 
-function toFormDelegations(domain: Topic): { [key: string]: Delegation[] } | undefined {
-    throw new Error('Not implemented')
+function toTopicSystemMetadata(dto: TopicDto): SystemMetaDataEncrypted | undefined {
+    return toSystemMetaDataEncrypted(dto)
 }
 
-function toFormEncryptionKeys(domain: Topic): { [key: string]: Delegation[] } | undefined {
-    throw new Error('Not implemented')
+function toTopicDtoLinkedServices(domain: Topic): string[] | undefined {
+    return domain.linkedServices ? Array.from(domain.linkedServices) : undefined
 }
 
-function toFormEncryptedSelf(domain: Topic): string | undefined {
-    throw new Error('Not implemented')
+function toTopicDtoLinkedHealthElements(domain: Topic): string[] | undefined {
+    return domain.linkedHealthElements ? Array.from(domain.linkedHealthElements) : undefined
 }
 
-function toTopicId(dto: Form): string | undefined {
-    throw new Error('Not implemented')
+function toTopicLinkedHealthElements(dto: TopicDto): Set<string> | undefined {
+    return dto.linkedHealthElements ? new Set(dto.linkedHealthElements) : undefined
 }
 
-function toTopicRev(dto: Form): string | undefined {
-    throw new Error('Not implemented')
+function toTopicLinkedServices(dto: TopicDto): Set<string> | undefined {
+    return dto.linkedServices ? new Set(dto.linkedServices) : undefined
 }
 
-function toTopicCreated(dto: Form): number | undefined {
-    throw new Error('Not implemented')
-}
-
-function toTopicModified(dto: Form): number | undefined {
-    throw new Error('Not implemented')
-}
-
-function toTopicAuthor(dto: Form): string | undefined {
-    throw new Error('Not implemented')
-}
-
-function toTopicResponsible(dto: Form): string | undefined {
-    throw new Error('Not implemented')
-}
-
-function toTopicMedicalLocationId(dto: Form): string | undefined {
-    throw new Error('Not implemented')
-}
-
-function toTopicTags(dto: Form): CodingReference[] | undefined {
-    throw new Error('Not implemented')
-}
-
-function toTopicCodes(dto: Form): CodingReference[] | undefined {
-    throw new Error('Not implemented')
-}
-
-function toTopicEndOfLife(dto: Form): number | undefined {
-    throw new Error('Not implemented')
-}
-
-function toTopicDeletionDate(dto: Form): number | undefined {
-    throw new Error('Not implemented')
-}
-
-function toTopicOpeningDate(dto: Form): number | undefined {
-    throw new Error('Not implemented')
-}
-
-function toTopicExternalUuid(dto: Form): string | undefined {
-    throw new Error('Not implemented')
-}
-
-function toTopicDescr(dto: Form): string | undefined {
-    throw new Error('Not implemented')
-}
-
-function toTopicContactId(dto: Form): string | undefined {
-    throw new Error('Not implemented')
-}
-
-function toTopicHealthElementId(dto: Form): string | undefined {
-    throw new Error('Not implemented')
-}
-
-function toTopicSystemMetadata(dto: Form): SystemMetaDataEncrypted | undefined {
-    throw new Error('Not implemented')
-}
-
-function toTopicActiveParticipants(dto: Form): string[] {
-    throw new Error('Not implemented')
-}
-
-export function mapFormToTopic(dto: Form): Topic {
+export function mapTopicDtoToTopic(dto: TopicDto): Topic {
     return new Topic({
         id: toTopicId(dto),
         rev: toTopicRev(dto),
@@ -196,44 +167,36 @@ export function mapFormToTopic(dto: Form): Topic {
         codes: toTopicCodes(dto),
         endOfLife: toTopicEndOfLife(dto),
         deletionDate: toTopicDeletionDate(dto),
-        openingDate: toTopicOpeningDate(dto),
-        externalUuid: toTopicExternalUuid(dto),
         descr: toTopicDescr(dto),
-        contactId: toTopicContactId(dto),
-        healthElementId: toTopicHealthElementId(dto),
+        linkedHealthElements: toTopicLinkedHealthElements(dto),
+        linkedServices: toTopicLinkedServices(dto),
         activeParticipants: toTopicActiveParticipants(dto),
         systemMetadata: toTopicSystemMetadata(dto),
     })
 }
 
-export function mapTopicToForm(domain: Topic): Form {
-    return new Form({
-        id: toFormId(domain),
-        rev: toFormRev(domain),
-        created: toFormCreated(domain),
-        modified: toFormModified(domain),
-        author: toFormAuthor(domain),
-        responsible: toFormResponsible(domain),
-        medicalLocationId: toFormMedicalLocationId(domain),
-        tags: toFormTags(domain),
-        codes: toFormCodes(domain),
-        endOfLife: toFormEndOfLife(domain),
-        deletionDate: toFormDeletionDate(domain),
-        openingDate: toFormOpeningDate(domain),
-        status: toFormStatus(domain),
-        version: toFormVersion(domain),
-        logicalUuid: toFormLogicalUuid(domain),
-        descr: toFormDescr(domain),
-        uniqueId: toFormUniqueId(domain),
-        formTemplateId: toFormFormTemplateId(domain),
-        contactId: toFormContactId(domain),
-        healthElementId: toFormHealthElementId(domain),
-        planOfActionId: toFormPlanOfActionId(domain),
-        parent: toFormParent(domain),
-        secretForeignKeys: toFormSecretForeignKeys(domain),
-        cryptedForeignKeys: toFormCryptedForeignKeys(domain),
-        delegations: toFormDelegations(domain),
-        encryptionKeys: toFormEncryptionKeys(domain),
-        encryptedSelf: toFormEncryptedSelf(domain),
+export function mapTopicToTopicDto(domain: Topic): TopicDto {
+    return new TopicDto({
+        id: toTopicDtoId(domain),
+        rev: toTopicDtoRev(domain),
+        created: toTopicDtoCreated(domain),
+        modified: toTopicDtoModified(domain),
+        description: toTopicDtoDescription(domain),
+        tags: toTopicDtoTags(domain),
+        codes: toTopicDtoCodes(domain),
+        author: toTopicDtoAuthor(domain),
+        responsible: toTopicDtoResponsible(domain),
+        medicalLocationId: toTopicDtoMedicalLocationId(domain),
+        endOfLife: toTopicDtoEndOfLife(domain),
+        deletionDate: toTopicDtoDeletionDate(domain),
+        activeParticipants: toTopicDtoActiveParticipants(domain),
+        linkedServices: toTopicDtoLinkedServices(domain),
+        linkedHealthElements: toTopicDtoLinkedHealthElements(domain),
+        securityMetadata: toTopicDtoSecurityMetadata(domain),
+        secretForeignKeys: toTopicDtoSecretForeignKeys(domain),
+        cryptedForeignKeys: toTopicDtoCryptedForeignKeys(domain),
+        delegations: toTopicDtoDelegations(domain),
+        encryptionKeys: toTopicDtoEncryptionKeys(domain),
+        encryptedSelf: toTopicDtoEncryptedSelf(domain),
     })
 }
