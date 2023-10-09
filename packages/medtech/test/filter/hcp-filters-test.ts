@@ -39,7 +39,8 @@ describe('HealthcareProfessional Filters Test', function () {
         patUser = patApiAndUser.user
 
         //Create more hcps
-        hcp1 = await hcp1Api.healthcareProfessionalApi.createOrModifyHealthcareProfessional(
+        const { api: masterApi } = await TestUtils.createMedTechApiAndLoggedUserFor(env.iCureUrl, env.masterHcp!)
+        hcp1 = await masterApi.healthcareProfessionalApi.createOrModifyHealthcareProfessional(
             new HealthcareProfessional({
                 name: 'HCP_01',
                 labels: new Set([new CodingReference({ type: 'hcp-type', code: `physician-${id}` })]),
@@ -47,7 +48,7 @@ describe('HealthcareProfessional Filters Test', function () {
             }),
         )
 
-        hcp2 = await hcp1Api.healthcareProfessionalApi.createOrModifyHealthcareProfessional(
+        hcp2 = await masterApi.healthcareProfessionalApi.createOrModifyHealthcareProfessional(
             new HealthcareProfessional({
                 name: 'HCP_02',
                 labels: new Set([new CodingReference({ type: 'hcp-type', code: `physician-${id}` })]),
@@ -55,7 +56,7 @@ describe('HealthcareProfessional Filters Test', function () {
             }),
         )
 
-        hcp3 = await hcp1Api.healthcareProfessionalApi.createOrModifyHealthcareProfessional(
+        hcp3 = await masterApi.healthcareProfessionalApi.createOrModifyHealthcareProfessional(
             new HealthcareProfessional({
                 firstName: 'John',
                 lastName: 'Keats',

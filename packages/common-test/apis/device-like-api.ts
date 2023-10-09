@@ -5,6 +5,7 @@ import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import { Device, sleep } from '@icure/api'
 import 'isomorphic-fetch'
 import { doXOnYAndSubscribe } from '../websocket-utils'
+import { describe, it, beforeAll } from '@jest/globals'
 
 setLocalStorage(fetch)
 
@@ -80,7 +81,7 @@ export function testDeviceLikeApi<DSAnonymousApiBuilder extends AnonymousApiBuil
             expect(updatedMedicalDeviceDto.modified).toBeGreaterThan(createdMedicalDeviceDto.modified!)
         })
 
-        const subscribeAndCreateDevice = async (options: {}, eventTypes: ('CREATE' | 'DELETE' | 'UPDATE')[]) => {
+        const subscribeAndCreateDevice = async (options: {}, eventTypes: ('CREATE' | 'UPDATE')[]) => {
             const apiAndUser = await ctx.apiForEnvUser(env, hcp1Username)
             const api = apiAndUser.api
             const user = apiAndUser.user

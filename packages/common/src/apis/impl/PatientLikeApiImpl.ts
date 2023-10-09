@@ -117,7 +117,7 @@ export class PatientLikeApiImpl<DSPatient> implements PatientLikeApi<DSPatient> 
     }
 
     async subscribeToEvents(
-        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
+        eventTypes: ('CREATE' | 'UPDATE')[],
         filter: CommonFilter<PatientDto>,
         eventFired: (patient: DSPatient) => Promise<void>,
         options?: {

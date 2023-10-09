@@ -324,7 +324,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
     }
 
     async subscribeToEvents(
-        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
+        eventTypes: ('CREATE' | 'UPDATE')[],
         filter: CommonFilter<ServiceDto>,
         eventFired: (service: DSService) => Promise<void>,
         options?: {

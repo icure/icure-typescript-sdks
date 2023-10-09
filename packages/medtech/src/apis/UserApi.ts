@@ -86,7 +86,7 @@ export interface UserApi extends UserLikeApi<User, Patient> {
      * @deprecated Use {@link UserApi.subscribeToEvents} instead.
      *
      * Opens a WebSocket Connection in order to receive all the Users corresponding to specific filter criteria.
-     * @param eventTypes Type of event you would like to listen. It can be CREATE, UPDATE or DELETE
+     * @param eventTypes Type of event you would like to listen. It can be CREATE or UPDATE
      * @param filter Filter criteria to filter to the users you would like to receive
      * @param eventFired Action applied each time you receive a user through the WebSocket
      * @param options Options to configure the WebSocket.
@@ -96,7 +96,7 @@ export interface UserApi extends UserLikeApi<User, Patient> {
      *    - connectionRetryIntervalInMs : How long base interval will be between two retry. The retry attempt is exponential and using a random value (connectionRetryIntervalMs * (random between 1 and 2))^nbAttempts)
      */
     subscribeToUserEvents(
-        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
+        eventTypes: ('CREATE' | 'UPDATE')[],
         filter: CommonFilter<UserDto>,
         eventFired: (user: User) => Promise<void>,
         options?: {
@@ -143,7 +143,7 @@ class UserApiImpl extends UserLikeApiImpl<User, Patient, HealthcareProfessional>
     }
 
     subscribeToUserEvents(
-        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
+        eventTypes: ('CREATE' | 'UPDATE')[],
         filter: CommonFilter<UserDto>,
         eventFired: (user: User) => Promise<void>,
         options?: {

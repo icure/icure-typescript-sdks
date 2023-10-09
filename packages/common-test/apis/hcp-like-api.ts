@@ -1,12 +1,12 @@
 import 'isomorphic-fetch'
-import { getEnvironmentInitializer, hcp1Username, setLocalStorage } from '../test-utils'
+import { getEnvironmentInitializer, setLocalStorage } from '../test-utils'
 import { webcrypto } from 'crypto'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, forceUuid, HealthcarePartyFilter } from '@icure/typescript-common'
-import { assert } from 'chai'
 import { BaseApiTestContext, WithDataOwnerApi, WithHcpApi, WithPatientApi } from './TestContexts'
 import { HealthcareParty, jwk2spki, sleep, User } from '@icure/api'
 import { doXOnYAndSubscribe } from '../websocket-utils'
+import { describe, it, beforeAll } from '@jest/globals'
 
 setLocalStorage(fetch)
 
@@ -122,7 +122,7 @@ export function testHcpLikeApi<
             expect(retrievedPatient).toEqual(createdPatient)
         })
 
-        const subscribeAndCreateHealthcareParty = async (options: {}, eventTypes: ('CREATE' | 'DELETE' | 'UPDATE')[]) => {
+        const subscribeAndCreateHealthcareParty = async (options: {}, eventTypes: ('CREATE' | 'UPDATE')[]) => {
             const { api, user } = await ctx.masterApi(env)
             const connectionPromise = async (options: {}, dataOwnerId: string, eventListener: (patient: HealthcareParty) => Promise<void>) => {
                 await sleep(2000)

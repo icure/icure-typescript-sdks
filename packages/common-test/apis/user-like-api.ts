@@ -3,11 +3,12 @@ import { getEnvironmentInitializer, getTempEmail, hcp1Username, hcp2Username, hc
 import { webcrypto } from 'crypto'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, MessageFactory, NotificationStatusEnum, NotificationTypeEnum, UserFilter } from '@icure/typescript-common'
-import { BaseApiTestContext, WithDataOwnerApi, WithHcpApi, WithHelementApi, WithMaintenanceTaskApi, WithPatientApi, WithServiceApi } from './TestContexts'
+import { BaseApiTestContext, WithHelementApi, WithMaintenanceTaskApi, WithPatientApi, WithServiceApi } from './TestContexts'
 import { Patient, sleep, User } from '@icure/api'
-import { assert } from 'chai'
 import { doXOnYAndSubscribe } from '../websocket-utils'
 import { v4 } from 'uuid'
+import { describe, it, beforeAll } from '@jest/globals'
+
 setLocalStorage(fetch)
 
 export function testUserLikeApi<
@@ -360,7 +361,7 @@ export function testUserLikeApi<
             expect(patientFound2).toContain(heByHcpId)
         })
 
-        const subscribeAndCreateUser = async (options: {}, eventTypes: ('CREATE' | 'DELETE' | 'UPDATE')[]) => {
+        const subscribeAndCreateUser = async (options: {}, eventTypes: ('CREATE' | 'UPDATE')[]) => {
             const { api, user } = await ctx.masterApi(env)
 
             const connectionPromise = async (options: {}, dataOwnerId: string, eventListener: (user: User) => Promise<void>) => {

@@ -1,12 +1,13 @@
 import 'isomorphic-fetch'
-import { getEnvironmentInitializer, hcp1Username, hcp2Username, hcp3Username, patUsername, setLocalStorage, TestUtils } from '../test-utils'
+import { getEnvironmentInitializer, hcp1Username, hcp2Username, hcp3Username, patUsername, setLocalStorage } from '../test-utils'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, forceUuid, MaintenanceTaskLikeApiImpl, NotificationStatusEnum, NotificationTypeEnum } from '@icure/typescript-common'
 import { assert } from 'chai'
-import { BaseApiTestContext, WithAuthenticationApi, WithDataOwnerApi, WithHcpApi, WithMaintenanceTaskApi, WithPatientApi, WithServiceApi } from './TestContexts'
+import { BaseApiTestContext, WithMaintenanceTaskApi } from './TestContexts'
 import { expectArrayContainsExactlyInAnyOrder } from '../assertions'
 import { MaintenanceTask, User } from '@icure/api'
 import { doXOnYAndSubscribe } from '../websocket-utils'
+import { describe, it, beforeAll } from '@jest/globals'
 
 setLocalStorage(fetch)
 
@@ -317,7 +318,7 @@ export function testMaintenanceTaskLikeApi<
             expect(ctx.toMtDto(updatedNotification).status).toEqual('completed')
         })
 
-        const subscribeAndCreateMaintenanceTask = async (options: {}, eventTypes: ('CREATE' | 'DELETE' | 'UPDATE')[]) => {
+        const subscribeAndCreateMaintenanceTask = async (options: {}, eventTypes: ('CREATE' | 'UPDATE')[]) => {
             const { api, user } = await ctx.apiForEnvUser(env, hcp1Username)
             // TODO fix eventListener typing
             const connectionPromise = async (options: {}, dataOwnerId: string, eventListener: (notification: MaintenanceTask) => Promise<void>) =>

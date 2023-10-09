@@ -75,7 +75,7 @@
 //   describe('Can subscribe to Data Samples', async () => {
 //     const subscribeAndCreateDataSample = async (
 //       options: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number },
-//       eventTypes: ('CREATE' | 'DELETE' | 'UPDATE')[],
+//       eventTypes: ('CREATE' | 'UPDATE')[],
 //       creationApi: MedTechApi,
 //       subscriptionApi: MedTechApi,
 //       supplier: () => Promise<void>
@@ -214,7 +214,7 @@
 //   })
 //
 //   describe('Can subscribe to Notifications', async () => {
-//     const subscribeAndCreateNotification = async (options: {}, eventTypes: ('CREATE' | 'DELETE' | 'UPDATE')[]) => {
+//     const subscribeAndCreateNotification = async (options: {}, eventTypes: ('CREATE' | 'UPDATE')[]) => {
 //       const connectionPromise = async (options: {}, dataOwnerId: string, eventListener: (notification: Notification) => Promise<void>) =>
 //         medtechApi!.notificationApi.subscribeToNotificationEvents(
 //           eventTypes,
@@ -282,7 +282,7 @@
 //   })
 //
 //   describe('Can subscribe to HealthcareElements', async () => {
-//     const subscribeAndCreateHealthcareElement = async (options: {}, eventTypes: ('CREATE' | 'DELETE' | 'UPDATE')[]) => {
+//     const subscribeAndCreateHealthcareElement = async (options: {}, eventTypes: ('CREATE' | 'UPDATE')[]) => {
 //       const connectionPromise = async (options: {}, dataOwnerId: string, eventListener: (healthcareElement: HealthcareElement) => Promise<void>) =>
 //         medtechApi!.healthcareElementApi.subscribeToHealthcareElementEvents(
 //           eventTypes,
@@ -356,7 +356,7 @@
 //   })
 //
 //   describe('Can subscribe to Patients', async () => {
-//     const subscribeAndCreatePatient = async (options: {}, eventTypes: ('CREATE' | 'DELETE' | 'UPDATE')[]) => {
+//     const subscribeAndCreatePatient = async (options: {}, eventTypes: ('CREATE' | 'UPDATE')[]) => {
 //       const connectionPromise = async (options: {}, dataOwnerId: string, eventListener: (patient: Patient) => Promise<void>) => {
 //         await sleep(2000)
 //         return medtechApi!.patientApi.subscribeToPatientEvents(
@@ -425,7 +425,7 @@
 //   })
 //
 //   describe('Can subscribe to User', async () => {
-//     const subscribeAndCreateUser = async (options: {}, eventTypes: ('CREATE' | 'DELETE' | 'UPDATE')[]) => {
+//     const subscribeAndCreateUser = async (options: {}, eventTypes: ('CREATE' | 'UPDATE')[]) => {
 //       const connectionPromise = async (options: {}, dataOwnerId: string, eventListener: (user: User) => Promise<void>) => {
 //         await sleep(2000)
 //         return medtechApi!.userApi.subscribeToUserEvents(eventTypes, await new UserFilter(medtechApi!).build(), eventListener, options)

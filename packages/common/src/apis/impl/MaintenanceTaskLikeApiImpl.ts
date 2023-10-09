@@ -106,7 +106,7 @@ export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements Maintenanc
     }
 
     async subscribeToEvents(
-        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
+        eventTypes: ('CREATE' | 'UPDATE')[],
         filter: CommonFilter<MaintenanceTask>,
         eventFired: (dataSample: DSMaintenanceTask) => Promise<void>,
         options?: {

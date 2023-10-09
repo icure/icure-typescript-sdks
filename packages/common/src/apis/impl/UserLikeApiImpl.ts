@@ -286,7 +286,7 @@ export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements Us
     }
 
     subscribeToEvents(
-        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
+        eventTypes: ('CREATE' | 'UPDATE')[],
         filter: CommonFilter<UserDto>,
         eventFired: (user: DSUser) => Promise<void>,
         options?: {

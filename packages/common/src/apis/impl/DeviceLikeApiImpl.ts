@@ -113,7 +113,7 @@ export class DeviceLikeApiImpl<DSDevice> implements DeviceLikeApi<DSDevice> {
     }
 
     async subscribeToEvents(
-        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
+        eventTypes: ('CREATE' | 'UPDATE')[],
         filter: CommonFilter<Device>,
         eventFired: (device: DSDevice) => Promise<void>,
         options?: {

@@ -46,7 +46,7 @@ export interface HealthcarePartyLikeApi<DSHealthcareParty> {
     matchBy(filter: CommonFilter<HealthcareParty>): Promise<Array<string>>
 
     subscribeToEvents(
-        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
+        eventTypes: ('CREATE' | 'UPDATE')[],
         filter: CommonFilter<HealthcareParty>,
         eventFired: (hcp: DSHealthcareParty) => Promise<void>,
         options?: {
