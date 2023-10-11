@@ -4,6 +4,7 @@ import { Connection, Topic as TopicDto } from '@icure/api'
 import { CodingReference } from '../models/CodingReference.model'
 import { Reference } from '../types/Reference'
 import { TopicRole } from '../models/enums/TopicRole.enum'
+import { SubscriptionOptions } from '@icure/api/icc-x-api/utils'
 
 export interface TopicLikeApi<DSTopic, DSHcp, DSPatient, DSService, DSHealthElement> {
     /**
@@ -111,5 +112,5 @@ export interface TopicLikeApi<DSTopic, DSHcp, DSPatient, DSService, DSHealthElem
 
     matchBy(filter: CommonFilter<TopicDto>): Promise<Array<String>>
 
-    subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: CommonFilter<TopicDto>, eventFired: (topic: DSTopic) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection>
+    subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: CommonFilter<TopicDto>, eventFired: (topic: DSTopic) => Promise<void>, options?: SubscriptionOptions): Promise<Connection>
 }

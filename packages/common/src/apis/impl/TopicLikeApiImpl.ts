@@ -14,6 +14,7 @@ import { FilterMapper } from '../../mappers/Filter.mapper'
 import { FilterChainTopic } from '@icure/api/icc-api/model/FilterChainTopic'
 import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
 import AccessLevelEnum = SecureDelegation.AccessLevelEnum
+import { SubscriptionOptions } from '@icure/api/icc-x-api/utils'
 
 class TopicLikeApiImpl<DSTopic, DSHcp, DSPatient, DSService, DSHealthElement> implements TopicLikeApi<DSTopic, DSHcp, DSPatient, DSService, DSHealthElement> {
     constructor(
@@ -201,15 +202,7 @@ class TopicLikeApiImpl<DSTopic, DSHcp, DSPatient, DSService, DSHealthElement> im
         )
     }
 
-    async subscribeToEvents(
-        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
-        filter: CommonFilter<TopicDto>,
-        eventFired: (topic: DSTopic) => Promise<void>,
-        options?: {
-            connectionMaxRetry?: number
-            connectionRetryIntervalMs?: number
-        },
-    ): Promise<Connection> {
+    async subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: CommonFilter<TopicDto>, eventFired: (topic: DSTopic) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
         return await this.topicApi.subscribeToTopicEvents(eventTypes, FilterMapper.toAbstractFilterDto(filter, 'Topic'), async (topic) => await eventFired(this.topicMapper.toDomain(topic)), options)
     }
 
