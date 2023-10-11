@@ -1,5 +1,5 @@
 import { DataSample } from '../models/DataSample.model'
-import { Annotation as AnnotationDto, CodeStub, Content as ContentDto, Delegation as DelegationDto, Identifier as IdentifierDto, ISO639_1, SecurityMetadata as SecurityMetadataDto, Service, SecurityMetadata as SecurityMetadataDto } from '@icure/api'
+import { Annotation as AnnotationDto, CodeStub, Content as ContentDto, Delegation as DelegationDto, Identifier as IdentifierDto, ISO639_1, SecurityMetadata as SecurityMetadataDto, Service } from '@icure/api'
 import {
     CodingReference,
     extractEncryptedSelf,
