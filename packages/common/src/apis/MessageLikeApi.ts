@@ -1,10 +1,11 @@
 import { Reference } from '../types/Reference'
-import { Topic } from '../models/Topic.model'
 import { CommonFilter } from '../filters/filters'
 import { PaginatedList } from '../models/PaginatedList.model'
-import { Connection } from '@icure/api'
+import { Connection, Document, Document as DocumentDto, Message as MessageDto, SecureDelegation, Topic as TopicDto } from '@icure/api'
+import DocumentLocationEnum = Document.DocumentLocationEnum
+import { SubscriptionOptions } from '@icure/api/icc-x-api/utils'
 
-export interface MessageLikeApi<DSMessage> {
+export interface MessageLikeApi<DSMessage, DSTopic> {
     /**
      * A Message is a message sent by a healthcare professional in a topic. It can contain a text and/or attachments.
      * You must provide either a content or attachment(s) to create a message.
@@ -15,9 +16,15 @@ export interface MessageLikeApi<DSMessage> {
      * @param content Text of the message
      * @param attachments Attachments of the message
      *
-     * @returns the created message
+     * @returns MessageCreationResult progress of the message creation if the message creation is not finished, or the created message
      */
-    create(topic: Reference<Topic>, content?: string, attachments?: { data: ArrayBuffer; type: string }[]): Promise<DSMessage>
+    create(topic: Reference<DSTopic>, content?: string, attachments?: { data: ArrayBuffer; uti: string; filename: string }[]): Promise<MessageCreationResult<DSMessage>>
+
+    /**
+     * Resume the creation of a message
+     * @param creationProgress Progress of the message creation, returned by the {@link create} method when the message creation is not finished
+     */
+    resumeMessageCreation(creationProgress: MessageCreationProgress): Promise<MessageCreationResult<DSMessage>>
 
     /**
      * Delete a message
@@ -39,7 +46,7 @@ export interface MessageLikeApi<DSMessage> {
      *
      * @returns the attachments of the message and their types
      */
-    getAttachments(message: Reference<DSMessage>): Promise<{ data: ArrayBuffer[]; type: string }[]>
+    getAttachments(message: Reference<DSMessage>): Promise<{ data: ArrayBuffer; uti: string; filename: string }[]>
 
     /**
      * Mark messages as read
@@ -48,12 +55,90 @@ export interface MessageLikeApi<DSMessage> {
      */
     read(messages: Reference<DSMessage>[]): Promise<DSMessage[]>
 
-    //TODO: Add proper type when filter is implemented
-    filterBy(filter: CommonFilter<any>, nextMessageId?: string, limit?: number): Promise<PaginatedList<DSMessage>>
+    filterBy(filter: CommonFilter<MessageDto>, nextMessageId?: string, limit?: number): Promise<PaginatedList<DSMessage>>
 
-    //TODO: Add proper type when filter is implemented
-    matchBy(filter: CommonFilter<any>, nextMessageId?: string, limit?: number): Promise<PaginatedList<DSMessage>>
+    matchBy(filter: CommonFilter<MessageDto>): Promise<string[]>
 
-    //TODO: Add proper type when filter is implemented
-    subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: CommonFilter<any>, eventFired: (topic: DSMessage) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection>
+    subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: CommonFilter<MessageDto>, eventFired: (topic: DSMessage) => Promise<void>, options?: SubscriptionOptions): Promise<Connection>
+}
+
+export type MessageCreationResult<DSMessage> =
+    | { createdMessage: DSMessage }
+    | {
+          creationProgress: MessageCreationProgress
+      }
+
+/**
+ * @internal
+ */
+export type MessageCreationProgress =
+    | {
+          step: MessageCreationStep.MESSAGE_INITIALISATION
+          topic: TopicDto
+          content: string | undefined
+          attachments: AttachmentInput[] | undefined
+          delegates: { [p: string]: SecureDelegation.AccessLevelEnum }
+      }
+    | {
+          step: MessageCreationStep.MESSAGE_INITIALISED
+          partialMessage: MessageDto
+          remainingAttachments: AttachmentCreationProgress[] | undefined
+          delegates: { [p: string]: SecureDelegation.AccessLevelEnum }
+      }
+    | {
+          step: MessageCreationStep.MESSAGE_ATTACHED
+          partialMessage: MessageDto
+      }
+
+/**
+ * @internal
+ */
+export type AttachmentCreationProgress =
+    | {
+          step: AttachmentCreationStep.DOCUMENT_INITIALISATION
+          attachment: AttachmentInput
+      }
+    | {
+          step: AttachmentCreationStep.DOCUMENT_INITIALISED
+          instantiatedDocument: DocumentDto
+          attachment: AttachmentInput
+      }
+    | {
+          step: AttachmentCreationStep.DOCUMENT_CREATED
+          createdDocument: DocumentDto
+          attachment: AttachmentInput
+      }
+    | {
+          step: AttachmentCreationStep.DOCUMENT_ATTACHED
+          document: DocumentDto
+      }
+
+/**
+ * @internal
+ */
+export type AttachmentInput = {
+    data: ArrayBuffer
+    uti: string
+    filename: string
+    documentLocation: DocumentLocationEnum
+}
+
+/**
+ * @internal
+ */
+export enum AttachmentCreationStep {
+    DOCUMENT_INITIALISATION = 'DOCUMENT_INITIALISATION',
+    DOCUMENT_INITIALISED = 'DOCUMENT_INITIALISED',
+    DOCUMENT_CREATED = 'DOCUMENT_CREATED',
+    DOCUMENT_ATTACHED = 'DOCUMENT_ATTACHED',
+}
+
+/**
+ * @internal
+ */
+export enum MessageCreationStep {
+    MESSAGE_INITIALISATION = 'MESSAGE_INITIALISATION',
+    MESSAGE_INITIALISED = 'MESSAGE_INITIALISED',
+    MESSAGE_ATTACHED = 'MESSAGE_ATTACHED',
+    MESSAGE_CREATED = 'MESSAGE_CREATED',
 }

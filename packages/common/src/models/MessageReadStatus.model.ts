@@ -1,3 +1,7 @@
+import { MessageReadStatus as MessageReadStatusDto } from '@icure/api'
+import { mapTo } from '../utils/decorators'
+
+@mapTo(MessageReadStatusDto)
 export class MessageReadStatus {
     time?: number
     read?: boolean
