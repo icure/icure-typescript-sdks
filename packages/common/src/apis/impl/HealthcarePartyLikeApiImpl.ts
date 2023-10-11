@@ -9,6 +9,7 @@ import { FilterMapper } from '../../mappers/Filter.mapper'
 import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
 import { iccRestApiPath } from '@icure/api/icc-api/api/IccRestApiPath'
 import { CommonFilter } from '../../filters/filters'
+import { SubscriptionOptions } from '@icure/api/icc-x-api/utils'
 
 export class HealthcarePartyLikeApiImpl<DSHealthcareParty> implements HealthcarePartyLikeApi<DSHealthcareParty> {
     constructor(
@@ -88,15 +89,7 @@ export class HealthcarePartyLikeApiImpl<DSHealthcareParty> implements Healthcare
         }
     }
 
-    async subscribeToEvents(
-        eventTypes: ('CREATE' | 'UPDATE')[],
-        filter: CommonFilter<HealthcareParty>,
-        eventFired: (hcp: DSHealthcareParty) => Promise<void>,
-        options?: {
-            connectionMaxRetry?: number
-            connectionRetryIntervalMs?: number
-        },
-    ): Promise<Connection> {
+    async subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<HealthcareParty>, eventFired: (hcp: DSHealthcareParty) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
         return subscribeToEntityEvents(iccRestApiPath(this.basePath), this.authApi, 'HealthcareParty', eventTypes, FilterMapper.toAbstractFilterDto(filter, 'HealthcareParty'), (event: HealthcareParty) => eventFired(this.mapper.toDomain(event)), options ?? {}).then(
             (ws) => new ConnectionImpl(ws),
         )

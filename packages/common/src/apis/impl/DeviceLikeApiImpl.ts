@@ -11,6 +11,7 @@ import { FilterMapper } from '../../mappers/Filter.mapper'
 import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
 import { CommonFilter } from '../../filters/filters'
 import { iccRestApiPath } from '@icure/api/icc-api/api/IccRestApiPath'
+import { SubscriptionOptions } from '@icure/api/icc-x-api/utils'
 
 export class DeviceLikeApiImpl<DSDevice> implements DeviceLikeApi<DSDevice> {
     constructor(
@@ -112,15 +113,7 @@ export class DeviceLikeApiImpl<DSDevice> implements DeviceLikeApi<DSDevice> {
         }
     }
 
-    async subscribeToEvents(
-        eventTypes: ('CREATE' | 'UPDATE')[],
-        filter: CommonFilter<Device>,
-        eventFired: (device: DSDevice) => Promise<void>,
-        options?: {
-            connectionMaxRetry?: number
-            connectionRetryIntervalMs?: number
-        },
-    ): Promise<Connection> {
+    async subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<Device>, eventFired: (device: DSDevice) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
         return subscribeToEntityEvents(iccRestApiPath(this.basePath), this.authApi, 'Device', eventTypes, FilterMapper.toAbstractFilterDto(filter, 'Device'), (event) => eventFired(this.mapper.toDomain(event)), options ?? {}).then((ws) => new ConnectionImpl(ws))
     }
 }

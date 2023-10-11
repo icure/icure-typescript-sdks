@@ -1,6 +1,7 @@
 import { PaginatedList } from '../models/PaginatedList.model'
 import { Connection, Service } from '@icure/api'
 import { CommonFilter } from '../filters/filters'
+import { SubscriptionOptions } from '@icure/api/icc-x-api/utils'
 
 /**
  * The ServiceApi interface provides methods to manage data samples.
@@ -127,15 +128,7 @@ export interface ServiceLikeApi<DSService, DSPatient, DSDocument> {
      *    - connectionMaxRetry : how many time retrying to reconnect to the iCure WebSocket;
      *    - connectionRetryIntervalInMs : How long base interval will be between two retry. The retry attempt is exponential and using a random value (connectionRetryIntervalMs * (random between 1 and 2))^nbAttempts)
      */
-    subscribeToEvents(
-        eventTypes: ('CREATE' | 'UPDATE')[],
-        filter: CommonFilter<Service>,
-        eventFired: (service: DSService) => Promise<void>,
-        options?: {
-            connectionMaxRetry?: number
-            connectionRetryIntervalMs?: number
-        },
-    ): Promise<Connection>
+    subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<Service>, eventFired: (service: DSService) => Promise<void>, options?: SubscriptionOptions): Promise<Connection>
 
     extractPatientId(service: DSService): Promise<string | undefined>
 

@@ -39,6 +39,7 @@ import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
 import { UtiDetector } from '../../utils/utiDetector'
 import { extractDomainTypeTag } from '../../utils/domain'
 import { iccRestApiPath } from '@icure/api/icc-api/api/IccRestApiPath'
+import { SubscriptionOptions } from '@icure/api/icc-x-api/utils'
 
 export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements ServiceLikeApi<DSService, DSPatient, DSDocument> {
     private readonly contactsCache: CachedMap<ContactDto> = new CachedMap<ContactDto>(5 * 60, 10000)
@@ -323,15 +324,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         }
     }
 
-    async subscribeToEvents(
-        eventTypes: ('CREATE' | 'UPDATE')[],
-        filter: CommonFilter<ServiceDto>,
-        eventFired: (service: DSService) => Promise<void>,
-        options?: {
-            connectionMaxRetry?: number
-            connectionRetryIntervalMs?: number
-        },
-    ): Promise<Connection> {
+    async subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<ServiceDto>, eventFired: (service: DSService) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
         const currentUser = await this.userApi.getCurrentUser()
         return subscribeToEntityEvents(
             iccRestApiPath(this.basePath),

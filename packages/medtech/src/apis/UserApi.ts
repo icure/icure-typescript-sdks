@@ -1,5 +1,5 @@
 import { CommonApi, CommonFilter, mapUserDtoToUser, mapUserToUserDto, MessageFactory, PaginatedList, User, UserLikeApi, UserLikeApiImpl } from '@icure/typescript-common'
-import { Connection, HealthcareParty as HealthcarePartyDto, Patient as PatientDto, User as UserDto } from '@icure/api'
+import { Connection, HealthcareParty as HealthcarePartyDto, Patient as PatientDto, SubscriptionOptions, User as UserDto } from '@icure/api'
 import { Patient } from '../models/Patient.model'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
 import { mapHealthcarePartyToHealthcareProfessional, mapHealthcareProfessionalToHealthcareParty } from '../mappers/HealthcareProfessional.mapper'
@@ -95,15 +95,7 @@ export interface UserApi extends UserLikeApi<User, Patient> {
      *    - connectionMaxRetry : how many time retrying to reconnect to the iCure WebSocket;
      *    - connectionRetryIntervalInMs : How long base interval will be between two retry. The retry attempt is exponential and using a random value (connectionRetryIntervalMs * (random between 1 and 2))^nbAttempts)
      */
-    subscribeToUserEvents(
-        eventTypes: ('CREATE' | 'UPDATE')[],
-        filter: CommonFilter<UserDto>,
-        eventFired: (user: User) => Promise<void>,
-        options?: {
-            connectionMaxRetry?: number
-            connectionRetryIntervalMs?: number
-        },
-    ): Promise<Connection>
+    subscribeToUserEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<UserDto>, eventFired: (user: User) => Promise<void>, options?: SubscriptionOptions): Promise<Connection>
 }
 
 /**
@@ -142,15 +134,7 @@ class UserApiImpl extends UserLikeApiImpl<User, Patient, HealthcareProfessional>
         return this.matchBy(filter)
     }
 
-    subscribeToUserEvents(
-        eventTypes: ('CREATE' | 'UPDATE')[],
-        filter: CommonFilter<UserDto>,
-        eventFired: (user: User) => Promise<void>,
-        options?: {
-            connectionMaxRetry?: number
-            connectionRetryIntervalMs?: number
-        },
-    ): Promise<Connection> {
+    subscribeToUserEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<UserDto>, eventFired: (user: User) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
         return this.subscribeToEvents(eventTypes, filter, eventFired, options)
     }
 }

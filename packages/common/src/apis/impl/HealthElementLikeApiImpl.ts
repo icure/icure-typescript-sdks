@@ -13,6 +13,7 @@ import { CommonApi } from '../CommonApi'
 import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
 import { iccRestApiPath } from '@icure/api/icc-api/api/IccRestApiPath'
 import { CommonFilter } from '../../filters/filters'
+import { SubscriptionOptions } from '@icure/api/icc-x-api/utils'
 
 export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements HealthElementLikeApi<DSHealthElement, DSPatient> {
     constructor(
@@ -161,15 +162,7 @@ export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements Hea
         }
     }
 
-    async subscribeToEvents(
-        eventTypes: ('CREATE' | 'UPDATE')[],
-        filter: CommonFilter<HealthElement>,
-        eventFired: (dataSample: DSHealthElement) => Promise<void>,
-        options?: {
-            connectionMaxRetry?: number
-            connectionRetryIntervalMs?: number
-        },
-    ): Promise<Connection> {
+    async subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<HealthElement>, eventFired: (dataSample: DSHealthElement) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
         const currentUser = await this.userApi.getCurrentUser()
 
         return subscribeToEntityEvents(

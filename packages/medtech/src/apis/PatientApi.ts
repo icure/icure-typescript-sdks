@@ -1,4 +1,4 @@
-import { Connection, Patient as PatientDto } from '@icure/api'
+import { Connection, Patient as PatientDto, SubscriptionOptions } from '@icure/api'
 import { CommonApi, CommonFilter, PaginatedList, PatientLikeApi, PatientLikeApiImpl } from '@icure/typescript-common'
 import { Patient } from '../models/Patient.model'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
@@ -83,15 +83,7 @@ export interface PatientApi extends PatientLikeApi<Patient> {
      *    - connectionMaxRetry : how many time retrying to reconnect to the iCure WebSocket;
      *    - connectionRetryIntervalInMs : How long base interval will be between two retry. The retry attempt is exponential and using a random value (connectionRetryIntervalMs * (random between 1 and 2))^nbAttempts)
      */
-    subscribeToPatientEvents(
-        eventTypes: ('CREATE' | 'UPDATE')[],
-        filter: CommonFilter<PatientDto>,
-        eventFired: (patient: Patient) => Promise<void>,
-        options?: {
-            connectionMaxRetry?: number
-            connectionRetryIntervalMs?: number
-        },
-    ): Promise<Connection>
+    subscribeToPatientEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<PatientDto>, eventFired: (patient: Patient) => Promise<void>, options?: SubscriptionOptions): Promise<Connection>
 
     /**
      * @deprecated Use {@link PatientApi.getAndTryDecrypt} instead.
@@ -133,15 +125,7 @@ class PatientApiImpl extends PatientLikeApiImpl<Patient> implements PatientApi {
         return this.giveAccessTo(patient, delegatedTo)
     }
 
-    subscribeToPatientEvents(
-        eventTypes: ('CREATE' | 'UPDATE')[],
-        filter: CommonFilter<PatientDto>,
-        eventFired: (patient: Patient) => Promise<void>,
-        options?: {
-            connectionMaxRetry?: number
-            connectionRetryIntervalMs?: number
-        },
-    ): Promise<Connection> {
+    subscribeToPatientEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<PatientDto>, eventFired: (patient: Patient) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
         return this.subscribeToEvents(eventTypes, filter, eventFired, options)
     }
 

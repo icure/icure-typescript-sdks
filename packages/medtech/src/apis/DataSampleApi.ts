@@ -1,5 +1,5 @@
 import { CommonApi, CommonFilter, Document, mapDocumentDtoToDocument, mapDocumentToDocumentDto, PaginatedList, ServiceLikeApi, ServiceLikeApiImpl } from '@icure/typescript-common'
-import { Connection, Document as DocumentDto, Patient as PatientDto, Service } from '@icure/api'
+import { Connection, Document as DocumentDto, Patient as PatientDto, Service, SubscriptionOptions } from '@icure/api'
 import { DataSample } from '../models/DataSample.model'
 import { Patient } from '../models/Patient.model'
 import { mapDataSampleToService, mapServiceToDataSample } from '../mappers/DataSample.mapper'
@@ -108,7 +108,7 @@ export interface DataSampleApi extends ServiceLikeApi<DataSample, Patient, Docum
      *    - connectionMaxRetry : how many time retrying to reconnect to the iCure WebSocket;
      *    - connectionRetryIntervalInMs : How long base interval will be between two retry. The retry attempt is exponential and using a random value (connectionRetryIntervalMs * (random between 1 and 2))^nbAttempts)
      */
-    subscribeToDataSampleEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<DataSample>, eventFired: (dataSample: DataSample) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection>
+    subscribeToDataSampleEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<DataSample>, eventFired: (dataSample: DataSample) => Promise<void>, options?: SubscriptionOptions): Promise<Connection>
 
     /**
      * @deprecated use {@link DataSampleApi.setAttachment} instead
@@ -169,7 +169,7 @@ class DataSampleApiImpl extends ServiceLikeApiImpl<DataSample, Patient, Document
     getDataSamplesForPatient(patient: Patient): Promise<Array<DataSample>> {
         return this.getForPatient(patient)
     }
-    subscribeToDataSampleEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<DataSample>, eventFired: (dataSample: DataSample) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection> {
+    subscribeToDataSampleEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<DataSample>, eventFired: (dataSample: DataSample) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
         return this.subscribeToEvents(eventTypes, filter, eventFired, options)
     }
     setDataSampleAttachment(dataSampleId: string, body: ArrayBuffer, documentName?: string, documentVersion?: string, documentExternalUuid?: string, documentLanguage?: string): Promise<Document> {

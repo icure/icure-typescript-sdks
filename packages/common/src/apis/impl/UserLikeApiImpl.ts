@@ -17,6 +17,7 @@ import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
 import { DataOwnerTypeEnum } from '@icure/api/icc-api/model/DataOwnerTypeEnum'
 import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
 import { iccRestApiPath } from '@icure/api/icc-api/api/IccRestApiPath'
+import { SubscriptionOptions } from '@icure/api/icc-x-api/utils'
 
 export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements UserLikeApi<DSUser, DSPatient> {
     constructor(
@@ -285,15 +286,7 @@ export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements Us
         throw this.errorHandler.createErrorWithMessage("Couldn't remove data sharing of user")
     }
 
-    subscribeToEvents(
-        eventTypes: ('CREATE' | 'UPDATE')[],
-        filter: CommonFilter<UserDto>,
-        eventFired: (user: DSUser) => Promise<void>,
-        options?: {
-            connectionMaxRetry?: number
-            connectionRetryIntervalMs?: number
-        },
-    ): Promise<Connection> {
+    subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<UserDto>, eventFired: (user: DSUser) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
         return subscribeToEntityEvents(iccRestApiPath(this.basePath), this.authApi, 'User', eventTypes, FilterMapper.toAbstractFilterDto(filter, 'User'), (event) => eventFired(this.userMapper.toDomain(event)), options ?? {}).then((ws) => new ConnectionImpl(ws))
     }
 }

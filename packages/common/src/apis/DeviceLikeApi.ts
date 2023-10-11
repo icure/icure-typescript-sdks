@@ -1,6 +1,7 @@
 import { PaginatedList } from '../models/PaginatedList.model'
 import { Connection, Device } from '@icure/api'
 import { CommonFilter } from '../filters/filters'
+import { SubscriptionOptions } from '@icure/api/icc-x-api/utils'
 
 /**
  * The DeviceApi interface provides methods to manage medical devices.
@@ -57,13 +58,5 @@ export interface DeviceLikeApi<DSDevice> {
      */
     matchBy(filter: CommonFilter<Device>): Promise<Array<string>>
 
-    subscribeToEvents(
-        eventTypes: ('CREATE' | 'UPDATE')[],
-        filter: CommonFilter<Device>,
-        eventFired: (device: DSDevice) => Promise<void>,
-        options?: {
-            connectionMaxRetry?: number
-            connectionRetryIntervalMs?: number
-        },
-    ): Promise<Connection>
+    subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<Device>, eventFired: (device: DSDevice) => Promise<void>, options?: SubscriptionOptions): Promise<Connection>
 }

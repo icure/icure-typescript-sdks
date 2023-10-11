@@ -12,6 +12,7 @@ import { AccessLevelEnum } from '../../models/enums/AccessLevel.enum'
 import { CommonFilter } from '../../filters/filters'
 import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
 import { iccRestApiPath } from '@icure/api/icc-api/api/IccRestApiPath'
+import { SubscriptionOptions } from '@icure/api/icc-x-api/utils'
 
 export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements MaintenanceTaskLikeApi<DSMaintenanceTask> {
     constructor(
@@ -105,15 +106,7 @@ export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements Maintenanc
         return !paginatedNotifications.nextKeyPair?.startKeyDocId ? accumulator.concat(paginatedNotifications.rows ?? []) : this.concatenateFilterResults(filter, paginatedNotifications.nextKeyPair.startKeyDocId, limit, accumulator.concat(paginatedNotifications.rows ?? []))
     }
 
-    async subscribeToEvents(
-        eventTypes: ('CREATE' | 'UPDATE')[],
-        filter: CommonFilter<MaintenanceTask>,
-        eventFired: (dataSample: DSMaintenanceTask) => Promise<void>,
-        options?: {
-            connectionMaxRetry?: number
-            connectionRetryIntervalMs?: number
-        },
-    ): Promise<Connection> {
+    async subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<MaintenanceTask>, eventFired: (dataSample: DSMaintenanceTask) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
         const currentUser = await this.userApi.getCurrentUser()
 
         return subscribeToEntityEvents(

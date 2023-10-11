@@ -1,6 +1,7 @@
 import { PaginatedList } from '../models/PaginatedList.model'
 import { Connection, HealthcareParty } from '@icure/api'
 import { CommonFilter } from '../filters/filters'
+import { SubscriptionOptions } from '@icure/api/icc-x-api/utils'
 
 /**
  * The HealthcarePartyApi interface provides methods to manage healthcare professionals.
@@ -45,13 +46,5 @@ export interface HealthcarePartyLikeApi<DSHealthcareParty> {
      */
     matchBy(filter: CommonFilter<HealthcareParty>): Promise<Array<string>>
 
-    subscribeToEvents(
-        eventTypes: ('CREATE' | 'UPDATE')[],
-        filter: CommonFilter<HealthcareParty>,
-        eventFired: (hcp: DSHealthcareParty) => Promise<void>,
-        options?: {
-            connectionMaxRetry?: number
-            connectionRetryIntervalMs?: number
-        },
-    ): Promise<Connection>
+    subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<HealthcareParty>, eventFired: (hcp: DSHealthcareParty) => Promise<void>, options?: SubscriptionOptions): Promise<Connection>
 }

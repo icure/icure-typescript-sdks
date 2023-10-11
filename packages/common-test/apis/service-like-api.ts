@@ -601,10 +601,10 @@ export function testServiceLikeApi<
             expect({ ...retrievedUnmodifiedServiceDto, encryptedSelf: undefined }).toEqual({ ...servicesDto[1], encryptedSelf: undefined })
         })
 
-        const subscribeAndCreateContactOrService = async (options: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }, eventTypes: ('CREATE' | 'UPDATE')[], supplier: () => Promise<void>) => {
+        const subscribeAndCreateContactOrService = async (options: SubscriptionOptions, eventTypes: ('CREATE' | 'UPDATE')[], supplier: () => Promise<void>) => {
             const { api, user } = await ctx.apiForEnvUser(env, hcp1Username)
             // TODO fix eventListener typing
-            const connectionPromise = async (options: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }, dataOwnerId: string, eventListener: (ds: Service) => Promise<void>) =>
+            const connectionPromise = async (options: SubscriptionOptions, dataOwnerId: string, eventListener: (ds: Service) => Promise<void>) =>
                 ctx.serviceApi(api).subscribeToEvents(eventTypes, await ctx.newServiceFilter(api).forSelf().build(), eventListener as unknown as any, options)
 
             const events: Service[] = []
