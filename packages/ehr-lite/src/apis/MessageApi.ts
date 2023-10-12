@@ -5,7 +5,7 @@ export interface MessageApi extends MessageLikeApi<Message, Topic> {}
 
 class MessageApiImpl extends MessageLikeApiImpl<Message, Topic> {}
 
-export const messageApi = (api: CommonApi, characterLimit: number | undefined): MessageApi =>
+export const messageApi = (api: CommonApi, characterLimit: number): MessageApi =>
     new MessageApiImpl(
         {
             toDomain(dto: MessageDto): Message {

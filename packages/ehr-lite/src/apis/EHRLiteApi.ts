@@ -15,6 +15,8 @@ import dataOwnerMapper from '../mappers/DataOwner.mapper'
 import { authenticationApi, AuthenticationApi } from './AuthenticationApi'
 import { EHRLiteCryptoStrategies } from '../services/EHRLiteCryptoStrategies'
 import { EHRLiteMessageFactory, iCureEHRLiteMessageFactory } from '../services/EHRLiteMessageFactory'
+import { topicApi, TopicApi } from './TopicApi'
+import { messageApi, MessageApi } from './MessageApi'
 
 export class EHRLiteApi extends CommonApi {
     private readonly _codingApi: CodingApi
@@ -26,6 +28,8 @@ export class EHRLiteApi extends CommonApi {
     private readonly _practitionerApi: PractitionerApi
     private readonly _userApi: UserApi
     private readonly _notificationApi: NotificationApi
+    private readonly _topicApi: TopicApi
+    private readonly _messageApi: MessageApi
 
     private readonly _cryptoApi: IccCryptoXApi
 
@@ -43,6 +47,9 @@ export class EHRLiteApi extends CommonApi {
         private readonly _msgGtwSpecId: string | undefined = undefined,
         private readonly _authProcessByEmailId: string | undefined = undefined,
         private readonly _authProcessBySmsId: string | undefined = undefined,
+        private readonly options: {
+            messageCharactersLimit: number
+        },
         storage?: StorageFacade<string>,
         keyStorage?: KeyStorageFacade,
         messageFactory?: EHRLiteMessageFactory,
@@ -74,6 +81,10 @@ export class EHRLiteApi extends CommonApi {
         this._userApi = userApi(this, this._messageFactory, _iCureBaseUrl)
 
         this._notificationApi = notificationApi(this, _iCureBaseUrl)
+
+        this._topicApi = topicApi(this)
+
+        this._messageApi = messageApi(this, options.messageCharactersLimit)
     }
 
     get codingApi(): CodingApi {
@@ -124,6 +135,14 @@ export class EHRLiteApi extends CommonApi {
         return this._notificationApi
     }
 
+    get topicApi(): TopicApi {
+        return this._topicApi
+    }
+
+    get messageApi(): MessageApi {
+        return this._messageApi
+    }
+
     get iCureBaseUrl(): string {
         return this._iCureBaseUrl
     }
@@ -151,6 +170,13 @@ export class EHRLiteApi extends CommonApi {
     /**
      * @internal this property is for internal use only and may be changed without notice
      */
+    get messageCharactersLimit(): number | undefined {
+        return this.options?.messageCharactersLimit
+    }
+
+    /**
+     * @internal this property is for internal use only and may be changed without notice
+     */
     get cryptoStrategies(): CryptoStrategies<DataOwnerWithType> {
         return this._cryptoStrategies
     }
@@ -169,6 +195,7 @@ export namespace EHRLiteApi {
                 super.withKeyStorage(initialisationApi.keyStorage)
                 super.withCryptoStrategies(initialisationApi.cryptoStrategies)
                 super.withMessageFactory(initialisationApi.messageFactory)
+                super.withMessageCharactersLimit(initialisationApi.messageCharactersLimit ?? 2000)
             }
         }
 
@@ -185,6 +212,7 @@ export namespace EHRLiteApi {
             authProcessByEmailId: string | undefined
             authProcessBySmsId: string | undefined
             messageFactory: EHRLiteMessageFactory | undefined
+            messageCharactersLimit: number
         }): Promise<EHRLiteApi> {
             return IcureApi.initialise(
                 props.iCureBaseUrl,
@@ -238,7 +266,26 @@ export namespace EHRLiteApi {
                     createMaintenanceTasksOnNewKey: true,
                     disableParentKeysInitialisation: true,
                 },
-            ).then((api) => new EHRLiteApi(api, props.iCureBaseUrl, props.userName, props.password, props.cryptoStrategies, props.msgGwUrl, props.msgGwSpecId, props.authProcessByEmailId, props.authProcessBySmsId, props.storage, props.keyStorage, props.messageFactory))
+            ).then(
+                (api) =>
+                    new EHRLiteApi(
+                        api,
+                        props.iCureBaseUrl,
+                        props.userName,
+                        props.password,
+                        props.cryptoStrategies,
+                        props.msgGwUrl,
+                        props.msgGwSpecId,
+                        props.authProcessByEmailId,
+                        props.authProcessBySmsId,
+                        {
+                            messageCharactersLimit: props.messageCharactersLimit,
+                        },
+                        props.storage,
+                        props.keyStorage,
+                        props.messageFactory,
+                    ),
+            )
         }
     }
 }
