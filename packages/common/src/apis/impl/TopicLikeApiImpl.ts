@@ -16,7 +16,7 @@ import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
 import AccessLevelEnum = SecureDelegation.AccessLevelEnum
 import { SubscriptionOptions } from '@icure/api/icc-x-api/utils'
 
-class TopicLikeApiImpl<DSTopic, DSHcp, DSPatient, DSService, DSHealthElement> implements TopicLikeApi<DSTopic, DSHcp, DSPatient, DSService, DSHealthElement> {
+export class TopicLikeApiImpl<DSTopic, DSHcp, DSPatient, DSService, DSHealthElement> implements TopicLikeApi<DSTopic, DSHcp, DSPatient, DSService, DSHealthElement> {
     constructor(
         private readonly topicMapper: Mapper<DSTopic, TopicDto>,
         private readonly hcpMapper: Mapper<DSHcp, HealthcareParty>,
