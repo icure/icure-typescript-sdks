@@ -24,8 +24,8 @@ export class MessageLikeApiImpl<DSMessage, DSTopic> implements MessageLikeApi<DS
         private readonly userApi: IccUserXApi,
         private readonly documentApi: IccDocumentXApi,
         private readonly dataOwnerApi: IccDataOwnerXApi,
-        private readonly characterLimit: number = 2000,
         private readonly errorHandler: ErrorHandler,
+        private readonly characterLimit: number = 2000,
     ) {}
 
     /**
