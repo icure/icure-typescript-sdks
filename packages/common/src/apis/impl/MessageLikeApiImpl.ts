@@ -85,62 +85,6 @@ export class MessageLikeApiImpl<DSMessage, DSTopic> implements MessageLikeApi<DS
         return await this.handleMessageCreation(creationProgress, currentUser)
     }
 
-    /**
-     * @internal
-     * @param creationProgress the progress of the message creation
-     * @param currentUser the current user
-     * @private
-     *
-     * @returns MessageCreationResult the result of the message creation
-     */
-    private async handleMessageCreation(creationProgress: MessageCreationProgress, currentUser: UserDto): Promise<MessageCreationResult<DSMessage>> {
-        switch (creationProgress.step) {
-            case MessageCreationStep.MESSAGE_INITIALISATION: {
-                const messageInitializationResult = await this.initialiseMessage(currentUser, creationProgress)
-
-                if (messageInitializationResult.step !== MessageCreationStep.MESSAGE_INITIALISED) {
-                    return {
-                        creationProgress: messageInitializationResult,
-                    } satisfies MessageCreationResult<DSMessage>
-                }
-
-                return this.handleMessageCreation(messageInitializationResult, currentUser)
-            }
-            case MessageCreationStep.MESSAGE_INITIALISED: {
-                const attachDocumentToMessageResult = await this.attachDocumentsToMessage(creationProgress, currentUser)
-
-                if (attachDocumentToMessageResult.step !== MessageCreationStep.MESSAGE_ATTACHED) {
-                    return {
-                        creationProgress: attachDocumentToMessageResult,
-                    }
-                }
-
-                return this.handleMessageCreation(attachDocumentToMessageResult, currentUser)
-            }
-            case MessageCreationStep.MESSAGE_ATTACHED: {
-                try {
-                    const createdMessage = await this.messageApi.createMessage(creationProgress.partialMessage)
-
-                    return {
-                        createdMessage: this.messageMapper.toDomain(createdMessage),
-                    }
-                } catch (e) {
-                    console.error(e)
-
-                    return {
-                        creationProgress: {
-                            ...creationProgress,
-                        },
-                    }
-                }
-            }
-
-            default: {
-                throw new Error(`Unknown message creation step: ${creationProgress}`)
-            }
-        }
-    }
-
     async delete(message: Reference<DSMessage>): Promise<string> {
         const messageId = typeof message === 'string' ? message : this.messageMapper.toDto(message).id!
         const docIdentifiers = await this.messageApi.deleteMessages(messageId)
@@ -217,9 +161,81 @@ export class MessageLikeApiImpl<DSMessage, DSTopic> implements MessageLikeApi<DS
     }
 
     /**
+     *
+     * Handle the creation of a message.
+     *
+     * This method is recursive and will call itself until the message is created following the following steps:
+     * 1. Initialise the message
+     * 2. Attach the documents to the message
+     *  * Initialise the documents
+     *  * Create the documents
+     *  * Encrypt and set the attachment of the documents
+     * 3. Create the message
+     *
+     * @internal
+     * @param creationProgress the progress of the message creation
+     * @param currentUser the current user
+     * @private
+     *
+     * @returns MessageCreationResult the result of the message creation
+     */
+    private async handleMessageCreation(creationProgress: MessageCreationProgress, currentUser: UserDto): Promise<MessageCreationResult<DSMessage>> {
+        switch (creationProgress.step) {
+            case MessageCreationStep.MESSAGE_INITIALISATION: {
+                const messageInitializationResult = await this.initialiseMessage(currentUser, creationProgress)
+
+                if (messageInitializationResult.step !== MessageCreationStep.MESSAGE_INITIALISED) {
+                    return {
+                        creationProgress: messageInitializationResult,
+                    } satisfies MessageCreationResult<DSMessage>
+                }
+
+                return this.handleMessageCreation(messageInitializationResult, currentUser)
+            }
+            case MessageCreationStep.MESSAGE_INITIALISED: {
+                const attachDocumentToMessageResult = await this.attachDocumentsToMessage(creationProgress, currentUser)
+
+                if (attachDocumentToMessageResult.step !== MessageCreationStep.MESSAGE_ATTACHED) {
+                    return {
+                        creationProgress: attachDocumentToMessageResult,
+                    }
+                }
+
+                return this.handleMessageCreation(attachDocumentToMessageResult, currentUser)
+            }
+            case MessageCreationStep.MESSAGE_ATTACHED: {
+                try {
+                    const createdMessage = await this.messageApi.createMessage(creationProgress.partialMessage)
+
+                    return {
+                        createdMessage: this.messageMapper.toDomain(createdMessage),
+                    }
+                } catch (e) {
+                    console.error(e)
+
+                    return {
+                        creationProgress: {
+                            ...creationProgress,
+                        },
+                    }
+                }
+            }
+
+            default: {
+                throw new Error(`Unknown message creation step: ${creationProgress}`)
+            }
+        }
+    }
+
+    /**
      * @internal
      *
      * Initialise the message to be created.
+     *
+     * This method will create the message instance and set the delegates. It will not create the message.
+     *
+     * - In case of failure, the method will return the initialisation parameters.
+     * - In case of success, the method will return the initialised message creation progress that can be used to create the message in the next step {@link attachDocumentsToMessage}
      *
      * @param currentUser User creating the message
      * @param messageCreationProgress the progress of the message creation
@@ -277,6 +293,13 @@ export class MessageLikeApiImpl<DSMessage, DSTopic> implements MessageLikeApi<DS
      *
      * Attach the documents to the message.
      *
+     * This method will create the documents and attach them to the message. It will not create the message.
+     *
+     * If the step is not {@link MessageCreationStep.MESSAGE_INITIALISED}, the method will return the message creation progress as is.
+     *
+     * - In case of failure to attach any document, the method will return the message creation progress with the remaining attachments to be attached.
+     * - In case of success, the method will return the message creation progress with the message attached.
+     *
      * @param messageCreationProgress the progress of the message creation
      * @param currentUser the current user
      * @param delegates the delegates to be added to the documents
@@ -311,17 +334,21 @@ export class MessageLikeApiImpl<DSMessage, DSTopic> implements MessageLikeApi<DS
      *
      * Create the documents to be attached to the message.
      *
+     * This method will create the documents and attach them to the message.
+     *
+     * The result of this method is a list of {@link AttachmentCreationProgress}, each representing the progress of the creation of a document.
+     *
      * @internal
-     * @param currentUser
-     * @param message
-     * @param attachments
-     * @param delegates
+     * @param user User creating the documents
+     * @param message Message to which the documents will be attached
+     * @param attachments Attachments to be created
+     * @param delegates Delegates to be added to the documents
      * @private
      *
      * @returns AttachmentCreationProgress the progress of the document creation
      */
-    private async createAttachedDocuments(currentUser: UserDto, message: MessageDto, attachments: AttachmentCreationProgress[], delegates: { [p: string]: SecureDelegation.AccessLevelEnum }): Promise<AttachmentCreationProgress[]> {
-        const documentInitializationResult = await this.initialiseDocuments(currentUser, message, attachments, delegates)
+    private async createAttachedDocuments(user: UserDto, message: MessageDto, attachments: AttachmentCreationProgress[], delegates: { [p: string]: SecureDelegation.AccessLevelEnum }): Promise<AttachmentCreationProgress[]> {
+        const documentInitializationResult = await this.initialiseDocuments(user, message, attachments, delegates)
         const documentCreationResults = await this.createDocuments(documentInitializationResult)
         return await this.encryptAndSetDocumentAttachment(documentCreationResults)
     }
@@ -331,7 +358,7 @@ export class MessageLikeApiImpl<DSMessage, DSTopic> implements MessageLikeApi<DS
      *
      * Initialise the documents to be created.
      *
-     * @param currentUser User creating the documents
+     * @param user User creating the documents
      * @param message Message to which the documents will be attached
      * @param attachments Attachments to be created
      * @param delegates Delegates to be added to the documents
@@ -339,7 +366,7 @@ export class MessageLikeApiImpl<DSMessage, DSTopic> implements MessageLikeApi<DS
      *
      * @returns AttachmentCreationProgress the progress of the document creation
      */
-    private async initialiseDocuments(currentUser: UserDto, message: MessageDto, attachments: AttachmentCreationProgress[], delegates: { [p: string]: SecureDelegation.AccessLevelEnum }): Promise<AttachmentCreationProgress[]> {
+    private async initialiseDocuments(user: UserDto, message: MessageDto, attachments: AttachmentCreationProgress[], delegates: { [p: string]: SecureDelegation.AccessLevelEnum }): Promise<AttachmentCreationProgress[]> {
         const attachmentToInitialize = attachments.reduce((acc, progress) => {
             if (progress.step === AttachmentCreationStep.DOCUMENT_INITIALISATION) {
                 acc.push(progress.attachment)
@@ -350,7 +377,7 @@ export class MessageLikeApiImpl<DSMessage, DSTopic> implements MessageLikeApi<DS
         const documentInitializationResult = await Promise.allSettled(
             attachmentToInitialize?.map(async ({ data, uti, filename, documentLocation }) => {
                 return await this.documentApi.newInstance(
-                    currentUser,
+                    user,
                     message,
                     new DocumentDto({
                         name: filename,
