@@ -90,6 +90,7 @@ export class TopicLikeApiImpl<DSTopic, DSHcp, DSPatient, DSService, DSHealthElem
         codes?: Set<CodingReference>,
     ): Promise<DSTopic> {
         const currentUser = await this.userApi.getCurrentUser()
+        const dataOwnerId = this.dataOwnerApi.getDataOwnerIdOf(currentUser)
 
         let linkedPatient: Patient | undefined = undefined
         if (patient !== undefined) {
@@ -104,6 +105,10 @@ export class TopicLikeApiImpl<DSTopic, DSHcp, DSPatient, DSService, DSHealthElem
             let hcpId = this.getRefIds([curr.participant], (hcp) => this.hcpMapper.toDto(hcp).id!)[0]
             return { hcpId, role: curr.role as TopicRoleDto }
         })
+
+        if (!activeParticipants.some(({ hcpId, role }) => hcpId === dataOwnerId && role === TopicRole.OWNER)) {
+            throw this.errorHandler.createErrorWithMessage("The current user must be a participant of the topic with the role 'OWNER'")
+        }
 
         const linkedServiceIds = services ? this.getRefIds(services, (service) => this.serviceMapper.toDto(service).id!) : undefined
         const linkedHealthElementIds = healthElements ? this.getRefIds(healthElements, (he) => this.healthElementMapper.toDto(he).id!) : undefined

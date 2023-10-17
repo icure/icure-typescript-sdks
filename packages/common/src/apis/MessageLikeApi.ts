@@ -2,10 +2,10 @@ import { Reference } from '../types/Reference'
 import { CommonFilter } from '../filters/filters'
 import { PaginatedList } from '../models/PaginatedList.model'
 import { Connection, Document, Document as DocumentDto, Message as MessageDto, SecureDelegation, Topic as TopicDto } from '@icure/api'
-import DocumentLocationEnum = Document.DocumentLocationEnum
 import { SubscriptionOptions } from '@icure/api/icc-x-api/utils'
+import DocumentLocationEnum = Document.DocumentLocationEnum
 
-export interface MessageLikeApi<DSMessage, DSTopic> {
+export interface MessageLikeApi<DSMessage, DSTopic, DSBinary> {
     /**
      * A Message is a message sent by a healthcare professional in a topic. It can contain a text and/or attachments.
      * You must provide either a content or attachment(s) to create a message.
@@ -18,7 +18,7 @@ export interface MessageLikeApi<DSMessage, DSTopic> {
      *
      * @returns MessageCreationResult progress of the message creation if the message creation is not finished, or the created message
      */
-    create(topic: Reference<DSTopic>, content?: string, attachments?: { data: ArrayBuffer; uti: string; filename: string }[]): Promise<MessageCreationResult<DSMessage>>
+    create(topic: Reference<DSTopic>, content?: string, attachments?: DSBinary[]): Promise<MessageCreationResult<DSMessage>>
 
     /**
      * Resume the creation of a message
@@ -46,7 +46,7 @@ export interface MessageLikeApi<DSMessage, DSTopic> {
      *
      * @returns the attachments of the message and their types
      */
-    getAttachments(message: Reference<DSMessage>): Promise<{ data: ArrayBuffer; uti: string; filename: string }[]>
+    getAttachments(message: Reference<DSMessage>): Promise<DSBinary[]>
 
     /**
      * Mark messages as read
@@ -87,6 +87,7 @@ export type MessageCreationProgress =
       }
     | {
           step: MessageCreationStep.MESSAGE_ATTACHED
+          createdAttachments: AttachmentCreationProgress[]
           partialMessage: MessageDto
       }
 
@@ -111,6 +112,7 @@ export type AttachmentCreationProgress =
     | {
           step: AttachmentCreationStep.DOCUMENT_ATTACHED
           document: DocumentDto
+          attachment: AttachmentInput
       }
 
 /**

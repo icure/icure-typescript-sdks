@@ -39,7 +39,7 @@ function toTopicDtoAuthor(domain: Topic): string | undefined {
 }
 
 function toTopicDtoResponsible(domain: Topic): string | undefined {
-    throw new Error('Not implemented')
+    return domain.responsible
 }
 
 function toTopicDtoMedicalLocationId(domain: Topic): string | undefined {

@@ -1556,9 +1556,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@icure/api@npm:8.0.0-RC.5":
-  version: 8.0.0-RC.5
-  resolution: "@icure/api@npm:8.0.0-RC.5"
+"@icure/api@npm:8.0.12":
+  version: 8.0.12
+  resolution: "@icure/api@npm:8.0.12"
   dependencies:
     browser-or-node: ^2.1.1
     date-fns: ^2.23.0
@@ -1568,7 +1568,7 @@ __metadata:
     text-encoding: ^0.7.0
     uuid: ^8.3.2
     uuid-encoder: ^1.1.0
-  checksum: 4585e92a480668f69ab0623e7f63d74335921c7f4e588fe2776669fb18aed54c0b030c01f3e3c392569987a7813a292d4e3507f77d3eeeec2fdd4d94a2872f2c
+  checksum: 7d967ade393663be5ae2063d3ce3363bccdc0ce02e3e142a45425ea78d46c4e2fec69d94cc14b0c71707a8f951372d8e1bc3dad370b6dd0f6774b80f793fe41a
   languageName: node
   linkType: hard
 
@@ -1602,21 +1602,18 @@ __metadata:
     "@types/chai": ^4.3.0
     "@types/chai-as-promised": ^7.1.1
     "@types/isomorphic-fetch": ^0.0.36
-    "@types/jest": ^29.5.2
     "@types/md5": ^2.3.2
     "@types/mocha": ^9.1.0
     "@types/node-localstorage": ^1.3.0
     "@types/uuid": ^8.3.4
     "@types/ws": ^8.5.4
     axios: ^0.26.1
-    babel-jest: ^29.5.0
     browser-or-node: ^2.1.1
     chai: ^4.3.6
     chai-as-promised: ^7.1.1
     date-fns: ^2.28.0
     es6-promise: ^4.2.4
     isomorphic-fetch: ^3.0.0
-    jest: ^29.5.0
     loglevel: ^1.8.1
     md5: ^2.3.0
     mocha: ^9.2.2
@@ -1627,7 +1624,6 @@ __metadata:
     pretty-quick: ^3.1.3
     rimraf: ^3.0.2
     source-map-support: ^0.5.21
-    ts-jest: ^29.1.0
     ts-loader: ^9.4.3
     ts-md5: ^1.3.1
     ts-node: ^10.7.0
@@ -4644,14 +4640,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "icure-typescript-sdks@workspace:."
   dependencies:
-    "@icure/api": 8.0.0-RC.5
+    "@icure/api": 8.0.12
     "@icure/test-setup": ^0.0.61
     nx: 16.3.2
     prettier: ^2.8.8
     pretty-quick: ^3.1.3
     rimraf: ^5.0.1
     ts-node: ^10.9.1
-    typescript: ^5.1.3
+    typescript: ^5.2.2
   languageName: unknown
   linkType: soft
 
@@ -7908,13 +7904,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.1.3":
-  version: 5.1.3
-  resolution: "typescript@npm:5.1.3"
+"typescript@npm:^5.2.2":
+  version: 5.2.2
+  resolution: "typescript@npm:5.2.2"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: d9d51862d98efa46534f2800a1071a613751b1585dc78884807d0c179bcd93d6e9d4012a508e276742f5f33c480adefc52ffcafaf9e0e00ab641a14cde9a31c7
+  checksum: 7912821dac4d962d315c36800fe387cdc0a6298dba7ec171b350b4a6e988b51d7b8f051317786db1094bd7431d526b648aba7da8236607febb26cf5b871d2d3c
   languageName: node
   linkType: hard
 
@@ -7928,13 +7924,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^5.1.3#~builtin<compat/typescript>":
-  version: 5.1.3
-  resolution: "typescript@patch:typescript@npm%3A5.1.3#~builtin<compat/typescript>::version=5.1.3&hash=5da071"
+"typescript@patch:typescript@^5.2.2#~builtin<compat/typescript>":
+  version: 5.2.2
+  resolution: "typescript@patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=5da071"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 6f0a9dca6bf4ce9dcaf4e282aade55ef4c56ecb5fb98d0a4a5c0113398815aea66d871b5611e83353e5953a19ed9ef103cf5a76ac0f276d550d1e7cd5344f61e
+  checksum: 07106822b4305de3f22835cbba949a2b35451cad50888759b6818421290ff95d522b38ef7919e70fb381c5fe9c1c643d7dea22c8b31652a717ddbd57b7f4d554
   languageName: node
   linkType: hard
 

@@ -11,14 +11,18 @@ import { FilterMapper } from '../../mappers/Filter.mapper'
 import { ErrorHandler } from '../../services/ErrorHandler'
 import { FilterChainMessage } from '@icure/api/icc-api/model/FilterChainMessage'
 import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
+import { SubscriptionOptions } from '@icure/api/icc-x-api/utils'
 import AccessLevelEnum = SecureDelegation.AccessLevelEnum
 import DocumentLocationEnum = DocumentDto.DocumentLocationEnum
-import { SubscriptionOptions } from '@icure/api/icc-x-api/utils'
 
-export class MessageLikeApiImpl<DSMessage, DSTopic> implements MessageLikeApi<DSMessage, DSTopic> {
+export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements MessageLikeApi<DSMessage, DSTopic, DSBinary> {
+    private readonly decoder = new TextDecoder()
+    private readonly encoder = new TextEncoder()
+
     constructor(
         private readonly messageMapper: Mapper<DSMessage, MessageDto>,
         private readonly topicMapper: Mapper<DSTopic, TopicDto>,
+        private readonly documentMapper: Mapper<DSBinary, { data: ArrayBuffer; uti: string; filename: string }>,
         private readonly messageApi: IccMessageXApi,
         private readonly topicApi: IccTopicXApi,
         private readonly userApi: IccUserXApi,
@@ -34,32 +38,30 @@ export class MessageLikeApiImpl<DSMessage, DSTopic> implements MessageLikeApi<DS
      * @param content
      * @param attachments
      */
-    async create(
-        topic: Reference<DSTopic>,
-        content?: string,
-        attachments?: {
-            data: ArrayBuffer
-            uti: string
-            filename: string
-        }[],
-    ): Promise<MessageCreationResult<DSMessage>> {
+    async create(topic: Reference<DSTopic>, content?: string, attachments?: DSBinary[]): Promise<MessageCreationResult<DSMessage>> {
         const currentUser = await this.userApi.getCurrentUser()
         const topicDto = typeof topic === 'string' ? await this.topicApi.getTopic(topic) : this.topicMapper.toDto(topic)
 
         const shouldCreateAttachmentForContent = !!content && content.length > this.characterLimit
 
-        const delegates: { [p: string]: SecureDelegation.AccessLevelEnum } = Object.fromEntries(Object.entries(topicDto?.activeParticipants ?? {})?.map(([participantId, role]) => [participantId, AccessLevelEnum.WRITE]))
+        const delegates: { [p: string]: SecureDelegation.AccessLevelEnum } = Object.fromEntries(
+            Object.entries(topicDto?.activeParticipants ?? {})
+                ?.filter(([participantId]) => currentUser.healthcarePartyId !== participantId)
+                ?.map(([participantId]) => [participantId, AccessLevelEnum.READ]),
+        )
+
+        const binaries = attachments?.map((attachment) => this.documentMapper.toDto(attachment))
 
         const documentAttachments: AttachmentInput[] = [
-            ...(attachments?.map((attachment) => ({
-                ...attachment,
+            ...(binaries?.map((binary) => ({
+                ...binary,
                 documentLocation: DocumentLocationEnum.Annex,
             })) ?? []),
             ...(shouldCreateAttachmentForContent
                 ? [
                       {
-                          data: new TextEncoder().encode(content).buffer,
-                          uti: this.documentApi.utiDefs['text/plain'],
+                          data: this.encoder.encode(content).buffer,
+                          uti: this.documentApi.uti('text/plain', 'txt'),
                           filename: 'content.txt',
                           documentLocation: DocumentLocationEnum.Body,
                       },
@@ -113,20 +115,34 @@ export class MessageLikeApiImpl<DSMessage, DSTopic> implements MessageLikeApi<DS
     }
 
     async get(id: string): Promise<DSMessage> {
-        return this.messageMapper.toDomain(await this.messageApi.getMessage(id))
+        const messageDto = await this.messageApi.getMessage(id)
+
+        const documents = await this.documentApi.findByMessage(this.dataOwnerApi.getDataOwnerIdOf(await this.userApi.getCurrentUser()), messageDto)
+        const bodyDocument = documents.find((document) => document.documentLocation === DocumentLocationEnum.Body)
+
+        if (bodyDocument !== undefined) {
+            const bodyDocumentAttachment = await retry(async () => await this.documentApi.getAndDecryptDocumentAttachment(bodyDocument), 5, 100, 2)
+            messageDto.subject = this.decoder.decode(bodyDocumentAttachment)
+        }
+
+        return this.messageMapper.toDomain(messageDto)
     }
 
-    async getAttachments(message: Reference<DSMessage>): Promise<{ data: ArrayBuffer; uti: string; filename: string }[]> {
+    async getAttachments(message: Reference<DSMessage>): Promise<DSBinary[]> {
         const currentUser = await this.userApi.getCurrentUser()
-        const messageDocuments = await this.documentApi.findByMessage(this.dataOwnerApi.getDataOwnerIdOf(currentUser), typeof message === 'string' ? await this.messageApi.getMessage(message) : this.messageMapper.toDto(message))
+        const messageDto = typeof message === 'string' ? await this.messageApi.getMessage(message) : this.messageMapper.toDto(message)
+        const messageDocuments = await this.documentApi.findByMessage(this.dataOwnerApi.getDataOwnerIdOf(currentUser), messageDto)
+        const annexes = messageDocuments.filter((document) => document.documentLocation === DocumentLocationEnum.Annex)
 
         return await Promise.all(
-            messageDocuments.map(async (document) => {
-                return {
-                    data: await retry(async () => await this.documentApi.getAndDecryptDocumentAttachment(document), 5, 100, 2),
+            annexes.map(async (document) => {
+                const attachment = await retry(async () => await this.documentApi.getAndDecryptDocumentAttachment(document), 5, 100, 2)
+
+                return this.documentMapper.toDomain({
+                    data: attachment,
                     uti: document.mainUti!,
                     filename: document.name!,
-                }
+                })
             }),
         )
     }
@@ -206,6 +222,32 @@ export class MessageLikeApiImpl<DSMessage, DSTopic> implements MessageLikeApi<DS
             case MessageCreationStep.MESSAGE_ATTACHED: {
                 try {
                     const createdMessage = await this.messageApi.createMessage(creationProgress.partialMessage)
+
+                    const attachmentCreationResults = (
+                        creationProgress as Extract<
+                            MessageCreationProgress,
+                            {
+                                step: MessageCreationStep.MESSAGE_ATTACHED
+                            }
+                        >
+                    ).createdAttachments
+                    const bodyAttachment = (
+                        attachmentCreationResults as Extract<
+                            AttachmentCreationProgress,
+                            {
+                                step: AttachmentCreationStep.DOCUMENT_ATTACHED
+                            }
+                        >[]
+                    ).find((attachment) => attachment.attachment.documentLocation === DocumentLocationEnum.Body)?.attachment
+
+                    if (bodyAttachment !== undefined) {
+                        return {
+                            createdMessage: this.messageMapper.toDomain({
+                                ...createdMessage,
+                                subject: this.decoder.decode(bodyAttachment.data),
+                            }),
+                        }
+                    }
 
                     return {
                         createdMessage: this.messageMapper.toDomain(createdMessage),
@@ -325,6 +367,7 @@ export class MessageLikeApiImpl<DSMessage, DSTopic> implements MessageLikeApi<DS
             return {
                 step: MessageCreationStep.MESSAGE_ATTACHED,
                 partialMessage: newMessageInstance,
+                createdAttachments: attachmentCreationProgresses,
             }
         }
         return messageCreationProgress
@@ -347,7 +390,14 @@ export class MessageLikeApiImpl<DSMessage, DSTopic> implements MessageLikeApi<DS
      *
      * @returns AttachmentCreationProgress the progress of the document creation
      */
-    private async createAttachedDocuments(user: UserDto, message: MessageDto, attachments: AttachmentCreationProgress[], delegates: { [p: string]: SecureDelegation.AccessLevelEnum }): Promise<AttachmentCreationProgress[]> {
+    private async createAttachedDocuments(
+        user: UserDto,
+        message: MessageDto,
+        attachments: AttachmentCreationProgress[],
+        delegates: {
+            [p: string]: SecureDelegation.AccessLevelEnum
+        },
+    ): Promise<AttachmentCreationProgress[]> {
         const documentInitializationResult = await this.initialiseDocuments(user, message, attachments, delegates)
         const documentCreationResults = await this.createDocuments(documentInitializationResult)
         return await this.encryptAndSetDocumentAttachment(documentCreationResults)
@@ -366,7 +416,14 @@ export class MessageLikeApiImpl<DSMessage, DSTopic> implements MessageLikeApi<DS
      *
      * @returns AttachmentCreationProgress the progress of the document creation
      */
-    private async initialiseDocuments(user: UserDto, message: MessageDto, attachments: AttachmentCreationProgress[], delegates: { [p: string]: SecureDelegation.AccessLevelEnum }): Promise<AttachmentCreationProgress[]> {
+    private async initialiseDocuments(
+        user: UserDto,
+        message: MessageDto,
+        attachments: AttachmentCreationProgress[],
+        delegates: {
+            [p: string]: SecureDelegation.AccessLevelEnum
+        },
+    ): Promise<AttachmentCreationProgress[]> {
         const attachmentToInitialize = attachments.reduce((acc, progress) => {
             if (progress.step === AttachmentCreationStep.DOCUMENT_INITIALISATION) {
                 acc.push(progress.attachment)
@@ -375,14 +432,13 @@ export class MessageLikeApiImpl<DSMessage, DSTopic> implements MessageLikeApi<DS
         }, [] as Array<AttachmentInput>)
 
         const documentInitializationResult = await Promise.allSettled(
-            attachmentToInitialize?.map(async ({ data, uti, filename, documentLocation }) => {
+            attachmentToInitialize?.map(async ({ filename, documentLocation }) => {
                 return await this.documentApi.newInstance(
                     user,
                     message,
                     new DocumentDto({
                         name: filename,
                         documentLocation: documentLocation,
-                        mainUti: uti,
                     }),
                     {
                         additionalDelegates: delegates,
@@ -488,7 +544,7 @@ export class MessageLikeApiImpl<DSMessage, DSTopic> implements MessageLikeApi<DS
             [] as Array<{ document: DocumentDto; attachment: AttachmentInput }>,
         )
 
-        const documentCreationResults = await Promise.allSettled(documentsToProcess.map(async ({ document, attachment }) => await this.documentApi.encryptAndSetDocumentAttachment(document, attachment.data, [document.mainUti!])))
+        const documentCreationResults = await Promise.allSettled(documentsToProcess.map(async ({ document, attachment }) => await this.documentApi.encryptAndSetDocumentAttachment(document, attachment.data, [attachment.uti])))
 
         const createdDocumentResults = documentCreationResults.map((result, index) => ({
             result,
@@ -503,6 +559,7 @@ export class MessageLikeApiImpl<DSMessage, DSTopic> implements MessageLikeApi<DS
                     return {
                         step: AttachmentCreationStep.DOCUMENT_ATTACHED,
                         document: (result as PromiseFulfilledResult<DocumentDto>).value,
+                        attachment: origin.attachment,
                     } satisfies AttachmentCreationProgress
                 } else {
                     return {

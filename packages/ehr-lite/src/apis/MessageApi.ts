@@ -1,9 +1,11 @@
 import { CommonApi, mapMessageDtoToMessage, mapMessageToMessageDto, mapTopicDtoToTopic, mapTopicToTopicDto, Message, MessageLikeApi, MessageLikeApiImpl, Topic } from '@icure/typescript-common'
 import { Message as MessageDto, Topic as TopicDto } from '@icure/api'
+import { Binary } from '../models/Binary.model'
+import { mapBinaryToDocumentAttachment, mapDocumentAttachmentToBinary } from '../mappers/Binary.mapper'
 
-export interface MessageApi extends MessageLikeApi<Message, Topic> {}
+export interface MessageApi extends MessageLikeApi<Message, Topic, Binary> {}
 
-class MessageApiImpl extends MessageLikeApiImpl<Message, Topic> {}
+class MessageApiImpl extends MessageLikeApiImpl<Message, Topic, Binary> {}
 
 export const messageApi = (api: CommonApi, characterLimit: number): MessageApi =>
     new MessageApiImpl(
@@ -21,6 +23,14 @@ export const messageApi = (api: CommonApi, characterLimit: number): MessageApi =
             },
             toDto(domain: Topic): TopicDto {
                 return mapTopicToTopicDto(domain)
+            },
+        },
+        {
+            toDomain(dto: { data: ArrayBuffer; filename: string; uti: string }): Binary {
+                return mapDocumentAttachmentToBinary(dto, (uti) => api.baseApi.documentApi.mimeType(uti))
+            },
+            toDto(domain: Binary): { data: ArrayBuffer; filename: string; uti: string } {
+                return mapBinaryToDocumentAttachment(domain, (mimeType, extension) => api.baseApi.documentApi.uti(mimeType, extension))
             },
         },
         api.baseApi.messageApi,

@@ -1,3 +1,4 @@
+export * from './Binary.model'
 export * from './Component.model'
 export * from './Condition.model'
 export * from './ContactPoint.model'
@@ -11,3 +12,5 @@ export * from './Patient.model'
 export * from './Practitioner.model'
 export * from './RelatedPerson.model'
 export * from './RelatedPractitioner.model'
+
+export * from './enums/enum'

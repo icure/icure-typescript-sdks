@@ -47,9 +47,7 @@ export class EHRLiteApi extends CommonApi {
         private readonly _msgGtwSpecId: string | undefined = undefined,
         private readonly _authProcessByEmailId: string | undefined = undefined,
         private readonly _authProcessBySmsId: string | undefined = undefined,
-        private readonly options: {
-            messageCharactersLimit: number
-        },
+        private readonly _messageCharactersLimit: number,
         storage?: StorageFacade<string>,
         keyStorage?: KeyStorageFacade,
         messageFactory?: EHRLiteMessageFactory,
@@ -84,7 +82,7 @@ export class EHRLiteApi extends CommonApi {
 
         this._topicApi = topicApi(this)
 
-        this._messageApi = messageApi(this, options.messageCharactersLimit)
+        this._messageApi = messageApi(this, this.messageCharactersLimit)
     }
 
     get codingApi(): CodingApi {
@@ -170,8 +168,8 @@ export class EHRLiteApi extends CommonApi {
     /**
      * @internal this property is for internal use only and may be changed without notice
      */
-    get messageCharactersLimit(): number | undefined {
-        return this.options?.messageCharactersLimit
+    get messageCharactersLimit(): number {
+        return this._messageCharactersLimit ?? 2_000
     }
 
     /**
@@ -195,7 +193,7 @@ export namespace EHRLiteApi {
                 super.withKeyStorage(initialisationApi.keyStorage)
                 super.withCryptoStrategies(initialisationApi.cryptoStrategies)
                 super.withMessageFactory(initialisationApi.messageFactory)
-                super.withMessageCharactersLimit(initialisationApi.messageCharactersLimit ?? 2000)
+                super.withMessageCharactersLimit(initialisationApi.messageCharactersLimit)
             }
         }
 
@@ -265,6 +263,9 @@ export namespace EHRLiteApi {
                     keyStorage: props.keyStorage,
                     createMaintenanceTasksOnNewKey: true,
                     disableParentKeysInitialisation: true,
+                    encryptedFieldsConfig: {
+                        message: ['subject'],
+                    },
                 },
             ).then(
                 (api) =>
@@ -278,9 +279,7 @@ export namespace EHRLiteApi {
                         props.msgGwSpecId,
                         props.authProcessByEmailId,
                         props.authProcessBySmsId,
-                        {
-                            messageCharactersLimit: props.messageCharactersLimit,
-                        },
+                        props.messageCharactersLimit,
                         props.storage,
                         props.keyStorage,
                         props.messageFactory,

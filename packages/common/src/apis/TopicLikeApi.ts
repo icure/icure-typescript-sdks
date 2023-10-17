@@ -57,6 +57,9 @@ export interface TopicLikeApi<DSTopic, DSHcp, DSPatient, DSService, DSHealthElem
 
     /**
      * Add a service to a topic
+     *
+     * This does not share the service with the participants, you need to do it separately
+     *
      * @param topic Topic to which the service will be added
      * @param services Services that will be added to the topic
      *
@@ -66,6 +69,9 @@ export interface TopicLikeApi<DSTopic, DSHcp, DSPatient, DSService, DSHealthElem
 
     /**
      * Add a healthElements to a topic
+     *
+     * This does not share the healthElements with the participants, you need to do it separately
+     *
      * @param topic Topic to which the service will be added
      * @param healthElements HealthElements that will be added to the topic
      *
