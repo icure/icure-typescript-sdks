@@ -1,9 +1,11 @@
-import { getEnvironmentInitializer, hcp2Username, setLocalStorage } from '../test-utils'
+import { getEnvironmentInitializer, hcp2Username, hcp3Username, setLocalStorage } from '../test-utils'
 import { BaseApiTestContext, WithDataOwnerApi, WithHcpApi, WithHelementApi, WithPatientApi, WithServiceApi, WithTopicApi } from './TestContexts'
-import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, TopicRole } from '@icure/typescript-common'
+import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, TopicFilter, TopicRole } from '@icure/typescript-common'
 import { describe, it, beforeAll } from '@jest/globals'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import 'isomorphic-fetch'
+import { XHR } from '@icure/api'
+import XHRError = XHR.XHRError
 
 setLocalStorage(fetch)
 
@@ -160,6 +162,105 @@ export function testTopicLikeApi<
             const gotTopicDto = ctx.toTopicDto(gotTopic)
             expect(gotTopicDto.id).toEqual(topicDto.id)
             expect(gotTopicDto).toEqual(topicDto)
+        })
+
+        it('should be capable to create topic and filter it by TopicByHcPartyFilter', async () => {
+            const { api: masterApi, user: masterUser } = await ctx.masterApi(env)
+            const { api: hcp2Api, user: hcp2User } = await ctx.apiForEnvUser(env, hcp2Username)
+
+            const topic = await ctx.topicApi(masterApi).create(
+                [
+                    {
+                        participant: masterUser.healthcarePartyId!,
+                        role: TopicRole.OWNER,
+                    },
+                    {
+                        participant: hcp2User.healthcarePartyId!,
+                        role: TopicRole.PARTICIPANT,
+                    },
+                ],
+                'Topic description',
+            )
+            expect(topic).toBeTruthy()
+
+            const topicDto = ctx.toTopicDto(topic)
+            expect(topicDto).toBeTruthy()
+
+            const filter = await new TopicFilter(hcp2Api).forSelf().build()
+
+            const paginatedList = await ctx.topicApi(hcp2Api).filterBy(filter)
+            expect(paginatedList).toBeTruthy()
+
+            const filteredTopicDtos = paginatedList.rows?.map(ctx.toTopicDto)
+            expect(filteredTopicDtos.length).toBeGreaterThanOrEqual(1)
+            expect(filteredTopicDtos).toEqual(expect.arrayContaining([topicDto]))
+        })
+
+        it('should be capable to create topic and filter it by TopicByParticipantFilter', async () => {
+            const { api: masterApi, user: masterUser } = await ctx.masterApi(env)
+            const { api: hcp2Api, user: hcp2User } = await ctx.apiForEnvUser(env, hcp2Username)
+
+            const topic = await ctx.topicApi(masterApi).create(
+                [
+                    {
+                        participant: masterUser.healthcarePartyId!,
+                        role: TopicRole.OWNER,
+                    },
+                    {
+                        participant: hcp2User.healthcarePartyId!,
+                        role: TopicRole.PARTICIPANT,
+                    },
+                ],
+                'Topic description',
+            )
+            expect(topic).toBeTruthy()
+
+            const topicDto = ctx.toTopicDto(topic)
+            expect(topicDto).toBeTruthy()
+
+            const filter = await new TopicFilter(masterApi).forSelf().byParticipant(hcp2User.healthcarePartyId!).build()
+
+            const paginatedList = await ctx.topicApi(masterApi).filterBy(filter)
+            expect(paginatedList).toBeTruthy()
+
+            const filteredTopicDtos = paginatedList.rows?.map(ctx.toTopicDto)
+            expect(filteredTopicDtos.length).toBeGreaterThanOrEqual(1)
+            expect(filteredTopicDtos).toEqual(expect.arrayContaining([topicDto]))
+        })
+
+        it('A non-participant user should not be able to filter topic that other user are participants in', async () => {
+            const { api: masterApi, user: masterUser } = await ctx.masterApi(env)
+            const { api: hcp2Api, user: hcp2User } = await ctx.apiForEnvUser(env, hcp2Username)
+            const { api: hcp3Api, user: hcp3User } = await ctx.apiForEnvUser(env, hcp3Username)
+
+            const topic = await ctx.topicApi(masterApi).create(
+                [
+                    {
+                        participant: masterUser.healthcarePartyId!,
+                        role: TopicRole.OWNER,
+                    },
+                    {
+                        participant: hcp2User.healthcarePartyId!,
+                        role: TopicRole.PARTICIPANT,
+                    },
+                ],
+                'Topic description',
+            )
+            expect(topic).toBeTruthy()
+
+            const topicDto = ctx.toTopicDto(topic)
+            expect(topicDto).toBeTruthy()
+
+            const filterByHcp = await new TopicFilter(hcp3Api).forDataOwner(hcp2User.healthcarePartyId!).build()
+            const filterByParticipants = await new TopicFilter(hcp3Api).forSelf().byParticipant(hcp2User.healthcarePartyId!).build()
+
+            await expect(ctx.topicApi(hcp3Api).filterBy(filterByHcp)).rejects.toThrow() // Throws 403, since your cannot get topic that you don't have access to
+
+            const paginatedList = await ctx.topicApi(hcp3Api).filterBy(filterByParticipants)
+            expect(paginatedList).toBeTruthy()
+
+            const filteredTopicDtos = paginatedList.rows?.map(ctx.toTopicDto)
+            expect(filteredTopicDtos.length).toBeGreaterThanOrEqual(0) // Returns a paginated list with 0 rows, since you don't share any topic with hcp2
         })
     })
 }
