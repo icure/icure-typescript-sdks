@@ -7,5 +7,5 @@ export { AuthenticationApi } from './apis/apis'
 export * from './filters/filters'
 export * from './models/models'
 
-export { PatientFilter, UserFilter } from './filters/filters'
+export { PatientFilter, UserFilter, MessageFilter, TopicFilter } from './filters/filters'
 export { DataOwnerWithType } from './models/models'
