@@ -5,5 +5,5 @@ export interface LatestMessageByHcPartyTransportGuidFilter extends Filter<Messag
     $type: 'LatestMessageByHcPartyTransportGuidFilter'
     healthcarePartyId?: string
     transportGuid?: string
-    desc?: string
+    description?: string
 }

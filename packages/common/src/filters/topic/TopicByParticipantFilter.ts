@@ -4,5 +4,5 @@ import { Filter } from '../Filter'
 export interface TopicByParticipantFilter extends Filter<Topic> {
     $type: 'TopicByParticipantFilter'
     participantId?: string
-    desc?: string
+    description?: string
 }
