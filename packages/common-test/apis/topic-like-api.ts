@@ -262,5 +262,45 @@ export function testTopicLikeApi<
             const filteredTopicDtos = paginatedList.rows?.map(ctx.toTopicDto)
             expect(filteredTopicDtos.length).toBeGreaterThanOrEqual(0) // Returns a paginated list with 0 rows, since you don't share any topic with hcp2
         })
+
+        it('a topic PARTICIPANT should be capable to leave the Topic and to not retrieve it using TopicByParticipantFilter', async () => {
+            const { api: masterApi, user: masterUser } = await ctx.masterApi(env)
+            const { api: hcp2Api, user: hcp2User } = await ctx.apiForEnvUser(env, hcp2Username)
+
+            const topic = await ctx.topicApi(masterApi).create(
+                [
+                    {
+                        participant: masterUser.healthcarePartyId!,
+                        role: TopicRole.OWNER,
+                    },
+                    {
+                        participant: hcp2User.healthcarePartyId!,
+                        role: TopicRole.PARTICIPANT,
+                    },
+                ],
+                'Topic description',
+            )
+            expect(topic).toBeTruthy()
+
+            const topicDto = ctx.toTopicDto(topic)
+            expect(topicDto).toBeTruthy()
+
+            const filter = await new TopicFilter(hcp2Api).forSelf().byParticipant(hcp2User.healthcarePartyId!).build()
+
+            const paginatedList = await ctx.topicApi(hcp2Api).filterBy(filter)
+            expect(paginatedList).toBeTruthy()
+
+            const filteredTopicDtos = paginatedList.rows?.map(ctx.toTopicDto)
+            expect(filteredTopicDtos.length).toBeGreaterThanOrEqual(1)
+            expect(filteredTopicDtos).toEqual(expect.arrayContaining([topicDto]))
+
+            await ctx.topicApi(hcp2Api).leave(topic)
+
+            const paginatedListAfterLeave = await ctx.topicApi(hcp2Api).filterBy(filter)
+            expect(paginatedListAfterLeave).toBeTruthy()
+
+            const filteredTopicDtosAfterLeave = paginatedListAfterLeave.rows?.map(ctx.toTopicDto)
+            expect(filteredTopicDtosAfterLeave).not.toEqual(expect.arrayContaining([topicDto]))
+        })
     })
 }
