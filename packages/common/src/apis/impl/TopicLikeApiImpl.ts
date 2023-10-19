@@ -15,23 +15,32 @@ import { FilterChainTopic } from '@icure/api/icc-api/model/FilterChainTopic'
 import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
 import AccessLevelEnum = SecureDelegation.AccessLevelEnum
 import { SubscriptionOptions } from '@icure/api/icc-x-api/utils'
+import { CryptoStrategies } from '../../services/CryptoStrategies'
+import { DataOwnerWithType } from '../../models/DataOwner.model'
 
-export class TopicLikeApiImpl<DSTopic, DSHcp, DSPatient, DSService, DSHealthElement> implements TopicLikeApi<DSTopic, DSHcp, DSPatient, DSService, DSHealthElement> {
+export class TopicLikeApiImpl<DSTopic, DSHcp, DSPatient, DSService, DSHealthElement, DSDataOwnerWithType extends DataOwnerWithType> implements TopicLikeApi<DSTopic, DSHcp, DSPatient, DSService, DSHealthElement> {
     constructor(
         private readonly topicMapper: Mapper<DSTopic, TopicDto>,
         private readonly hcpMapper: Mapper<DSHcp, HealthcareParty>,
         private readonly patientMapper: Mapper<DSPatient, Patient>,
         private readonly serviceMapper: Mapper<DSService, Service>,
         private readonly healthElementMapper: Mapper<DSHealthElement, HealthElement>,
+        private readonly dataOwnerMapper: Mapper<DSDataOwnerWithType, DataOwnerWithType>,
         private readonly errorHandler: ErrorHandler,
         private readonly topicApi: IccTopicXApi,
         private readonly userApi: IccUserXApi,
         private readonly patientApi: IccPatientXApi,
         private readonly dataOwnerApi: IccDataOwnerXApi,
+        private readonly cryptoStrategies: CryptoStrategies<DSDataOwnerWithType>,
     ) {}
 
     async addParticipant(topic: DSTopic, participant: { ref: Reference<DSHcp>; role: TopicRole }): Promise<DSTopic> {
         const hcpId = typeof participant.ref === 'string' ? participant.ref : this.hcpMapper.toDto(participant.ref).id!
+        const dataOwner = await this.dataOwnerApi.getDataOwner(hcpId)
+
+        if (this.cryptoStrategies.dataOwnerRequiresAnonymousDelegation(hcpId, this.dataOwnerMapper.toDomain(dataOwner).type)) {
+            throw this.errorHandler.createErrorWithMessage("Data owner that requires anonymous delegation aren't supported yet")
+        }
 
         return this.topicMapper.toDomain(
             await this.topicApi
@@ -105,6 +114,11 @@ export class TopicLikeApiImpl<DSTopic, DSHcp, DSPatient, DSService, DSHealthElem
             let hcpId = this.getRefIds([curr.participant], (hcp) => this.hcpMapper.toDto(hcp).id!)[0]
             return { hcpId, role: curr.role as TopicRoleDto }
         })
+
+        const dataOwners = await Promise.all(activeParticipants.map(async (curr) => ({ dataOwner: await this.dataOwnerApi.getDataOwner(curr.hcpId), hcpId: curr.hcpId })))
+        if (dataOwners.some(({ dataOwner, hcpId }) => this.cryptoStrategies.dataOwnerRequiresAnonymousDelegation(hcpId, this.dataOwnerMapper.toDomain(dataOwner).type))) {
+            throw this.errorHandler.createErrorWithMessage("Data owner that requires anonymous delegation aren't supported yet")
+        }
 
         if (!activeParticipants.some(({ hcpId, role }) => hcpId === dataOwnerId && role === TopicRole.OWNER)) {
             throw this.errorHandler.createErrorWithMessage("The current user must be a participant of the topic with the role 'OWNER'")

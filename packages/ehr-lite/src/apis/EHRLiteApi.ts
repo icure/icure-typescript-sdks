@@ -80,7 +80,7 @@ export class EHRLiteApi extends CommonApi {
 
         this._notificationApi = notificationApi(this, _iCureBaseUrl)
 
-        this._topicApi = topicApi(this)
+        this._topicApi = topicApi(this, this.cryptoStrategies)
 
         this._messageApi = messageApi(this, this.messageCharactersLimit)
     }

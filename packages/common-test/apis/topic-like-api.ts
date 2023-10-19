@@ -1,4 +1,4 @@
-import { getEnvironmentInitializer, hcp2Username, hcp3Username, setLocalStorage } from '../test-utils'
+import { getEnvironmentInitializer, hcp2Username, hcp3Username, patUsername, setLocalStorage } from '../test-utils'
 import { BaseApiTestContext, WithDataOwnerApi, WithHcpApi, WithHelementApi, WithPatientApi, WithServiceApi, WithTopicApi } from './TestContexts'
 import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, TopicFilter, TopicRole } from '@icure/typescript-common'
 import { describe, it, beforeAll } from '@jest/globals'
@@ -301,6 +301,49 @@ export function testTopicLikeApi<
 
             const filteredTopicDtosAfterLeave = paginatedListAfterLeave.rows?.map(ctx.toTopicDto)
             expect(filteredTopicDtosAfterLeave).not.toEqual(expect.arrayContaining([topicDto]))
+        })
+
+        it('should not be able to add a patient as a participant', async () => {
+            const { api: masterApi, user: masterUser } = await ctx.masterApi(env)
+            const { api: patientApi, user: patientUser } = await ctx.apiForEnvUser(env, patUsername)
+
+            await expect(
+                ctx.topicApi(masterApi).create(
+                    [
+                        {
+                            participant: masterUser.healthcarePartyId!,
+                            role: TopicRole.OWNER,
+                        },
+                        {
+                            participant: patientUser.patientId!,
+                            role: TopicRole.PARTICIPANT,
+                        },
+                    ],
+                    'Topic description',
+                ),
+            ).rejects.toThrow()
+        })
+
+        it('should be able to create a topic but not to add a patient as a participant afterward', async () => {
+            const { api: masterApi, user: masterUser } = await ctx.masterApi(env)
+            const { api: patientApi, user: patientUser } = await ctx.apiForEnvUser(env, patUsername)
+
+            const topic = await ctx.topicApi(masterApi).create(
+                [
+                    {
+                        participant: masterUser.healthcarePartyId!,
+                        role: TopicRole.OWNER,
+                    },
+                ],
+                'Topic description',
+            )
+
+            await expect(
+                ctx.topicApi(masterApi).addParticipant(topic, {
+                    ref: patientUser.patientId!,
+                    role: TopicRole.PARTICIPANT,
+                }),
+            ).rejects.toThrow()
         })
     })
 }

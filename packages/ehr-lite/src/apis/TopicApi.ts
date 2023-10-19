@@ -1,19 +1,21 @@
-import { CommonApi, mapTopicDtoToTopic, mapTopicToTopicDto, Topic, TopicLikeApi, TopicLikeApiImpl } from '@icure/typescript-common'
+import { CommonApi, CryptoStrategies, mapTopicDtoToTopic, mapTopicToTopicDto, Topic, TopicLikeApi, TopicLikeApiImpl } from '@icure/typescript-common'
 import { Practitioner } from '../models/Practitioner.model'
 import { Patient } from '../models/Patient.model'
 import { Observation } from '../models/Observation.model'
 import { Condition } from '../models/Condition.model'
-import { HealthcareParty, Topic as TopicDto, Patient as PatientDto, Service, HealthElement } from '@icure/api'
+import { HealthcareParty, Topic as TopicDto, Patient as PatientDto, Service, HealthElement, DataOwnerWithType as DataOwnerWithTypeDto } from '@icure/api'
 import { mapHealthcarePartyToPractitioner, mapPractitionerToHealthcareParty } from '../mappers/Practitioner.mapper'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
 import { mapObservationToService, mapServiceToObservation } from '../mappers/Observation.mapper'
 import { mapConditionToHealthElement, mapHealthElementToCondition } from '../mappers/Condition.mapper'
+import { DataOwnerWithType } from '../models/DataOwner.model'
+import DataOwnerMapper from '../mappers/DataOwner.mapper'
 
 export interface TopicApi extends TopicLikeApi<Topic, Practitioner, Patient, Observation, Condition> {}
 
-class TopicApiImpl extends TopicLikeApiImpl<Topic, Practitioner, Patient, Observation, Condition> {}
+class TopicApiImpl extends TopicLikeApiImpl<Topic, Practitioner, Patient, Observation, Condition, DataOwnerWithType> {}
 
-export const topicApi = (api: CommonApi): TopicApi =>
+export const topicApi = (api: CommonApi, cryptoStrategies: CryptoStrategies<DataOwnerWithType>): TopicApi =>
     new TopicApiImpl(
         {
             toDomain(dto: TopicDto): Topic {
@@ -55,9 +57,18 @@ export const topicApi = (api: CommonApi): TopicApi =>
                 return mapConditionToHealthElement(domain)
             },
         },
+        {
+            toDomain(dto: DataOwnerWithTypeDto): DataOwnerWithType {
+                return DataOwnerMapper.toDomain(dto)
+            },
+            toDto(domain: DataOwnerWithType): DataOwnerWithTypeDto {
+                return DataOwnerMapper.toDto(domain)
+            },
+        },
         api.errorHandler,
         api.baseApi.topicApi,
         api.baseApi.userApi,
         api.baseApi.patientApi,
         api.baseApi.dataOwnerApi,
+        cryptoStrategies,
     )
