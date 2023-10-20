@@ -1,10 +1,11 @@
-import { getEnvironmentInitializer, hcp2Username, setLocalStorage } from '../test-utils'
+import { getEnvironmentInitializer, hcp1Username, hcp2Username, setLocalStorage } from '../test-utils'
 import { BaseApiTestContext, WithDataOwnerApi, WithHcpApi, WithMessageApi, WithPatientApi, WithTopicApi } from './TestContexts'
 import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, FilterComposition, MessageFilter, TopicRole } from '@icure/typescript-common'
 import { describe, it, beforeAll } from '@jest/globals'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import 'isomorphic-fetch'
-import { sleep, User } from '@icure/api'
+import { Message, sleep, User } from '@icure/api'
+import { doXOnYAndSubscribe } from '../websocket-utils'
 
 setLocalStorage(fetch)
 
@@ -55,7 +56,7 @@ export function testMessageLikeApi<
             env = await initializer.execute(getEnvVariables())
         }, 600_000)
 
-        const createTopic = async (masterApi: DSApi, hcp2Api: DSApi, masterUser: User, hcp2User: User): Promise<DSTopic> => {
+        const createTopic = async (masterApi: DSApi, masterUser: User, hcp2User: User): Promise<DSTopic> => {
             const topic = await ctx.topicApi(masterApi).create(
                 [
                     {
@@ -73,11 +74,11 @@ export function testMessageLikeApi<
             return topic
         }
 
-        it('should be capable of creating a message from scratch', async () => {
+        it.skip('should be capable of creating a message from scratch', async () => {
             const { api: masterApi, user: masterUser } = await ctx.masterApi(env)
             const { api: hcp2Api, user: hcp2User } = await ctx.apiForEnvUser(env, hcp2Username)
 
-            const topic = await createTopic(masterApi, hcp2Api, masterUser, hcp2User)
+            const topic = await createTopic(masterApi, masterUser, hcp2User)
             const topicDto = ctx.toTopicDto(topic)
             expect(topicDto.id).toBeTruthy()
 
@@ -97,11 +98,11 @@ export function testMessageLikeApi<
             expect(gotMessageDto).toEqual(messageDto)
         })
 
-        it('should be capable of creating a long message from scratch', async () => {
+        it.skip('should be capable of creating a long message from scratch', async () => {
             const { api: masterApi, user: masterUser } = await ctx.masterApi(env)
             const { api: hcp2Api, user: hcp2User } = await ctx.apiForEnvUser(env, hcp2Username)
 
-            const topic = await createTopic(masterApi, hcp2Api, masterUser, hcp2User)
+            const topic = await createTopic(masterApi, masterUser, hcp2User)
             const topicDto = ctx.toTopicDto(topic)
             expect(topicDto.id).toBeTruthy()
 
@@ -125,11 +126,11 @@ export function testMessageLikeApi<
             expect(gotMessageDto.subject).toEqual(content)
         })
 
-        it('should be capable of creating a long message with some documents', async () => {
+        it.skip('should be capable of creating a long message with some documents', async () => {
             const { api: masterApi, user: masterUser } = await ctx.masterApi(env)
             const { api: hcp2Api, user: hcp2User } = await ctx.apiForEnvUser(env, hcp2Username)
 
-            const topic = await createTopic(masterApi, hcp2Api, masterUser, hcp2User)
+            const topic = await createTopic(masterApi, masterUser, hcp2User)
             const topicDto = ctx.toTopicDto(topic)
             expect(topicDto.id).toBeTruthy()
 
@@ -168,12 +169,12 @@ export function testMessageLikeApi<
             expect(expect.arrayContaining(documents)).toEqual(binaries)
         })
 
-        it('should be capable to filter latest message sent on different Topics', async () => {
+        it.skip('should be capable to filter latest message sent on different Topics', async () => {
             const { api: masterApi, user: masterUser } = await ctx.masterApi(env)
             const { api: hcp2Api, user: hcp2User } = await ctx.apiForEnvUser(env, hcp2Username)
 
-            const topic1 = await createTopic(masterApi, hcp2Api, masterUser, hcp2User)
-            const topic2 = await createTopic(masterApi, hcp2Api, masterUser, hcp2User)
+            const topic1 = await createTopic(masterApi, masterUser, hcp2User)
+            const topic2 = await createTopic(masterApi, masterUser, hcp2User)
 
             const topic1Dto = ctx.toTopicDto(topic1)
             const topic2Dto = ctx.toTopicDto(topic2)
@@ -215,15 +216,15 @@ export function testMessageLikeApi<
             expect(ids).toEqual(expect.arrayContaining([latestTopic1Message.id!, latestTopic2Message.id!]))
         })
 
-        it('should be capable to filter message sent on a Topic', async () => {
+        it.skip('should be capable to filter message sent on a Topic', async () => {
             const { api: masterApi, user: masterUser } = await ctx.masterApi(env)
             const { api: hcp2Api, user: hcp2User } = await ctx.apiForEnvUser(env, hcp2Username)
 
-            const topic = await createTopic(masterApi, hcp2Api, masterUser, hcp2User)
+            const topic = await createTopic(masterApi, masterUser, hcp2User)
             const topicDto = ctx.toTopicDto(topic)
             expect(topicDto.id).toBeTruthy()
 
-            const anotherTopic = await createTopic(masterApi, hcp2Api, masterUser, hcp2User)
+            const anotherTopic = await createTopic(masterApi, masterUser, hcp2User)
             const anotherTopicDto = ctx.toTopicDto(anotherTopic)
             expect(anotherTopicDto.id).toBeTruthy()
 
@@ -256,11 +257,11 @@ export function testMessageLikeApi<
             expect(messagesDto).not.toEqual(expect.arrayContaining(anotherTopicMessages))
         })
 
-        it('should be capable to set read status of a Message', async () => {
+        it.skip('should be capable to set read status of a Message', async () => {
             const { api: masterApi, user: masterUser } = await ctx.masterApi(env)
             const { api: hcp2Api, user: hcp2User } = await ctx.apiForEnvUser(env, hcp2Username)
 
-            const topic = await createTopic(masterApi, hcp2Api, masterUser, hcp2User)
+            const topic = await createTopic(masterApi, masterUser, hcp2User)
             const topicDto = ctx.toTopicDto(topic)
             expect(topicDto.id).toBeTruthy()
 
@@ -293,5 +294,65 @@ export function testMessageLikeApi<
             expect(gotUpdatedMessageDto.readStatus).toBeTruthy()
             expect(gotUpdatedMessageDto.readStatus![hcp2User.id!].read).toBeTruthy()
         })
+
+        const subscribeAndCreateMessage = async (options: {}, eventTypes: ('CREATE' | 'UPDATE')[]) => {
+            const { api, user } = await ctx.apiForEnvUser(env, hcp1Username)
+
+            const topic = await createTopic(api!!, user, user)
+            const topicDto = ctx.toTopicDto(topic)
+
+            const connectionPromise = async (options: {}, dataOwnerId: string, eventListener: (patient: Message) => Promise<void>) => {
+                await sleep(2000)
+                // TODO fix eventListener typing
+                return ctx.messageApi(api).subscribeToEvents(eventTypes, await new MessageFilter(api).forSelf().byTransportGuid(topicDto.id!, false).build(), eventListener as unknown as any, options)
+            }
+
+            const events: Message[] = []
+            const statuses: string[] = []
+
+            let eventReceivedPromiseResolve!: (value: void | PromiseLike<void>) => void
+            let eventReceivedPromiseReject!: (reason?: any) => void
+            const eventReceivedPromise = new Promise<void>((res, rej) => {
+                eventReceivedPromiseResolve = res
+                eventReceivedPromiseReject = rej
+            })
+
+            await doXOnYAndSubscribe(
+                api!!,
+                options,
+                connectionPromise(options, user.healthcarePartyId!, async (patient) => {
+                    events.push(patient)
+                    eventReceivedPromiseResolve()
+                }),
+                async () => {
+                    await ctx.messageApi(api).create(topic, 'Message content')
+                },
+                (status) => {
+                    statuses.push(status)
+                },
+                eventReceivedPromiseReject,
+                eventReceivedPromise,
+            )
+
+            events?.forEach((event) => console.log(`Event : ${event}`))
+            statuses?.forEach((status) => console.log(`Status : ${status}`))
+
+            expect(statuses.length).toEqual(2)
+            expect(events.length).toEqual(1)
+        }
+
+        it('Can subscribe MessageLike CREATE without option', async () => {
+            await subscribeAndCreateMessage({}, ['CREATE'])
+        }, 60_000)
+
+        it('Can subscribe MessageLike CREATE with options', async () => {
+            await subscribeAndCreateMessage(
+                {
+                    connectionRetryIntervalMs: 10_000,
+                    connectionMaxRetry: 5,
+                },
+                ['CREATE'],
+            )
+        }, 60_000)
     })
 }

@@ -173,7 +173,7 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
         ).map((message) => this.messageMapper.toDomain(message))
     }
 
-    async subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: Filter<MessageDto>, eventFired: (topic: DSMessage) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
+    async subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: Filter<MessageDto>, eventFired: (message: DSMessage) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
         return await this.messageApi.subscribeToMessageEvents(eventTypes, FilterMapper.toAbstractFilterDto<MessageDto>(filter, 'Message'), async (message) => await eventFired(this.messageMapper.toDomain(message)), options)
     }
 

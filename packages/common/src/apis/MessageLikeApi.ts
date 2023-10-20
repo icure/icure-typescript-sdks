@@ -59,7 +59,7 @@ export interface MessageLikeApi<DSMessage, DSTopic, DSBinary> {
 
     matchBy(filter: CommonFilter<MessageDto>): Promise<string[]>
 
-    subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: CommonFilter<MessageDto>, eventFired: (topic: DSMessage) => Promise<void>, options?: SubscriptionOptions): Promise<Connection>
+    subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: CommonFilter<MessageDto>, eventFired: (message: DSMessage) => Promise<void>, options?: SubscriptionOptions): Promise<Connection>
 }
 
 export type MessageCreationResult<DSMessage> =
