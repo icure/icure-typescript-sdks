@@ -1,10 +1,10 @@
 import { getEnvironmentInitializer, hcp2Username, setLocalStorage } from '../test-utils'
 import { BaseApiTestContext, WithDataOwnerApi, WithHcpApi, WithMessageApi, WithPatientApi, WithTopicApi } from './TestContexts'
-import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, TopicRole } from '@icure/typescript-common'
+import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, FilterComposition, MessageFilter, TopicRole } from '@icure/typescript-common'
 import { describe, it, beforeAll } from '@jest/globals'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import 'isomorphic-fetch'
-import { Binary } from '@icure/ehr-lite-sdk'
+import { sleep, User } from '@icure/api'
 
 setLocalStorage(fetch)
 
@@ -55,10 +55,7 @@ export function testMessageLikeApi<
             env = await initializer.execute(getEnvVariables())
         }, 600_000)
 
-        it('should be capable of creating a message from scratch', async () => {
-            const { api: masterApi, user: masterUser } = await ctx.masterApi(env)
-            const { api: hcp2Api, user: hcp2User } = await ctx.apiForEnvUser(env, hcp2Username)
-
+        const createTopic = async (masterApi: DSApi, hcp2Api: DSApi, masterUser: User, hcp2User: User): Promise<DSTopic> => {
             const topic = await ctx.topicApi(masterApi).create(
                 [
                     {
@@ -73,7 +70,14 @@ export function testMessageLikeApi<
                 'Topic description',
             )
             expect(topic).toBeTruthy()
+            return topic
+        }
 
+        it('should be capable of creating a message from scratch', async () => {
+            const { api: masterApi, user: masterUser } = await ctx.masterApi(env)
+            const { api: hcp2Api, user: hcp2User } = await ctx.apiForEnvUser(env, hcp2Username)
+
+            const topic = await createTopic(masterApi, hcp2Api, masterUser, hcp2User)
             const topicDto = ctx.toTopicDto(topic)
             expect(topicDto.id).toBeTruthy()
 
@@ -97,21 +101,7 @@ export function testMessageLikeApi<
             const { api: masterApi, user: masterUser } = await ctx.masterApi(env)
             const { api: hcp2Api, user: hcp2User } = await ctx.apiForEnvUser(env, hcp2Username)
 
-            const topic = await ctx.topicApi(masterApi).create(
-                [
-                    {
-                        participant: masterUser.healthcarePartyId!,
-                        role: TopicRole.OWNER,
-                    },
-                    {
-                        participant: hcp2User.healthcarePartyId!,
-                        role: TopicRole.PARTICIPANT,
-                    },
-                ],
-                'Topic description',
-            )
-            expect(topic).toBeTruthy()
-
+            const topic = await createTopic(masterApi, hcp2Api, masterUser, hcp2User)
             const topicDto = ctx.toTopicDto(topic)
             expect(topicDto.id).toBeTruthy()
 
@@ -139,21 +129,7 @@ export function testMessageLikeApi<
             const { api: masterApi, user: masterUser } = await ctx.masterApi(env)
             const { api: hcp2Api, user: hcp2User } = await ctx.apiForEnvUser(env, hcp2Username)
 
-            const topic = await ctx.topicApi(masterApi).create(
-                [
-                    {
-                        participant: masterUser.healthcarePartyId!,
-                        role: TopicRole.OWNER,
-                    },
-                    {
-                        participant: hcp2User.healthcarePartyId!,
-                        role: TopicRole.PARTICIPANT,
-                    },
-                ],
-                'Topic description',
-            )
-            expect(topic).toBeTruthy()
-
+            const topic = await createTopic(masterApi, hcp2Api, masterUser, hcp2User)
             const topicDto = ctx.toTopicDto(topic)
             expect(topicDto.id).toBeTruthy()
 
@@ -190,6 +166,132 @@ export function testMessageLikeApi<
 
             expect(documents.length).toEqual(2)
             expect(expect.arrayContaining(documents)).toEqual(binaries)
+        })
+
+        it('should be capable to filter latest message sent on different Topics', async () => {
+            const { api: masterApi, user: masterUser } = await ctx.masterApi(env)
+            const { api: hcp2Api, user: hcp2User } = await ctx.apiForEnvUser(env, hcp2Username)
+
+            const topic1 = await createTopic(masterApi, hcp2Api, masterUser, hcp2User)
+            const topic2 = await createTopic(masterApi, hcp2Api, masterUser, hcp2User)
+
+            const topic1Dto = ctx.toTopicDto(topic1)
+            const topic2Dto = ctx.toTopicDto(topic2)
+
+            expect(topic1Dto.id).toBeTruthy()
+            expect(topic2Dto.id).toBeTruthy()
+
+            const createMessage = async (topic: DSTopic, content: string) => {
+                const messageCreationResult = await ctx.messageApi(masterApi).create(topic, content)
+                expect(messageCreationResult).toBeTruthy()
+                const createdMessage = (messageCreationResult as any).createdMessage as DSMessage
+                const messageDto = ctx.toMessageDto(createdMessage)
+                return messageDto
+            }
+
+            const topic1Messages = []
+            const topic2Messages = []
+
+            for (let i = 0; i < 10; i++) {
+                topic1Messages.push(await createMessage(topic1, `Message content ${i}`))
+                topic2Messages.push(await createMessage(topic2, `Message content ${i}`))
+            }
+
+            const latestTopic1Message = topic1Messages.reduce((prev, curr) => (prev.created! > curr.created! ? prev : curr))
+            const latestTopic2Message = topic2Messages.reduce((prev, curr) => (prev.created! > curr.created! ? prev : curr))
+
+            const filter = FilterComposition.union(await new MessageFilter(hcp2Api).forSelf().byTransportGuid(topic1Dto.id!, true).build(), await new MessageFilter(hcp2Api).forSelf().byTransportGuid(topic2Dto.id!, true).build())
+
+            const paginatedList = await ctx.messageApi(hcp2Api).filterBy(filter)
+            const ids = await ctx.messageApi(hcp2Api).matchBy(filter)
+
+            expect(paginatedList).toBeTruthy()
+            expect(ids).toBeTruthy()
+            expect(paginatedList.rows.length).toEqual(2)
+            expect(ids.length).toEqual(2)
+
+            const messagesDto = paginatedList.rows.map(ctx.toMessageDto)
+            expect(messagesDto).toEqual(expect.arrayContaining([latestTopic1Message, latestTopic2Message]))
+            expect(ids).toEqual(expect.arrayContaining([latestTopic1Message.id!, latestTopic2Message.id!]))
+        })
+
+        it('should be capable to filter message sent on a Topic', async () => {
+            const { api: masterApi, user: masterUser } = await ctx.masterApi(env)
+            const { api: hcp2Api, user: hcp2User } = await ctx.apiForEnvUser(env, hcp2Username)
+
+            const topic = await createTopic(masterApi, hcp2Api, masterUser, hcp2User)
+            const topicDto = ctx.toTopicDto(topic)
+            expect(topicDto.id).toBeTruthy()
+
+            const anotherTopic = await createTopic(masterApi, hcp2Api, masterUser, hcp2User)
+            const anotherTopicDto = ctx.toTopicDto(anotherTopic)
+            expect(anotherTopicDto.id).toBeTruthy()
+
+            const createMessage = async (topic: DSTopic, content: string) => {
+                const messageCreationResult = await ctx.messageApi(masterApi).create(topic, content)
+                expect(messageCreationResult).toBeTruthy()
+                const createdMessage = (messageCreationResult as any).createdMessage as DSMessage
+                const messageDto = ctx.toMessageDto(createdMessage)
+                return messageDto
+            }
+
+            const topicMessages = await Promise.all(Array.from({ length: 10 }, (_, i) => createMessage(topic, `Message content ${i}`)))
+
+            const anotherTopicMessages = await Promise.all(Array.from({ length: 10 }, (_, i) => createMessage(anotherTopic, `Message content ${i}`)))
+
+            const filter = await new MessageFilter(hcp2Api).forSelf().byTransportGuid(topicDto.id!, false).build()
+
+            const paginatedList = await ctx.messageApi(hcp2Api).filterBy(filter, undefined, 1000)
+            const ids = await ctx.messageApi(hcp2Api).matchBy(filter)
+
+            expect(paginatedList).toBeTruthy()
+            expect(ids).toBeTruthy()
+
+            expect(paginatedList.rows.length).toEqual(10)
+            expect(ids.length).toEqual(10)
+
+            const messagesDto = paginatedList.rows.map(ctx.toMessageDto)
+            expect(messagesDto).toEqual(expect.arrayContaining(topicMessages))
+            expect(ids).toEqual(expect.arrayContaining(topicMessages.map((it) => it.id!)))
+            expect(messagesDto).not.toEqual(expect.arrayContaining(anotherTopicMessages))
+        })
+
+        it('should be capable to set read status of a Message', async () => {
+            const { api: masterApi, user: masterUser } = await ctx.masterApi(env)
+            const { api: hcp2Api, user: hcp2User } = await ctx.apiForEnvUser(env, hcp2Username)
+
+            const topic = await createTopic(masterApi, hcp2Api, masterUser, hcp2User)
+            const topicDto = ctx.toTopicDto(topic)
+            expect(topicDto.id).toBeTruthy()
+
+            const messageCreationResult = await ctx.messageApi(masterApi).create(topic, 'Message content')
+
+            expect(messageCreationResult).toBeTruthy()
+
+            const createdMessage = (messageCreationResult as any).createdMessage as DSMessage
+            const messageDto = ctx.toMessageDto(createdMessage)
+
+            const gotMessage = await ctx.messageApi(hcp2Api).get(messageDto.id!)
+
+            expect(gotMessage).toBeTruthy()
+
+            const gotMessageDto = ctx.toMessageDto(gotMessage)
+            expect(gotMessageDto.id).toEqual(messageDto.id)
+            expect(gotMessageDto).toEqual(messageDto)
+
+            const updatedMessage = await ctx.messageApi(hcp2Api).read([messageDto.id!])
+            expect(updatedMessage).toBeTruthy()
+            expect(updatedMessage[0]).toBeTruthy()
+
+            const updatedMessageDto = ctx.toMessageDto(updatedMessage[0])
+            expect(updatedMessageDto.readStatus).toBeTruthy()
+            expect(updatedMessageDto.readStatus![hcp2User.id!].read).toBeTruthy()
+
+            const gotUpdatedMessage = await ctx.messageApi(masterApi).get(messageDto.id!)
+            expect(gotUpdatedMessage).toBeTruthy()
+            const gotUpdatedMessageDto = ctx.toMessageDto(gotUpdatedMessage)
+            expect(gotUpdatedMessageDto.readStatus).toBeTruthy()
+            expect(gotUpdatedMessageDto.readStatus![hcp2User.id!].read).toBeTruthy()
         })
     })
 }

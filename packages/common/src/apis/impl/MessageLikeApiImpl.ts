@@ -14,6 +14,7 @@ import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
 import { SubscriptionOptions } from '@icure/api/icc-x-api/utils'
 import AccessLevelEnum = SecureDelegation.AccessLevelEnum
 import DocumentLocationEnum = DocumentDto.DocumentLocationEnum
+import { MessageReadStatus } from '../../models/MessageReadStatus.model'
 
 export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements MessageLikeApi<DSMessage, DSTopic, DSBinary> {
     private readonly decoder = new TextDecoder()
@@ -300,6 +301,15 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
                         subject: content?.substring(0, this.characterLimit),
                         sent: +new Date(),
                         transportGuid: topic!.id,
+                        readStatus: Object.fromEntries(
+                            Object.entries(topic?.activeParticipants ?? {}).map(([participantId]) => [
+                                participantId,
+                                new MessageReadStatus({
+                                    read: false,
+                                    time: undefined,
+                                }),
+                            ]),
+                        ),
                     }),
                     {
                         additionalDelegates: delegates,
