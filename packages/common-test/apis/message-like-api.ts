@@ -56,15 +56,15 @@ export function testMessageLikeApi<
             env = await initializer.execute(getEnvVariables())
         }, 600_000)
 
-        const createTopic = async (masterApi: DSApi, masterUser: User, hcp2User: User): Promise<DSTopic> => {
+        const createTopic = async (masterApi: DSApi, ownerUser: User, participantUser: User): Promise<DSTopic> => {
             const topic = await ctx.topicApi(masterApi).create(
                 [
                     {
-                        participant: masterUser.healthcarePartyId!,
+                        participant: ownerUser.healthcarePartyId!,
                         role: TopicRole.OWNER,
                     },
                     {
-                        participant: hcp2User.healthcarePartyId!,
+                        participant: participantUser.healthcarePartyId!,
                         role: TopicRole.PARTICIPANT,
                     },
                 ],
@@ -74,7 +74,7 @@ export function testMessageLikeApi<
             return topic
         }
 
-        it.skip('should be capable of creating a message from scratch', async () => {
+        it('should be capable of creating a message from scratch', async () => {
             const { api: masterApi, user: masterUser } = await ctx.masterApi(env)
             const { api: hcp2Api, user: hcp2User } = await ctx.apiForEnvUser(env, hcp2Username)
 
@@ -98,7 +98,7 @@ export function testMessageLikeApi<
             expect(gotMessageDto).toEqual(messageDto)
         })
 
-        it.skip('should be capable of creating a long message from scratch', async () => {
+        it('should be capable of creating a long message from scratch', async () => {
             const { api: masterApi, user: masterUser } = await ctx.masterApi(env)
             const { api: hcp2Api, user: hcp2User } = await ctx.apiForEnvUser(env, hcp2Username)
 
@@ -126,7 +126,7 @@ export function testMessageLikeApi<
             expect(gotMessageDto.subject).toEqual(content)
         })
 
-        it.skip('should be capable of creating a long message with some documents', async () => {
+        it('should be capable of creating a long message with some documents', async () => {
             const { api: masterApi, user: masterUser } = await ctx.masterApi(env)
             const { api: hcp2Api, user: hcp2User } = await ctx.apiForEnvUser(env, hcp2Username)
 
@@ -169,7 +169,7 @@ export function testMessageLikeApi<
             expect(expect.arrayContaining(documents)).toEqual(binaries)
         })
 
-        it.skip('should be capable to filter latest message sent on different Topics', async () => {
+        it('should be capable to filter latest message sent on different Topics', async () => {
             const { api: masterApi, user: masterUser } = await ctx.masterApi(env)
             const { api: hcp2Api, user: hcp2User } = await ctx.apiForEnvUser(env, hcp2Username)
 
@@ -216,7 +216,7 @@ export function testMessageLikeApi<
             expect(ids).toEqual(expect.arrayContaining([latestTopic1Message.id!, latestTopic2Message.id!]))
         })
 
-        it.skip('should be capable to filter message sent on a Topic', async () => {
+        it('should be capable to filter message sent on a Topic', async () => {
             const { api: masterApi, user: masterUser } = await ctx.masterApi(env)
             const { api: hcp2Api, user: hcp2User } = await ctx.apiForEnvUser(env, hcp2Username)
 
@@ -257,7 +257,7 @@ export function testMessageLikeApi<
             expect(messagesDto).not.toEqual(expect.arrayContaining(anotherTopicMessages))
         })
 
-        it.skip('should be capable to set read status of a Message', async () => {
+        it('should be capable to set read status of a Message', async () => {
             const { api: masterApi, user: masterUser } = await ctx.masterApi(env)
             const { api: hcp2Api, user: hcp2User } = await ctx.apiForEnvUser(env, hcp2Username)
 
@@ -296,15 +296,16 @@ export function testMessageLikeApi<
         })
 
         const subscribeAndCreateMessage = async (options: {}, eventTypes: ('CREATE' | 'UPDATE')[]) => {
-            const { api, user } = await ctx.apiForEnvUser(env, hcp1Username)
+            const { api: hcp1Api, user: hcp1User } = await ctx.apiForEnvUser(env, hcp1Username)
+            const { api: hcp2Api, user: hcp2User } = await ctx.apiForEnvUser(env, hcp2Username)
 
-            const topic = await createTopic(api!!, user, user)
+            const topic = await createTopic(hcp1Api!!, hcp1User, hcp2User)
             const topicDto = ctx.toTopicDto(topic)
 
-            const connectionPromise = async (options: {}, dataOwnerId: string, eventListener: (patient: Message) => Promise<void>) => {
+            const connectionPromise = async (options: {}, eventListener: (message: Message) => Promise<void>) => {
                 await sleep(2000)
                 // TODO fix eventListener typing
-                return ctx.messageApi(api).subscribeToEvents(eventTypes, await new MessageFilter(api).forSelf().byTransportGuid(topicDto.id!, false).build(), eventListener as unknown as any, options)
+                return await ctx.messageApi(hcp2Api).subscribeToEvents(eventTypes, await new MessageFilter(hcp2Api).forSelf().byTransportGuid(topicDto.id!, false).build(), eventListener as unknown as any, options)
             }
 
             const events: Message[] = []
@@ -318,14 +319,14 @@ export function testMessageLikeApi<
             })
 
             await doXOnYAndSubscribe(
-                api!!,
+                hcp1Api!!,
                 options,
-                connectionPromise(options, user.healthcarePartyId!, async (patient) => {
-                    events.push(patient)
+                connectionPromise(options, async (message) => {
+                    events.push(message)
                     eventReceivedPromiseResolve()
                 }),
                 async () => {
-                    await ctx.messageApi(api).create(topic, 'Message content')
+                    await ctx.messageApi(hcp1Api).create(topic, 'Message content')
                 },
                 (status) => {
                     statuses.push(status)

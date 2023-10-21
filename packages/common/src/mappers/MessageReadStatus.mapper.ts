@@ -1,7 +1,7 @@
 import { MessageReadStatus } from '../models/MessageReadStatus.model'
 import { MessageReadStatus as MessageReadStatusDto } from '@icure/api'
 
-function toMessageReadStatusDtoTime(domain: MessageReadStatus): number | undefined {
+function toMessageReadStatusDtoTime(domain: MessageReadStatus): number | null {
     return domain.time
 }
 

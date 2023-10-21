@@ -1,11 +1,11 @@
-import { getEnvironmentInitializer, hcp2Username, hcp3Username, patUsername, setLocalStorage } from '../test-utils'
+import { getEnvironmentInitializer, hcp1Username, hcp2Username, hcp3Username, patUsername, setLocalStorage } from '../test-utils'
 import { BaseApiTestContext, WithDataOwnerApi, WithHcpApi, WithHelementApi, WithPatientApi, WithServiceApi, WithTopicApi } from './TestContexts'
 import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, TopicFilter, TopicRole } from '@icure/typescript-common'
 import { describe, it, beforeAll } from '@jest/globals'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import 'isomorphic-fetch'
-import { XHR } from '@icure/api'
-import XHRError = XHR.XHRError
+import { sleep, Topic } from '@icure/api'
+import { doXOnYAndSubscribe } from '../websocket-utils'
 
 setLocalStorage(fetch)
 
@@ -345,5 +345,75 @@ export function testTopicLikeApi<
                 }),
             ).rejects.toThrow()
         })
+
+        const subscribeAndCreateTopic = async (options: {}, eventTypes: ('CREATE' | 'UPDATE')[]) => {
+            const { api: hcp1Api, user: hcp1User } = await ctx.apiForEnvUser(env, hcp1Username)
+            const { api: hcp2Api, user: hcp2User } = await ctx.apiForEnvUser(env, hcp2Username)
+
+            const connectionPromise = async (options: {}, eventListener: (message: Topic) => Promise<void>) => {
+                await sleep(2000)
+                // TODO fix eventListener typing
+                return await ctx.topicApi(hcp2Api).subscribeToEvents(eventTypes, await new TopicFilter(hcp2Api).forSelf().byParticipant(hcp2User.healthcarePartyId!).build(), eventListener as unknown as any, options)
+            }
+
+            const events: Topic[] = []
+            const statuses: string[] = []
+
+            let eventReceivedPromiseResolve!: (value: void | PromiseLike<void>) => void
+            let eventReceivedPromiseReject!: (reason?: any) => void
+            const eventReceivedPromise = new Promise<void>((res, rej) => {
+                eventReceivedPromiseResolve = res
+                eventReceivedPromiseReject = rej
+            })
+
+            await doXOnYAndSubscribe(
+                hcp1Api!!,
+                options,
+                connectionPromise(options, async (topic) => {
+                    events.push(topic)
+                    eventReceivedPromiseResolve()
+                }),
+                async () => {
+                    await ctx.topicApi(hcp1Api).create(
+                        [
+                            {
+                                participant: hcp1User.healthcarePartyId!,
+                                role: TopicRole.OWNER,
+                            },
+                            {
+                                participant: hcp2User.healthcarePartyId!,
+                                role: TopicRole.PARTICIPANT,
+                            },
+                        ],
+                        'Topic description',
+                    )
+                },
+                (status) => {
+                    statuses.push(status)
+                },
+                eventReceivedPromiseReject,
+                eventReceivedPromise,
+            )
+
+            events?.forEach((event) => console.log(`Event : ${event}`))
+            statuses?.forEach((status) => console.log(`Status : ${status}`))
+
+            expect(statuses.length).toEqual(2)
+            expect(events.length).toEqual(1)
+        }
+
+        it('Can subscribe TopicLike CREATE without option', async () => {
+            await subscribeAndCreateTopic({}, ['CREATE'])
+        }, 60_000)
+
+        it('Can subscribe TopicLike CREATE with options', async () => {
+            await subscribeAndCreateTopic(
+                {
+                    connectionRetryIntervalMs: 10_000,
+                    connectionMaxRetry: 5,
+                },
+                ['CREATE'],
+            )
+        }, 60_000)
     })
 }

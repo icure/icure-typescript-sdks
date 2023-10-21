@@ -3,18 +3,18 @@ import { mapTo } from '../utils/decorators'
 
 @mapTo(MessageReadStatusDto)
 export class MessageReadStatus {
-    time?: number
-    read?: boolean
+    time: number | null
+    read: boolean
 
     constructor(messageReadStatus: IMessageReadStatus) {
-        this.time = messageReadStatus.time
-        this.read = messageReadStatus.read
+        this.time = messageReadStatus.time ?? null
+        this.read = messageReadStatus.read ?? false
     }
 
     static toJSON(instance: MessageReadStatus): any {
         const pojo: any = {}
         if (instance.time !== undefined) pojo['time'] = instance.time
-        if (instance.read !== undefined) pojo['read'] = instance.read
+        pojo['read'] = instance.read
         return pojo
     }
 
@@ -23,14 +23,12 @@ export class MessageReadStatus {
         if (pojo['time'] !== undefined) {
             obj['time'] = pojo['time']
         }
-        if (pojo['read'] !== undefined) {
-            obj['read'] = pojo['read']
-        }
+        obj['read'] = pojo['read']
         return new MessageReadStatus(obj)
     }
 }
 
 interface IMessageReadStatus {
-    time?: number
+    time?: number | null
     read?: boolean
 }

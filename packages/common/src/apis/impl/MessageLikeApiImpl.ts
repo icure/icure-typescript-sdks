@@ -1,5 +1,5 @@
 import { Reference } from '../../types/Reference'
-import { Connection, Document as DocumentDto, IccDocumentXApi, IccMessageXApi, IccUserXApi, Message as MessageDto, MessagesReadStatusUpdate, retry, SecureDelegation, Topic as TopicDto, User as UserDto } from '@icure/api'
+import { Connection, Document as DocumentDto, IccDocumentXApi, IccMessageXApi, IccUserXApi, Message as MessageDto, MessageReadStatus, MessagesReadStatusUpdate, retry, SecureDelegation, Topic as TopicDto, User as UserDto } from '@icure/api'
 import { PaginatedList } from '../../models/PaginatedList.model'
 import { AttachmentCreationProgress, AttachmentCreationStep, AttachmentInput, MessageCreationProgress, MessageCreationResult, MessageCreationStep, MessageLikeApi } from '../MessageLikeApi'
 import { Mapper } from '../Mapper'
@@ -14,7 +14,6 @@ import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
 import { SubscriptionOptions } from '@icure/api/icc-x-api/utils'
 import AccessLevelEnum = SecureDelegation.AccessLevelEnum
 import DocumentLocationEnum = DocumentDto.DocumentLocationEnum
-import { MessageReadStatus } from '../../models/MessageReadStatus.model'
 
 export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements MessageLikeApi<DSMessage, DSTopic, DSBinary> {
     private readonly decoder = new TextDecoder()
@@ -306,7 +305,7 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
                                 participantId,
                                 new MessageReadStatus({
                                     read: false,
-                                    time: undefined,
+                                    time: null,
                                 }),
                             ]),
                         ),
