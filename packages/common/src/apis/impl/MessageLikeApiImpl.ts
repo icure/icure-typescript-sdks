@@ -98,34 +98,46 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
             return PaginatedList.empty()
         }
 
-        return toPaginatedList(
-            await this.messageApi
-                .filterMessagesBy(
-                    new FilterChainMessage({
-                        filter: FilterMapper.toAbstractFilterDto<MessageDto>(filter, 'Message'),
-                    }),
-                    nextMessageId,
-                    limit,
-                )
-                .catch((e) => {
-                    throw this.errorHandler.createErrorFromAny(e)
+        const paginatedListDto = await this.messageApi
+            .filterMessagesBy(
+                new FilterChainMessage({
+                    filter: FilterMapper.toAbstractFilterDto<MessageDto>(filter, 'Message'),
                 }),
+                nextMessageId,
+                limit,
+            )
+            .catch((e) => {
+                throw this.errorHandler.createErrorFromAny(e)
+            })
+
+        return toPaginatedList(
+            {
+                ...paginatedListDto,
+                rows: await Promise.all(paginatedListDto.rows?.map(async (message) => await this.getMessageBody(message)) ?? []),
+            },
             this.messageMapper.toDomain,
         )!
+    }
+
+    private async getMessageBody(message: MessageDto): Promise<MessageDto> {
+        const documents = await this.documentApi.findByMessage(this.dataOwnerApi.getDataOwnerIdOf(await this.userApi.getCurrentUser()), message)
+        const bodyDocument = documents.find((document) => document.documentLocation === DocumentLocationEnum.Body)
+
+        if (bodyDocument !== undefined) {
+            const bodyDocumentAttachment = await retry(async () => await this.documentApi.getAndDecryptDocumentAttachment(bodyDocument), 5, 100, 2)
+            return {
+                ...message,
+                subject: this.decoder.decode(bodyDocumentAttachment),
+            }
+        }
+
+        return message
     }
 
     async get(id: string): Promise<DSMessage> {
         const messageDto = await this.messageApi.getMessage(id)
 
-        const documents = await this.documentApi.findByMessage(this.dataOwnerApi.getDataOwnerIdOf(await this.userApi.getCurrentUser()), messageDto)
-        const bodyDocument = documents.find((document) => document.documentLocation === DocumentLocationEnum.Body)
-
-        if (bodyDocument !== undefined) {
-            const bodyDocumentAttachment = await retry(async () => await this.documentApi.getAndDecryptDocumentAttachment(bodyDocument), 5, 100, 2)
-            messageDto.subject = this.decoder.decode(bodyDocumentAttachment)
-        }
-
-        return this.messageMapper.toDomain(messageDto)
+        return this.messageMapper.toDomain(await this.getMessageBody(messageDto))
     }
 
     async getAttachments(message: Reference<DSMessage>): Promise<DSBinary[]> {
@@ -160,20 +172,22 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
     async read(messages: Reference<DSMessage>[]): Promise<DSMessage[]> {
         const messageIds = messages.map((message) => (typeof message === 'string' ? message : this.messageMapper.toDto(message).id!))
 
-        return (
-            await this.messageApi.setMessagesReadStatus(
-                new MessagesReadStatusUpdate({
-                    ids: messageIds,
-                    time: +new Date(),
-                    status: true,
-                    userId: (await this.userApi.getCurrentUser()).id!,
-                }),
-            )
-        ).map((message) => this.messageMapper.toDomain(message))
+        return await Promise.all(
+            (
+                await this.messageApi.setMessagesReadStatus(
+                    new MessagesReadStatusUpdate({
+                        ids: messageIds,
+                        time: +new Date(),
+                        status: true,
+                        userId: (await this.userApi.getCurrentUser()).id!,
+                    }),
+                )
+            ).map(async (message) => this.messageMapper.toDomain(await this.getMessageBody(message))),
+        )
     }
 
     async subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: Filter<MessageDto>, eventFired: (message: DSMessage) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
-        return await this.messageApi.subscribeToMessageEvents(eventTypes, FilterMapper.toAbstractFilterDto<MessageDto>(filter, 'Message'), async (message) => await eventFired(this.messageMapper.toDomain(message)), options)
+        return await this.messageApi.subscribeToMessageEvents(eventTypes, FilterMapper.toAbstractFilterDto<MessageDto>(filter, 'Message'), async (message) => await eventFired(this.messageMapper.toDomain(await this.getMessageBody(message))), options)
     }
 
     /**
