@@ -1,6 +1,6 @@
 import { PaginatedList } from '../../models/PaginatedList.model'
 import { HealthElementLikeApi } from '../HealthElementLikeApi'
-import { Connection, ConnectionImpl, FilterChainHealthElement, HealthElement, IccAuthApi, IccCryptoXApi, IccHelementXApi, IccPatientXApi, IccUserXApi, Patient, subscribeToEntityEvents, User } from '@icure/api'
+import { Connection, ConnectionImpl, FilterChainHealthElement, HealthElement, IccAuthApi, IccCryptoXApi, IccHelementXApi, IccPatientXApi, IccUserXApi, Patient, subscribeToEntityEvents, SubscriptionOptions, User } from '@icure/api'
 import { Mapper } from '../Mapper'
 import { ErrorHandler } from '../../services/ErrorHandler'
 import { firstOrNull } from '../../utils/functionalUtils'
@@ -161,15 +161,7 @@ export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements Hea
         }
     }
 
-    async subscribeToEvents(
-        eventTypes: ('CREATE' | 'UPDATE')[],
-        filter: CommonFilter<HealthElement>,
-        eventFired: (dataSample: DSHealthElement) => Promise<void>,
-        options?: {
-            connectionMaxRetry?: number
-            connectionRetryIntervalMs?: number
-        },
-    ): Promise<Connection> {
+    async subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<HealthElement>, eventFired: (dataSample: DSHealthElement) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
         const currentUser = await this.userApi.getCurrentUser()
 
         return subscribeToEntityEvents(

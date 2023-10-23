@@ -1,6 +1,6 @@
 import { SharedDataType } from '../models/User.model'
 import { PaginatedList } from '../models/PaginatedList.model'
-import { Connection, User } from '@icure/api'
+import { Connection, SubscriptionOptions, User } from '@icure/api'
 import { CommonFilter } from '../filters/filters'
 
 /**
@@ -89,7 +89,7 @@ export interface UserLikeApi<DSUser, DSPatient> {
      *    - connectionMaxRetry : how many time retrying to reconnect to the iCure WebSocket;
      *    - connectionRetryIntervalInMs : How long base interval will be between two retry. The retry attempt is exponential and using a random value (connectionRetryIntervalMs * (random between 1 and 2))^nbAttempts)
      */
-    subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<User>, eventFired: (user: DSUser) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection>
+    subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<User>, eventFired: (user: DSUser) => Promise<void>, options?: SubscriptionOptions): Promise<Connection>
 
     /**
      * Add autoDelegations values to the user.

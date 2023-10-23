@@ -24,6 +24,7 @@ import {
     ServiceLink,
     SubContact,
     subscribeToEntityEvents,
+    SubscriptionOptions,
     ua2hex,
     User as UserDto,
 } from '@icure/api'
@@ -323,15 +324,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         }
     }
 
-    async subscribeToEvents(
-        eventTypes: ('CREATE' | 'UPDATE')[],
-        filter: CommonFilter<ServiceDto>,
-        eventFired: (service: DSService) => Promise<void>,
-        options?: {
-            connectionMaxRetry?: number
-            connectionRetryIntervalMs?: number
-        },
-    ): Promise<Connection> {
+    async subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<ServiceDto>, eventFired: (service: DSService) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
         const currentUser = await this.userApi.getCurrentUser()
         return subscribeToEntityEvents(
             iccRestApiPath(this.basePath),

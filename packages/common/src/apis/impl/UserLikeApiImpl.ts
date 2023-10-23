@@ -2,7 +2,7 @@ import { PaginatedList } from '../../models/PaginatedList.model'
 import { SharedDataType } from '../../models/User.model'
 import { UserLikeApi } from '../UserLikeApi'
 import { ErrorHandler } from '../../services/ErrorHandler'
-import { Connection, ConnectionImpl, FilterChainUser, HealthcareParty as HealthcarePartyDto, IccAuthApi, IccUserXApi, Patient as PatientDto, retry, subscribeToEntityEvents, User as UserDto } from '@icure/api'
+import { Connection, ConnectionImpl, FilterChainUser, HealthcareParty as HealthcarePartyDto, IccAuthApi, IccUserXApi, Patient as PatientDto, retry, subscribeToEntityEvents, SubscriptionOptions, User as UserDto } from '@icure/api'
 import { Mapper } from '../Mapper'
 import { MessageGatewayApi } from '../MessageGatewayApi'
 import { Sanitizer } from '../../services/Sanitizer'
@@ -285,15 +285,7 @@ export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements Us
         throw this.errorHandler.createErrorWithMessage("Couldn't remove data sharing of user")
     }
 
-    subscribeToEvents(
-        eventTypes: ('CREATE' | 'UPDATE')[],
-        filter: CommonFilter<UserDto>,
-        eventFired: (user: DSUser) => Promise<void>,
-        options?: {
-            connectionMaxRetry?: number
-            connectionRetryIntervalMs?: number
-        },
-    ): Promise<Connection> {
+    subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<UserDto>, eventFired: (user: DSUser) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
         return subscribeToEntityEvents(iccRestApiPath(this.basePath), this.authApi, 'User', eventTypes, FilterMapper.toAbstractFilterDto(filter, 'User'), (event) => eventFired(this.userMapper.toDomain(event)), options ?? {}).then((ws) => new ConnectionImpl(ws))
     }
 }

@@ -1,5 +1,5 @@
 import { PaginatedList } from '../../models/PaginatedList.model'
-import { Connection, ConnectionImpl, FilterChainMaintenanceTask, IccAuthApi, IccUserXApi, MaintenanceTask, subscribeToEntityEvents, User } from '@icure/api'
+import { Connection, ConnectionImpl, FilterChainMaintenanceTask, IccAuthApi, IccUserXApi, MaintenanceTask, subscribeToEntityEvents, SubscriptionOptions, User } from '@icure/api'
 import { MaintenanceTaskLikeApi } from '../MaintenanceTaskLikeApi'
 import { Mapper } from '../Mapper'
 import { ErrorHandler } from '../../services/ErrorHandler'
@@ -105,15 +105,7 @@ export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements Maintenanc
         return !paginatedNotifications.nextKeyPair?.startKeyDocId ? accumulator.concat(paginatedNotifications.rows ?? []) : this.concatenateFilterResults(filter, paginatedNotifications.nextKeyPair.startKeyDocId, limit, accumulator.concat(paginatedNotifications.rows ?? []))
     }
 
-    async subscribeToEvents(
-        eventTypes: ('CREATE' | 'UPDATE')[],
-        filter: CommonFilter<MaintenanceTask>,
-        eventFired: (dataSample: DSMaintenanceTask) => Promise<void>,
-        options?: {
-            connectionMaxRetry?: number
-            connectionRetryIntervalMs?: number
-        },
-    ): Promise<Connection> {
+    async subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<MaintenanceTask>, eventFired: (dataSample: DSMaintenanceTask) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
         const currentUser = await this.userApi.getCurrentUser()
 
         return subscribeToEntityEvents(

@@ -1,5 +1,5 @@
 import { PaginatedList } from '../models/PaginatedList.model'
-import { Connection, HealthElement } from '@icure/api'
+import { Connection, HealthElement, SubscriptionOptions } from '@icure/api'
 import { CommonFilter } from '../filters/filters'
 
 /**
@@ -94,5 +94,5 @@ export interface HealthElementLikeApi<DSHealthElement, DSPatient> {
      *    - connectionMaxRetry : how many time retrying to reconnect to the iCure WebSocket;
      *    - connectionRetryIntervalInMs : How long base interval will be between two retry. The retry attempt is exponential and using a random value (connectionRetryIntervalMs * (random between 1 and 2))^nbAttempts)
      */
-    subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<HealthElement>, eventFired: (dataSample: DSHealthElement) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection>
+    subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<HealthElement>, eventFired: (dataSample: DSHealthElement) => Promise<void>, options?: SubscriptionOptions): Promise<Connection>
 }
