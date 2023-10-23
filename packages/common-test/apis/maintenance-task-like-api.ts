@@ -110,8 +110,8 @@ export function testMaintenanceTaskLikeApi<
             expect(createdNotificationDto.rev).toBeTruthy()
             expect(createdNotificationDto.created).toBeTruthy()
             expect(createdNotificationDto.taskType).toEqual(notification.taskType)
-            expect(createdNotificationDto.author).toEqual(patUser!.id!)
-            expect(createdNotificationDto.responsible).toEqual(patUser!.patientId)
+            expect(createdNotificationDto.author).toEqual('*') // Patient is an anonymous data owner: omit user id
+            expect(createdNotificationDto.responsible).toEqual('*') // Patient is an anonymous data owner: omit data owner id
             const retrievedNotification = await ctx.mtApi(patApi).get(createdNotificationDto.id!)
             expect(retrievedNotification).toEqual(createdNotification)
             const retrievedByHcp2Notification = await ctx.mtApi(hcp3Api).get(createdNotificationDto.id!)
@@ -208,7 +208,7 @@ export function testMaintenanceTaskLikeApi<
             const createdNotification = await ctx.createMt(hcp1Api!, hcp2User!.healthcarePartyId!)
             const createdNotificationDto = ctx.toMtDto(createdNotification)
             expect(createdNotificationDto.deletionDate).toBe(undefined)
-            const beforeDeletion = new Date().getTime()
+            const beforeDeletion = new Date().getTime() - 100
             const deletedId = await ctx.mtApi(hcp2Api).delete(createdNotificationDto.id!)
             expect(deletedId).toEqual(createdNotificationDto.id)
             const deletedNotification = await ctx.mtApi(hcp2Api).get(createdNotificationDto.id!)

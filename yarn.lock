@@ -1556,9 +1556,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@icure/api@npm:8.0.0-RC.5":
-  version: 8.0.0-RC.5
-  resolution: "@icure/api@npm:8.0.0-RC.5"
+"@icure/api@npm:8.0.0-RC.2":
+  version: 8.0.0-RC.2
+  resolution: "@icure/api@npm:8.0.0-RC.2"
   dependencies:
     browser-or-node: ^2.1.1
     date-fns: ^2.23.0
@@ -1568,7 +1568,7 @@ __metadata:
     text-encoding: ^0.7.0
     uuid: ^8.3.2
     uuid-encoder: ^1.1.0
-  checksum: 4585e92a480668f69ab0623e7f63d74335921c7f4e588fe2776669fb18aed54c0b030c01f3e3c392569987a7813a292d4e3507f77d3eeeec2fdd4d94a2872f2c
+  checksum: 76ba701aaac0ff8fe8c2ce8736259efed149dcaf652d7aa4a4d80375bfc60267b7b72b0470610e0a766a0f2249e08dba4c2f5b8d9959124b835a3a32c30bb68d
   languageName: node
   linkType: hard
 
@@ -1602,21 +1602,18 @@ __metadata:
     "@types/chai": ^4.3.0
     "@types/chai-as-promised": ^7.1.1
     "@types/isomorphic-fetch": ^0.0.36
-    "@types/jest": ^29.5.2
     "@types/md5": ^2.3.2
     "@types/mocha": ^9.1.0
     "@types/node-localstorage": ^1.3.0
     "@types/uuid": ^8.3.4
     "@types/ws": ^8.5.4
     axios: ^0.26.1
-    babel-jest: ^29.5.0
     browser-or-node: ^2.1.1
     chai: ^4.3.6
     chai-as-promised: ^7.1.1
     date-fns: ^2.28.0
     es6-promise: ^4.2.4
     isomorphic-fetch: ^3.0.0
-    jest: ^29.5.0
     loglevel: ^1.8.1
     md5: ^2.3.0
     mocha: ^9.2.2
@@ -1627,7 +1624,6 @@ __metadata:
     pretty-quick: ^3.1.3
     rimraf: ^3.0.2
     source-map-support: ^0.5.21
-    ts-jest: ^29.1.0
     ts-loader: ^9.4.3
     ts-md5: ^1.3.1
     ts-node: ^10.7.0
@@ -4644,7 +4640,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "icure-typescript-sdks@workspace:."
   dependencies:
-    "@icure/api": 8.0.0-RC.5
+    "@icure/api": 8.0.0-RC.2
     "@icure/test-setup": ^0.0.61
     nx: 16.3.2
     prettier: ^2.8.8
