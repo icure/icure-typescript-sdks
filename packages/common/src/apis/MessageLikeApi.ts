@@ -1,8 +1,8 @@
 import { Reference } from '../types/Reference'
 import { CommonFilter } from '../filters/filters'
 import { PaginatedList } from '../models/PaginatedList.model'
-import { Connection, Document, Document as DocumentDto, Message as MessageDto, SecureDelegation, Topic as TopicDto } from '@icure/api'
-import { SubscriptionOptions } from '@icure/api/icc-x-api/utils'
+import { Connection, Document, Document as DocumentDto, Message as MessageDto, SecureDelegation, SubscriptionOptions, Topic as TopicDto } from '@icure/api'
+
 import DocumentLocationEnum = Document.DocumentLocationEnum
 
 export interface MessageLikeApi<DSMessage, DSTopic, DSBinary> {

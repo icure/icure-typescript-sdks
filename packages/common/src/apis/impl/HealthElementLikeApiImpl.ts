@@ -13,7 +13,6 @@ import { CommonApi } from '../CommonApi'
 import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
 import { iccRestApiPath } from '@icure/api/icc-api/api/IccRestApiPath'
 import { CommonFilter } from '../../filters/filters'
-import { SubscriptionOptions } from '@icure/api/icc-x-api/utils'
 
 export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements HealthElementLikeApi<DSHealthElement, DSPatient> {
     constructor(

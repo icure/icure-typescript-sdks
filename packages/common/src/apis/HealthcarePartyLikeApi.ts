@@ -1,7 +1,6 @@
 import { PaginatedList } from '../models/PaginatedList.model'
 import { Connection, HealthcareParty, SubscriptionOptions } from '@icure/api'
 import { CommonFilter } from '../filters/filters'
-import { SubscriptionOptions } from '@icure/api/icc-x-api/utils'
 
 /**
  * The HealthcarePartyApi interface provides methods to manage healthcare professionals.

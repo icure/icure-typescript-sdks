@@ -10,7 +10,6 @@ import { FilterMapper } from '../../mappers/Filter.mapper'
 import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
 import { iccRestApiPath } from '@icure/api/icc-api/api/IccRestApiPath'
 import { CommonFilter } from '../../filters/filters'
-import { SubscriptionOptions } from '@icure/api/icc-x-api/utils'
 
 export class PatientLikeApiImpl<DSPatient> implements PatientLikeApi<DSPatient> {
     constructor(

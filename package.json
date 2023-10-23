@@ -19,10 +19,7 @@
         "typescript": "^5.2.2"
     },
     "dependencies": {
-        "@icure/api": "8.0.0-RC.2"
-    },
-    "dependencies": {
-        "@icure/api": "8.0.0-RC.2"
+        "@icure/api": "8.0.0-RC.3"
     },
     "workspaces": [
         "packages/*"

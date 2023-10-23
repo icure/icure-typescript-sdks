@@ -11,7 +11,6 @@ import { FilterMapper } from '../../mappers/Filter.mapper'
 import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
 import { CommonFilter } from '../../filters/filters'
 import { iccRestApiPath } from '@icure/api/icc-api/api/IccRestApiPath'
-import { SubscriptionOptions } from '@icure/api/icc-x-api/utils'
 
 export class DeviceLikeApiImpl<DSDevice> implements DeviceLikeApi<DSDevice> {
     constructor(

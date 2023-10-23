@@ -13,6 +13,7 @@ import {
     Topic as TopicDto,
     User as UserDto,
     MessageAttachment as MessageAttachmentDto,
+    SubscriptionOptions,
 } from '@icure/api'
 import { PaginatedList } from '../../models/PaginatedList.model'
 import { AttachmentCreationProgress, AttachmentCreationStep, AttachmentInput, MessageCreationProgress, MessageCreationResult, MessageCreationStep, MessageLikeApi } from '../MessageLikeApi'
@@ -25,7 +26,7 @@ import { FilterMapper } from '../../mappers/Filter.mapper'
 import { ErrorHandler } from '../../services/ErrorHandler'
 import { FilterChainMessage } from '@icure/api/icc-api/model/FilterChainMessage'
 import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
-import { SubscriptionOptions } from '@icure/api/icc-x-api/utils'
+
 import AccessLevelEnum = SecureDelegation.AccessLevelEnum
 import DocumentLocationEnum = DocumentDto.DocumentLocationEnum
 

@@ -2,7 +2,7 @@ import { TopicLikeApi } from '../TopicLikeApi'
 import { Reference } from '../../types/Reference'
 import { CodingReference } from '../../models/CodingReference.model'
 import { PaginatedList } from '../../models/PaginatedList.model'
-import { Connection, HealthcareParty, HealthElement, IccAuthApi, IccContactXApi, IccPatientXApi, IccUserXApi, Patient, SecureDelegation, Service, Topic as TopicDto, TopicRole as TopicRoleDto } from '@icure/api'
+import { Connection, HealthcareParty, HealthElement, IccAuthApi, IccContactXApi, IccPatientXApi, IccUserXApi, Patient, SecureDelegation, Service, SubscriptionOptions, Topic as TopicDto, TopicRole as TopicRoleDto } from '@icure/api'
 import { CommonFilter, NoOpFilter } from '../../filters/filters'
 import { TopicRole } from '../../models/enums/TopicRole.enum'
 import { IccTopicXApi } from '@icure/api/icc-x-api/icc-topic-x-api'
@@ -14,7 +14,7 @@ import { FilterMapper } from '../../mappers/Filter.mapper'
 import { FilterChainTopic } from '@icure/api/icc-api/model/FilterChainTopic'
 import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
 import AccessLevelEnum = SecureDelegation.AccessLevelEnum
-import { SubscriptionOptions } from '@icure/api/icc-x-api/utils'
+
 import { CryptoStrategies } from '../../services/CryptoStrategies'
 import { DataOwnerWithType } from '../../models/DataOwner.model'
 

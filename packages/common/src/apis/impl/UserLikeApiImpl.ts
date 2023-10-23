@@ -17,7 +17,6 @@ import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
 import { DataOwnerTypeEnum } from '@icure/api/icc-api/model/DataOwnerTypeEnum'
 import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
 import { iccRestApiPath } from '@icure/api/icc-api/api/IccRestApiPath'
-import { SubscriptionOptions } from '@icure/api/icc-x-api/utils'
 
 export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements UserLikeApi<DSUser, DSPatient> {
     constructor(

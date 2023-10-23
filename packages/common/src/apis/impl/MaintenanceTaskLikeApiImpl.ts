@@ -12,7 +12,6 @@ import { AccessLevelEnum } from '../../models/enums/AccessLevel.enum'
 import { CommonFilter } from '../../filters/filters'
 import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
 import { iccRestApiPath } from '@icure/api/icc-api/api/IccRestApiPath'
-import { SubscriptionOptions } from '@icure/api/icc-x-api/utils'
 
 export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements MaintenanceTaskLikeApi<DSMaintenanceTask> {
     constructor(

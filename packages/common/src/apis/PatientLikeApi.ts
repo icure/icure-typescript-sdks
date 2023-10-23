@@ -2,7 +2,6 @@ import { SharingResult } from '../utils/interfaces'
 import { PaginatedList } from '../models/PaginatedList.model'
 import { Connection, Patient, SubscriptionOptions } from '@icure/api'
 import { CommonFilter } from '../filters/filters'
-import { SubscriptionOptions } from '@icure/api/icc-x-api/utils'
 
 /**
  * The PatientApi interface provides methods to manage patients.

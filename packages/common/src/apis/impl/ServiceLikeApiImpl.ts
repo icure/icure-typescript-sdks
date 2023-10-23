@@ -40,7 +40,6 @@ import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
 import { UtiDetector } from '../../utils/utiDetector'
 import { extractDomainTypeTag } from '../../utils/domain'
 import { iccRestApiPath } from '@icure/api/icc-api/api/IccRestApiPath'
-import { SubscriptionOptions } from '@icure/api/icc-x-api/utils'
 
 export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements ServiceLikeApi<DSService, DSPatient, DSDocument> {
     private readonly contactsCache: CachedMap<ContactDto> = new CachedMap<ContactDto>(5 * 60, 10000)
