@@ -123,7 +123,14 @@ export function testMessageLikeApi<
 
             const gotMessageDto = ctx.toMessageDto(gotMessage)
             expect(gotMessageDto.id).toEqual(messageDto.id)
-            expect(gotMessageDto.subject).toEqual(content)
+            expect(gotMessageDto.subject).not.toEqual(content)
+            expect(gotMessageDto.subject).toEqual(content.slice(0, 2000))
+
+            const fullContent = await ctx.messageApi(hcp2Api).loadMessageWithContent(gotMessage)
+            expect(fullContent).toBeTruthy()
+
+            const fullContentDto = ctx.toMessageDto(fullContent)
+            expect(fullContentDto.subject).toEqual(content)
         })
 
         it('should be capable of creating a long message with some documents', async () => {
@@ -160,7 +167,12 @@ export function testMessageLikeApi<
 
             const gotMessageDto = ctx.toMessageDto(gotMessage)
             expect(gotMessageDto.id).toEqual(messageDto.id)
-            expect(gotMessageDto).toEqual(messageDto)
+
+            const fullMessage = await ctx.messageApi(hcp2Api).loadMessageWithContent(gotMessage)
+            expect(fullMessage).toBeTruthy()
+
+            const fullMessageDto = ctx.toMessageDto(fullMessage)
+            expect(fullMessageDto).toEqual(messageDto)
 
             const documents = await ctx.messageApi(hcp2Api).getAttachments(gotMessageDto.id!)
             expect(documents).toBeTruthy()
@@ -355,5 +367,33 @@ export function testMessageLikeApi<
                 ['CREATE'],
             )
         }, 60_000)
+
+        it('message should be encrypted', async () => {
+            const { api: masterApi, user: masterUser } = await ctx.masterApi(env)
+            const { api: hcp2Api, user: hcp2User } = await ctx.apiForEnvUser(env, hcp2Username)
+
+            const topic = await createTopic(masterApi, masterUser, hcp2User)
+            const topicDto = ctx.toTopicDto(topic)
+            expect(topicDto.id).toBeTruthy()
+
+            const messageCreationResult = await ctx.messageApi(masterApi).create(topic, 'Message content')
+
+            expect(messageCreationResult).toBeTruthy()
+
+            const createdMessage = (messageCreationResult as any).createdMessage as DSMessage
+            const messageDto = ctx.toMessageDto(createdMessage)
+
+            const gotMessage = await ctx.messageApi(hcp2Api).get(messageDto.id!)
+            expect(gotMessage).toBeTruthy()
+
+            const gotMessageDto = ctx.toMessageDto(gotMessage)
+            expect(gotMessageDto.id).toEqual(messageDto.id)
+
+            const shouldBeEncryptedMessage = await hcp2Api.baseApi.messageApi.getMessage(gotMessageDto.id!)
+            expect(shouldBeEncryptedMessage).toBeTruthy()
+
+            expect(shouldBeEncryptedMessage.subject).toBeUndefined()
+            expect(shouldBeEncryptedMessage.encryptedSelf).toBeDefined()
+        })
     })
 }

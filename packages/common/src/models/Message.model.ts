@@ -1,6 +1,7 @@
 import { Message as MessageDto } from '@icure/api'
 import { mapTo } from '../utils/decorators'
 import { CodingReference } from './CodingReference.model'
+import { MessageAttachment } from './MessageAttachment.model'
 import { MessageReadStatus } from './MessageReadStatus.model'
 import { SystemMetaDataEncrypted } from './SystemMetaDataEncrypted.model'
 
@@ -12,6 +13,7 @@ export class Message {
     modified?: number
     sent?: number
     readStatus?: Map<string, MessageReadStatus>
+    attachments?: MessageAttachment[]
     author?: string
     responsible?: string
     tags?: Set<CodingReference>
@@ -19,7 +21,6 @@ export class Message {
     endOfLife?: number
     deletionDate?: number
     sender?: string
-    recipients?: Set<string>
     metas?: Map<string, string>
     content?: string
     topicId?: string
@@ -39,11 +40,15 @@ export class Message {
         this.endOfLife = message.endOfLife
         this.deletionDate = message.deletionDate
         this.sender = message.sender
-        this.recipients = message.recipients
         this.metas = message.metas
         this.content = message.content
         this.topicId = message.topicId
         this.systemMetadata = message.systemMetadata
+        this.attachments = message.attachments
+    }
+
+    get isTruncated(): boolean {
+        return this.attachments?.some((attachment) => attachment.type === 'body') ?? false
     }
 
     static toJSON(instance: Message): any {
@@ -54,6 +59,7 @@ export class Message {
         if (instance.modified !== undefined) pojo['modified'] = instance.modified
         if (instance.sent !== undefined) pojo['sent'] = instance.sent
         if (instance.readStatus !== undefined) pojo['readStatus'] = !!instance.readStatus ? Object.fromEntries([...instance.readStatus.entries()].map(([k, v]) => [k, MessageReadStatus.toJSON(v)])) : undefined
+        if (instance.attachments !== undefined) pojo['attachments'] = instance.attachments?.map((item) => MessageAttachment.toJSON(item))
         if (instance.author !== undefined) pojo['author'] = instance.author
         if (instance.responsible !== undefined) pojo['responsible'] = instance.responsible
         if (instance.tags !== undefined) pojo['tags'] = Array.from([...(instance.tags ?? [])]?.map((item) => CodingReference.toJSON(item)) ?? [])
@@ -61,7 +67,6 @@ export class Message {
         if (instance.endOfLife !== undefined) pojo['endOfLife'] = instance.endOfLife
         if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
         if (instance.sender !== undefined) pojo['sender'] = instance.sender
-        if (instance.recipients !== undefined) pojo['recipients'] = Array.from([...(instance.recipients ?? [])]?.map((item) => item) ?? [])
         if (instance.metas !== undefined) pojo['metas'] = !!instance.metas ? Object.fromEntries([...instance.metas.entries()].map(([k, v]) => [k, v])) : undefined
         if (instance.content !== undefined) pojo['content'] = instance.content
         if (instance.topicId !== undefined) pojo['topicId'] = instance.topicId
@@ -89,6 +94,9 @@ export class Message {
         if (pojo['readStatus'] !== undefined) {
             obj['readStatus'] = pojo['readStatus'] ? new Map(Object.entries(pojo['readStatus']).map(([k, v]: [any, any]) => [k, MessageReadStatus.fromJSON(v)])) : undefined
         }
+        if (pojo['attachments'] !== undefined) {
+            obj['attachments'] = pojo['attachments']?.map((item: any) => MessageAttachment.fromJSON(item))
+        }
         if (pojo['author'] !== undefined) {
             obj['author'] = pojo['author']
         }
@@ -109,9 +117,6 @@ export class Message {
         }
         if (pojo['sender'] !== undefined) {
             obj['sender'] = pojo['sender']
-        }
-        if (pojo['recipients'] !== undefined) {
-            obj['recipients'] = new Set(pojo['recipients']?.map((item: any) => item) ?? [])
         }
         if (pojo['metas'] !== undefined) {
             obj['metas'] = pojo['metas'] ? new Map(Object.entries(pojo['metas']).map(([k, v]: [any, any]) => [k, v])) : undefined
@@ -136,6 +141,7 @@ interface IMessage {
     modified?: number
     sent?: number
     readStatus?: Map<string, MessageReadStatus>
+    attachments?: MessageAttachment[]
     author?: string
     responsible?: string
     tags?: Set<CodingReference>
@@ -143,7 +149,6 @@ interface IMessage {
     endOfLife?: number
     deletionDate?: number
     sender?: string
-    recipients?: Set<string>
     metas?: Map<string, string>
     content?: string
     topicId?: string

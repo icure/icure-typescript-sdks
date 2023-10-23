@@ -1,5 +1,19 @@
 import { Reference } from '../../types/Reference'
-import { Connection, Document as DocumentDto, IccDocumentXApi, IccMessageXApi, IccUserXApi, Message as MessageDto, MessageReadStatus, MessagesReadStatusUpdate, retry, SecureDelegation, Topic as TopicDto, User as UserDto } from '@icure/api'
+import {
+    Connection,
+    Document as DocumentDto,
+    IccDocumentXApi,
+    IccMessageXApi,
+    IccUserXApi,
+    Message as MessageDto,
+    MessageReadStatus,
+    MessagesReadStatusUpdate,
+    retry,
+    SecureDelegation,
+    Topic as TopicDto,
+    User as UserDto,
+    MessageAttachment as MessageAttachmentDto,
+} from '@icure/api'
 import { PaginatedList } from '../../models/PaginatedList.model'
 import { AttachmentCreationProgress, AttachmentCreationStep, AttachmentInput, MessageCreationProgress, MessageCreationResult, MessageCreationStep, MessageLikeApi } from '../MessageLikeApi'
 import { Mapper } from '../Mapper'
@@ -110,34 +124,33 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
                 throw this.errorHandler.createErrorFromAny(e)
             })
 
-        return toPaginatedList(
-            {
-                ...paginatedListDto,
-                rows: await Promise.all(paginatedListDto.rows?.map(async (message) => await this.getMessageBody(message)) ?? []),
-            },
-            this.messageMapper.toDomain,
-        )!
+        return toPaginatedList(paginatedListDto, this.messageMapper.toDomain)!
     }
 
-    private async getMessageBody(message: MessageDto): Promise<MessageDto> {
-        const documents = await this.documentApi.findByMessage(this.dataOwnerApi.getDataOwnerIdOf(await this.userApi.getCurrentUser()), message)
-        const bodyDocument = documents.find((document) => document.documentLocation === DocumentLocationEnum.Body)
+    async loadMessageWithContent(message: DSMessage): Promise<DSMessage> {
+        const messageDto = this.messageMapper.toDto(message)
+
+        if (messageDto.messageAttachments?.every((messageAttachment) => messageAttachment.type !== 'body')) {
+            return message
+        }
+
+        const bodyAttachment = messageDto.messageAttachments?.find((messageAttachment) => messageAttachment.type === 'body')
+        const bodyDocument = await this.documentApi.getDocument(bodyAttachment?.ids![0]!)
 
         if (bodyDocument !== undefined) {
             const bodyDocumentAttachment = await retry(async () => await this.documentApi.getAndDecryptDocumentAttachment(bodyDocument), 5, 100, 2)
-            return {
-                ...message,
+            return this.messageMapper.toDomain({
+                ...messageDto,
                 subject: this.decoder.decode(bodyDocumentAttachment),
-            }
+            })
         }
 
         return message
     }
 
     async get(id: string): Promise<DSMessage> {
-        const messageDto = await this.messageApi.getMessage(id)
-
-        return this.messageMapper.toDomain(await this.getMessageBody(messageDto))
+        const messageDto = await this.messageApi.getAndDecryptMessage(id)
+        return this.messageMapper.toDomain(messageDto)
     }
 
     async getAttachments(message: Reference<DSMessage>): Promise<DSBinary[]> {
@@ -182,12 +195,12 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
                         userId: (await this.userApi.getCurrentUser()).id!,
                     }),
                 )
-            ).map(async (message) => this.messageMapper.toDomain(await this.getMessageBody(message))),
+            ).map(async (message) => this.messageMapper.toDomain(message)),
         )
     }
 
     async subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: Filter<MessageDto>, eventFired: (message: DSMessage) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
-        return await this.messageApi.subscribeToMessageEvents(eventTypes, FilterMapper.toAbstractFilterDto<MessageDto>(filter, 'Message'), async (message) => await eventFired(this.messageMapper.toDomain(await this.getMessageBody(message))), options)
+        return await this.messageApi.subscribeToMessageEvents(eventTypes, FilterMapper.toAbstractFilterDto<MessageDto>(filter, 'Message'), async (message) => await eventFired(this.messageMapper.toDomain(message)), options)
     }
 
     /**
@@ -235,7 +248,7 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
             }
             case MessageCreationStep.MESSAGE_ATTACHED: {
                 try {
-                    const createdMessage = await this.messageApi.createMessage(creationProgress.partialMessage)
+                    const createdMessage = await this.messageApi.encryptAndCreateMessage(creationProgress.partialMessage)
 
                     const attachmentCreationResults = (
                         creationProgress as Extract<
@@ -387,9 +400,28 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
                 } satisfies MessageCreationProgress
             }
 
+            const createdAttachments = attachmentCreationProgresses.reduce(
+                (acc, progress) => {
+                    if (progress.step === AttachmentCreationStep.DOCUMENT_ATTACHED) {
+                        acc.push(progress)
+                    }
+                    return acc
+                },
+                [] as Array<Extract<AttachmentCreationProgress, { step: AttachmentCreationStep.DOCUMENT_ATTACHED }>>,
+            )
+
             return {
                 step: MessageCreationStep.MESSAGE_ATTACHED,
-                partialMessage: newMessageInstance,
+                partialMessage: {
+                    ...newMessageInstance,
+                    messageAttachments: createdAttachments.map(
+                        (value) =>
+                            new MessageAttachmentDto({
+                                type: value.attachment.documentLocation.toLowerCase(),
+                                ids: [value.document.id!],
+                            }),
+                    ),
+                },
                 createdAttachments: attachmentCreationProgresses,
             }
         }

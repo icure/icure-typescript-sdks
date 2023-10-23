@@ -1,11 +1,13 @@
 import { Message } from '../models/Message.model'
-import { CodeStub, Delegation, Message as MessageDto, MessageReadStatus as MessageReadStatusDto, SecurityMetadata as SecurityMetadataDto } from '@icure/api'
+import { CodeStub, Delegation, Message as MessageDto, MessageReadStatus as MessageReadStatusDto, SecurityMetadata as SecurityMetadataDto, MessageAttachment as MessageAttachmentDto } from '@icure/api'
 import { mapCodeStubToCodingReference, mapCodingReferenceToCodeStub } from './CodingReference.mapper'
 import { CodingReference } from '../models/CodingReference.model'
 import { MessageReadStatus } from '../models/MessageReadStatus.model'
 import { mapMessageReadStatusDtoToMessageReadStatus, mapMessageReadStatusToMessageReadStatusDto } from './MessageReadStatus.mapper'
 import { toCryptedForeignKeys, toDelegations, toEncryptedSelf, toEncryptionKeys, toSecretForeignKeys, toSecurityMetadataDto, toSystemMetaDataEncrypted } from './SystemMetaData.mapper'
 import { SystemMetaDataEncrypted } from '../models/SystemMetaDataEncrypted.model'
+import { MessageAttachment } from '../models/MessageAttachment.model'
+import { mapMessageAttachmentDtoToMessageAttachment, mapMessageAttachmentToMessageAttachmentDto } from './MessageAttachment.mapper'
 
 function toMessageDtoId(domain: Message): string | undefined {
     return domain.id
@@ -72,7 +74,7 @@ function toMessageDtoRecipientsType(domain: Message): string | undefined {
 }
 
 function toMessageDtoRecipients(domain: Message): string[] | undefined {
-    return [...(domain.recipients ?? [])]
+    return undefined
 }
 
 function toMessageDtoToAddresses(domain: Message): string[] | undefined {
@@ -187,12 +189,12 @@ function toMessageResponsible(dto: MessageDto): string | undefined {
     return dto.responsible
 }
 
-function toMessageTags(dto: MessageDto): Set<CodingReference> | undefined {
-    return !!dto.tags ? new Set(dto.tags.map((item) => mapCodeStubToCodingReference(item))) : undefined
+function toMessageTags({ tags }: MessageDto): Set<CodingReference> | undefined {
+    return !!tags ? new Set(tags.map((item) => mapCodeStubToCodingReference(item))) : undefined
 }
 
-function toMessageCodes(dto: MessageDto): Set<CodingReference> | undefined {
-    return !!dto.codes ? new Set(dto.codes.map((item) => mapCodeStubToCodingReference(item))) : undefined
+function toMessageCodes({ codes }: MessageDto): Set<CodingReference> | undefined {
+    return !!codes ? new Set(codes.map((item) => mapCodeStubToCodingReference(item))) : undefined
 }
 
 function toMessageEndOfLife(dto: MessageDto): number | undefined {
@@ -206,11 +208,6 @@ function toMessageDeletionDate(dto: MessageDto): number | undefined {
 function toMessageSender(dto: MessageDto): string | undefined {
     return dto.fromHealthcarePartyId
 }
-
-function toMessageRecipients(dto: MessageDto): Set<string> | undefined {
-    return !!dto.recipients ? new Set(dto.recipients) : undefined
-}
-
 function toMessageMetas(dto: MessageDto): Map<string, string> | undefined {
     return !!dto.metas ? new Map(Object.entries(dto.metas)) : undefined
 }
@@ -231,6 +228,14 @@ function toMessageDtoReceived(domain: Message): number | undefined {
     return undefined
 }
 
+function toMessageDtoMessageAttachments(domain: Message): MessageAttachmentDto[] | undefined {
+    return domain.attachments?.map((ma) => mapMessageAttachmentToMessageAttachmentDto(ma))
+}
+
+function toMessageAttachments(dto: MessageDto): MessageAttachment[] | undefined {
+    return dto.messageAttachments?.map((ma) => mapMessageAttachmentDtoToMessageAttachment(ma))
+}
+
 export function mapMessageDtoToMessage(dto: MessageDto): Message {
     return new Message({
         id: toMessageId(dto),
@@ -239,6 +244,7 @@ export function mapMessageDtoToMessage(dto: MessageDto): Message {
         modified: toMessageModified(dto),
         sent: toMessageSent(dto),
         readStatus: toMessageReadStatus(dto),
+        attachments: toMessageAttachments(dto),
         author: toMessageAuthor(dto),
         responsible: toMessageResponsible(dto),
         tags: toMessageTags(dto),
@@ -246,7 +252,6 @@ export function mapMessageDtoToMessage(dto: MessageDto): Message {
         endOfLife: toMessageEndOfLife(dto),
         deletionDate: toMessageDeletionDate(dto),
         sender: toMessageSender(dto),
-        recipients: toMessageRecipients(dto),
         metas: toMessageMetas(dto),
         content: toMessageContent(dto),
         topicId: toMessageTopicId(dto),
@@ -278,6 +283,7 @@ export function mapMessageToMessageDto(domain: Message): MessageDto {
         sent: toMessageDtoSent(domain),
         metas: toMessageDtoMetas(domain),
         readStatus: toMessageDtoReadStatus(domain),
+        messageAttachments: toMessageDtoMessageAttachments(domain),
         transportGuid: toMessageDtoTransportGuid(domain),
         remark: toMessageDtoRemark(domain),
         conversationGuid: toMessageDtoConversationGuid(domain),

@@ -27,6 +27,14 @@ export interface MessageLikeApi<DSMessage, DSTopic, DSBinary> {
     resumeMessageCreation(creationProgress: MessageCreationProgress): Promise<MessageCreationResult<DSMessage>>
 
     /**
+     * Load full content of the message if it is truncated
+     * @param message Truncated message
+     *
+     * @returns Message with full content
+     */
+    loadMessageWithContent(message: DSMessage): Promise<DSMessage>
+
+    /**
      * Delete a message
      * @param message Reference of message to delete
      */
