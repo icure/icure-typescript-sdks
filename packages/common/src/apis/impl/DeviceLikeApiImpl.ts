@@ -1,7 +1,7 @@
 import { PaginatedList } from '../../models/PaginatedList.model'
 import { DeviceLikeApi } from '../DeviceLikeApi'
 import { ErrorHandler } from '../../services/ErrorHandler'
-import { Connection, ConnectionImpl, Device, FilterChainDevice, IccAuthApi, IccDeviceApi, ListOfIds, subscribeToEntityEvents } from '@icure/api'
+import { Connection, ConnectionImpl, Device, FilterChainDevice, IccAuthApi, IccDeviceApi, ListOfIds, subscribeToEntityEvents, SubscriptionOptions } from '@icure/api'
 import { Mapper } from '../Mapper'
 import { firstOrNull } from '../../utils/functionalUtils'
 

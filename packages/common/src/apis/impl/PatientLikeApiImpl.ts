@@ -1,7 +1,7 @@
 import { PaginatedList } from '../../models/PaginatedList.model'
 import { SharingResult, SharingStatus } from '../../utils/interfaces'
 import { PatientLikeApi } from '../PatientLikeApi'
-import { Connection, ConnectionImpl, FilterChainPatient, IccAuthApi, IccPatientXApi, IccUserXApi, Patient as PatientDto, subscribeToEntityEvents } from '@icure/api'
+import { Connection, ConnectionImpl, FilterChainPatient, IccAuthApi, IccPatientXApi, IccUserXApi, Patient as PatientDto, subscribeToEntityEvents, SubscriptionOptions } from '@icure/api'
 import { ErrorHandler } from '../../services/ErrorHandler'
 import { Mapper } from '../Mapper'
 import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'

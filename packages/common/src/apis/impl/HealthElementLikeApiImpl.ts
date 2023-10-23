@@ -1,6 +1,6 @@
 import { PaginatedList } from '../../models/PaginatedList.model'
 import { HealthElementLikeApi } from '../HealthElementLikeApi'
-import { Connection, ConnectionImpl, FilterChainHealthElement, HealthElement, IccAuthApi, IccCryptoXApi, IccHelementXApi, IccPatientXApi, IccUserXApi, Patient, subscribeToEntityEvents, User } from '@icure/api'
+import { Connection, ConnectionImpl, FilterChainHealthElement, HealthElement, IccAuthApi, IccCryptoXApi, IccHelementXApi, IccPatientXApi, IccUserXApi, Patient, subscribeToEntityEvents, SubscriptionOptions, User } from '@icure/api'
 import { Mapper } from '../Mapper'
 import { ErrorHandler } from '../../services/ErrorHandler'
 import { firstOrNull } from '../../utils/functionalUtils'

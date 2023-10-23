@@ -1,5 +1,5 @@
 import { PaginatedList } from '../models/PaginatedList.model'
-import { Connection, Device } from '@icure/api'
+import { Connection, Device, SubscriptionOptions } from '@icure/api'
 import { CommonFilter } from '../filters/filters'
 import { SubscriptionOptions } from '@icure/api/icc-x-api/utils'
 

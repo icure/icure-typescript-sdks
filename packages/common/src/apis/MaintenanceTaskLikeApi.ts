@@ -1,4 +1,4 @@
-import { Connection, MaintenanceTask } from '@icure/api'
+import { Connection, MaintenanceTask, SubscriptionOptions } from '@icure/api'
 import { PaginatedList } from '../models/PaginatedList.model'
 import { CommonFilter } from '../filters/filters'
 import { SubscriptionOptions } from '@icure/api/icc-x-api/utils'

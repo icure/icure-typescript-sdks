@@ -21,6 +21,9 @@
     "dependencies": {
         "@icure/api": "8.0.0-RC.2"
     },
+    "dependencies": {
+        "@icure/api": "8.0.0-RC.2"
+    },
     "workspaces": [
         "packages/*"
     ],

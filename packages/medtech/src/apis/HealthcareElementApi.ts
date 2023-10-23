@@ -106,7 +106,7 @@ export interface HealthcareElementApi extends HealthElementLikeApi<HealthcareEle
      *    - connectionMaxRetry : how many time retrying to reconnect to the iCure WebSocket;
      *    - connectionRetryIntervalInMs : How long base interval will be between two retry. The retry attempt is exponential and using a random value (connectionRetryIntervalMs * (random between 1 and 2))^nbAttempts)
      */
-    subscribeToHealthcareElementEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<HealthElement>, eventFired: (dataSample: HealthcareElement) => Promise<void>, options?: SubscriptionOptions): Promise<Connection>
+    subscribeToHealthcareElementEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<HealthElement>, eventFired: (healthcareElement: HealthcareElement) => Promise<void>, options?: SubscriptionOptions): Promise<Connection>
 }
 
 class HealthcareElementApiImpl extends HealthElementLikeApiImpl<HealthcareElement, Patient> implements HealthcareElementApi {

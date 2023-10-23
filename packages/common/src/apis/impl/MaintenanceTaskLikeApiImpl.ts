@@ -1,5 +1,5 @@
 import { PaginatedList } from '../../models/PaginatedList.model'
-import { Connection, ConnectionImpl, FilterChainMaintenanceTask, IccAuthApi, IccUserXApi, MaintenanceTask, subscribeToEntityEvents, User } from '@icure/api'
+import { Connection, ConnectionImpl, FilterChainMaintenanceTask, IccAuthApi, IccUserXApi, MaintenanceTask, subscribeToEntityEvents, SubscriptionOptions, User } from '@icure/api'
 import { MaintenanceTaskLikeApi } from '../MaintenanceTaskLikeApi'
 import { Mapper } from '../Mapper'
 import { ErrorHandler } from '../../services/ErrorHandler'

@@ -1,6 +1,6 @@
 import { SharedDataType } from '../models/User.model'
 import { PaginatedList } from '../models/PaginatedList.model'
-import { Connection, User } from '@icure/api'
+import { Connection, SubscriptionOptions, User } from '@icure/api'
 import { CommonFilter } from '../filters/filters'
 import { SubscriptionOptions } from '@icure/api/icc-x-api/utils'
 

@@ -1,7 +1,7 @@
 import { PaginatedList } from '../../models/PaginatedList.model'
 import { HealthcarePartyLikeApi } from '../HealthcarePartyLikeApi'
 import { ErrorHandler } from '../../services/ErrorHandler'
-import { AbstractFilter, Connection, ConnectionImpl, FilterChainHealthcareParty, HealthcareParty, IccAuthApi, IccHcpartyXApi, subscribeToEntityEvents } from '@icure/api'
+import { AbstractFilter, Connection, ConnectionImpl, FilterChainHealthcareParty, HealthcareParty, IccAuthApi, IccHcpartyXApi, subscribeToEntityEvents, SubscriptionOptions } from '@icure/api'
 import { Mapper } from '../Mapper'
 import { firstOrNull } from '../../utils/functionalUtils'
 import { NoOpFilter } from '../../filters/dsl'

@@ -24,6 +24,7 @@ import {
     ServiceLink,
     SubContact,
     subscribeToEntityEvents,
+    SubscriptionOptions,
     ua2hex,
     User as UserDto,
 } from '@icure/api'
