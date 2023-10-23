@@ -95,11 +95,11 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
         if (!loggedUser) {
             throw this.errorHandler.createErrorWithMessage(`There is no user currently logged in. You must call this method from an authenticated MedTechApi`)
         } else if (!!loggedUser.patientId) {
-            const patientDataOwner = await baseApi.patientApi.getPatientWithUser(loggedUser, loggedUser.patientId)
+            const patientDataOwner: Patient = await baseApi.patientApi.getPatientWithUser(loggedUser, loggedUser.patientId)
             if (!patientDataOwner) throw this.errorHandler.createErrorWithMessage(`Impossible to find the patient ${loggedUser.patientId} apparently linked to the user ${loggedUser.id}. Are you sure this patientId is correct ?`)
             this.validatePatient(patientDataOwner)
 
-            const delegatesInfo = await baseApi.cryptoApi.entities.getDataOwnersWithAccessTo(patientDataOwner)
+            const delegatesInfo = await baseApi.patientApi.getDataOwnersWithAccessTo(patientDataOwner)
             const delegates = Object.keys(delegatesInfo.permissionsByDataOwnerId)
 
             for (const delegate of delegates) {
@@ -111,7 +111,7 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
                             status: 'pending',
                             author: loggedUser.id,
                             responsible: loggedUser.patientId,
-                            taskType: NotificationTypeEnum.NEW_USER_OWN_DATA_ACCESS,
+                            taskType: NotificationTypeEnum.NewUserOwnDataAccess,
                         },
                         {
                             additionalDelegates: { [delegate]: 'WRITE' },

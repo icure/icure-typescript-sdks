@@ -1,6 +1,6 @@
 import 'isomorphic-fetch'
 import { MedTechApi } from '../../src/apis/MedTechApi'
-import { User, Notification, NotificationTypeEnum } from '@icure/typescript-common'
+import { User, Notification, NotificationTypeEnum, NotificationStatusEnum } from '@icure/typescript-common'
 import { NotificationFilter } from '../../src/filter/NotificationFilterDsl'
 import { FilterComposition, NoOpFilter } from '@icure/typescript-common'
 import { expect } from 'chai'
@@ -35,27 +35,27 @@ describe('Notification Filters Tests', function () {
 
         notification1 = (await hcp1Api.notificationApi.createOrModifyNotification(
             new Notification({
-                status: 'pending',
+                status: NotificationStatusEnum.Pending,
                 created: startingDate.getTime() - 10000,
-                type: NotificationTypeEnum.KEY_PAIR_UPDATE,
+                type: NotificationTypeEnum.KeyPairUpdate,
             }),
             hcp1User.healthcarePartyId!,
         ))!
 
         notification2 = (await hcp1Api.notificationApi.createOrModifyNotification(
             new Notification({
-                status: 'pending',
+                status: NotificationStatusEnum.Pending,
                 created: startingDate.getTime() - 10000,
-                type: NotificationTypeEnum.NEW_USER_OWN_DATA_ACCESS,
+                type: NotificationTypeEnum.NewUserOwnDataAccess,
             }),
             hcp1User.healthcarePartyId!,
         ))!
 
         notification3 = (await hcp1Api.notificationApi.createOrModifyNotification(
             new Notification({
-                status: 'ongoing',
+                status: NotificationStatusEnum.Ongoing,
                 created: startingDate.getTime() + 10000,
-                type: NotificationTypeEnum.NEW_USER_OWN_DATA_ACCESS,
+                type: NotificationTypeEnum.NewUserOwnDataAccess,
             }),
             hcp1User.healthcarePartyId!,
         ))!
@@ -76,11 +76,11 @@ describe('Notification Filters Tests', function () {
     })
 
     it('Can filter Notifications by type', async function () {
-        const notes = await hcp1Api.notificationApi.filterNotifications(await new NotificationFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).withType(NotificationTypeEnum.NEW_USER_OWN_DATA_ACCESS).build())
+        const notes = await hcp1Api.notificationApi.filterNotifications(await new NotificationFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).withType(NotificationTypeEnum.NewUserOwnDataAccess).build())
 
         expect(notes.rows.length).to.be.greaterThan(0)
         notes.rows.forEach((note) => {
-            expect(note.type).to.be.equal(NotificationTypeEnum.NEW_USER_OWN_DATA_ACCESS)
+            expect(note.type).to.be.equal(NotificationTypeEnum.NewUserOwnDataAccess)
         })
     })
 
@@ -96,7 +96,7 @@ describe('Notification Filters Tests', function () {
     it('Can filter Notifications by union filter', async function () {
         const afterDateFilter = await new NotificationFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).afterDate(startingDate.getTime()).build()
 
-        const filterByType = await new NotificationFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).withType(NotificationTypeEnum.KEY_PAIR_UPDATE).build()
+        const filterByType = await new NotificationFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).withType(NotificationTypeEnum.KeyPairUpdate).build()
 
         const unionFilter = FilterComposition.union(afterDateFilter, filterByType)
 
@@ -105,19 +105,19 @@ describe('Notification Filters Tests', function () {
         expect(notes.rows.length).to.be.greaterThan(0)
         notes.rows.forEach((note) => {
             expect(note).to.satisfy((n: Notification) => {
-                return (!!n.created && n.created >= startingDate.getTime()) || n.type === NotificationTypeEnum.KEY_PAIR_UPDATE
+                return (!!n.created && n.created >= startingDate.getTime()) || n.type === NotificationTypeEnum.KeyPairUpdate
             })
         })
     })
 
     it('Can filter Notifications by implicit intersection filter', async function () {
-        const filterAfterDateOrType = await new NotificationFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).withType(NotificationTypeEnum.NEW_USER_OWN_DATA_ACCESS).afterDate(startingDate.getTime()).build()
+        const filterAfterDateOrType = await new NotificationFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).withType(NotificationTypeEnum.NewUserOwnDataAccess).afterDate(startingDate.getTime()).build()
 
         const notes = await hcp1Api.notificationApi.filterNotifications(filterAfterDateOrType)
 
         expect(notes.rows.length).to.be.greaterThan(0)
         notes.rows.forEach((note) => {
-            expect(note.type).to.be.equal(NotificationTypeEnum.NEW_USER_OWN_DATA_ACCESS)
+            expect(note.type).to.be.equal(NotificationTypeEnum.NewUserOwnDataAccess)
             expect(note.created).to.be.greaterThanOrEqual(startingDate.getTime())
         })
     })
@@ -125,7 +125,7 @@ describe('Notification Filters Tests', function () {
     it('Can filter Notifications by explicit intersection filter', async function () {
         const afterDateFilter = await new NotificationFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).afterDate(startingDate.getTime()).build()
 
-        const filterByType = await new NotificationFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).withType(NotificationTypeEnum.NEW_USER_OWN_DATA_ACCESS).build()
+        const filterByType = await new NotificationFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).withType(NotificationTypeEnum.NewUserOwnDataAccess).build()
 
         const intersectionFilter = FilterComposition.intersection(afterDateFilter, filterByType)
 
@@ -133,13 +133,13 @@ describe('Notification Filters Tests', function () {
 
         expect(notes.rows.length).to.be.greaterThan(0)
         notes.rows.forEach((note) => {
-            expect(note.type).to.be.equal(NotificationTypeEnum.NEW_USER_OWN_DATA_ACCESS)
+            expect(note.type).to.be.equal(NotificationTypeEnum.NewUserOwnDataAccess)
             expect(note.created).to.be.greaterThanOrEqual(startingDate.getTime())
         })
     })
 
     it('Intersection between disjoint sets return empty result', async function () {
-        const notes = await hcp1Api.notificationApi.filterNotifications(await new NotificationFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).withType(NotificationTypeEnum.NEW_USER_OWN_DATA_ACCESS).byIds([notification1.id!]).build())
+        const notes = await hcp1Api.notificationApi.filterNotifications(await new NotificationFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).withType(NotificationTypeEnum.NewUserOwnDataAccess).byIds([notification1.id!]).build())
 
         expect(notes.rows.length).to.be.equal(0)
     })

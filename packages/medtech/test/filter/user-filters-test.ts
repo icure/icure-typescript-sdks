@@ -17,6 +17,7 @@ let hcp1User: User
 let patApi: MedTechApi
 let patUser: User
 let newUser: User
+let masterApi: MedTechApi
 
 describe('User Filters Test', function () {
     before(async function () {
@@ -32,7 +33,10 @@ describe('User Filters Test', function () {
         patApi = patApiAndUser.api
         patUser = patApiAndUser.user
 
-        newUser = await hcp1Api.userApi.createOrModifyUser(
+        const masterApiAndUser = await TestUtils.createMedTechApiAndLoggedUserFor(env.iCureUrl, env.masterHcp!)
+        masterApi = masterApiAndUser.api
+
+        newUser = await masterApi.userApi.createOrModifyUser(
             new User({
                 name: 'Marvin',
                 login: getTempEmail(),
@@ -66,9 +70,13 @@ describe('User Filters Test', function () {
     it('Can filter User by Id', async function () {
         const users = await hcp1Api.userApi.filterUsers(await new UserFilter(hcp1Api).byIds([patUser.id!, newUser.id!]).build())
 
-        expect(users.rows.length).to.be.equal(2)
+        expect(users.rows.length).to.be.equal(1)
         expect(users.rows.map((it) => it.id)).to.contain(patUser.id!)
-        expect(users.rows.map((it) => it.id)).to.contain(newUser.id!)
+
+        const usersByMaster = await masterApi.userApi.filterUsers(await new UserFilter(masterApi).byIds([patUser.id!, newUser.id!]).build())
+        expect(usersByMaster.rows.length).to.be.equal(2)
+        expect(usersByMaster.rows.map((it) => it.id)).to.contain(patUser.id!)
+        expect(usersByMaster.rows.map((it) => it.id)).to.contain(newUser.id!)
     })
 
     it('Can filter User by union filter', async function () {
@@ -80,7 +88,12 @@ describe('User Filters Test', function () {
 
         expect(users.rows.length).to.be.greaterThan(0)
         expect(users.rows.map((it) => it.id)).to.contain(patUser.id!)
-        expect(users.rows.map((it) => it.id)).to.contain(newUser.id!)
+
+        const usersByMaster = await masterApi.userApi.filterUsers(unionFilter)
+
+        expect(usersByMaster.rows.length).to.be.greaterThan(0)
+        expect(usersByMaster.rows.map((it) => it.id)).to.contain(patUser.id!)
+        expect(usersByMaster.rows.map((it) => it.id)).to.contain(newUser.id!)
     })
 
     it('Can filter user by implicit intersection filter', async function () {

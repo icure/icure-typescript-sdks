@@ -235,7 +235,7 @@ export function NotificationApiAware<TBase extends Constructor<any>>(Base: TBase
 
         async createMt(api: MedTechApi, delegate: string): Promise<Notification> {
             const notification = new Notification({
-                type: NotificationTypeEnum.KEY_PAIR_UPDATE,
+                type: NotificationTypeEnum.KeyPairUpdate,
             })
             const createdNotification = await api.notificationApi.createOrModify(notification, delegate)
             expect(createdNotification).toBeTruthy()

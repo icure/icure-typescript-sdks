@@ -6,7 +6,6 @@ import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
 import { IccIcureMaintenanceXApi } from '@icure/api/icc-x-api/icc-icure-maintenance-x-api'
 import { DataOwnerTypeEnum } from '@icure/api/icc-api/model/DataOwnerTypeEnum'
 import { DataOwnerWithType } from '../../models/DataOwner.model'
-import { hexPublicKeysOf } from '@icure/api/icc-x-api/crypto/utils'
 
 export class DataOwnerLikeApiImpl<DSDataOwnerWithType extends DataOwnerWithType, DSDataOwnerType, DSPatient, DSUser> implements DataOwnerLikeApi<DSDataOwnerWithType, DSUser> {
     constructor(
@@ -22,7 +21,7 @@ export class DataOwnerLikeApiImpl<DSDataOwnerWithType extends DataOwnerWithType,
         const retrieved = await this.dataOwnerApi.getDataOwner(ownerId)
 
         if (retrieved.type === DataOwnerTypeEnum.Patient) {
-            const potentiallyDecryptedPatient = (await this.patientApi.tryDecryptOrReturnOriginal(undefined, [retrieved.dataOwner]))[0]
+            const potentiallyDecryptedPatient = (await this.patientApi.tryDecryptOrReturnOriginal([retrieved.dataOwner]))[0]
 
             return this.dataOwnerWithTypeMapper.toDomain({
                 dataOwner: potentiallyDecryptedPatient.entity,
@@ -44,7 +43,7 @@ export class DataOwnerLikeApiImpl<DSDataOwnerWithType extends DataOwnerWithType,
 
     getPublicKeysOf(dataOwner: DSDataOwnerWithType): string[] {
         const dataOwnerDto = this.dataOwnerWithTypeMapper.toDto(dataOwner).dataOwner
-        return [...hexPublicKeysOf(dataOwnerDto)]
+        return [...this.dataOwnerApi.getHexPublicKeysOf(dataOwnerDto)]
     }
 
     async giveAccessBackTo(ownerId: string, ownerNewPublicKey: string): Promise<void> {

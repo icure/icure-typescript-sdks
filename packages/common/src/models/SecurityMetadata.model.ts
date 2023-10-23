@@ -1,5 +1,8 @@
+import { SecurityMetadata as SecurityMetadataDto } from '@icure/api'
+import { mapTo } from '../utils/decorators'
 import { SecureDelegation } from './SecureDelegation.model'
 
+@mapTo(SecurityMetadataDto)
 export class SecurityMetadata {
     constructor(securityMetadata?: ISecurityMetadata | any) {
         this.secureDelegations = securityMetadata?.secureDelegations

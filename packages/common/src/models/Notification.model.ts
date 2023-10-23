@@ -146,10 +146,8 @@ export interface INotification {
     systemMetaData?: SystemMetaDataEncrypted
 }
 
-export enum NotificationTypeEnum {
-    KEY_PAIR_UPDATE = 'KEY_PAIR_UPDATE',
-    NEW_USER_OWN_DATA_ACCESS = 'NEW_USER_OWN_DATA_ACCESS',
-    OTHER = 'OTHER',
-}
+export type NotificationTypeEnum = MaintenanceTask.TaskTypeEnum
+export const NotificationTypeEnum = MaintenanceTask.TaskTypeEnum
 
-export type NotificationStatusEnum = 'pending' | 'ongoing' | 'cancelled' | 'completed'
+export type NotificationStatusEnum = MaintenanceTask.StatusEnum
+export const NotificationStatusEnum = MaintenanceTask.StatusEnum

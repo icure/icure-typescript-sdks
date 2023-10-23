@@ -11,7 +11,7 @@ import { addUniqueObjectsToArray } from './Array.utils'
 export const ICURE_INTERNAL_FHIR_TAG_TYPE = 'ICURE_INTERNAL_FHIR_TYPE'
 const ICURE_INTERNAL_FHIR_TAG_VERSION = '5'
 
-export const ICURE_INTERNAL_FHIR_TAG_ID = (domain: string) => `${ICURE_INTERNAL_FHIR_TAG_TYPE}|${domain}|${ICURE_INTERNAL_FHIR_TAG_VERSION}`
+export const ICURE_INTERNAL_FHIR_TAG_ID = (domain: string) => `${ICURE_INTERNAL_FHIR_TAG_TYPE}|${domain?.toUpperCase()}|${ICURE_INTERNAL_FHIR_TAG_VERSION}`
 
 export const extractDataOwnerDomainType = (dataOwnerWithType: DataOwner) => {
     const tags = dataOwnerWithType.tags || []
@@ -22,7 +22,7 @@ export const extractDataOwnerDomainType = (dataOwnerWithType: DataOwner) => {
         throw new Error(`Data owner ${dataOwnerWithType.id} has no domain type tag`)
     }
 
-    return domainType
+    return domainType?.toUpperCase()
 }
 
 export const extractDomainTypeTag = (tags?: CodeStub[]): CodeStub | undefined => {
@@ -31,11 +31,11 @@ export const extractDomainTypeTag = (tags?: CodeStub[]): CodeStub | undefined =>
 
 export const extractDomainType = (tags: CodeStub[] | undefined) => {
     const domainTypeTag = extractDomainTypeTag(tags)
-    return domainTypeTag?.code
+    return domainTypeTag?.code?.toUpperCase()
 }
 
 export const domainTypeTag = (domainType: string): CodeStub => {
-    const domainTypeString = domainType.toLowerCase()
+    const domainTypeString = domainType.toUpperCase()
     return new CodeStub({
         id: ICURE_INTERNAL_FHIR_TAG_ID(domainTypeString),
         version: ICURE_INTERNAL_FHIR_TAG_VERSION,
@@ -46,7 +46,8 @@ export const domainTypeTag = (domainType: string): CodeStub => {
 
 export const filteringOutInternalTags = (fhirType: string, tags: CodeStub[] | undefined, throwOnMissing: boolean = true): Set<CodingReference> | undefined => {
     const domainTypeTag = extractDomainTypeTag(tags)
-    if ((!domainTypeTag || domainTypeTag.code?.toLowerCase() !== fhirType) && throwOnMissing) throw new Error(`${fhirType} domain tag type is missing`)
+    const fhirTypeUpperCased = fhirType.toUpperCase()
+    if ((!domainTypeTag || domainTypeTag.code?.toUpperCase() !== fhirTypeUpperCased) && throwOnMissing) throw new Error(`${fhirTypeUpperCased} domain tag type is missing`)
     const filteredTags = tags?.filter((tag) => tag.type !== ICURE_INTERNAL_FHIR_TAG_TYPE)
     return !!filteredTags?.length ? new Set(filteredTags.map(mapCodeStubToCodingReference)) : undefined
 }

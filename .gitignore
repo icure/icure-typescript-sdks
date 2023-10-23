@@ -42,3 +42,4 @@ Thumbs.db
 !.yarn/plugins
 !.yarn/releases
 **/test/scratch
+/custom-docker-compose-cloud.yaml

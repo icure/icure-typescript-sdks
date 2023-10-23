@@ -1,10 +1,10 @@
 import { CryptoStrategies, KeyPair, SimpleCryptoStrategies } from '@icure/typescript-common'
-import { DataOwnerWithType } from '../models/DataOwner.model'
+import { DataOwnerTypeEnum, DataOwnerWithType } from '../models/DataOwner.model'
 
 export interface MedTechCryptoStrategies extends CryptoStrategies<DataOwnerWithType> {}
 
 export class SimpleMedTechCryptoStrategies extends SimpleCryptoStrategies<DataOwnerWithType> {
-    constructor(availableKeys?: KeyPair[]) {
-        super(availableKeys ?? [])
+    constructor(availableKeys?: KeyPair[], anonymousDataOwnerTypes?: Set<DataOwnerTypeEnum>) {
+        super(availableKeys ?? [], anonymousDataOwnerTypes ?? new Set([DataOwnerTypeEnum.Patient]))
     }
 }

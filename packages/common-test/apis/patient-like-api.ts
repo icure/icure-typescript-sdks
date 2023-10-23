@@ -5,6 +5,7 @@ import { getEnvironmentInitializer, hcp1Username, hcp2Username, patUsername, set
 import { Patient, sleep, User } from '@icure/api'
 import 'isomorphic-fetch'
 import { doXOnYAndSubscribe } from '../websocket-utils'
+import { describe, it, beforeAll } from '@jest/globals'
 
 setLocalStorage(fetch)
 
@@ -56,7 +57,7 @@ export function testPatientLikeApi<
             expect(forceUuid(patientDto.id)).toEqual(patientDto.id)
             expect(patientDto.firstName).toEqual('Giovanni')
             expect(patientDto.lastName).toEqual('Neve')
-            expect(patientDto.notes[0].markdown['it']).toEqual("L'inverno sta arrivando")
+            expect(patientDto.notes![0].markdown!['it']).toEqual("L'inverno sta arrivando")
 
             const retrieved = await ctx.patientApi(hcp1Api).get(patientDto.id!)
             expect(retrieved).toEqual(patient)
@@ -69,7 +70,7 @@ export function testPatientLikeApi<
         })
 
         it('Patient sharing its own information with HCP', async function () {
-            if (env.backendType === 'oss') this.skip()
+            if (env.backendType === 'oss') return
             const patApiAndUser = await ctx.signUpUserUsingEmail(env, 'Giacomo', 'Passero', 'patient', hcp1User.healthcarePartyId!)
             const patApi = patApiAndUser.api
             const patUser = patApiAndUser.user
@@ -82,12 +83,12 @@ export function testPatientLikeApi<
                 notes: [{ markdown: { en: 'Some note' } }],
             })
             const updatedPatient = await ctx.patientApi(patApi).createOrModify(modifyPatient)
-            expect(ctx.toPatientDto(updatedPatient).notes[0].markdown.en).toEqual('Some note')
+            expect(ctx.toPatientDto(updatedPatient).notes![0].markdown!.en).toEqual('Some note')
             // Initially HCP can't access the patient
             await ctx.checkPatientInaccessible(hcpApi, updatedPatient)
             // Patient shares P and gets it updated and decrypted
             const sharedPatient = await ctx.patientApi(patApi).giveAccessTo(updatedPatient, hcpUser.healthcarePartyId!)
-            expect(ctx.toPatientDto(sharedPatient).notes[0].markdown.en).toEqual('Some note')
+            expect(ctx.toPatientDto(sharedPatient).notes![0].markdown!.en).toEqual('Some note')
             // HCP can now access the patient
             await ctx.checkPatientAccessibleAndDecrypted(hcpApi, sharedPatient, true)
         })
@@ -146,23 +147,25 @@ export function testPatientLikeApi<
             await expect(ctx.patientApi(hcp2Api).giveAccessTo(createdPatient, env.dataOwnerDetails[patUsername].dataOwnerId!)).rejects.toBeInstanceOf(Error)
         })
 
-        it('Give access to will fail if the patient version does not match the latest', async () => {
+        it('Give access using an older version of patient should not lose information', async () => {
             const { api: h2api, user: h2 } = await ctx.apiForEnvUser(env, hcp2Username)
             const { api: pApi, user: p } = await ctx.apiForEnvUser(env, patUsername)
             const patient = await ctx.createPatient(hcp1Api)
-            const sharedPatient = await ctx.patientApi(hcp1Api!).giveAccessTo(patient, p.patientId!)
-            await expect(ctx.patientApi(hcp1Api!).giveAccessTo(patient, h2.healthcarePartyId!)).rejects.toBeInstanceOf(Error)
+            await ctx.patientApi(hcp1Api!).giveAccessTo(patient, p.patientId!)
+            const sharedPatient = await ctx.patientApi(hcp1Api!).giveAccessTo(patient, h2.healthcarePartyId!)
             await ctx.checkPatientAccessibleAndDecrypted(hcp1Api, sharedPatient, true)
+            await ctx.checkPatientAccessibleAndDecrypted(h2api, sharedPatient, true)
+            // Still accessible to patient even though the last time we shared we didn't pass the helement with delegation to patient.
             await ctx.checkPatientAccessibleAndDecrypted(pApi, sharedPatient, true)
-            await ctx.checkPatientInaccessible(h2api, patient)
         })
 
-        const subscribeAndCreatePatient = async (options: {}, eventTypes: ('CREATE' | 'DELETE' | 'UPDATE')[]) => {
+        const subscribeAndCreatePatient = async (options: {}, eventTypes: ('CREATE' | 'UPDATE')[]) => {
             const { api, user } = await ctx.apiForEnvUser(env, hcp1Username)
 
             const connectionPromise = async (options: {}, dataOwnerId: string, eventListener: (patient: Patient) => Promise<void>) => {
                 await sleep(2000)
-                return ctx.patientApi(api).subscribeToEvents(eventTypes, await new PatientFilter(api).forSelf().containsFuzzy('John').build(), eventListener, options)
+                // TODO fix eventListener typing
+                return ctx.patientApi(api).subscribeToEvents(eventTypes, await new PatientFilter(api).forSelf().containsFuzzy('John').build(), eventListener as unknown as any, options)
             }
 
             const events: Patient[] = []

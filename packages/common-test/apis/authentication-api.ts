@@ -7,6 +7,7 @@ import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, D
 import { assert } from 'chai'
 import { BaseApiTestContext, WithAuthenticationApi, WithDataOwnerApi, WithHcpApi, WithMaintenanceTaskApi, WithPatientApi, WithServiceApi } from './TestContexts'
 import { expectArrayContainsExactlyInAnyOrder } from '../assertions'
+import { describe, it, beforeAll } from '@jest/globals'
 
 setLocalStorage(fetch)
 
@@ -372,8 +373,7 @@ export function testAuthenticationApi<
             // User can create new data
             expect(await ctx.createServiceForPatient(loginAuthResult.api, currentPatient)).toBeTruthy()
 
-            // But can't access (v8) / decrypt (v7) previous ones
-            await ctx.checkServiceAccessibleButEncrypted(loginAuthResult.api, createdDataSample)
+            await ctx.checkServiceInaccessible(loginAuthResult.api, createdDataSample)
 
             // When he gave access back with his previous key
             await patApiAndUser.api.baseApi.cryptoApi.forceReload()
@@ -425,15 +425,14 @@ export function testAuthenticationApi<
             // Then
             // User can create new data
             expect(await ctx.createServiceForPatient(loginAuthResult.api, currentPatient)).toBeTruthy()
-            // But can't access (v8) / decrypt (v7) previous ones
-            await ctx.checkServiceAccessibleButEncrypted(loginAuthResult.api, createdService)
+            await ctx.checkServiceInaccessible(loginAuthResult.api, createdService)
 
             // When the delegate gave him access back
             // Hcp checks dedicated notification
             const startTimestamp = new Date().getTime() - 100000
             const hcpNotification = (await ctx.mtApi(hcpApiAndUser.api).getPendingAfter(startTimestamp))
                 .map((x) => ctx.toMtDto(x))
-                .find((mt) => mt.taskType === NotificationTypeEnum.KEY_PAIR_UPDATE && mt.properties?.find((prop) => prop.typedValue?.stringValue == patApiAndUser.user.patientId!) != undefined)
+                .find((mt) => mt.taskType === NotificationTypeEnum.KeyPairUpdate && mt.properties?.find((prop) => prop.typedValue?.stringValue == patApiAndUser.user.patientId!) != undefined)
 
             expect(hcpNotification).toBeTruthy()
 

@@ -19,10 +19,11 @@ export class SimpleCryptoStrategies<DSDataOwnerWithType extends DataOwnerWithTyp
      * Builds a new instance of simple med-tech crypto strategies:
      * @param availableKeys pre-loaded available keys which may not be contained yet in the key storage. Will be also
      * considered as verified.
+     * @param anonymousDataOwnerTypes data owner types which require anonymous delegations
      */
-    // * @param anonymousDataOwnerTypes data owner types which require anonymous delegations
     constructor(
-        private readonly availableKeys: KeyPair[], // private readonly anonymousDataOwnerTypes: Set<DSDataOwnerWithType['type']>
+        private readonly availableKeys: KeyPair[],
+        private readonly anonymousDataOwnerTypes: Set<DSDataOwnerWithType['type']>,
     ) {}
 
     /**
@@ -67,8 +68,7 @@ export class SimpleCryptoStrategies<DSDataOwnerWithType extends DataOwnerWithTyp
         return Promise.resolve(publicKeys)
     }
 
-    // TODO will be needed for api v8
-    // dataOwnerRequiresAnonymousDelegation(dataOwnerId: string, dataOwnerType: DSDataOwnerWithType['type']): boolean {
-    //   return this.anonymousDataOwnerTypes.has(dataOwnerType)
-    // }
+    dataOwnerRequiresAnonymousDelegation(dataOwnerId: string, dataOwnerType: DSDataOwnerWithType['type']): boolean {
+        return this.anonymousDataOwnerTypes.has(dataOwnerType)
+    }
 }

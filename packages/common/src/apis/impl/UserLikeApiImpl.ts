@@ -285,7 +285,7 @@ export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements Us
         throw this.errorHandler.createErrorWithMessage("Couldn't remove data sharing of user")
     }
 
-    subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: CommonFilter<UserDto>, eventFired: (user: DSUser) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
+    subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<UserDto>, eventFired: (user: DSUser) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
         return subscribeToEntityEvents(iccRestApiPath(this.basePath), this.authApi, 'User', eventTypes, FilterMapper.toAbstractFilterDto(filter, 'User'), (event) => eventFired(this.userMapper.toDomain(event)), options ?? {}).then((ws) => new ConnectionImpl(ws))
     }
 }

@@ -108,7 +108,7 @@ function annotation2(): Annotation {
 // Returns copy with added tags
 function addDomainTypeTagIfMissing(tags: CodeStub[] | undefined, domainType: string): CodeStub[] {
     const found = extractDomainTypeTag(tags)
-    if (found) {
+    if (tags && found) {
         expect(found.code).toEqual(domainType)
         return tags
     } else return [...(tags ?? []), domainTypeTag(domainType)]
@@ -215,7 +215,7 @@ export function ConditionApiAware<TBase extends Constructor<any>>(Base: TBase): 
         toDSHelement(helementDto: HealthElement): Condition {
             return mapHealthElementToCondition({
                 ...helementDto,
-                tags: addDomainTypeTagIfMissing(helementDto.tags, 'condition'),
+                tags: addDomainTypeTagIfMissing(helementDto.tags, 'condition'.toUpperCase()),
             })
         }
 
@@ -282,7 +282,7 @@ export function ObservationApiAware<TBase extends Constructor<any>>(Base: TBase)
         toDSService(serviceDto: Service): Observation {
             return mapServiceToObservation({
                 ...serviceDto,
-                tags: addDomainTypeTagIfMissing(serviceDto.tags, 'observation'),
+                tags: addDomainTypeTagIfMissing(serviceDto.tags, 'observation'.toUpperCase()),
             })
         }
 
@@ -316,7 +316,7 @@ export function NotificationApiAware<TBase extends Constructor<any>>(Base: TBase
 
         async createMt(api: EHRLiteApi, delegate: string): Promise<Notification> {
             const notification = new Notification({
-                type: NotificationTypeEnum.KEY_PAIR_UPDATE,
+                type: NotificationTypeEnum.KeyPairUpdate,
             })
             const createdNotification = await api.notificationApi.createOrModify(notification, delegate)
             expect(createdNotification).toBeTruthy()
@@ -334,7 +334,7 @@ export function PractitionerApiAware<TBase extends Constructor<any>>(Base: TBase
         toDSHcp(hcpDto: HealthcareParty): Practitioner {
             return mapHealthcarePartyToPractitioner({
                 ...hcpDto,
-                tags: addDomainTypeTagIfMissing(hcpDto.tags, 'practitioner'),
+                tags: addDomainTypeTagIfMissing(hcpDto.tags, 'practitioner'.toUpperCase()),
             })
         }
 
@@ -353,7 +353,7 @@ export function OrganisationApiAware<TBase extends Constructor<any>>(Base: TBase
         toDSHcp(hcpDto: HealthcareParty): Organisation {
             return mapHealthcarePartyToOrganisation({
                 ...hcpDto,
-                tags: addDomainTypeTagIfMissing(hcpDto.tags, 'organisation'),
+                tags: addDomainTypeTagIfMissing(hcpDto.tags, 'organisation'.toUpperCase()),
             })
         }
 

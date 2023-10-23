@@ -1,5 +1,8 @@
+import { SecureDelegation as SecureDelegationDto } from '@icure/api'
+import { mapTo } from '../utils/decorators'
 import { AccessLevelEnum } from './enums/AccessLevel.enum'
 
+@mapTo(SecureDelegationDto)
 export class SecureDelegation {
     constructor(secureDelegation: ISecureDelegation) {
         this.delegator = secureDelegation.delegator

@@ -19,6 +19,7 @@ import {
     ListOfIds,
     PaginatedListContact,
     Patient as PatientDto,
+    Service,
     Service as ServiceDto,
     ServiceLink,
     SubContact,
@@ -163,7 +164,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
     }
 
     async extractPatientId(service: DSService): Promise<string | undefined> {
-        return (await this.cryptoApi.entities.owningEntityIdsOf(this.serviceMapper.toDto(service)!, undefined))[0]
+        return (await this.cryptoApi.xapi.owningEntityIdsOf({ entity: this.serviceMapper.toDto(service), type: 'Contact' }, undefined))[0]
     }
 
     async filterBy(filter: CommonFilter<ServiceDto>, nextServiceId?: string, limit?: number): Promise<PaginatedList<DSService>> {
@@ -323,7 +324,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         }
     }
 
-    async subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[], filter: CommonFilter<ServiceDto>, eventFired: (service: DSService) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
+    async subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<ServiceDto>, eventFired: (service: DSService) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
         const currentUser = await this.userApi.getCurrentUser()
         return subscribeToEntityEvents(
             iccRestApiPath(this.basePath),
@@ -373,7 +374,6 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
                     externalUuid: documentExternalUuid,
                     hash: ua2hex(await this.api.baseApi.cryptoApi.primitives.sha256(body)),
                     size: body.byteLength,
-                    mainUti: UtiDetector.getUtiFor(documentName),
                 }),
                 {
                     additionalDelegates: dataOwnersWithAccessInfo.permissionsByDataOwnerId,
@@ -402,7 +402,8 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
             // Do not delete existing `Document` entity, even if existing: services are versioned
 
             // Add attachment to document
-            const docWithAttachment = await this.api.baseApi.documentApi.encryptAndSetDocumentAttachment(createdDocument, body)
+            const mainUti = UtiDetector.getUtiFor(documentName)
+            const docWithAttachment = await this.api.baseApi.documentApi.encryptAndSetDocumentAttachment(createdDocument, body, mainUti ? [mainUti] : undefined)
 
             return this.documentMapper.toDomain(docWithAttachment)
         } catch (e) {
@@ -575,6 +576,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
             delegations: contact.delegations,
             encryptionKeys: contact.encryptionKeys,
             contactId: contact.id,
+            securityMetadata: contact.securityMetadata,
         }
     }
 
@@ -609,6 +611,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
             delete baseContact.encryptionKeys
             delete baseContact.secretForeignKeys
             delete baseContact.cryptedForeignKeys
+            delete baseContact.securityMetadata
             dataOwnersWithAccess = await this.contactApi.getDataOwnersWithAccessTo(existingContact)
         } else {
             baseContact = { id: this.cryptoApi.primitives.randomUuid() }

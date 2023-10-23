@@ -74,7 +74,7 @@ export interface PatientApi extends PatientLikeApi<Patient> {
      * @deprecated Use {@link PatientApi.subscribeToEvents} instead.
      *
      * Opens a WebSocket Connection in order to receive all the Patients corresponding to specific filter criteria.
-     * @param eventTypes Type of event you would like to listen. It can be CREATE, UPDATE or DELETE
+     * @param eventTypes Type of event you would like to listen. It can be CREATE or UPDATE
      * @param filter Filter criteria to filter to the Patients you would like to receive
      * @param eventFired Action applied each time you receive a Patient through the WebSocket
      * @param options Options to configure the WebSocket.
@@ -84,7 +84,7 @@ export interface PatientApi extends PatientLikeApi<Patient> {
      *    - connectionRetryIntervalInMs : How long base interval will be between two retry. The retry attempt is exponential and using a random value (connectionRetryIntervalMs * (random between 1 and 2))^nbAttempts)
      */
     subscribeToPatientEvents(
-        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
+        eventTypes: ('CREATE' | 'UPDATE')[],
         filter: CommonFilter<PatientDto>,
         eventFired: (patient: Patient) => Promise<void>,
         options?: {
@@ -134,7 +134,7 @@ class PatientApiImpl extends PatientLikeApiImpl<Patient> implements PatientApi {
     }
 
     subscribeToPatientEvents(
-        eventTypes: ('CREATE' | 'UPDATE' | 'DELETE')[],
+        eventTypes: ('CREATE' | 'UPDATE')[],
         filter: CommonFilter<PatientDto>,
         eventFired: (patient: Patient) => Promise<void>,
         options?: {

@@ -69,7 +69,7 @@ describe('Notification mapper test', () => {
         const newNotification = new Notification({
             ...commonOptions,
             properties: new Set(commonOptions.properties),
-            type: NotificationTypeEnum.KEY_PAIR_UPDATE,
+            type: NotificationTypeEnum.KeyPairUpdate,
             systemMetaData: new SystemMetaDataEncrypted({
                 delegations: mapOf({ TEST_ID: new Set([new Delegation({ owner: uuid(), delegatedTo: uuid() })]) }),
                 encryptionKeys: mapOf({ TEST_KEY: new Set([new Delegation({ owner: uuid(), delegatedTo: uuid() })]) }),
@@ -84,7 +84,7 @@ describe('Notification mapper test', () => {
     it('MaintenanceTask to Notification - Success', () => {
         const newTask = new MaintenanceTask({
             ...commonOptions,
-            taskType: NotificationTypeEnum.NEW_USER_OWN_DATA_ACCESS,
+            taskType: NotificationTypeEnum.NewUserOwnDataAccess,
             delegations: { TEST_ID: [new Delegation({ owner: uuid(), delegatedTo: uuid() })] },
             encryptionKeys: { TEST_KEY: [new Delegation({ owner: uuid(), delegatedTo: uuid() })] },
         })
@@ -94,15 +94,17 @@ describe('Notification mapper test', () => {
         assertNotificationIsEquivalentToMaintenanceTask(newNotification, newTask)
     })
 
-    it('If MaintenanceTask type is not in notificationTypeEnum, type OTHER is set in Notification', () => {
+    it('If MaintenanceTask type is not in notificationTypeEnum, type OTHER is set in Notification', async () => {
         const newTask = new MaintenanceTask({
             id: uuid(),
             taskType: 'THIS DOES NOT BELONG TO THE ENUM',
         })
         assert(newTask)
-        const newNotification = mapMaintenanceTaskToNotification(newTask)
-        assert(newNotification)
-        assert(newNotification.id === newTask.id)
-        assert(newNotification.type === NotificationTypeEnum.OTHER)
+        await Promise.resolve()
+            .then(() => mapMaintenanceTaskToNotification(newTask))
+            .then(
+                () => assert(false),
+                (e) => assert(e.message.includes('THIS DOES NOT BELONG TO THE ENUM')),
+            )
     })
 })

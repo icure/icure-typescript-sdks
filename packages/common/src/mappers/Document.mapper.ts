@@ -1,11 +1,12 @@
 import { Document } from '../models/Document.model'
-import { CodeStub, DataAttachment, DeletedAttachment, Document as DocumentDto, DocumentTemplate } from '@icure/api'
+import { CodeStub, DataAttachment, DeletedAttachment, Document as DocumentDto, DocumentTemplate, SecurityMetadata as SecurityMetadataDto } from '@icure/api'
 import { Delegation } from '../models/Delegation.model'
 import DocumentLocationEnum = DocumentDto.DocumentLocationEnum
 import DocumentTypeEnum = DocumentTemplate.DocumentTypeEnum
 import DocumentStatusEnum = DocumentDto.DocumentStatusEnum
-import { SecurityMetadata } from '../models/SecurityMetadata.model'
 import { forceUuid } from '../utils/uuidUtils'
+import { toCryptedForeignKeys, toDelegations, toEncryptedSelf, toEncryptionKeys, toSecretForeignKeys, toSecurityMetadataDto, toSystemMetaDataEncrypted } from './SystemMetaData.mapper'
+import { SystemMetaDataEncrypted } from '../models/SystemMetaDataEncrypted.model'
 
 function toDocumentDtoId(domain: Document): string {
     return forceUuid(domain.id)
@@ -128,27 +129,27 @@ function toDocumentDtoDecryptedAttachment(domain: Document): ArrayBuffer | undef
 }
 
 function toDocumentDtoSecretForeignKeys(domain: Document): string[] | undefined {
-    return undefined
+    return toSecretForeignKeys(domain.systemMetaData)
 }
 
 function toDocumentDtoCryptedForeignKeys(domain: Document): { [key: string]: Delegation[] } | undefined {
-    return undefined
+    return toCryptedForeignKeys(domain.systemMetaData)
 }
 
 function toDocumentDtoDelegations(domain: Document): { [key: string]: Delegation[] } | undefined {
-    return undefined
+    return toDelegations(domain.systemMetaData)
 }
 
 function toDocumentDtoEncryptionKeys(domain: Document): { [key: string]: Delegation[] } | undefined {
-    return undefined
+    return toEncryptionKeys(domain.systemMetaData)
 }
 
 function toDocumentDtoEncryptedSelf(domain: Document): string | undefined {
-    return undefined
+    return toEncryptedSelf(domain.systemMetaData)
 }
 
-function toDocumentDtoSecurityMetadata(domain: Document): SecurityMetadata | undefined {
-    return undefined
+function toDocumentDtoSecurityMetadata(domain: Document): SecurityMetadataDto | undefined {
+    return toSecurityMetadataDto(domain.systemMetaData)
 }
 
 function toDocumentId(dto: DocumentDto): string {
@@ -219,6 +220,10 @@ function toDocumentAttachmentId(dto: DocumentDto): string | undefined {
     return dto.attachmentId
 }
 
+function toDocumentSystemMetaData(dto: DocumentDto): SystemMetaDataEncrypted | undefined {
+    return toSystemMetaDataEncrypted(dto)
+}
+
 export function mapDocumentDtoToDocument(dto: DocumentDto): Document {
     return new Document({
         id: toDocumentId(dto),
@@ -238,6 +243,7 @@ export function mapDocumentDtoToDocument(dto: DocumentDto): Document {
         size: toDocumentSize(dto),
         hash: toDocumentHash(dto),
         attachmentId: toDocumentAttachmentId(dto),
+        systemMetaData: toDocumentSystemMetaData(dto),
     })
 }
 
@@ -278,5 +284,6 @@ export function mapDocumentToDocumentDto(domain: Document): DocumentDto {
         delegations: toDocumentDtoDelegations(domain),
         encryptionKeys: toDocumentDtoEncryptionKeys(domain),
         encryptedSelf: toDocumentDtoEncryptedSelf(domain),
+        securityMetadata: toDocumentDtoSecurityMetadata(domain),
     })
 }
