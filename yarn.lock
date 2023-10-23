@@ -1556,9 +1556,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@icure/api@npm:8.0.12":
-  version: 8.0.12
-  resolution: "@icure/api@npm:8.0.12"
+"@icure/api@npm:8.0.0-RC.2":
+  version: 8.0.0-RC.2
+  resolution: "@icure/api@npm:8.0.0-RC.2"
   dependencies:
     browser-or-node: ^2.1.1
     date-fns: ^2.23.0
@@ -1568,7 +1568,7 @@ __metadata:
     text-encoding: ^0.7.0
     uuid: ^8.3.2
     uuid-encoder: ^1.1.0
-  checksum: 7d967ade393663be5ae2063d3ce3363bccdc0ce02e3e142a45425ea78d46c4e2fec69d94cc14b0c71707a8f951372d8e1bc3dad370b6dd0f6774b80f793fe41a
+  checksum: 76ba701aaac0ff8fe8c2ce8736259efed149dcaf652d7aa4a4d80375bfc60267b7b72b0470610e0a766a0f2249e08dba4c2f5b8d9959124b835a3a32c30bb68d
   languageName: node
   linkType: hard
 
@@ -4640,7 +4640,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "icure-typescript-sdks@workspace:."
   dependencies:
-    "@icure/api": 8.0.12
+    "@icure/api": 8.0.0-RC.2
     "@icure/test-setup": ^0.0.61
     nx: 16.3.2
     prettier: ^2.8.8
