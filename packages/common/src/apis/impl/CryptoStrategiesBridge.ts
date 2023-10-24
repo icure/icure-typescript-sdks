@@ -76,8 +76,8 @@ export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithTyp
                 },
             ]),
         )
-        const sha1Keys = hexPublicKeysWithSha1Of(selfData.dataOwner)
-        const sha256Keys = hexPublicKeysWithSha256Of(selfData.dataOwner)
+        const sha1Keys = hexPublicKeysWithSha1Of(selfData.dataOwner.dataOwner)
+        const sha256Keys = hexPublicKeysWithSha256Of(selfData.dataOwner.dataOwner)
 
         return Promise.resolve({
             ...recoveredEmpty,
