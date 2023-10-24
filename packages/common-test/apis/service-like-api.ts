@@ -1,7 +1,7 @@
 import 'isomorphic-fetch'
 import { getEnvironmentInitializer, hcp1Username, hcp2Username, hcp3Username, patUsername, setLocalStorage } from '../test-utils'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
-import { IccDocumentApi, Service, sleep, ua2utf8, utf8_2ua } from '@icure/api'
+import { IccDocumentApi, Service, sleep, SubscriptionOptions, ua2utf8, utf8_2ua } from '@icure/api'
 import { BasicAuthenticationProvider } from '@icure/api/icc-x-api/auth/AuthenticationProvider'
 import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, forceUuid, ServiceLikeApiImpl } from '@icure/typescript-common'
 import { BaseApiTestContext, WithHelementApi, WithPatientApi, WithServiceApi } from './TestContexts'
