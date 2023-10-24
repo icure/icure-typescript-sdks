@@ -395,5 +395,38 @@ export function testMessageLikeApi<
             expect(shouldBeEncryptedMessage.subject).toBeUndefined()
             expect(shouldBeEncryptedMessage.encryptedSelf).toBeDefined()
         })
+
+        it('should not be able to send a message after leaving the Topic', async () => {
+            const { api: masterApi, user: masterUser } = await ctx.masterApi(env)
+            const { api: hcp2Api, user: hcp2User } = await ctx.apiForEnvUser(env, hcp2Username)
+
+            const topic = await createTopic(masterApi, masterUser, hcp2User)
+            const topicDto = ctx.toTopicDto(topic)
+            expect(topicDto.id).toBeTruthy()
+
+            const messageCreationResult = await ctx.messageApi(masterApi).create(topic, 'Message content')
+
+            expect(messageCreationResult).toBeTruthy()
+
+            const createdMessage = (messageCreationResult as any).createdMessage as DSMessage
+            const messageDto = ctx.toMessageDto(createdMessage)
+
+            const gotMessage = await ctx.messageApi(hcp2Api).get(messageDto.id!)
+
+            expect(gotMessage).toBeTruthy()
+
+            const gotMessageDto = ctx.toMessageDto(gotMessage)
+            expect(gotMessageDto.id).toEqual(messageDto.id)
+            expect(gotMessageDto).toEqual(messageDto)
+
+            const updatedTopic = await ctx.topicApi(hcp2Api).leave(topic)
+            expect(updatedTopic).toBeTruthy()
+
+            const updatedTopicDto = ctx.toTopicDto(updatedTopic)
+            expect(updatedTopicDto.id).toEqual(topicDto.id)
+            expect(updatedTopicDto.activeParticipants).not.toEqual(topicDto.activeParticipants)
+
+            await expect(ctx.messageApi(hcp2Api).create(topic, 'Message content')).rejects.toThrow()
+        })
     })
 }
