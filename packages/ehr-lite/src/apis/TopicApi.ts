@@ -11,9 +11,14 @@ import { mapConditionToHealthElement, mapHealthElementToCondition } from '../map
 import { DataOwnerWithType } from '../models/DataOwner.model'
 import DataOwnerMapper from '../mappers/DataOwner.mapper'
 
-export interface TopicApi extends TopicLikeApi<Topic, Practitioner, Patient, Observation, Condition> {}
+export interface TopicApi extends TopicLikeApi<Topic, Practitioner, Patient, Observation, Condition> {
+    addObservations(topic: Topic, observations: Reference<Observation>[]): Promise<Topic>
+    addConditions(topic: Topic, conditions: Reference<Condition>[]): Promise<Topic>
+    removeObservations(topic: Topic, observations: Reference<Observation>[]): Promise<Topic>
+    removeConditions(topic: Topic, conditions: Reference<Condition>[]): Promise<Topic>
+}
 
-class TopicApiImpl extends TopicLikeApiImpl<Topic, Practitioner, Patient, Observation, Condition, DataOwnerWithType> {
+class TopicApiImpl extends TopicLikeApiImpl<Topic, Practitioner, Patient, Observation, Condition, DataOwnerWithType> implements TopicApi {
     async addObservations(topic: Topic, observations: Reference<Observation>[]): Promise<Topic> {
         return await super.addServices(topic, observations)
     }
