@@ -6,6 +6,7 @@ export * from './mappers/mapper'
 export * from './filters/filters'
 export * from './utils/utils'
 export * from './apis/apis'
+export * from './types'
 
 export { StorageFacade, KeyStorageFacade, LocalStorageImpl, KeyStorageImpl } from '@icure/api'
 

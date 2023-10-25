@@ -1,4 +1,4 @@
-import { CommonApi, CryptoStrategies, mapTopicDtoToTopic, mapTopicToTopicDto, Topic, TopicLikeApi, TopicLikeApiImpl } from '@icure/typescript-common'
+import { CommonApi, CryptoStrategies, mapTopicDtoToTopic, mapTopicToTopicDto, Reference, Topic, TopicLikeApi, TopicLikeApiImpl } from '@icure/typescript-common'
 import { Practitioner } from '../models/Practitioner.model'
 import { Patient } from '../models/Patient.model'
 import { Observation } from '../models/Observation.model'
@@ -13,7 +13,39 @@ import DataOwnerMapper from '../mappers/DataOwner.mapper'
 
 export interface TopicApi extends TopicLikeApi<Topic, Practitioner, Patient, Observation, Condition> {}
 
-class TopicApiImpl extends TopicLikeApiImpl<Topic, Practitioner, Patient, Observation, Condition, DataOwnerWithType> {}
+class TopicApiImpl extends TopicLikeApiImpl<Topic, Practitioner, Patient, Observation, Condition, DataOwnerWithType> {
+    async addObservations(topic: Topic, observations: Reference<Observation>[]): Promise<Topic> {
+        return await super.addServices(topic, observations)
+    }
+
+    async addConditions(topic: Topic, conditions: Reference<Condition>[]): Promise<Topic> {
+        return await super.addHealthElements(topic, conditions)
+    }
+
+    override async addServices(topic: Topic, services: Reference<Observation>[]): Promise<Topic> {
+        throw new Error('You should not use this method, use addObservations instead')
+    }
+
+    override async addHealthElements(topic: Topic, healthElements: Reference<Condition>[]): Promise<Topic> {
+        throw new Error('You should not use this method, use addConditions instead')
+    }
+
+    async removeObservations(topic: Topic, observations: Reference<Observation>[]): Promise<Topic> {
+        return await super.removeServices(topic, observations)
+    }
+
+    async removeConditions(topic: Topic, conditions: Reference<Condition>[]): Promise<Topic> {
+        return await super.removeHealthElements(topic, conditions)
+    }
+
+    override async removeServices(topic: Topic, services: Reference<Observation>[]): Promise<Topic> {
+        throw new Error('You should not use this method, use removeObservations instead')
+    }
+
+    override async removeHealthElements(topic: Topic, healthElements: Reference<Condition>[]): Promise<Topic> {
+        throw new Error('You should not use this method, use removeConditions instead')
+    }
+}
 
 export const topicApi = (api: CommonApi, cryptoStrategies: CryptoStrategies<DataOwnerWithType>): TopicApi =>
     new TopicApiImpl(

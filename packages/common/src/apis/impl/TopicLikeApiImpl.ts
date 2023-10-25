@@ -195,9 +195,9 @@ export class TopicLikeApiImpl<DSTopic, DSHcp, DSPatient, DSService, DSHealthElem
         return this.topicMapper.toDomain(await this.topicApi.removeParticipant({ dataOwnerId: this.getRefIds([participant], (hcp) => this.hcpMapper.toDto(hcp).id!)[0] }, this.topicMapper.toDto(topic).id!))
     }
 
-    async removeServices(topic: DSTopic, services: DSService[]): Promise<DSTopic> {
+    async removeServices(topic: DSTopic, services: Reference<DSService>[]): Promise<DSTopic> {
         const previousTopic = this.topicMapper.toDto(topic)
-        const servicesIds = services.map((service) => this.serviceMapper.toDto(service).id!)
+        const servicesIds = services.map((service) => (typeof service === 'string' ? service : this.serviceMapper.toDto(service).id!))
         return this.topicMapper.toDomain(
             await this.topicApi.modifyTopic(
                 new TopicDto({
@@ -208,9 +208,9 @@ export class TopicLikeApiImpl<DSTopic, DSHcp, DSPatient, DSService, DSHealthElem
         )
     }
 
-    async removeHealthElements(topic: DSTopic, healthElements: DSHealthElement[]): Promise<DSTopic> {
+    async removeHealthElements(topic: DSTopic, healthElements: Reference<DSHealthElement>[]): Promise<DSTopic> {
         const previousTopic = this.topicMapper.toDto(topic)
-        const healthElementsIds = healthElements.map((healthElement) => this.healthElementMapper.toDto(healthElement).id!)
+        const healthElementsIds = healthElements.map((healthElement) => (typeof healthElement === 'string' ? healthElement : this.healthElementMapper.toDto(healthElement).id!))
         return this.topicMapper.toDomain(
             await this.topicApi.modifyTopic(
                 new TopicDto({

@@ -85,7 +85,7 @@ export interface TopicLikeApi<DSTopic, DSHcp, DSPatient, DSService, DSHealthElem
      *
      * @returns the updated topic
      */
-    removeServices(topic: DSTopic, services: DSService[]): Promise<DSTopic>
+    removeServices(topic: DSTopic, services: Reference<DSService>[]): Promise<DSTopic>
 
     /**
      * Remove a healthElements from a topic
@@ -94,7 +94,7 @@ export interface TopicLikeApi<DSTopic, DSHcp, DSPatient, DSService, DSHealthElem
      *
      * @returns the updated topic
      */
-    removeHealthElements(topic: DSTopic, healthElements: DSHealthElement[]): Promise<DSTopic>
+    removeHealthElements(topic: DSTopic, healthElements: Reference<DSHealthElement>[]): Promise<DSTopic>
 
     /**
      * Unsubscribe the current user from a topic, the user will not receive any more messages from this topic neither will be able to send messages to it
