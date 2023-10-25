@@ -6,14 +6,14 @@ import {
     IccMessageXApi,
     IccUserXApi,
     Message as MessageDto,
+    MessageAttachment as MessageAttachmentDto,
     MessageReadStatus,
     MessagesReadStatusUpdate,
     retry,
     SecureDelegation,
+    SubscriptionOptions,
     Topic as TopicDto,
     User as UserDto,
-    MessageAttachment as MessageAttachmentDto,
-    SubscriptionOptions,
 } from '@icure/api'
 import { PaginatedList } from '../../models/PaginatedList.model'
 import { AttachmentCreationProgress, AttachmentCreationStep, AttachmentInput, MessageCreationProgress, MessageCreationResult, MessageCreationStep, MessageLikeApi } from '../MessageLikeApi'
@@ -26,7 +26,6 @@ import { FilterMapper } from '../../mappers/Filter.mapper'
 import { ErrorHandler } from '../../services/ErrorHandler'
 import { FilterChainMessage } from '@icure/api/icc-api/model/FilterChainMessage'
 import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
-
 import AccessLevelEnum = SecureDelegation.AccessLevelEnum
 import DocumentLocationEnum = DocumentDto.DocumentLocationEnum
 
@@ -254,52 +253,63 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
                 return this.handleMessageCreation(attachDocumentToMessageResult, currentUser)
             }
             case MessageCreationStep.MESSAGE_ATTACHED: {
-                try {
-                    const createdMessage = await this.messageApi.encryptAndCreateMessage(creationProgress.partialMessage)
-
-                    const attachmentCreationResults = (
-                        creationProgress as Extract<
-                            MessageCreationProgress,
-                            {
-                                step: MessageCreationStep.MESSAGE_ATTACHED
-                            }
-                        >
-                    ).createdAttachments
-                    const bodyAttachment = (
-                        attachmentCreationResults as Extract<
-                            AttachmentCreationProgress,
-                            {
-                                step: AttachmentCreationStep.DOCUMENT_ATTACHED
-                            }
-                        >[]
-                    ).find((attachment) => attachment.attachment.documentLocation === DocumentLocationEnum.Body)?.attachment
-
-                    if (bodyAttachment !== undefined) {
-                        return {
-                            createdMessage: this.messageMapper.toDomain({
-                                ...createdMessage,
-                                subject: this.decoder.decode(bodyAttachment.data),
-                            }),
-                        }
-                    }
-
-                    return {
-                        createdMessage: this.messageMapper.toDomain(createdMessage),
-                    }
-                } catch (e) {
-                    console.error(e)
-
-                    return {
-                        creationProgress: {
-                            ...creationProgress,
-                        },
-                    }
+                return this.handleMessageCreation(await this.createMessage(creationProgress), currentUser)
+            }
+            case MessageCreationStep.MESSAGE_CREATED: {
+                return {
+                    createdMessage: this.messageMapper.toDomain(creationProgress.createdMessage),
                 }
             }
 
             default: {
                 throw new Error(`Unknown message creation step: ${creationProgress}`)
             }
+        }
+    }
+
+    private async createMessage(creationProgress: MessageCreationProgress): Promise<MessageCreationProgress> {
+        if (creationProgress.step !== MessageCreationStep.MESSAGE_ATTACHED) {
+            throw this.errorHandler.createErrorWithMessage(`createMessage should only be called with MessageCreationProgress at ${MessageCreationStep.MESSAGE_ATTACHED} step and not ${creationProgress.step} step`)
+        }
+
+        try {
+            const createdMessage = await this.messageApi.encryptAndCreateMessage(creationProgress.partialMessage)
+
+            const attachmentCreationResults = (
+                creationProgress as Extract<
+                    MessageCreationProgress,
+                    {
+                        step: MessageCreationStep.MESSAGE_ATTACHED
+                    }
+                >
+            ).createdAttachments
+            const bodyAttachment = (
+                attachmentCreationResults as Extract<
+                    AttachmentCreationProgress,
+                    {
+                        step: AttachmentCreationStep.DOCUMENT_ATTACHED
+                    }
+                >[]
+            ).find((attachment) => attachment.attachment.documentLocation === DocumentLocationEnum.Body)?.attachment
+
+            if (bodyAttachment !== undefined) {
+                return {
+                    step: MessageCreationStep.MESSAGE_CREATED,
+                    createdMessage: {
+                        ...createdMessage,
+                        subject: this.decoder.decode(bodyAttachment.data),
+                    },
+                }
+            }
+
+            return {
+                step: MessageCreationStep.MESSAGE_CREATED,
+                createdMessage: createdMessage,
+            }
+        } catch (e) {
+            console.error(e)
+
+            return creationProgress
         }
     }
 
@@ -320,57 +330,58 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
      * @returns MessageCreationProgress the progress of the message creation
      */
     private async initialiseMessage(currentUser: UserDto, messageCreationProgress: MessageCreationProgress): Promise<MessageCreationProgress> {
-        if (messageCreationProgress.step === MessageCreationStep.MESSAGE_INITIALISATION) {
-            const topic = messageCreationProgress.topic
-            const content = messageCreationProgress.content
-            const attachments = messageCreationProgress.attachments
-            const delegates = messageCreationProgress.delegates
+        if (messageCreationProgress.step !== MessageCreationStep.MESSAGE_INITIALISATION) {
+            throw this.errorHandler.createErrorWithMessage(`initialiseMessage should only be called with MessageCreationProgress at ${MessageCreationStep.MESSAGE_INITIALISATION} step and not ${messageCreationProgress.step} step`)
+        }
 
-            try {
-                const newMessageInstance = await this.messageApi.newInstanceWithPatient(
-                    currentUser,
-                    null,
-                    new MessageDto({
-                        subject: content?.substring(0, this.characterLimit),
-                        sent: +new Date(),
-                        transportGuid: topic!.id,
-                        readStatus: Object.fromEntries(
-                            Object.entries(topic?.activeParticipants ?? {}).map(([participantId]) => [
-                                participantId,
-                                new MessageReadStatus({
-                                    read: false,
-                                    time: null,
-                                }),
-                            ]),
-                        ),
-                    }),
-                    {
-                        additionalDelegates: delegates,
-                    },
-                )
+        const topic = messageCreationProgress.topic
+        const content = messageCreationProgress.content
+        const attachments = messageCreationProgress.attachments
+        const delegates = messageCreationProgress.delegates
 
-                return {
-                    step: MessageCreationStep.MESSAGE_INITIALISED,
-                    partialMessage: newMessageInstance,
-                    remainingAttachments: attachments?.map((attachment) => ({
-                        step: AttachmentCreationStep.DOCUMENT_INITIALISATION,
-                        attachment,
-                    })),
-                    delegates: delegates,
-                }
-            } catch (e) {
-                console.error(e)
+        try {
+            const newMessageInstance = await this.messageApi.newInstanceWithPatient(
+                currentUser,
+                null,
+                new MessageDto({
+                    subject: content?.substring(0, this.characterLimit),
+                    sent: +new Date(),
+                    transportGuid: topic!.id,
+                    readStatus: Object.fromEntries(
+                        Object.entries(topic?.activeParticipants ?? {}).map(([participantId]) => [
+                            participantId,
+                            new MessageReadStatus({
+                                read: false,
+                                time: null,
+                            }),
+                        ]),
+                    ),
+                }),
+                {
+                    additionalDelegates: delegates,
+                },
+            )
 
-                return {
-                    step: MessageCreationStep.MESSAGE_INITIALISATION,
-                    topic: topic,
-                    content: content,
-                    attachments: attachments,
-                    delegates: delegates,
-                }
+            return {
+                step: MessageCreationStep.MESSAGE_INITIALISED,
+                partialMessage: newMessageInstance,
+                remainingAttachments: attachments?.map((attachment) => ({
+                    step: AttachmentCreationStep.DOCUMENT_INITIALISATION,
+                    attachment,
+                })),
+                delegates: delegates,
+            }
+        } catch (e) {
+            console.error(e)
+
+            return {
+                step: MessageCreationStep.MESSAGE_INITIALISATION,
+                topic: topic,
+                content: content,
+                attachments: attachments,
+                delegates: delegates,
             }
         }
-        return messageCreationProgress
     }
 
     /**
@@ -393,46 +404,47 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
      * @returns MessageCreationProgress the progress of the message creation
      */
     private async attachDocumentsToMessage(messageCreationProgress: MessageCreationProgress, currentUser: UserDto): Promise<MessageCreationProgress> {
-        if (messageCreationProgress.step === MessageCreationStep.MESSAGE_INITIALISED) {
-            const newMessageInstance = messageCreationProgress.partialMessage
-            const documentAttachments = messageCreationProgress.remainingAttachments
-            const delegates = messageCreationProgress.delegates
-
-            const attachmentCreationProgresses = await this.createAttachedDocuments(currentUser, newMessageInstance, documentAttachments ?? [], delegates)
-
-            if (attachmentCreationProgresses.some(({ step }) => step !== AttachmentCreationStep.DOCUMENT_ATTACHED)) {
-                return {
-                    ...messageCreationProgress,
-                    remainingAttachments: attachmentCreationProgresses,
-                } satisfies MessageCreationProgress
-            }
-
-            const createdAttachments = attachmentCreationProgresses.reduce(
-                (acc, progress) => {
-                    if (progress.step === AttachmentCreationStep.DOCUMENT_ATTACHED) {
-                        acc.push(progress)
-                    }
-                    return acc
-                },
-                [] as Array<Extract<AttachmentCreationProgress, { step: AttachmentCreationStep.DOCUMENT_ATTACHED }>>,
-            )
-
-            return {
-                step: MessageCreationStep.MESSAGE_ATTACHED,
-                partialMessage: {
-                    ...newMessageInstance,
-                    messageAttachments: createdAttachments.map(
-                        (value) =>
-                            new MessageAttachmentDto({
-                                type: value.attachment.documentLocation.toLowerCase(),
-                                ids: [value.document.id!],
-                            }),
-                    ),
-                },
-                createdAttachments: attachmentCreationProgresses,
-            }
+        if (messageCreationProgress.step !== MessageCreationStep.MESSAGE_INITIALISED) {
+            throw this.errorHandler.createErrorWithMessage(`attachDocumentsToMessage should only be called with MessageCreationProgress at ${MessageCreationStep.MESSAGE_INITIALISED} step and not ${messageCreationProgress.step} step`)
         }
-        return messageCreationProgress
+
+        const newMessageInstance = messageCreationProgress.partialMessage
+        const documentAttachments = messageCreationProgress.remainingAttachments
+        const delegates = messageCreationProgress.delegates
+
+        const attachmentCreationProgresses = await this.createAttachedDocuments(currentUser, newMessageInstance, documentAttachments ?? [], delegates)
+
+        if (attachmentCreationProgresses.some(({ step }) => step !== AttachmentCreationStep.DOCUMENT_ATTACHED)) {
+            return {
+                ...messageCreationProgress,
+                remainingAttachments: attachmentCreationProgresses,
+            } satisfies MessageCreationProgress
+        }
+
+        const createdAttachments = attachmentCreationProgresses.reduce(
+            (acc, progress) => {
+                if (progress.step === AttachmentCreationStep.DOCUMENT_ATTACHED) {
+                    acc.push(progress)
+                }
+                return acc
+            },
+            [] as Array<Extract<AttachmentCreationProgress, { step: AttachmentCreationStep.DOCUMENT_ATTACHED }>>,
+        )
+
+        return {
+            step: MessageCreationStep.MESSAGE_ATTACHED,
+            partialMessage: {
+                ...newMessageInstance,
+                messageAttachments: createdAttachments.map(
+                    (value) =>
+                        new MessageAttachmentDto({
+                            type: value.attachment.documentLocation.toLowerCase(),
+                            ids: [value.document.id!],
+                        }),
+                ),
+            },
+            createdAttachments: attachmentCreationProgresses,
+        }
     }
 
     /**

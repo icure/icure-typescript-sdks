@@ -98,6 +98,10 @@ export type MessageCreationProgress =
           createdAttachments: AttachmentCreationProgress[]
           partialMessage: MessageDto
       }
+    | {
+          step: MessageCreationStep.MESSAGE_CREATED
+          createdMessage: MessageDto
+      }
 
 /**
  * @internal
