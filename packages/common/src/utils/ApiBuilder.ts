@@ -61,11 +61,6 @@ export abstract class ApiBuilder<DSCryptoStrategies extends CryptoStrategies<any
         return this
     }
 
-    withMessageCharactersLimit(limit: number): this {
-        this.messageCharactersLimit = limit
-        return this
-    }
-
     abstract build(): Promise<DSApi>
 }
 

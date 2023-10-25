@@ -17,10 +17,23 @@ export class AnonymousEHRLiteApi extends CommonAnonymousApi<EHRLiteApi> {
         private readonly cryptoPrimitives: CryptoPrimitives,
         private readonly cryptoStrategies: CryptoStrategies<DataOwnerWithType>,
         authProcessInfo: { authProcessBySmsId: string; authProcessByEmailId?: string } | { authProcessBySmsId?: string; authProcessByEmailId: string },
+        private readonly _messageCharactersLimit: number | undefined,
     ) {
         super(msgGwUrl, msgGwSpecId, storage, keyStorage, undefined, undefined)
 
-        this._authenticationApi = authenticationApi(this._errorHandler, this._sanitizer, this._messageGatewayApi, iCureUrlPath, authProcessInfo.authProcessByEmailId, authProcessInfo.authProcessBySmsId, cryptoPrimitives.crypto, storage, keyStorage, this.cryptoStrategies)
+        this._authenticationApi = authenticationApi(
+            this._errorHandler,
+            this._sanitizer,
+            this._messageGatewayApi,
+            iCureUrlPath,
+            authProcessInfo.authProcessByEmailId,
+            authProcessInfo.authProcessBySmsId,
+            cryptoPrimitives.crypto,
+            storage,
+            keyStorage,
+            this.cryptoStrategies,
+            this._messageCharactersLimit,
+        )
     }
 
     get authenticationApi(): AuthenticationApi<EHRLiteApi> {
@@ -30,6 +43,11 @@ export class AnonymousEHRLiteApi extends CommonAnonymousApi<EHRLiteApi> {
 
 export namespace AnonymousEHRLiteApi {
     export class Builder extends AnonymousApiBuilder<CryptoStrategies<DataOwnerWithType>, AnonymousEHRLiteApi> {
+        withMessageCharactersLimit(limit: number): this {
+            this.messageCharactersLimit = limit
+            return this
+        }
+
         protected doBuild(props: {
             iCureBaseUrl: string
             msgGwUrl: string
@@ -44,8 +62,9 @@ export namespace AnonymousEHRLiteApi {
                       authProcessBySmsId?: string
                       authProcessByEmailId: string
                   }
+            messageCharactersLimit: number | undefined
         }): Promise<AnonymousEHRLiteApi> {
-            return Promise.resolve(new AnonymousEHRLiteApi(props.iCureBaseUrl, props.msgGwUrl, props.msgGwSpecId, props.storage, props.keyStorage, props.primitives, props.cryptoStrategies, props.authProcessInfo))
+            return Promise.resolve(new AnonymousEHRLiteApi(props.iCureBaseUrl, props.msgGwUrl, props.msgGwSpecId, props.storage, props.keyStorage, props.primitives, props.cryptoStrategies, props.authProcessInfo, props.messageCharactersLimit))
         }
     }
 }

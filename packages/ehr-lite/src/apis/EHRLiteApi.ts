@@ -71,7 +71,7 @@ export class EHRLiteApi extends CommonApi {
         this._practitionerApi = practitionerApi(this, _iCureBaseUrl)
 
         this._authenticationApi = this.messageGatewayApi
-            ? authenticationApi(this.errorHandler, this.sanitizer, this.messageGatewayApi, _iCureBaseUrl, _authProcessByEmailId, _authProcessBySmsId, _baseApi.cryptoApi.primitives.crypto, this._storage, this._keyStorage, _cryptoStrategies)
+            ? authenticationApi(this.errorHandler, this.sanitizer, this.messageGatewayApi, _iCureBaseUrl, _authProcessByEmailId, _authProcessBySmsId, _baseApi.cryptoApi.primitives.crypto, this._storage, this._keyStorage, _cryptoStrategies, this.messageCharactersLimit)
             : undefined
 
         this._messageFactory = messageFactory ?? iCureEHRLiteMessageFactory
@@ -182,6 +182,11 @@ export class EHRLiteApi extends CommonApi {
 
 export namespace EHRLiteApi {
     export class Builder extends AuthenticatedApiBuilder<EHRLiteCryptoStrategies, EHRLiteMessageFactory, EHRLiteApi> {
+        withMessageCharactersLimit(limit: number | undefined): this {
+            this.messageCharactersLimit = limit
+            return this
+        }
+
         constructor(initialisationApi?: EHRLiteApi) {
             super()
             if (initialisationApi) {
@@ -193,7 +198,7 @@ export namespace EHRLiteApi {
                 super.withKeyStorage(initialisationApi.keyStorage)
                 super.withCryptoStrategies(initialisationApi.cryptoStrategies)
                 super.withMessageFactory(initialisationApi.messageFactory)
-                super.withMessageCharactersLimit(initialisationApi.messageCharactersLimit)
+                this.withMessageCharactersLimit(initialisationApi.messageCharactersLimit)
             }
         }
 
