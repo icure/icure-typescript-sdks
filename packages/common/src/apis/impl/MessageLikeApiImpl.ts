@@ -52,7 +52,11 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
      * @param content
      * @param attachments
      */
-    async create(topic: Reference<DSTopic>, content?: string, attachments?: DSBinary[]): Promise<MessageCreationResult<DSMessage>> {
+    async create(topic: Reference<DSTopic>, content: string | undefined, attachments?: DSBinary[]): Promise<MessageCreationResult<DSMessage>> {
+        if (content === undefined && (attachments === undefined || attachments?.length === 0)) {
+            throw this.errorHandler.createErrorWithMessage('You cannot create an empty message')
+        }
+
         const currentUser = await this.userApi.getCurrentUser()
         const dataOwnerId = this.dataOwnerApi.getDataOwnerIdOf(currentUser)
         const topicDto = typeof topic === 'string' ? await this.topicApi.getTopic(topic) : await this.topicApi.getTopic(this.topicMapper.toDto(topic).id!)
