@@ -49,10 +49,9 @@ export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithTyp
         // if (keysData.length !== 1) {
         //     throw new Error('Internal error: data owners of MedTech api should have no hierarchy.')
         // }
-        const selfData = keysData[keysData.length - 1]
-        const missingKeys = selfData.unavailableKeys
-        const unverifiedKeys = selfData.unknownKeys
-        const { recoveredKeyPairs, verifiedKeys } = await this.dsStrategies.recoverAndVerifyKeys(this.dataOwnerMapper.toDomain(selfData.dataOwner), missingKeys, unverifiedKeys)
+        const { dataOwner: dataOwnerWithType, unknownKeys: unverifiedKeys, unavailableKeys: missingKeys } = keysData[keysData.length - 1]
+
+        const { recoveredKeyPairs, verifiedKeys } = await this.dsStrategies.recoverAndVerifyKeys(this.dataOwnerMapper.toDomain(dataOwnerWithType), missingKeys, unverifiedKeys)
         const missingKeysSet = new Set(missingKeys)
         const unverifiedKeysSet = new Set(unverifiedKeys)
         if (recoveredKeyPairs.some(({ publicKey }) => !missingKeysSet.has(publicKey))) {
@@ -76,12 +75,12 @@ export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithTyp
                 },
             ]),
         )
-        const sha1Keys = hexPublicKeysWithSha1Of(selfData.dataOwner)
-        const sha256Keys = hexPublicKeysWithSha256Of(selfData.dataOwner)
+        const sha1Keys = hexPublicKeysWithSha1Of(dataOwnerWithType?.dataOwner)
+        const sha256Keys = hexPublicKeysWithSha256Of(dataOwnerWithType?.dataOwner)
 
         return Promise.resolve({
             ...recoveredEmpty,
-            [selfData.dataOwner.dataOwner.id!]: {
+            [dataOwnerWithType.dataOwner.id!]: {
                 recoveredKeys: Object.fromEntries(
                     await Promise.all(
                         recoveredKeyPairs.map(async (x): Promise<[string, KeyPair<CryptoKey>]> => {
