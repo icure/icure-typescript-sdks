@@ -21,6 +21,13 @@ export interface MessageLikeApi<DSMessage, DSTopic, DSBinary> {
     create(topic: Reference<DSTopic>, content?: string, attachments?: DSBinary[]): Promise<MessageCreationResult<DSMessage>>
 
     /**
+     * Get the message from the MessageCreationResult if the message creation is finished, or null if the message creation is not finished
+     * @param messageCreationResult Progress of the message creation, returned by the {@link create} method when the message creation is not finished
+     * @returns the created message if the message creation is finished, or null if the message creation is not finished
+     */
+    getMessage(messageCreationResult: MessageCreationResult<DSMessage>): DSMessage | null
+
+    /**
      * Resume the creation of a message
      * @param creationProgress Progress of the message creation, returned by the {@link create} method when the message creation is not finished
      */

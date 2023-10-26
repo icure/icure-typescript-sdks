@@ -46,6 +46,13 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
         private readonly characterLimit: number,
     ) {}
 
+    getMessage(messageCreationResult: MessageCreationResult<DSMessage>): DSMessage | null {
+        if (messageCreationResult.hasOwnProperty('createdMessage')) {
+            return (messageCreationResult as Extract<MessageCreationResult<DSMessage>, { createdMessage: DSMessage }>).createdMessage
+        }
+        return null
+    }
+
     /**
      * @inheritDoc MessageLikeApi.create
      * @param topic
