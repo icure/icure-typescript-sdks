@@ -136,11 +136,11 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
     async loadMessageWithContent(message: DSMessage): Promise<DSMessage> {
         const messageDto = this.messageMapper.toDto(message)
 
-        if (messageDto.messageAttachments?.every((messageAttachment) => messageAttachment.type !== 'body')) {
+        const bodyAttachment = messageDto.messageAttachments?.find((messageAttachment) => messageAttachment.type === 'body')
+        if (!bodyAttachment) {
             return message
         }
 
-        const bodyAttachment = messageDto.messageAttachments?.find((messageAttachment) => messageAttachment.type === 'body')
         const bodyDocument = await this.documentApi.getDocument(bodyAttachment?.ids![0]!)
 
         if (bodyDocument !== undefined) {
