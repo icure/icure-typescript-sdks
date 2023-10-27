@@ -1,4 +1,4 @@
-import { Reference } from '../../types/Reference'
+import { Reference } from '../../types'
 import {
     Connection,
     Document as DocumentDto,
@@ -120,8 +120,8 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
 
     async delete(message: Reference<DSMessage>): Promise<string> {
         const messageId = typeof message === 'string' ? message : this.messageMapper.toDto(message).id!
-        const docIdentifiers = await this.messageApi.deleteMessages(messageId)
-        return docIdentifiers[0].rev!
+        const docIdentifiers = await this.messageApi.deleteMessage(messageId)
+        return docIdentifiers.rev!
     }
 
     async filterBy(filter: Filter<MessageDto>, nextMessageId?: string, limit?: number): Promise<PaginatedList<DSMessage>> {
@@ -409,7 +409,6 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
      *
      * @param messageCreationProgress the progress of the message creation
      * @param currentUser the current user
-     * @param delegates the delegates to be added to the documents
      * @private
      *
      * @returns MessageCreationProgress the progress of the message creation
