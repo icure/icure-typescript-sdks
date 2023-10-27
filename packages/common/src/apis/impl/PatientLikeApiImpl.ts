@@ -31,9 +31,7 @@ export class PatientLikeApiImpl<DSPatient> implements PatientLikeApi<DSPatient> 
             await this.patientApi.deletePatient(patientId).catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
             })
-        )
-            .map((docIdentifier) => docIdentifier.id!)
-            .pop()
+        ).id
 
         if (deletedId) {
             return deletedId

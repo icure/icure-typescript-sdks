@@ -34,8 +34,8 @@ export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements Maintenanc
             .getCurrentUser()
             .then((user) => {
                 if (!user) throw new Error('There is no user currently logged in. You must call this method from an authenticated MedTechApi')
-                return this.maintenanceTaskApi.deleteMaintenanceTaskWithUser(user, id).then((identifiers) => {
-                    const res = identifiers?.[0]?.id
+                return this.maintenanceTaskApi.deleteMaintenanceTaskWithUser(user, id).then((identifier) => {
+                    const res = identifier?.id
                     if (!res) throw new Error(`Could not delete notification with id ${id}`)
                     return res
                 })
