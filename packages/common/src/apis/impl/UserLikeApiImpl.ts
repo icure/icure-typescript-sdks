@@ -168,7 +168,7 @@ export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements Us
 
     async get(id: string): Promise<DSUser> {
         return this.userMapper.toDomain(
-            await this.userApi.getCurrentUser().catch((e) => {
+            await this.userApi.getUser(id).catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
             }),
         )!

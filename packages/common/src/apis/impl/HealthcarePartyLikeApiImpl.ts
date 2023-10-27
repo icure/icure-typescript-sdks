@@ -1,9 +1,8 @@
 import { PaginatedList } from '../../models/PaginatedList.model'
 import { HealthcarePartyLikeApi } from '../HealthcarePartyLikeApi'
 import { ErrorHandler } from '../../services/ErrorHandler'
-import { AbstractFilter, Connection, ConnectionImpl, FilterChainHealthcareParty, HealthcareParty, IccAuthApi, IccHcpartyXApi, subscribeToEntityEvents, SubscriptionOptions } from '@icure/api'
+import { Connection, ConnectionImpl, FilterChainHealthcareParty, HealthcareParty, IccAuthApi, IccHcpartyXApi, subscribeToEntityEvents, SubscriptionOptions } from '@icure/api'
 import { Mapper } from '../Mapper'
-import { firstOrNull } from '../../utils/functionalUtils'
 import { NoOpFilter } from '../../filters/dsl'
 import { FilterMapper } from '../../mappers/Filter.mapper'
 import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
@@ -38,11 +37,10 @@ export class HealthcarePartyLikeApiImpl<DSHealthcareParty> implements Healthcare
     }
 
     async delete(id: string): Promise<string> {
-        const deletedHcpRev = firstOrNull(
-            await this.healthcarePartyApi.deleteHealthcareParties(id).catch((e) => {
+        const deletedHcpRev = (await this.healthcarePartyApi.deleteHealthcareParty(id).catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
-            }),
-        )?.rev
+            },
+        ))?.rev
         if (deletedHcpRev) {
             return deletedHcpRev
         }

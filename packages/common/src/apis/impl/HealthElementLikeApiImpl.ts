@@ -6,9 +6,9 @@ import { ErrorHandler } from '../../services/ErrorHandler'
 import { firstOrNull } from '../../utils/functionalUtils'
 import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
 import { forceUuid } from '../../utils/uuidUtils'
-import { NoOpFilter } from '../../filters/dsl/filterDsl'
+import { NoOpFilter } from '../../filters/dsl'
 import { FilterMapper } from '../../mappers/Filter.mapper'
-import { HealthElementFilter } from '../../filters/dsl/HealthElementFilterDsl'
+import { HealthElementFilter } from '../../filters/dsl'
 import { CommonApi } from '../CommonApi'
 import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
 import { iccRestApiPath } from '@icure/api/icc-api/api/IccRestApiPath'
@@ -76,10 +76,9 @@ export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements Hea
     }
 
     async delete(id: string): Promise<string> {
-        const deletedHeRev = firstOrNull(
-            await this.heApi.deleteHealthElements(id).catch((e) => {
+        const deletedHeRev = (await this.heApi.deleteHealthElement(id).catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
-            }),
+            })
         )?.rev
         if (deletedHeRev) {
             return deletedHeRev
