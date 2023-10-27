@@ -145,7 +145,7 @@ export class ServiceFilterWithDataOwner<DSPatient> extends SortableFilterBuilder
                 healthcarePartyId: id,
                 healthElementIds: byHealthElementIds,
                 $type: 'ServiceByHealthcarePartyHealthElementIdsFilter',
-            } satisfies ServiceByHealthcarePartyHealthElementIdsFilter
+            }
         })
         this._builderAccumulator.addByIdsFilter(filter, 'healthElementIds')
         return this

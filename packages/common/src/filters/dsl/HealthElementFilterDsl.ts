@@ -104,7 +104,7 @@ export class HealthElementFilterWithDataOwner<DSPatient> extends SortableFilterB
                 codeType,
                 codeCode,
                 $type: 'HealthElementByHealthcarePartyTagCodeFilter',
-            } satisfies HealthElementByHealthcarePartyTagCodeFilter
+            }
         })
         this._builderAccumulator.addFilter(filter)
         return this
