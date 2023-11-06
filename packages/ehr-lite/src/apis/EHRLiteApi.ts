@@ -15,6 +15,7 @@ import dataOwnerMapper from '../mappers/DataOwner.mapper'
 import { authenticationApi, AuthenticationApi } from './AuthenticationApi'
 import { EHRLiteCryptoStrategies } from '../services/EHRLiteCryptoStrategies'
 import { EHRLiteMessageFactory, iCureEHRLiteMessageFactory } from '../services/EHRLiteMessageFactory'
+import { JwtBridgedAuthService } from '@icure/api/icc-x-api/auth/JwtBridgedAuthService'
 
 export class EHRLiteApi extends CommonApi {
     private readonly _codingApi: CodingApi
@@ -65,9 +66,26 @@ export class EHRLiteApi extends CommonApi {
 
         this._practitionerApi = practitionerApi(this, _iCureBaseUrl)
 
-        this._authenticationApi = this.messageGatewayApi
-            ? authenticationApi(this.errorHandler, this.sanitizer, this.messageGatewayApi, _iCureBaseUrl, _authProcessByEmailId, _authProcessBySmsId, _baseApi.cryptoApi.primitives.crypto, this._storage, this._keyStorage, _cryptoStrategies)
-            : undefined
+        const jwtAuthService = new JwtBridgedAuthService(this.baseApi.authApi, this.username, this.password)
+
+        this._authenticationApi =
+            this.messageGatewayApi && _msgGtwUrl && _msgGtwSpecId
+                ? authenticationApi(
+                      this.errorHandler,
+                      this.sanitizer,
+                      this.messageGatewayApi,
+                      _iCureBaseUrl,
+                      _authProcessByEmailId,
+                      _authProcessBySmsId,
+                      _baseApi.cryptoApi.primitives.crypto,
+                      this._storage,
+                      this._keyStorage,
+                      _cryptoStrategies,
+                      _msgGtwSpecId,
+                      _msgGtwUrl,
+                      jwtAuthService,
+                  )
+                : undefined
 
         this._messageFactory = messageFactory ?? iCureEHRLiteMessageFactory
 
