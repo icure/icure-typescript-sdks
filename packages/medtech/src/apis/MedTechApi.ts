@@ -73,7 +73,7 @@ export class MedTechApi extends CommonApi {
 
         const jwtAuthService = new JwtBridgedAuthService(this.baseApi.authApi, username, password)
         this._authenticationApi =
-            authProcessByEmailId && authProcessBySmsId && this._messageGatewayApi && msgGtwUrl && msgGtwSpecId
+            (authProcessByEmailId || authProcessBySmsId) && this._messageGatewayApi && msgGtwUrl && msgGtwSpecId
                 ? authenticationApi(this.errorHandler, this.sanitizer, this._messageGatewayApi, basePath, authProcessByEmailId, authProcessBySmsId, api.cryptoApi.primitives.crypto, this.storage, this.keyStorage, this.cryptoStrategies, jwtAuthService, msgGtwSpecId, msgGtwUrl)
                 : undefined
         this._dataSampleApi = dataSampleApi(this, basePath)
