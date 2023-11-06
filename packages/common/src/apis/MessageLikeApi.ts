@@ -29,9 +29,9 @@ export interface MessageLikeApi<DSMessage, DSTopic, DSBinary> {
 
     /**
      * Resume the creation of a message
-     * @param creationProgress Progress of the message creation, returned by the {@link create} method when the message creation is not finished
+     * @param messageCreationResult Progress of the message creation, returned by the {@link create} method when the message creation is not finished
      */
-    resumeMessageCreation(creationProgress: MessageCreationProgress): Promise<MessageCreationResult<DSMessage>>
+    resumeMessageCreation(messageCreationResult: MessageCreationResult<DSMessage>): Promise<MessageCreationResult<DSMessage>>
 
     /**
      * Load full content of the message if it is truncated

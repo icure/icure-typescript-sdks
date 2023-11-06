@@ -112,10 +112,15 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
         )
     }
 
-    async resumeMessageCreation(creationProgress: MessageCreationProgress): Promise<MessageCreationResult<DSMessage>> {
+    async resumeMessageCreation(messageCreationResult: MessageCreationResult<DSMessage>): Promise<MessageCreationResult<DSMessage>> {
         const currentUser = await this.userApi.getCurrentUser()
 
-        return await this.handleMessageCreation(creationProgress, currentUser)
+        if (messageCreationResult.hasOwnProperty('creationProgress')) {
+            const creationProgress = (messageCreationResult as Extract<MessageCreationResult<DSMessage>, { creationProgress: MessageCreationProgress }>).creationProgress
+            return await this.handleMessageCreation(creationProgress, currentUser)
+        }
+
+        return messageCreationResult
     }
 
     async delete(message: Reference<DSMessage>): Promise<string> {
