@@ -52,7 +52,7 @@ export function testAuthenticationApi<
             hcpId = env.dataOwnerDetails[hcp1Username].dataOwnerId
         }, 600_000)
 
-        it.skip("AnonymousMedTechApi shouldn't be instantiated if authServerUrl, authProcessId and specId aren't passed", async () => {
+        it("AnonymousMedTechApi shouldn't be instantiated if authServerUrl, authProcessId and specId aren't passed", async () => {
             if (shouldSkip()) return
             await expect(
                 Promise.resolve().then(() =>
@@ -82,7 +82,7 @@ export function testAuthenticationApi<
             expect(anonymousMedTechApi).toBeTruthy()
         })
 
-        it.skip("Impossible to use authenticationApi if msgGtwUrl, msgGtwSpecId and authProcessId haven't been provided", async () => {
+        it("Impossible to use authenticationApi if msgGtwUrl, msgGtwSpecId and authProcessId haven't been provided", async () => {
             if (shouldSkip()) return
             const user = env.dataOwnerDetails[hcp1Username]
             const storage = await testStorageForUser(user)
@@ -104,7 +104,7 @@ export function testAuthenticationApi<
             await expect(Promise.resolve().then(() => ctx.authenticationApi(api))).rejects.toBeInstanceOf(Error)
         })
 
-        it.skip('Cannot instantiate the API if no AuthProcessId is passed', async () => {
+        it('Cannot instantiate the API if no AuthProcessId is passed', async () => {
             if (shouldSkip()) return
             await expect(
                 Promise.resolve().then(() =>
@@ -119,7 +119,7 @@ export function testAuthenticationApi<
             ).rejects.toBeInstanceOf(Error)
         })
 
-        it.skip("User should not be able to start authentication if he didn't provide any email and mobilePhone", async () => {
+        it("User should not be able to start authentication if he didn't provide any email and mobilePhone", async () => {
             if (shouldSkip()) return
             // Given
             const anonymousMedTechApi = await ctx
@@ -136,7 +136,7 @@ export function testAuthenticationApi<
             await expect(anonymousMedTechApi.authenticationApi.startAuthentication(env!.recaptcha, undefined, undefined, 'Tom', 'Gideon', env!.hcpAuthProcessId, false)).rejects.toBeInstanceOf(Error)
         })
 
-        it.skip('User should not be able to start authentication if he provided an empty email and mobilePhone', async () => {
+        it('User should not be able to start authentication if he provided an empty email and mobilePhone', async () => {
             if (shouldSkip()) return
             // Given
             const anonymousMedTechApi = await ctx
@@ -153,7 +153,7 @@ export function testAuthenticationApi<
             await expect(anonymousMedTechApi.authenticationApi.startAuthentication(env!.recaptcha, '', '', 'Tom', 'Gideon', env!.patAuthProcessId, false)).rejects.toBeInstanceOf(Error)
         })
 
-        it.skip('User should not be able to start authentication if he provided an email but no AuthProcessByEmailId', async () => {
+        it('User should not be able to start authentication if he provided an email but no AuthProcessByEmailId', async () => {
             if (shouldSkip()) return
             // Given
             const anonymousMedTechApi = await ctx
@@ -169,7 +169,7 @@ export function testAuthenticationApi<
             await expect(anonymousMedTechApi.authenticationApi.startAuthentication(env!.recaptcha, 'a-fake-email', undefined, 'Tom', 'Gideon', env!.hcpAuthProcessId, false)).rejects.toBeInstanceOf(Error)
         })
 
-        it.skip('User should not be able to start authentication if he provided an sms but no AuthProcessBySMSId', async () => {
+        it('User should not be able to start authentication if he provided an sms but no AuthProcessBySMSId', async () => {
             if (shouldSkip()) return
             // Given
             const anonymousMedTechApi = await ctx
@@ -185,7 +185,7 @@ export function testAuthenticationApi<
             await expect(anonymousMedTechApi.authenticationApi.startAuthentication(env!.recaptcha, undefined, 'a-fake-phone-number', 'Tom', 'Gideon', env!.hcpAuthProcessId, false)).rejects.toBeInstanceOf(Error)
         })
 
-        it.skip('A User should be able to start the authentication by sms', async () => {
+        it('A User should be able to start the authentication by sms', async () => {
             if (shouldSkip()) return
             // Given
             const anonymousMedTechApi = await ctx
@@ -205,7 +205,7 @@ export function testAuthenticationApi<
             expect(messages?.message).not.toBeFalsy()
         })
 
-        it.skip('HCP should be capable of signing up using email', async () => {
+        it('HCP should be capable of signing up using email', async () => {
             if (shouldSkip()) return
             // When
             const firstName = `Gigio${forceUuid()}`
@@ -225,7 +225,7 @@ export function testAuthenticationApi<
             expect(currentHcp.lastName).toEqual(lastName)
         })
 
-        it.skip('HCP should be capable of signing up using email with friendlyCaptchaData', async () => {
+        it('HCP should be capable of signing up using email with friendlyCaptchaData', async () => {
             if (shouldSkip()) return
             const firstName = `Gigio${forceUuid()}`
             const lastName = `Bagigio${forceUuid()}`
@@ -245,7 +245,7 @@ export function testAuthenticationApi<
             expect(currentHcp.lastName).toEqual(lastName)
         })
 
-        it.skip('Patient should be able to signing up through email', async () => {
+        it('Patient should be able to signing up through email', async () => {
             if (shouldSkip()) return
             // When
             const firstName = `Gigio${forceUuid()}`
@@ -265,7 +265,7 @@ export function testAuthenticationApi<
             expect(currentPatient.lastName).toEqual(lastName)
         })
 
-        it.skip('Patient should be able to signing up through email with friendlyCaptchaData', async () => {
+        it('Patient should be able to signing up through email with friendlyCaptchaData', async () => {
             if (shouldSkip()) return
             // When
             const firstName = `Gigio${forceUuid()}`
@@ -285,7 +285,7 @@ export function testAuthenticationApi<
             expect(currentPatient.lastName).toEqual(lastName)
         })
 
-        it.skip('Patient should be able to retrieve its keys when re-login', async () => {
+        it('Patient should be able to retrieve its keys when re-login', async () => {
             if (shouldSkip()) return
             // When
             const { api, user, token } = await ctx.signUpUserUsingEmail(env, 'A', 'B', 'patient', hcpId)
@@ -311,7 +311,7 @@ export function testAuthenticationApi<
             expectArrayContainsExactlyInAnyOrder(keysFromNewApi, keysFromFirstInit)
         })
 
-        it.skip('Patient should be able to signing up through email using a different Storage implementation', async () => {
+        it('Patient should be able to signing up through email using a different Storage implementation', async () => {
             if (shouldSkip()) return
             // Given
             const storage = new TestStorage()
@@ -332,7 +332,7 @@ export function testAuthenticationApi<
             assert(Object.entries(keyStorage).length == 1)
         })
 
-        it.skip('A patient may login with a new RSA keypair and access his previous data if he gave access to its new key with his previous private key', async () => {
+        it('A patient may login with a new RSA keypair and access his previous data if he gave access to its new key with his previous private key', async () => {
             if (shouldSkip()) return
             // Given
             const patApiAndUser = await ctx.signUpUserUsingEmail(env!, 'a', 'b', 'patient', hcpId, 'recaptcha')
@@ -385,7 +385,7 @@ export function testAuthenticationApi<
             await ctx.checkServiceAccessibleAndDecrypted(loginAuthResult.api, createdDataSample, true)
         })
 
-        it.skip('A patient may login with a new RSA keypair and access his previous data only when a delegate gave him access back', async () => {
+        it('A patient may login with a new RSA keypair and access his previous data only when a delegate gave him access back', async () => {
             if (shouldSkip()) return
             // Given
             const hcpApiAndUser = await ctx.apiForEnvUser(env, hcp3Username)
