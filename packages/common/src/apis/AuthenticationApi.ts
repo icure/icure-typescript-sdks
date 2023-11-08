@@ -69,4 +69,11 @@ export interface AuthenticationApi<DSApi extends CommonApi> {
      * user.
      */
     authenticateAndAskAccessToItsExistingData(userLogin: string, shortLivedToken: string, tokenDurationInSeconds?: number): Promise<AuthenticationResult<DSApi>>
+
+    /**
+     * Get the JWT token of the current user
+     *
+     * @return The JWT token of the current user
+     */
+    getJsonWebToken(): Promise<string | undefined>
 }

@@ -20,7 +20,20 @@ export class AnonymousEHRLiteApi extends CommonAnonymousApi<EHRLiteApi> {
     ) {
         super(msgGwUrl, msgGwSpecId, storage, keyStorage, undefined, undefined)
 
-        this._authenticationApi = authenticationApi(this._errorHandler, this._sanitizer, this._messageGatewayApi, iCureUrlPath, authProcessInfo.authProcessByEmailId, authProcessInfo.authProcessBySmsId, cryptoPrimitives.crypto, storage, keyStorage, this.cryptoStrategies)
+        this._authenticationApi = authenticationApi(
+            this._errorHandler,
+            this._sanitizer,
+            this._messageGatewayApi,
+            iCureUrlPath,
+            authProcessInfo.authProcessByEmailId,
+            authProcessInfo.authProcessBySmsId,
+            cryptoPrimitives.crypto,
+            storage,
+            keyStorage,
+            this.cryptoStrategies,
+            msgGwSpecId,
+            msgGwUrl,
+        )
     }
 
     get authenticationApi(): AuthenticationApi<EHRLiteApi> {

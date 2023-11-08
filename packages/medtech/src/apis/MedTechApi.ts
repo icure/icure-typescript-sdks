@@ -1,5 +1,6 @@
 import { Apis, DataOwnerWithType as DataOwnerWithTypeDto, IccCryptoXApi, IcureApi, KeyStorageFacade, StorageFacade } from '@icure/api'
 import {
+    authenticationApi,
     AuthenticationApi,
     CodingApi,
     codingApi,
@@ -27,6 +28,7 @@ import { DataOwnerTypeEnum as DataOwnerTypeEnumDto } from '@icure/api/icc-api/mo
 import dataOwnerMapper from '../mappers/DataOwner.mapper'
 import { MedTechCryptoStrategies } from '../services/MedTechCryptoStrategies'
 import { iCureMedTechMessageFactory, MedTechMessageFactory } from '../services/MedTechMessageFactory'
+import { JwtBridgedAuthService } from '@icure/api/icc-x-api/auth/JwtBridgedAuthService'
 
 export class MedTechApi extends CommonApi {
     private readonly _codingApi: CodingApi
@@ -69,9 +71,10 @@ export class MedTechApi extends CommonApi {
         this._password = password
         this._messageFactory = messageFactory ?? iCureMedTechMessageFactory
 
+        const jwtAuthService = new JwtBridgedAuthService(this.baseApi.authApi, username, password)
         this._authenticationApi =
-            authProcessByEmailId && authProcessBySmsId && this._messageGatewayApi
-                ? new AuthenticationApi(this._messageGatewayApi, basePath, authProcessByEmailId, authProcessBySmsId, this.errorHandler, this.sanitizer, api.cryptoApi.primitives.crypto, this.storage, this.keyStorage, this.cryptoStrategies)
+            (authProcessByEmailId || authProcessBySmsId) && this._messageGatewayApi && msgGtwUrl && msgGtwSpecId
+                ? authenticationApi(this.errorHandler, this.sanitizer, this._messageGatewayApi, basePath, authProcessByEmailId, authProcessBySmsId, api.cryptoApi.primitives.crypto, this.storage, this.keyStorage, this.cryptoStrategies, jwtAuthService, msgGtwSpecId, msgGtwUrl)
                 : undefined
         this._dataSampleApi = dataSampleApi(this, basePath)
         this._codingApi = codingApi(this)

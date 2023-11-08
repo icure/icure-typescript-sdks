@@ -1,8 +1,9 @@
 import { AuthenticationApiImpl, CryptoStrategies, DataOwnerWithType, ErrorHandler, extractDomainType, MessageGatewayApi, Sanitizer } from '@icure/typescript-common'
 import { EHRLiteApi } from './EHRLiteApi'
-import { Device, HealthcareParty, KeyStorageFacade, Patient, StorageFacade } from '@icure/api'
+import { Device, HealthcareParty, IccAuthApi, KeyStorageFacade, Patient, StorageFacade } from '@icure/api'
 import Crypto from 'crypto'
 import { DataOwnerTypeEnum } from '../models/DataOwner.model'
+import { JwtBridgedAuthService } from '@icure/api/icc-x-api/auth/JwtBridgedAuthService'
 
 export class AuthenticationApi extends AuthenticationApiImpl<EHRLiteApi> {
     constructor(
@@ -16,13 +17,25 @@ export class AuthenticationApi extends AuthenticationApiImpl<EHRLiteApi> {
         storage: StorageFacade<string>,
         private readonly keyStorage: KeyStorageFacade,
         private readonly cryptoStrategies: CryptoStrategies<DataOwnerWithType>,
+        msgGtwSpecId: string,
+        msgGtwUrl: string,
+        jwtAuthService?: JwtBridgedAuthService,
         private readonly fetchImpl: (input: RequestInfo, init?: RequestInit) => Promise<Response> = typeof window !== 'undefined' ? window.fetch : typeof self !== 'undefined' ? self.fetch : fetch,
     ) {
-        super(messageGatewayApi, errorHandler, sanitizer, iCureBasePath, authProcessByEmailId, authProcessBySmsId, storage)
+        super(messageGatewayApi, errorHandler, sanitizer, iCureBasePath, authProcessByEmailId, authProcessBySmsId, storage, msgGtwSpecId, msgGtwUrl, jwtAuthService)
     }
 
     protected initApi(username: string, password: string): Promise<EHRLiteApi> {
-        const builder = new EHRLiteApi.Builder().withICureBaseUrl(this.iCureBasePath).withUserName(username).withPassword(password).withCrypto(this.crypto).withStorage(this.storage).withKeyStorage(this.keyStorage).withCryptoStrategies(this.cryptoStrategies)
+        const builder = new EHRLiteApi.Builder()
+            .withICureBaseUrl(this.iCureBasePath)
+            .withUserName(username)
+            .withPassword(password)
+            .withCrypto(this.crypto)
+            .withStorage(this.storage)
+            .withKeyStorage(this.keyStorage)
+            .withCryptoStrategies(this.cryptoStrategies)
+            .withMsgGwUrl(this.msgGtwUrl)
+            .withMsgGwSpecId(this.msgGtwSpecId)
         if (this.authProcessBySmsId) {
             builder.withAuthProcessBySmsId(this.authProcessBySmsId)
         }
@@ -64,5 +77,8 @@ export const authenticationApi = (
     storage: StorageFacade<string>,
     keyStorage: KeyStorageFacade,
     cryptoStrategies: CryptoStrategies<DataOwnerWithType>,
+    msgGtwSpecId: string,
+    msgGtwUrl: string,
+    jwtAuthService?: JwtBridgedAuthService,
     fetchImpl?: (input: RequestInfo, init?: RequestInit) => Promise<Response>,
-) => new AuthenticationApi(messageGatewayApi, iCureBasePath, authProcessByEmailId, authProcessBySmsId, errorHandler, sanitizer, crypto, storage, keyStorage, cryptoStrategies, fetchImpl)
+) => new AuthenticationApi(messageGatewayApi, iCureBasePath, authProcessByEmailId, authProcessBySmsId, errorHandler, sanitizer, crypto, storage, keyStorage, cryptoStrategies, msgGtwSpecId, msgGtwUrl, jwtAuthService, fetchImpl)
