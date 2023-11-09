@@ -289,7 +289,7 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
         }
 
         try {
-            const createdMessage = await this.messageApi.encryptAndCreateMessage(creationProgress.partialMessage)
+            const createdMessage = await this.messageApi.encryptAndCreateMessageInTopic(creationProgress.partialMessage)
 
             const attachmentCreationResults = (
                 creationProgress as Extract<
