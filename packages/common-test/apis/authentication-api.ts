@@ -8,6 +8,7 @@ import { assert } from 'chai'
 import { BaseApiTestContext, WithAuthenticationApi, WithDataOwnerApi, WithHcpApi, WithMaintenanceTaskApi, WithPatientApi, WithServiceApi } from './TestContexts'
 import { expectArrayContainsExactlyInAnyOrder } from '../assertions'
 import { describe, it, beforeAll } from '@jest/globals'
+import { User } from '@icure/api'
 
 setLocalStorage(fetch)
 
@@ -446,6 +447,30 @@ export function testAuthenticationApi<
             // Then
             await loginAuthResult.api.baseApi.cryptoApi.forceReload()
             await ctx.checkServiceAccessibleAndDecrypted(loginAuthResult.api, sharedService, true)
+        }, 120_000)
+
+        it('An user is able to get his JWT token', async () => {
+            // Given
+            const firstName = `Gigio${forceUuid()}`
+            const lastName = `Bagigio${forceUuid()}`
+            const { api, user } = await ctx.signUpUserUsingEmail(env!, firstName, lastName, 'hcp', hcpId!, 'recaptcha')
+
+            // When
+            const token = await ctx.authenticationApi(api).getJsonWebToken()
+
+            // Then
+            expect(token).toBeTruthy()
+
+            // When
+            const response = await fetch(env!.iCureUrl + '/rest/v2/user/current', {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+
+            // Then
+            expect(response.status).toBe(200)
+            expect(((await response.json()) as User).id).toEqual(user.id)
         }, 120_000)
     })
 }

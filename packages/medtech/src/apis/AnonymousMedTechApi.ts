@@ -26,7 +26,20 @@ export class AnonymousMedTechApi extends CommonAnonymousApi<MedTechApi> {
         this._msgGwSpecId = msgGwSpecId
         this._iCureUrlPath = iCureUrlPath
 
-        this._authenticationApi = new AuthenticationApi(this._messageGatewayApi, this._iCureUrlPath, authProcessInfo.authProcessByEmailId, authProcessInfo.authProcessBySmsId, this._errorHandler, this._sanitizer, cryptoPrimitives.crypto, storage, keyStorage, this.cryptoStrategies)
+        this._authenticationApi = new AuthenticationApi(
+            this._messageGatewayApi,
+            this._iCureUrlPath,
+            authProcessInfo.authProcessByEmailId,
+            authProcessInfo.authProcessBySmsId,
+            this._errorHandler,
+            this._sanitizer,
+            cryptoPrimitives.crypto,
+            storage,
+            keyStorage,
+            this.cryptoStrategies,
+            this._msgGwSpecId,
+            this._msgGwUrl,
+        )
     }
 
     get authenticationApi(): AuthenticationApi {

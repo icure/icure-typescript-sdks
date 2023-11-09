@@ -68,7 +68,6 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
         const dataOwnerId = this.dataOwnerApi.getDataOwnerIdOf(currentUser)
         const topicDto = typeof topic === 'string' ? await this.topicApi.getTopic(topic) : await this.topicApi.getTopic(this.topicMapper.toDto(topic).id!)
 
-        // TODO CV: This should be done by the backend, related to ticket ICBE-160
         if (!Object.entries(topicDto.activeParticipants ?? {}).some(([participantId]) => dataOwnerId === participantId)) {
             throw this.errorHandler.createErrorFromAny(new Error('You cannot create a message in a topic you are not a participant of'))
         }

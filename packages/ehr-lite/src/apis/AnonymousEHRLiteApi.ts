@@ -33,6 +33,8 @@ export class AnonymousEHRLiteApi extends CommonAnonymousApi<EHRLiteApi> {
             keyStorage,
             this.cryptoStrategies,
             this._messageCharactersLimit,
+            msgGwSpecId,
+            msgGwUrl,
         )
     }
 
