@@ -304,7 +304,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
 
             res.push(
                 this.serviceMapper.toDomain({
-                    ...this.enrichWithContactMetadata(updatedContact.services.find((service) => service.id == service.id)!, updatedContact),
+                    ...this.enrichWithContactMetadata(updatedService, updatedContact),
                     subContactIds: subContactsForService?.map((subContact) => subContact.id!),
                     healthElementsIds: originalService.healthElementsIds ?? subContactsForService?.filter((subContact) => subContact.healthElementId)?.map((subContact) => subContact.healthElementId!),
                     formIds: !!subContactsForService ? subContactsForService.filter((subContact) => subContact.formId).map((subContact) => subContact.formId!) : originalService.formIds,

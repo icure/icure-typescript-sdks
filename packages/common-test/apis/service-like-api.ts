@@ -1,7 +1,7 @@
 import 'isomorphic-fetch'
 import { getEnvironmentInitializer, hcp1Username, hcp2Username, hcp3Username, patUsername, setLocalStorage } from '../test-utils'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
-import { IccDocumentApi, Service, sleep, ua2utf8, utf8_2ua } from '@icure/api'
+import { IccDocumentApi, Service, sleep, SubscriptionOptions, ua2utf8, utf8_2ua } from '@icure/api'
 import { BasicAuthenticationProvider } from '@icure/api/icc-x-api/auth/AuthenticationProvider'
 import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, forceUuid, ServiceLikeApiImpl } from '@icure/typescript-common'
 import { BaseApiTestContext, WithHelementApi, WithPatientApi, WithServiceApi } from './TestContexts'
@@ -601,10 +601,10 @@ export function testServiceLikeApi<
             expect({ ...retrievedUnmodifiedServiceDto, encryptedSelf: undefined }).toEqual({ ...servicesDto[1], encryptedSelf: undefined })
         })
 
-        const subscribeAndCreateContactOrService = async (options: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }, eventTypes: ('CREATE' | 'UPDATE')[], supplier: () => Promise<void>) => {
+        const subscribeAndCreateContactOrService = async (options: SubscriptionOptions, eventTypes: ('CREATE' | 'UPDATE')[], supplier: () => Promise<void>) => {
             const { api, user } = await ctx.apiForEnvUser(env, hcp1Username)
             // TODO fix eventListener typing
-            const connectionPromise = async (options: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }, dataOwnerId: string, eventListener: (ds: Service) => Promise<void>) =>
+            const connectionPromise = async (options: SubscriptionOptions, dataOwnerId: string, eventListener: (ds: Service) => Promise<void>) =>
                 ctx.serviceApi(api).subscribeToEvents(eventTypes, await ctx.newServiceFilter(api).forSelf().build(), eventListener as unknown as any, options)
 
             const events: Service[] = []

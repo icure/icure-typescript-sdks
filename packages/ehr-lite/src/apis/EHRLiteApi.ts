@@ -15,6 +15,8 @@ import dataOwnerMapper from '../mappers/DataOwner.mapper'
 import { authenticationApi, AuthenticationApi } from './AuthenticationApi'
 import { EHRLiteCryptoStrategies } from '../services/EHRLiteCryptoStrategies'
 import { EHRLiteMessageFactory, iCureEHRLiteMessageFactory } from '../services/EHRLiteMessageFactory'
+import { topicApi, TopicApi } from './TopicApi'
+import { messageApi, MessageApi } from './MessageApi'
 import { JwtBridgedAuthService } from '@icure/api/icc-x-api/auth/JwtBridgedAuthService'
 
 export class EHRLiteApi extends CommonApi {
@@ -27,6 +29,8 @@ export class EHRLiteApi extends CommonApi {
     private readonly _practitionerApi: PractitionerApi
     private readonly _userApi: UserApi
     private readonly _notificationApi: NotificationApi
+    private readonly _topicApi: TopicApi
+    private readonly _messageApi: MessageApi
 
     private readonly _cryptoApi: IccCryptoXApi
 
@@ -44,6 +48,7 @@ export class EHRLiteApi extends CommonApi {
         private readonly _msgGtwSpecId: string | undefined = undefined,
         private readonly _authProcessByEmailId: string | undefined = undefined,
         private readonly _authProcessBySmsId: string | undefined = undefined,
+        private readonly _messageCharactersLimit: number,
         storage?: StorageFacade<string>,
         keyStorage?: KeyStorageFacade,
         messageFactory?: EHRLiteMessageFactory,
@@ -81,6 +86,7 @@ export class EHRLiteApi extends CommonApi {
                       this._storage,
                       this._keyStorage,
                       _cryptoStrategies,
+                      this.messageCharactersLimit,
                       _msgGtwSpecId,
                       _msgGtwUrl,
                       jwtAuthService,
@@ -92,6 +98,10 @@ export class EHRLiteApi extends CommonApi {
         this._userApi = userApi(this, this._messageFactory, _iCureBaseUrl)
 
         this._notificationApi = notificationApi(this, _iCureBaseUrl)
+
+        this._topicApi = topicApi(this, this.cryptoStrategies)
+
+        this._messageApi = messageApi(this, this.messageCharactersLimit)
     }
 
     get codingApi(): CodingApi {
@@ -142,6 +152,14 @@ export class EHRLiteApi extends CommonApi {
         return this._notificationApi
     }
 
+    get topicApi(): TopicApi {
+        return this._topicApi
+    }
+
+    get messageApi(): MessageApi {
+        return this._messageApi
+    }
+
     get iCureBaseUrl(): string {
         return this._iCureBaseUrl
     }
@@ -169,6 +187,13 @@ export class EHRLiteApi extends CommonApi {
     /**
      * @internal this property is for internal use only and may be changed without notice
      */
+    get messageCharactersLimit(): number {
+        return this._messageCharactersLimit ?? 2_000
+    }
+
+    /**
+     * @internal this property is for internal use only and may be changed without notice
+     */
     get cryptoStrategies(): CryptoStrategies<DataOwnerWithType> {
         return this._cryptoStrategies
     }
@@ -176,6 +201,11 @@ export class EHRLiteApi extends CommonApi {
 
 export namespace EHRLiteApi {
     export class Builder extends AuthenticatedApiBuilder<EHRLiteCryptoStrategies, EHRLiteMessageFactory, EHRLiteApi> {
+        withMessageCharactersLimit(limit: number | undefined): this {
+            this.messageCharactersLimit = limit
+            return this
+        }
+
         constructor(initialisationApi?: EHRLiteApi) {
             super()
             if (initialisationApi) {
@@ -187,6 +217,7 @@ export namespace EHRLiteApi {
                 super.withKeyStorage(initialisationApi.keyStorage)
                 super.withCryptoStrategies(initialisationApi.cryptoStrategies)
                 super.withMessageFactory(initialisationApi.messageFactory)
+                this.withMessageCharactersLimit(initialisationApi.messageCharactersLimit)
             }
         }
 
@@ -203,6 +234,7 @@ export namespace EHRLiteApi {
             authProcessByEmailId: string | undefined
             authProcessBySmsId: string | undefined
             messageFactory: EHRLiteMessageFactory | undefined
+            messageCharactersLimit: number
         }): Promise<EHRLiteApi> {
             return IcureApi.initialise(
                 props.iCureBaseUrl,
@@ -255,8 +287,28 @@ export namespace EHRLiteApi {
                     keyStorage: props.keyStorage,
                     createMaintenanceTasksOnNewKey: true,
                     disableParentKeysInitialisation: true,
+                    encryptedFieldsConfig: {
+                        message: ['subject'],
+                    },
                 },
-            ).then((api) => new EHRLiteApi(api, props.iCureBaseUrl, props.userName, props.password, props.cryptoStrategies, props.msgGwUrl, props.msgGwSpecId, props.authProcessByEmailId, props.authProcessBySmsId, props.storage, props.keyStorage, props.messageFactory))
+            ).then(
+                (api) =>
+                    new EHRLiteApi(
+                        api,
+                        props.iCureBaseUrl,
+                        props.userName,
+                        props.password,
+                        props.cryptoStrategies,
+                        props.msgGwUrl,
+                        props.msgGwSpecId,
+                        props.authProcessByEmailId,
+                        props.authProcessBySmsId,
+                        props.messageCharactersLimit,
+                        props.storage,
+                        props.keyStorage,
+                        props.messageFactory,
+                    ),
+            )
         }
     }
 }

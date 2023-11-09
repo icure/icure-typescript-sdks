@@ -74,14 +74,14 @@
 //
 //   describe('Can subscribe to Data Samples', async () => {
 //     const subscribeAndCreateDataSample = async (
-//       options: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number },
+//       options: SubscriptionOptions,
 //       eventTypes: ('CREATE' | 'UPDATE')[],
 //       creationApi: MedTechApi,
 //       subscriptionApi: MedTechApi,
 //       supplier: () => Promise<void>
 //     ) => {
 //       const connectionPromise = async (
-//         options: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number },
+//         options: SubscriptionOptions,
 //         dataOwnerId: string,
 //         eventListener: (ds: DataSample) => Promise<void>
 //       ) =>

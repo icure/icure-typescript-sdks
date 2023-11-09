@@ -51,6 +51,13 @@ import {
     UnionFilter as UnionFilterDto,
     User as UserDto,
     UserByIdsFilter as UserByIdsFilterDto,
+    Topic as TopicDto,
+    Message as MessageDto,
+    TopicByHcPartyFilter as TopicByHcPartyFilterDto,
+    TopicByParticipantFilter as TopicByParticipantFilterDto,
+    MessageByHcPartyFilter as MessageByHcPartyFilterDto,
+    MessageByHcPartyTransportGuidFilter as MessageByHcPartyTransportGuidFilterDto,
+    LatestMessageByHcPartyTransportGuidFilter as LatestMessageByHcPartyTransportGuidFilterDto,
 } from '@icure/api'
 import { UsersByPatientIdFilter as UsersByPatientIdFilterDto } from '@icure/api/icc-x-api/filters/UsersByPatientIdFilter'
 import { ComplementFilter } from '../filters/ComplementFilter'
@@ -73,6 +80,10 @@ import {
 } from '../filters/patient'
 import { MaintenanceTasksAfterDateFilter, MaintenanceTasksByHcPartyAndTypeFilter, MaintenanceTasksByIdFilter } from '../filters/maintenancetask'
 import { Filter } from '../filters/Filter'
+import { AbstractFilterTopic } from '@icure/api/icc-api/model/AbstractFilterTopic'
+import { AbstractFilterMessage } from '@icure/api/icc-api/model/AbstractFilterMessage'
+import { TopicByHcPartyFilter, TopicByParticipantFilter } from '../filters/topic'
+import { LatestMessageByHcPartyTransportGuidFilter, MessageByHcPartyFilter, MessageByHcPartyTransportGuidFilter } from '../filters/message'
 
 export namespace FilterMapper {
     export function toAbstractFilterDto<ServiceDto>(filter: Filter<ServiceDto>, input: 'Service'): AbstractFilterService
@@ -83,10 +94,12 @@ export namespace FilterMapper {
     export function toAbstractFilterDto<PatientDto>(filter: Filter<PatientDto>, input: 'Patient'): AbstractFilterPatient
     export function toAbstractFilterDto<UserDto>(filter: Filter<UserDto>, input: 'User'): AbstractFilterUser
     export function toAbstractFilterDto<MaintenanceTaskDto>(filter: Filter<MaintenanceTaskDto>, input: 'MaintenanceTask'): AbstractFilterMaintenanceTask
+    export function toAbstractFilterDto<TopicDto>(filter: Filter<TopicDto>, input: 'Topic'): AbstractFilterTopic
+    export function toAbstractFilterDto<MessageDto>(filter: Filter<MessageDto>, input: 'Message'): AbstractFilterMessage
     export function toAbstractFilterDto<T>(
         filter: Filter<T>,
-        input: 'Service' | 'Code' | 'Device' | 'HealthcareParty' | 'HealthElement' | 'Patient' | 'User' | 'MaintenanceTask',
-    ): AbstractFilter<ServiceDto | CodeDto | DeviceDto | HealthcarePartyDto | HealthElementDto | PatientDto | UserDto | MaintenanceTaskDto> {
+        input: 'Service' | 'Code' | 'Device' | 'HealthcareParty' | 'HealthElement' | 'Patient' | 'User' | 'MaintenanceTask' | 'Topic' | 'Message',
+    ): AbstractFilter<ServiceDto | CodeDto | DeviceDto | HealthcarePartyDto | HealthElementDto | PatientDto | UserDto | MaintenanceTaskDto | TopicDto | MessageDto> {
         const res =
             input === 'Service'
                 ? toAbstractFilterServiceDto(filter)
@@ -104,6 +117,10 @@ export namespace FilterMapper {
                 ? toAbstractFilterUserDto(filter)
                 : input === 'MaintenanceTask'
                 ? toAbstractFilterMaintenanceTaskDto(filter)
+                : input === 'Topic'
+                ? toAbstractFilterTopicDto(filter)
+                : input === 'Message'
+                ? toAbstractFilterMessageDto(filter)
                 : null
         if (!res) {
             throw Error('Filter is not recognized')
@@ -574,5 +591,90 @@ export namespace FilterMapper {
             desc: filter.description,
             healthcarePartyId: filter.healthcarePartyId,
             date: filter.date,
+        })
+
+    function toAbstractFilterTopicDto(filter: Filter<TopicDto>): AbstractFilter<TopicDto> {
+        if (filter['$type'] === 'ComplementFilter') {
+            return toComplementFilterTopicDto(filter as ComplementFilter<TopicDto>)
+        }
+        if (filter['$type'] === 'UnionFilter') {
+            return toUnionFilterTopicDto(filter as UnionFilter<TopicDto>)
+        }
+        if (filter['$type'] === 'IntersectionFilter') {
+            return toIntersectionFilterTopicDto(filter as IntersectionFilter<TopicDto>)
+        }
+        if (filter['$type'] === 'TopicByHcPartyFilter') {
+            return toTopicByHcPartyFilterDto(filter as TopicByHcPartyFilter)
+        }
+        if (filter['$type'] === 'TopicByParticipantFilter') {
+            return toTopicByParticipantFilterDto(filter as TopicByParticipantFilter)
+        }
+        throw Error(`No mapper for ${filter['$type']}`)
+    }
+
+    const toComplementFilterTopicDto = (filter: ComplementFilter<TopicDto>) => new ComplementFilterDto<TopicDto>(toAbstractFilterTopicDto(filter.superSet), toAbstractFilterTopicDto(filter.subSet))
+
+    const toUnionFilterTopicDto = (filter: UnionFilter<TopicDto>) => new UnionFilterDto<TopicDto>(filter.filters.map((it) => toAbstractFilterTopicDto(it)))
+
+    const toIntersectionFilterTopicDto = (filter: IntersectionFilter<TopicDto>) => new IntersectionFilterDto<TopicDto>(filter.filters.map((it) => toAbstractFilterTopicDto(it)))
+
+    const toTopicByHcPartyFilterDto = (filter: TopicByHcPartyFilter) =>
+        new TopicByHcPartyFilterDto({
+            desc: filter.description,
+            hcpId: filter.hcpId,
+        })
+
+    const toTopicByParticipantFilterDto = (filter: TopicByParticipantFilter) =>
+        new TopicByParticipantFilterDto({
+            desc: filter.description,
+            participantId: filter.participantId,
+        })
+
+    function toAbstractFilterMessageDto(filter: Filter<MessageDto>): AbstractFilter<MessageDto> {
+        if (filter['$type'] === 'ComplementFilter') {
+            return toComplementFilterMessageDto(filter as ComplementFilter<MessageDto>)
+        }
+        if (filter['$type'] === 'UnionFilter') {
+            return toUnionFilterMessageDto(filter as UnionFilter<MessageDto>)
+        }
+        if (filter['$type'] === 'IntersectionFilter') {
+            return toIntersectionFilterMessageDto(filter as IntersectionFilter<MessageDto>)
+        }
+        if (filter['$type'] === 'LatestMessageByHcPartyTransportGuidFilter') {
+            return toLatestMessageByHcPartyTransportGuidFilterDto(filter as LatestMessageByHcPartyTransportGuidFilter)
+        }
+        if (filter['$type'] === 'MessageByHcPartyTransportGuidFilter') {
+            return toMessageByHcPartyTransportGuidFilterDto(filter as MessageByHcPartyTransportGuidFilter)
+        }
+        if (filter['$type'] === 'MessageByHcPartyFilter') {
+            return toMessageByHcPartyFilterDto(filter as MessageByHcPartyFilter)
+        }
+        throw Error(`No mapper for ${filter['$type']}`)
+    }
+
+    const toComplementFilterMessageDto = (filter: ComplementFilter<MessageDto>) => new ComplementFilterDto<MessageDto>(toAbstractFilterMessageDto(filter.superSet), toAbstractFilterMessageDto(filter.subSet))
+
+    const toUnionFilterMessageDto = (filter: UnionFilter<MessageDto>) => new UnionFilterDto<MessageDto>(filter.filters.map((it) => toAbstractFilterMessageDto(it)))
+
+    const toIntersectionFilterMessageDto = (filter: IntersectionFilter<MessageDto>) => new IntersectionFilterDto<MessageDto>(filter.filters.map((it) => toAbstractFilterMessageDto(it)))
+
+    const toLatestMessageByHcPartyTransportGuidFilterDto = (filter: LatestMessageByHcPartyTransportGuidFilter) =>
+        new LatestMessageByHcPartyTransportGuidFilterDto({
+            healthcarePartyId: filter.healthcarePartyId,
+            transportGuid: filter.transportGuid,
+            desc: filter.description,
+        })
+
+    const toMessageByHcPartyTransportGuidFilterDto = (filter: MessageByHcPartyTransportGuidFilter) =>
+        new MessageByHcPartyTransportGuidFilterDto({
+            healthcarePartyId: filter.healthcarePartyId,
+            transportGuid: filter.transportGuid,
+            desc: filter.description,
+        })
+
+    const toMessageByHcPartyFilterDto = (filter: MessageByHcPartyFilter) =>
+        new MessageByHcPartyFilterDto({
+            hcpId: filter.hcpId,
+            desc: filter.description,
         })
 }

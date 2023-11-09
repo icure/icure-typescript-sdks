@@ -1,4 +1,4 @@
-import { BaseApiTestContext, WithAuthenticationApi, WithDataOwnerApi, WithHcpApi, WithHelementApi, WithMaintenanceTaskApi, WithPatientApi, WithServiceApi } from '../../../common-test/apis/TestContexts'
+import { BaseApiTestContext, WithAuthenticationApi, WithDataOwnerApi, WithHcpApi, WithHelementApi, WithMaintenanceTaskApi, WithMessageApi, WithPatientApi, WithServiceApi, WithTopicApi } from '../../../common-test/apis/TestContexts'
 import {
     AnonymousEHRLiteApi,
     Condition,
@@ -17,6 +17,11 @@ import {
     PractitionerApi,
     DataOwnerWithType,
     AuthenticationApi,
+    mapTopicDtoToTopic,
+    mapTopicToTopicDto,
+    MessageLikeApi,
+    mapMessageDtoToMessage,
+    mapMessageToMessageDto,
 } from '../../src'
 import { EHRLiteCryptoStrategies, SimpleEHRLiteCryptoStrategies } from '../../src/services/EHRLiteCryptoStrategies'
 import {
@@ -35,9 +40,11 @@ import {
     MaintenanceTaskFilter,
     NotificationTypeEnum,
     Notification,
+    Topic,
+    Message,
 } from '@icure/typescript-common'
 import { EHRLiteMessageFactory } from '../../src/services/EHRLiteMessageFactory'
-import { HealthcareParty, Patient as PatientDto, Service, User as UserDto, DataOwnerWithType as DataOwnerWithTypeDto, Document as DocumentDto, HealthElement, Device, CodeStub, MaintenanceTask } from '@icure/api'
+import { HealthcareParty, Patient as PatientDto, Service, User as UserDto, DataOwnerWithType as DataOwnerWithTypeDto, Document as DocumentDto, HealthElement, CodeStub, MaintenanceTask, Topic as TopicDto, Message as MessageDto } from '@icure/api'
 import { UserApi, Patient, PatientApi, Annotation, NotificationApi, DataOwnerApi } from '../../src'
 import { TestMessageFactory } from '../test-utils'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../../src/mappers/Patient.mapper'
@@ -47,6 +54,9 @@ import { mapHealthcarePartyToPractitioner, mapPractitionerToHealthcareParty } fr
 import { mapHealthcarePartyToOrganisation, mapOrganisationToHealthcareParty } from '../../src/mappers/Organisation.mapper'
 import dataOwnerMapper from '../../src/mappers/DataOwner.mapper'
 import { TestVars } from '@icure/test-setup/types'
+import { TopicApi } from '../../src/apis/TopicApi'
+import { Binary } from '../../src/models/Binary.model'
+import { mapBinaryToDocumentAttachment, mapDocumentAttachmentToBinary } from '../../src/mappers/Binary.mapper'
 
 export class EhrLiteBaseTestContext extends BaseApiTestContext<AnonymousEHRLiteApi.Builder, AnonymousEHRLiteApi, EHRLiteApi, EHRLiteCryptoStrategies, User, EHRLiteMessageFactory> {
     newAnonymousApiBuilder(): AnonymousEHRLiteApi.Builder {
@@ -110,7 +120,7 @@ function addDomainTypeTagIfMissing(tags: CodeStub[] | undefined, domainType: str
     const found = extractDomainTypeTag(tags)
     if (tags && found) {
         expect(found.code).toEqual(domainType)
-        return tags
+        return tags!
     } else return [...(tags ?? []), domainTypeTag(domainType)]
 }
 
@@ -383,6 +393,60 @@ export function DataOwnerApiAware<TBase extends Constructor<any>>(Base: TBase): 
 
         toDataOwnerDto(dsDataOwner: DataOwnerWithType): DataOwnerWithTypeDto {
             return dataOwnerMapper.toDto(dsDataOwner)
+        }
+    }
+}
+
+export function TopicApiAware<TBase extends Constructor<any>>(Base: TBase): TBase & Constructor<WithTopicApi<EHRLiteApi, Topic, Practitioner, Patient, Observation, Condition>> {
+    return class TopicApiAwareImpl extends Base implements WithTopicApi<EHRLiteApi, Topic, Practitioner, Patient, Observation, Condition> {
+        topicApi(api: EHRLiteApi): TopicApi {
+            return api.topicApi
+        }
+
+        toDSTopic(topicDto: TopicDto): Topic {
+            return mapTopicDtoToTopic(topicDto)
+        }
+
+        toTopicDto(dsTopic: Topic): TopicDto {
+            return mapTopicToTopicDto(dsTopic)
+        }
+    }
+}
+
+export function MessageApiAware<TBase extends Constructor<any>>(Base: TBase): TBase & Constructor<WithMessageApi<EHRLiteApi, Message, Topic, Binary>> {
+    return class MessageApiAwareImpl extends Base implements WithMessageApi<EHRLiteApi, Message, Topic, Binary> {
+        messageApi(api: EHRLiteApi): MessageLikeApi<Message, Topic, Binary> {
+            return api.messageApi
+        }
+
+        toDSMessage(messageDto: MessageDto): Message {
+            return mapMessageDtoToMessage(messageDto)
+        }
+
+        toMessageDto(dsMessage: Message): MessageDto {
+            return mapMessageToMessageDto(dsMessage)
+        }
+
+        toBinaryDto(
+            dsBinary: Binary,
+            utiProvider: (mimeType: string, extension: string) => string,
+        ): {
+            data: ArrayBuffer
+            filename: string
+            uti: string
+        } {
+            return mapBinaryToDocumentAttachment(dsBinary, utiProvider)
+        }
+
+        toDSBinary(
+            binaryDto: {
+                data: ArrayBuffer
+                filename: string
+                uti: string
+            },
+            mimeTypeProvider: (uti: string) => string,
+        ): Binary {
+            return mapDocumentAttachmentToBinary(binaryDto, mimeTypeProvider)
         }
     }
 }

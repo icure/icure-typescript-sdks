@@ -1,3 +1,4 @@
+export * from './Binary.mapper'
 export * from './Component.mapper'
 export * from './Condition.mapper'
 export * from './ContactPoint.mapper'

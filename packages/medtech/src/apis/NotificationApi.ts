@@ -1,5 +1,5 @@
 import { CommonApi, CommonFilter, MaintenanceTaskLikeApi, MaintenanceTaskLikeApiImpl, mapMaintenanceTaskToNotification, mapNotificationToMaintenanceTask, Notification, PaginatedList } from '@icure/typescript-common'
-import { Connection, MaintenanceTask } from '@icure/api'
+import { Connection, MaintenanceTask, SubscriptionOptions } from '@icure/api'
 
 export interface NotificationApi extends MaintenanceTaskLikeApi<Notification> {
     /**
@@ -75,7 +75,7 @@ export interface NotificationApi extends MaintenanceTaskLikeApi<Notification> {
      *    - connectionMaxRetry : how many time retrying to reconnect to the iCure WebSocket;
      *    - connectionRetryIntervalInMs : How long base interval will be between two retry. The retry attempt is exponential and using a random value (connectionRetryIntervalMs * (random between 1 and 2))^nbAttempts)
      */
-    subscribeToNotificationEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<MaintenanceTask>, eventFired: (dataSample: Notification) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection>
+    subscribeToNotificationEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<MaintenanceTask>, eventFired: (dataSample: Notification) => Promise<void>, options?: SubscriptionOptions): Promise<Connection>
 }
 
 /**
@@ -100,7 +100,7 @@ class NotificationApiImpl extends MaintenanceTaskLikeApiImpl<Notification> imple
     updateNotificationStatus(notification: Notification, newStatus: MaintenanceTask.StatusEnum): Promise<Notification | undefined> {
         return this.updateStatus(notification, newStatus)
     }
-    subscribeToNotificationEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<MaintenanceTask>, eventFired: (dataSample: Notification) => Promise<void>, options?: { connectionMaxRetry?: number; connectionRetryIntervalMs?: number }): Promise<Connection> {
+    subscribeToNotificationEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<MaintenanceTask>, eventFired: (dataSample: Notification) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
         return this.subscribeToEvents(eventTypes, filter, eventFired, options)
     }
 }
