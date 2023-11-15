@@ -428,5 +428,17 @@ export function testMessageLikeApi<
 
             await expect(ctx.messageApi(hcp2Api).create(topic, 'Message content')).rejects.toThrow()
         })
+
+        it('message creation should fail if the user is not a participant of the topic and noot loop infinitely', async () => {
+            const { api: masterApi, user: masterUser } = await ctx.masterApi(env)
+            const { api: hcp1Api } = await ctx.apiForEnvUser(env, hcp1Username)
+            const { user: hcp2User } = await ctx.apiForEnvUser(env, hcp2Username)
+
+            const topic = await createTopic(masterApi, masterUser, hcp2User)
+            const topicDto = ctx.toTopicDto(topic)
+            expect(topicDto.id).toBeTruthy()
+
+            await expect(ctx.messageApi(hcp1Api).create(topic, 'Message content')).rejects.toThrow()
+        })
     })
 }

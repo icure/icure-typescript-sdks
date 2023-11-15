@@ -47,6 +47,12 @@ export class Message {
         this.attachments = message.attachments
     }
 
+    /**
+     * Determine if the message is truncated, meaning the content is not complete and there is an attachment with the full content
+     *
+     * @returns true if the message is truncated, false otherwise
+     *
+     */
     get isTruncated(): boolean {
         return this.attachments?.some((attachment) => attachment.type === 'body') ?? false
     }
