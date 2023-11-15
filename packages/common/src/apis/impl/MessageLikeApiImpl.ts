@@ -268,6 +268,14 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
                 return this.handleMessageCreation(attachDocumentToMessageResult, currentUser)
             }
             case MessageCreationStep.MESSAGE_ATTACHED: {
+                const messageCreationResult = await this.createMessage(creationProgress)
+
+                if (messageCreationResult.step !== MessageCreationStep.MESSAGE_CREATED) {
+                    return {
+                        creationProgress: messageCreationResult,
+                    }
+                }
+
                 return this.handleMessageCreation(await this.createMessage(creationProgress), currentUser)
             }
             case MessageCreationStep.MESSAGE_CREATED: {
