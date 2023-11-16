@@ -119,7 +119,7 @@ export function testUserLikeApi<
 
             // When HCP_1 creates user for patient PAT_1
             // And HCP_1 is sending an invitation email to patient PAT_1
-            await ctx.userApi(hcp1Api).createAndInviteFor(newPatient, 3600)
+            await ctx.userApi(hcp1Api).createAndInviteFor(newPatient, 5 * 60)
             await sleep(3_000)
 
             // And PAT_1 accepts this invitation and changes his credentials
@@ -235,7 +235,7 @@ export function testUserLikeApi<
             )
             expect(newUser).toBeTruthy()
 
-            await expect(ctx.userApi(hcp1Api).createAndInviteFor(newPatient, 3600)).rejects.toBeInstanceOf(Error)
+            await expect(ctx.userApi(hcp1Api).createAndInviteFor(newPatient, 5 * 60)).rejects.toBeInstanceOf(Error)
         })
 
         it('a new user from existing patient should be able to create new data and modify non-encrypted data before being given full access to existing data', async () => {
@@ -269,7 +269,7 @@ export function testUserLikeApi<
             const patientId = ctx.toPatientDto(patient).id
             const heByHcp = await ctx.createHelementForPatient(hcp1Api, patient)
             // Create patient api
-            await ctx.userApi(hcp1Api).createAndInviteFor(patient, 3600)
+            await ctx.userApi(hcp1Api).createAndInviteFor(patient, 5 * 60)
 
             await sleep(3_000)
 
