@@ -276,7 +276,7 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
                     }
                 }
 
-                return this.handleMessageCreation(await this.createMessage(creationProgress), currentUser)
+                return this.handleMessageCreation(messageCreationResult, currentUser)
             }
             case MessageCreationStep.MESSAGE_CREATED: {
                 return {
