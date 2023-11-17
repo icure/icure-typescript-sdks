@@ -1,23 +1,5 @@
 import { Patient, PatientBirthSexEnum, PatientDeactivationReasonEnum, PatientGenderEnum, PatientPersonalStatusEnum } from '../models/Patient.model'
 import {
-    Address as AddressDto,
-    Annotation as AnnotationDto,
-    CodeStub,
-    Delegation as DelegationDto,
-    EmploymentInfo,
-    FinancialInstitutionInformation,
-    Identifier as IdentifierDto,
-    Insurability,
-    MedicalHouseContract,
-    Partnership as PartnershipDto,
-    Patient as PatientDto,
-    PatientHealthCareParty as PatientHealthCarePartyDto,
-    PersonName as PersonNameDto,
-    PropertyStub,
-    SchoolingInfo,
-    SecurityMetadata as SecurityMetadataDto,
-} from '@icure/api'
-import {
     Annotation,
     CodingReference,
     forceUuid,
@@ -45,6 +27,22 @@ import {
     toSecurityMetadataDto,
     toSystemMetaDataOwnerEncrypted,
     toTransferKeys,
+    AddressDto,
+    AnnotationDto,
+    CodeStub,
+    DelegationDto,
+    EmploymentInfo,
+    FinancialInstitutionInformation,
+    IdentifierDto,
+    Insurability,
+    MedicalHouseContract,
+    PartnershipDto,
+    PatientDto,
+    PatientHealthCarePartyDto,
+    PersonNameDto,
+    PropertyStub,
+    SchoolingInfo,
+    SecurityMetadataDto,
 } from '@icure/typescript-common'
 import { PersonName } from '../models/PersonName.model'
 import { Address } from '../models/Address.model'

@@ -1,4 +1,3 @@
-import { Apis, DataOwnerWithType as DataOwnerWithTypeDto, IccCryptoXApi, IcureApi, KeyStorageFacade, StorageFacade } from '@icure/api'
 import {
     authenticationApi,
     AuthenticationApi,
@@ -23,12 +22,10 @@ import {
     UserApi,
     userApi,
 } from '../../index'
-import { AuthenticatedApiBuilder, CommonApi, CryptoStrategies, CryptoStrategiesBridge, ICureMessageFactory } from '@icure/typescript-common'
-import { DataOwnerTypeEnum as DataOwnerTypeEnumDto } from '@icure/api/icc-api/model/DataOwnerTypeEnum'
+import { AuthenticatedApiBuilder, CommonApi, CryptoStrategies, CryptoStrategiesBridge, KeyStorageFacade, StorageFacade, Apis, IccCryptoXApi, DataOwnerWithTypeDto, DataOwnerTypeEnumDto, JwtBridgedAuthService, IcureApi } from '@icure/typescript-common'
 import dataOwnerMapper from '../mappers/DataOwner.mapper'
 import { MedTechCryptoStrategies } from '../services/MedTechCryptoStrategies'
 import { iCureMedTechMessageFactory, MedTechMessageFactory } from '../services/MedTechMessageFactory'
-import { JwtBridgedAuthService } from '@icure/api/icc-x-api/auth/JwtBridgedAuthService'
 
 export class MedTechApi extends CommonApi {
     private readonly _codingApi: CodingApi

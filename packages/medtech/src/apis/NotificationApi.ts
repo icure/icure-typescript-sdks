@@ -1,5 +1,4 @@
-import { CommonApi, CommonFilter, MaintenanceTaskLikeApi, MaintenanceTaskLikeApiImpl, mapMaintenanceTaskToNotification, mapNotificationToMaintenanceTask, Notification, PaginatedList } from '@icure/typescript-common'
-import { Connection, MaintenanceTask, SubscriptionOptions } from '@icure/api'
+import { CommonApi, CommonFilter, MaintenanceTaskLikeApi, MaintenanceTaskLikeApiImpl, mapMaintenanceTaskToNotification, mapNotificationToMaintenanceTask, Notification, PaginatedList, Connection, MaintenanceTaskDto, SubscriptionOptions } from '@icure/typescript-common'
 
 export interface NotificationApi extends MaintenanceTaskLikeApi<Notification> {
     /**
@@ -31,7 +30,7 @@ export interface NotificationApi extends MaintenanceTaskLikeApi<Notification> {
      * @param limit The number of patients to return in the queried page
      * @return a Promise containing the PaginatedList of Notification objects
      */
-    filterNotifications(filter: CommonFilter<MaintenanceTask>, nextNotificationId?: string, limit?: number): Promise<PaginatedList<Notification>>
+    filterNotifications(filter: CommonFilter<MaintenanceTaskDto>, nextNotificationId?: string, limit?: number): Promise<PaginatedList<Notification>>
 
     /**
      * @deprecated use {@link NotificationApi.get} instead.
@@ -60,7 +59,7 @@ export interface NotificationApi extends MaintenanceTaskLikeApi<Notification> {
      * @param newStatus the new status
      * @return the updated Notification
      */
-    updateNotificationStatus(notification: Notification, newStatus: MaintenanceTask.StatusEnum): Promise<Notification | undefined>
+    updateNotificationStatus(notification: Notification, newStatus: MaintenanceTaskDto.StatusEnum): Promise<Notification | undefined>
 
     /**
      * @deprecated use {@link NotificationApi.subscribeToEvents} instead.
@@ -75,7 +74,7 @@ export interface NotificationApi extends MaintenanceTaskLikeApi<Notification> {
      *    - connectionMaxRetry : how many time retrying to reconnect to the iCure WebSocket;
      *    - connectionRetryIntervalInMs : How long base interval will be between two retry. The retry attempt is exponential and using a random value (connectionRetryIntervalMs * (random between 1 and 2))^nbAttempts)
      */
-    subscribeToNotificationEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<MaintenanceTask>, eventFired: (dataSample: Notification) => Promise<void>, options?: SubscriptionOptions): Promise<Connection>
+    subscribeToNotificationEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<MaintenanceTaskDto>, eventFired: (dataSample: Notification) => Promise<void>, options?: SubscriptionOptions): Promise<Connection>
 }
 
 /**
@@ -88,7 +87,7 @@ class NotificationApiImpl extends MaintenanceTaskLikeApiImpl<Notification> imple
     deleteNotification(notificationId: string): Promise<string | undefined> {
         return this.delete(notificationId)
     }
-    filterNotifications(filter: CommonFilter<MaintenanceTask>, nextNotificationId?: string, limit?: number): Promise<PaginatedList<Notification>> {
+    filterNotifications(filter: CommonFilter<MaintenanceTaskDto>, nextNotificationId?: string, limit?: number): Promise<PaginatedList<Notification>> {
         return this.filterBy(filter, nextNotificationId, limit)
     }
     getNotification(notificationId: string): Promise<Notification | undefined> {
@@ -97,10 +96,10 @@ class NotificationApiImpl extends MaintenanceTaskLikeApiImpl<Notification> imple
     getPendingNotificationsAfter(fromDate?: number): Promise<Array<Notification>> {
         return this.getPendingAfter(fromDate)
     }
-    updateNotificationStatus(notification: Notification, newStatus: MaintenanceTask.StatusEnum): Promise<Notification | undefined> {
+    updateNotificationStatus(notification: Notification, newStatus: MaintenanceTaskDto.StatusEnum): Promise<Notification | undefined> {
         return this.updateStatus(notification, newStatus)
     }
-    subscribeToNotificationEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<MaintenanceTask>, eventFired: (dataSample: Notification) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
+    subscribeToNotificationEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<MaintenanceTaskDto>, eventFired: (dataSample: Notification) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
         return this.subscribeToEvents(eventTypes, filter, eventFired, options)
     }
 }
@@ -108,10 +107,10 @@ class NotificationApiImpl extends MaintenanceTaskLikeApiImpl<Notification> imple
 export const notificationApi = (api: CommonApi, basePath: string): NotificationApi => {
     return new NotificationApiImpl(
         {
-            toDomain(dto: MaintenanceTask): Notification {
+            toDomain(dto: MaintenanceTaskDto): Notification {
                 return mapMaintenanceTaskToNotification(dto)
             },
-            toDto(domain: Notification): MaintenanceTask {
+            toDto(domain: Notification): MaintenanceTaskDto {
                 return mapNotificationToMaintenanceTask(domain)
             },
         },

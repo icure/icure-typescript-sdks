@@ -1,5 +1,4 @@
 import { HealthcareElement } from '../models/HealthcareElement.model'
-import { Annotation as AnnotationDto, CareTeamMember, CodeStub, Delegation as DelegationDto, Episode, HealthElement, Identifier as IdentifierDto, PlanOfAction, SecurityMetadata as SecurityMetadataDto } from '@icure/api'
 import {
     Annotation,
     CodingReference,
@@ -19,6 +18,15 @@ import {
     toSecretForeignKeys,
     toSecurityMetadataDto,
     toSystemMetaDataEncrypted,
+    AnnotationDto,
+    CareTeamMember,
+    CodeStub,
+    DelegationDto,
+    Episode,
+    HealthElementDto,
+    IdentifierDto,
+    PlanOfAction,
+    SecurityMetadataDto,
 } from '@icure/typescript-common'
 
 function toHealthElementId(domain: HealthcareElement): string {
@@ -118,7 +126,7 @@ function toHealthElementStatus(domain: HealthcareElement): number | undefined {
     return 0
 }
 
-function toHealthElementLaterality(domain: HealthcareElement): HealthElement.LateralityEnum | undefined {
+function toHealthElementLaterality(domain: HealthcareElement): HealthElementDto.LateralityEnum | undefined {
     return undefined
 }
 
@@ -154,83 +162,83 @@ function toHealthElementEncryptedSelf(domain: HealthcareElement): string | undef
     return !!domain.systemMetaData ? toEncryptedSelf(domain.systemMetaData) : undefined
 }
 
-function toHealthcareElementId(dto: HealthElement): string | undefined {
+function toHealthcareElementId(dto: HealthElementDto): string | undefined {
     return dto.id
 }
 
-function toHealthcareElementIdentifiers(dto: HealthElement): Identifier[] {
+function toHealthcareElementIdentifiers(dto: HealthElementDto): Identifier[] {
     return dto.identifiers?.map(mapIdentifierDtoToIdentifier) ?? []
 }
 
-function toHealthcareElementRev(dto: HealthElement): string | undefined {
+function toHealthcareElementRev(dto: HealthElementDto): string | undefined {
     return dto.rev
 }
 
-function toHealthcareElementCreated(dto: HealthElement): number | undefined {
+function toHealthcareElementCreated(dto: HealthElementDto): number | undefined {
     return dto.created
 }
 
-function toHealthcareElementModified(dto: HealthElement): number | undefined {
+function toHealthcareElementModified(dto: HealthElementDto): number | undefined {
     return dto.modified
 }
 
-function toHealthcareElementAuthor(dto: HealthElement): string | undefined {
+function toHealthcareElementAuthor(dto: HealthElementDto): string | undefined {
     return dto.author
 }
 
-function toHealthcareElementResponsible(dto: HealthElement): string | undefined {
+function toHealthcareElementResponsible(dto: HealthElementDto): string | undefined {
     return dto.responsible
 }
 
-function toHealthcareElementMedicalLocationId(dto: HealthElement): string | undefined {
+function toHealthcareElementMedicalLocationId(dto: HealthElementDto): string | undefined {
     return dto.medicalLocationId
 }
 
-function toHealthcareElementLabels(dto: HealthElement): Set<CodingReference> {
+function toHealthcareElementLabels(dto: HealthElementDto): Set<CodingReference> {
     return new Set(dto.tags?.map(mapCodeStubToCodingReference) ?? [])
 }
 
-function toHealthcareElementCodes(dto: HealthElement): Set<CodingReference> {
+function toHealthcareElementCodes(dto: HealthElementDto): Set<CodingReference> {
     return new Set(dto.codes?.map(mapCodeStubToCodingReference) ?? [])
 }
 
-function toHealthcareElementEndOfLife(dto: HealthElement): number | undefined {
+function toHealthcareElementEndOfLife(dto: HealthElementDto): number | undefined {
     return dto.endOfLife
 }
 
-function toHealthcareElementDeletionDate(dto: HealthElement): number | undefined {
+function toHealthcareElementDeletionDate(dto: HealthElementDto): number | undefined {
     return dto.deletionDate
 }
 
-function toHealthcareElementHealthcareElementId(dto: HealthElement): string | undefined {
+function toHealthcareElementHealthcareElementId(dto: HealthElementDto): string | undefined {
     return dto.healthElementId
 }
 
-function toHealthcareElementValueDate(dto: HealthElement): number | undefined {
+function toHealthcareElementValueDate(dto: HealthElementDto): number | undefined {
     return dto.valueDate
 }
 
-function toHealthcareElementOpeningDate(dto: HealthElement): number | undefined {
+function toHealthcareElementOpeningDate(dto: HealthElementDto): number | undefined {
     return dto.openingDate
 }
 
-function toHealthcareElementClosingDate(dto: HealthElement): number | undefined {
+function toHealthcareElementClosingDate(dto: HealthElementDto): number | undefined {
     return dto.closingDate
 }
 
-function toHealthcareElementDescription(dto: HealthElement): string | undefined {
+function toHealthcareElementDescription(dto: HealthElementDto): string | undefined {
     return dto.descr
 }
 
-function toHealthcareElementNote(dto: HealthElement): string | undefined {
+function toHealthcareElementNote(dto: HealthElementDto): string | undefined {
     return dto.note
 }
 
-function toHealthcareElementSystemMetaData(dto: HealthElement): SystemMetaDataEncrypted | undefined {
+function toHealthcareElementSystemMetaData(dto: HealthElementDto): SystemMetaDataEncrypted | undefined {
     return toSystemMetaDataEncrypted(dto)
 }
 
-function toHealthcareElementNotes(dto: HealthElement): Annotation[] | undefined {
+function toHealthcareElementNotes(dto: HealthElementDto): Annotation[] | undefined {
     return dto.notes?.map(mapAnnotationDtoToAnnotation)
 }
 
@@ -238,7 +246,7 @@ function toHealthElementSecurityMetadata(domain: HealthcareElement): SecurityMet
     return toSecurityMetadataDto(domain.systemMetaData)
 }
 
-export function mapHealthElementToHealthcareElement(dto: HealthElement): HealthcareElement {
+export function mapHealthElementToHealthcareElement(dto: HealthElementDto): HealthcareElement {
     return new HealthcareElement({
         id: toHealthcareElementId(dto),
         identifiers: toHealthcareElementIdentifiers(dto),
@@ -263,9 +271,9 @@ export function mapHealthElementToHealthcareElement(dto: HealthElement): Healthc
     })
 }
 
-export function mapHealthcareElementToHealthElement(domain: HealthcareElement): HealthElement {
+export function mapHealthcareElementToHealthElement(domain: HealthcareElement): HealthElementDto {
     const id = toHealthElementId(domain)
-    return new HealthElement({
+    return new HealthElementDto({
         id,
         identifiers: toHealthElementIdentifiers(domain),
         rev: toHealthElementRev(domain),

@@ -10,8 +10,7 @@
  * Do not edit the class manually.
  */
 
-import { Partnership as PartnershipDto } from '@icure/api'
-import { mapTo } from '@icure/typescript-common'
+import { mapTo, PartnershipDto } from '@icure/typescript-common'
 
 /**
  * List of partners, or persons of contact (of class Partnership, see below).

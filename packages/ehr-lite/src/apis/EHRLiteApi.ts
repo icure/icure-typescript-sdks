@@ -201,6 +201,8 @@ export class EHRLiteApi extends CommonApi {
 
 export namespace EHRLiteApi {
     export class Builder extends AuthenticatedApiBuilder<EHRLiteCryptoStrategies, EHRLiteMessageFactory, EHRLiteApi> {
+        protected messageCharactersLimit?: number
+
         withMessageCharactersLimit(limit: number | undefined): this {
             this.messageCharactersLimit = limit
             return this

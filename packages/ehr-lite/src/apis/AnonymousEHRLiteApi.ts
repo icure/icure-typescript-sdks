@@ -45,6 +45,8 @@ export class AnonymousEHRLiteApi extends CommonAnonymousApi<EHRLiteApi> {
 
 export namespace AnonymousEHRLiteApi {
     export class Builder extends AnonymousApiBuilder<CryptoStrategies<DataOwnerWithType>, AnonymousEHRLiteApi> {
+        protected messageCharactersLimit?: number
+
         withMessageCharactersLimit(limit: number): this {
             this.messageCharactersLimit = limit
             return this

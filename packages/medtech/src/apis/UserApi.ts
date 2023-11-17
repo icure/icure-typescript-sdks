@@ -1,5 +1,4 @@
-import { CommonApi, CommonFilter, mapUserDtoToUser, mapUserToUserDto, MessageFactory, PaginatedList, User, UserLikeApi, UserLikeApiImpl } from '@icure/typescript-common'
-import { Connection, HealthcareParty as HealthcarePartyDto, Patient as PatientDto, SubscriptionOptions, User as UserDto } from '@icure/api'
+import { CommonApi, CommonFilter, mapUserDtoToUser, mapUserToUserDto, MessageFactory, PaginatedList, User, UserLikeApi, UserLikeApiImpl, Connection, HealthcarePartyDto, PatientDto, SubscriptionOptions, UserDto } from '@icure/typescript-common'
 import { Patient } from '../models/Patient.model'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
 import { mapHealthcarePartyToHealthcareProfessional, mapHealthcareProfessionalToHealthcareParty } from '../mappers/HealthcareProfessional.mapper'

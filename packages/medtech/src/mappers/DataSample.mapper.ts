@@ -1,5 +1,4 @@
 import { DataSample } from '../models/DataSample.model'
-import { Annotation as AnnotationDto, CodeStub, Content as ContentDto, Delegation as DelegationDto, Identifier as IdentifierDto, ISO639_1, SecurityMetadata as SecurityMetadataDto, Service } from '@icure/api'
 import {
     CodingReference,
     extractEncryptedSelf,
@@ -17,6 +16,14 @@ import {
     toSecretForeignKeys,
     toSecurityMetadataDto,
     toSystemMetaDataEncrypted,
+    AnnotationDto,
+    CodeStub,
+    ContentDto,
+    DelegationDto,
+    IdentifierDto,
+    ISO639_1,
+    SecurityMetadataDto,
+    ServiceDto,
 } from '@icure/typescript-common'
 import { Content } from '../models/Content.model'
 import { mapContentDtoToContent, mapContentToContentDto } from './Content.mapper'
@@ -166,87 +173,87 @@ function toServiceEncryptedSelf(domain: DataSample): string | undefined {
     return !!domain.systemMetaData ? toEncryptedSelf(domain.systemMetaData) : undefined
 }
 
-function toDataSampleId(dto: Service): string | undefined {
+function toDataSampleId(dto: ServiceDto): string | undefined {
     return forceUuid(dto.id)
 }
 
-function toDataSampleTransactionId(dto: Service): string | undefined {
+function toDataSampleTransactionId(dto: ServiceDto): string | undefined {
     return dto.transactionId
 }
 
-function toDataSampleIdentifiers(dto: Service): Identifier[] {
+function toDataSampleIdentifiers(dto: ServiceDto): Identifier[] {
     return dto.identifier?.map(mapIdentifierDtoToIdentifier) ?? []
 }
 
-function toDataSampleBatchId(dto: Service): string | undefined {
+function toDataSampleBatchId(dto: ServiceDto): string | undefined {
     return dto.contactId
 }
 
-function toDataSampleHealthcareElementIds(dto: Service): Set<string> | undefined {
+function toDataSampleHealthcareElementIds(dto: ServiceDto): Set<string> | undefined {
     return dto.healthElementsIds ? new Set(dto.healthElementsIds) : undefined
 }
 
-function toDataSampleCanvasesIds(dto: Service): Set<string> | undefined {
+function toDataSampleCanvasesIds(dto: ServiceDto): Set<string> | undefined {
     return dto.formIds ? new Set(dto.formIds) : undefined
 }
 
-function toDataSampleIndex(dto: Service): number | undefined {
+function toDataSampleIndex(dto: ServiceDto): number | undefined {
     return dto.index
 }
 
-function toDataSampleContent(dto: Service): Map<ISO639_1, Content> {
+function toDataSampleContent(dto: ServiceDto): Map<ISO639_1, Content> {
     return dto.content ? new Map([...Object.entries(dto.content)].map(([key, value]) => [key, mapContentDtoToContent(value)])) : new Map()
 }
 
-function toDataSampleValueDate(dto: Service): number | undefined {
+function toDataSampleValueDate(dto: ServiceDto): number | undefined {
     return dto.valueDate
 }
 
-function toDataSampleOpeningDate(dto: Service): number | undefined {
+function toDataSampleOpeningDate(dto: ServiceDto): number | undefined {
     return dto.openingDate
 }
 
-function toDataSampleClosingDate(dto: Service): number | undefined {
+function toDataSampleClosingDate(dto: ServiceDto): number | undefined {
     return dto.closingDate
 }
 
-function toDataSampleCreated(dto: Service): number | undefined {
+function toDataSampleCreated(dto: ServiceDto): number | undefined {
     return dto.created
 }
 
-function toDataSampleModified(dto: Service): number | undefined {
+function toDataSampleModified(dto: ServiceDto): number | undefined {
     return dto.modified
 }
 
-function toDataSampleEndOfLife(dto: Service): number | undefined {
+function toDataSampleEndOfLife(dto: ServiceDto): number | undefined {
     return dto.endOfLife
 }
 
-function toDataSampleAuthor(dto: Service): string | undefined {
+function toDataSampleAuthor(dto: ServiceDto): string | undefined {
     return dto.author
 }
 
-function toDataSampleResponsible(dto: Service): string | undefined {
+function toDataSampleResponsible(dto: ServiceDto): string | undefined {
     return dto.responsible
 }
 
-function toDataSampleComment(dto: Service): string | undefined {
+function toDataSampleComment(dto: ServiceDto): string | undefined {
     return dto.comment
 }
 
-function toDataSampleQualifiedLinks(dto: Service): Map<string, Map<string, string>> {
+function toDataSampleQualifiedLinks(dto: ServiceDto): Map<string, Map<string, string>> {
     return dto.qualifiedLinks ? new Map([...Object.entries(dto.qualifiedLinks)].map(([key, value]) => [key, new Map([...Object.entries(value)])])) : new Map()
 }
 
-function toDataSampleCodes(dto: Service): Set<CodingReference> {
+function toDataSampleCodes(dto: ServiceDto): Set<CodingReference> {
     return dto.codes ? new Set(dto.codes.map(mapCodeStubToCodingReference)) : new Set()
 }
 
-function toDataSampleLabels(dto: Service): Set<CodingReference> {
+function toDataSampleLabels(dto: ServiceDto): Set<CodingReference> {
     return dto.tags ? new Set(dto.tags.map(mapCodeStubToCodingReference)) : new Set()
 }
 
-function toDataSampleSystemMetaData(dto: Service): SystemMetaDataEncrypted | undefined {
+function toDataSampleSystemMetaData(dto: ServiceDto): SystemMetaDataEncrypted | undefined {
     return toSystemMetaDataEncrypted(dto)
 }
 
@@ -254,7 +261,7 @@ function toServiceSecurityMetadata(domain: DataSample): SecurityMetadataDto | un
     return toSecurityMetadataDto(domain.systemMetaData)
 }
 
-export function mapServiceToDataSample(dto: Service): DataSample {
+export function mapServiceToDataSample(dto: ServiceDto): DataSample {
     return new DataSample({
         id: toDataSampleId(dto),
         transactionId: toDataSampleTransactionId(dto),
@@ -280,8 +287,8 @@ export function mapServiceToDataSample(dto: Service): DataSample {
     })
 }
 
-export function mapDataSampleToService(domain: DataSample): Service {
-    return new Service({
+export function mapDataSampleToService(domain: DataSample): ServiceDto {
+    return new ServiceDto({
         id: toServiceId(domain),
         transactionId: toServiceTransactionId(domain),
         identifier: toServiceIdentifier(domain),

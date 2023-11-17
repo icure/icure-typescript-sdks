@@ -1,5 +1,5 @@
 import { Partnership, PartnershipStatusEnum, PartnershipTypeEnum } from '../models/Partnership.model'
-import { Partnership as PartnershipDto } from '@icure/api'
+import { PartnershipDto } from '@icure/typescript-common'
 
 function toPartnershipDtoType(domain: Partnership): PartnershipDto.TypeEnum | undefined {
     return domain.type

@@ -10,8 +10,7 @@
  * Do not edit the class manually.
  */
 
-import { PersonName as PersonNameDto } from '@icure/api'
-import { mapTo } from '@icure/typescript-common'
+import { mapTo, PersonNameDto } from '@icure/typescript-common'
 
 /**
  * the list of all names of the patient, also containing the official full name information. Ordered by preference of use. First element is therefore the official name used for the patient in the application

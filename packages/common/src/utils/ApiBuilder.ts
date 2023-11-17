@@ -14,7 +14,6 @@ export abstract class ApiBuilder<DSCryptoStrategies extends CryptoStrategies<any
     protected storage?: StorageFacade<string>
     protected keyStorage?: KeyStorageFacade
     protected cryptoStrategies?: DSCryptoStrategies
-    protected messageCharactersLimit?: number
 
     withICureBaseUrl(newICureBaseUrl: string): this {
         this.iCureBaseUrl = formatICureApiUrl(newICureBaseUrl)
@@ -73,7 +72,6 @@ export abstract class AnonymousApiBuilder<DSCryptoStrategies extends CryptoStrat
         const authProcessBySmsId = this.authProcessBySmsId
         const cryptoStrategies = this.cryptoStrategies
         const authProcessInfo = !!authProcessByEmailId && !!authProcessBySmsId ? { authProcessBySmsId, authProcessByEmailId } : !!authProcessBySmsId ? { authProcessBySmsId } : !!authProcessByEmailId ? { authProcessByEmailId } : undefined
-        const messageCharactersLimit = this.messageCharactersLimit
         if (!authProcessInfo) {
             throw new Error('At least one between authProcessIdBySms and authProcessByEmailId is required')
         }
@@ -96,7 +94,6 @@ export abstract class AnonymousApiBuilder<DSCryptoStrategies extends CryptoStrat
             primitives: new CryptoPrimitives(this.crypto),
             cryptoStrategies: cryptoStrategies,
             authProcessInfo,
-            messageCharactersLimit,
         })
     }
 
@@ -109,7 +106,6 @@ export abstract class AnonymousApiBuilder<DSCryptoStrategies extends CryptoStrat
         primitives: CryptoPrimitives
         cryptoStrategies: DSCryptoStrategies
         authProcessInfo: { authProcessBySmsId: string; authProcessByEmailId?: string } | { authProcessBySmsId?: string; authProcessByEmailId: string }
-        messageCharactersLimit: number | undefined
     }): Promise<DSApi>
 }
 
@@ -146,7 +142,6 @@ export abstract class AuthenticatedApiBuilder<DSCryptoStrategies extends CryptoS
         const storage = this.storage
         const keyStorage = this.keyStorage
         const messageFactory = this.messageFactory
-        const messageCharactersLimit = this.messageCharactersLimit
         if (iCureBaseUrl == undefined) {
             throw new Error('iCureBaseUrl is required')
         }
@@ -173,7 +168,6 @@ export abstract class AuthenticatedApiBuilder<DSCryptoStrategies extends CryptoS
             storage,
             keyStorage,
             messageFactory,
-            messageCharactersLimit,
         })
     }
 
@@ -190,6 +184,5 @@ export abstract class AuthenticatedApiBuilder<DSCryptoStrategies extends CryptoS
         authProcessByEmailId: string | undefined
         authProcessBySmsId: string | undefined
         messageFactory: DSMessageFactory | undefined
-        messageCharactersLimit: number | undefined
     }): Promise<DSApi>
 }

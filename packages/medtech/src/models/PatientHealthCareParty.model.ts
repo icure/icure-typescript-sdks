@@ -10,8 +10,7 @@
  * Do not edit the class manually.
  */
 
-import { PatientHealthCareParty as PatientHealthCarePartyDto } from '@icure/api'
-import { mapTo } from '@icure/typescript-common'
+import { mapTo, PatientHealthCarePartyDto } from '@icure/typescript-common'
 
 /**
  * Links (usually for therapeutic reasons) between this patient and healthcare parties (of class PatientHealthcareParty).

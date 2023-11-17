@@ -9,10 +9,9 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { HealthElement } from '@icure/api'
-import { Annotation, CodingReference, forceUuid, Identifier, mapTo, SystemMetaDataEncrypted } from '@icure/typescript-common'
+import { Annotation, CodingReference, forceUuid, Identifier, mapTo, SystemMetaDataEncrypted, HealthElementDto } from '@icure/typescript-common'
 
-@mapTo(HealthElement)
+@mapTo(HealthElementDto)
 export class HealthcareElement {
     /**
      * The Id of the healthcare element. We encourage using either a v4 UUID or a HL7 Id.

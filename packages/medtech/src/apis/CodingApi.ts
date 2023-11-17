@@ -1,5 +1,4 @@
-import { CodeLikeApi, CodeLikeApiImpl, Coding, CommonApi, CommonFilter, mapCodeToCoding, mapCodingToCode, PaginatedList } from '@icure/typescript-common'
-import { Code } from '@icure/api'
+import { CodeLikeApi, CodeLikeApiImpl, Coding, CommonApi, CommonFilter, mapCodeToCoding, mapCodingToCode, PaginatedList, CodeDto } from '@icure/typescript-common'
 
 export interface CodingApi extends CodeLikeApi<Coding> {
     /**
@@ -29,7 +28,7 @@ export interface CodingApi extends CodeLikeApi<Coding> {
      * @param nextCodingId The id of the first coding in the next page
      * @param limit The maximum number of codings that should contain the returned page. By default, a page contains 1000 codings
      */
-    filterCoding(filter: CommonFilter<Code>, nextCodingId?: string, limit?: number): Promise<PaginatedList<Coding>>
+    filterCoding(filter: CommonFilter<CodeDto>, nextCodingId?: string, limit?: number): Promise<PaginatedList<Coding>>
 
     /**
      * @deprecated use {@link CodingApi.get} instead
@@ -47,7 +46,7 @@ export interface CodingApi extends CodeLikeApi<Coding> {
      * Load coding ids from the database by filtering them using the provided [filter].
      * @param filter The Filter object that describes which condition(s) the elements whose the ids should be returned must fulfill
      */
-    matchCoding(filter: CommonFilter<Code>): Promise<Array<string>>
+    matchCoding(filter: CommonFilter<CodeDto>): Promise<Array<string>>
 }
 
 export class CodingApiImpl extends CodeLikeApiImpl<Coding> implements CodingApi {
@@ -57,13 +56,13 @@ export class CodingApiImpl extends CodeLikeApiImpl<Coding> implements CodingApi 
     createOrModifyCodings(codings: Array<Coding>): Promise<Array<Coding>> {
         return this.createOrModifyMany(codings)
     }
-    filterCoding(filter: CommonFilter<Code>, nextCodingId?: string, limit?: number): Promise<PaginatedList<Coding>> {
+    filterCoding(filter: CommonFilter<CodeDto>, nextCodingId?: string, limit?: number): Promise<PaginatedList<Coding>> {
         return this.filterBy(filter, nextCodingId, limit)
     }
     getCoding(codingId: string): Promise<Coding> {
         return this.get(codingId)
     }
-    matchCoding(filter: CommonFilter<Code>): Promise<Array<string>> {
+    matchCoding(filter: CommonFilter<CodeDto>): Promise<Array<string>> {
         return this.matchBy(filter)
     }
 }
@@ -71,10 +70,10 @@ export class CodingApiImpl extends CodeLikeApiImpl<Coding> implements CodingApi 
 export const codingApi = (api: CommonApi): CodingApi => {
     return new CodingApiImpl(
         {
-            toDomain(dto: Code): Coding {
+            toDomain(dto: CodeDto): Coding {
                 return mapCodeToCoding(dto)
             },
-            toDto(domain: Coding): Code {
+            toDto(domain: Coding): CodeDto {
                 return mapCodingToCode(domain)
             },
         },

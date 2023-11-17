@@ -1,5 +1,5 @@
 import { Telecom, TelecomTelecomTypeEnum } from '../models/Telecom.model'
-import { Telecom as TelecomDto } from '@icure/api'
+import { TelecomDto } from '@icure/typescript-common'
 
 function toTelecomDtoTelecomType(domain: Telecom): TelecomDto.TelecomTypeEnum | undefined {
     return domain.telecomType

@@ -1,5 +1,4 @@
-import { Connection, HealthElement, Patient as PatientDto, SubscriptionOptions } from '@icure/api'
-import { CommonApi, CommonFilter, HealthElementLikeApi, HealthElementLikeApiImpl, PaginatedList } from '@icure/typescript-common'
+import { CommonApi, CommonFilter, HealthElementLikeApi, HealthElementLikeApiImpl, PaginatedList, Connection, HealthElementDto, PatientDto, SubscriptionOptions } from '@icure/typescript-common'
 import { mapHealthcareElementToHealthElement, mapHealthElementToHealthcareElement } from '../mappers/HealthcareElement.mapper'
 import { Patient } from '../models/Patient.model'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
@@ -62,7 +61,7 @@ export interface HealthcareElementApi extends HealthElementLikeApi<HealthcareEle
      * @param nextHealthElementId The id of the first Healthcare professional in the next page
      * @param limit The maximum number of healthcare elements that should contain the returned page. By default, a page contains 1000 healthcare elements
      */
-    filterHealthcareElement(filter: CommonFilter<HealthElement>, nextHealthElementId?: string, limit?: number): Promise<PaginatedList<HealthcareElement>>
+    filterHealthcareElement(filter: CommonFilter<HealthElementDto>, nextHealthElementId?: string, limit?: number): Promise<PaginatedList<HealthcareElement>>
 
     /**
      * @deprecated use {@link HealthcareElementApi.get} instead.
@@ -81,7 +80,7 @@ export interface HealthcareElementApi extends HealthElementLikeApi<HealthcareEle
      *
      * @param filter Filtering conditions that the returned healthcare element ids are satisfying.
      */
-    matchHealthcareElement(filter: CommonFilter<HealthElement>): Promise<Array<string>>
+    matchHealthcareElement(filter: CommonFilter<HealthElementDto>): Promise<Array<string>>
 
     /**
      * @deprecated use {@link HealthcareElementApi.getAllForPatient} instead.
@@ -106,7 +105,7 @@ export interface HealthcareElementApi extends HealthElementLikeApi<HealthcareEle
      *    - connectionMaxRetry : how many time retrying to reconnect to the iCure WebSocket;
      *    - connectionRetryIntervalInMs : How long base interval will be between two retry. The retry attempt is exponential and using a random value (connectionRetryIntervalMs * (random between 1 and 2))^nbAttempts)
      */
-    subscribeToHealthcareElementEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<HealthElement>, eventFired: (healthcareElement: HealthcareElement) => Promise<void>, options?: SubscriptionOptions): Promise<Connection>
+    subscribeToHealthcareElementEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<HealthElementDto>, eventFired: (healthcareElement: HealthcareElement) => Promise<void>, options?: SubscriptionOptions): Promise<Connection>
 }
 
 class HealthcareElementApiImpl extends HealthElementLikeApiImpl<HealthcareElement, Patient> implements HealthcareElementApi {
@@ -122,7 +121,7 @@ class HealthcareElementApiImpl extends HealthElementLikeApiImpl<HealthcareElemen
         return this.delete(id)
     }
 
-    filterHealthcareElement(filter: CommonFilter<HealthElement>, nextHealthElementId?: string, limit?: number): Promise<PaginatedList<HealthcareElement>> {
+    filterHealthcareElement(filter: CommonFilter<HealthElementDto>, nextHealthElementId?: string, limit?: number): Promise<PaginatedList<HealthcareElement>> {
         return this.filterBy(filter, nextHealthElementId, limit)
     }
 
@@ -130,7 +129,7 @@ class HealthcareElementApiImpl extends HealthElementLikeApiImpl<HealthcareElemen
         return this.get(id)
     }
 
-    matchHealthcareElement(filter: CommonFilter<HealthElement>): Promise<Array<string>> {
+    matchHealthcareElement(filter: CommonFilter<HealthElementDto>): Promise<Array<string>> {
         return this.matchBy(filter)
     }
 
@@ -138,7 +137,7 @@ class HealthcareElementApiImpl extends HealthElementLikeApiImpl<HealthcareElemen
         return this.getAllForPatient(patient)
     }
 
-    subscribeToHealthcareElementEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<HealthElement>, eventFired: (dataSample: HealthcareElement) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
+    subscribeToHealthcareElementEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<HealthElementDto>, eventFired: (dataSample: HealthcareElement) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
         return this.subscribeToEvents(eventTypes, filter, eventFired, options)
     }
 }
@@ -146,10 +145,10 @@ class HealthcareElementApiImpl extends HealthElementLikeApiImpl<HealthcareElemen
 export const healthcareElementApi = (api: CommonApi, basePath: string): HealthcareElementApi => {
     return new HealthcareElementApiImpl(
         {
-            toDomain(dto: HealthElement): HealthcareElement {
+            toDomain(dto: HealthElementDto): HealthcareElement {
                 return mapHealthElementToHealthcareElement(dto)
             },
-            toDto(domain: HealthcareElement): HealthElement {
+            toDto(domain: HealthcareElement): HealthElementDto {
                 return mapHealthcareElementToHealthElement(domain)
             },
         },

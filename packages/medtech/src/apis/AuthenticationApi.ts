@@ -1,8 +1,21 @@
-import { AuthenticationApiImpl, AuthenticationProcess, AuthenticationResult, CryptoStrategies, DataOwnerWithType, ErrorHandler, MessageGatewayApi, Sanitizer } from '@icure/typescript-common'
-import { Device, HealthcareParty, IccAuthApi, KeyStorageFacade, Patient, StorageFacade } from '@icure/api'
+import {
+    AuthenticationApiImpl,
+    AuthenticationProcess,
+    AuthenticationResult,
+    CryptoStrategies,
+    DataOwnerWithType,
+    ErrorHandler,
+    MessageGatewayApi,
+    Sanitizer,
+    DeviceDto,
+    HealthcarePartyDto,
+    KeyStorageFacade,
+    PatientDto,
+    StorageFacade,
+    JwtBridgedAuthService,
+} from '@icure/typescript-common'
 import Crypto from 'crypto'
 import { MedTechApi } from './MedTechApi'
-import { JwtBridgedAuthService } from '@icure/api/icc-x-api/auth/JwtBridgedAuthService'
 
 export interface MedTechAuthenticationResult extends AuthenticationResult<MedTechApi> {
     /**
@@ -56,15 +69,15 @@ export class AuthenticationApi extends AuthenticationApiImpl<MedTechApi> {
         return builder.build()
     }
 
-    protected validateDevice(deviceDto: Device): void {
+    protected validateDevice(deviceDto: DeviceDto): void {
         return
     }
 
-    protected validateHcp(hcpDto: HealthcareParty): void {
+    protected validateHcp(hcpDto: HealthcarePartyDto): void {
         return
     }
 
-    protected validatePatient(patientDto: Patient): void {
+    protected validatePatient(patientDto: PatientDto): void {
         return
     }
 }
