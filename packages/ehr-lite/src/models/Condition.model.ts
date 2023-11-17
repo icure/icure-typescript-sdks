@@ -1,11 +1,10 @@
-import { HealthElement } from '@icure/api'
-import { Annotation, CodingReference, Identifier, SystemMetaDataEncrypted, forceUuid, mapTo } from '@icure/typescript-common'
+import { Annotation, CodingReference, Identifier, SystemMetaDataEncrypted, forceUuid, mapTo, HealthElementDto } from '@icure/typescript-common'
 import { CategoryEnum } from './enums/Category.enum'
 import { ClinicalStatusEnum } from './enums/ClinicalStatus.enum'
 import { SeverityEnum } from './enums/Severity.enum'
 import { VerificationStatusEnum } from './enums/VerificationStatus.enum'
 
-@mapTo(HealthElement)
+@mapTo(HealthElementDto)
 export class Condition {
     id: string
     identifiers: Identifier[]

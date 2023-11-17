@@ -1,5 +1,4 @@
-import { CommonApi, CommonFilter, DeviceLikeApi, DeviceLikeApiImpl, PaginatedList } from '@icure/typescript-common'
-import { Device } from '@icure/api'
+import { CommonApi, CommonFilter, DeviceLikeApi, DeviceLikeApiImpl, PaginatedList, DeviceDto } from '@icure/typescript-common'
 import { MedicalDevice } from '../models/MedicalDevice.model'
 import { mapDeviceToMedicalDevice, mapMedicalDeviceToDevice } from '../mappers/MedicalDevice.mapper'
 
@@ -49,7 +48,7 @@ export interface MedicalDeviceApi extends DeviceLikeApi<MedicalDevice> {
      * @param nextDeviceId The id of the first device in the next page
      * @param limit The number of devices to return in the queried page
      */
-    filterMedicalDevices(filter: CommonFilter<Device>, nextDeviceId?: string, limit?: number): Promise<PaginatedList<MedicalDevice>>
+    filterMedicalDevices(filter: CommonFilter<DeviceDto>, nextDeviceId?: string, limit?: number): Promise<PaginatedList<MedicalDevice>>
 
     /**
      * @deprecated use {@link MedicalDeviceApi.get} instead.
@@ -67,7 +66,7 @@ export interface MedicalDeviceApi extends DeviceLikeApi<MedicalDevice> {
      * Load medical device ids from the database by filtering them using the provided Filter.
      * @param filter The Filter object that describes which condition(s) the elements whose the ids should be returned must fulfill
      */
-    matchMedicalDevices(filter: CommonFilter<Device>): Promise<Array<string>>
+    matchMedicalDevices(filter: CommonFilter<DeviceDto>): Promise<Array<string>>
 }
 
 class MedicalDeviceApiImpl extends DeviceLikeApiImpl<MedicalDevice> implements MedicalDeviceApi {
@@ -83,13 +82,13 @@ class MedicalDeviceApiImpl extends DeviceLikeApiImpl<MedicalDevice> implements M
     deleteMedicalDevices(ids: Array<string>): Promise<Array<string>> {
         return this.deleteMany(ids)
     }
-    filterMedicalDevices(filter: CommonFilter<Device>, nextDeviceId?: string, limit?: number): Promise<PaginatedList<MedicalDevice>> {
+    filterMedicalDevices(filter: CommonFilter<DeviceDto>, nextDeviceId?: string, limit?: number): Promise<PaginatedList<MedicalDevice>> {
         return this.filterBy(filter, nextDeviceId, limit)
     }
     getMedicalDevice(medicalDeviceId: string): Promise<MedicalDevice> {
         return this.get(medicalDeviceId)
     }
-    matchMedicalDevices(filter: CommonFilter<Device>): Promise<Array<string>> {
+    matchMedicalDevices(filter: CommonFilter<DeviceDto>): Promise<Array<string>> {
         return this.matchBy(filter)
     }
 }
@@ -97,10 +96,10 @@ class MedicalDeviceApiImpl extends DeviceLikeApiImpl<MedicalDevice> implements M
 export const medicalDeviceApi = (api: CommonApi, basePath: string): MedicalDeviceApi => {
     return new MedicalDeviceApiImpl(
         {
-            toDomain(dto: Device): MedicalDevice {
+            toDomain(dto: DeviceDto): MedicalDevice {
                 return mapDeviceToMedicalDevice(dto)
             },
-            toDto(domain: MedicalDevice): Device {
+            toDto(domain: MedicalDevice): DeviceDto {
                 return mapMedicalDeviceToDevice(domain)
             },
         },

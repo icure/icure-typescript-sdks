@@ -1,5 +1,4 @@
 import { MedicalDevice } from '../models/MedicalDevice.model'
-import { CodeStub, Device, Identifier as IdentifierDto, PropertyStub } from '@icure/api'
 import {
     CodingReference,
     forceUuid,
@@ -19,6 +18,10 @@ import {
     toPublicKeysForOaepWithSha256,
     toSystemMetaDataOwner,
     toTransferKeys,
+    CodeStub,
+    DeviceDto,
+    IdentifierDto,
+    PropertyStub,
 } from '@icure/typescript-common'
 
 function toDeviceId(domain: MedicalDevice): string {
@@ -133,91 +136,91 @@ function toDevicePublicKeysForOaepWithSha256(domain: MedicalDevice): string[] | 
     return !!domain.systemMetaData ? toPublicKeysForOaepWithSha256(domain.systemMetaData) : undefined
 }
 
-function toMedicalDeviceId(dto: Device): string | undefined {
+function toMedicalDeviceId(dto: DeviceDto): string | undefined {
     return dto.id
 }
 
-function toMedicalDeviceRev(dto: Device): string | undefined {
+function toMedicalDeviceRev(dto: DeviceDto): string | undefined {
     return dto.rev
 }
 
-function toMedicalDeviceDeletionDate(dto: Device): number | undefined {
+function toMedicalDeviceDeletionDate(dto: DeviceDto): number | undefined {
     return dto.deletionDate
 }
 
-function toMedicalDeviceIdentifiers(dto: Device): Identifier[] {
+function toMedicalDeviceIdentifiers(dto: DeviceDto): Identifier[] {
     return dto.identifiers ? [...dto.identifiers].map(mapIdentifierDtoToIdentifier) : []
 }
 
-function toMedicalDeviceCreated(dto: Device): number | undefined {
+function toMedicalDeviceCreated(dto: DeviceDto): number | undefined {
     return dto.created
 }
 
-function toMedicalDeviceModified(dto: Device): number | undefined {
+function toMedicalDeviceModified(dto: DeviceDto): number | undefined {
     return dto.modified
 }
 
-function toMedicalDeviceAuthor(dto: Device): string | undefined {
+function toMedicalDeviceAuthor(dto: DeviceDto): string | undefined {
     return dto.author
 }
 
-function toMedicalDeviceResponsible(dto: Device): string | undefined {
+function toMedicalDeviceResponsible(dto: DeviceDto): string | undefined {
     return dto.responsible
 }
 
-function toMedicalDeviceLabels(dto: Device): Set<CodingReference> {
+function toMedicalDeviceLabels(dto: DeviceDto): Set<CodingReference> {
     return dto.tags ? new Set([...dto.tags].map(mapCodeStubToCodingReference)) : new Set()
 }
 
-function toMedicalDeviceCodes(dto: Device): Set<CodingReference> {
+function toMedicalDeviceCodes(dto: DeviceDto): Set<CodingReference> {
     return dto.codes ? new Set([...dto.codes].map(mapCodeStubToCodingReference)) : new Set()
 }
 
-function toMedicalDeviceEndOfLife(dto: Device): number | undefined {
+function toMedicalDeviceEndOfLife(dto: DeviceDto): number | undefined {
     return dto.endOfLife
 }
 
-function toMedicalDeviceExternalId(dto: Device): string | undefined {
+function toMedicalDeviceExternalId(dto: DeviceDto): string | undefined {
     return dto.externalId
 }
 
-function toMedicalDeviceName(dto: Device): string | undefined {
+function toMedicalDeviceName(dto: DeviceDto): string | undefined {
     return dto.name
 }
 
-function toMedicalDeviceType(dto: Device): string | undefined {
+function toMedicalDeviceType(dto: DeviceDto): string | undefined {
     return dto.type
 }
 
-function toMedicalDeviceBrand(dto: Device): string | undefined {
+function toMedicalDeviceBrand(dto: DeviceDto): string | undefined {
     return dto.brand
 }
 
-function toMedicalDeviceModel(dto: Device): string | undefined {
+function toMedicalDeviceModel(dto: DeviceDto): string | undefined {
     return dto.model
 }
 
-function toMedicalDeviceSerialNumber(dto: Device): string | undefined {
+function toMedicalDeviceSerialNumber(dto: DeviceDto): string | undefined {
     return dto.serialNumber
 }
 
-function toMedicalDeviceParentId(dto: Device): string | undefined {
+function toMedicalDeviceParentId(dto: DeviceDto): string | undefined {
     return dto.parentId
 }
 
-function toMedicalDevicePicture(dto: Device): ArrayBuffer | undefined {
+function toMedicalDevicePicture(dto: DeviceDto): ArrayBuffer | undefined {
     return dto.picture
 }
 
-function toMedicalDeviceProperties(dto: Device): Set<Property> {
+function toMedicalDeviceProperties(dto: DeviceDto): Set<Property> {
     return dto.properties ? new Set([...dto.properties].map(mapPropertyStubToProperty)) : new Set()
 }
 
-function toMedicalDeviceSystemMetaData(dto: Device): SystemMetaDataOwner | undefined {
+function toMedicalDeviceSystemMetaData(dto: DeviceDto): SystemMetaDataOwner | undefined {
     return toSystemMetaDataOwner(dto)
 }
 
-export function mapDeviceToMedicalDevice(dto: Device): MedicalDevice {
+export function mapDeviceToMedicalDevice(dto: DeviceDto): MedicalDevice {
     return new MedicalDevice({
         id: toMedicalDeviceId(dto),
         rev: toMedicalDeviceRev(dto),
@@ -243,8 +246,8 @@ export function mapDeviceToMedicalDevice(dto: Device): MedicalDevice {
     })
 }
 
-export function mapMedicalDeviceToDevice(domain: MedicalDevice): Device {
-    return new Device({
+export function mapMedicalDeviceToDevice(domain: MedicalDevice): DeviceDto {
+    return new DeviceDto({
         id: toDeviceId(domain),
         rev: toDeviceRev(domain),
         deletionDate: toDeviceDeletionDate(domain),

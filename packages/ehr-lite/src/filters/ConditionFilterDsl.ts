@@ -1,6 +1,5 @@
-import { CommonApi, domainTypeTag, HealthElementFilter, HealthElementFilterWithDataOwner } from '@icure/typescript-common'
+import { CommonApi, domainTypeTag, HealthElementFilter, HealthElementFilterWithDataOwner, PatientDto } from '@icure/typescript-common'
 import { Patient } from '../models/Patient.model'
-import { Patient as PatientDto } from '@icure/api'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
 
 export class ConditionFilter extends HealthElementFilter<Patient> {

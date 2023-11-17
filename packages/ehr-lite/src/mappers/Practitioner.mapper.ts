@@ -1,5 +1,4 @@
 import { Practitioner } from '../models/Practitioner.model'
-import { Address, CodeStub, FinancialInstitutionInformation, FlatRateTarification, HealthcareParty, HealthcarePartyHistoryStatus, Identifier as IdentifierDto, ISO639_1, PersonName, PropertyStub } from '@icure/api'
 import { HumanName } from '../models/HumanName.model'
 import { Location } from '../models/Location.model'
 import {
@@ -24,6 +23,16 @@ import {
     toPublicKeysForOaepWithSha256,
     toSystemMetaDataOwner,
     toTransferKeys,
+    AddressDto,
+    CodeStub,
+    FinancialInstitutionInformation,
+    FlatRateTarification,
+    HealthcarePartyDto,
+    HealthcarePartyHistoryStatus,
+    IdentifierDto,
+    ISO639_1,
+    PersonNameDto,
+    PropertyStub,
 } from '@icure/typescript-common'
 import { mapHumanNameToPersonName, mapPersonNameToHumanName } from './HumanName.mapper'
 import { mapAddressToLocation, mapLocationToAddress } from './Location.mapper'
@@ -74,11 +83,11 @@ function toHealthcarePartyFirstName(domain: Practitioner): string | undefined {
     return domain.firstName
 }
 
-function toHealthcarePartyNames(domain: Practitioner): PersonName[] | undefined {
+function toHealthcarePartyNames(domain: Practitioner): PersonNameDto[] | undefined {
     return !!domain.names ? domain.names.map(mapHumanNameToPersonName) : undefined
 }
 
-function toHealthcarePartyGender(domain: Practitioner): HealthcareParty.GenderEnum | undefined {
+function toHealthcarePartyGender(domain: Practitioner): HealthcarePartyDto.GenderEnum | undefined {
     return domain.gender
 }
 
@@ -146,7 +155,7 @@ function toHealthcarePartySsin(domain: Practitioner): string | undefined {
     return undefined
 }
 
-function toHealthcarePartyAddresses(domain: Practitioner): Address[] | undefined {
+function toHealthcarePartyAddresses(domain: Practitioner): AddressDto[] | undefined {
     return !!domain.addresses ? domain.addresses.map(mapLocationToAddress) : undefined
 }
 
@@ -158,7 +167,7 @@ function toHealthcarePartyPicture(domain: Practitioner): ArrayBuffer | undefined
     return domain.picture
 }
 
-function toHealthcarePartyStatuses(domain: Practitioner): HealthcareParty.StatusesEnum[] | undefined {
+function toHealthcarePartyStatuses(domain: Practitioner): HealthcarePartyDto.StatusesEnum[] | undefined {
     return undefined
 }
 
@@ -254,23 +263,23 @@ function toHealthcarePartyPublicKeysForOaepWithSha256(domain: Practitioner): str
     return !!domain.systemMetaData ? toPublicKeysForOaepWithSha256(domain.systemMetaData) : undefined
 }
 
-function toPractitionerId(dto: HealthcareParty): string | undefined {
+function toPractitionerId(dto: HealthcarePartyDto): string | undefined {
     return dto.id
 }
 
-function toPractitionerRev(dto: HealthcareParty): string | undefined {
+function toPractitionerRev(dto: HealthcarePartyDto): string | undefined {
     return dto.rev
 }
 
-function toPractitionerCreated(dto: HealthcareParty): number | undefined {
+function toPractitionerCreated(dto: HealthcarePartyDto): number | undefined {
     return dto.created
 }
 
-function toPractitionerModified(dto: HealthcareParty): number | undefined {
+function toPractitionerModified(dto: HealthcarePartyDto): number | undefined {
     return dto.modified
 }
 
-function toPractitionerIdentifiers(dto: HealthcareParty): Identifier[] | undefined {
+function toPractitionerIdentifiers(dto: HealthcarePartyDto): Identifier[] | undefined {
     const identifiers = healthcareProfessionalIdentifiers(dto)
 
     if (identifiers.length === 0) return undefined
@@ -278,83 +287,83 @@ function toPractitionerIdentifiers(dto: HealthcareParty): Identifier[] | undefin
     return identifiers.map(mapIdentifierDtoToIdentifier)
 }
 
-function toPractitionerTags(dto: HealthcareParty): Set<CodingReference> | undefined {
+function toPractitionerTags(dto: HealthcarePartyDto): Set<CodingReference> | undefined {
     return filteringOutInternalTags('practitioner', dto.tags)
 }
 
-function toPractitionerCodes(dto: HealthcareParty): Set<CodingReference> | undefined {
+function toPractitionerCodes(dto: HealthcarePartyDto): Set<CodingReference> | undefined {
     return !!dto.codes ? new Set(dto.codes.map(mapCodeStubToCodingReference)) : undefined
 }
 
-function toPractitionerDeletionDate(dto: HealthcareParty): number | undefined {
+function toPractitionerDeletionDate(dto: HealthcarePartyDto): number | undefined {
     return dto.deletionDate
 }
 
-function toPractitionerName(dto: HealthcareParty): string | undefined {
+function toPractitionerName(dto: HealthcarePartyDto): string | undefined {
     return dto.name
 }
 
-function toPractitionerLastName(dto: HealthcareParty): string | undefined {
+function toPractitionerLastName(dto: HealthcarePartyDto): string | undefined {
     return dto.lastName
 }
 
-function toPractitionerFirstName(dto: HealthcareParty): string | undefined {
+function toPractitionerFirstName(dto: HealthcarePartyDto): string | undefined {
     return dto.firstName
 }
 
-function toPractitionerNames(dto: HealthcareParty): HumanName[] | undefined {
+function toPractitionerNames(dto: HealthcarePartyDto): HumanName[] | undefined {
     return !!dto.names ? dto.names.map(mapPersonNameToHumanName) : undefined
 }
 
-function toPractitionerGender(dto: HealthcareParty): GenderEnum | undefined {
+function toPractitionerGender(dto: HealthcarePartyDto): GenderEnum | undefined {
     return dto.gender as GenderEnum | undefined
 }
 
-function toPractitionerCivility(dto: HealthcareParty): string | undefined {
+function toPractitionerCivility(dto: HealthcarePartyDto): string | undefined {
     return dto.civility
 }
 
-function toPractitionerSpeciality(dto: HealthcareParty): string | undefined {
+function toPractitionerSpeciality(dto: HealthcarePartyDto): string | undefined {
     return dto.speciality
 }
 
-function toPractitionerParentId(dto: HealthcareParty): string | undefined {
+function toPractitionerParentId(dto: HealthcarePartyDto): string | undefined {
     return dto.parentId
 }
 
-function toPractitionerUserId(dto: HealthcareParty): string | undefined {
+function toPractitionerUserId(dto: HealthcarePartyDto): string | undefined {
     return dto.userId
 }
 
-function toPractitionerAddresses(dto: HealthcareParty): Location[] | undefined {
+function toPractitionerAddresses(dto: HealthcarePartyDto): Location[] | undefined {
     return !!dto.addresses ? dto.addresses.map(mapAddressToLocation) : undefined
 }
 
-function toPractitionerLanguages(dto: HealthcareParty): string[] | undefined {
+function toPractitionerLanguages(dto: HealthcarePartyDto): string[] | undefined {
     return dto.languages
 }
 
-function toPractitionerPicture(dto: HealthcareParty): ArrayBuffer | undefined {
+function toPractitionerPicture(dto: HealthcarePartyDto): ArrayBuffer | undefined {
     return dto.picture
 }
 
-function toPractitionerSpecialityCodes(dto: HealthcareParty): Set<CodingReference> | undefined {
+function toPractitionerSpecialityCodes(dto: HealthcarePartyDto): Set<CodingReference> | undefined {
     return !!dto.specialityCodes ? new Set(dto.specialityCodes.map(mapCodeStubToCodingReference)) : undefined
 }
 
-function toPractitionerDescription(dto: HealthcareParty): Map<ISO639_1, string> | undefined {
+function toPractitionerDescription(dto: HealthcarePartyDto): Map<ISO639_1, string> | undefined {
     return !!dto.descr ? (convertObjectToMap(dto.descr) as Map<ISO639_1, string>) : undefined
 }
 
-function toPractitionerProperties(dto: HealthcareParty): Set<Property> | undefined {
+function toPractitionerProperties(dto: HealthcarePartyDto): Set<Property> | undefined {
     return !!dto.properties ? new Set(dto.properties.map(mapPropertyStubToProperty)) : undefined
 }
 
-function toPractitionerSystemMetaData(dto: HealthcareParty): SystemMetaDataOwner | undefined {
+function toPractitionerSystemMetaData(dto: HealthcarePartyDto): SystemMetaDataOwner | undefined {
     return toSystemMetaDataOwner(dto)
 }
 
-export function mapHealthcarePartyToPractitioner(dto: HealthcareParty): Practitioner {
+export function mapHealthcarePartyToPractitioner(dto: HealthcarePartyDto): Practitioner {
     return new Practitioner({
         id: toPractitionerId(dto),
         rev: toPractitionerRev(dto),
@@ -383,8 +392,8 @@ export function mapHealthcarePartyToPractitioner(dto: HealthcareParty): Practiti
     })
 }
 
-export function mapPractitionerToHealthcareParty(domain: Practitioner): HealthcareParty {
-    return new HealthcareParty({
+export function mapPractitionerToHealthcareParty(domain: Practitioner): HealthcarePartyDto {
+    return new HealthcarePartyDto({
         id: toHealthcarePartyId(domain),
         rev: toHealthcarePartyRev(domain),
         created: toHealthcarePartyCreated(domain),

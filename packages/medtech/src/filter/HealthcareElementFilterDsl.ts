@@ -1,6 +1,5 @@
-import { CommonApi, HealthElementFilter } from '@icure/typescript-common'
+import { CommonApi, HealthElementFilter, PatientDto } from '@icure/typescript-common'
 import { Patient } from '../models/Patient.model'
-import { Patient as PatientDto } from '@icure/api'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
 
 export class HealthcareElementFilter extends HealthElementFilter<Patient> {

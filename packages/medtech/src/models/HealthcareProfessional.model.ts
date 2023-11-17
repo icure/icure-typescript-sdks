@@ -10,12 +10,11 @@
  * Do not edit the class manually.
  */
 
-import { b64_2ab, HealthcareParty, ua2b64 } from '@icure/api'
-import { CodingReference, forceUuid, mapTo, Property, SystemMetaDataOwner } from '@icure/typescript-common'
+import { CodingReference, forceUuid, mapTo, Property, SystemMetaDataOwner, b64_2ab, HealthcarePartyDto, ua2b64 } from '@icure/typescript-common'
 import { Address } from './Address.model'
 import { PersonName } from './PersonName.model'
 
-@mapTo(HealthcareParty)
+@mapTo(HealthcarePartyDto)
 export class HealthcareProfessional {
     constructor(json: IHealthcareProfessional) {
         this.id = forceUuid(json.id)

@@ -1,4 +1,3 @@
-import { CareTeamMember, CodeStub, Delegation as DelegationDto, Episode, HealthElement, Identifier as IdentifierDto, PlanOfAction, SecurityMetadata as SecurityMetadataDto } from '@icure/api'
 import { Condition } from '../models/Condition.model'
 import {
     addUniqueObjectsToArray,
@@ -22,8 +21,16 @@ import {
     toSecretForeignKeys,
     toSecurityMetadataDto,
     toSystemMetaDataEncrypted,
+    CareTeamMember,
+    CodeStub,
+    DelegationDto,
+    Episode,
+    HealthElementDto,
+    IdentifierDto,
+    PlanOfAction,
+    SecurityMetadataDto,
+    AnnotationDto,
 } from '@icure/typescript-common'
-import { Annotation as AnnotationDto } from '@icure/api/icc-api/model/Annotation'
 import { ClinicalStatusEnum } from '../models/enums/ClinicalStatus.enum'
 import { VerificationStatusEnum } from '../models/enums/VerificationStatus.enum'
 import { CategoryEnum } from '../models/enums/Category.enum'
@@ -172,7 +179,7 @@ function toHealthElementStatus(domain: Condition): number | undefined {
     return undefined
 }
 
-function toHealthElementLaterality(domain: Condition): HealthElement.LateralityEnum | undefined {
+function toHealthElementLaterality(domain: Condition): HealthElementDto.LateralityEnum | undefined {
     return undefined
 }
 
@@ -220,59 +227,59 @@ function toHealthElementEncryptedSelf(domain: Condition): string | undefined {
     return !!domain.systemMetaData ? toEncryptedSelf(domain.systemMetaData) : undefined
 }
 
-function toConditionId(dto: HealthElement): string | undefined {
+function toConditionId(dto: HealthElementDto): string | undefined {
     return dto.id
 }
 
-function toConditionIdentifiers(dto: HealthElement): Identifier[] | undefined {
+function toConditionIdentifiers(dto: HealthElementDto): Identifier[] | undefined {
     return !!dto.identifiers ? [...dto.identifiers].map(mapIdentifierDtoToIdentifier) : undefined
 }
 
-function toConditionRev(dto: HealthElement): string | undefined {
+function toConditionRev(dto: HealthElementDto): string | undefined {
     return dto.rev
 }
 
-function toConditionCreated(dto: HealthElement): number | undefined {
+function toConditionCreated(dto: HealthElementDto): number | undefined {
     return dto.created
 }
 
-function toConditionModified(dto: HealthElement): number | undefined {
+function toConditionModified(dto: HealthElementDto): number | undefined {
     return dto.modified
 }
 
-function toConditionAuthor(dto: HealthElement): string | undefined {
+function toConditionAuthor(dto: HealthElementDto): string | undefined {
     return dto.author
 }
 
-function toConditionResponsible(dto: HealthElement): string | undefined {
+function toConditionResponsible(dto: HealthElementDto): string | undefined {
     return dto.responsible
 }
 
-function toConditionMedicalLocationId(dto: HealthElement): string | undefined {
+function toConditionMedicalLocationId(dto: HealthElementDto): string | undefined {
     return dto.medicalLocationId
 }
 
-function toConditionClinicalStatus(dto: HealthElement): ClinicalStatusEnum | undefined {
+function toConditionClinicalStatus(dto: HealthElementDto): ClinicalStatusEnum | undefined {
     const clinicalStatusTag = dto.tags?.find((v) => v.context === 'Condition.clinicalStatus')
     return clinicalStatusTag ? ClinicalStatusEnum.fromCodeStub(clinicalStatusTag) : undefined
 }
 
-function toConditionVerificationStatus(dto: HealthElement): VerificationStatusEnum | undefined {
+function toConditionVerificationStatus(dto: HealthElementDto): VerificationStatusEnum | undefined {
     const verificationStatusTag = dto.tags?.find((v) => v.context === 'Condition.verificationStatus')
     return verificationStatusTag ? VerificationStatusEnum.fromCodeStub(verificationStatusTag) : undefined
 }
 
-function toConditionCategory(dto: HealthElement): CategoryEnum | undefined {
+function toConditionCategory(dto: HealthElementDto): CategoryEnum | undefined {
     const categoryTag = dto.tags?.find((v) => v.context === 'Condition.category')
     return categoryTag ? CategoryEnum.fromCodeStub(categoryTag) : undefined
 }
 
-function toConditionSeverity(dto: HealthElement): SeverityEnum | undefined {
+function toConditionSeverity(dto: HealthElementDto): SeverityEnum | undefined {
     const severityTag = dto.tags?.find((v) => v.context === 'Condition.severity')
     return severityTag ? SeverityEnum.fromCodeStub(severityTag) : undefined
 }
 
-function toConditionBodySite(dto: HealthElement): Set<CodingReference> | undefined {
+function toConditionBodySite(dto: HealthElementDto): Set<CodingReference> | undefined {
     const bodySites = dto.tags?.filter((v) => v.context === 'Condition.bodySite')
 
     if (!bodySites) {
@@ -282,50 +289,50 @@ function toConditionBodySite(dto: HealthElement): Set<CodingReference> | undefin
     return new Set(bodySites.map(mapCodeStubToCodingReference))
 }
 
-function toConditionTags(dto: HealthElement): Set<CodingReference> | undefined {
+function toConditionTags(dto: HealthElementDto): Set<CodingReference> | undefined {
     const contexts = ['clinicalStatus', 'verificationStatus', 'category', 'severity', 'bodySite'].map((v) => `Condition.${v}`)
     const tags = dto.tags?.filter((v) => (!!v.context ? !contexts.includes(v.context) : true))
 
     return filteringOutInternalTags('condition', tags)
 }
 
-function toConditionCodes(dto: HealthElement): Set<CodingReference> | undefined {
+function toConditionCodes(dto: HealthElementDto): Set<CodingReference> | undefined {
     return dto.codes ? new Set([...dto.codes].map(mapCodeStubToCodingReference)) : undefined
 }
 
-function toConditionEndOfLife(dto: HealthElement): number | undefined {
+function toConditionEndOfLife(dto: HealthElementDto): number | undefined {
     return dto.endOfLife
 }
 
-function toConditionDeletionDate(dto: HealthElement): number | undefined {
+function toConditionDeletionDate(dto: HealthElementDto): number | undefined {
     return dto.deletionDate
 }
 
-function toConditionHealthcareElementId(dto: HealthElement): string | undefined {
+function toConditionHealthcareElementId(dto: HealthElementDto): string | undefined {
     return dto.healthElementId
 }
 
-function toConditionRecordedDate(dto: HealthElement): number | undefined {
+function toConditionRecordedDate(dto: HealthElementDto): number | undefined {
     return dto.valueDate
 }
 
-function toConditionOpeningDate(dto: HealthElement): number | undefined {
+function toConditionOpeningDate(dto: HealthElementDto): number | undefined {
     return dto.openingDate
 }
 
-function toConditionClosingDate(dto: HealthElement): number | undefined {
+function toConditionClosingDate(dto: HealthElementDto): number | undefined {
     return dto.closingDate
 }
 
-function toConditionDescription(dto: HealthElement): string | undefined {
+function toConditionDescription(dto: HealthElementDto): string | undefined {
     return dto.descr
 }
 
-function toConditionNotes(dto: HealthElement): Annotation[] | undefined {
+function toConditionNotes(dto: HealthElementDto): Annotation[] | undefined {
     return dto.notes ? [...dto.notes].map(mapAnnotationDtoToAnnotation) : undefined
 }
 
-function toConditionSystemMetaData(dto: HealthElement): SystemMetaDataEncrypted | undefined {
+function toConditionSystemMetaData(dto: HealthElementDto): SystemMetaDataEncrypted | undefined {
     return toSystemMetaDataEncrypted(dto)
 }
 
@@ -333,7 +340,7 @@ function toHealthElementSecurityMetadata(domain: Condition): SecurityMetadataDto
     return toSecurityMetadataDto(domain.systemMetaData)
 }
 
-export function mapHealthElementToCondition(dto: HealthElement): Condition {
+export function mapHealthElementToCondition(dto: HealthElementDto): Condition {
     return new Condition({
         id: toConditionId(dto),
         identifiers: toConditionIdentifiers(dto),
@@ -362,9 +369,9 @@ export function mapHealthElementToCondition(dto: HealthElement): Condition {
     })
 }
 
-export function mapConditionToHealthElement(domain: Condition): HealthElement {
+export function mapConditionToHealthElement(domain: Condition): HealthElementDto {
     const id = toHealthElementId(domain)
-    return new HealthElement({
+    return new HealthElementDto({
         id: id,
         identifiers: toHealthElementIdentifiers(domain),
         rev: toHealthElementRev(domain),

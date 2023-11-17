@@ -10,10 +10,9 @@
  * Do not edit the class manually.
  */
 
-import { b64_2ab, Device, ua2b64 } from '@icure/api'
-import { CodingReference, forceUuid, Identifier, mapTo, Property, SystemMetaDataOwner } from '@icure/typescript-common'
+import { CodingReference, forceUuid, Identifier, mapTo, Property, SystemMetaDataOwner, b64_2ab, DeviceDto, ua2b64 } from '@icure/typescript-common'
 
-@mapTo(Device)
+@mapTo(DeviceDto)
 export class MedicalDevice {
     constructor(json: IMedicalDevice) {
         this.id = forceUuid(json.id)

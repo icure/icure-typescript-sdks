@@ -1,8 +1,8 @@
 import { RelatedPractitioner } from '../models/RelatedPractitioner.model'
-import { PatientHealthCareParty, ReferralPeriod } from '@icure/api'
+import { PatientHealthCarePartyDto, ReferralPeriod } from '@icure/typescript-common'
 import { PractitionerTypeEnum } from '../models/enums/PractitionerType.enum'
 
-function toPatientHealthCarePartyType(domain: RelatedPractitioner): PatientHealthCareParty.TypeEnum | undefined {
+function toPatientHealthCarePartyType(domain: RelatedPractitioner): PatientHealthCarePartyDto.TypeEnum | undefined {
     return domain.type
 }
 
@@ -26,19 +26,19 @@ function toPatientHealthCarePartyEncryptedSelf(domain: RelatedPractitioner): str
     return domain.encryptedSelf
 }
 
-function toRelatedPractitionerType(dto: PatientHealthCareParty): PractitionerTypeEnum | undefined {
+function toRelatedPractitionerType(dto: PatientHealthCarePartyDto): PractitionerTypeEnum | undefined {
     return dto.type as PractitionerTypeEnum | undefined
 }
 
-function toRelatedPractitionerHealthcarePartyId(dto: PatientHealthCareParty): string | undefined {
+function toRelatedPractitionerHealthcarePartyId(dto: PatientHealthCarePartyDto): string | undefined {
     return dto.healthcarePartyId as string | undefined
 }
 
-function toRelatedPractitionerEncryptedSelf(dto: PatientHealthCareParty): string | undefined {
+function toRelatedPractitionerEncryptedSelf(dto: PatientHealthCarePartyDto): string | undefined {
     return dto.encryptedSelf as string | undefined
 }
 
-export function mapPatientHealthCarePartyToRelatedPractitioner(dto: PatientHealthCareParty): RelatedPractitioner {
+export function mapPatientHealthCarePartyToRelatedPractitioner(dto: PatientHealthCarePartyDto): RelatedPractitioner {
     return new RelatedPractitioner({
         type: toRelatedPractitionerType(dto),
         healthcarePartyId: toRelatedPractitionerHealthcarePartyId(dto),
@@ -46,8 +46,8 @@ export function mapPatientHealthCarePartyToRelatedPractitioner(dto: PatientHealt
     })
 }
 
-export function mapRelatedPractitionerToPatientHealthCareParty(domain: RelatedPractitioner): PatientHealthCareParty {
-    return new PatientHealthCareParty({
+export function mapRelatedPractitionerToPatientHealthCareParty(domain: RelatedPractitioner): PatientHealthCarePartyDto {
+    return new PatientHealthCarePartyDto({
         type: toPatientHealthCarePartyType(domain),
         healthcarePartyId: toPatientHealthCarePartyHealthcarePartyId(domain),
         sendFormats: toPatientHealthCarePartySendFormats(domain),

@@ -1,8 +1,8 @@
 import { ContactPoint } from '../models/ContactPoint.model'
-import { Telecom } from '@icure/api'
+import { TelecomDto } from '@icure/typescript-common'
 import { ContactPointTelecomTypeEnum } from '../models/enums/ContactPointTelecomType.enum'
 
-function toTelecomTelecomType(domain: ContactPoint): Telecom.TelecomTypeEnum | undefined {
+function toTelecomTelecomType(domain: ContactPoint): TelecomDto.TelecomTypeEnum | undefined {
     return domain.system
 }
 
@@ -18,23 +18,23 @@ function toTelecomEncryptedSelf(domain: ContactPoint): string | undefined {
     return domain.encryptedSelf
 }
 
-function toContactPointSystem(dto: Telecom): ContactPointTelecomTypeEnum | undefined {
+function toContactPointSystem(dto: TelecomDto): ContactPointTelecomTypeEnum | undefined {
     return dto.telecomType as ContactPointTelecomTypeEnum | undefined
 }
 
-function toContactPointValue(dto: Telecom): string | undefined {
+function toContactPointValue(dto: TelecomDto): string | undefined {
     return dto.telecomNumber
 }
 
-function toContactPointDescription(dto: Telecom): string | undefined {
+function toContactPointDescription(dto: TelecomDto): string | undefined {
     return dto.telecomDescription
 }
 
-function toContactPointEncryptedSelf(dto: Telecom): string | undefined {
+function toContactPointEncryptedSelf(dto: TelecomDto): string | undefined {
     return dto.encryptedSelf
 }
 
-export function mapTelecomToContactPoint(dto: Telecom): ContactPoint {
+export function mapTelecomToContactPoint(dto: TelecomDto): ContactPoint {
     return new ContactPoint({
         system: toContactPointSystem(dto),
         value: toContactPointValue(dto),
@@ -43,8 +43,8 @@ export function mapTelecomToContactPoint(dto: Telecom): ContactPoint {
     })
 }
 
-export function mapContactPointToTelecom(domain: ContactPoint): Telecom {
-    return new Telecom({
+export function mapContactPointToTelecom(domain: ContactPoint): TelecomDto {
+    return new TelecomDto({
         telecomType: toTelecomTelecomType(domain),
         telecomNumber: toTelecomTelecomNumber(domain),
         telecomDescription: toTelecomTelecomDescription(domain),

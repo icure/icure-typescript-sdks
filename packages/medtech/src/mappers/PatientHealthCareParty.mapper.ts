@@ -1,5 +1,5 @@
 import { PatientHealthCareParty, PatientHealthCarePartyTypeEnum } from '../models/PatientHealthCareParty.model'
-import { PatientHealthCareParty as PatientHealthCarePartyDto, ReferralPeriod } from '@icure/api'
+import { PatientHealthCarePartyDto, ReferralPeriod } from '@icure/typescript-common'
 
 function toPatientHealthCarePartyDtoType(domain: PatientHealthCareParty): PatientHealthCarePartyDto.TypeEnum | undefined {
     return domain.type

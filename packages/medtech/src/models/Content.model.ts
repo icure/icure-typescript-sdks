@@ -10,8 +10,7 @@
  * Do not edit the class manually.
  */
 
-import { Content as ContentDto, b64_2ab, ua2b64 } from '@icure/api'
-import { Measure, TimeSeries, mapTo } from '@icure/typescript-common'
+import { Measure, TimeSeries, mapTo, ContentDto, b64_2ab, ua2b64 } from '@icure/typescript-common'
 import { DataSample } from './DataSample.model'
 
 /**

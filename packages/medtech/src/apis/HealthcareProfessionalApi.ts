@@ -1,5 +1,4 @@
-import { CommonApi, CommonFilter, HealthcarePartyLikeApi, HealthcarePartyLikeApiImpl, PaginatedList } from '@icure/typescript-common'
-import { HealthcareParty } from '@icure/api'
+import { CommonApi, CommonFilter, HealthcarePartyLikeApi, HealthcarePartyLikeApiImpl, PaginatedList, HealthcarePartyDto } from '@icure/typescript-common'
 import { HealthcareProfessional } from '../models/HealthcareProfessional.model'
 import { mapHealthcarePartyToHealthcareProfessional, mapHealthcareProfessionalToHealthcareParty } from '../mappers/HealthcareProfessional.mapper'
 
@@ -31,7 +30,7 @@ export interface HealthcareProfessionalApi extends HealthcarePartyLikeApi<Health
      * @param nextHcpId The id of the first Healthcare professional in the next page
      * @param limit The number of healthcare professionals to return in the queried page
      */
-    filterHealthcareProfessionalBy(filter: CommonFilter<HealthcareParty>, nextHcpId?: string, limit?: number): Promise<PaginatedList<HealthcareProfessional>>
+    filterHealthcareProfessionalBy(filter: CommonFilter<HealthcarePartyDto>, nextHcpId?: string, limit?: number): Promise<PaginatedList<HealthcareProfessional>>
 
     /**
      * @deprecated use {@link HealthcareProfessionalApi.get} instead.
@@ -49,7 +48,7 @@ export interface HealthcareProfessionalApi extends HealthcarePartyLikeApi<Health
      * Load healthcare professional ids from the database by filtering them using the provided Filter.
      * @param filter The Filter object that describes which condition(s) the elements whose the ids should be returned must fulfill
      */
-    matchHealthcareProfessionalBy(filter: CommonFilter<HealthcareParty>): Promise<Array<string>>
+    matchHealthcareProfessionalBy(filter: CommonFilter<HealthcarePartyDto>): Promise<Array<string>>
 }
 
 class HealthcareProfessionalApiImpl extends HealthcarePartyLikeApiImpl<HealthcareProfessional> implements HealthcareProfessionalApi {
@@ -59,13 +58,13 @@ class HealthcareProfessionalApiImpl extends HealthcarePartyLikeApiImpl<Healthcar
     deleteHealthcareProfessional(hcpId: string): Promise<string> {
         return this.delete(hcpId)
     }
-    filterHealthcareProfessionalBy(filter: CommonFilter<HealthcareParty>, nextHcpId?: string, limit?: number): Promise<PaginatedList<HealthcareProfessional>> {
+    filterHealthcareProfessionalBy(filter: CommonFilter<HealthcarePartyDto>, nextHcpId?: string, limit?: number): Promise<PaginatedList<HealthcareProfessional>> {
         return this.filterBy(filter, nextHcpId, limit)
     }
     getHealthcareProfessional(hcpId: string): Promise<HealthcareProfessional> {
         return this.get(hcpId)
     }
-    matchHealthcareProfessionalBy(filter: CommonFilter<HealthcareParty>): Promise<Array<string>> {
+    matchHealthcareProfessionalBy(filter: CommonFilter<HealthcarePartyDto>): Promise<Array<string>> {
         return this.matchBy(filter)
     }
 }
@@ -73,10 +72,10 @@ class HealthcareProfessionalApiImpl extends HealthcarePartyLikeApiImpl<Healthcar
 export const healthcareProfessionalApi = (api: CommonApi, basePath: string): HealthcareProfessionalApi => {
     return new HealthcareProfessionalApiImpl(
         {
-            toDomain(dto: HealthcareParty): HealthcareProfessional {
+            toDomain(dto: HealthcarePartyDto): HealthcareProfessional {
                 return mapHealthcarePartyToHealthcareProfessional(dto)
             },
-            toDto(domain: HealthcareProfessional): HealthcareParty {
+            toDto(domain: HealthcareProfessional): HealthcarePartyDto {
                 return mapHealthcareProfessionalToHealthcareParty(domain)
             },
         },

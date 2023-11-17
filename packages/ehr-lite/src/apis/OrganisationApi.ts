@@ -1,5 +1,4 @@
-import { CommonApi, HealthcarePartyLikeApi, HealthcarePartyLikeApiImpl } from '@icure/typescript-common'
-import { HealthcareParty } from '@icure/api'
+import { CommonApi, HealthcarePartyLikeApi, HealthcarePartyLikeApiImpl, HealthcarePartyDto } from '@icure/typescript-common'
 import { Organisation } from '../models/Organisation.model'
 import { mapHealthcarePartyToOrganisation, mapOrganisationToHealthcareParty } from '../mappers/Organisation.mapper'
 
@@ -9,10 +8,10 @@ class OrganisationApiImpl extends HealthcarePartyLikeApiImpl<Organisation> {}
 export const organisationApi = (api: CommonApi, basePath: string): OrganisationApi =>
     new OrganisationApiImpl(
         {
-            toDomain(dto: HealthcareParty): Organisation {
+            toDomain(dto: HealthcarePartyDto): Organisation {
                 return mapHealthcarePartyToOrganisation(dto)
             },
-            toDto(domain: Organisation): HealthcareParty {
+            toDto(domain: Organisation): HealthcarePartyDto {
                 return mapOrganisationToHealthcareParty(domain)
             },
         },

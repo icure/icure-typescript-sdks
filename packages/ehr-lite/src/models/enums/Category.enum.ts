@@ -1,4 +1,4 @@
-import { CodeStub } from '@icure/api'
+import { CodeStub } from '@icure/typescript-common'
 
 export enum CategoryEnum {
     PROBLEM_LIST_ITEM = 'problem-list-item',

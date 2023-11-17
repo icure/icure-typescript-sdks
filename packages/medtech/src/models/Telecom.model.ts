@@ -9,8 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { Telecom as TelecomDto } from '@icure/api'
-import { mapTo } from '@icure/typescript-common'
+import { mapTo, TelecomDto } from '@icure/typescript-common'
 
 @mapTo(TelecomDto)
 export class Telecom {

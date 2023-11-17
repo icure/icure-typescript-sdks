@@ -8,7 +8,62 @@ export * from './utils/utils'
 export * from './apis/apis'
 export * from './types'
 
-export { StorageFacade, KeyStorageFacade, LocalStorageImpl, KeyStorageImpl } from '@icure/api'
+export {
+    StorageFacade,
+    KeyStorageFacade,
+    LocalStorageImpl,
+    KeyStorageImpl,
+    Apis,
+    IccCryptoXApi,
+    DataOwnerWithType as DataOwnerWithTypeDto,
+    IcureApi,
+    Connection,
+    Patient as PatientDto,
+    SubscriptionOptions,
+    MaintenanceTask as MaintenanceTaskDto,
+    Device as DeviceDto,
+    HealthcareParty as HealthcarePartyDto,
+    Document as DocumentDto,
+    Service as ServiceDto,
+    Code as CodeDto,
+    Telecom as TelecomDto,
+    HealthElement as HealthElementDto,
+    Address as AddressDto,
+    Partnership as PartnershipDto,
+    User as UserDto,
+    PatientHealthCareParty as PatientHealthCarePartyDto,
+    ReferralPeriod,
+    ISO639_1,
+    b64_2ab,
+    ua2b64,
+    IccAuthApi,
+    CryptoPrimitives,
+    Annotation as AnnotationDto,
+    CodeStub,
+    Delegation as DelegationDto,
+    EmploymentInfo,
+    FinancialInstitutionInformation,
+    Identifier as IdentifierDto,
+    Insurability,
+    MedicalHouseContract,
+    PersonName as PersonNameDto,
+    PropertyStub,
+    SchoolingInfo,
+    SecurityMetadata as SecurityMetadataDto,
+    Content as ContentDto,
+    CareTeamMember,
+    Episode,
+    PlanOfAction,
+    FlatRateTarification,
+    HealthcarePartyHistoryStatus,
+    Medication as MedicationDto,
+    Measure as MeasureDto,
+    TimeSeries as TimeSeriesDto,
+    Message as MessageDto,
+    Topic as TopicDto,
+} from '@icure/api'
+export { DataOwnerTypeEnum as DataOwnerTypeEnumDto } from '@icure/api/icc-api/model/DataOwnerTypeEnum'
+export { JwtBridgedAuthService } from '@icure/api/icc-x-api/auth/JwtBridgedAuthService'
 
 export { toMapSet } from './utils/mapUtils'
 export { toMapSetTransform } from './utils/mapUtils'

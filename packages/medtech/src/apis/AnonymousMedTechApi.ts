@@ -1,8 +1,5 @@
-import { KeyStorageFacade, StorageFacade } from '@icure/api'
-
 import { AuthenticationApi, CryptoStrategies, DataOwnerWithType, MedTechApi } from '../../index'
-import { CryptoPrimitives } from '@icure/api/icc-x-api/crypto/CryptoPrimitives'
-import { AnonymousApiBuilder, CommonAnonymousApi } from '@icure/typescript-common'
+import { AnonymousApiBuilder, CommonAnonymousApi, KeyStorageFacade, StorageFacade, CryptoPrimitives } from '@icure/typescript-common'
 import { MedTechCryptoStrategies } from '../services/MedTechCryptoStrategies'
 
 export class AnonymousMedTechApi extends CommonAnonymousApi<MedTechApi> {

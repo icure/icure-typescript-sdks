@@ -1,4 +1,4 @@
-import { b64_2ab, ua2b64 } from '@icure/api'
+import { b64_2ab, ua2b64 } from '@icure/typescript-common'
 
 export class Binary {
     contentType: string

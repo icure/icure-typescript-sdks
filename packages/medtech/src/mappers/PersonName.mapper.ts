@@ -1,5 +1,5 @@
 import { PersonName, PersonNameUseEnum } from '../models/PersonName.model'
-import { PersonName as PersonNameDto } from '@icure/api'
+import { PersonNameDto } from '@icure/typescript-common'
 
 function toPersonNameDtoLastName(domain: PersonName): string | undefined {
     return domain.lastName
