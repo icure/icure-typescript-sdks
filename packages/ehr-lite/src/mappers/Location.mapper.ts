@@ -1,11 +1,10 @@
 import { Location } from '../models/Location.model'
-import { Address, Annotation as AnnotationDto, Telecom } from '@icure/api'
-import { Annotation, mapAnnotationDtoToAnnotation, mapAnnotationToAnnotationDto } from '@icure/typescript-common'
+import { Annotation, mapAnnotationDtoToAnnotation, mapAnnotationToAnnotationDto, AddressDto, AnnotationDto, TelecomDto } from '@icure/typescript-common'
 import { ContactPoint } from '../models/ContactPoint.model'
 import { mapContactPointToTelecom, mapTelecomToContactPoint } from './ContactPoint.mapper'
 import { LocationAddressTypeEnum } from '../models/enums/LocationAddressType.enum'
 
-function toAddressAddressType(domain: Location): Address.AddressTypeEnum | undefined {
+function toAddressAddressType(domain: Location): AddressDto.AddressTypeEnum | undefined {
     return domain.addressType
 }
 
@@ -49,7 +48,7 @@ function toAddressNotes(domain: Location): AnnotationDto[] | undefined {
     return !!domain.notes ? domain.notes.map(mapAnnotationToAnnotationDto) : undefined
 }
 
-function toAddressTelecoms(domain: Location): Telecom[] | undefined {
+function toAddressTelecoms(domain: Location): TelecomDto[] | undefined {
     return !!domain.telecoms ? domain.telecoms.map(mapContactPointToTelecom) : undefined
 }
 
@@ -57,55 +56,55 @@ function toAddressEncryptedSelf(domain: Location): string | undefined {
     return domain.encryptedSelf
 }
 
-function toLocationAddressType(dto: Address): LocationAddressTypeEnum | undefined {
+function toLocationAddressType(dto: AddressDto): LocationAddressTypeEnum | undefined {
     return dto.addressType as LocationAddressTypeEnum | undefined
 }
 
-function toLocationDescription(dto: Address): string | undefined {
+function toLocationDescription(dto: AddressDto): string | undefined {
     return dto.descr
 }
 
-function toLocationStreet(dto: Address): string | undefined {
+function toLocationStreet(dto: AddressDto): string | undefined {
     return dto.street
 }
 
-function toLocationHouseNumber(dto: Address): string | undefined {
+function toLocationHouseNumber(dto: AddressDto): string | undefined {
     return dto.houseNumber
 }
 
-function toLocationPostboxNumber(dto: Address): string | undefined {
+function toLocationPostboxNumber(dto: AddressDto): string | undefined {
     return dto.postboxNumber
 }
 
-function toLocationPostalCode(dto: Address): string | undefined {
+function toLocationPostalCode(dto: AddressDto): string | undefined {
     return dto.postalCode
 }
 
-function toLocationCity(dto: Address): string | undefined {
+function toLocationCity(dto: AddressDto): string | undefined {
     return dto.city
 }
 
-function toLocationState(dto: Address): string | undefined {
+function toLocationState(dto: AddressDto): string | undefined {
     return dto.state
 }
 
-function toLocationCountry(dto: Address): string | undefined {
+function toLocationCountry(dto: AddressDto): string | undefined {
     return dto.country
 }
 
-function toLocationNotes(dto: Address): Annotation[] | undefined {
+function toLocationNotes(dto: AddressDto): Annotation[] | undefined {
     return !!dto.notes ? dto.notes.map(mapAnnotationDtoToAnnotation) : undefined
 }
 
-function toLocationTelecoms(dto: Address): ContactPoint[] | undefined {
+function toLocationTelecoms(dto: AddressDto): ContactPoint[] | undefined {
     return !!dto.telecoms ? dto.telecoms.map(mapTelecomToContactPoint) : undefined
 }
 
-function toLocationEncryptedSelf(dto: Address): string | undefined {
+function toLocationEncryptedSelf(dto: AddressDto): string | undefined {
     return dto.encryptedSelf
 }
 
-export function mapAddressToLocation(dto: Address): Location {
+export function mapAddressToLocation(dto: AddressDto): Location {
     return new Location({
         addressType: toLocationAddressType(dto),
         description: toLocationDescription(dto),
@@ -122,8 +121,8 @@ export function mapAddressToLocation(dto: Address): Location {
     })
 }
 
-export function mapLocationToAddress(domain: Location): Address {
-    return new Address({
+export function mapLocationToAddress(domain: Location): AddressDto {
+    return new AddressDto({
         addressType: toAddressAddressType(domain),
         descr: toAddressDescr(domain),
         street: toAddressStreet(domain),

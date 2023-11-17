@@ -1,7 +1,6 @@
-import { Content } from '@icure/api'
-import { mapTo } from '@icure/typescript-common'
+import { mapTo, ContentDto } from '@icure/typescript-common'
 
-@mapTo(Content)
+@mapTo(ContentDto)
 export class LocalComponent {
     stringValue?: string
     documentId?: string

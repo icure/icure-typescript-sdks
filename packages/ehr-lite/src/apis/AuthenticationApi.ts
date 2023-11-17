@@ -1,9 +1,7 @@
-import { AuthenticationApiImpl, CryptoStrategies, DataOwnerWithType, ErrorHandler, extractDomainType, MessageGatewayApi, Sanitizer } from '@icure/typescript-common'
+import { AuthenticationApiImpl, CryptoStrategies, DataOwnerWithType, ErrorHandler, extractDomainType, MessageGatewayApi, Sanitizer, DeviceDto, HealthcarePartyDto, KeyStorageFacade, PatientDto, StorageFacade, JwtBridgedAuthService } from '@icure/typescript-common'
 import { EHRLiteApi } from './EHRLiteApi'
-import { Device, HealthcareParty, IccAuthApi, KeyStorageFacade, Patient, StorageFacade } from '@icure/api'
 import Crypto from 'crypto'
 import { DataOwnerTypeEnum } from '../models/DataOwner.model'
-import { JwtBridgedAuthService } from '@icure/api/icc-x-api/auth/JwtBridgedAuthService'
 
 export class AuthenticationApi extends AuthenticationApiImpl<EHRLiteApi> {
     constructor(
@@ -47,11 +45,11 @@ export class AuthenticationApi extends AuthenticationApiImpl<EHRLiteApi> {
         return builder.build()
     }
 
-    protected validateDevice(deviceDto: Device): void {
+    protected validateDevice(deviceDto: DeviceDto): void {
         throw new Error('Unsupported DataOwner')
     }
 
-    protected validateHcp(hcpDto: HealthcareParty): void {
+    protected validateHcp(hcpDto: HealthcarePartyDto): void {
         const domainType = hcpDto.tags ? extractDomainType(hcpDto.tags) : undefined
 
         if (domainType === undefined) {
@@ -63,7 +61,7 @@ export class AuthenticationApi extends AuthenticationApiImpl<EHRLiteApi> {
         }
     }
 
-    protected validatePatient(patientDto: Patient): void {
+    protected validatePatient(patientDto: PatientDto): void {
         return
     }
 }

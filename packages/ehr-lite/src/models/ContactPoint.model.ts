@@ -1,8 +1,7 @@
-import { Telecom } from '@icure/api'
-import { mapTo } from '@icure/typescript-common'
+import { mapTo, TelecomDto } from '@icure/typescript-common'
 import { ContactPointTelecomTypeEnum } from './enums/ContactPointTelecomType.enum'
 
-@mapTo(Telecom)
+@mapTo(TelecomDto)
 export class ContactPoint {
     system?: ContactPointTelecomTypeEnum
     value?: string

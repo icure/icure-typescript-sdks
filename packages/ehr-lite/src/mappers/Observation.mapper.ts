@@ -1,5 +1,4 @@
 import { Observation } from '../models/Observation.model'
-import { Annotation as AnnotationDto, CodeStub, Content, Delegation as DelegationDto, Identifier as IdentifierDto, ISO639_1, SecurityMetadata as SecurityMetadataDto, Service } from '@icure/api'
 import {
     Annotation,
     CodingReference,
@@ -22,6 +21,14 @@ import {
     toSecretForeignKeys,
     toSecurityMetadataDto,
     toSystemMetaDataEncrypted,
+    AnnotationDto,
+    CodeStub,
+    ContentDto,
+    DelegationDto,
+    IdentifierDto,
+    ISO639_1,
+    SecurityMetadataDto,
+    ServiceDto,
 } from '@icure/typescript-common'
 import { Component } from '../models/Component.model'
 import { LocalComponent } from '../models/LocalComponent.model'
@@ -88,9 +95,9 @@ function toServiceIndex(domain: Observation): number | undefined {
     return domain.index
 }
 
-function toServiceContent(domain: Observation): { [key: string]: Content } | undefined {
+function toServiceContent(domain: Observation): { [key: string]: ContentDto } | undefined {
     const nonLocalizedContent = !!domain.component ? mapComponentToContent(domain.component) : undefined
-    const localizedContentEntries: [ISO639_1, Content][] = [...(domain.localContent?.entries() ?? [])]?.map(([key, value]) => {
+    const localizedContentEntries: [ISO639_1, ContentDto][] = [...(domain.localContent?.entries() ?? [])]?.map(([key, value]) => {
         return [key, mapLocalComponentToContent(value)]
     })
 
@@ -182,68 +189,68 @@ function toServiceEncryptedSelf(domain: Observation): string | undefined {
     return extractEncryptedSelf(domain.systemMetaData)
 }
 
-function toObservationId(dto: Service): string | undefined {
+function toObservationId(dto: ServiceDto): string | undefined {
     return dto.id
 }
 
-function toObservationTransactionId(dto: Service): string | undefined {
+function toObservationTransactionId(dto: ServiceDto): string | undefined {
     return dto.transactionId
 }
 
-function toObservationIdentifiers(dto: Service): Identifier[] | undefined {
+function toObservationIdentifiers(dto: ServiceDto): Identifier[] | undefined {
     return !!dto.identifier ? dto.identifier.map(mapIdentifierDtoToIdentifier) : undefined
 }
 
-function toObservationBatchId(dto: Service): string | undefined {
+function toObservationBatchId(dto: ServiceDto): string | undefined {
     return dto.contactId
 }
 
-function toObservationHealthcareElementIds(dto: Service): string[] | undefined {
+function toObservationHealthcareElementIds(dto: ServiceDto): string[] | undefined {
     return dto.healthElementsIds
 }
 
-function toObservationIndex(dto: Service): number | undefined {
+function toObservationIndex(dto: ServiceDto): number | undefined {
     return dto.index
 }
 
-function toObservationComponent(dto: Service): Component | undefined {
+function toObservationComponent(dto: ServiceDto): Component | undefined {
     const content = Object.entries(dto.content ?? {})?.find(([key]) => key === 'xx')?.[1]
     return !!content ? mapContentToComponent(content) : undefined
 }
 
-function toObservationValueDate(dto: Service): number | undefined {
+function toObservationValueDate(dto: ServiceDto): number | undefined {
     return dto.valueDate
 }
 
-function toObservationOpeningDate(dto: Service): number | undefined {
+function toObservationOpeningDate(dto: ServiceDto): number | undefined {
     return dto.openingDate
 }
 
-function toObservationClosingDate(dto: Service): number | undefined {
+function toObservationClosingDate(dto: ServiceDto): number | undefined {
     return dto.closingDate
 }
 
-function toObservationCreated(dto: Service): number | undefined {
+function toObservationCreated(dto: ServiceDto): number | undefined {
     return dto.created
 }
 
-function toObservationModified(dto: Service): number | undefined {
+function toObservationModified(dto: ServiceDto): number | undefined {
     return dto.modified
 }
 
-function toObservationEndOfLife(dto: Service): number | undefined {
+function toObservationEndOfLife(dto: ServiceDto): number | undefined {
     return dto.endOfLife
 }
 
-function toObservationAuthor(dto: Service): string | undefined {
+function toObservationAuthor(dto: ServiceDto): string | undefined {
     return dto.author
 }
 
-function toObservationPerformer(dto: Service): string | undefined {
+function toObservationPerformer(dto: ServiceDto): string | undefined {
     return dto.responsible
 }
 
-function toObservationLocalContent(dto: Service): Map<ISO639_1, LocalComponent> | undefined {
+function toObservationLocalContent(dto: ServiceDto): Map<ISO639_1, LocalComponent> | undefined {
     const localizedContent = Object.entries(dto.content ?? {})?.filter(([key]) => key !== 'xx')
     return new Map(
         localizedContent.map(([key, value]) => {
@@ -252,23 +259,23 @@ function toObservationLocalContent(dto: Service): Map<ISO639_1, LocalComponent> 
     )
 }
 
-function toObservationQualifiedLinks(dto: Service): Map<string, Map<string, string>> | undefined {
+function toObservationQualifiedLinks(dto: ServiceDto): Map<string, Map<string, string>> | undefined {
     return !!dto.qualifiedLinks ? convertObjectToNestedMap(dto.qualifiedLinks) : undefined
 }
 
-function toObservationCodes(dto: Service): Set<CodingReference> | undefined {
+function toObservationCodes(dto: ServiceDto): Set<CodingReference> | undefined {
     return !!dto.codes ? new Set(dto.codes.map(mapCodeStubToCodingReference)) : undefined
 }
 
-function toObservationTags(dto: Service): Set<CodingReference> | undefined {
+function toObservationTags(dto: ServiceDto): Set<CodingReference> | undefined {
     return filteringOutInternalTags('observation', dto.tags)
 }
 
-function toObservationSystemMetaData(dto: Service): SystemMetaDataEncrypted | undefined {
+function toObservationSystemMetaData(dto: ServiceDto): SystemMetaDataEncrypted | undefined {
     return toSystemMetaDataEncrypted(dto)
 }
 
-function toObservationNotes(dto: Service): Annotation[] | undefined {
+function toObservationNotes(dto: ServiceDto): Annotation[] | undefined {
     return !!dto.notes ? dto.notes.map(mapAnnotationDtoToAnnotation) : undefined
 }
 
@@ -276,7 +283,7 @@ function toServiceSecurityMetadata(domain: Observation): SecurityMetadataDto | u
     return toSecurityMetadataDto(domain.systemMetaData)
 }
 
-export function mapServiceToObservation(dto: Service): Observation {
+export function mapServiceToObservation(dto: ServiceDto): Observation {
     return new Observation({
         id: toObservationId(dto),
         transactionId: toObservationTransactionId(dto),
@@ -302,8 +309,8 @@ export function mapServiceToObservation(dto: Service): Observation {
     })
 }
 
-export function mapObservationToService(domain: Observation): Service {
-    return new Service({
+export function mapObservationToService(domain: Observation): ServiceDto {
+    return new ServiceDto({
         id: toServiceId(domain),
         transactionId: toServiceTransactionId(domain),
         identifier: toServiceIdentifier(domain),

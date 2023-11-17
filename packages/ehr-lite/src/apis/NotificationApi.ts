@@ -1,5 +1,4 @@
-import { CommonApi, MaintenanceTaskLikeApi, MaintenanceTaskLikeApiImpl, mapMaintenanceTaskToNotification, mapNotificationToMaintenanceTask, Notification } from '@icure/typescript-common'
-import { MaintenanceTask } from '@icure/api'
+import { CommonApi, MaintenanceTaskLikeApi, MaintenanceTaskLikeApiImpl, mapMaintenanceTaskToNotification, mapNotificationToMaintenanceTask, Notification, MaintenanceTaskDto } from '@icure/typescript-common'
 
 export interface NotificationApi extends MaintenanceTaskLikeApi<Notification> {}
 class NotificationApiImpl extends MaintenanceTaskLikeApiImpl<Notification> {}
@@ -7,10 +6,10 @@ class NotificationApiImpl extends MaintenanceTaskLikeApiImpl<Notification> {}
 export const notificationApi = (api: CommonApi, basePath: string): NotificationApi => {
     return new NotificationApiImpl(
         {
-            toDomain(dto: MaintenanceTask): Notification {
+            toDomain(dto: MaintenanceTaskDto): Notification {
                 return mapMaintenanceTaskToNotification(dto)
             },
-            toDto(domain: Notification): MaintenanceTask {
+            toDto(domain: Notification): MaintenanceTaskDto {
                 return mapNotificationToMaintenanceTask(domain)
             },
         },

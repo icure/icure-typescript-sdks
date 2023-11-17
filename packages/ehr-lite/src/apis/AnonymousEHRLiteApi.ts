@@ -1,6 +1,4 @@
-import { AnonymousApiBuilder, AuthenticationApi, CryptoStrategies, DataOwnerWithType } from '@icure/typescript-common'
-import { KeyStorageFacade, StorageFacade } from '@icure/api'
-import { CryptoPrimitives } from '@icure/api/icc-x-api/crypto/CryptoPrimitives'
+import { AnonymousApiBuilder, AuthenticationApi, CryptoStrategies, DataOwnerWithType, KeyStorageFacade, StorageFacade, CryptoPrimitives } from '@icure/typescript-common'
 import { EHRLiteApi } from './EHRLiteApi'
 import { authenticationApi } from './AuthenticationApi'
 import { CommonAnonymousApi } from '@icure/typescript-common'

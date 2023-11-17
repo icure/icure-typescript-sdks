@@ -1,9 +1,8 @@
-import { Partnership } from '@icure/api'
-import { mapTo } from '@icure/typescript-common'
+import { mapTo, PartnershipDto } from '@icure/typescript-common'
 import { RelatedPersonStatusEnum } from './enums/RelatedPersonStatus.enum'
 import { RelatedPersonTypeEnum } from './enums/RelatedPersonType.enum'
 
-@mapTo(Partnership)
+@mapTo(PartnershipDto)
 export class RelatedPerson {
     type?: RelatedPersonTypeEnum
     status?: RelatedPersonStatusEnum

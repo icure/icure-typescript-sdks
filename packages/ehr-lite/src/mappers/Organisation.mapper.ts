@@ -1,5 +1,4 @@
 import { Organisation } from '../models/Organisation.model'
-import { Address, CodeStub, FinancialInstitutionInformation, FlatRateTarification, HealthcareParty, HealthcarePartyHistoryStatus, Identifier as IdentifierDto, ISO639_1, PersonName, PropertyStub } from '@icure/api'
 import { Location } from '../models/Location.model'
 import {
     CodingReference,
@@ -23,6 +22,16 @@ import {
     toPublicKeysForOaepWithSha256,
     toSystemMetaDataOwner,
     toTransferKeys,
+    AddressDto,
+    CodeStub,
+    FinancialInstitutionInformation,
+    FlatRateTarification,
+    HealthcarePartyDto,
+    HealthcarePartyHistoryStatus,
+    IdentifierDto,
+    ISO639_1,
+    PersonNameDto,
+    PropertyStub,
 } from '@icure/typescript-common'
 import { mapAddressToLocation, mapLocationToAddress } from './Location.mapper'
 import { healthcareProfessionalIdentifiers } from './utils/HealthProfessional.utils'
@@ -71,11 +80,11 @@ function toHealthcarePartyFirstName(domain: Organisation): string | undefined {
     return undefined
 }
 
-function toHealthcarePartyNames(domain: Organisation): PersonName[] | undefined {
+function toHealthcarePartyNames(domain: Organisation): PersonNameDto[] | undefined {
     return undefined
 }
 
-function toHealthcarePartyGender(domain: Organisation): HealthcareParty.GenderEnum | undefined {
+function toHealthcarePartyGender(domain: Organisation): HealthcarePartyDto.GenderEnum | undefined {
     return undefined
 }
 
@@ -143,7 +152,7 @@ function toHealthcarePartySsin(domain: Organisation): string | undefined {
     return undefined
 }
 
-function toHealthcarePartyAddresses(domain: Organisation): Address[] | undefined {
+function toHealthcarePartyAddresses(domain: Organisation): AddressDto[] | undefined {
     return !!domain.addresses ? domain.addresses.map(mapLocationToAddress) : undefined
 }
 
@@ -155,7 +164,7 @@ function toHealthcarePartyPicture(domain: Organisation): ArrayBuffer | undefined
     return domain.picture
 }
 
-function toHealthcarePartyStatuses(domain: Organisation): HealthcareParty.StatusesEnum[] | undefined {
+function toHealthcarePartyStatuses(domain: Organisation): HealthcarePartyDto.StatusesEnum[] | undefined {
     return undefined
 }
 
@@ -251,23 +260,23 @@ function toHealthcarePartyPublicKeysForOaepWithSha256(domain: Organisation): str
     return domain.systemMetaData ? toPublicKeysForOaepWithSha256(domain.systemMetaData) : undefined
 }
 
-function toOrganisationId(dto: HealthcareParty): string | undefined {
+function toOrganisationId(dto: HealthcarePartyDto): string | undefined {
     return dto.id
 }
 
-function toOrganisationRev(dto: HealthcareParty): string | undefined {
+function toOrganisationRev(dto: HealthcarePartyDto): string | undefined {
     return dto.rev
 }
 
-function toOrganisationCreated(dto: HealthcareParty): number | undefined {
+function toOrganisationCreated(dto: HealthcarePartyDto): number | undefined {
     return dto.created
 }
 
-function toOrganisationModified(dto: HealthcareParty): number | undefined {
+function toOrganisationModified(dto: HealthcarePartyDto): number | undefined {
     return dto.modified
 }
 
-function toOrganisationIdentifiers(dto: HealthcareParty): Identifier[] | undefined {
+function toOrganisationIdentifiers(dto: HealthcarePartyDto): Identifier[] | undefined {
     const identifiers = healthcareProfessionalIdentifiers(dto)
 
     if (identifiers.length === 0) return undefined
@@ -275,55 +284,55 @@ function toOrganisationIdentifiers(dto: HealthcareParty): Identifier[] | undefin
     return identifiers.map(mapIdentifierDtoToIdentifier)
 }
 
-function toOrganisationTags(dto: HealthcareParty): Set<CodingReference> | undefined {
+function toOrganisationTags(dto: HealthcarePartyDto): Set<CodingReference> | undefined {
     return filteringOutInternalTags('organisation', dto.tags)
 }
 
-function toOrganisationCodes(dto: HealthcareParty): Set<CodingReference> | undefined {
+function toOrganisationCodes(dto: HealthcarePartyDto): Set<CodingReference> | undefined {
     return !!dto.codes ? new Set(dto.codes.map(mapCodeStubToCodingReference)) : undefined
 }
 
-function toOrganisationDeletionDate(dto: HealthcareParty): number | undefined {
+function toOrganisationDeletionDate(dto: HealthcarePartyDto): number | undefined {
     return dto.deletionDate
 }
 
-function toOrganisationName(dto: HealthcareParty): string | undefined {
+function toOrganisationName(dto: HealthcarePartyDto): string | undefined {
     return dto.name
 }
 
-function toOrganisationParentId(dto: HealthcareParty): string | undefined {
+function toOrganisationParentId(dto: HealthcarePartyDto): string | undefined {
     return dto.parentId
 }
 
-function toOrganisationUserId(dto: HealthcareParty): string | undefined {
+function toOrganisationUserId(dto: HealthcarePartyDto): string | undefined {
     return dto.userId
 }
 
-function toOrganisationAddresses(dto: HealthcareParty): Location[] | undefined {
+function toOrganisationAddresses(dto: HealthcarePartyDto): Location[] | undefined {
     return !!dto.addresses ? dto.addresses.map(mapAddressToLocation) : undefined
 }
 
-function toOrganisationLanguages(dto: HealthcareParty): string[] | undefined {
+function toOrganisationLanguages(dto: HealthcarePartyDto): string[] | undefined {
     return dto.languages
 }
 
-function toOrganisationPicture(dto: HealthcareParty): ArrayBuffer | undefined {
+function toOrganisationPicture(dto: HealthcarePartyDto): ArrayBuffer | undefined {
     return dto.picture
 }
 
-function toOrganisationDescription(dto: HealthcareParty): Map<ISO639_1, string> | undefined {
+function toOrganisationDescription(dto: HealthcarePartyDto): Map<ISO639_1, string> | undefined {
     return !!dto.descr ? (convertObjectToMap(dto.descr) as Map<ISO639_1, string>) : undefined
 }
 
-function toOrganisationProperties(dto: HealthcareParty): Set<Property> | undefined {
+function toOrganisationProperties(dto: HealthcarePartyDto): Set<Property> | undefined {
     return !!dto.properties ? new Set(dto.properties.map(mapPropertyStubToProperty)) : undefined
 }
 
-function toOrganisationSystemMetaData(dto: HealthcareParty): SystemMetaDataOwner | undefined {
+function toOrganisationSystemMetaData(dto: HealthcarePartyDto): SystemMetaDataOwner | undefined {
     return toSystemMetaDataOwner(dto)
 }
 
-export function mapHealthcarePartyToOrganisation(dto: HealthcareParty): Organisation {
+export function mapHealthcarePartyToOrganisation(dto: HealthcarePartyDto): Organisation {
     return new Organisation({
         id: toOrganisationId(dto),
         rev: toOrganisationRev(dto),
@@ -345,8 +354,8 @@ export function mapHealthcarePartyToOrganisation(dto: HealthcareParty): Organisa
     })
 }
 
-export function mapOrganisationToHealthcareParty(domain: Organisation): HealthcareParty {
-    return new HealthcareParty({
+export function mapOrganisationToHealthcareParty(domain: Organisation): HealthcarePartyDto {
+    return new HealthcarePartyDto({
         id: toHealthcarePartyId(domain),
         rev: toHealthcarePartyRev(domain),
         created: toHealthcarePartyCreated(domain),

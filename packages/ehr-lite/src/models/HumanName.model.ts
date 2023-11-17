@@ -1,8 +1,7 @@
-import { PersonName } from '@icure/api'
-import { mapTo } from '@icure/typescript-common'
+import { mapTo, PersonNameDto } from '@icure/typescript-common'
 import { HumanNameUseEnum } from './enums/HumanNameUse.enum'
 
-@mapTo(PersonName)
+@mapTo(PersonNameDto)
 export class HumanName {
     family?: string
     given: string[]

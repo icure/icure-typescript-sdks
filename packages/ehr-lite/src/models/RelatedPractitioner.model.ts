@@ -1,8 +1,7 @@
-import { PatientHealthCareParty } from '@icure/api'
-import { mapTo } from '@icure/typescript-common'
+import { mapTo, PatientHealthCarePartyDto } from '@icure/typescript-common'
 import { PractitionerTypeEnum } from './enums/PractitionerType.enum'
 
-@mapTo(PatientHealthCareParty)
+@mapTo(PatientHealthCarePartyDto)
 export class RelatedPractitioner {
     type?: PractitionerTypeEnum
     healthcarePartyId?: string

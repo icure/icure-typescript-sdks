@@ -1,9 +1,8 @@
-import { CommonApi, CryptoStrategies, mapTopicDtoToTopic, mapTopicToTopicDto, Reference, Topic, TopicLikeApi, TopicLikeApiImpl } from '@icure/typescript-common'
+import { CommonApi, CryptoStrategies, mapTopicDtoToTopic, mapTopicToTopicDto, Reference, Topic, TopicLikeApi, TopicLikeApiImpl, HealthcarePartyDto, TopicDto, PatientDto, ServiceDto, HealthElementDto, DataOwnerWithTypeDto } from '@icure/typescript-common'
 import { Practitioner } from '../models/Practitioner.model'
 import { Patient } from '../models/Patient.model'
 import { Observation } from '../models/Observation.model'
 import { Condition } from '../models/Condition.model'
-import { HealthcareParty, Topic as TopicDto, Patient as PatientDto, Service, HealthElement, DataOwnerWithType as DataOwnerWithTypeDto } from '@icure/api'
 import { mapHealthcarePartyToPractitioner, mapPractitionerToHealthcareParty } from '../mappers/Practitioner.mapper'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
 import { mapObservationToService, mapServiceToObservation } from '../mappers/Observation.mapper'
@@ -63,10 +62,10 @@ export const topicApi = (api: CommonApi, cryptoStrategies: CryptoStrategies<Data
             },
         },
         {
-            toDomain(dto: HealthcareParty): Practitioner {
+            toDomain(dto: HealthcarePartyDto): Practitioner {
                 return mapHealthcarePartyToPractitioner(dto)
             },
-            toDto(domain: Practitioner): HealthcareParty {
+            toDto(domain: Practitioner): HealthcarePartyDto {
                 return mapPractitionerToHealthcareParty(domain)
             },
         },
@@ -79,18 +78,18 @@ export const topicApi = (api: CommonApi, cryptoStrategies: CryptoStrategies<Data
             },
         },
         {
-            toDomain(dto: Service): Observation {
+            toDomain(dto: ServiceDto): Observation {
                 return mapServiceToObservation(dto)
             },
-            toDto(domain: Observation): Service {
+            toDto(domain: Observation): ServiceDto {
                 return mapObservationToService(domain)
             },
         },
         {
-            toDomain(dto: HealthElement): Condition {
+            toDomain(dto: HealthElementDto): Condition {
                 return mapHealthElementToCondition(dto)
             },
-            toDto(domain: Condition): HealthElement {
+            toDto(domain: Condition): HealthElementDto {
                 return mapConditionToHealthElement(domain)
             },
         },

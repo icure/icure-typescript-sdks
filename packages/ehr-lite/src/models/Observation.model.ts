@@ -1,9 +1,8 @@
-import { ISO639_1, Service } from '@icure/api'
-import { Annotation, CodingReference, Identifier, SystemMetaDataEncrypted, forceUuid, mapTo } from '@icure/typescript-common'
+import { Annotation, CodingReference, Identifier, SystemMetaDataEncrypted, forceUuid, mapTo, ISO639_1, ServiceDto } from '@icure/typescript-common'
 import { Component } from './Component.model'
 import { LocalComponent } from './LocalComponent.model'
 
-@mapTo(Service)
+@mapTo(ServiceDto)
 export class Observation {
     id: string
     transactionId?: string

@@ -1,5 +1,4 @@
-import { User as UserDto, Patient as PatientDto, HealthcareParty as HealthcarePartyDto } from '@icure/api'
-import { CommonApi, mapUserDtoToUser, mapUserToUserDto, User, UserLikeApi, UserLikeApiImpl } from '@icure/typescript-common'
+import { CommonApi, mapUserDtoToUser, mapUserToUserDto, User, UserLikeApi, UserLikeApiImpl, UserDto, PatientDto, HealthcarePartyDto } from '@icure/typescript-common'
 import { Patient } from '../models/Patient.model'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
 import { Practitioner } from '../models/Practitioner.model'

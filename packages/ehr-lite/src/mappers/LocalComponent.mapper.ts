@@ -1,5 +1,5 @@
 import { LocalComponent } from '../models/LocalComponent.model'
-import { Content, Measure, Medication, Service, TimeSeries } from '@icure/api'
+import { ContentDto, MeasureDto, MedicationDto, ServiceDto, TimeSeriesDto } from '@icure/typescript-common'
 
 function toContentStringValue(domain: LocalComponent): string | undefined {
     return domain.stringValue
@@ -29,47 +29,47 @@ function toContentDocumentId(domain: LocalComponent): string | undefined {
     return domain.documentId
 }
 
-function toContentMeasureValue(domain: LocalComponent): Measure | undefined {
+function toContentMeasureValue(domain: LocalComponent): MeasureDto | undefined {
     return undefined
 }
 
-function toContentMedicationValue(domain: LocalComponent): Medication | undefined {
+function toContentMedicationValue(domain: LocalComponent): MedicationDto | undefined {
     return undefined
 }
 
-function toContentTimeSeries(domain: LocalComponent): TimeSeries | undefined {
+function toContentTimeSeries(domain: LocalComponent): TimeSeriesDto | undefined {
     return undefined
 }
 
-function toContentCompoundValue(domain: LocalComponent): Service[] | undefined {
+function toContentCompoundValue(domain: LocalComponent): ServiceDto[] | undefined {
     return undefined
 }
 
-function toContentRatio(domain: LocalComponent): Measure[] | undefined {
+function toContentRatio(domain: LocalComponent): MeasureDto[] | undefined {
     return undefined
 }
 
-function toContentRange(domain: LocalComponent): Measure[] | undefined {
+function toContentRange(domain: LocalComponent): MeasureDto[] | undefined {
     return undefined
 }
 
-function toLocalComponentStringValue(dto: Content): string | undefined {
+function toLocalComponentStringValue(dto: ContentDto): string | undefined {
     return dto.stringValue
 }
 
-function toLocalComponentDocumentId(dto: Content): string | undefined {
+function toLocalComponentDocumentId(dto: ContentDto): string | undefined {
     return dto.documentId
 }
 
-export function mapContentToLocalComponent(dto: Content): LocalComponent {
+export function mapContentToLocalComponent(dto: ContentDto): LocalComponent {
     return new LocalComponent({
         stringValue: toLocalComponentStringValue(dto),
         documentId: toLocalComponentDocumentId(dto),
     })
 }
 
-export function mapLocalComponentToContent(domain: LocalComponent): Content {
-    return new Content({
+export function mapLocalComponentToContent(domain: LocalComponent): ContentDto {
+    return new ContentDto({
         stringValue: toContentStringValue(domain),
         numberValue: toContentNumberValue(domain),
         booleanValue: toContentBooleanValue(domain),

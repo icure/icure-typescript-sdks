@@ -1,8 +1,7 @@
-import { Content } from '@icure/api'
-import { mapTo, Measure, TimeSeries } from '@icure/typescript-common'
+import { mapTo, Measure, TimeSeries, ContentDto } from '@icure/typescript-common'
 import { Observation } from './Observation.model'
 
-@mapTo(Content)
+@mapTo(ContentDto)
 export class Component {
     numberValue?: number
     booleanValue?: boolean

@@ -1,5 +1,4 @@
-import { Apis, DataOwnerWithType as DataOwnerWithTypeDto, IccCryptoXApi, IcureApi, KeyStorageFacade, StorageFacade } from '@icure/api'
-import { AuthenticatedApiBuilder, CommonApi, CryptoStrategies, CryptoStrategiesBridge, extractDomainType } from '@icure/typescript-common'
+import { AuthenticatedApiBuilder, CommonApi, CryptoStrategies, CryptoStrategiesBridge, extractDomainType, Apis, DataOwnerWithTypeDto, IccCryptoXApi, IcureApi, KeyStorageFacade, StorageFacade, DataOwnerTypeEnumDto, JwtBridgedAuthService } from '@icure/typescript-common'
 import { DataOwnerTypeEnum, DataOwnerWithType } from '../models/DataOwner.model'
 import { DataOwnerApi, dataOwnerApi } from './DataOwnerApi'
 import { CodingApi, codingApi } from './CodingApi'
@@ -10,14 +9,12 @@ import { PatientApi, patientApi } from './PatientApi'
 import { PractitionerApi, practitionerApi } from './PractitionerApi'
 import { UserApi, userApi } from './UserApi'
 import { NotificationApi, notificationApi } from './NotificationApi'
-import { DataOwnerTypeEnum as DataOwnerTypeEnumDto } from '@icure/api/icc-api/model/DataOwnerTypeEnum'
 import dataOwnerMapper from '../mappers/DataOwner.mapper'
 import { authenticationApi, AuthenticationApi } from './AuthenticationApi'
 import { EHRLiteCryptoStrategies } from '../services/EHRLiteCryptoStrategies'
 import { EHRLiteMessageFactory, iCureEHRLiteMessageFactory } from '../services/EHRLiteMessageFactory'
 import { topicApi, TopicApi } from './TopicApi'
 import { messageApi, MessageApi } from './MessageApi'
-import { JwtBridgedAuthService } from '@icure/api/icc-x-api/auth/JwtBridgedAuthService'
 
 export class EHRLiteApi extends CommonApi {
     private readonly _codingApi: CodingApi

@@ -1,21 +1,4 @@
 import { Patient } from '../models/Patient.model'
-import {
-    Address,
-    Annotation as AnnotationDto,
-    CodeStub,
-    EmploymentInfo,
-    FinancialInstitutionInformation,
-    Identifier as IdentifierDto,
-    Insurability,
-    MedicalHouseContract,
-    Partnership,
-    Patient as PatientDto,
-    PatientHealthCareParty,
-    PersonName,
-    PropertyStub,
-    SchoolingInfo,
-    SecurityMetadata as SecurityMetadataDto,
-} from '@icure/api'
 import { HumanName } from '../models/HumanName.model'
 import { Location } from '../models/Location.model'
 import {
@@ -45,10 +28,25 @@ import {
     toSecurityMetadataDto,
     toSystemMetaDataOwnerEncrypted,
     toTransferKeys,
+    AddressDto,
+    AnnotationDto,
+    CodeStub,
+    EmploymentInfo,
+    FinancialInstitutionInformation,
+    IdentifierDto,
+    Insurability,
+    MedicalHouseContract,
+    PartnershipDto,
+    PatientDto,
+    PatientHealthCarePartyDto,
+    PersonNameDto,
+    PropertyStub,
+    SchoolingInfo,
+    SecurityMetadataDto,
+    DelegationDto,
 } from '@icure/typescript-common'
 import { RelatedPerson } from '../models/RelatedPerson.model'
 import { RelatedPractitioner } from '../models/RelatedPractitioner.model'
-import { Delegation as DelegationDto } from '@icure/api/icc-api/model/Delegation'
 import { mapHumanNameToPersonName, mapPersonNameToHumanName } from './HumanName.mapper'
 import { mapPartnershipToRelatedPerson, mapRelatedPersonToPartnership } from './RelatedPerson.mapper'
 import { mapPatientHealthCarePartyToRelatedPractitioner, mapRelatedPractitionerToPatientHealthCareParty } from './RelatedPractitioner.mapper'
@@ -109,7 +107,7 @@ function toPatientDtoLastName(domain: Patient): string | undefined {
     return domain.lastName
 }
 
-function toPatientDtoNames(domain: Patient): PersonName[] | undefined {
+function toPatientDtoNames(domain: Patient): PersonNameDto[] | undefined {
     return !!domain.names ? domain.names.map(mapHumanNameToPersonName) : undefined
 }
 
@@ -121,7 +119,7 @@ function toPatientDtoLanguages(domain: Patient): string[] | undefined {
     return domain.languages
 }
 
-function toPatientDtoAddresses(domain: Patient): Address[] | undefined {
+function toPatientDtoAddresses(domain: Patient): AddressDto[] | undefined {
     return !!domain.addresses ? domain.addresses.map(mapLocationToAddress) : undefined
 }
 
@@ -253,11 +251,11 @@ function toPatientDtoInsurabilities(domain: Patient): Insurability[] | undefined
     return undefined
 }
 
-function toPatientDtoPartnerships(domain: Patient): Partnership[] | undefined {
+function toPatientDtoPartnerships(domain: Patient): PartnershipDto[] | undefined {
     return !!domain.relatives ? domain.relatives.map(mapRelatedPersonToPartnership) : undefined
 }
 
-function toPatientDtoPatientHealthCareParties(domain: Patient): PatientHealthCareParty[] | undefined {
+function toPatientDtoPatientHealthCareParties(domain: Patient): PatientHealthCarePartyDto[] | undefined {
     return !!domain.patientPractitioners ? domain.patientPractitioners.map(mapRelatedPractitionerToPatientHealthCareParty) : undefined
 }
 

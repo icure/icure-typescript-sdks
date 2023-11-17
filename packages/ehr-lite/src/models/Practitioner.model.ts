@@ -1,10 +1,9 @@
-import { b64_2ab, HealthcareParty, ISO639_1, ua2b64 } from '@icure/api'
-import { CodingReference, forceUuid, Identifier, mapTo, Property, SystemMetaDataOwner } from '@icure/typescript-common'
+import { CodingReference, forceUuid, Identifier, mapTo, Property, SystemMetaDataOwner, b64_2ab, HealthcarePartyDto, ISO639_1, ua2b64 } from '@icure/typescript-common'
 import { GenderEnum } from './enums/Gender.enum'
 import { HumanName } from './HumanName.model'
 import { Location } from './Location.model'
 
-@mapTo(HealthcareParty)
+@mapTo(HealthcarePartyDto)
 export class Practitioner {
     id: string
     rev?: string
