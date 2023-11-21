@@ -8,6 +8,7 @@ import { Patient, sleep, User } from '@icure/api'
 import { doXOnYAndSubscribe } from '../websocket-utils'
 import { v4 } from 'uuid'
 import { describe, it, beforeAll } from '@jest/globals'
+import { CryptoPrimitives } from '@icure/api/icc-x-api/crypto/CryptoPrimitives'
 
 setLocalStorage(fetch)
 
@@ -426,6 +427,29 @@ export function testUserLikeApi<
                 },
                 ['CREATE'],
             )
+        }, 60_000)
+
+        it('Can get an user by its phoneNumber', async () => {
+            const api = await ctx.masterApi(env)
+            const primitives = new CryptoPrimitives(webcrypto as any)
+
+            const phoneNumber = `+${primitives.randomUuid()}`
+
+            const createdUser = await ctx.userApi(api.api).createOrModify(
+                ctx.toDSUser(
+                    new User({
+                        id: v4(),
+                        name: `user-${primitives.randomUuid()}`,
+                        login: `user-${primitives.randomUuid()}`,
+                        email: `user-${primitives.randomUuid()}@icure.com`,
+                        mobilePhone: phoneNumber,
+                    }),
+                ),
+            )
+
+            const user = await ctx.userApi(api.api).getByPhoneNumber(phoneNumber)
+
+            expect(user).toEqual(createdUser)
         }, 60_000)
     })
 }
