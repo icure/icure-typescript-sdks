@@ -20,19 +20,15 @@ import {
     ServiceFilter,
     ServiceLikeApi,
     SimpleCryptoStrategies,
-    UserLikeApi,
-    TopicLikeApi,
-    MessageLikeApi,
-    MessageCreationResult,
+    UserLikeApi
 } from '@icure/typescript-common'
 import { testStorageWithKeys } from '../test-storage'
 import { webcrypto } from 'crypto'
 import { getTempEmail, TestUtils } from '../test-utils'
 import { assert } from 'chai'
-import { DataOwnerWithType as DataOwnerWithTypeDto, HealthcareParty, HealthElement, KeyStorageFacade, MaintenanceTask, Patient, Service, sleep, StorageFacade, User, Document, Device, retry, Topic, Message, IccDocumentXApi } from '@icure/api'
+import { DataOwnerWithType as DataOwnerWithTypeDto, HealthcareParty, HealthElement, KeyStorageFacade, MaintenanceTask, Patient, Service, sleep, StorageFacade, User, Document, Device, retry } from '@icure/api'
 import { TestVars, UserDetails } from '@icure/test-setup/types'
 import { DefaultStorageEntryKeysFactory } from '@icure/api/icc-x-api/storage/DefaultStorageEntryKeysFactory'
-import { Binary } from '@icure/ehr-lite-sdk'
 
 export abstract class BaseApiTestContext<
     DSAnonymousApiBuilder extends AnonymousApiBuilder<DSCryptoStrategies, DSAnonymousApi>,
@@ -68,7 +64,7 @@ export abstract class BaseApiTestContext<
         const storage = await testStorageWithKeys(new DefaultStorageEntryKeysFactory(), [
             {
                 dataOwnerId: credentials.dataOwnerId,
-                pairs: [{ keyPair: { publicKey: credentials.publicKey, privateKey: credentials.privateKey }, shaVersion: 'sha-1' }],
+                pairs: [{ keyPair: { publicKey: credentials.publicKey, privateKey: credentials.privateKey }}],
             },
         ])
         const builderApi = this.newApiBuilder()
@@ -221,18 +217,4 @@ export interface WithDeviceApi<DSApi, DSDevice> {
     deviceApi(api: DSApi): DeviceLikeApi<DSDevice>
     toDeviceDto(dsDevice: DSDevice): Device
     toDSDevice(deviceDto: Device): DSDevice
-}
-
-export interface WithTopicApi<DSApi, DSTopic, DSHcp, DSPatient, DSService, DSHealthElement> {
-    topicApi(api: DSApi): TopicLikeApi<DSTopic, DSHcp, DSPatient, DSService, DSHealthElement>
-    toTopicDto(dsTopic: DSTopic): Topic
-    toDSTopic(topicDto: Topic): DSTopic
-}
-
-export interface WithMessageApi<DSApi, DSMessage, DSTopic, DSBinary> {
-    messageApi(api: DSApi): MessageLikeApi<DSMessage, DSTopic, DSBinary>
-    toMessageDto(dsMessage: DSMessage): Message
-    toDSMessage(messageDto: Message): DSMessage
-    toDSBinary(binaryDto: { data: ArrayBuffer; filename: string; uti: string }, mimeTypeProvider: (uti: string) => string): DSBinary
-    toBinaryDto(dsBinary: DSBinary, utiProvider: (mimeType: string, extension: string) => string): { data: ArrayBuffer; filename: string; uti: string }
 }

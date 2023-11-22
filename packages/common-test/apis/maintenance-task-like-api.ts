@@ -1,13 +1,31 @@
 import 'isomorphic-fetch'
-import { getEnvironmentInitializer, hcp1Username, hcp2Username, hcp3Username, patUsername, setLocalStorage } from '../test-utils'
-import { getEnvVariables, TestVars } from '@icure/test-setup/types'
-import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, forceUuid, MaintenanceTaskLikeApiImpl, NotificationStatusEnum, NotificationTypeEnum } from '@icure/typescript-common'
-import { assert } from 'chai'
-import { BaseApiTestContext, WithMaintenanceTaskApi } from './TestContexts'
-import { expectArrayContainsExactlyInAnyOrder } from '../assertions'
-import { MaintenanceTask, User } from '@icure/api'
-import { doXOnYAndSubscribe } from '../websocket-utils'
-import { describe, it, beforeAll } from '@jest/globals'
+import {
+    getEnvironmentInitializer,
+    hcp1Username,
+    hcp2Username,
+    hcp3Username,
+    patUsername,
+    setLocalStorage
+} from '../test-utils'
+import {getEnvVariables, TestVars} from '@icure/test-setup/types'
+import {
+    AnonymousApiBuilder,
+    CommonAnonymousApi,
+    CommonApi,
+    CryptoStrategies,
+    DataOwnerWithType,
+    forceUuid,
+    MaintenanceTaskLikeApiImpl,
+    NotificationStatusEnum,
+    NotificationTypeEnum
+} from '@icure/typescript-common'
+import {assert} from 'chai'
+import {BaseApiTestContext, WithMaintenanceTaskApi} from './TestContexts'
+import {expectArrayContainsExactlyInAnyOrder} from '../assertions'
+import {MaintenanceTask, User} from '@icure/api'
+import {doXOnYAndSubscribe} from '../websocket-utils'
+import {beforeAll, describe, it} from '@jest/globals'
+import TaskTypeEnum = MaintenanceTask.TaskTypeEnum;
 
 setLocalStorage(fetch)
 
@@ -110,8 +128,8 @@ export function testMaintenanceTaskLikeApi<
             expect(createdNotificationDto.rev).toBeTruthy()
             expect(createdNotificationDto.created).toBeTruthy()
             expect(createdNotificationDto.taskType).toEqual(notification.taskType)
-            expect(createdNotificationDto.author).toEqual('*') // Patient is an anonymous data owner: omit user id
-            expect(createdNotificationDto.responsible).toEqual('*') // Patient is an anonymous data owner: omit data owner id
+            expect(createdNotificationDto.author).toEqual(patUser.id)
+            expect(createdNotificationDto.responsible).toEqual(patUser.patientId)
             const retrievedNotification = await ctx.mtApi(patApi).get(createdNotificationDto.id!)
             expect(retrievedNotification).toEqual(createdNotification)
             const retrievedByHcp2Notification = await ctx.mtApi(hcp3Api).get(createdNotificationDto.id!)
@@ -236,7 +254,7 @@ export function testMaintenanceTaskLikeApi<
         })
 
         it('should be able to filter Notifications by HcParty id and type as the creator', async () => {
-            const result = await ctx.mtApi(hcp1Api).filterBy(await ctx.newMtFilter(hcp1Api!).forSelf().withType(NotificationTypeEnum.NewUserOwnDataAccess).build())
+            const result = await ctx.mtApi(hcp1Api).filterBy(await ctx.newMtFilter(hcp1Api!).forSelf().withType(TaskTypeEnum.NewUserOwnDataAccess).build())
             expect(result.rows.length).toBeGreaterThan(0)
             for (const notification of result.rows) {
                 const mt = ctx.toMtDto(notification)
@@ -247,7 +265,7 @@ export function testMaintenanceTaskLikeApi<
         })
 
         it('should be able to filter Notifications by HcParty id and type as the delegate', async () => {
-            const result = await ctx.mtApi(hcp1Api).filterBy(await ctx.newMtFilter(hcp1Api!).forSelf().withType(NotificationTypeEnum.NewUserOwnDataAccess).build())
+            const result = await ctx.mtApi(hcp1Api).filterBy(await ctx.newMtFilter(hcp1Api!).forSelf().withType(TaskTypeEnum.NewUserOwnDataAccess).build())
             expect(result.rows.length).toBeGreaterThan(0)
             for (const notification of result.rows) {
                 const mt = ctx.toMtDto(notification)
@@ -272,7 +290,7 @@ export function testMaintenanceTaskLikeApi<
         })
 
         it('should be able to get all the Notifications from multiple paginated lists', async () => {
-            const filter = await ctx.newMtFilter(hcp1Api!).forSelf().withType(NotificationTypeEnum.NewUserOwnDataAccess).build()
+            const filter = await ctx.newMtFilter(hcp1Api!).forSelf().withType(TaskTypeEnum.NewUserOwnDataAccess).build()
             let nextId
             let page
             let existingNotifications: string[] = []
@@ -322,7 +340,7 @@ export function testMaintenanceTaskLikeApi<
             const { api, user } = await ctx.apiForEnvUser(env, hcp1Username)
             // TODO fix eventListener typing
             const connectionPromise = async (options: {}, dataOwnerId: string, eventListener: (notification: MaintenanceTask) => Promise<void>) =>
-                ctx.mtApi(api).subscribeToEvents(eventTypes, await ctx.newMtFilter(api).forSelf().withType(MaintenanceTask.TaskTypeEnum.KeyPairUpdate).build(), eventListener as unknown as any, options)
+                ctx.mtApi(api).subscribeToEvents(eventTypes, await ctx.newMtFilter(api).forSelf().withType(TaskTypeEnum.KeyPairUpdate).build(), eventListener as unknown as any, options)
 
             const events: MaintenanceTask[] = []
             const statuses: string[] = []

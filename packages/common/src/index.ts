@@ -49,7 +49,6 @@ export {
     PersonName as PersonNameDto,
     PropertyStub,
     SchoolingInfo,
-    SecurityMetadata as SecurityMetadataDto,
     Content as ContentDto,
     CareTeamMember,
     Episode,
@@ -60,7 +59,6 @@ export {
     Measure as MeasureDto,
     TimeSeries as TimeSeriesDto,
     Message as MessageDto,
-    Topic as TopicDto,
 } from '@icure/api'
 export { DataOwnerTypeEnum as DataOwnerTypeEnumDto } from '@icure/api/icc-api/model/DataOwnerTypeEnum'
 export { JwtBridgedAuthService } from '@icure/api/icc-x-api/auth/JwtBridgedAuthService'

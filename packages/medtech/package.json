@@ -14,7 +14,7 @@
         "build": "tsc"
     },
     "dependencies": {
-        "@icure/typescript-common": "3.1.0",
+        "@icure/typescript-common": "3.1.0-c",
         "browser-or-node": "^2.1.1",
         "date-fns": "^2.28.0",
         "es6-promise": "^4.2.4",

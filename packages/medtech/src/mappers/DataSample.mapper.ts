@@ -14,7 +14,6 @@ import {
     toEncryptedSelf,
     toEncryptionKeys,
     toSecretForeignKeys,
-    toSecurityMetadataDto,
     toSystemMetaDataEncrypted,
     AnnotationDto,
     CodeStub,
@@ -22,7 +21,6 @@ import {
     DelegationDto,
     IdentifierDto,
     ISO639_1,
-    SecurityMetadataDto,
     ServiceDto,
 } from '@icure/typescript-common'
 import { Content } from '../models/Content.model'
@@ -257,10 +255,6 @@ function toDataSampleSystemMetaData(dto: ServiceDto): SystemMetaDataEncrypted | 
     return toSystemMetaDataEncrypted(dto)
 }
 
-function toServiceSecurityMetadata(domain: DataSample): SecurityMetadataDto | undefined {
-    return toSecurityMetadataDto(domain.systemMetaData)
-}
-
 export function mapServiceToDataSample(dto: ServiceDto): DataSample {
     return new DataSample({
         id: toDataSampleId(dto),
@@ -324,7 +318,6 @@ export function mapDataSampleToService(domain: DataSample): ServiceDto {
         qualifiedLinks: toServiceQualifiedLinks(domain),
         codes: toServiceCodes(domain),
         tags: toServiceTags(domain),
-        encryptedSelf: toServiceEncryptedSelf(domain),
-        securityMetadata: toServiceSecurityMetadata(domain),
+        encryptedSelf: toServiceEncryptedSelf(domain)
     })
 }

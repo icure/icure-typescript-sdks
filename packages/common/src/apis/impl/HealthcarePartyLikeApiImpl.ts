@@ -37,10 +37,10 @@ export class HealthcarePartyLikeApiImpl<DSHealthcareParty> implements Healthcare
     }
 
     async delete(id: string): Promise<string> {
-        const deletedHcpRev = (await this.healthcarePartyApi.deleteHealthcareParty(id).catch((e) => {
+        const deletedHcpRev = (await this.healthcarePartyApi.deleteHealthcareParties(id).catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
             },
-        ))?.rev
+        ))[0]?.rev
         if (deletedHcpRev) {
             return deletedHcpRev
         }

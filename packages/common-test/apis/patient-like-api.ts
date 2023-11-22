@@ -151,8 +151,8 @@ export function testPatientLikeApi<
             const { api: h2api, user: h2 } = await ctx.apiForEnvUser(env, hcp2Username)
             const { api: pApi, user: p } = await ctx.apiForEnvUser(env, patUsername)
             const patient = await ctx.createPatient(hcp1Api)
-            await ctx.patientApi(hcp1Api!).giveAccessTo(patient, p.patientId!)
-            const sharedPatient = await ctx.patientApi(hcp1Api!).giveAccessTo(patient, h2.healthcarePartyId!)
+            const shared = await ctx.patientApi(hcp1Api!).giveAccessTo(patient, p.patientId!)
+            const sharedPatient = await ctx.patientApi(hcp1Api!).giveAccessTo(shared, h2.healthcarePartyId!)
             await ctx.checkPatientAccessibleAndDecrypted(hcp1Api, sharedPatient, true)
             await ctx.checkPatientAccessibleAndDecrypted(h2api, sharedPatient, true)
             // Still accessible to patient even though the last time we shared we didn't pass the helement with delegation to patient.

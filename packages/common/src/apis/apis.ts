@@ -1,5 +1,3 @@
-import { CommonAnonymousApi } from './CommonAnonymousApi'
-
 export * from './impl/AuthenticationApiImpl'
 export * from './impl/CodeLikeApiImpl'
 export * from './impl/CryptoStrategiesBridge'
@@ -12,8 +10,6 @@ export * from './impl/MessageGatewayApiImpl'
 export * from './impl/PatientLikeApiImpl'
 export * from './impl/ServiceLikeApiImpl'
 export * from './impl/UserLikeApiImpl'
-export * from './impl/TopicLikeApiImpl'
-export * from './impl/MessageLikeApiImpl'
 
 export * from './AuthenticationApi'
 export * from './CodeLikeApi'
@@ -28,7 +24,5 @@ export * from './MessageGatewayApi'
 export * from './PatientLikeApi'
 export * from './ServiceLikeApi'
 export * from './UserLikeApi'
-export * from './TopicLikeApi'
-export * from './MessageLikeApi'
 
 export * from './CommonApi'

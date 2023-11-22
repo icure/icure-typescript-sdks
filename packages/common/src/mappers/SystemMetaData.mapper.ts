@@ -1,4 +1,4 @@
-import { Device, HealthcareParty, HealthElement, MaintenanceTask, Patient, Service, SecurityMetadata as SecurityMetadataDto, Document as DocumentDto, Message as MessageDto, Topic as TopicDto } from '@icure/api'
+import { Device, HealthcareParty, HealthElement, MaintenanceTask, Patient, Service, Document as DocumentDto, Message as MessageDto } from '@icure/api'
 import { SystemMetaDataEncrypted } from '../models/SystemMetaDataEncrypted.model'
 import { mapDelegationDtoToDelegation, mapDelegationToDelegationDto } from './Delegation.mapper'
 import { SystemMetaDataOwner } from '../models/SystemMetaDataOwner.model'
@@ -27,7 +27,6 @@ import { Delegation } from '../models/Delegation.model'
 import { mapCodeStubToCodingReference } from './CodingReference.mapper'
 import { CodingReference } from '../models/CodingReference.model'
 import { ICURE_INTERNAL_FHIR_TAG_TYPE } from '../utils/domain'
-import { mapSecurityMetadataDtoToSecurityMetadata, mapSecurityMetadataToSecurityMetadataDto } from './SecurityMetadata.mapper'
 
 function toMapOfSetOfDelegations(delegations: { [p: string]: DelegationDto[] }): Map<string, Set<DelegationDto>> {
     return new Map(Object.entries(delegations).map(([k, v]) => [k, new Set(v.map(mapDelegationDtoToDelegation))]))
@@ -37,15 +36,14 @@ function extractInternalTags(dto: HealthElement | Service | MaintenanceTask | He
     return !!dto.tags ? new Set(dto.tags.filter((t) => t.type === ICURE_INTERNAL_FHIR_TAG_TYPE).map(mapCodeStubToCodingReference)) : undefined
 }
 
-export function toSystemMetaDataEncrypted(dto: HealthElement | Service | MaintenanceTask | DocumentDto | MessageDto | TopicDto): SystemMetaDataEncrypted | undefined {
+export function toSystemMetaDataEncrypted(dto: HealthElement | Service | MaintenanceTask | DocumentDto | MessageDto): SystemMetaDataEncrypted | undefined {
     return new SystemMetaDataEncrypted({
         encryptedSelf: dto.encryptedSelf,
         secretForeignKeys: dto.secretForeignKeys,
         cryptedForeignKeys: !!dto.cryptedForeignKeys ? toMapOfSetOfDelegations(dto.cryptedForeignKeys) : undefined,
         delegations: !!dto.delegations ? toMapOfSetOfDelegations(dto.delegations) : undefined,
         encryptionKeys: !!dto.encryptionKeys ? toMapOfSetOfDelegations(dto.encryptionKeys) : undefined,
-        tags: extractInternalTags(dto),
-        securityMetadata: !!dto.securityMetadata ? mapSecurityMetadataDtoToSecurityMetadata(dto.securityMetadata) : undefined,
+        tags: extractInternalTags(dto)
     })
 }
 
@@ -74,8 +72,7 @@ export function toSystemMetaDataOwnerEncrypted(dto: Patient): SystemMetaDataOwne
         transferKeys: !!dto.transferKeys ? convertObjectToNestedMap(dto.transferKeys) : undefined,
         privateKeyShamirPartitions: !!dto.privateKeyShamirPartitions ? convertObjectToMap(dto.privateKeyShamirPartitions) : undefined,
         publicKeysForOaepWithSha256: dto.publicKeysForOaepWithSha256,
-        tags: extractInternalTags(dto),
-        securityMetadata: !!dto.securityMetadata ? mapSecurityMetadataDtoToSecurityMetadata(dto.securityMetadata) : undefined,
+        tags: extractInternalTags(dto)
     })
 }
 
@@ -168,10 +165,6 @@ function toObjectOfArrayOfDelegations(delegations: Map<string, Set<Delegation>>)
 
 export function toEncryptedSelf(systemMetaData: SystemMetaDataOwnerEncrypted | SystemMetaDataEncrypted | undefined): string | undefined {
     return systemMetaData ? extractEncryptedSelf(systemMetaData) : undefined
-}
-
-export function toSecurityMetadataDto(systemMetaData: SystemMetaDataOwnerEncrypted | SystemMetaDataEncrypted | undefined): SecurityMetadataDto | undefined {
-    return !!systemMetaData?.securityMetadata ? mapSecurityMetadataToSecurityMetadataDto(systemMetaData.securityMetadata) : undefined
 }
 
 export function systemMetaDataTags(systemMetaData: SystemMetaDataOwnerEncrypted | SystemMetaDataEncrypted | SystemMetaDataOwner | undefined): Set<CodingReference> {

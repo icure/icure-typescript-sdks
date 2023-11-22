@@ -7,12 +7,11 @@ import {
     PaginatedListMaintenanceTask as PaginatedListMaintenanceTaskDto,
     PaginatedListPatient as PaginatedListPatientDto,
     PaginatedListService as PaginatedListServiceDto,
-    PaginatedListContact as PaginatedListContactDto,
-    PaginatedListTopic as PaginatedListTopicDto,
+    PaginatedListContact as PaginatedListContactDto
 } from '@icure/api'
 import { PaginatedDocumentKeyAndIdPairObject } from '../models/PaginatedDocumentKeyAndIdPairObject.model'
 
-type AnyPaginatedListDto = PaginatedListCodeDto | PaginatedListDeviceDto | PaginatedListHealthcarePartyDto | PaginatedListHealthElementDto | PaginatedListMaintenanceTaskDto | PaginatedListPatientDto | PaginatedListServiceDto | PaginatedListContactDto | PaginatedListTopicDto
+type AnyPaginatedListDto = PaginatedListCodeDto | PaginatedListDeviceDto | PaginatedListHealthcarePartyDto | PaginatedListHealthElementDto | PaginatedListMaintenanceTaskDto | PaginatedListPatientDto | PaginatedListServiceDto | PaginatedListContactDto
 
 export function toPaginatedList<DtoElement, DsElement>(dto: AnyPaginatedListDto & { rows?: DtoElement[] }, dtoElementToDomain: (dto: DtoElement) => DsElement): PaginatedList<DsElement> {
     if (!dto.rows) throw new Error('Internal error: paginated list value does not have rows')

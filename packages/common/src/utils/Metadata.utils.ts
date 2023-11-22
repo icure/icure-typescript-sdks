@@ -22,10 +22,6 @@ export const extractEncryptedSelf = (value?: SystemMetaDataOwnerEncrypted | Syst
     return value?.encryptedSelf
 }
 
-export const extractSecurityMetadata = (value?: SystemMetaDataOwnerEncrypted | SystemMetaDataEncrypted) => {
-    return value?.securityMetadata
-}
-
 export const extractHcPartyKeys = (value?: SystemMetaDataOwner | SystemMetaDataOwnerEncrypted) => {
     return value?.hcPartyKeys
 }
@@ -48,10 +44,6 @@ export const extractPublicKey = (value?: SystemMetaDataOwner | SystemMetaDataOwn
 
 export const extractPublicKeysForOaepWithSha256 = (value?: SystemMetaDataOwner | SystemMetaDataOwnerEncrypted) => {
     return value?.publicKeysForOaepWithSha256
-}
-
-export const extractSecurityMetaData = (value?: SystemMetaDataEncrypted | SystemMetaDataOwnerEncrypted) => {
-    return value?.securityMetadata
 }
 
 export function convertMapToObject(map: Map<string, string>): { [key: string]: string } {

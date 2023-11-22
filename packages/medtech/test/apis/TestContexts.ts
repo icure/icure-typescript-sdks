@@ -12,13 +12,10 @@ import {
     mapNotificationToMaintenanceTask,
     Document,
     mapMaintenanceTaskToNotification,
-    ServiceFilter,
     mapDocumentToDocumentDto,
-    HealthElementFilter,
     MessageFactory,
-    NotificationTypeEnum,
     MaintenanceTaskFilter,
-    Annotation,
+    Annotation, NotificationTypeEnum,
 } from '@icure/typescript-common'
 import { AnonymousMedTechApi } from '../../src/apis/AnonymousMedTechApi'
 import { MedTechApi } from '../../src/apis/MedTechApi'
@@ -43,11 +40,10 @@ import dataOwnerMapper from '../../src/mappers/DataOwner.mapper'
 import { HealthcareElement } from '../../src/models/HealthcareElement.model'
 import { HealthcareElementApi } from '../../src/apis/HealthcareElementApi'
 import { mapHealthcareElementToHealthElement, mapHealthElementToHealthcareElement } from '../../src/mappers/HealthcareElement.mapper'
-import { DataSampleFilter } from '../../src/filter/DataSampleFilterDsl'
-import { HealthcareElementFilter } from '../../src/filter/HealthcareElementFilterDsl'
+import {DataSampleFilter, NotificationFilter} from '../../src/filter'
+import { HealthcareElementFilter } from '../../src/filter'
 import { TestMessageFactory } from '../test-utils'
 import { MedTechMessageFactory } from '../../src/services/MedTechMessageFactory'
-import { NotificationFilter } from '@icure/ehr-lite-sdk'
 import { MedicalDeviceApi } from '../../src/apis/MedicalDeviceApi'
 import { MedicalDevice } from '../../src/models/MedicalDevice.model'
 import { mapDeviceToMedicalDevice, mapMedicalDeviceToDevice } from '../../src/mappers/MedicalDevice.mapper'

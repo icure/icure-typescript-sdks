@@ -24,7 +24,6 @@ import {
     toPublicKey,
     toPublicKeysForOaepWithSha256,
     toSecretForeignKeys,
-    toSecurityMetadataDto,
     toSystemMetaDataOwnerEncrypted,
     toTransferKeys,
     AddressDto,
@@ -42,7 +41,6 @@ import {
     PersonNameDto,
     PropertyStub,
     SchoolingInfo,
-    SecurityMetadataDto,
 } from '@icure/typescript-common'
 import { PersonName } from '../models/PersonName.model'
 import { Address } from '../models/Address.model'
@@ -593,10 +591,6 @@ function toPatientNotes(dto: PatientDto): Annotation[] | undefined {
     return dto.notes ? dto.notes.map(mapAnnotationDtoToAnnotation) : undefined
 }
 
-function toPatientDtoSecurityMetadata(domain: Patient): SecurityMetadataDto | undefined {
-    return toSecurityMetadataDto(domain.systemMetaData)
-}
-
 export function mapPatientDtoToPatient(dto: PatientDto): Patient {
     return new Patient({
         id: toPatientId(dto),
@@ -734,7 +728,6 @@ export function mapPatientToPatientDto(domain: Patient): PatientDto {
         socialStatus: toPatientDtoSocialStatus(domain),
         mainSourceOfIncome: toPatientDtoMainSourceOfIncome(domain),
         schoolingInfos: toPatientDtoSchoolingInfos(domain),
-        employementInfos: toPatientDtoEmployementInfos(domain),
-        securityMetadata: toPatientDtoSecurityMetadata(domain),
+        employementInfos: toPatientDtoEmployementInfos(domain)
     })
 }

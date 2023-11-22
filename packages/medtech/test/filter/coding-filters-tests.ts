@@ -5,10 +5,10 @@ import { expect } from 'chai'
 import { v4 as uuid } from 'uuid'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import { Coding, mapOf, User } from '@icure/typescript-common'
+import { CodingFilter } from "../../src/filter";
 import { FilterComposition, NoOpFilter } from '@icure/typescript-common'
 import { describe, it, before } from 'mocha'
 import { TestUtils } from '../test-utils'
-import {CodingFilter} from "@icure/ehr-lite-sdk";
 
 setLocalStorage(fetch)
 
@@ -30,7 +30,7 @@ describe('Coding Filters Test', function () {
         hcp1Api = hcp1ApiAndUser.api
         hcp1User = hcp1ApiAndUser.user
 
-        code1 = await hcp1Api.codingApi.createOrModifyCoding(
+        code1 = await hcp1Api.codingApi.createOrModify(
             new Coding({
                 type: 'ICURE',
                 code: 'PARARIBULITIS',
@@ -40,7 +40,7 @@ describe('Coding Filters Test', function () {
             }),
         )
 
-        code2 = await hcp1Api.codingApi.createOrModifyCoding(
+        code2 = await hcp1Api.codingApi.createOrModify(
             new Coding({
                 type: 'ICURE',
                 code: 'UNIVERSE THERMAL DEATH',
@@ -50,7 +50,7 @@ describe('Coding Filters Test', function () {
             }),
         )
 
-        code3 = await hcp1Api.codingApi.createOrModifyCoding(
+        code3 = await hcp1Api.codingApi.createOrModify(
             new Coding({
                 type: 'SNOMED',
                 code: 'HEADACHE',
@@ -90,7 +90,7 @@ describe('Coding Filters Test', function () {
 
         const unionFilter = FilterComposition.union(codeByIdFilter, codeByRegionLanguageTypeFilter)
 
-        const codes = await hcp1Api.codingApi.filterCoding(unionFilter)
+        const codes = await hcp1Api.codingApi.filterBy(unionFilter)
 
         expect(codes.rows.length).to.be.greaterThan(0)
         codes.rows.forEach((code) => {
@@ -101,7 +101,7 @@ describe('Coding Filters Test', function () {
     }).timeout(60000)
 
     it('Can filter Codings by implicit intersection filter', async function () {
-        const codes = await hcp1Api.codingApi.filterCoding(await new CodingFilter(hcp1Api).byRegionLanguageTypeLabel('gb', 'en', 'SNOMED').byIds([code1.id!, code2.id!, code3.id!]).build())
+        const codes = await hcp1Api.codingApi.filterBy(await new CodingFilter(hcp1Api).byRegionLanguageTypeLabel('gb', 'en', 'SNOMED').byIds([code1.id!, code2.id!, code3.id!]).build())
         expect(codes.rows.length).to.be.equal(1)
         codes.rows.forEach((code) => {
             expect(code.id).to.be.oneOf([code1.id!, code2.id!, code3.id!])
@@ -116,7 +116,7 @@ describe('Coding Filters Test', function () {
         const codesByLanguageFilter = await new CodingFilter(hcp1Api).byRegionLanguageTypeLabel('gb', 'en', 'SNOMED').build()
 
         const intersectionFilter = FilterComposition.intersection(codesByIdFilter, codesByLanguageFilter)
-        const codes = await hcp1Api.codingApi.filterCoding(intersectionFilter)
+        const codes = await hcp1Api.codingApi.filterBy(intersectionFilter)
         expect(codes.rows.length).to.be.equal(1)
         codes.rows.forEach((code) => {
             expect(code.id).to.be.oneOf([code1.id!, code2.id!, code3.id!])
@@ -132,7 +132,7 @@ describe('Coding Filters Test', function () {
 
         const intersectionFilter = FilterComposition.intersection(codesByIdFilter, codesByLanguageFilter)
 
-        const codes = await hcp1Api.codingApi.filterCoding(intersectionFilter)
+        const codes = await hcp1Api.codingApi.filterBy(intersectionFilter)
         expect(codes.rows.length).to.be.equal(0)
     })
 
@@ -140,7 +140,7 @@ describe('Coding Filters Test', function () {
         const noOpFilter = await new CodingFilter(hcp1Api).byIds([uuid()]).byIds([uuid()]).build()
         expect(NoOpFilter.isNoOp(noOpFilter)).to.be.true
 
-        const codes = await hcp1Api.codingApi.filterCoding(noOpFilter)
+        const codes = await hcp1Api.codingApi.filterBy(noOpFilter)
         expect(codes.rows.length).to.be.equal(0)
     })
 })

@@ -30,7 +30,7 @@ export function testHcpLikeApi<
 
         it('should be capable of creating a healthcare professional from scratch', async () => {
             const { api } = await ctx.masterApi(env)
-            const rawKeyPair: CryptoKeyPair = await api.baseApi.cryptoApi.primitives.RSA.generateKeyPair('sha-256')
+            const rawKeyPair: CryptoKeyPair = await api.baseApi.cryptoApi.primitives.RSA.generateKeyPair()
             const keyPair = await api.baseApi.cryptoApi.primitives.RSA.exportKeys(
                 rawKeyPair as {
                     publicKey: CryptoKey

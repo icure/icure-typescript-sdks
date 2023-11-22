@@ -38,10 +38,9 @@ export class AuthenticationApi extends AuthenticationApiImpl<MedTechApi> {
         private readonly cryptoStrategies: CryptoStrategies<DataOwnerWithType>,
         msgGtwSpecId: string,
         msgGtwUrl: string,
-        jwtAuthService?: JwtBridgedAuthService,
         fetchImpl: (input: RequestInfo, init?: RequestInit) => Promise<Response> = typeof window !== 'undefined' ? window.fetch : typeof self !== 'undefined' ? self.fetch : fetch,
     ) {
-        super(messageGatewayApi, errorHandler, sanitizer, iCureBasePath, authProcessByEmailId, authProcessBySmsId, storage, msgGtwSpecId, msgGtwUrl, jwtAuthService, fetchImpl)
+        super(messageGatewayApi, errorHandler, sanitizer, iCureBasePath, authProcessByEmailId, authProcessBySmsId, storage, msgGtwSpecId, msgGtwUrl, fetchImpl)
     }
 
     async completeAuthentication(process: AuthenticationProcess, validationCode: string, tokenDurationInSeconds?: number): Promise<MedTechAuthenticationResult> {
@@ -97,4 +96,4 @@ export const authenticationApi = (
     msgGtwSpecId: string,
     msgGtwUrl: string,
     fetchImpl?: (input: RequestInfo, init?: RequestInit) => Promise<Response>,
-) => new AuthenticationApi(messageGatewayApi, iCureBasePath, authProcessByEmailId, authProcessBySmsId, errorHandler, sanitizer, crypto, storage, keyStorage, cryptoStrategies, msgGtwSpecId, msgGtwUrl, jwtAuthService, fetchImpl)
+) => new AuthenticationApi(messageGatewayApi, iCureBasePath, authProcessByEmailId, authProcessBySmsId, errorHandler, sanitizer, crypto, storage, keyStorage, cryptoStrategies, msgGtwSpecId, msgGtwUrl, fetchImpl)

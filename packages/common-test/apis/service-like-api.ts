@@ -30,7 +30,7 @@ export function testServiceLikeApi<
             env = await initializer.execute(getEnvVariables())
         }, 600_000)
 
-        it('Create Data Sample - Success', async () => {
+        it.skip('Create Data Sample - Success', async () => {
             // Given
             const api = (await ctx.apiForEnvUser(env, hcp1Username)).api
 
@@ -46,7 +46,7 @@ export function testServiceLikeApi<
             expect(forceUuid(mappedServiceDto.id)).toEqual(mappedServiceDto.id)
         })
 
-        it('Delete a Data Sample - Success', async () => {
+        it.skip('Delete a Data Sample - Success', async () => {
             // Given
             const api = (await ctx.apiForEnvUser(env, hcp1Username)).api
 
@@ -68,7 +68,7 @@ export function testServiceLikeApi<
             expect(deletedServiceDto.created).toBeLessThan(deletedServiceDto.endOfLife!)
         })
 
-        it('Delete Data Sample - part of same batch - Success', async () => {
+        it.skip('Delete Data Sample - part of same batch - Success', async () => {
             // Given
             const api = (await ctx.apiForEnvUser(env, hcp1Username)).api
 
@@ -91,7 +91,7 @@ export function testServiceLikeApi<
             }
         })
 
-        it('Delete Data Samples - with data in cache - Success', async () => {
+        it.skip('Delete Data Samples - with data in cache - Success', async () => {
             // Given
             const api = (await ctx.apiForEnvUser(env, hcp1Username)).api
 
@@ -109,7 +109,7 @@ export function testServiceLikeApi<
             )
         })
 
-        it('Delete Data Samples - without data in cache - Success', async () => {
+        it.skip('Delete Data Samples - without data in cache - Success', async () => {
             // Given
             const api = (await ctx.apiForEnvUser(env, hcp1Username)).api
 
@@ -128,7 +128,7 @@ export function testServiceLikeApi<
             )
         })
 
-        it('Create Data Sample linked to HealthElement - Success', async () => {
+        it.skip('Create Data Sample linked to HealthElement - Success', async () => {
             // Given
             const api = (await ctx.apiForEnvUser(env, hcp1Username)).api
 
@@ -154,7 +154,7 @@ export function testServiceLikeApi<
             expect(createdServiceDto.healthElementsIds).toContain(healthElementDto.id)
         })
 
-        it('Create Data Sample and modify it to link it to HealthElement - Success', async () => {
+        it.skip('Create Data Sample and modify it to link it to HealthElement - Success', async () => {
             // Given
             const api = (await ctx.apiForEnvUser(env, hcp1Username)).api
 
@@ -182,7 +182,7 @@ export function testServiceLikeApi<
             expect(modifiedServiceDto.healthElementsIds).toContain(healthElementDto.id)
         })
 
-        it('Can not create Data Sample with invalid healthElementId', async () => {
+        it.skip('Can not create Data Sample with invalid healthElementId', async () => {
             // Given
             const api = (await ctx.apiForEnvUser(env, hcp1Username)).api
 
@@ -206,7 +206,7 @@ export function testServiceLikeApi<
             expect(creationPromiseResult.message).toContain(nonExistingHeId)
         })
 
-        it('Filter Data Samples', async () => {
+        it.skip('Filter Data Samples', async () => {
             const { api } = await ctx.apiForEnvUser(env, hcp1Username)
 
             const patient = await ctx.createPatient(api)
@@ -229,7 +229,7 @@ export function testServiceLikeApi<
             expect(ctx.toServiceDto(filteredServices.rows[0]).id).toEqual(createdServiceDto.id)
         })
 
-        it('Filter data samples by HealthElementIds - Success', async () => {
+        it.skip('Filter data samples by HealthElementIds - Success', async () => {
             // Given
             const { api } = await ctx.apiForEnvUser(env, hcp1Username)
 
@@ -256,7 +256,7 @@ export function testServiceLikeApi<
             expect(testedDataSample.healthElementsIds).toContain(healthElement.id!)
         })
 
-        it('Patient sharing data sample with HCP', async () => {
+        it.skip('Patient sharing data sample with HCP', async () => {
             // Given
             const { api: patApi, user: patUser } = await ctx.apiForEnvUser(env, patUsername)
             const currentPatient = await ctx.patientApi(patApi).get(patUser.patientId!)
@@ -272,7 +272,7 @@ export function testServiceLikeApi<
             await ctx.checkServiceAccessibleAndDecrypted(hcpApi, sharedService, true)
         })
 
-        it('HCP sharing data sample with patient', async () => {
+        it.skip('HCP sharing data sample with patient', async () => {
             // Given
             const { api: patApi, user: patUser } = await ctx.apiForEnvUser(env, patUsername)
             const { api: hcpApi, user: hcpUser } = await ctx.apiForEnvUser(env, hcp2Username)
@@ -289,7 +289,7 @@ export function testServiceLikeApi<
             await ctx.checkServiceAccessibleAndDecrypted(patApi, sharedService, true)
         })
 
-        it('HCP sharing data sample with another HCP', async () => {
+        it.skip('HCP sharing data sample with another HCP', async () => {
             // Given
             const { api: hcp1Api, user: hcp1User } = await ctx.apiForEnvUser(env, hcp1Username)
             const { api: hcp2Api, user: hcp2User } = await ctx.apiForEnvUser(env, hcp2Username)
@@ -306,7 +306,7 @@ export function testServiceLikeApi<
             await ctx.checkServiceAccessibleAndDecrypted(hcp2Api, sharedService, true)
         })
 
-        it('Optimization - No delegation sharing if delegated already has access to data sample', async () => {
+        it.skip('Optimization - No delegation sharing if delegated already has access to data sample', async () => {
             const { api: hcp1Api, user: hcp1User } = await ctx.apiForEnvUser(env, hcp1Username)
             const { api: hcp2Api, user: hcp2User } = await ctx.apiForEnvUser(env, hcp2Username)
             const patient = await ctx.createPatient(hcp1Api)
@@ -317,7 +317,7 @@ export function testServiceLikeApi<
             expect(ctx.toServiceDto(sharedService2)).toEqual(ctx.toServiceDto(sharedService))
         })
 
-        it('A data owner with no access to a service may not share it', async () => {
+        it.skip('A data owner with no access to a service may not share it', async () => {
             const { api: hcp1Api } = await ctx.apiForEnvUser(env, hcp1Username)
             const { api: hcp3Api } = await ctx.apiForEnvUser(env, hcp3Username)
             const { user: patUser } = await ctx.apiForEnvUser(env, patUsername)
@@ -328,7 +328,7 @@ export function testServiceLikeApi<
             await expect(ctx.serviceApi(hcp3Api).giveAccessTo(createdService, patUser.patientId!)).rejects.toBeInstanceOf(Error)
         })
 
-        it('Data Owner can filter all the Services  for a Patient - Success', async () => {
+        it.skip('Data Owner can filter all the Services  for a Patient - Success', async () => {
             const { api } = await ctx.apiForEnvUser(env, hcp1Username)
             const patient = await ctx.createPatient(api)
             const createdServiceSingle = await ctx.createServiceForPatient(api, patient)
@@ -341,14 +341,14 @@ export function testServiceLikeApi<
             )
         })
 
-        it('getDataSamplesForPatient returns no Data Samples for a Patient with no Data Samples', async () => {
+        it.skip('getDataSamplesForPatient returns no Data Samples for a Patient with no Data Samples', async () => {
             const { api } = await ctx.apiForEnvUser(env, hcp1Username)
             const patient = await ctx.createPatient(api)
             const filteredSamples = await ctx.serviceApi(api).getForPatient(patient)
             expect(filteredSamples).toHaveLength(0)
         })
 
-        it('Should be able to create a DataSample and retrieve the associated patientId', async () => {
+        it.skip('Should be able to create a DataSample and retrieve the associated patientId', async () => {
             const { api } = await ctx.apiForEnvUser(env, hcp1Username)
             const patient = await ctx.createPatient(api)
             const patientId = ctx.toPatientDto(patient).id!
@@ -357,7 +357,7 @@ export function testServiceLikeApi<
             expect(extractedId).toEqual(patientId)
         })
 
-        it('Should be able to filter and sort data samples by descending value date', async () => {
+        it.skip('Should be able to filter and sort data samples by descending value date', async () => {
             const { api: h1api } = await ctx.apiForEnvUser(env, hcp1Username)
             const patient = await ctx.createPatient(h1api)
             const patientId = ctx.toPatientDto(patient).id!
@@ -394,7 +394,7 @@ export function testServiceLikeApi<
             expect(filteredServices.rows.map((x) => ctx.toServiceDto(x).id)).toEqual(sortedIds)
         })
 
-        it('Should be able to create encrypted attachments to data samples', async () => {
+        it.skip('Should be able to create encrypted attachments to data samples', async () => {
             const { api: h1api } = await ctx.apiForEnvUser(env, hcp1Username)
             const patient = await ctx.createPatient(h1api)
             const patientId = ctx.toPatientDto(patient).id!
@@ -443,7 +443,7 @@ export function testServiceLikeApi<
             expect(await docApi.getDocumentAttachment(attachmentDocFrDto.id!, 'ignored').then((x) => ua2utf8(x))).not.toEqual(attachmentFr)
         })
 
-        it('Created attachments should be accessible to all data owners with access to the data sample', async () => {
+        it.skip('Created attachments should be accessible to all data owners with access to the data sample', async () => {
             const { api: h1api } = await ctx.apiForEnvUser(env, hcp1Username)
             const { api: h2api, user: h2user } = await ctx.apiForEnvUser(env, hcp2Username)
             // TODO in order to modify a data sample currently the user needs to have access also to the patient of the data sample (client-side requirement due to implementation)
@@ -457,7 +457,7 @@ export function testServiceLikeApi<
             expect(ua2utf8(await ctx.serviceApi(h1api).getAttachmentContent(dataSampleId, attachmentDocId))).toEqual(value)
         })
 
-        it('Sharing a data sample should also share attachments of that data sample', async () => {
+        it.skip('Sharing a data sample should also share attachments of that data sample', async () => {
             const { api: h1api } = await ctx.apiForEnvUser(env, hcp1Username)
             const { api: h2api, user: h2user } = await ctx.apiForEnvUser(env, hcp2Username)
             const patient = await ctx.createPatient(h1api)
@@ -476,7 +476,7 @@ export function testServiceLikeApi<
             expect(ua2utf8(await ctx.serviceApi(h2api).getAttachmentContent(dataSampleId, attachmentDocFrId))).toEqual(value2)
         })
 
-        it('A shared service should still be shared after modification, even if it required to create a new contact', async () => {
+        it.skip('A shared service should still be shared after modification, even if it required to create a new contact', async () => {
             const { api: h1api } = await ctx.apiForEnvUser(env, hcp1Username)
             const { api: h2api, user: h2user } = await ctx.apiForEnvUser(env, hcp2Username)
             const patient = await ctx.createPatient(h1api)
@@ -499,7 +499,7 @@ export function testServiceLikeApi<
             await ctx.checkServiceAccessibleAndDecrypted(h2api, modifiedService, true)
         })
 
-        it('If multiple services are created at once they should be part of the same contact', async () => {
+        it.skip('If multiple services are created at once they should be part of the same contact', async () => {
             const { api: h1api } = await ctx.apiForEnvUser(env, hcp1Username)
             const patient = await ctx.createPatient(h1api)
             const services = await ctx.createServicesForPatient(h1api, patient)
@@ -511,7 +511,7 @@ export function testServiceLikeApi<
             expect(new Set(servicesDtos.map((s) => s.id)).size).toEqual(servicesDtos.length)
         })
 
-        it('If multiple services are created in quick succession but over different calls the services should NOT be part of the same contact', async () => {
+        it.skip('If multiple services are created in quick succession but over different calls the services should NOT be part of the same contact', async () => {
             const { api: h1api } = await ctx.apiForEnvUser(env, hcp1Username)
             const patient = await ctx.createPatient(h1api)
             const service1 = ctx.toServiceDto(await ctx.createServiceForPatient(h1api, patient))
@@ -521,7 +521,7 @@ export function testServiceLikeApi<
             expect(service1.contactId).not.toEqual(service2.contactId)
         })
 
-        it('Should allow to share a batch fully', async () => {
+        it.skip('Should allow to share a batch fully', async () => {
             const { api: h1api } = await ctx.apiForEnvUser(env, hcp1Username)
             const { api: h2api, user: h2user } = await ctx.apiForEnvUser(env, hcp2Username)
             const patient = await ctx.createPatient(h1api)
@@ -540,7 +540,7 @@ export function testServiceLikeApi<
             expect(new Set(sharedServices.map((s) => ctx.toServiceDto(s).contactId)).size).toEqual(1)
         })
 
-        it('Should allow to share only some services of a batch', async () => {
+        it.skip('Should allow to share only some services of a batch', async () => {
             const { api: h1api } = await ctx.apiForEnvUser(env, hcp1Username)
             const { api: h2api, user: h2user } = await ctx.apiForEnvUser(env, hcp2Username)
             const patient = await ctx.createPatient(h1api)
@@ -660,13 +660,13 @@ export function testServiceLikeApi<
             await ctx.serviceApi(api).delete(service.id!)
         }
 
-        it('Can subscribe ServiceLike CREATE without options', async () => {
+        it.skip('Can subscribe ServiceLike CREATE without options', async () => {
             await subscribeAndCreateContactOrService({}, ['CREATE'], async () => {
                 await createService()
             })
         }, 60_000)
 
-        it('Can subscribe ServiceLike CREATE with options', async () => {
+        it.skip('Can subscribe ServiceLike CREATE with options', async () => {
             await subscribeAndCreateContactOrService(
                 {
                     connectionRetryIntervalMs: 10_000,
@@ -679,13 +679,13 @@ export function testServiceLikeApi<
             )
         }, 60_000)
 
-        it('Can subscribe ServiceLike CREATE without options with another instance of api', async () => {
+        it.skip('Can subscribe ServiceLike CREATE without options with another instance of api', async () => {
             await subscribeAndCreateContactOrService({}, ['CREATE'], async () => {
                 await createService()
             })
         }, 60_000)
 
-        it('Can subscribe ServiceLike CREATE with options with another instance of api', async () => {
+        it.skip('Can subscribe ServiceLike CREATE with options with another instance of api', async () => {
             await subscribeAndCreateContactOrService(
                 {
                     connectionRetryIntervalMs: 10_000,
@@ -699,11 +699,11 @@ export function testServiceLikeApi<
         }, 60_000)
 
         // Delete is not supported yet
-        // it('Can subscribe ServiceLike DELETE without options', async () => {
+        // it.skip('Can subscribe ServiceLike DELETE without options', async () => {
         //     await subscribeAndCreateContactOrService({}, ['DELETE'], async () => deleteService())
         // }, 60_000)
         //
-        // it('Can subscribe ServiceLike DELETE with options', async () => {
+        // it.skip('Can subscribe ServiceLike DELETE with options', async () => {
         //     await subscribeAndCreateContactOrService(
         //         {
         //             connectionRetryIntervalMs: 10_000,

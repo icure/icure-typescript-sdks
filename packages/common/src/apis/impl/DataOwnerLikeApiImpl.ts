@@ -21,7 +21,7 @@ export class DataOwnerLikeApiImpl<DSDataOwnerWithType extends DataOwnerWithType,
         const retrieved = await this.dataOwnerApi.getDataOwner(ownerId)
 
         if (retrieved.type === DataOwnerTypeEnum.Patient) {
-            const potentiallyDecryptedPatient = (await this.patientApi.tryDecryptOrReturnOriginal([retrieved.dataOwner]))[0]
+            const potentiallyDecryptedPatient = (await this.patientApi.tryDecryptOrReturnOriginal(retrieved.dataOwner.id, [retrieved.dataOwner]))[0]
 
             return this.dataOwnerWithTypeMapper.toDomain({
                 dataOwner: potentiallyDecryptedPatient.entity,

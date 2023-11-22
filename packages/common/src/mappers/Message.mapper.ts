@@ -1,13 +1,11 @@
 import { Message } from '../models/Message.model'
-import { CodeStub, Delegation, Message as MessageDto, MessageReadStatus as MessageReadStatusDto, SecurityMetadata as SecurityMetadataDto, MessageAttachment as MessageAttachmentDto } from '@icure/api'
+import { CodeStub, Delegation, Message as MessageDto, MessageReadStatus as MessageReadStatusDto } from '@icure/api'
 import { mapCodeStubToCodingReference, mapCodingReferenceToCodeStub } from './CodingReference.mapper'
 import { CodingReference } from '../models/CodingReference.model'
 import { MessageReadStatus } from '../models/MessageReadStatus.model'
 import { mapMessageReadStatusDtoToMessageReadStatus, mapMessageReadStatusToMessageReadStatusDto } from './MessageReadStatus.mapper'
-import { toCryptedForeignKeys, toDelegations, toEncryptedSelf, toEncryptionKeys, toSecretForeignKeys, toSecurityMetadataDto, toSystemMetaDataEncrypted } from './SystemMetaData.mapper'
+import { toCryptedForeignKeys, toDelegations, toEncryptedSelf, toEncryptionKeys, toSecretForeignKeys, toSystemMetaDataEncrypted } from './SystemMetaData.mapper'
 import { SystemMetaDataEncrypted } from '../models/SystemMetaDataEncrypted.model'
-import { MessageAttachment } from '../models/MessageAttachment.model'
-import { mapMessageAttachmentDtoToMessageAttachment, mapMessageAttachmentToMessageAttachmentDto } from './MessageAttachment.mapper'
 
 function toMessageDtoId(domain: Message): string | undefined {
     return domain.id
@@ -153,10 +151,6 @@ function toMessageDtoEncryptedSelf(domain: Message): string | undefined {
     return toEncryptedSelf(domain.systemMetadata)
 }
 
-function toMessageDtoSecurityMetadata(domain: Message): SecurityMetadataDto | undefined {
-    return toSecurityMetadataDto(domain.systemMetadata)
-}
-
 function toMessageId(dto: MessageDto): string | undefined {
     return dto.id
 }
@@ -228,14 +222,6 @@ function toMessageDtoReceived(domain: Message): number | undefined {
     return undefined
 }
 
-function toMessageDtoMessageAttachments(domain: Message): MessageAttachmentDto[] | undefined {
-    return domain.attachments?.map((ma) => mapMessageAttachmentToMessageAttachmentDto(ma))
-}
-
-function toMessageAttachments(dto: MessageDto): MessageAttachment[] | undefined {
-    return dto.messageAttachments?.map((ma) => mapMessageAttachmentDtoToMessageAttachment(ma))
-}
-
 export function mapMessageDtoToMessage(dto: MessageDto): Message {
     return new Message({
         id: toMessageId(dto),
@@ -244,7 +230,6 @@ export function mapMessageDtoToMessage(dto: MessageDto): Message {
         modified: toMessageModified(dto),
         sent: toMessageSent(dto),
         readStatus: toMessageReadStatus(dto),
-        attachments: toMessageAttachments(dto),
         author: toMessageAuthor(dto),
         responsible: toMessageResponsible(dto),
         tags: toMessageTags(dto),
@@ -283,7 +268,6 @@ export function mapMessageToMessageDto(domain: Message): MessageDto {
         sent: toMessageDtoSent(domain),
         metas: toMessageDtoMetas(domain),
         readStatus: toMessageDtoReadStatus(domain),
-        messageAttachments: toMessageDtoMessageAttachments(domain),
         transportGuid: toMessageDtoTransportGuid(domain),
         remark: toMessageDtoRemark(domain),
         conversationGuid: toMessageDtoConversationGuid(domain),
@@ -299,6 +283,5 @@ export function mapMessageToMessageDto(domain: Message): MessageDto {
         delegations: toMessageDtoDelegations(domain),
         encryptionKeys: toMessageDtoEncryptionKeys(domain),
         encryptedSelf: toMessageDtoEncryptedSelf(domain),
-        securityMetadata: toMessageDtoSecurityMetadata(domain),
     })
 }

@@ -19,7 +19,6 @@ import {
     ListOfIds,
     PaginatedListContact,
     Patient as PatientDto,
-    Service,
     Service as ServiceDto,
     ServiceLink,
     SubContact,
@@ -164,7 +163,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
     }
 
     async extractPatientId(service: DSService): Promise<string | undefined> {
-        return (await this.cryptoApi.xapi.owningEntityIdsOf({ entity: this.serviceMapper.toDto(service), type: 'Contact' }, undefined))[0]
+        return (await this.cryptoApi.entities.owningEntityIdsOf(this.serviceMapper.toDto(service), undefined))[0]
     }
 
     async filterBy(filter: CommonFilter<ServiceDto>, nextServiceId?: string, limit?: number): Promise<PaginatedList<DSService>> {
@@ -456,7 +455,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         if (contactCached && existingContact != null) {
             const modifiedServices = services.map((service) => {
                 return {
-                    ...service,
+                    ...this.contactApi.service().newInstance(currentUser, service),
                     formIds: undefined,
                     healthElementsIds: undefined,
                 }
@@ -575,8 +574,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
             cryptedForeignKeys: contact.cryptedForeignKeys,
             delegations: contact.delegations,
             encryptionKeys: contact.encryptionKeys,
-            contactId: contact.id,
-            securityMetadata: contact.securityMetadata,
+            contactId: contact.id
         }
     }
 
@@ -592,7 +590,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
 
     private async createContactDtoUsing(currentUser: UserDto, contactPatient: PatientDto, services: Array<ServiceDto>, existingContact: ContactDto | undefined, requiresNewMetadata: boolean, newDelegates: string[]): Promise<ContactDto> {
         const servicesToCreate = services.map((e) => {
-            return { ...e, modified: undefined }
+            return { ...this.contactApi.service().newInstance(currentUser, e), modified: undefined }
         })
 
         let baseContact: ContactDto
@@ -611,7 +609,6 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
             delete baseContact.encryptionKeys
             delete baseContact.secretForeignKeys
             delete baseContact.cryptedForeignKeys
-            delete baseContact.securityMetadata
             dataOwnersWithAccess = await this.contactApi.getDataOwnersWithAccessTo(existingContact)
         } else {
             baseContact = { id: this.cryptoApi.primitives.randomUuid() }

@@ -1,6 +1,5 @@
 import { CodingReference } from './CodingReference.model'
 import { Delegation } from './Delegation.model'
-import { SecurityMetadata } from './SecurityMetadata.model'
 
 export class SystemMetaDataOwnerEncrypted {
     publicKey?: string
@@ -12,7 +11,6 @@ export class SystemMetaDataOwnerEncrypted {
     encryptionKeys: Map<string, Set<Delegation>>
     aesExchangeKeys: Map<string, Map<string, Map<string, string>>>
     transferKeys: Map<string, Map<string, string>>
-    securityMetadata?: SecurityMetadata
     publicKeysForOaepWithSha256: Array<string>
     encryptedSelf?: string
     tags: Set<CodingReference>
@@ -27,7 +25,6 @@ export class SystemMetaDataOwnerEncrypted {
         this.encryptionKeys = systemMetaDataOwnerEncrypted.encryptionKeys ?? new Map<string, Set<Delegation>>()
         this.aesExchangeKeys = systemMetaDataOwnerEncrypted.aesExchangeKeys ?? new Map<string, Map<string, Map<string, string>>>()
         this.transferKeys = systemMetaDataOwnerEncrypted.transferKeys ?? new Map<string, Map<string, string>>()
-        this.securityMetadata = systemMetaDataOwnerEncrypted.securityMetadata
         this.encryptedSelf = systemMetaDataOwnerEncrypted.encryptedSelf
         this.publicKeysForOaepWithSha256 = systemMetaDataOwnerEncrypted.publicKeysForOaepWithSha256 ?? []
         this.tags = systemMetaDataOwnerEncrypted.tags ?? new Set<CodingReference>()
@@ -44,7 +41,6 @@ export class SystemMetaDataOwnerEncrypted {
         pojo['encryptionKeys'] = Object.fromEntries([...instance.encryptionKeys.entries()].map(([k, v]) => [k, Array.from([...v].map((item) => Delegation.toJSON(item)))]))
         pojo['aesExchangeKeys'] = Object.fromEntries([...instance.aesExchangeKeys.entries()].map(([k, v]) => [k, Object.fromEntries([...v.entries()].map(([k, v]) => [k, Object.fromEntries([...v.entries()].map(([k, v]) => [k, v]))]))]))
         pojo['transferKeys'] = Object.fromEntries([...instance.transferKeys.entries()].map(([k, v]) => [k, Object.fromEntries([...v.entries()].map(([k, v]) => [k, v]))]))
-        if (instance.securityMetadata !== undefined) pojo['securityMetadata'] = !!instance.securityMetadata ? SecurityMetadata.toJSON(instance.securityMetadata) : undefined
         pojo['publicKeysForOaepWithSha256'] = instance.publicKeysForOaepWithSha256.map((item) => item)
         if (instance.encryptedSelf !== undefined) pojo['encryptedSelf'] = instance.encryptedSelf
         pojo['tags'] = Array.from([...instance.tags].map((item) => CodingReference.toJSON(item)))
@@ -64,9 +60,6 @@ export class SystemMetaDataOwnerEncrypted {
         obj['encryptionKeys'] = new Map(Object.entries(pojo['encryptionKeys']).map(([k, v]: [any, any]) => [k, new Set(v.map((item: any) => Delegation.fromJSON(item)))]))
         obj['aesExchangeKeys'] = new Map(Object.entries(pojo['aesExchangeKeys']).map(([k, v]: [any, any]) => [k, new Map(Object.entries(v).map(([k, v]: [any, any]) => [k, new Map(Object.entries(v).map(([k, v]: [any, any]) => [k, v]))]))]))
         obj['transferKeys'] = new Map(Object.entries(pojo['transferKeys']).map(([k, v]: [any, any]) => [k, new Map(Object.entries(v).map(([k, v]: [any, any]) => [k, v]))]))
-        if (pojo['securityMetadata'] !== undefined) {
-            obj['securityMetadata'] = !!pojo['securityMetadata'] ? SecurityMetadata.fromJSON(pojo['securityMetadata']) : undefined
-        }
         obj['publicKeysForOaepWithSha256'] = pojo['publicKeysForOaepWithSha256'].map((item: any) => item)
         if (pojo['encryptedSelf'] !== undefined) {
             obj['encryptedSelf'] = pojo['encryptedSelf']
@@ -86,7 +79,6 @@ interface ISystemMetaDataOwnerEncrypted {
     encryptionKeys?: Map<string, Set<Delegation>>
     aesExchangeKeys?: Map<string, Map<string, Map<string, string>>>
     transferKeys?: Map<string, Map<string, string>>
-    securityMetadata?: SecurityMetadata
     publicKeysForOaepWithSha256?: Array<string>
     encryptedSelf?: string
     tags?: Set<CodingReference>

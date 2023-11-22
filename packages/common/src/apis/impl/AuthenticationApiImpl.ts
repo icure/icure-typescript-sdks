@@ -1,5 +1,5 @@
 import { AuthenticationApi } from '../AuthenticationApi'
-import { BasicApis, BasicAuthenticationProvider, Device, HealthcareParty, IccAuthApi, JwtAuthenticationProvider, NoAuthenticationProvider, Patient, retry, StorageFacade, ua2hex, User } from '@icure/api'
+import { BasicApis, Device, HealthcareParty, Patient, retry, StorageFacade, ua2hex, User } from '@icure/api'
 import { Sanitizer } from '../../services/Sanitizer'
 import { ErrorHandler } from '../../services/ErrorHandler'
 import { MessageGatewayApi } from '../MessageGatewayApi'
@@ -10,8 +10,6 @@ import { RecaptchaType } from '../../models/RecaptchaType.model'
 import { CommonApi } from '../CommonApi'
 import { forceUuid } from '../../utils/uuidUtils'
 import { NotificationTypeEnum } from '../../models/Notification.model'
-import { JwtBridgedAuthService } from '@icure/api/icc-x-api/auth/JwtBridgedAuthService'
-import { EnsembleAuthService } from '@icure/api/icc-x-api/auth/EnsembleAuthService'
 
 const DEVICE_ID_KEY = 'ICURE.DEVICE_ID'
 
@@ -26,7 +24,6 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
         protected readonly storage: StorageFacade<string>,
         protected readonly msgGtwSpecId: string,
         protected readonly msgGtwUrl: string,
-        private readonly jwtAuthService?: JwtBridgedAuthService,
         private readonly fetchImpl: (input: RequestInfo, init?: RequestInit) => Promise<Response> = typeof window !== 'undefined' ? window.fetch : typeof self !== 'undefined' ? self.fetch : fetch,
     ) {}
 
@@ -202,7 +199,7 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
         user: User
         password: string
     }> {
-        const userApi = (await BasicApis(this.iCureBasePath, new JwtAuthenticationProvider(new IccAuthApi(this.iCureBasePath, {}, new NoAuthenticationProvider(), this.fetchImpl), login, validationCode))).userApi
+        const userApi = (await BasicApis(this.iCureBasePath, { username: login, password: validationCode })).userApi
         const user = await userApi.getCurrentUser()
         if (!user) {
             throw this.errorHandler.createErrorWithMessage(`Your validation code ${validationCode} expired. Start a new authentication process for your user`)
@@ -212,13 +209,5 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
             throw this.errorHandler.createErrorWithMessage(`Your validation code ${validationCode} expired. Start a new authentication process for your user`)
         }
         return { user, password: token }
-    }
-
-    public getJsonWebToken(): Promise<string | undefined> {
-        if (this.jwtAuthService === undefined) {
-            throw this.errorHandler.createErrorWithMessage('This method is only available for authenticated APIs')
-        }
-
-        return this.jwtAuthService.getJWT()
     }
 }

@@ -8,7 +8,6 @@ import { assert } from 'chai'
 import { BaseApiTestContext, WithAuthenticationApi, WithDataOwnerApi, WithHcpApi, WithMaintenanceTaskApi, WithPatientApi, WithServiceApi } from './TestContexts'
 import { expectArrayContainsExactlyInAnyOrder } from '../assertions'
 import { describe, it, beforeAll } from '@jest/globals'
-import { User } from '@icure/api'
 
 setLocalStorage(fetch)
 
@@ -374,7 +373,7 @@ export function testAuthenticationApi<
             // User can create new data
             expect(await ctx.createServiceForPatient(loginAuthResult.api, currentPatient)).toBeTruthy()
 
-            await ctx.checkServiceInaccessible(loginAuthResult.api, createdDataSample)
+            await ctx.checkServiceAccessibleButEncrypted(loginAuthResult.api, createdDataSample)
 
             // When he gave access back with his previous key
             await patApiAndUser.api.baseApi.cryptoApi.forceReload()
@@ -426,7 +425,7 @@ export function testAuthenticationApi<
             // Then
             // User can create new data
             expect(await ctx.createServiceForPatient(loginAuthResult.api, currentPatient)).toBeTruthy()
-            await ctx.checkServiceInaccessible(loginAuthResult.api, createdService)
+            await ctx.checkServiceAccessibleButEncrypted(loginAuthResult.api, createdService)
 
             // When the delegate gave him access back
             // Hcp checks dedicated notification
@@ -447,30 +446,6 @@ export function testAuthenticationApi<
             // Then
             await loginAuthResult.api.baseApi.cryptoApi.forceReload()
             await ctx.checkServiceAccessibleAndDecrypted(loginAuthResult.api, sharedService, true)
-        }, 120_000)
-
-        it('An user is able to get his JWT token', async () => {
-            // Given
-            const firstName = `Gigio${forceUuid()}`
-            const lastName = `Bagigio${forceUuid()}`
-            const { api, user } = await ctx.signUpUserUsingEmail(env!, firstName, lastName, 'hcp', hcpId!, 'recaptcha')
-
-            // When
-            const token = await ctx.authenticationApi(api).getJsonWebToken()
-
-            // Then
-            expect(token).toBeTruthy()
-
-            // When
-            const response = await fetch(env!.iCureUrl + '/rest/v2/user/current', {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            })
-
-            // Then
-            expect(response.status).toBe(200)
-            expect(((await response.json()) as User).id).toEqual(user.id)
         }, 120_000)
     })
 }

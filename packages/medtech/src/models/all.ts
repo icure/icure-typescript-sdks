@@ -14,7 +14,6 @@ export * from './DataOwner.model'
 
 export {
     Measure,
-    SecureDelegation,
     Notification,
     TimeSeries,
     RecaptchaType,
@@ -35,7 +34,6 @@ export {
     Identifier,
     SystemMetaDataEncrypted,
     Filter,
-    SecurityMetadata,
     SystemMetaDataOwner,
     Delegation,
     InlineResponse403,

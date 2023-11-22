@@ -7,7 +7,7 @@ import { CryptoActorStubWithType } from '@icure/api/icc-api/model/CryptoActorStu
 import { DataOwnerWithType } from '../../models/DataOwner.model'
 import { Mapper } from '../Mapper'
 import KeyVerificationBehaviour = CryptoStrategies.KeyVerificationBehaviour
-import { hexPublicKeysWithSha1Of, hexPublicKeysWithSha256Of } from '@icure/api/icc-x-api/crypto/utils'
+import {hexPublicKeysOf} from "@icure/api/icc-x-api/crypto/utils";
 
 export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithType> implements BaseCryptoStrategies {
     constructor(
@@ -19,7 +19,7 @@ export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithTyp
     async generateNewKeyForDataOwner(self: DataOwnerWithTypeDto, cryptoPrimitives: CryptoPrimitives): Promise<KeyPair<CryptoKey> | boolean> {
         const canGenerate = await this.dsStrategies.allowNewKeyPairGeneration(this.dataOwnerMapper.toDomain(self))
         if (canGenerate) {
-            const newKey = await cryptoPrimitives.RSA.generateKeyPair('sha-256')
+            const newKey = await cryptoPrimitives.RSA.generateKeyPair()
             await this.dsStrategies.notifyKeyPairGeneration({
                 privateKey: ua2hex(await cryptoPrimitives.RSA.exportKey(newKey.privateKey, 'pkcs8')),
                 publicKey: ua2hex(await cryptoPrimitives.RSA.exportKey(newKey.publicKey, 'spki')),
@@ -75,8 +75,7 @@ export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithTyp
                 },
             ]),
         )
-        const sha1Keys = hexPublicKeysWithSha1Of(dataOwnerWithType?.dataOwner)
-        const sha256Keys = hexPublicKeysWithSha256Of(dataOwnerWithType?.dataOwner)
+        const shaKeys = hexPublicKeysOf(dataOwnerWithType?.dataOwner)
 
         return Promise.resolve({
             ...recoveredEmpty,
@@ -84,14 +83,9 @@ export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithTyp
                 recoveredKeys: Object.fromEntries(
                     await Promise.all(
                         recoveredKeyPairs.map(async (x): Promise<[string, KeyPair<CryptoKey>]> => {
-                            if (sha1Keys.has(x.publicKey)) {
-                                return [x.publicKey.slice(-32), await cryptoPrimitives.RSA.importKeyPair('pkcs8', hex2ua(x.privateKey), 'spki', hex2ua(x.publicKey), 'sha-1')]
+                            if (shaKeys.has(x.publicKey)) {
+                                return [x.publicKey.slice(-32), await cryptoPrimitives.RSA.importKeyPair('pkcs8', hex2ua(x.privateKey), 'spki', hex2ua(x.publicKey))]
                             }
-
-                            if (sha256Keys.has(x.publicKey)) {
-                                return [x.publicKey.slice(-32), await cryptoPrimitives.RSA.importKeyPair('pkcs8', hex2ua(x.privateKey), 'spki', hex2ua(x.publicKey), 'sha-256')]
-                            }
-
                             throw new Error('Internal error: recovered key should be an existing key')
                         }),
                     ),

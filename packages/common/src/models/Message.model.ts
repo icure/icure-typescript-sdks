@@ -1,7 +1,6 @@
 import { Message as MessageDto } from '@icure/api'
 import { mapTo } from '../utils/decorators'
 import { CodingReference } from './CodingReference.model'
-import { MessageAttachment } from './MessageAttachment.model'
 import { MessageReadStatus } from './MessageReadStatus.model'
 import { SystemMetaDataEncrypted } from './SystemMetaDataEncrypted.model'
 
@@ -13,7 +12,6 @@ export class Message {
     modified?: number
     sent?: number
     readStatus?: Map<string, MessageReadStatus>
-    attachments?: MessageAttachment[]
     author?: string
     responsible?: string
     tags?: Set<CodingReference>
@@ -44,17 +42,6 @@ export class Message {
         this.content = message.content
         this.topicId = message.topicId
         this.systemMetadata = message.systemMetadata
-        this.attachments = message.attachments
-    }
-
-    /**
-     * Determine if the message is truncated, meaning the content is not complete and there is an attachment with the full content
-     *
-     * @returns true if the message is truncated, false otherwise
-     *
-     */
-    get isTruncated(): boolean {
-        return this.attachments?.some((attachment) => attachment.type === 'body') ?? false
     }
 
     static toJSON(instance: Message): any {
@@ -65,7 +52,6 @@ export class Message {
         if (instance.modified !== undefined) pojo['modified'] = instance.modified
         if (instance.sent !== undefined) pojo['sent'] = instance.sent
         if (instance.readStatus !== undefined) pojo['readStatus'] = !!instance.readStatus ? Object.fromEntries([...instance.readStatus.entries()].map(([k, v]) => [k, MessageReadStatus.toJSON(v)])) : undefined
-        if (instance.attachments !== undefined) pojo['attachments'] = instance.attachments?.map((item) => MessageAttachment.toJSON(item))
         if (instance.author !== undefined) pojo['author'] = instance.author
         if (instance.responsible !== undefined) pojo['responsible'] = instance.responsible
         if (instance.tags !== undefined) pojo['tags'] = Array.from([...(instance.tags ?? [])]?.map((item) => CodingReference.toJSON(item)) ?? [])
@@ -99,9 +85,6 @@ export class Message {
         }
         if (pojo['readStatus'] !== undefined) {
             obj['readStatus'] = pojo['readStatus'] ? new Map(Object.entries(pojo['readStatus']).map(([k, v]: [any, any]) => [k, MessageReadStatus.fromJSON(v)])) : undefined
-        }
-        if (pojo['attachments'] !== undefined) {
-            obj['attachments'] = pojo['attachments']?.map((item: any) => MessageAttachment.fromJSON(item))
         }
         if (pojo['author'] !== undefined) {
             obj['author'] = pojo['author']
@@ -147,7 +130,6 @@ interface IMessage {
     modified?: number
     sent?: number
     readStatus?: Map<string, MessageReadStatus>
-    attachments?: MessageAttachment[]
     author?: string
     responsible?: string
     tags?: Set<CodingReference>

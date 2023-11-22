@@ -1,11 +1,11 @@
 import { Document } from '../models/Document.model'
-import { CodeStub, DataAttachment, DeletedAttachment, Document as DocumentDto, DocumentTemplate, SecurityMetadata as SecurityMetadataDto } from '@icure/api'
+import { CodeStub, DataAttachment, DeletedAttachment, Document as DocumentDto, DocumentTemplate } from '@icure/api'
 import { Delegation } from '../models/Delegation.model'
 import DocumentLocationEnum = DocumentDto.DocumentLocationEnum
 import DocumentTypeEnum = DocumentTemplate.DocumentTypeEnum
 import DocumentStatusEnum = DocumentDto.DocumentStatusEnum
 import { forceUuid } from '../utils/uuidUtils'
-import { toCryptedForeignKeys, toDelegations, toEncryptedSelf, toEncryptionKeys, toSecretForeignKeys, toSecurityMetadataDto, toSystemMetaDataEncrypted } from './SystemMetaData.mapper'
+import { toCryptedForeignKeys, toDelegations, toEncryptedSelf, toEncryptionKeys, toSecretForeignKeys, toSystemMetaDataEncrypted } from './SystemMetaData.mapper'
 import { SystemMetaDataEncrypted } from '../models/SystemMetaDataEncrypted.model'
 
 function toDocumentDtoId(domain: Document): string {
@@ -148,10 +148,6 @@ function toDocumentDtoEncryptedSelf(domain: Document): string | undefined {
     return toEncryptedSelf(domain.systemMetaData)
 }
 
-function toDocumentDtoSecurityMetadata(domain: Document): SecurityMetadataDto | undefined {
-    return toSecurityMetadataDto(domain.systemMetaData)
-}
-
 function toDocumentId(dto: DocumentDto): string {
     return dto.id!
 }
@@ -283,7 +279,6 @@ export function mapDocumentToDocumentDto(domain: Document): DocumentDto {
         cryptedForeignKeys: toDocumentDtoCryptedForeignKeys(domain),
         delegations: toDocumentDtoDelegations(domain),
         encryptionKeys: toDocumentDtoEncryptionKeys(domain),
-        encryptedSelf: toDocumentDtoEncryptedSelf(domain),
-        securityMetadata: toDocumentDtoSecurityMetadata(domain),
+        encryptedSelf: toDocumentDtoEncryptedSelf(domain)
     })
 }

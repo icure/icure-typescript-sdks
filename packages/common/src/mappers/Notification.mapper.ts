@@ -1,12 +1,12 @@
 import { Notification, NotificationStatusEnum, NotificationTypeEnum } from '../models/Notification.model'
-import { CodeStub, Identifier as IdentifierDto, MaintenanceTask, PropertyStub, SecurityMetadata as SecurityMetadataDto } from '@icure/api'
+import { CodeStub, Identifier as IdentifierDto, MaintenanceTask, PropertyStub } from '@icure/api'
 import { Property } from '../models/Property.model'
 import { Delegation as DelegationDto } from '@icure/api/icc-api/model/Delegation'
 import { Identifier } from '../models/Identifier.model'
 import { SystemMetaDataEncrypted } from '../models/SystemMetaDataEncrypted.model'
 import { mapIdentifierDtoToIdentifier, mapIdentifierToIdentifierDto } from './Identifier.mapper'
 import { mapPropertyStubToProperty, mapPropertyToPropertyStub } from './Property.mapper'
-import { toCryptedForeignKeys, toDelegations, toEncryptedSelf, toEncryptionKeys, toSecretForeignKeys, toSecurityMetadataDto, toSystemMetaDataEncrypted } from './SystemMetaData.mapper'
+import { toCryptedForeignKeys, toDelegations, toEncryptedSelf, toEncryptionKeys, toSecretForeignKeys, toSystemMetaDataEncrypted } from './SystemMetaData.mapper'
 import { forceUuid } from '../utils/uuidUtils'
 
 function toMaintenanceTaskId(domain: Notification): string {
@@ -156,10 +156,6 @@ function toNotificationSystemMetaData(dto: MaintenanceTask): SystemMetaDataEncry
     return toSystemMetaDataEncrypted(dto)
 }
 
-function toMaintenanceTaskSecurityMetadata(domain: Notification): SecurityMetadataDto | undefined {
-    return toSecurityMetadataDto(domain.systemMetaData)
-}
-
 export function mapMaintenanceTaskToNotification(dto: MaintenanceTask): Notification {
     return new Notification({
         id: toNotificationId(dto),
@@ -200,6 +196,5 @@ export function mapNotificationToMaintenanceTask(domain: Notification): Maintena
         delegations: toMaintenanceTaskDelegations(domain),
         encryptionKeys: toMaintenanceTaskEncryptionKeys(domain),
         encryptedSelf: toMaintenanceTaskEncryptedSelf(domain),
-        securityMetadata: toMaintenanceTaskSecurityMetadata(domain),
     })
 }

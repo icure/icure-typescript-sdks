@@ -1,4 +1,4 @@
-import { hex2ua, KeyStorageFacade, pkcs8ToJwk, ShaVersion, spkiToJwk, StorageFacade } from '@icure/api'
+import { hex2ua, KeyStorageFacade, pkcs8ToJwk, spkiToJwk, StorageFacade } from '@icure/api'
 import { DefaultStorageEntryKeysFactory } from '@icure/api/icc-x-api/storage/DefaultStorageEntryKeysFactory'
 import { IcureStorageFacade } from '@icure/api/icc-x-api/storage/IcureStorageFacade'
 import { StorageEntryKeysFactory } from '@icure/api/icc-x-api/storage/StorageEntryKeysFactory'
@@ -53,7 +53,7 @@ export class TestKeyStorage implements KeyStorageFacade {
     }
 }
 
-export async function testStorageWithKeys(keyFactory: StorageEntryKeysFactory, data: { dataOwnerId: string; pairs: { keyPair: KeyPair<string>; shaVersion: ShaVersion }[] }[]): Promise<{ keyStorage: KeyStorageFacade; storage: StorageFacade<string> }> {
+export async function testStorageWithKeys(keyFactory: StorageEntryKeysFactory, data: { dataOwnerId: string; pairs: { keyPair: KeyPair<string> }[] }[]): Promise<{ keyStorage: KeyStorageFacade; storage: StorageFacade<string> }> {
     const keyStorage = new TestKeyStorage()
     const storage = new TestStorage()
     const icureStorage = new IcureStorageFacade(keyStorage, storage, keyFactory)
@@ -64,7 +64,7 @@ export async function testStorageWithKeys(keyFactory: StorageEntryKeysFactory, d
                 pair.keyPair.publicKey.slice(-32),
                 {
                     privateKey: pkcs8ToJwk(hex2ua(pair.keyPair.privateKey)),
-                    publicKey: spkiToJwk(hex2ua(pair.keyPair.publicKey), pair.shaVersion),
+                    publicKey: spkiToJwk(hex2ua(pair.keyPair.publicKey)),
                 },
                 true,
             )
@@ -77,7 +77,7 @@ export async function testStorageForUser(credentials: UserDetails): Promise<{ ke
     return await testStorageWithKeys(new DefaultStorageEntryKeysFactory(), [
         {
             dataOwnerId: credentials.dataOwnerId,
-            pairs: [{ keyPair: { publicKey: credentials.publicKey, privateKey: credentials.privateKey }, shaVersion: 'sha-1' }],
+            pairs: [{ keyPair: { publicKey: credentials.publicKey, privateKey: credentials.privateKey } }],
         },
     ])
 }

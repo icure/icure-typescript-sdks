@@ -32,7 +32,7 @@ export class TestUtils {
         const storage = await testStorageWithKeys(new DefaultStorageEntryKeysFactory(), [
             {
                 dataOwnerId: credentials.dataOwnerId,
-                pairs: [{ keyPair: { publicKey: credentials.publicKey, privateKey: credentials.privateKey }, shaVersion: 'sha-1' }],
+                pairs: [{ keyPair: { publicKey: credentials.publicKey, privateKey: credentials.privateKey }}],
             },
         ])
         const builderApi = new MedTechApi.Builder()

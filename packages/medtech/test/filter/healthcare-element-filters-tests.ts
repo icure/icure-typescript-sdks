@@ -1,7 +1,7 @@
 import 'isomorphic-fetch'
 import { MedTechApi } from '../../src/apis/MedTechApi'
 import { User } from '@icure/typescript-common'
-import { HealthcareElementFilter } from '../../src/filter/HealthcareElementFilterDsl'
+import { HealthcareElementFilter } from '../../src/filter'
 import { FilterComposition, NoOpFilter } from '@icure/typescript-common'
 import { expect } from 'chai'
 import { HealthcareElement } from '../../src/models/HealthcareElement.model'
@@ -10,7 +10,6 @@ import { Patient } from '../../src/models/Patient.model'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import { v4 as uuid } from 'uuid'
 import { mapHealthcareElementToHealthElement } from '../../src/mappers/HealthcareElement.mapper'
-import { mapPatientToPatientDto } from '../../src/mappers/Patient.mapper'
 import { getEnvironmentInitializer, hcp1Username, setLocalStorage } from '../../../common-test/test-utils'
 import { TestUtils } from '../test-utils'
 
@@ -35,14 +34,14 @@ describe('Healthcare Element Filters Test', function () {
         hcp1Api = hcp1ApiAndUser.api
         hcp1User = hcp1ApiAndUser.user
 
-        patient = await hcp1Api.patientApi.createOrModifyPatient(
+        patient = await hcp1Api.patientApi.createOrModify(
             new Patient({
                 firstName: 'Dirk',
                 lastName: 'Gently',
             }),
         )
 
-        he1 = await hcp1Api.healthcareElementApi.createOrModifyHealthcareElement(
+        he1 = await hcp1Api.healthcareElementApi.createOrModify(
             new HealthcareElement({
                 description: 'The patient has been diagnosed Pararibulitis',
                 codes: new Set([
@@ -57,7 +56,7 @@ describe('Healthcare Element Filters Test', function () {
             patient.id!,
         )
 
-        he2 = await hcp1Api.healthcareElementApi.createOrModifyHealthcareElement(
+        he2 = await hcp1Api.healthcareElementApi.createOrModify(
             new HealthcareElement({
                 description: 'The patient has been diagnosed Pararibulitis',
                 labels: new Set([
@@ -72,7 +71,7 @@ describe('Healthcare Element Filters Test', function () {
             patient.id!,
         )
 
-        he3 = await hcp1Api.healthcareElementApi.createOrModifyHealthcareElement(
+        he3 = await hcp1Api.healthcareElementApi.createOrModify(
             new HealthcareElement({
                 description: 'The patient is allergic to Vogon poetry',
             }),
@@ -82,29 +81,26 @@ describe('Healthcare Element Filters Test', function () {
 
     it('If no parameter is specified, all healthcare Elements for the HCP are returned', async function () {
         const filter = await new HealthcareElementFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).build()
-        const elements = await hcp1Api.healthcareElementApi.filterHealthcareElement(filter)
+        const elements = await hcp1Api.healthcareElementApi.filterBy(filter)
 
         expect(elements.rows.length).to.be.greaterThan(0)
         for (const e of elements.rows) {
-            const accessInfo = await hcp1Api.cryptoApi.delegationsDeAnonymization.getDataOwnersWithAccessTo(
-                {
-                    entity: mapHealthcareElementToHealthElement(e),
-                    type: 'HealthElement',
-                }!,
+            const accessInfo = await hcp1Api.baseApi.healthcareElementApi.getDataOwnersWithAccessTo(
+                mapHealthcareElementToHealthElement(e),
             )
             expect(Object.keys(accessInfo.permissionsByDataOwnerId)).to.contain(hcp1User.healthcarePartyId!)
         }
     })
 
     it('Can filter Healthcare Elements by patient', async function () {
-        const elements = await hcp1Api.healthcareElementApi.filterHealthcareElement(await new HealthcareElementFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).forPatients([patient]).build())
+        const elements = await hcp1Api.healthcareElementApi.filterBy(await new HealthcareElementFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).forPatients([patient]).build())
 
         expect(!!elements).to.eq(true)
         expect(elements.rows.length).to.be.greaterThan(0)
     })
 
     it('Can filter Healthcare Elements by code', async function () {
-        const elements = await hcp1Api.healthcareElementApi.filterHealthcareElement(await new HealthcareElementFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).byLabelCodeFilter('SNOMEDCT', '617').build())
+        const elements = await hcp1Api.healthcareElementApi.filterBy(await new HealthcareElementFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).byLabelCodeFilter('SNOMEDCT', '617').build())
 
         expect(!!elements).to.eq(true)
         expect(elements.rows.length).to.be.greaterThan(0)
@@ -115,7 +111,7 @@ describe('Healthcare Element Filters Test', function () {
     })
 
     it('Can filter Healthcare Elements by tag', async function () {
-        const elements = await hcp1Api.healthcareElementApi.filterHealthcareElement(await new HealthcareElementFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).byLabelCodeFilter(undefined, undefined, 'SNOMEDCT', '617').build())
+        const elements = await hcp1Api.healthcareElementApi.filterBy(await new HealthcareElementFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).byLabelCodeFilter(undefined, undefined, 'SNOMEDCT', '617').build())
 
         expect(!!elements).to.eq(true)
         expect(elements.rows.length).to.be.greaterThan(0)
@@ -131,7 +127,7 @@ describe('Healthcare Element Filters Test', function () {
 
         const unionFilter = FilterComposition.union(tagFilter, codeFilter)
 
-        const elements = await hcp1Api.healthcareElementApi.filterHealthcareElement(unionFilter)
+        const elements = await hcp1Api.healthcareElementApi.filterBy(unionFilter)
 
         expect(elements.rows.length).to.be.greaterThan(0)
         elements.rows.forEach((he) => {
@@ -142,7 +138,7 @@ describe('Healthcare Element Filters Test', function () {
     })
 
     it('Can filter Healthcare Elements by implicit intersection filter', async function () {
-        const elements = await hcp1Api.healthcareElementApi.filterHealthcareElement(await new HealthcareElementFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).byIds([he1.id!, he2.id!, he3.id!]).byLabelCodeFilter('SNOMEDCT', '617').build())
+        const elements = await hcp1Api.healthcareElementApi.filterBy(await new HealthcareElementFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).byIds([he1.id!, he2.id!, he3.id!]).byLabelCodeFilter('SNOMEDCT', '617').build())
         expect(elements.rows.length).to.be.equal(1)
         elements.rows.forEach((he) => {
             expect(Array.from(he.labels).map((it) => it.code)).to.contain('617')
@@ -156,7 +152,7 @@ describe('Healthcare Element Filters Test', function () {
 
         const intersectionFilter = FilterComposition.intersection(tagFilter, idsFilter)
 
-        const elements = await hcp1Api.healthcareElementApi.filterHealthcareElement(intersectionFilter)
+        const elements = await hcp1Api.healthcareElementApi.filterBy(intersectionFilter)
         expect(elements.rows.length).to.be.equal(1)
         elements.rows.forEach((he) => {
             expect(Array.from(he.labels).map((it) => it.code)).to.contain('617')
@@ -170,7 +166,7 @@ describe('Healthcare Element Filters Test', function () {
 
         const intersectionFilter = FilterComposition.intersection(tagFilter, labelCodeFilter)
 
-        const elements = await hcp1Api.healthcareElementApi.filterHealthcareElement(intersectionFilter)
+        const elements = await hcp1Api.healthcareElementApi.filterBy(intersectionFilter)
 
         expect(elements.rows.length).to.be.equal(0)
     })
@@ -180,7 +176,7 @@ describe('Healthcare Element Filters Test', function () {
 
         expect(NoOpFilter.isNoOp(noOpFilter)).to.be.true
 
-        const elements = await hcp1Api.healthcareElementApi.filterHealthcareElement(noOpFilter)
+        const elements = await hcp1Api.healthcareElementApi.filterBy(noOpFilter)
         expect(elements.rows.length).to.be.equal(0)
     })
 })
