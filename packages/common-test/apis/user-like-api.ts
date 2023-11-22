@@ -433,7 +433,7 @@ export function testUserLikeApi<
             const api = await ctx.masterApi(env)
             const primitives = new CryptoPrimitives(webcrypto as any)
 
-            const phoneNumber = `+${primitives.randomUuid()}`
+            const phoneNumber = `+${`${Buffer.from(primitives.randomUuid()).readInt32BE(0)}`.slice(0, 14)}`
 
             const createdUser = await ctx.userApi(api.api).createOrModify(
                 ctx.toDSUser(
