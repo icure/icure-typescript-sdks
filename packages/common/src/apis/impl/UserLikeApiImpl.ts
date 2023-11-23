@@ -2,7 +2,7 @@ import { PaginatedList } from '../../models/PaginatedList.model'
 import { SharedDataType } from '../../models/User.model'
 import { UserLikeApi } from '../UserLikeApi'
 import { ErrorHandler } from '../../services/ErrorHandler'
-import { Connection, ConnectionImpl, FilterChainUser, HealthcareParty as HealthcarePartyDto, IccAuthApi, IccUserXApi, Patient as PatientDto, retry, subscribeToEntityEvents, SubscriptionOptions, User as UserDto } from '@icure/api'
+import { Connection, ConnectionImpl, FilterChainUser, IccAuthApi, IccUserXApi, retry, subscribeToEntityEvents, SubscriptionOptions } from '@icure/api'
 import { Mapper } from '../Mapper'
 import { MessageGatewayApi } from '../MessageGatewayApi'
 import { Sanitizer } from '../../services/Sanitizer'
@@ -17,6 +17,7 @@ import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
 import { DataOwnerTypeEnum } from '@icure/api/icc-api/model/DataOwnerTypeEnum'
 import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
 import { iccRestApiPath } from '@icure/api/icc-api/api/IccRestApiPath'
+import { HealthcarePartyDto, PatientDto, UserDto } from '../../index'
 
 export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements UserLikeApi<DSUser, DSPatient> {
     constructor(
@@ -287,5 +288,13 @@ export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements Us
 
     subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<UserDto>, eventFired: (user: DSUser) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
         return subscribeToEntityEvents(iccRestApiPath(this.basePath), this.authApi, 'User', eventTypes, FilterMapper.toAbstractFilterDto(filter, 'User'), (event) => eventFired(this.userMapper.toDomain(event)), options ?? {}).then((ws) => new ConnectionImpl(ws))
+    }
+
+    async getByPhoneNumber(phoneNumber: string): Promise<DSUser> {
+        return this.userMapper.toDomain(
+            await this.userApi.getUserByPhoneNumber(this.sanitizer.validateMobilePhone(phoneNumber)).catch((e) => {
+                throw this.errorHandler.createErrorFromAny(e)
+            }),
+        )!
     }
 }

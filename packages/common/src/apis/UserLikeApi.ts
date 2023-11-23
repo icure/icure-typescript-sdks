@@ -63,13 +63,22 @@ export interface UserLikeApi<DSUser, DSPatient> {
     get(id: string): Promise<DSUser>
 
     /**
-     * Get a User by email.
+     * Get a User by their email.
      *
      * Each user is uniquely identified by an email
      *
      * @param email The email that identifies the user uniquely
      */
     getByEmail(email: string): Promise<DSUser>
+
+    /**
+     * Get a User by their phone number.
+     *
+     * Each user is uniquely identified by a phone number
+     *
+     * @param phoneNumber The phone number that identifies the user uniquely
+     */
+    getByPhoneNumber(phoneNumber: string): Promise<DSUser>
 
     /**
      * Filters are complex selectors that are built by combining basic building blocks. You can learn more on how to build filters here {@link https://docs.icure.com/sdks/how-to/how-to-filter-data-with-advanced-search-criteria}. This method returns the list of the ids of the users matching the filter.

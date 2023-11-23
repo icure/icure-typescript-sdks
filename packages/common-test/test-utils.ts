@@ -5,7 +5,7 @@ import { v4 as uuid } from 'uuid'
 import { EnvInitializer } from '@icure/test-setup/decorators'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import { TestEnvironmentBuilder } from '@icure/test-setup/builder'
-import { BasicApis, retry } from '@icure/api'
+import { BasicApis, IccAuthApi, JwtAuthenticationProvider, NoAuthenticationProvider, retry } from '@icure/api'
 import { webcrypto } from 'crypto'
 import { domainTypeTag } from '@icure/typescript-common'
 
@@ -44,7 +44,7 @@ export async function getEnvironmentInitializer(): Promise<EnvInitializer> {
             ...baseInitializer,
             execute: async (env: TestVars): Promise<TestVars> => {
                 const updatedEnvs = await baseInitializer.execute(env)
-                const masterApi = await BasicApis(updatedEnvs.iCureUrl, updatedEnvs.masterHcp!.user, updatedEnvs.masterHcp!.password, webcrypto as any, fetch)
+                const masterApi = await BasicApis(updatedEnvs.iCureUrl, new JwtAuthenticationProvider(new IccAuthApi(updatedEnvs.iCureUrl, {}, new NoAuthenticationProvider(), fetch), updatedEnvs.masterHcp!.user, updatedEnvs.masterHcp!.password), webcrypto as any, fetch)
                 await retry(() => masterApi.userApi.getCurrentUser(), 10, 1000) // Ensure the user is available
                 const masterHcp = await masterApi.healthcarePartyApi.getHealthcareParty(updatedEnvs.masterHcp!.dataOwnerId)
                 await masterApi.healthcarePartyApi.modifyHealthcareParty({
