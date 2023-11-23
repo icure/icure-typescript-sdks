@@ -5,10 +5,10 @@ import { expect } from 'chai'
 import { v4 as uuid } from 'uuid'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import { Coding, mapOf, User } from '@icure/typescript-common'
-import { CodingFilter } from '@icure/ehr-lite-sdk'
 import { FilterComposition, NoOpFilter } from '@icure/typescript-common'
 import { describe, it, before } from 'mocha'
 import { TestUtils } from '../test-utils'
+import {CodingFilter} from "@icure/ehr-lite-sdk";
 
 setLocalStorage(fetch)
 
@@ -62,13 +62,13 @@ describe('Coding Filters Test', function () {
     })
 
     it('If no parameter is specified, all the Codings are returned', async function () {
-        const codes = await hcp1Api.codingApi.filterCoding(await new CodingFilter(hcp1Api).build())
+        const codes = await hcp1Api.codingApi.filterBy(await new CodingFilter(hcp1Api).build())
 
         expect(codes.rows.length).to.be.greaterThan(0)
     })
 
     it('Can filter Codings by ids', async function () {
-        const codes = await hcp1Api.codingApi.filterCoding(await new CodingFilter(hcp1Api).byIds([code1.id!, code2.id!]).build())
+        const codes = await hcp1Api.codingApi.filterBy(await new CodingFilter(hcp1Api).byIds([code1.id!, code2.id!]).build())
 
         expect(codes.rows.length).to.be.equal(2)
         expect(codes.rows.map((it) => it.id)).to.contain(code1.id)
@@ -76,7 +76,7 @@ describe('Coding Filters Test', function () {
     }).timeout(60000)
 
     it('Can filter Codings by language', async function () {
-        const codes = await hcp1Api.codingApi.filterCoding(await new CodingFilter(hcp1Api).byRegionLanguageTypeLabel('be').build())
+        const codes = await hcp1Api.codingApi.filterBy(await new CodingFilter(hcp1Api).byRegionLanguageTypeLabel('be', 'fr', 'ICURE').build())
 
         expect(codes.rows.length).to.be.greaterThan(0)
         codes.rows.forEach((code) => {
