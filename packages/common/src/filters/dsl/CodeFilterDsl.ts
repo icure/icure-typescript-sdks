@@ -1,9 +1,7 @@
 import { FilterBuilder, NoOpFilter, SortableFilterBuilder } from './filterDsl'
-import { CodeByRegionTypeLabelFilter } from '../code/CodeByRegionTypeLabelFilter'
 import { Filter } from '../Filter'
-import { AllCodesFilter } from '../code/AllCodesFilter'
+import { AllCodesFilter } from '../code'
 import { Code, IntersectionFilter } from '@icure/api'
-import { CodeByIdsFilter } from '../code/CodeByIdsFilter'
 import { CommonApi } from '../../apis/CommonApi'
 
 interface BaseCodeFilterBuilder<F> {
@@ -38,10 +36,7 @@ export class CodeFilter extends SortableFilterBuilder<Code, CodeFilterSortStepDe
         return this
     }
 
-    byRegionLanguageTypeLabel(region?: string, language?: string, type?: string, label?: string): CodeFilter {
-        if (!region && !language && !type && !label) {
-            throw Error('To instantiate the filter, you must specify at least one of these parameters: labelType, labelCode, codeType, or codeCode')
-        }
+    byRegionLanguageTypeLabel(region: string | undefined, language: string, type: string, label?: string): CodeFilter {
         this._builderAccumulator.addFilter(Promise.resolve({ region, type, language, label, $type: 'CodeByRegionTypeLabelFilter' }))
         return this
     }
@@ -76,7 +71,7 @@ class CodeFilterSortStepDecorator implements BaseCodeFilterBuilder<NonSortableCo
         return this.codeFilter
     }
 
-    byRegionLanguageTypeLabel(region?: string, language?: string, type?: string, label?: string): NonSortableCodeFilter {
+    byRegionLanguageTypeLabel(region: string | undefined, language: string, type: string, label?: string): NonSortableCodeFilter {
         this.codeFilter.byRegionLanguageTypeLabel(region, language, type, label)
         this.codeFilter._builderAccumulator.setLastElementAsSortKey()
         return this.codeFilter
