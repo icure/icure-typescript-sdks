@@ -34,6 +34,9 @@ export interface ServiceLikeApi<DSService, DSPatient, DSDocument> {
      * batch into a new one.
      * @param patientId
      * @param services
+     * @experimental This feature is still experimental and may not always work as expected when sharing only a subset
+     * of the services of a batch (through the {@link giveAccessTo} or {@link giveAccessToMany} methods) . You should
+     * avoid doing this in production for now.
      */
     createOrModifyManyFor(patientId: string, services: Array<DSService>): Promise<Array<DSService>>
 
@@ -105,6 +108,8 @@ export interface ServiceLikeApi<DSService, DSPatient, DSDocument> {
      * @param services The services the current data owner would like to share with another data owner
      * @param delegatedTo ID of the data owner to which current user would like to give access
      * @return The service with updated access rights
+     * @experimental This feature is still experimental and may not always work as expected when sharing only a subset
+     * of the services of a batch. You should avoid doing this in production for now.
      */
     giveAccessToMany(services: DSService[], delegatedTo: string): Promise<DSService[]>
 
