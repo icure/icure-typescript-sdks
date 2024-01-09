@@ -3,7 +3,7 @@ import { getEnvironmentInitializer, hcp1Username, hcp3Username, setLocalStorage,
 import { webcrypto } from 'crypto'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import { TestKeyStorage, TestStorage, testStorageForUser } from '../test-storage'
-import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, forceUuid, NotificationTypeEnum } from '@icure/typescript-common'
+import { AnonymousApiBuilder, AuthSecretDetails, AuthSecretType, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, forceUuid, NotificationTypeEnum } from '@icure/typescript-common'
 import { assert } from 'chai'
 import { BaseApiTestContext, WithAuthenticationApi, WithDataOwnerApi, WithHcpApi, WithMaintenanceTaskApi, WithPatientApi, WithServiceApi } from './TestContexts'
 import { expectArrayContainsExactlyInAnyOrder } from '../assertions'
@@ -219,10 +219,7 @@ export function testAuthenticationApi<
             expect(forceUuid(currentUser.healthcarePartyId)).toEqual(currentUser.healthcarePartyId)
             expect(currentUser.healthcarePartyId).not.toEqual(hcpId!)
 
-            const currentHcp = ctx.toHcpDto(await ctx.hcpApi(hcpApiAndUser.api).get(currentUser.healthcarePartyId!))
-            expect(currentHcp).toBeTruthy()
-            expect(currentHcp.firstName).toEqual(firstName)
-            expect(currentHcp.lastName).toEqual(lastName)
+            expect(ctx.toUserDto(await ctx.userApi(hcpApiAndUser.api).getLogged()).id).toEqual(currentUser.id)
         })
 
         it('A user should be able of logging in with a long token', async () => {
@@ -241,10 +238,7 @@ export function testAuthenticationApi<
                 .withKeyStorage(hcpApiAndUserFromMailSignup.api.baseApi.cryptoApi.keyStorage)
                 .withCryptoStrategies(ctx.newSimpleCryptoStrategies())
                 .build()
-            const currentHcp = ctx.toHcpDto(await ctx.hcpApi(hcpApiAndUserFromTokenLogin).get(hcpApiAndUserFromMailSignup.user.healthcarePartyId!))
-            expect(currentHcp).toBeTruthy()
-            expect(currentHcp.firstName).toEqual(firstName)
-            expect(currentHcp.lastName).toEqual(lastName)
+            expect(ctx.toUserDto(await ctx.userApi(hcpApiAndUserFromTokenLogin).getLogged()).id).toEqual(hcpApiAndUserFromMailSignup.user.id)
         })
 
         it('HCP should be capable of signing up using email with friendlyCaptchaData', async () => {
@@ -261,10 +255,7 @@ export function testAuthenticationApi<
             expect(forceUuid(currentUser.healthcarePartyId)).toEqual(currentUser.healthcarePartyId)
             expect(currentUser.healthcarePartyId).not.toEqual(hcpId!)
 
-            const currentHcp = ctx.toHcpDto(await ctx.hcpApi(hcpApiAndUser.api).get(currentUser.healthcarePartyId!))
-            expect(currentHcp).toBeTruthy()
-            expect(currentHcp.firstName).toEqual(firstName)
-            expect(currentHcp.lastName).toEqual(lastName)
+            expect(ctx.toUserDto(await ctx.userApi(hcpApiAndUser.api).getLogged()).id).toEqual(currentUser.id)
         })
 
         it('Patient should be able to signing up through email', async () => {
@@ -493,6 +484,32 @@ export function testAuthenticationApi<
             // Then
             expect(response.status).toBe(200)
             expect(((await response.json()) as User).id).toEqual(user.id)
+        }, 120_000)
+
+        it('Should be able to use an auth secret provider for login', async () => {
+            const firstName = `Gigio${forceUuid()}`
+            const lastName = `Bagigio${forceUuid()}`
+            const signupApiInfo = await ctx.signUpUserUsingEmail(env!, firstName, lastName, 'hcp', hcpId!, 'recaptcha')
+            let secretProviderCalled = false
+            const apiWithProvider = await ctx
+                .newApiBuilder()
+                .withICureBaseUrl(env.iCureUrl)
+                .withUserName(signupApiInfo.user.login!)
+                .withAuthSecretProvider({
+                    getSecret(acceptedSecrets: AuthSecretType[], previousAttempts: AuthSecretDetails[]): Promise<AuthSecretDetails> {
+                        secretProviderCalled = true
+                        expect(acceptedSecrets).toContain(AuthSecretType.LONG_LIVED_TOKEN)
+                        expect(previousAttempts).toHaveLength(0)
+                        return Promise.resolve({ value: signupApiInfo.token, secretType: AuthSecretType.LONG_LIVED_TOKEN })
+                    },
+                })
+                .withCrypto(webcrypto as any)
+                .withStorage(signupApiInfo.api.baseApi.cryptoApi.storage)
+                .withKeyStorage(signupApiInfo.api.baseApi.cryptoApi.keyStorage)
+                .withCryptoStrategies(ctx.newSimpleCryptoStrategies())
+                .build()
+            expect(ctx.toUserDto(await ctx.userApi(apiWithProvider).getLogged()).id).toEqual(signupApiInfo.user.id)
+            expect(secretProviderCalled).toBeTruthy()
         }, 120_000)
     })
 }

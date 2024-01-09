@@ -22,7 +22,7 @@ import {
     UserApi,
     userApi,
 } from '../../index'
-import { AuthenticatedApiBuilder, CommonApi, CryptoStrategies, CryptoStrategiesBridge, KeyStorageFacade, StorageFacade, Apis, IccCryptoXApi, DataOwnerWithTypeDto, DataOwnerTypeEnumDto, JwtBridgedAuthService, IcureApi } from '@icure/typescript-common'
+import { AuthenticatedApiBuilder, CommonApi, CryptoStrategies, CryptoStrategiesBridge, KeyStorageFacade, StorageFacade, Apis, IccCryptoXApi, DataOwnerWithTypeDto, DataOwnerTypeEnumDto, JwtBridgedAuthService, IcureApi, AuthSecretProvider } from '@icure/typescript-common'
 import dataOwnerMapper from '../mappers/DataOwner.mapper'
 import { MedTechCryptoStrategies } from '../services/MedTechCryptoStrategies'
 import { iCureMedTechMessageFactory, MedTechMessageFactory } from '../services/MedTechMessageFactory'
@@ -42,7 +42,8 @@ export class MedTechApi extends CommonApi {
 
     private readonly _iCureBaseUrl: string
     private readonly _username: string
-    private readonly _password: string
+    private readonly _password: string | undefined
+    private readonly _authSecretProvider: AuthSecretProvider | undefined
 
     private readonly _authenticationApi: AuthenticationApi | undefined
     private readonly _cryptoStrategies: CryptoStrategies<DataOwnerWithType>
@@ -51,7 +52,8 @@ export class MedTechApi extends CommonApi {
         api: Apis,
         basePath: string,
         username: string,
-        password: string,
+        password: string | undefined,
+        authSecretProvider: AuthSecretProvider | undefined,
         cryptoStrategies: CryptoStrategies<DataOwnerWithType>,
         msgGtwUrl: string | undefined = undefined,
         msgGtwSpecId: string | undefined = undefined,
@@ -66,12 +68,26 @@ export class MedTechApi extends CommonApi {
         this._iCureBaseUrl = basePath
         this._username = username
         this._password = password
+        this._authSecretProvider = authSecretProvider
         this._messageFactory = messageFactory ?? iCureMedTechMessageFactory
 
-        const jwtAuthService = new JwtBridgedAuthService(this.baseApi.authApi, username, password)
         this._authenticationApi =
             (authProcessByEmailId || authProcessBySmsId) && this._messageGatewayApi && msgGtwUrl && msgGtwSpecId
-                ? authenticationApi(this.errorHandler, this.sanitizer, this._messageGatewayApi, basePath, authProcessByEmailId, authProcessBySmsId, api.cryptoApi.primitives.crypto, this.storage, this.keyStorage, this.cryptoStrategies, jwtAuthService, msgGtwSpecId, msgGtwUrl)
+                ? authenticationApi(
+                      this.errorHandler,
+                      this.sanitizer,
+                      this._messageGatewayApi,
+                      basePath,
+                      authProcessByEmailId,
+                      authProcessBySmsId,
+                      api.cryptoApi.primitives.crypto,
+                      this.storage,
+                      this.keyStorage,
+                      this.cryptoStrategies,
+                      this._baseApi.authApi.authenticationProvider,
+                      msgGtwSpecId,
+                      msgGtwUrl,
+                  )
                 : undefined
         this._dataSampleApi = dataSampleApi(this, basePath)
         this._codingApi = codingApi(this)
@@ -144,8 +160,12 @@ export class MedTechApi extends CommonApi {
         return this._username
     }
 
-    get password(): string {
+    get password(): string | undefined {
         return this._password
+    }
+
+    get authSecretProvider(): AuthSecretProvider | undefined {
+        return this._authSecretProvider
     }
 
     get storage(): StorageFacade<string> {
@@ -190,7 +210,12 @@ export namespace MedTechApi {
                 super.withICureBaseUrl(initialisationApi.iCureBaseUrl)
                 super.withCrypto(initialisationApi.cryptoApi.primitives.crypto)
                 super.withUserName(initialisationApi.username)
-                super.withPassword(initialisationApi.password)
+                if (!!initialisationApi.password) {
+                    super.withPassword(initialisationApi.password)
+                }
+                if (!!initialisationApi.authSecretProvider) {
+                    super.withAuthSecretProvider(initialisationApi.authSecretProvider)
+                }
                 super.withStorage(initialisationApi.storage)
                 super.withKeyStorage(initialisationApi.keyStorage)
                 super.withCryptoStrategies(initialisationApi.cryptoStrategies)
@@ -205,8 +230,16 @@ export namespace MedTechApi {
             storage: StorageFacade<string> | undefined
             keyStorage: KeyStorageFacade | undefined
             cryptoStrategies: MedTechCryptoStrategies
-            userName: string
-            password: string
+            loginDetails:
+                | {
+                      username: string
+                      password: string
+                  }
+                | {
+                      username: string
+                      secretProvider: AuthSecretProvider
+                      password: string | undefined
+                  }
             crypto: Crypto | undefined
             authProcessByEmailId: string | undefined
             authProcessBySmsId: string | undefined
@@ -214,10 +247,7 @@ export namespace MedTechApi {
         }): Promise<MedTechApi> {
             return IcureApi.initialise(
                 props.iCureBaseUrl,
-                {
-                    username: props.userName,
-                    password: props.password,
-                },
+                props.loginDetails,
                 new CryptoStrategiesBridge(
                     props.cryptoStrategies,
                     {
@@ -253,7 +283,24 @@ export namespace MedTechApi {
                     createMaintenanceTasksOnNewKey: true,
                     disableParentKeysInitialisation: true,
                 },
-            ).then((api) => new MedTechApi(api, props.iCureBaseUrl, props.userName, props.password, props.cryptoStrategies, props.msgGwUrl, props.msgGwSpecId, props.authProcessByEmailId, props.authProcessBySmsId, props.storage, props.keyStorage, props.messageFactory))
+            ).then(
+                (api) =>
+                    new MedTechApi(
+                        api,
+                        props.iCureBaseUrl,
+                        props.loginDetails.username,
+                        props.loginDetails.password,
+                        'secretProvider' in props.loginDetails ? props.loginDetails.secretProvider : undefined,
+                        props.cryptoStrategies,
+                        props.msgGwUrl,
+                        props.msgGwSpecId,
+                        props.authProcessByEmailId,
+                        props.authProcessBySmsId,
+                        props.storage,
+                        props.keyStorage,
+                        props.messageFactory,
+                    ),
+            )
         }
     }
 }

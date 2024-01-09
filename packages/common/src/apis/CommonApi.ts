@@ -15,8 +15,8 @@ export abstract class CommonApi {
 
     protected constructor(
         protected readonly _baseApi: Apis,
-        username: string,
-        password: string,
+        username: string | undefined,
+        password: string | undefined,
         protected readonly msgGtwUrl?: string,
         protected readonly msgGtwSpecId?: string,
         storage?: StorageFacade<string>,
