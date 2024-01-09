@@ -225,6 +225,28 @@ export function testAuthenticationApi<
             expect(currentHcp.lastName).toEqual(lastName)
         })
 
+        it('A user should be able of logging in with a long token', async () => {
+            if (shouldSkip()) return
+            // When
+            const firstName = `Gigio${forceUuid()}`
+            const lastName = `Bagigio${forceUuid()}`
+            const hcpApiAndUserFromMailSignup = await ctx.signUpUserUsingEmail(env!, firstName, lastName, 'hcp', hcpId!, 'recaptcha')
+            const hcpApiAndUserFromTokenLogin = await ctx
+                .newApiBuilder()
+                .withICureBaseUrl(env.iCureUrl)
+                .withUserName(hcpApiAndUserFromMailSignup.user.login!)
+                .withPassword(hcpApiAndUserFromMailSignup.token)
+                .withCrypto(webcrypto as any)
+                .withStorage(hcpApiAndUserFromMailSignup.api.baseApi.cryptoApi.storage)
+                .withKeyStorage(hcpApiAndUserFromMailSignup.api.baseApi.cryptoApi.keyStorage)
+                .withCryptoStrategies(ctx.newSimpleCryptoStrategies())
+                .build()
+            const currentHcp = ctx.toHcpDto(await ctx.hcpApi(hcpApiAndUserFromTokenLogin).get(hcpApiAndUserFromMailSignup.user.healthcarePartyId!))
+            expect(currentHcp).toBeTruthy()
+            expect(currentHcp.firstName).toEqual(firstName)
+            expect(currentHcp.lastName).toEqual(lastName)
+        })
+
         it('HCP should be capable of signing up using email with friendlyCaptchaData', async () => {
             if (shouldSkip()) return
             const firstName = `Gigio${forceUuid()}`
