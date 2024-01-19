@@ -25,7 +25,7 @@ export class AuthenticationApi extends AuthenticationApiImpl<EHRLiteApi> {
         super(messageGatewayApi, errorHandler, sanitizer, iCureBasePath, authProcessByEmailId, authProcessBySmsId, storage, msgGtwSpecId, msgGtwUrl, authProvider, fetchImpl)
     }
 
-    protected initApi(username: string, password: string): Promise<EHRLiteApi> {
+    protected initApi(username: string, password: string, initialTokens: { token: string; refreshToken: string } | undefined): Promise<EHRLiteApi> {
         const builder = new EHRLiteApi.Builder()
             .withICureBaseUrl(this.iCureBasePath)
             .withUserName(username)
@@ -37,6 +37,9 @@ export class AuthenticationApi extends AuthenticationApiImpl<EHRLiteApi> {
             .withMessageCharactersLimit(this.messageCharactersLimit)
             .withMsgGwUrl(this.msgGtwUrl)
             .withMsgGwSpecId(this.msgGtwSpecId)
+        if (!!initialTokens) {
+            builder.withInitialTokens(initialTokens)
+        }
         if (this.authProcessBySmsId) {
             builder.withAuthProcessBySmsId(this.authProcessBySmsId)
         }

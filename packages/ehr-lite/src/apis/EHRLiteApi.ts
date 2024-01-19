@@ -262,9 +262,15 @@ export namespace EHRLiteApi {
                       password: string
                   }
                 | {
+                      icureTokens: { token: string; refreshToken: string }
+                      credentials: { username: string; password: string }
+                  }
+                | {
                       username: string
                       secretProvider: AuthSecretProvider
                       password: string | undefined
+                      initialAuthToken: string | undefined
+                      initialRefreshToken: string | undefined
                   }
             crypto: Crypto | undefined
             authProcessByEmailId: string | undefined
@@ -329,8 +335,8 @@ export namespace EHRLiteApi {
                     new EHRLiteApi(
                         api,
                         props.iCureBaseUrl,
-                        props.loginDetails.username,
-                        props.loginDetails.password,
+                        'username' in props.loginDetails ? props.loginDetails.username : props.loginDetails.credentials.username,
+                        'password' in props.loginDetails ? props.loginDetails.password : props.loginDetails.credentials.password,
                         'secretProvider' in props.loginDetails ? props.loginDetails.secretProvider : undefined,
                         props.cryptoStrategies,
                         props.msgGwUrl,

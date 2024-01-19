@@ -151,8 +151,8 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
     }
 
     protected async _initUserAuthTokenAndCrypto(login: string, token: string, tokenDurationInSeconds?: number): Promise<AuthenticationResult<DSApi>> {
-        const { user, password } = await retry(() => this._generateAndAssignAuthenticationToken(login, token, tokenDurationInSeconds), 5, 500, 2)
-        const authenticatedApi = await this.initApi(login, password)
+        const { user, password, initialTokens } = await retry(() => this._generateAndAssignAuthenticationToken(login, token, tokenDurationInSeconds), 5, 500, 2)
+        const authenticatedApi = await this.initApi(login, password, initialTokens)
 
         const userKeyPairs: KeyPair<string>[] = []
         for (const keyPair of Object.values(authenticatedApi.baseApi.cryptoApi.userKeysManager.getDecryptionKeys())) {
@@ -187,7 +187,7 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
         return newDeviceId
     }
 
-    protected abstract initApi(username: string, password: string): Promise<DSApi>
+    protected abstract initApi(username: string, password: string, initialTokens: { token: string; refreshToken: string } | undefined): Promise<DSApi>
 
     protected abstract validatePatient(patientDto: Patient): void
 
@@ -202,8 +202,10 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
     ): Promise<{
         user: User
         password: string
+        initialTokens: { token: string; refreshToken: string } | undefined
     }> {
-        const userApi = (await BasicApis(this.iCureBasePath, new JwtAuthenticationProvider(new IccAuthApi(this.iCureBasePath, {}, new NoAuthenticationProvider(), this.fetchImpl), login, validationCode))).userApi
+        const authProvider = new JwtAuthenticationProvider(new IccAuthApi(this.iCureBasePath, {}, new NoAuthenticationProvider(), this.fetchImpl), login, validationCode)
+        const userApi = (await BasicApis(this.iCureBasePath, authProvider)).userApi
         const user = await userApi.getCurrentUser()
         if (!user) {
             throw this.errorHandler.createErrorWithMessage(`Your validation code ${validationCode} expired. Start a new authentication process for your user`)
@@ -212,7 +214,11 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
         if (!token) {
             throw this.errorHandler.createErrorWithMessage(`Your validation code ${validationCode} expired. Start a new authentication process for your user`)
         }
-        return { user, password: token }
+        const initialTokens = await authProvider.getIcureTokens()
+        if (!initialTokens) {
+            console.warn('Could not retrieve initial auth tokens from the auth provider.')
+        }
+        return { user, password: token, initialTokens }
     }
 
     public async getJsonWebToken(): Promise<string | undefined> {

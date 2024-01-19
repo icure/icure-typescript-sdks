@@ -119,6 +119,7 @@ export abstract class AnonymousApiBuilder<DSCryptoStrategies extends CryptoStrat
 export abstract class AuthenticatedApiBuilder<DSCryptoStrategies extends CryptoStrategies<any>, DSMessageFactory extends MessageFactory<any, any, any>, DSApi extends CommonApi> extends ApiBuilder<DSCryptoStrategies, DSApi> {
     private userName?: string
     private password?: string
+    private tokens?: { token: string; refreshToken: string }
     protected messageFactory?: DSMessageFactory
 
     withUserName(newUserName: string): this {
@@ -128,6 +129,11 @@ export abstract class AuthenticatedApiBuilder<DSCryptoStrategies extends CryptoS
 
     withPassword(newPassword: string): this {
         this.password = newPassword
+        return this
+    }
+
+    withInitialTokens(tokens: { token: string; refreshToken: string }): this {
+        this.tokens = tokens
         return this
     }
 
@@ -165,11 +171,20 @@ export abstract class AuthenticatedApiBuilder<DSCryptoStrategies extends CryptoS
                 username,
                 secretProvider,
                 password,
+                initialAuthToken: this.tokens?.token,
+                initialRefreshToken: this.tokens?.refreshToken,
             }
         } else if (password != undefined) {
-            loginDetails = {
-                username,
-                password,
+            if (this.tokens != undefined) {
+                loginDetails = {
+                    icureTokens: this.tokens,
+                    credentials: { username, password },
+                }
+            } else {
+                loginDetails = {
+                    username,
+                    password,
+                }
             }
         } else throw new Error('either a password or an authSecretProvider is required')
 
@@ -201,9 +216,15 @@ export abstract class AuthenticatedApiBuilder<DSCryptoStrategies extends CryptoS
                   password: string
               }
             | {
+                  icureTokens: { token: string; refreshToken: string }
+                  credentials: { username: string; password: string }
+              }
+            | {
                   username: string
                   secretProvider: AuthSecretProvider
                   password: string | undefined
+                  initialAuthToken: string | undefined
+                  initialRefreshToken: string | undefined
               }
         crypto: Crypto | undefined
         authProcessByEmailId: string | undefined

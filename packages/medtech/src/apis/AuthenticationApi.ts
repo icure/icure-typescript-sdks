@@ -50,7 +50,7 @@ export class AuthenticationApi extends AuthenticationApiImpl<MedTechApi> {
         return { ...res, medTechApi: res.api }
     }
 
-    protected initApi(username: string, password: string): Promise<MedTechApi> {
+    protected initApi(username: string, password: string, initialTokens: { token: string; refreshToken: string } | undefined): Promise<MedTechApi> {
         const builder = new MedTechApi.Builder()
             .withICureBaseUrl(this.iCureBasePath)
             .withUserName(username)
@@ -61,6 +61,9 @@ export class AuthenticationApi extends AuthenticationApiImpl<MedTechApi> {
             .withCryptoStrategies(this.cryptoStrategies)
             .withMsgGwSpecId(this.msgGtwSpecId)
             .withMsgGwUrl(this.msgGtwUrl)
+        if (!!initialTokens) {
+            builder.withInitialTokens(initialTokens)
+        }
         if (this.authProcessBySmsId) {
             builder.withAuthProcessBySmsId(this.authProcessBySmsId)
         }
