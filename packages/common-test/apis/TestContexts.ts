@@ -122,7 +122,14 @@ export abstract class BaseApiTestContext<
         const anonymousApi = await builder.build()
 
         const email = getTempEmail()
-        const process = await anonymousApi.authenticationApi.startAuthentication(recaptchaType === 'recaptcha' ? env.recaptcha : env.friendlyCaptchaKey, email, undefined, firstName, lastName, inviterId, false, 8, recaptchaType)
+        const process = await anonymousApi.authenticationApi.startAuthentication({
+            recaptcha: recaptchaType === 'recaptcha' ? env.recaptcha : env.friendlyCaptchaKey,
+            email,
+            firstName,
+            lastName,
+            validationCodeLength: 8,
+            recaptchaType,
+        })
 
         const emails = await TestUtils.getEmail(email)
 

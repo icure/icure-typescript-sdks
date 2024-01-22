@@ -46,17 +46,25 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
         throw this.errorHandler.createErrorWithMessage(`iCure could not complete authentication process with requestId ${process.requestId}. Try again later.`)
     }
 
-    async startAuthentication(
-        recaptcha: string,
-        email?: string,
-        phoneNumber?: string,
-        firstName: string = '',
-        lastName: string = '',
-        healthcareProfessionalId: string = '',
-        bypassTokenCheck: boolean = false,
-        validationCodeLength: number = 6,
-        recaptchaType: RecaptchaType = 'recaptcha',
-    ): Promise<AuthenticationProcess> {
+    async startAuthentication({
+        recaptcha,
+        email,
+        phoneNumber,
+        firstName = '',
+        lastName = '',
+        bypassTokenCheck = false,
+        validationCodeLength = 6,
+        recaptchaType = 'recaptcha',
+    }: {
+        recaptcha: string
+        email?: string
+        phoneNumber?: string
+        firstName?: string
+        lastName?: string
+        bypassTokenCheck?: boolean
+        validationCodeLength?: number
+        recaptchaType?: RecaptchaType
+    }): Promise<AuthenticationProcess> {
         if (!email && !phoneNumber) {
             throw this.errorHandler.createErrorWithMessage(`In order to start authentication of a user, you should at least provide its email OR its phone number`)
         }
@@ -79,7 +87,6 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
                 from: email != undefined ? this.sanitizer.validateEmail(email) : this.sanitizer.validateMobilePhone(phoneNumber!),
                 email: email,
                 mobilePhone: phoneNumber,
-                hcpId: healthcareProfessionalId,
             },
             validationCodeLength,
         )

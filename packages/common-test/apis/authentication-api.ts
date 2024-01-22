@@ -133,7 +133,13 @@ export function testAuthenticationApi<
                 .withCryptoStrategies(ctx.newSimpleCryptoStrategies([]))
                 .build()
 
-            await expect(anonymousMedTechApi.authenticationApi.startAuthentication(env!.recaptcha, undefined, undefined, 'Tom', 'Gideon', env!.hcpAuthProcessId, false)).rejects.toBeInstanceOf(Error)
+            await expect(
+                anonymousMedTechApi.authenticationApi.startAuthentication({
+                    recaptcha: env!.recaptcha,
+                    firstName: 'Tom',
+                    lastName: 'Gideon',
+                }),
+            ).rejects.toBeInstanceOf(Error)
         })
 
         it('User should not be able to start authentication if he provided an empty email and mobilePhone', async () => {
@@ -150,7 +156,15 @@ export function testAuthenticationApi<
                 .withCryptoStrategies(ctx.newSimpleCryptoStrategies([]))
                 .build()
 
-            await expect(anonymousMedTechApi.authenticationApi.startAuthentication(env!.recaptcha, '', '', 'Tom', 'Gideon', env!.patAuthProcessId, false)).rejects.toBeInstanceOf(Error)
+            await expect(
+                anonymousMedTechApi.authenticationApi.startAuthentication({
+                    recaptcha: env!.recaptcha,
+                    email: '',
+                    phoneNumber: '',
+                    firstName: 'Tom',
+                    lastName: 'Gideon',
+                }),
+            ).rejects.toBeInstanceOf(Error)
         })
 
         it('User should not be able to start authentication if he provided an email but no AuthProcessByEmailId', async () => {
@@ -166,7 +180,14 @@ export function testAuthenticationApi<
                 .withCryptoStrategies(ctx.newSimpleCryptoStrategies([]))
                 .build()
 
-            await expect(anonymousMedTechApi.authenticationApi.startAuthentication(env!.recaptcha, 'a-fake-email', undefined, 'Tom', 'Gideon', env!.hcpAuthProcessId, false)).rejects.toBeInstanceOf(Error)
+            await expect(
+                anonymousMedTechApi.authenticationApi.startAuthentication({
+                    recaptcha: env!.recaptcha,
+                    email: 'a-fake-email',
+                    firstName: 'Tom',
+                    lastName: 'Gideon',
+                }),
+            ).rejects.toBeInstanceOf(Error)
         })
 
         it('User should not be able to start authentication if he provided an sms but no AuthProcessBySMSId', async () => {
@@ -182,7 +203,14 @@ export function testAuthenticationApi<
                 .withCryptoStrategies(ctx.newSimpleCryptoStrategies([]))
                 .build()
 
-            await expect(anonymousMedTechApi.authenticationApi.startAuthentication(env!.recaptcha, undefined, 'a-fake-phone-number', 'Tom', 'Gideon', env!.hcpAuthProcessId, false)).rejects.toBeInstanceOf(Error)
+            await expect(
+                anonymousMedTechApi.authenticationApi.startAuthentication({
+                    recaptcha: env!.recaptcha,
+                    phoneNumber: 'a-fake-phone-number',
+                    firstName: 'Tom',
+                    lastName: 'Gideon',
+                }),
+            ).rejects.toBeInstanceOf(Error)
         })
 
         it('A User should be able to start the authentication by sms', async () => {
@@ -200,7 +228,12 @@ export function testAuthenticationApi<
 
             // When
             const phoneNumber = `+${Math.ceil(Math.random() * 10000000 + 10000000)}`
-            await anonymousMedTechApi.authenticationApi.startAuthentication(env!.recaptcha, undefined, phoneNumber, 'Tom', 'Gideon', env!.hcpAuthProcessId, false)
+            await anonymousMedTechApi.authenticationApi.startAuthentication({
+                recaptcha: env!.recaptcha,
+                phoneNumber: phoneNumber,
+                firstName: 'Tom',
+                lastName: 'Gideon',
+            })
             const messages = await TestUtils.getSMS(phoneNumber)
             expect(messages?.message).not.toBeFalsy()
         })
@@ -369,7 +402,10 @@ export function testAuthenticationApi<
                 .withCryptoStrategies(newCryptoStrategies)
                 .build()
 
-            const loginProcess = await anonymousMedTechApi.authenticationApi.startAuthentication(env!.recaptcha, patApiAndUser.user.email)
+            const loginProcess = await anonymousMedTechApi.authenticationApi.startAuthentication({
+                recaptcha: env!.recaptcha,
+                email: patApiAndUser.user.email,
+            })
 
             // When
             const subjectCode = (await TestUtils.getEmail(patApiAndUser.user.email!)).subject!
@@ -425,7 +461,10 @@ export function testAuthenticationApi<
                 .withCryptoStrategies(newCryptoStrategies)
                 .build()
 
-            const loginProcess = await anonymousMedTechApi.authenticationApi.startAuthentication(env!.recaptcha, patApiAndUser.user.email)
+            const loginProcess = await anonymousMedTechApi.authenticationApi.startAuthentication({
+                recaptcha: env!.recaptcha,
+                email: patApiAndUser.user.email,
+            })
 
             // When
             const subjectCode = (await TestUtils.getEmail(patApiAndUser.user.email!)).subject!

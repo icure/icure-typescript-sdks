@@ -6,5 +6,4 @@ export type AuthenticationProcessBody = {
     from: string | undefined
     email: string | undefined
     mobilePhone: string | undefined
-    hcpId: string | undefined
 }
