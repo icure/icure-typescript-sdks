@@ -95,7 +95,7 @@ export abstract class BaseApiTestContext<
         recaptchaType: RecaptchaType = 'recaptcha',
         storage?: StorageFacade<string>,
         keyStorage?: KeyStorageFacade,
-    ): Promise<{ api: DSApi; user: User; token: string }> {
+    ): Promise<{ api: DSApi; user: User; token: string; registrationProcessId: string }> {
         if (new Date().getTime() - this.lastRegisterCall < BaseApiTestContext.registerThrottlingLimit) {
             const throttlingWait = this.returnWithinBoundaries((BaseApiTestContext.registerThrottlingLimit - this.registerAverageWait) * 5 - this.registerAverageWait, BaseApiTestContext.registerThrottlingLimit, 0)
             await sleep(throttlingWait)
@@ -103,12 +103,14 @@ export abstract class BaseApiTestContext<
         }
         this.lastRegisterCall = new Date().getTime()
 
+        const processId = await TestUtils.createTestProcess(inviterId, userType === 'hcp' ? 'PRACTITIONER' : 'PATIENT', env.testGroupId)
+
         const builder = this.newAnonymousApiBuilder()
             .withICureBaseUrl(env.iCureUrl)
             .withMsgGwUrl(env.msgGtwUrl)
             .withMsgGwSpecId(env.specId)
             .withCrypto(webcrypto as any)
-            .withAuthProcessByEmailId(userType === 'hcp' ? this.hcpProcessId(env) : this.patProcessId(env))
+            .withAuthProcessByEmailId(processId)
             .withCryptoStrategies(this.newSimpleCryptoStrategies())
 
         if (storage) {
@@ -147,7 +149,7 @@ export abstract class BaseApiTestContext<
         assert(result!.token != null)
         assert(result!.userId != null)
 
-        return { api: result.api, user: this.toUserDto(foundUser), token: result.token }
+        return { api: result.api, user: this.toUserDto(foundUser), token: result.token, registrationProcessId: processId }
     }
 
     private returnWithinBoundaries(element: number, upperBound: number, lowerBound: number): number {

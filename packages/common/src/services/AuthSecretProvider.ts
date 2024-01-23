@@ -26,6 +26,19 @@ export enum ShortLivedTokenRequestType {
     SMS,
 }
 
+export type SecretRequest = {
+    [AuthSecretType.PASSWORD]: { accepted: boolean }
+    [AuthSecretType.LONG_LIVED_TOKEN]: { accepted: boolean }
+    [AuthSecretType.SHORT_LIVED_TOKEN]:
+        | {
+              accepted: true
+              requestToken: RequestTokenFunction
+          }
+        | { accepted: false }
+    [AuthSecretType.TWO_FACTOR_AUTHENTICATION_TOKEN]: { accepted: boolean }
+    [AuthSecretType.EXTERNAL_AUTHENTICATION]: { accepted: boolean }
+}
+
 /**
  * A function that can be used to request a token
  */
@@ -83,19 +96,5 @@ export interface AuthSecretProvider {
      * @return a promise that resolves with the secret and the secret type to use for authentication. If the promise rejects then the ongoing SDK
      * operation will fail without being re-attempted.
      */
-    getSecret(
-        request: {
-            [AuthSecretType.PASSWORD]: { accepted: boolean }
-            [AuthSecretType.LONG_LIVED_TOKEN]: { accepted: boolean }
-            [AuthSecretType.SHORT_LIVED_TOKEN]:
-                | {
-                      accepted: true
-                      requestToken: RequestTokenFunction
-                  }
-                | { accepted: false }
-            [AuthSecretType.TWO_FACTOR_AUTHENTICATION_TOKEN]: { accepted: boolean }
-            [AuthSecretType.EXTERNAL_AUTHENTICATION]: { accepted: boolean }
-        },
-        previousAttempts: Omit<AuthSecretDetails, 'tokenRequestId'>[],
-    ): Promise<AuthSecretDetails>
+    getSecret(request: SecretRequest, previousAttempts: Omit<AuthSecretDetails, 'tokenRequestId'>[]): Promise<AuthSecretDetails>
 }

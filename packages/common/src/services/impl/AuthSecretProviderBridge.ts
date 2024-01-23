@@ -110,7 +110,7 @@ function getProcessBody(
     return {
         firstName: '',
         lastName: '',
-        from: undefined,
+        from: params.email ?? params.mobilePhone, // may be needed by some old processes
         email: params.email,
         mobilePhone: params.mobilePhone,
         ...(params.recaptchaType == 'friendly-captcha' ? { 'friendly-captcha-response': params.recaptcha, 'g-recaptcha-response': undefined } : { 'friendly-captcha-response': undefined, 'g-recaptcha-response': params.recaptcha }),
