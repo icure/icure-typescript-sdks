@@ -22,10 +22,27 @@ import {
     UserApi,
     userApi,
 } from '../../index'
-import { AuthenticatedApiBuilder, CommonApi, CryptoStrategies, CryptoStrategiesBridge, KeyStorageFacade, StorageFacade, Apis, IccCryptoXApi, DataOwnerWithTypeDto, DataOwnerTypeEnumDto, JwtBridgedAuthService, IcureApi, AuthSecretProvider } from '@icure/typescript-common'
+import {
+    AuthenticatedApiBuilder,
+    CommonApi,
+    CryptoStrategies,
+    CryptoStrategiesBridge,
+    KeyStorageFacade,
+    StorageFacade,
+    Apis,
+    IccCryptoXApi,
+    DataOwnerWithTypeDto,
+    DataOwnerTypeEnumDto,
+    JwtBridgedAuthService,
+    IcureApi,
+    AuthSecretProvider,
+    ErrorHandler,
+    Sanitizer,
+} from '@icure/typescript-common'
 import dataOwnerMapper from '../mappers/DataOwner.mapper'
 import { MedTechCryptoStrategies } from '../services/MedTechCryptoStrategies'
 import { iCureMedTechMessageFactory, MedTechMessageFactory } from '../services/MedTechMessageFactory'
+import { AuthSecretProviderBridge } from '@icure/typescript-common/dist/services/impl/AuthSecretProviderBridge'
 
 export class MedTechApi extends CommonApi {
     private readonly _codingApi: CodingApi
@@ -62,6 +79,8 @@ export class MedTechApi extends CommonApi {
         storage?: StorageFacade<string>,
         keyStorage?: KeyStorageFacade,
         messageFactory?: MedTechMessageFactory,
+        errorHandler?: ErrorHandler,
+        sanitizer?: Sanitizer,
     ) {
         super(api, username, password, msgGtwUrl, msgGtwSpecId, storage, keyStorage)
 
@@ -241,7 +260,7 @@ export namespace MedTechApi {
                   }
                 | {
                       username: string
-                      secretProvider: AuthSecretProvider
+                      secretProvider: AuthSecretProviderBridge
                       password: string | undefined
                       initialAuthToken: string | undefined
                       initialRefreshToken: string | undefined
@@ -250,6 +269,8 @@ export namespace MedTechApi {
             authProcessByEmailId: string | undefined
             authProcessBySmsId: string | undefined
             messageFactory: MedTechMessageFactory | undefined
+            errorHandler: ErrorHandler
+            sanitizer: Sanitizer
         }): Promise<MedTechApi> {
             return IcureApi.initialise(
                 props.iCureBaseUrl,
@@ -296,7 +317,7 @@ export namespace MedTechApi {
                         props.iCureBaseUrl,
                         'username' in props.loginDetails ? props.loginDetails.username : props.loginDetails.credentials.username,
                         'password' in props.loginDetails ? props.loginDetails.password : props.loginDetails.credentials.password,
-                        'secretProvider' in props.loginDetails ? props.loginDetails.secretProvider : undefined,
+                        'secretProvider' in props.loginDetails ? props.loginDetails.secretProvider.provider : undefined,
                         props.cryptoStrategies,
                         props.msgGwUrl,
                         props.msgGwSpecId,
@@ -305,6 +326,8 @@ export namespace MedTechApi {
                         props.storage,
                         props.keyStorage,
                         props.messageFactory,
+                        props.errorHandler,
+                        props.sanitizer,
                     ),
             )
         }

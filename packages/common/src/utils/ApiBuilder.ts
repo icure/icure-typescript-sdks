@@ -1,9 +1,10 @@
 import { CryptoStrategies } from '../services/CryptoStrategies'
-import { CommonApi, formatICureApiUrl, ICURE_CLOUD_URL, MessageFactory, MSG_GW_CLOUD_URL } from '../index'
+import { AuthSecretProvider, CommonApi, ErrorHandler, ErrorHandlerImpl, formatICureApiUrl, ICURE_CLOUD_URL, MessageFactory, MessageGatewayApi, MessageGatewayApiImpl, MSG_GW_CLOUD_URL, Sanitizer, SanitizerImpl } from '../index'
 import { KeyStorageFacade, KeyStorageImpl, LocalStorageImpl, StorageFacade } from '@icure/api'
 import { CryptoPrimitives } from '@icure/api/icc-x-api/crypto/CryptoPrimitives'
+import { AuthSecretProvider as BaseAuthSecretProvider } from '@icure/api/icc-x-api/auth/SmartAuthProvider'
 import { CommonAnonymousApi } from '../apis/CommonAnonymousApi'
-import { AuthSecretProvider } from '@icure/api/icc-x-api/auth/SmartAuthProvider'
+import { AuthSecretProviderBridge } from '../services/impl/AuthSecretProviderBridge'
 
 export abstract class ApiBuilder<DSCryptoStrategies extends CryptoStrategies<any>, DSApi> {
     protected iCureBaseUrl: string = ICURE_CLOUD_URL
@@ -166,10 +167,15 @@ export abstract class AuthenticatedApiBuilder<DSCryptoStrategies extends CryptoS
             throw new Error('cryptoStrategies is required')
         }
         let loginDetails
+
+        const errorHandler = new ErrorHandlerImpl()
+        const sanitizer = new SanitizerImpl(errorHandler)
         if (secretProvider != undefined) {
+            const anonymousMessageGatewayApi = msgGwUrl && msgGwSpecId ? new MessageGatewayApiImpl(msgGwUrl, msgGwSpecId, errorHandler, sanitizer, undefined, undefined) : undefined
+            const bridgedProvider = new AuthSecretProviderBridge(secretProvider, anonymousMessageGatewayApi, { email: authProcessByEmailId, sms: authProcessBySmsId }, username, sanitizer)
             loginDetails = {
                 username,
-                secretProvider,
+                secretProvider: bridgedProvider,
                 password,
                 initialAuthToken: this.tokens?.token,
                 initialRefreshToken: this.tokens?.refreshToken,
@@ -200,6 +206,8 @@ export abstract class AuthenticatedApiBuilder<DSCryptoStrategies extends CryptoS
             keyStorage,
             messageFactory,
             loginDetails,
+            errorHandler,
+            sanitizer,
         })
     }
 
@@ -221,7 +229,7 @@ export abstract class AuthenticatedApiBuilder<DSCryptoStrategies extends CryptoS
               }
             | {
                   username: string
-                  secretProvider: AuthSecretProvider
+                  secretProvider: AuthSecretProviderBridge
                   password: string | undefined
                   initialAuthToken: string | undefined
                   initialRefreshToken: string | undefined
@@ -230,5 +238,7 @@ export abstract class AuthenticatedApiBuilder<DSCryptoStrategies extends CryptoS
         authProcessByEmailId: string | undefined
         authProcessBySmsId: string | undefined
         messageFactory: DSMessageFactory | undefined
+        errorHandler: ErrorHandler
+        sanitizer: Sanitizer
     }): Promise<DSApi>
 }

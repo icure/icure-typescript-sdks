@@ -12,6 +12,9 @@ import {
     StorageFacade,
     DataOwnerTypeEnumDto,
     JwtBridgedAuthService,
+    ErrorHandler,
+    Sanitizer,
+    MessageGatewayApi,
     AuthSecretProvider,
 } from '@icure/typescript-common'
 import { DataOwnerTypeEnum, DataOwnerWithType } from '../models/DataOwner.model'
@@ -30,6 +33,8 @@ import { EHRLiteCryptoStrategies } from '../services/EHRLiteCryptoStrategies'
 import { EHRLiteMessageFactory, iCureEHRLiteMessageFactory } from '../services/EHRLiteMessageFactory'
 import { topicApi, TopicApi } from './TopicApi'
 import { messageApi, MessageApi } from './MessageApi'
+import { AuthSecretProvider as BaseAuthSecretProvider } from '@icure/api/icc-x-api/auth/SmartAuthProvider'
+import { AuthSecretProviderBridge } from '@icure/typescript-common/dist/services/impl/AuthSecretProviderBridge'
 
 export class EHRLiteApi extends CommonApi {
     private readonly _codingApi: CodingApi
@@ -65,8 +70,10 @@ export class EHRLiteApi extends CommonApi {
         storage?: StorageFacade<string>,
         keyStorage?: KeyStorageFacade,
         messageFactory?: EHRLiteMessageFactory,
+        errorHandler?: ErrorHandler,
+        sanitizer?: Sanitizer,
     ) {
-        super(_baseApi, _username, _password, _msgGtwUrl, _msgGtwSpecId, storage, keyStorage)
+        super(_baseApi, _username, _password, _msgGtwUrl, _msgGtwSpecId, storage, keyStorage, errorHandler, sanitizer)
 
         this._cryptoApi = this._baseApi.cryptoApi
 
@@ -267,7 +274,7 @@ export namespace EHRLiteApi {
                   }
                 | {
                       username: string
-                      secretProvider: AuthSecretProvider
+                      secretProvider: AuthSecretProviderBridge
                       password: string | undefined
                       initialAuthToken: string | undefined
                       initialRefreshToken: string | undefined
@@ -277,6 +284,8 @@ export namespace EHRLiteApi {
             authProcessBySmsId: string | undefined
             messageFactory: EHRLiteMessageFactory | undefined
             messageCharactersLimit: number
+            errorHandler: ErrorHandler
+            sanitizer: Sanitizer
         }): Promise<EHRLiteApi> {
             return IcureApi.initialise(
                 props.iCureBaseUrl,
@@ -337,7 +346,7 @@ export namespace EHRLiteApi {
                         props.iCureBaseUrl,
                         'username' in props.loginDetails ? props.loginDetails.username : props.loginDetails.credentials.username,
                         'password' in props.loginDetails ? props.loginDetails.password : props.loginDetails.credentials.password,
-                        'secretProvider' in props.loginDetails ? props.loginDetails.secretProvider : undefined,
+                        'secretProvider' in props.loginDetails ? props.loginDetails.secretProvider.provider : undefined,
                         props.cryptoStrategies,
                         props.msgGwUrl,
                         props.msgGwSpecId,
@@ -347,6 +356,8 @@ export namespace EHRLiteApi {
                         props.storage,
                         props.keyStorage,
                         props.messageFactory,
+                        props.errorHandler,
+                        props.sanitizer,
                     ),
             )
         }

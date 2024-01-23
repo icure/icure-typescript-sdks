@@ -62,7 +62,6 @@ export {
     Message as MessageDto,
     Topic as TopicDto,
 } from '@icure/api'
-export { AuthSecretProvider, AuthSecretDetails, AuthSecretType } from '@icure/api/icc-x-api/auth/SmartAuthProvider'
 export { DataOwnerTypeEnum as DataOwnerTypeEnumDto } from '@icure/api/icc-api/model/DataOwnerTypeEnum'
 export { JwtBridgedAuthService } from '@icure/api/icc-x-api/auth/JwtBridgedAuthService'
 
