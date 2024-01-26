@@ -1,11 +1,11 @@
-import { Annotation, CodingReference, forceUuid, Identifier, mapTo, Property, SystemMetaDataOwnerEncrypted, b64_2ab, PatientDto, ua2b64 } from '@icure/typescript-common'
-import { GenderEnum } from './enums/Gender.enum'
-import { PatientDeactivationReasonEnum } from './enums/PatientDeactivationReason.enum'
-import { PatientPersonalStatusEnum } from './enums/PatientPersonalStatus.enum'
+import { Annotation, CodingReference, Identifier, PatientDto, Property, SystemMetaDataOwnerEncrypted, b64_2ab, forceUuid, mapTo, ua2b64 } from '@icure/typescript-common'
 import { HumanName } from './HumanName.model'
 import { Location } from './Location.model'
 import { RelatedPerson } from './RelatedPerson.model'
 import { RelatedPractitioner } from './RelatedPractitioner.model'
+import { GenderEnum } from './enums/Gender.enum'
+import { PatientDeactivationReasonEnum } from './enums/PatientDeactivationReason.enum'
+import { PatientPersonalStatusEnum } from './enums/PatientPersonalStatus.enum'
 
 @mapTo(PatientDto)
 export class Patient {

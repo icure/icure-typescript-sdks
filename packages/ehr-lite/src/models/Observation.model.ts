@@ -1,4 +1,4 @@
-import { Annotation, CodingReference, Identifier, SystemMetaDataEncrypted, forceUuid, mapTo, ISO639_1, ServiceDto } from '@icure/typescript-common'
+import { Annotation, CodingReference, ISO639_1, Identifier, ServiceDto, SystemMetaDataEncrypted, forceUuid, mapTo } from '@icure/typescript-common'
 import { Component } from './Component.model'
 import { LocalComponent } from './LocalComponent.model'
 

@@ -30,203 +30,203 @@ import {
 import { mapPersonNameDtoToPersonName, mapPersonNameToPersonNameDto } from './PersonName.mapper'
 import { mapAddressDtoToAddress, mapAddressToAddressDto } from './Address.mapper'
 
-function toHealthcarePartyId(domain: HealthcareProfessional): string | undefined {
+function toHealthcarePartyDtoId(domain: HealthcareProfessional): string | undefined {
     return forceUuid(domain.id)
 }
 
-function toHealthcarePartyRev(domain: HealthcareProfessional): string | undefined {
+function toHealthcarePartyDtoRev(domain: HealthcareProfessional): string | undefined {
     return domain.rev
 }
 
-function toHealthcarePartyCreated(domain: HealthcareProfessional): number | undefined {
+function toHealthcarePartyDtoCreated(domain: HealthcareProfessional): number | undefined {
     return domain.created
 }
 
-function toHealthcarePartyModified(domain: HealthcareProfessional): number | undefined {
+function toHealthcarePartyDtoModified(domain: HealthcareProfessional): number | undefined {
     return domain.modified
 }
 
-function toHealthcarePartyDeletionDate(domain: HealthcareProfessional): number | undefined {
+function toHealthcarePartyDtoDeletionDate(domain: HealthcareProfessional): number | undefined {
     return domain.deletionDate
 }
 
-function toHealthcarePartyIdentifier(domain: HealthcareProfessional): IdentifierDto[] | undefined {
+function toHealthcarePartyDtoIdentifier(domain: HealthcareProfessional): IdentifierDto[] | undefined {
     return undefined
 }
 
-function toHealthcarePartyTags(domain: HealthcareProfessional): CodeStub[] | undefined {
+function toHealthcarePartyDtoTags(domain: HealthcareProfessional): CodeStub[] | undefined {
     return !!domain.labels ? [...domain.labels].map(mapCodingReferenceToCodeStub) : undefined
 }
 
-function toHealthcarePartyCodes(domain: HealthcareProfessional): CodeStub[] | undefined {
+function toHealthcarePartyDtoCodes(domain: HealthcareProfessional): CodeStub[] | undefined {
     return !!domain.codes ? [...domain.codes].map(mapCodingReferenceToCodeStub) : undefined
 }
 
-function toHealthcarePartyName(domain: HealthcareProfessional): string | undefined {
+function toHealthcarePartyDtoName(domain: HealthcareProfessional): string | undefined {
     return domain.name
 }
 
-function toHealthcarePartyLastName(domain: HealthcareProfessional): string | undefined {
+function toHealthcarePartyDtoLastName(domain: HealthcareProfessional): string | undefined {
     return domain.lastName
 }
 
-function toHealthcarePartyFirstName(domain: HealthcareProfessional): string | undefined {
+function toHealthcarePartyDtoFirstName(domain: HealthcareProfessional): string | undefined {
     return domain.firstName
 }
 
-function toHealthcarePartyNames(domain: HealthcareProfessional): PersonNameDto[] | undefined {
+function toHealthcarePartyDtoNames(domain: HealthcareProfessional): PersonNameDto[] | undefined {
     return !!domain.names ? [...domain.names].map(mapPersonNameToPersonNameDto) : undefined
 }
 
-function toHealthcarePartyGender(domain: HealthcareProfessional): HealthcarePartyDto.GenderEnum | undefined {
+function toHealthcarePartyDtoGender(domain: HealthcareProfessional): HealthcarePartyDto.GenderEnum | undefined {
     return domain.gender
 }
 
-function toHealthcarePartyCivility(domain: HealthcareProfessional): string | undefined {
+function toHealthcarePartyDtoCivility(domain: HealthcareProfessional): string | undefined {
     return domain.civility
 }
 
-function toHealthcarePartyCompanyName(domain: HealthcareProfessional): string | undefined {
+function toHealthcarePartyDtoCompanyName(domain: HealthcareProfessional): string | undefined {
     return undefined
 }
 
-function toHealthcarePartySpeciality(domain: HealthcareProfessional): string | undefined {
+function toHealthcarePartyDtoSpeciality(domain: HealthcareProfessional): string | undefined {
     return domain.speciality
 }
 
-function toHealthcarePartyBankAccount(domain: HealthcareProfessional): string | undefined {
+function toHealthcarePartyDtoBankAccount(domain: HealthcareProfessional): string | undefined {
     return undefined
 }
 
-function toHealthcarePartyBic(domain: HealthcareProfessional): string | undefined {
+function toHealthcarePartyDtoBic(domain: HealthcareProfessional): string | undefined {
     return undefined
 }
 
-function toHealthcarePartyProxyBankAccount(domain: HealthcareProfessional): string | undefined {
+function toHealthcarePartyDtoProxyBankAccount(domain: HealthcareProfessional): string | undefined {
     return undefined
 }
 
-function toHealthcarePartyProxyBic(domain: HealthcareProfessional): string | undefined {
+function toHealthcarePartyDtoProxyBic(domain: HealthcareProfessional): string | undefined {
     return undefined
 }
 
-function toHealthcarePartyInvoiceHeader(domain: HealthcareProfessional): string | undefined {
+function toHealthcarePartyDtoInvoiceHeader(domain: HealthcareProfessional): string | undefined {
     return undefined
 }
 
-function toHealthcarePartyCbe(domain: HealthcareProfessional): string | undefined {
+function toHealthcarePartyDtoCbe(domain: HealthcareProfessional): string | undefined {
     return undefined
 }
 
-function toHealthcarePartyEhp(domain: HealthcareProfessional): string | undefined {
+function toHealthcarePartyDtoEhp(domain: HealthcareProfessional): string | undefined {
     return undefined
 }
 
-function toHealthcarePartyUserId(domain: HealthcareProfessional): string | undefined {
+function toHealthcarePartyDtoUserId(domain: HealthcareProfessional): string | undefined {
     return undefined
 }
 
-function toHealthcarePartyParentId(domain: HealthcareProfessional): string | undefined {
+function toHealthcarePartyDtoParentId(domain: HealthcareProfessional): string | undefined {
     return domain.parentId
 }
 
-function toHealthcarePartyConvention(domain: HealthcareProfessional): number | undefined {
+function toHealthcarePartyDtoConvention(domain: HealthcareProfessional): number | undefined {
     return undefined
 }
 
-function toHealthcarePartyNihii(domain: HealthcareProfessional): string | undefined {
+function toHealthcarePartyDtoNihii(domain: HealthcareProfessional): string | undefined {
     return undefined
 }
 
-function toHealthcarePartyNihiiSpecCode(domain: HealthcareProfessional): string | undefined {
+function toHealthcarePartyDtoNihiiSpecCode(domain: HealthcareProfessional): string | undefined {
     return undefined
 }
 
-function toHealthcarePartySsin(domain: HealthcareProfessional): string | undefined {
+function toHealthcarePartyDtoSsin(domain: HealthcareProfessional): string | undefined {
     return undefined
 }
 
-function toHealthcarePartyAddresses(domain: HealthcareProfessional): AddressDto[] | undefined {
+function toHealthcarePartyDtoAddresses(domain: HealthcareProfessional): AddressDto[] | undefined {
     return !!domain.addresses ? [...domain.addresses].map(mapAddressToAddressDto) : undefined
 }
 
-function toHealthcarePartyLanguages(domain: HealthcareProfessional): string[] | undefined {
+function toHealthcarePartyDtoLanguages(domain: HealthcareProfessional): string[] | undefined {
     return domain.languages
 }
 
-function toHealthcarePartyPicture(domain: HealthcareProfessional): ArrayBuffer | undefined {
+function toHealthcarePartyDtoPicture(domain: HealthcareProfessional): ArrayBuffer | undefined {
     return domain.picture
 }
 
-function toHealthcarePartyStatuses(domain: HealthcareProfessional): HealthcarePartyDto.StatusesEnum[] | undefined {
+function toHealthcarePartyDtoStatuses(domain: HealthcareProfessional): HealthcarePartyDto.StatusesEnum[] | undefined {
     return undefined
 }
 
-function toHealthcarePartyStatusHistory(domain: HealthcareProfessional): HealthcarePartyHistoryStatus[] | undefined {
+function toHealthcarePartyDtoStatusHistory(domain: HealthcareProfessional): HealthcarePartyHistoryStatus[] | undefined {
     return undefined
 }
 
-function toHealthcarePartySpecialityCodes(domain: HealthcareProfessional): CodeStub[] | undefined {
+function toHealthcarePartyDtoSpecialityCodes(domain: HealthcareProfessional): CodeStub[] | undefined {
     return undefined
 }
 
-function toHealthcarePartySendFormats(domain: HealthcareProfessional): { [key: string]: string } | undefined {
+function toHealthcarePartyDtoSendFormats(domain: HealthcareProfessional): { [key: string]: string } | undefined {
     return undefined
 }
 
-function toHealthcarePartyNotes(domain: HealthcareProfessional): string | undefined {
+function toHealthcarePartyDtoNotes(domain: HealthcareProfessional): string | undefined {
     return domain.notes
 }
 
-function toHealthcarePartyFinancialInstitutionInformation(domain: HealthcareProfessional): FinancialInstitutionInformation[] | undefined {
+function toHealthcarePartyDtoFinancialInstitutionInformation(domain: HealthcareProfessional): FinancialInstitutionInformation[] | undefined {
     return undefined
 }
 
-function toHealthcarePartyDescr(domain: HealthcareProfessional): { [key: string]: string } | undefined {
+function toHealthcarePartyDtoDescr(domain: HealthcareProfessional): { [key: string]: string } | undefined {
     return undefined
 }
 
-function toHealthcarePartyBillingType(domain: HealthcareProfessional): string | undefined {
+function toHealthcarePartyDtoBillingType(domain: HealthcareProfessional): string | undefined {
     return undefined
 }
 
-function toHealthcarePartyType(domain: HealthcareProfessional): string | undefined {
+function toHealthcarePartyDtoType(domain: HealthcareProfessional): string | undefined {
     return undefined
 }
 
-function toHealthcarePartyContactPerson(domain: HealthcareProfessional): string | undefined {
+function toHealthcarePartyDtoContactPerson(domain: HealthcareProfessional): string | undefined {
     return undefined
 }
 
-function toHealthcarePartyContactPersonHcpId(domain: HealthcareProfessional): string | undefined {
+function toHealthcarePartyDtoContactPersonHcpId(domain: HealthcareProfessional): string | undefined {
     return undefined
 }
 
-function toHealthcarePartySupervisorId(domain: HealthcareProfessional): string | undefined {
+function toHealthcarePartyDtoSupervisorId(domain: HealthcareProfessional): string | undefined {
     return undefined
 }
 
-function toHealthcarePartyFlatRateTarifications(domain: HealthcareProfessional): FlatRateTarification[] | undefined {
+function toHealthcarePartyDtoFlatRateTarifications(domain: HealthcareProfessional): FlatRateTarification[] | undefined {
     return undefined
 }
 
-function toHealthcarePartyImportedData(domain: HealthcareProfessional): { [key: string]: string } | undefined {
+function toHealthcarePartyDtoImportedData(domain: HealthcareProfessional): { [key: string]: string } | undefined {
     return undefined
 }
 
-function toHealthcarePartyOptions(domain: HealthcareProfessional): { [key: string]: string } | undefined {
+function toHealthcarePartyDtoOptions(domain: HealthcareProfessional): { [key: string]: string } | undefined {
     return undefined
 }
 
-function toHealthcarePartyProperties(domain: HealthcareProfessional): PropertyStub[] | undefined {
+function toHealthcarePartyDtoProperties(domain: HealthcareProfessional): PropertyStub[] | undefined {
     return domain.properties ? [...domain.properties].map(mapPropertyToPropertyStub) : undefined
 }
 
-function toHealthcarePartyHcPartyKeys(domain: HealthcareProfessional): { [key: string]: string[] } | undefined {
+function toHealthcarePartyDtoHcPartyKeys(domain: HealthcareProfessional): { [key: string]: string[] } | undefined {
     return !!domain.systemMetaData ? toHcPartyKeys(domain.systemMetaData) : undefined
 }
 
-function toHealthcarePartyAesExchangeKeys(domain: HealthcareProfessional):
+function toHealthcarePartyDtoAesExchangeKeys(domain: HealthcareProfessional):
     | {
           [key: string]: { [key: string]: { [key: string]: string } }
       }
@@ -234,7 +234,7 @@ function toHealthcarePartyAesExchangeKeys(domain: HealthcareProfessional):
     return !!domain.systemMetaData ? toAesExchangeKeys(domain.systemMetaData) : undefined
 }
 
-function toHealthcarePartyTransferKeys(domain: HealthcareProfessional):
+function toHealthcarePartyDtoTransferKeys(domain: HealthcareProfessional):
     | {
           [key: string]: { [key: string]: string }
       }
@@ -242,7 +242,7 @@ function toHealthcarePartyTransferKeys(domain: HealthcareProfessional):
     return !!domain.systemMetaData ? toTransferKeys(domain.systemMetaData) : undefined
 }
 
-function toHealthcarePartyPrivateKeyShamirPartitions(domain: HealthcareProfessional):
+function toHealthcarePartyDtoPrivateKeyShamirPartitions(domain: HealthcareProfessional):
     | {
           [key: string]: string
       }
@@ -250,11 +250,11 @@ function toHealthcarePartyPrivateKeyShamirPartitions(domain: HealthcareProfessio
     return !!domain.systemMetaData ? toPrivateKeyShamirPartitions(domain.systemMetaData) : undefined
 }
 
-function toHealthcarePartyPublicKey(domain: HealthcareProfessional): string | undefined {
+function toHealthcarePartyDtoPublicKey(domain: HealthcareProfessional): string | undefined {
     return !!domain.systemMetaData ? toPublicKey(domain.systemMetaData) : undefined
 }
 
-function toHealthcarePartyPublicKeysForOaepWithSha256(domain: HealthcareProfessional): string[] | undefined {
+function toHealthcarePartyDtoPublicKeysForOaepWithSha256(domain: HealthcareProfessional): string[] | undefined {
     return !!domain.systemMetaData ? toPublicKeysForOaepWithSha256(domain.systemMetaData) : undefined
 }
 
@@ -346,7 +346,7 @@ function toHealthcareProfessionalSystemMetaData(dto: HealthcarePartyDto): System
     return toSystemMetaDataOwner(dto)
 }
 
-export function mapHealthcarePartyToHealthcareProfessional(dto: HealthcarePartyDto): HealthcareProfessional {
+export function mapHealthcarePartyDtoToHealthcareProfessional(dto: HealthcarePartyDto): HealthcareProfessional {
     return new HealthcareProfessional({
         id: toHealthcareProfessionalId(dto),
         rev: toHealthcareProfessionalRev(dto),
@@ -373,61 +373,61 @@ export function mapHealthcarePartyToHealthcareProfessional(dto: HealthcarePartyD
     })
 }
 
-export function mapHealthcareProfessionalToHealthcareParty(domain: HealthcareProfessional): HealthcarePartyDto {
+export function mapHealthcareProfessionalToHealthcarePartyDto(domain: HealthcareProfessional): HealthcarePartyDto {
     return new HealthcarePartyDto({
-        id: toHealthcarePartyId(domain),
-        rev: toHealthcarePartyRev(domain),
-        created: toHealthcarePartyCreated(domain),
-        modified: toHealthcarePartyModified(domain),
-        deletionDate: toHealthcarePartyDeletionDate(domain),
-        identifier: toHealthcarePartyIdentifier(domain),
-        tags: toHealthcarePartyTags(domain),
-        codes: toHealthcarePartyCodes(domain),
-        name: toHealthcarePartyName(domain),
-        lastName: toHealthcarePartyLastName(domain),
-        firstName: toHealthcarePartyFirstName(domain),
-        names: toHealthcarePartyNames(domain),
-        gender: toHealthcarePartyGender(domain),
-        civility: toHealthcarePartyCivility(domain),
-        companyName: toHealthcarePartyCompanyName(domain),
-        speciality: toHealthcarePartySpeciality(domain),
-        bankAccount: toHealthcarePartyBankAccount(domain),
-        bic: toHealthcarePartyBic(domain),
-        proxyBankAccount: toHealthcarePartyProxyBankAccount(domain),
-        proxyBic: toHealthcarePartyProxyBic(domain),
-        invoiceHeader: toHealthcarePartyInvoiceHeader(domain),
-        cbe: toHealthcarePartyCbe(domain),
-        ehp: toHealthcarePartyEhp(domain),
-        userId: toHealthcarePartyUserId(domain),
-        parentId: toHealthcarePartyParentId(domain),
-        convention: toHealthcarePartyConvention(domain),
-        nihii: toHealthcarePartyNihii(domain),
-        nihiiSpecCode: toHealthcarePartyNihiiSpecCode(domain),
-        ssin: toHealthcarePartySsin(domain),
-        addresses: toHealthcarePartyAddresses(domain),
-        languages: toHealthcarePartyLanguages(domain),
-        picture: toHealthcarePartyPicture(domain),
-        statuses: toHealthcarePartyStatuses(domain),
-        statusHistory: toHealthcarePartyStatusHistory(domain),
-        specialityCodes: toHealthcarePartySpecialityCodes(domain),
-        sendFormats: toHealthcarePartySendFormats(domain),
-        notes: toHealthcarePartyNotes(domain),
-        financialInstitutionInformation: toHealthcarePartyFinancialInstitutionInformation(domain),
-        descr: toHealthcarePartyDescr(domain),
-        billingType: toHealthcarePartyBillingType(domain),
-        type: toHealthcarePartyType(domain),
-        contactPerson: toHealthcarePartyContactPerson(domain),
-        contactPersonHcpId: toHealthcarePartyContactPersonHcpId(domain),
-        supervisorId: toHealthcarePartySupervisorId(domain),
-        flatRateTarifications: toHealthcarePartyFlatRateTarifications(domain),
-        importedData: toHealthcarePartyImportedData(domain),
-        options: toHealthcarePartyOptions(domain),
-        properties: toHealthcarePartyProperties(domain),
-        hcPartyKeys: toHealthcarePartyHcPartyKeys(domain),
-        aesExchangeKeys: toHealthcarePartyAesExchangeKeys(domain),
-        transferKeys: toHealthcarePartyTransferKeys(domain),
-        privateKeyShamirPartitions: toHealthcarePartyPrivateKeyShamirPartitions(domain),
-        publicKey: toHealthcarePartyPublicKey(domain),
-        publicKeysForOaepWithSha256: toHealthcarePartyPublicKeysForOaepWithSha256(domain),
+        id: toHealthcarePartyDtoId(domain),
+        rev: toHealthcarePartyDtoRev(domain),
+        created: toHealthcarePartyDtoCreated(domain),
+        modified: toHealthcarePartyDtoModified(domain),
+        deletionDate: toHealthcarePartyDtoDeletionDate(domain),
+        identifier: toHealthcarePartyDtoIdentifier(domain),
+        tags: toHealthcarePartyDtoTags(domain),
+        codes: toHealthcarePartyDtoCodes(domain),
+        name: toHealthcarePartyDtoName(domain),
+        lastName: toHealthcarePartyDtoLastName(domain),
+        firstName: toHealthcarePartyDtoFirstName(domain),
+        names: toHealthcarePartyDtoNames(domain),
+        gender: toHealthcarePartyDtoGender(domain),
+        civility: toHealthcarePartyDtoCivility(domain),
+        companyName: toHealthcarePartyDtoCompanyName(domain),
+        speciality: toHealthcarePartyDtoSpeciality(domain),
+        bankAccount: toHealthcarePartyDtoBankAccount(domain),
+        bic: toHealthcarePartyDtoBic(domain),
+        proxyBankAccount: toHealthcarePartyDtoProxyBankAccount(domain),
+        proxyBic: toHealthcarePartyDtoProxyBic(domain),
+        invoiceHeader: toHealthcarePartyDtoInvoiceHeader(domain),
+        cbe: toHealthcarePartyDtoCbe(domain),
+        ehp: toHealthcarePartyDtoEhp(domain),
+        userId: toHealthcarePartyDtoUserId(domain),
+        parentId: toHealthcarePartyDtoParentId(domain),
+        convention: toHealthcarePartyDtoConvention(domain),
+        nihii: toHealthcarePartyDtoNihii(domain),
+        nihiiSpecCode: toHealthcarePartyDtoNihiiSpecCode(domain),
+        ssin: toHealthcarePartyDtoSsin(domain),
+        addresses: toHealthcarePartyDtoAddresses(domain),
+        languages: toHealthcarePartyDtoLanguages(domain),
+        picture: toHealthcarePartyDtoPicture(domain),
+        statuses: toHealthcarePartyDtoStatuses(domain),
+        statusHistory: toHealthcarePartyDtoStatusHistory(domain),
+        specialityCodes: toHealthcarePartyDtoSpecialityCodes(domain),
+        sendFormats: toHealthcarePartyDtoSendFormats(domain),
+        notes: toHealthcarePartyDtoNotes(domain),
+        financialInstitutionInformation: toHealthcarePartyDtoFinancialInstitutionInformation(domain),
+        descr: toHealthcarePartyDtoDescr(domain),
+        billingType: toHealthcarePartyDtoBillingType(domain),
+        type: toHealthcarePartyDtoType(domain),
+        contactPerson: toHealthcarePartyDtoContactPerson(domain),
+        contactPersonHcpId: toHealthcarePartyDtoContactPersonHcpId(domain),
+        supervisorId: toHealthcarePartyDtoSupervisorId(domain),
+        flatRateTarifications: toHealthcarePartyDtoFlatRateTarifications(domain),
+        importedData: toHealthcarePartyDtoImportedData(domain),
+        options: toHealthcarePartyDtoOptions(domain),
+        properties: toHealthcarePartyDtoProperties(domain),
+        hcPartyKeys: toHealthcarePartyDtoHcPartyKeys(domain),
+        aesExchangeKeys: toHealthcarePartyDtoAesExchangeKeys(domain),
+        transferKeys: toHealthcarePartyDtoTransferKeys(domain),
+        privateKeyShamirPartitions: toHealthcarePartyDtoPrivateKeyShamirPartitions(domain),
+        publicKey: toHealthcarePartyDtoPublicKey(domain),
+        publicKeysForOaepWithSha256: toHealthcarePartyDtoPublicKeysForOaepWithSha256(domain),
     })
 }

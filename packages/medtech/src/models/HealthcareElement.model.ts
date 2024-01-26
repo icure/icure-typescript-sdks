@@ -9,7 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { Annotation, CodingReference, forceUuid, Identifier, mapTo, SystemMetaDataEncrypted, HealthElementDto } from '@icure/typescript-common'
+import { Annotation, CodingReference, HealthElementDto, Identifier, SystemMetaDataEncrypted, forceUuid, mapTo } from '@icure/typescript-common'
 
 @mapTo(HealthElementDto)
 export class HealthcareElement {

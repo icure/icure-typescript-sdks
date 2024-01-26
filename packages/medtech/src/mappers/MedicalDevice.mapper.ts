@@ -24,95 +24,95 @@ import {
     PropertyStub,
 } from '@icure/typescript-common'
 
-function toDeviceId(domain: MedicalDevice): string {
+function toDeviceDtoId(domain: MedicalDevice): string {
     return forceUuid(domain.id)
 }
 
-function toDeviceRev(domain: MedicalDevice): string | undefined {
+function toDeviceDtoRev(domain: MedicalDevice): string | undefined {
     return domain.rev
 }
 
-function toDeviceDeletionDate(domain: MedicalDevice): number | undefined {
+function toDeviceDtoDeletionDate(domain: MedicalDevice): number | undefined {
     return domain.deletionDate
 }
 
-function toDeviceIdentifiers(domain: MedicalDevice): IdentifierDto[] | undefined {
+function toDeviceDtoIdentifiers(domain: MedicalDevice): IdentifierDto[] | undefined {
     return domain.identifiers ? [...domain.identifiers].map(mapIdentifierToIdentifierDto) : undefined
 }
 
-function toDeviceCreated(domain: MedicalDevice): number | undefined {
+function toDeviceDtoCreated(domain: MedicalDevice): number | undefined {
     return domain.created
 }
 
-function toDeviceModified(domain: MedicalDevice): number | undefined {
+function toDeviceDtoModified(domain: MedicalDevice): number | undefined {
     return domain.modified
 }
 
-function toDeviceAuthor(domain: MedicalDevice): string | undefined {
+function toDeviceDtoAuthor(domain: MedicalDevice): string | undefined {
     return domain.author
 }
 
-function toDeviceResponsible(domain: MedicalDevice): string | undefined {
+function toDeviceDtoResponsible(domain: MedicalDevice): string | undefined {
     return domain.responsible
 }
 
-function toDeviceTags(domain: MedicalDevice): CodeStub[] | undefined {
+function toDeviceDtoTags(domain: MedicalDevice): CodeStub[] | undefined {
     return domain.labels ? [...domain.labels].map(mapCodingReferenceToCodeStub) : undefined
 }
 
-function toDeviceCodes(domain: MedicalDevice): CodeStub[] | undefined {
+function toDeviceDtoCodes(domain: MedicalDevice): CodeStub[] | undefined {
     return domain.codes ? [...domain.codes].map(mapCodingReferenceToCodeStub) : undefined
 }
 
-function toDeviceEndOfLife(domain: MedicalDevice): number | undefined {
+function toDeviceDtoEndOfLife(domain: MedicalDevice): number | undefined {
     return domain.endOfLife
 }
 
-function toDeviceMedicalLocationId(domain: MedicalDevice): string | undefined {
+function toDeviceDtoMedicalLocationId(domain: MedicalDevice): string | undefined {
     return undefined
 }
 
-function toDeviceExternalId(domain: MedicalDevice): string | undefined {
+function toDeviceDtoExternalId(domain: MedicalDevice): string | undefined {
     return domain.externalId
 }
 
-function toDeviceName(domain: MedicalDevice): string | undefined {
+function toDeviceDtoName(domain: MedicalDevice): string | undefined {
     return domain.name
 }
 
-function toDeviceType(domain: MedicalDevice): string | undefined {
+function toDeviceDtoType(domain: MedicalDevice): string | undefined {
     return domain.type
 }
 
-function toDeviceBrand(domain: MedicalDevice): string | undefined {
+function toDeviceDtoBrand(domain: MedicalDevice): string | undefined {
     return domain.brand
 }
 
-function toDeviceModel(domain: MedicalDevice): string | undefined {
+function toDeviceDtoModel(domain: MedicalDevice): string | undefined {
     return domain.model
 }
 
-function toDeviceSerialNumber(domain: MedicalDevice): string | undefined {
+function toDeviceDtoSerialNumber(domain: MedicalDevice): string | undefined {
     return domain.serialNumber
 }
 
-function toDeviceParentId(domain: MedicalDevice): string | undefined {
+function toDeviceDtoParentId(domain: MedicalDevice): string | undefined {
     return domain.parentId
 }
 
-function toDevicePicture(domain: MedicalDevice): ArrayBuffer | undefined {
+function toDeviceDtoPicture(domain: MedicalDevice): ArrayBuffer | undefined {
     return domain.picture
 }
 
-function toDeviceProperties(domain: MedicalDevice): PropertyStub[] | undefined {
+function toDeviceDtoProperties(domain: MedicalDevice): PropertyStub[] | undefined {
     return domain.properties ? [...domain.properties].map(mapPropertyToPropertyStub) : undefined
 }
 
-function toDeviceHcPartyKeys(domain: MedicalDevice): { [key: string]: string[] } | undefined {
+function toDeviceDtoHcPartyKeys(domain: MedicalDevice): { [key: string]: string[] } | undefined {
     return !!domain.systemMetaData ? toHcPartyKeys(domain.systemMetaData) : undefined
 }
 
-function toDeviceAesExchangeKeys(domain: MedicalDevice):
+function toDeviceDtoAesExchangeKeys(domain: MedicalDevice):
     | {
           [key: string]: { [key: string]: { [key: string]: string } }
       }
@@ -120,19 +120,19 @@ function toDeviceAesExchangeKeys(domain: MedicalDevice):
     return !!domain.systemMetaData ? toAesExchangeKeys(domain.systemMetaData) : undefined
 }
 
-function toDeviceTransferKeys(domain: MedicalDevice): { [key: string]: { [key: string]: string } } | undefined {
+function toDeviceDtoTransferKeys(domain: MedicalDevice): { [key: string]: { [key: string]: string } } | undefined {
     return !!domain.systemMetaData ? toTransferKeys(domain.systemMetaData) : undefined
 }
 
-function toDevicePrivateKeyShamirPartitions(domain: MedicalDevice): { [key: string]: string } | undefined {
+function toDeviceDtoPrivateKeyShamirPartitions(domain: MedicalDevice): { [key: string]: string } | undefined {
     return !!domain.systemMetaData ? toPrivateKeyShamirPartitions(domain.systemMetaData) : undefined
 }
 
-function toDevicePublicKey(domain: MedicalDevice): string | undefined {
+function toDeviceDtoPublicKey(domain: MedicalDevice): string | undefined {
     return !!domain.systemMetaData ? toPublicKey(domain.systemMetaData) : undefined
 }
 
-function toDevicePublicKeysForOaepWithSha256(domain: MedicalDevice): string[] | undefined {
+function toDeviceDtoPublicKeysForOaepWithSha256(domain: MedicalDevice): string[] | undefined {
     return !!domain.systemMetaData ? toPublicKeysForOaepWithSha256(domain.systemMetaData) : undefined
 }
 
@@ -220,7 +220,7 @@ function toMedicalDeviceSystemMetaData(dto: DeviceDto): SystemMetaDataOwner | un
     return toSystemMetaDataOwner(dto)
 }
 
-export function mapDeviceToMedicalDevice(dto: DeviceDto): MedicalDevice {
+export function mapDeviceDtoToMedicalDevice(dto: DeviceDto): MedicalDevice {
     return new MedicalDevice({
         id: toMedicalDeviceId(dto),
         rev: toMedicalDeviceRev(dto),
@@ -246,34 +246,34 @@ export function mapDeviceToMedicalDevice(dto: DeviceDto): MedicalDevice {
     })
 }
 
-export function mapMedicalDeviceToDevice(domain: MedicalDevice): DeviceDto {
+export function mapMedicalDeviceToDeviceDto(domain: MedicalDevice): DeviceDto {
     return new DeviceDto({
-        id: toDeviceId(domain),
-        rev: toDeviceRev(domain),
-        deletionDate: toDeviceDeletionDate(domain),
-        identifiers: toDeviceIdentifiers(domain),
-        created: toDeviceCreated(domain),
-        modified: toDeviceModified(domain),
-        author: toDeviceAuthor(domain),
-        responsible: toDeviceResponsible(domain),
-        tags: toDeviceTags(domain),
-        codes: toDeviceCodes(domain),
-        endOfLife: toDeviceEndOfLife(domain),
-        medicalLocationId: toDeviceMedicalLocationId(domain),
-        externalId: toDeviceExternalId(domain),
-        name: toDeviceName(domain),
-        type: toDeviceType(domain),
-        brand: toDeviceBrand(domain),
-        model: toDeviceModel(domain),
-        serialNumber: toDeviceSerialNumber(domain),
-        parentId: toDeviceParentId(domain),
-        picture: toDevicePicture(domain),
-        properties: toDeviceProperties(domain),
-        hcPartyKeys: toDeviceHcPartyKeys(domain),
-        aesExchangeKeys: toDeviceAesExchangeKeys(domain),
-        transferKeys: toDeviceTransferKeys(domain),
-        privateKeyShamirPartitions: toDevicePrivateKeyShamirPartitions(domain),
-        publicKey: toDevicePublicKey(domain),
-        publicKeysForOaepWithSha256: toDevicePublicKeysForOaepWithSha256(domain),
+        id: toDeviceDtoId(domain),
+        rev: toDeviceDtoRev(domain),
+        deletionDate: toDeviceDtoDeletionDate(domain),
+        identifiers: toDeviceDtoIdentifiers(domain),
+        created: toDeviceDtoCreated(domain),
+        modified: toDeviceDtoModified(domain),
+        author: toDeviceDtoAuthor(domain),
+        responsible: toDeviceDtoResponsible(domain),
+        tags: toDeviceDtoTags(domain),
+        codes: toDeviceDtoCodes(domain),
+        endOfLife: toDeviceDtoEndOfLife(domain),
+        medicalLocationId: toDeviceDtoMedicalLocationId(domain),
+        externalId: toDeviceDtoExternalId(domain),
+        name: toDeviceDtoName(domain),
+        type: toDeviceDtoType(domain),
+        brand: toDeviceDtoBrand(domain),
+        model: toDeviceDtoModel(domain),
+        serialNumber: toDeviceDtoSerialNumber(domain),
+        parentId: toDeviceDtoParentId(domain),
+        picture: toDeviceDtoPicture(domain),
+        properties: toDeviceDtoProperties(domain),
+        hcPartyKeys: toDeviceDtoHcPartyKeys(domain),
+        aesExchangeKeys: toDeviceDtoAesExchangeKeys(domain),
+        transferKeys: toDeviceDtoTransferKeys(domain),
+        privateKeyShamirPartitions: toDeviceDtoPrivateKeyShamirPartitions(domain),
+        publicKey: toDeviceDtoPublicKey(domain),
+        publicKeysForOaepWithSha256: toDeviceDtoPublicKeysForOaepWithSha256(domain),
     })
 }

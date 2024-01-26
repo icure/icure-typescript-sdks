@@ -47,10 +47,10 @@ import {
 } from '@icure/typescript-common'
 import { RelatedPerson } from '../models/RelatedPerson.model'
 import { RelatedPractitioner } from '../models/RelatedPractitioner.model'
-import { mapHumanNameToPersonName, mapPersonNameToHumanName } from './HumanName.mapper'
-import { mapPartnershipToRelatedPerson, mapRelatedPersonToPartnership } from './RelatedPerson.mapper'
-import { mapPatientHealthCarePartyToRelatedPractitioner, mapRelatedPractitionerToPatientHealthCareParty } from './RelatedPractitioner.mapper'
-import { mapAddressToLocation, mapLocationToAddress } from './Location.mapper'
+import { mapHumanNameToPersonNameDto, mapPersonNameDtoToHumanName } from './HumanName.mapper'
+import { mapPartnershipDtoToRelatedPerson, mapRelatedPersonToPartnershipDto } from './RelatedPerson.mapper'
+import { mapPatientHealthCarePartyDtoToRelatedPractitioner, mapRelatedPractitionerToPatientHealthCarePartyDto } from './RelatedPractitioner.mapper'
+import { mapAddressDtoToLocation, mapLocationToAddressDto } from './Location.mapper'
 import { GenderEnum } from '../models/enums/Gender.enum'
 import { PatientDeactivationReasonEnum } from '../models/enums/PatientDeactivationReason.enum'
 import { PatientPersonalStatusEnum } from '../models/enums/PatientPersonalStatus.enum'
@@ -108,7 +108,7 @@ function toPatientDtoLastName(domain: Patient): string | undefined {
 }
 
 function toPatientDtoNames(domain: Patient): PersonNameDto[] | undefined {
-    return !!domain.names ? domain.names.map(mapHumanNameToPersonName) : undefined
+    return !!domain.names ? domain.names.map(mapHumanNameToPersonNameDto) : undefined
 }
 
 function toPatientDtoCompanyName(domain: Patient): string | undefined {
@@ -120,7 +120,7 @@ function toPatientDtoLanguages(domain: Patient): string[] | undefined {
 }
 
 function toPatientDtoAddresses(domain: Patient): AddressDto[] | undefined {
-    return !!domain.addresses ? domain.addresses.map(mapLocationToAddress) : undefined
+    return !!domain.addresses ? domain.addresses.map(mapLocationToAddressDto) : undefined
 }
 
 function toPatientDtoCivility(domain: Patient): string | undefined {
@@ -252,11 +252,11 @@ function toPatientDtoInsurabilities(domain: Patient): Insurability[] | undefined
 }
 
 function toPatientDtoPartnerships(domain: Patient): PartnershipDto[] | undefined {
-    return !!domain.relatives ? domain.relatives.map(mapRelatedPersonToPartnership) : undefined
+    return !!domain.relatives ? domain.relatives.map(mapRelatedPersonToPartnershipDto) : undefined
 }
 
 function toPatientDtoPatientHealthCareParties(domain: Patient): PatientHealthCarePartyDto[] | undefined {
-    return !!domain.patientPractitioners ? domain.patientPractitioners.map(mapRelatedPractitionerToPatientHealthCareParty) : undefined
+    return !!domain.patientPractitioners ? domain.patientPractitioners.map(mapRelatedPractitionerToPatientHealthCarePartyDto) : undefined
 }
 
 function toPatientDtoFinancialInstitutionInformation(domain: Patient): FinancialInstitutionInformation[] | undefined {
@@ -420,7 +420,7 @@ function toPatientDeletionDate(dto: PatientDto): number | undefined {
 }
 
 function toPatientNames(dto: PatientDto): HumanName[] | undefined {
-    return !!dto.names ? dto.names.map(mapPersonNameToHumanName) : undefined
+    return !!dto.names ? dto.names.map(mapPersonNameDtoToHumanName) : undefined
 }
 
 function toPatientLanguages(dto: PatientDto): string[] | undefined {
@@ -428,7 +428,7 @@ function toPatientLanguages(dto: PatientDto): string[] | undefined {
 }
 
 function toPatientAddresses(dto: PatientDto): Location[] | undefined {
-    return !!dto.addresses ? dto.addresses.map(mapAddressToLocation) : undefined
+    return !!dto.addresses ? dto.addresses.map(mapAddressDtoToLocation) : undefined
 }
 
 function toPatientCivility(dto: PatientDto): string | undefined {
@@ -524,11 +524,11 @@ function toPatientExternalId(dto: PatientDto): string | undefined {
 }
 
 function toPatientRelatives(dto: PatientDto): RelatedPerson[] | undefined {
-    return !!dto.partnerships ? dto.partnerships.map(mapPartnershipToRelatedPerson) : undefined
+    return !!dto.partnerships ? dto.partnerships.map(mapPartnershipDtoToRelatedPerson) : undefined
 }
 
 function toPatientPatientPractitioners(dto: PatientDto): RelatedPractitioner[] | undefined {
-    return !!dto.patientHealthCareParties ? dto.patientHealthCareParties.map(mapPatientHealthCarePartyToRelatedPractitioner) : undefined
+    return !!dto.patientHealthCareParties ? dto.patientHealthCareParties.map(mapPatientHealthCarePartyDtoToRelatedPractitioner) : undefined
 }
 
 function toPatientPatientProfessions(dto: PatientDto): CodingReference[] | undefined {

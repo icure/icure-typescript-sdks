@@ -8,6 +8,7 @@ export class CodingReference {
     code?: string
     version?: string
     context?: string
+    contextLabel?: string
 
     constructor(codingReference: ICodingReference) {
         this.id = codingReference.id!
@@ -15,6 +16,7 @@ export class CodingReference {
         this.code = codingReference.code
         this.version = codingReference.version
         this.context = codingReference.context
+        this.contextLabel = codingReference.contextLabel
     }
 
     static toJSON(instance: CodingReference): any {
@@ -24,6 +26,7 @@ export class CodingReference {
         if (instance.code !== undefined) pojo['code'] = instance.code
         if (instance.version !== undefined) pojo['version'] = instance.version
         if (instance.context !== undefined) pojo['context'] = instance.context
+        if (instance.contextLabel !== undefined) pojo['contextLabel'] = instance.contextLabel
         return pojo
     }
 
@@ -42,6 +45,9 @@ export class CodingReference {
         if (pojo['context'] !== undefined) {
             obj['context'] = pojo['context']
         }
+        if (pojo['contextLabel'] !== undefined) {
+            obj['contextLabel'] = pojo['contextLabel']
+        }
         return new CodingReference(obj)
     }
 }
@@ -52,4 +58,5 @@ interface ICodingReference {
     code?: string
     version?: string
     context?: string
+    contextLabel?: string
 }

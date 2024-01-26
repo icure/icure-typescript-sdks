@@ -48,10 +48,10 @@ import { HealthcareParty, Patient as PatientDto, Service, User as UserDto, DataO
 import { UserApi, Patient, PatientApi, Annotation, NotificationApi, DataOwnerApi } from '../../src'
 import { TestMessageFactory } from '../test-utils'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../../src/mappers/Patient.mapper'
-import { mapConditionToHealthElement, mapHealthElementToCondition } from '../../src/mappers/Condition.mapper'
-import { mapObservationToService, mapServiceToObservation } from '../../src/mappers/Observation.mapper'
-import { mapHealthcarePartyToPractitioner, mapPractitionerToHealthcareParty } from '../../src/mappers/Practitioner.mapper'
-import { mapHealthcarePartyToOrganisation, mapOrganisationToHealthcareParty } from '../../src/mappers/Organisation.mapper'
+import { mapConditionToHealthElementDto, mapHealthElementDtoToCondition } from '../../src/mappers/Condition.mapper'
+import { mapObservationToServiceDto, mapServiceDtoToObservation } from '../../src/mappers/Observation.mapper'
+import { mapHealthcarePartyDtoToPractitioner, mapPractitionerToHealthcarePartyDto } from '../../src/mappers/Practitioner.mapper'
+import { mapHealthcarePartyDtoToOrganisation, mapOrganisationToHealthcarePartyDto } from '../../src/mappers/Organisation.mapper'
 import dataOwnerMapper from '../../src/mappers/DataOwner.mapper'
 import { TestVars } from '@icure/test-setup/types'
 import { TopicApi } from '../../src/apis/TopicApi'
@@ -223,14 +223,14 @@ export function ConditionApiAware<TBase extends Constructor<any>>(Base: TBase): 
         }
 
         toDSHelement(helementDto: HealthElement): Condition {
-            return mapHealthElementToCondition({
+            return mapHealthElementDtoToCondition({
                 ...helementDto,
                 tags: addDomainTypeTagIfMissing(helementDto.tags, 'condition'.toUpperCase()),
             })
         }
 
         toHelementDto(dsHelement: Condition): HealthElement {
-            return mapConditionToHealthElement(dsHelement)
+            return mapConditionToHealthElementDto(dsHelement)
         }
     }
 }
@@ -290,7 +290,7 @@ export function ObservationApiAware<TBase extends Constructor<any>>(Base: TBase)
         }
 
         toDSService(serviceDto: Service): Observation {
-            return mapServiceToObservation({
+            return mapServiceDtoToObservation({
                 ...serviceDto,
                 tags: addDomainTypeTagIfMissing(serviceDto.tags, 'observation'.toUpperCase()),
             })
@@ -301,7 +301,7 @@ export function ObservationApiAware<TBase extends Constructor<any>>(Base: TBase)
         }
 
         toServiceDto(dsService: Observation): Service {
-            return mapObservationToService(dsService)
+            return mapObservationToServiceDto(dsService)
         }
     }
 }
@@ -342,14 +342,14 @@ export function PractitionerApiAware<TBase extends Constructor<any>>(Base: TBase
         }
 
         toDSHcp(hcpDto: HealthcareParty): Practitioner {
-            return mapHealthcarePartyToPractitioner({
+            return mapHealthcarePartyDtoToPractitioner({
                 ...hcpDto,
                 tags: addDomainTypeTagIfMissing(hcpDto.tags, 'practitioner'.toUpperCase()),
             })
         }
 
         toHcpDto(dsHcp: Practitioner): HealthcareParty {
-            return mapPractitionerToHealthcareParty(dsHcp)
+            return mapPractitionerToHealthcarePartyDto(dsHcp)
         }
     }
 }
@@ -361,14 +361,14 @@ export function OrganisationApiAware<TBase extends Constructor<any>>(Base: TBase
         }
 
         toDSHcp(hcpDto: HealthcareParty): Organisation {
-            return mapHealthcarePartyToOrganisation({
+            return mapHealthcarePartyDtoToOrganisation({
                 ...hcpDto,
                 tags: addDomainTypeTagIfMissing(hcpDto.tags, 'organisation'.toUpperCase()),
             })
         }
 
         toHcpDto(dsHcp: Organisation): HealthcareParty {
-            return mapOrganisationToHealthcareParty(dsHcp)
+            return mapOrganisationToHealthcarePartyDto(dsHcp)
         }
     }
 }

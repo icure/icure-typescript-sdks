@@ -1,18 +1,12 @@
 import { Measure } from '../models/Measure.model'
-import { CodeStub, Measure as MeasureDto } from '@icure/api'
 import { mapCodeStubToCodingReference, mapCodingReferenceToCodeStub } from './CodingReference.mapper'
 import { CodingReference } from '../models/CodingReference.model'
+import { ReferenceRange } from '../models/ReferenceRange.model'
+import { mapReferenceRangeDtoToReferenceRange, mapReferenceRangeToReferenceRangeDto } from './ReferenceRange.mapper'
+import { MeasureDto, CodeStub, ReferenceRangeDto } from '../index'
 
 function toMeasureDtoValue(domain: Measure): number | undefined {
     return domain.value
-}
-
-function toMeasureDtoMin(domain: Measure): number | undefined {
-    return domain.min
-}
-
-function toMeasureDtoMax(domain: Measure): number | undefined {
-    return domain.max
 }
 
 function toMeasureDtoRef(domain: Measure): number | undefined {
@@ -55,14 +49,6 @@ function toMeasureValue(dto: MeasureDto): number | undefined {
     return dto.value
 }
 
-function toMeasureMin(dto: MeasureDto): number | undefined {
-    return dto.min
-}
-
-function toMeasureMax(dto: MeasureDto): number | undefined {
-    return dto.max
-}
-
 function toMeasureRef(dto: MeasureDto): number | undefined {
     return dto.ref
 }
@@ -95,11 +81,17 @@ function toMeasureComparator(dto: MeasureDto): string | undefined {
     return dto.comparator
 }
 
+function toMeasureDtoReferenceRange(domain: Measure): ReferenceRangeDto[] | undefined {
+    return domain.referenceRange ? domain.referenceRange.map(mapReferenceRangeToReferenceRangeDto) : undefined
+}
+
+function toMeasureReferenceRange(dto: MeasureDto): ReferenceRange[] | undefined {
+    return dto.referenceRange ? dto.referenceRange.map(mapReferenceRangeDtoToReferenceRange) : undefined
+}
+
 export function mapMeasureDtoToMeasure(dto: MeasureDto): Measure {
     return new Measure({
         value: toMeasureValue(dto),
-        min: toMeasureMin(dto),
-        max: toMeasureMax(dto),
         ref: toMeasureRef(dto),
         severity: toMeasureSeverity(dto),
         severityCode: toMeasureSeverityCode(dto),
@@ -108,14 +100,13 @@ export function mapMeasureDtoToMeasure(dto: MeasureDto): Measure {
         unitCodes: toMeasureUnitCodes(dto),
         comment: toMeasureComment(dto),
         comparator: toMeasureComparator(dto),
+        referenceRange: toMeasureReferenceRange(dto),
     })
 }
 
 export function mapMeasureToMeasureDto(domain: Measure): MeasureDto {
     return new MeasureDto({
         value: toMeasureDtoValue(domain),
-        min: toMeasureDtoMin(domain),
-        max: toMeasureDtoMax(domain),
         ref: toMeasureDtoRef(domain),
         severity: toMeasureDtoSeverity(domain),
         severityCode: toMeasureDtoSeverityCode(domain),
@@ -125,5 +116,6 @@ export function mapMeasureToMeasureDto(domain: Measure): MeasureDto {
         unitCodes: toMeasureDtoUnitCodes(domain),
         comment: toMeasureDtoComment(domain),
         comparator: toMeasureDtoComparator(domain),
+        referenceRange: toMeasureDtoReferenceRange(domain),
     })
 }

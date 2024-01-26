@@ -1,4 +1,4 @@
-import { mapTo, Measure, TimeSeries, ContentDto } from '@icure/typescript-common'
+import { ContentDto, Measure, TimeSeries, mapTo } from '@icure/typescript-common'
 import { Observation } from './Observation.model'
 
 @mapTo(ContentDto)

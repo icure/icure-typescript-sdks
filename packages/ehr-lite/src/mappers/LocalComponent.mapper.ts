@@ -1,55 +1,55 @@
 import { LocalComponent } from '../models/LocalComponent.model'
 import { ContentDto, MeasureDto, MedicationDto, ServiceDto, TimeSeriesDto } from '@icure/typescript-common'
 
-function toContentStringValue(domain: LocalComponent): string | undefined {
+function toContentDtoStringValue(domain: LocalComponent): string | undefined {
     return domain.stringValue
 }
 
-function toContentNumberValue(domain: LocalComponent): number | undefined {
+function toContentDtoNumberValue(domain: LocalComponent): number | undefined {
     return undefined
 }
 
-function toContentBooleanValue(domain: LocalComponent): boolean | undefined {
+function toContentDtoBooleanValue(domain: LocalComponent): boolean | undefined {
     return undefined
 }
 
-function toContentInstantValue(domain: LocalComponent): number | undefined {
+function toContentDtoInstantValue(domain: LocalComponent): number | undefined {
     return undefined
 }
 
-function toContentFuzzyDateValue(domain: LocalComponent): number | undefined {
+function toContentDtoFuzzyDateValue(domain: LocalComponent): number | undefined {
     return undefined
 }
 
-function toContentBinaryValue(domain: LocalComponent): ArrayBuffer | undefined {
+function toContentDtoBinaryValue(domain: LocalComponent): ArrayBuffer | undefined {
     return undefined
 }
 
-function toContentDocumentId(domain: LocalComponent): string | undefined {
+function toContentDtoDocumentId(domain: LocalComponent): string | undefined {
     return domain.documentId
 }
 
-function toContentMeasureValue(domain: LocalComponent): MeasureDto | undefined {
+function toContentDtoMeasureValue(domain: LocalComponent): MeasureDto | undefined {
     return undefined
 }
 
-function toContentMedicationValue(domain: LocalComponent): MedicationDto | undefined {
+function toContentDtoMedicationValue(domain: LocalComponent): MedicationDto | undefined {
     return undefined
 }
 
-function toContentTimeSeries(domain: LocalComponent): TimeSeriesDto | undefined {
+function toContentDtoTimeSeries(domain: LocalComponent): TimeSeriesDto | undefined {
     return undefined
 }
 
-function toContentCompoundValue(domain: LocalComponent): ServiceDto[] | undefined {
+function toContentDtoCompoundValue(domain: LocalComponent): ServiceDto[] | undefined {
     return undefined
 }
 
-function toContentRatio(domain: LocalComponent): MeasureDto[] | undefined {
+function toContentDtoRatio(domain: LocalComponent): MeasureDto[] | undefined {
     return undefined
 }
 
-function toContentRange(domain: LocalComponent): MeasureDto[] | undefined {
+function toContentDtoRange(domain: LocalComponent): MeasureDto[] | undefined {
     return undefined
 }
 
@@ -61,27 +61,27 @@ function toLocalComponentDocumentId(dto: ContentDto): string | undefined {
     return dto.documentId
 }
 
-export function mapContentToLocalComponent(dto: ContentDto): LocalComponent {
+export function mapContentDtoToLocalComponent(dto: ContentDto): LocalComponent {
     return new LocalComponent({
         stringValue: toLocalComponentStringValue(dto),
         documentId: toLocalComponentDocumentId(dto),
     })
 }
 
-export function mapLocalComponentToContent(domain: LocalComponent): ContentDto {
+export function mapLocalComponentToContentDto(domain: LocalComponent): ContentDto {
     return new ContentDto({
-        stringValue: toContentStringValue(domain),
-        numberValue: toContentNumberValue(domain),
-        booleanValue: toContentBooleanValue(domain),
-        instantValue: toContentInstantValue(domain),
-        fuzzyDateValue: toContentFuzzyDateValue(domain),
-        binaryValue: toContentBinaryValue(domain),
-        documentId: toContentDocumentId(domain),
-        measureValue: toContentMeasureValue(domain),
-        medicationValue: toContentMedicationValue(domain),
-        timeSeries: toContentTimeSeries(domain),
-        compoundValue: toContentCompoundValue(domain),
-        ratio: toContentRatio(domain),
-        range: toContentRange(domain),
+        stringValue: toContentDtoStringValue(domain),
+        numberValue: toContentDtoNumberValue(domain),
+        booleanValue: toContentDtoBooleanValue(domain),
+        instantValue: toContentDtoInstantValue(domain),
+        fuzzyDateValue: toContentDtoFuzzyDateValue(domain),
+        binaryValue: toContentDtoBinaryValue(domain),
+        documentId: toContentDtoDocumentId(domain),
+        measureValue: toContentDtoMeasureValue(domain),
+        medicationValue: toContentDtoMedicationValue(domain),
+        timeSeries: toContentDtoTimeSeries(domain),
+        compoundValue: toContentDtoCompoundValue(domain),
+        ratio: toContentDtoRatio(domain),
+        range: toContentDtoRange(domain),
     })
 }

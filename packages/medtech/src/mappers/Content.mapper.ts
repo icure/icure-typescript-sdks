@@ -1,7 +1,7 @@
 import { Content } from '../models/Content.model'
 import { mapMeasureDtoToMeasure, mapMeasureToMeasureDto, mapTimeSeriesDtoToTimeSeries, mapTimeSeriesToTimeSeriesDto, Measure, TimeSeries, ContentDto, MedicationDto, ServiceDto, MeasureDto, TimeSeriesDto } from '@icure/typescript-common'
 import { DataSample } from '../models/DataSample.model'
-import { mapDataSampleToService, mapServiceToDataSample } from './DataSample.mapper'
+import { mapDataSampleToServiceDto, mapServiceDtoToDataSample } from './DataSample.mapper'
 
 function toContentDtoStringValue(domain: Content): string | undefined {
     return domain.stringValue
@@ -44,7 +44,7 @@ function toContentDtoTimeSeries(domain: Content): TimeSeriesDto | undefined {
 }
 
 function toContentDtoCompoundValue(domain: Content): ServiceDto[] | undefined {
-    return domain.compoundValue?.map(mapDataSampleToService)
+    return domain.compoundValue?.map(mapDataSampleToServiceDto)
 }
 
 function toContentDtoRatio(domain: Content): MeasureDto[] | undefined {
@@ -92,7 +92,7 @@ function toContentTimeSeries(dto: ContentDto): TimeSeries | undefined {
 }
 
 function toContentCompoundValue(dto: ContentDto): DataSample[] | undefined {
-    return dto.compoundValue?.map(mapServiceToDataSample)
+    return dto.compoundValue?.map(mapServiceDtoToDataSample)
 }
 
 function toContentRatio(dto: ContentDto): Measure[] | undefined {

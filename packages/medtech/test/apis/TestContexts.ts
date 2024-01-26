@@ -31,18 +31,18 @@ import { HealthcareProfessionalApi } from '../../src/apis/HealthcareProfessional
 import { DataOwnerApi } from '../../src/apis/DataOwnerApi'
 import { PatientApi } from '../../src/apis/PatientApi'
 import { NotificationApi } from '../../src/apis/NotificationApi'
-import { mapHealthcarePartyToHealthcareProfessional, mapHealthcareProfessionalToHealthcareParty } from '../../src/mappers/HealthcareProfessional.mapper'
+import { mapHealthcarePartyDtoToHealthcareProfessional, mapHealthcareProfessionalToHealthcarePartyDto } from '../../src/mappers/HealthcareProfessional.mapper'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../../src/mappers/Patient.mapper'
 import { DataSample } from '../../src/models/DataSample.model'
 import { Content } from '../../src/models/Content.model'
 import { DataSampleApi } from '../../src/apis/DataSampleApi'
 import { MaintenanceTask } from '@icure/api/icc-api/model/MaintenanceTask'
 import { BaseApiTestContext, WithAuthenticationApi, WithDataOwnerApi, WithDeviceApi, WithHcpApi, WithHelementApi, WithMaintenanceTaskApi, WithPatientApi, WithServiceApi } from '../../../common-test/apis/TestContexts'
-import { mapDataSampleToService, mapServiceToDataSample } from '../../src/mappers/DataSample.mapper'
+import { mapDataSampleToServiceDto, mapServiceDtoToDataSample } from '../../src/mappers/DataSample.mapper'
 import dataOwnerMapper from '../../src/mappers/DataOwner.mapper'
 import { HealthcareElement } from '../../src/models/HealthcareElement.model'
 import { HealthcareElementApi } from '../../src/apis/HealthcareElementApi'
-import { mapHealthcareElementToHealthElement, mapHealthElementToHealthcareElement } from '../../src/mappers/HealthcareElement.mapper'
+import { mapHealthcareElementToHealthElementDto, mapHealthElementDtoToHealthcareElement } from '../../src/mappers/HealthcareElement.mapper'
 import { DataSampleFilter } from '../../src/filter/DataSampleFilterDsl'
 import { HealthcareElementFilter } from '../../src/filter/HealthcareElementFilterDsl'
 import { TestMessageFactory } from '../test-utils'
@@ -50,8 +50,8 @@ import { MedTechMessageFactory } from '../../src/services/MedTechMessageFactory'
 import { NotificationFilter } from '@icure/ehr-lite-sdk'
 import { MedicalDeviceApi } from '../../src/apis/MedicalDeviceApi'
 import { MedicalDevice } from '../../src/models/MedicalDevice.model'
-import { mapDeviceToMedicalDevice, mapMedicalDeviceToDevice } from '../../src/mappers/MedicalDevice.mapper'
 import { TestVars } from '@icure/test-setup/types'
+import { mapDeviceDtoToMedicalDevice, mapMedicalDeviceToDeviceDto } from '../../src/mappers/MedicalDevice.mapper'
 
 export class MedTechBaseTestContext extends BaseApiTestContext<AnonymousMedTechApi.Builder, AnonymousMedTechApi, MedTechApi, MedTechCryptoStrategies, User, MedTechMessageFactory> {
     newAnonymousApiBuilder(): AnonymousMedTechApi.Builder {
@@ -198,11 +198,11 @@ export function DataSampleApiAware<TBase extends Constructor<any>>(Base: TBase):
         }
 
         toDSService(serviceDto: Service): DataSample {
-            return mapServiceToDataSample(serviceDto)
+            return mapServiceDtoToDataSample(serviceDto)
         }
 
         toServiceDto(dsService: DataSample): Service {
-            return mapDataSampleToService(dsService)
+            return mapDataSampleToServiceDto(dsService)
         }
 
         newServiceFilter(api: MedTechApi): DataSampleFilter {
@@ -267,11 +267,11 @@ export function HealthcareProfessionalApiAware<TBase extends Constructor<any>>(B
         }
 
         toDSHcp(hcpDto: HealthcareParty): HealthcareProfessional {
-            return mapHealthcarePartyToHealthcareProfessional(hcpDto)
+            return mapHealthcarePartyDtoToHealthcareProfessional(hcpDto)
         }
 
         toHcpDto(dsHcp: HealthcareProfessional): HealthcareParty {
-            return mapHealthcareProfessionalToHealthcareParty(dsHcp)
+            return mapHealthcareProfessionalToHealthcarePartyDto(dsHcp)
         }
     }
 }
@@ -300,11 +300,11 @@ export function HelementApiAware<TBase extends Constructor<any>>(Base: TBase): T
         }
 
         toDSHelement(helementDto: HealthElement): HealthcareElement {
-            return mapHealthElementToHealthcareElement(helementDto)
+            return mapHealthElementDtoToHealthcareElement(helementDto)
         }
 
         toHelementDto(dsHelement: HealthcareElement): HealthElement {
-            return mapHealthcareElementToHealthElement(dsHelement)
+            return mapHealthcareElementToHealthElementDto(dsHelement)
         }
 
         async checkHelementAccessibleAndDecrypted(api: MedTechApi, helement: HealthcareElement, checkDeepEquals: boolean): Promise<void> {
@@ -335,11 +335,11 @@ export function MedicalDeviceApiAware<TBase extends Constructor<any>>(Base: TBas
         }
 
         toDSDevice(deviceDto: Device): MedicalDevice {
-            return mapDeviceToMedicalDevice(deviceDto)
+            return mapDeviceDtoToMedicalDevice(deviceDto)
         }
 
         toDeviceDto(dsDevice: MedicalDevice): Device {
-            return mapMedicalDeviceToDevice(dsDevice)
+            return mapMedicalDeviceToDeviceDto(dsDevice)
         }
     }
 }

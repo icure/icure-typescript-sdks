@@ -28,148 +28,148 @@ import {
 import { Content } from '../models/Content.model'
 import { mapContentDtoToContent, mapContentToContentDto } from './Content.mapper'
 
-function toServiceId(domain: DataSample): string | undefined {
+function toServiceDtoId(domain: DataSample): string | undefined {
     return forceUuid(domain.id)
 }
 
-function toServiceTransactionId(domain: DataSample): string | undefined {
+function toServiceDtoTransactionId(domain: DataSample): string | undefined {
     return domain.transactionId
 }
 
-function toServiceIdentifier(domain: DataSample): IdentifierDto[] | undefined {
+function toServiceDtoIdentifier(domain: DataSample): IdentifierDto[] | undefined {
     return domain.identifiers?.map(mapIdentifierToIdentifierDto)
 }
 
-function toServiceContactId(domain: DataSample): string | undefined {
+function toServiceDtoContactId(domain: DataSample): string | undefined {
     return domain.batchId
 }
 
-function toServiceSubContactIds(domain: DataSample): string[] | undefined {
+function toServiceDtoSubContactIds(domain: DataSample): string[] | undefined {
     return undefined
 }
 
-function toServicePlansOfActionIds(domain: DataSample): string[] | undefined {
+function toServiceDtoPlansOfActionIds(domain: DataSample): string[] | undefined {
     return undefined
 }
 
-function toServiceHealthElementsIds(domain: DataSample): string[] | undefined {
+function toServiceDtoHealthElementsIds(domain: DataSample): string[] | undefined {
     return [...(domain.healthcareElementIds ?? [])]
 }
 
-function toServiceFormIds(domain: DataSample): string[] | undefined {
+function toServiceDtoFormIds(domain: DataSample): string[] | undefined {
     return [...(domain.canvasesIds ?? [])]
 }
 
-function toServiceSecretForeignKeys(domain: DataSample): string[] | undefined {
+function toServiceDtoSecretForeignKeys(domain: DataSample): string[] | undefined {
     return !!domain.systemMetaData ? toSecretForeignKeys(domain.systemMetaData) : undefined
 }
 
-function toServiceCryptedForeignKeys(domain: DataSample): { [key: string]: DelegationDto[] } | undefined {
+function toServiceDtoCryptedForeignKeys(domain: DataSample): { [key: string]: DelegationDto[] } | undefined {
     return !!domain.systemMetaData ? toCryptedForeignKeys(domain.systemMetaData) : undefined
 }
 
-function toServiceDelegations(domain: DataSample): { [key: string]: DelegationDto[] } | undefined {
+function toServiceDtoDelegations(domain: DataSample): { [key: string]: DelegationDto[] } | undefined {
     return !!domain.systemMetaData ? toDelegations(domain.systemMetaData) : undefined
 }
 
-function toServiceEncryptionKeys(domain: DataSample): { [key: string]: DelegationDto[] } | undefined {
+function toServiceDtoEncryptionKeys(domain: DataSample): { [key: string]: DelegationDto[] } | undefined {
     return !!domain.systemMetaData ? toEncryptionKeys(domain.systemMetaData) : undefined
 }
 
-function toServiceLabel(domain: DataSample): string | undefined {
+function toServiceDtoLabel(domain: DataSample): string | undefined {
     return undefined
 }
 
-function toServiceDataClassName(domain: DataSample): string | undefined {
+function toServiceDtoDataClassName(domain: DataSample): string | undefined {
     return undefined
 }
 
-function toServiceIndex(domain: DataSample): number | undefined {
+function toServiceDtoIndex(domain: DataSample): number | undefined {
     return domain.index
 }
 
-function toServiceContent(domain: DataSample): { [key: string]: ContentDto } | undefined {
+function toServiceDtoContent(domain: DataSample): { [key: string]: ContentDto } | undefined {
     const mappedEntries = [...(domain.content?.entries() ?? [])]?.map(([lang, content]) => [lang, mapContentToContentDto(content)])
     return !!mappedEntries ? Object.fromEntries(mappedEntries) : undefined
 }
 
-function toServiceEncryptedContent(domain: DataSample): string | undefined {
+function toServiceDtoEncryptedContent(domain: DataSample): string | undefined {
     return undefined
 }
 
-function toServiceTextIndexes(domain: DataSample): { [key: string]: string } | undefined {
+function toServiceDtoTextIndexes(domain: DataSample): { [key: string]: string } | undefined {
     return undefined
 }
 
-function toServiceValueDate(domain: DataSample): number | undefined {
+function toServiceDtoValueDate(domain: DataSample): number | undefined {
     return domain.valueDate
 }
 
-function toServiceOpeningDate(domain: DataSample): number | undefined {
+function toServiceDtoOpeningDate(domain: DataSample): number | undefined {
     return domain.openingDate
 }
 
-function toServiceClosingDate(domain: DataSample): number | undefined {
+function toServiceDtoClosingDate(domain: DataSample): number | undefined {
     return domain.closingDate
 }
 
-function toServiceFormId(domain: DataSample): string | undefined {
+function toServiceDtoFormId(domain: DataSample): string | undefined {
     return undefined
 }
 
-function toServiceCreated(domain: DataSample): number | undefined {
+function toServiceDtoCreated(domain: DataSample): number | undefined {
     return domain.created
 }
 
-function toServiceModified(domain: DataSample): number | undefined {
+function toServiceDtoModified(domain: DataSample): number | undefined {
     return domain.modified
 }
 
-function toServiceEndOfLife(domain: DataSample): number | undefined {
+function toServiceDtoEndOfLife(domain: DataSample): number | undefined {
     return domain.endOfLife
 }
 
-function toServiceAuthor(domain: DataSample): string | undefined {
+function toServiceDtoAuthor(domain: DataSample): string | undefined {
     return domain.author
 }
 
-function toServiceResponsible(domain: DataSample): string | undefined {
+function toServiceDtoResponsible(domain: DataSample): string | undefined {
     return domain.responsible
 }
 
-function toServiceMedicalLocationId(domain: DataSample): string | undefined {
+function toServiceDtoMedicalLocationId(domain: DataSample): string | undefined {
     return undefined
 }
 
-function toServiceComment(domain: DataSample): string | undefined {
+function toServiceDtoComment(domain: DataSample): string | undefined {
     return domain.comment
 }
 
-function toServiceStatus(domain: DataSample): number | undefined {
+function toServiceDtoStatus(domain: DataSample): number | undefined {
     return undefined
 }
 
-function toServiceInvoicingCodes(domain: DataSample): string[] | undefined {
+function toServiceDtoInvoicingCodes(domain: DataSample): string[] | undefined {
     return undefined
 }
 
-function toServiceNotes(domain: DataSample): AnnotationDto[] | undefined {
+function toServiceDtoNotes(domain: DataSample): AnnotationDto[] | undefined {
     return undefined
 }
 
-function toServiceQualifiedLinks(domain: DataSample): { [key: string]: { [key: string]: string } } | undefined {
+function toServiceDtoQualifiedLinks(domain: DataSample): { [key: string]: { [key: string]: string } } | undefined {
     return domain.qualifiedLinks ? Object.fromEntries([...domain.qualifiedLinks.entries()].map(([key, value]) => [key, Object.fromEntries([...value.entries()])])) : undefined
 }
 
-function toServiceCodes(domain: DataSample): CodeStub[] | undefined {
+function toServiceDtoCodes(domain: DataSample): CodeStub[] | undefined {
     return domain.codes ? [...domain.codes].map(mapCodingReferenceToCodeStub) : undefined
 }
 
-function toServiceTags(domain: DataSample): CodeStub[] | undefined {
+function toServiceDtoTags(domain: DataSample): CodeStub[] | undefined {
     return domain.labels ? [...domain.labels].map(mapCodingReferenceToCodeStub) : undefined
 }
 
-function toServiceEncryptedSelf(domain: DataSample): string | undefined {
+function toServiceDtoEncryptedSelf(domain: DataSample): string | undefined {
     return !!domain.systemMetaData ? toEncryptedSelf(domain.systemMetaData) : undefined
 }
 
@@ -257,11 +257,11 @@ function toDataSampleSystemMetaData(dto: ServiceDto): SystemMetaDataEncrypted | 
     return toSystemMetaDataEncrypted(dto)
 }
 
-function toServiceSecurityMetadata(domain: DataSample): SecurityMetadataDto | undefined {
+function toServiceDtoSecurityMetadata(domain: DataSample): SecurityMetadataDto | undefined {
     return toSecurityMetadataDto(domain.systemMetaData)
 }
 
-export function mapServiceToDataSample(dto: ServiceDto): DataSample {
+export function mapServiceDtoToDataSample(dto: ServiceDto): DataSample {
     return new DataSample({
         id: toDataSampleId(dto),
         transactionId: toDataSampleTransactionId(dto),
@@ -287,44 +287,44 @@ export function mapServiceToDataSample(dto: ServiceDto): DataSample {
     })
 }
 
-export function mapDataSampleToService(domain: DataSample): ServiceDto {
+export function mapDataSampleToServiceDto(domain: DataSample): ServiceDto {
     return new ServiceDto({
-        id: toServiceId(domain),
-        transactionId: toServiceTransactionId(domain),
-        identifier: toServiceIdentifier(domain),
-        contactId: toServiceContactId(domain),
-        subContactIds: toServiceSubContactIds(domain),
-        plansOfActionIds: toServicePlansOfActionIds(domain),
-        healthElementsIds: toServiceHealthElementsIds(domain),
-        formIds: toServiceFormIds(domain),
-        secretForeignKeys: toServiceSecretForeignKeys(domain),
-        cryptedForeignKeys: toServiceCryptedForeignKeys(domain),
-        delegations: toServiceDelegations(domain),
-        encryptionKeys: toServiceEncryptionKeys(domain),
-        label: toServiceLabel(domain),
-        dataClassName: toServiceDataClassName(domain),
-        index: toServiceIndex(domain),
-        content: toServiceContent(domain),
-        encryptedContent: toServiceEncryptedContent(domain),
-        textIndexes: toServiceTextIndexes(domain),
-        valueDate: toServiceValueDate(domain),
-        openingDate: toServiceOpeningDate(domain),
-        closingDate: toServiceClosingDate(domain),
-        formId: toServiceFormId(domain),
-        created: toServiceCreated(domain),
-        modified: toServiceModified(domain),
-        endOfLife: toServiceEndOfLife(domain),
-        author: toServiceAuthor(domain),
-        responsible: toServiceResponsible(domain),
-        medicalLocationId: toServiceMedicalLocationId(domain),
-        comment: toServiceComment(domain),
-        status: toServiceStatus(domain),
-        invoicingCodes: toServiceInvoicingCodes(domain),
-        notes: toServiceNotes(domain),
-        qualifiedLinks: toServiceQualifiedLinks(domain),
-        codes: toServiceCodes(domain),
-        tags: toServiceTags(domain),
-        encryptedSelf: toServiceEncryptedSelf(domain),
-        securityMetadata: toServiceSecurityMetadata(domain),
+        id: toServiceDtoId(domain),
+        transactionId: toServiceDtoTransactionId(domain),
+        identifier: toServiceDtoIdentifier(domain),
+        contactId: toServiceDtoContactId(domain),
+        subContactIds: toServiceDtoSubContactIds(domain),
+        plansOfActionIds: toServiceDtoPlansOfActionIds(domain),
+        healthElementsIds: toServiceDtoHealthElementsIds(domain),
+        formIds: toServiceDtoFormIds(domain),
+        secretForeignKeys: toServiceDtoSecretForeignKeys(domain),
+        cryptedForeignKeys: toServiceDtoCryptedForeignKeys(domain),
+        delegations: toServiceDtoDelegations(domain),
+        encryptionKeys: toServiceDtoEncryptionKeys(domain),
+        label: toServiceDtoLabel(domain),
+        dataClassName: toServiceDtoDataClassName(domain),
+        index: toServiceDtoIndex(domain),
+        content: toServiceDtoContent(domain),
+        encryptedContent: toServiceDtoEncryptedContent(domain),
+        textIndexes: toServiceDtoTextIndexes(domain),
+        valueDate: toServiceDtoValueDate(domain),
+        openingDate: toServiceDtoOpeningDate(domain),
+        closingDate: toServiceDtoClosingDate(domain),
+        formId: toServiceDtoFormId(domain),
+        created: toServiceDtoCreated(domain),
+        modified: toServiceDtoModified(domain),
+        endOfLife: toServiceDtoEndOfLife(domain),
+        author: toServiceDtoAuthor(domain),
+        responsible: toServiceDtoResponsible(domain),
+        medicalLocationId: toServiceDtoMedicalLocationId(domain),
+        comment: toServiceDtoComment(domain),
+        status: toServiceDtoStatus(domain),
+        invoicingCodes: toServiceDtoInvoicingCodes(domain),
+        notes: toServiceDtoNotes(domain),
+        qualifiedLinks: toServiceDtoQualifiedLinks(domain),
+        codes: toServiceDtoCodes(domain),
+        tags: toServiceDtoTags(domain),
+        encryptedSelf: toServiceDtoEncryptedSelf(domain),
+        securityMetadata: toServiceDtoSecurityMetadata(domain),
     })
 }

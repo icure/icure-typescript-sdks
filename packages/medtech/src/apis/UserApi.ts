@@ -1,7 +1,7 @@
 import { CommonApi, CommonFilter, mapUserDtoToUser, mapUserToUserDto, MessageFactory, PaginatedList, User, UserLikeApi, UserLikeApiImpl, Connection, HealthcarePartyDto, PatientDto, SubscriptionOptions, UserDto } from '@icure/typescript-common'
 import { Patient } from '../models/Patient.model'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
-import { mapHealthcarePartyToHealthcareProfessional, mapHealthcareProfessionalToHealthcareParty } from '../mappers/HealthcareProfessional.mapper'
+import { mapHealthcarePartyDtoToHealthcareProfessional, mapHealthcareProfessionalToHealthcarePartyDto } from '../mappers/HealthcareProfessional.mapper'
 import { HealthcareProfessional } from '../models/HealthcareProfessional.model'
 
 export interface UserApi extends UserLikeApi<User, Patient> {
@@ -158,10 +158,10 @@ export const userApi = (api: CommonApi, messageFactory: MessageFactory<User, Hea
         },
         {
             toDomain(dto: HealthcarePartyDto): HealthcareProfessional {
-                return mapHealthcarePartyToHealthcareProfessional(dto)
+                return mapHealthcarePartyDtoToHealthcareProfessional(dto)
             },
             toDto(domain: HealthcareProfessional): HealthcarePartyDto {
-                return mapHealthcareProfessionalToHealthcareParty(domain)
+                return mapHealthcareProfessionalToHealthcarePartyDto(domain)
             },
         },
         api.errorHandler,

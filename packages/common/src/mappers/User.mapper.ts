@@ -4,6 +4,7 @@ import { mapPropertyStubToProperty, mapPropertyToPropertyStub } from './Property
 import { Property } from '../models/Property.model'
 import { AuthenticationToken } from '../models/AuthenticationToken.model'
 import { forceUuid } from '../utils/uuidUtils'
+import SystemMetadata = UserDto.SystemMetadata
 
 export function toUserDtoId(domain: User): string | undefined {
     return forceUuid(domain.id)
@@ -207,6 +208,10 @@ export function toUserAuthenticationTokens(dto: UserDto): Map<string, Authentica
     return !!dto.authenticationTokens ? new Map(Object.entries(dto.authenticationTokens)) : new Map()
 }
 
+function toUserDtoSystemMetadata(domain: User): SystemMetadata | undefined {
+    throw new Error('Not implemented')
+}
+
 export function mapUserDtoToUser(dto: UserDto): User {
     return new User({
         id: toUserId(dto),
@@ -258,5 +263,6 @@ export function mapUserToUserDto(domain: User): UserDto {
         mobilePhone: toUserDtoMobilePhone(domain),
         applicationTokens: toUserDtoApplicationTokens(domain),
         authenticationTokens: toUserDtoAuthenticationTokens(domain),
+        systemMetadata: toUserDtoSystemMetadata(domain),
     })
 }

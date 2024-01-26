@@ -9,7 +9,7 @@ import { CodingReference } from '@icure/typescript-common'
 import { Patient } from '../../src/models/Patient.model'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import { v4 as uuid } from 'uuid'
-import { mapHealthcareElementToHealthElement } from '../../src/mappers/HealthcareElement.mapper'
+import { mapHealthcareElementToHealthElementDto } from '../../src/mappers/HealthcareElement.mapper'
 import { mapPatientToPatientDto } from '../../src/mappers/Patient.mapper'
 import { getEnvironmentInitializer, hcp1Username, setLocalStorage } from '../../../common-test/test-utils'
 import { TestUtils } from '../test-utils'
@@ -88,7 +88,7 @@ describe('Healthcare Element Filters Test', function () {
         for (const e of elements.rows) {
             const accessInfo = await hcp1Api.cryptoApi.delegationsDeAnonymization.getDataOwnersWithAccessTo(
                 {
-                    entity: mapHealthcareElementToHealthElement(e),
+                    entity: mapHealthcareElementToHealthElementDto(e),
                     type: 'HealthElement',
                 }!,
             )

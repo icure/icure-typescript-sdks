@@ -1,58 +1,58 @@
 import { Location } from '../models/Location.model'
 import { Annotation, mapAnnotationDtoToAnnotation, mapAnnotationToAnnotationDto, AddressDto, AnnotationDto, TelecomDto } from '@icure/typescript-common'
 import { ContactPoint } from '../models/ContactPoint.model'
-import { mapContactPointToTelecom, mapTelecomToContactPoint } from './ContactPoint.mapper'
 import { LocationAddressTypeEnum } from '../models/enums/LocationAddressType.enum'
+import { mapContactPointToTelecomDto, mapTelecomDtoToContactPoint } from './ContactPoint.mapper'
 
-function toAddressAddressType(domain: Location): AddressDto.AddressTypeEnum | undefined {
+function toAddressDtoAddressType(domain: Location): AddressDto.AddressTypeEnum | undefined {
     return domain.addressType
 }
 
-function toAddressDescr(domain: Location): string | undefined {
+function toAddressDtoDescr(domain: Location): string | undefined {
     return domain.description
 }
 
-function toAddressStreet(domain: Location): string | undefined {
+function toAddressDtoStreet(domain: Location): string | undefined {
     return domain.street
 }
 
-function toAddressHouseNumber(domain: Location): string | undefined {
+function toAddressDtoHouseNumber(domain: Location): string | undefined {
     return domain.houseNumber
 }
 
-function toAddressPostboxNumber(domain: Location): string | undefined {
+function toAddressDtoPostboxNumber(domain: Location): string | undefined {
     return domain.postboxNumber
 }
 
-function toAddressPostalCode(domain: Location): string | undefined {
+function toAddressDtoPostalCode(domain: Location): string | undefined {
     return domain.postalCode
 }
 
-function toAddressCity(domain: Location): string | undefined {
+function toAddressDtoCity(domain: Location): string | undefined {
     return domain.city
 }
 
-function toAddressState(domain: Location): string | undefined {
+function toAddressDtoState(domain: Location): string | undefined {
     return domain.state
 }
 
-function toAddressCountry(domain: Location): string | undefined {
+function toAddressDtoCountry(domain: Location): string | undefined {
     return domain.country
 }
 
-function toAddressNote(domain: Location): string | undefined {
+function toAddressDtoNote(domain: Location): string | undefined {
     return undefined
 }
 
-function toAddressNotes(domain: Location): AnnotationDto[] | undefined {
+function toAddressDtoNotes(domain: Location): AnnotationDto[] | undefined {
     return !!domain.notes ? domain.notes.map(mapAnnotationToAnnotationDto) : undefined
 }
 
-function toAddressTelecoms(domain: Location): TelecomDto[] | undefined {
-    return !!domain.telecoms ? domain.telecoms.map(mapContactPointToTelecom) : undefined
+function toAddressDtoTelecoms(domain: Location): TelecomDto[] | undefined {
+    return !!domain.telecoms ? domain.telecoms.map(mapContactPointToTelecomDto) : undefined
 }
 
-function toAddressEncryptedSelf(domain: Location): string | undefined {
+function toAddressDtoEncryptedSelf(domain: Location): string | undefined {
     return domain.encryptedSelf
 }
 
@@ -97,14 +97,14 @@ function toLocationNotes(dto: AddressDto): Annotation[] | undefined {
 }
 
 function toLocationTelecoms(dto: AddressDto): ContactPoint[] | undefined {
-    return !!dto.telecoms ? dto.telecoms.map(mapTelecomToContactPoint) : undefined
+    return !!dto.telecoms ? dto.telecoms.map(mapTelecomDtoToContactPoint) : undefined
 }
 
 function toLocationEncryptedSelf(dto: AddressDto): string | undefined {
     return dto.encryptedSelf
 }
 
-export function mapAddressToLocation(dto: AddressDto): Location {
+export function mapAddressDtoToLocation(dto: AddressDto): Location {
     return new Location({
         addressType: toLocationAddressType(dto),
         description: toLocationDescription(dto),
@@ -121,20 +121,20 @@ export function mapAddressToLocation(dto: AddressDto): Location {
     })
 }
 
-export function mapLocationToAddress(domain: Location): AddressDto {
+export function mapLocationToAddressDto(domain: Location): AddressDto {
     return new AddressDto({
-        addressType: toAddressAddressType(domain),
-        descr: toAddressDescr(domain),
-        street: toAddressStreet(domain),
-        houseNumber: toAddressHouseNumber(domain),
-        postboxNumber: toAddressPostboxNumber(domain),
-        postalCode: toAddressPostalCode(domain),
-        city: toAddressCity(domain),
-        state: toAddressState(domain),
-        country: toAddressCountry(domain),
-        note: toAddressNote(domain),
-        notes: toAddressNotes(domain),
-        telecoms: toAddressTelecoms(domain),
-        encryptedSelf: toAddressEncryptedSelf(domain),
+        addressType: toAddressDtoAddressType(domain),
+        descr: toAddressDtoDescr(domain),
+        street: toAddressDtoStreet(domain),
+        houseNumber: toAddressDtoHouseNumber(domain),
+        postboxNumber: toAddressDtoPostboxNumber(domain),
+        postalCode: toAddressDtoPostalCode(domain),
+        city: toAddressDtoCity(domain),
+        state: toAddressDtoState(domain),
+        country: toAddressDtoCountry(domain),
+        note: toAddressDtoNote(domain),
+        notes: toAddressDtoNotes(domain),
+        telecoms: toAddressDtoTelecoms(domain),
+        encryptedSelf: toAddressDtoEncryptedSelf(domain),
     })
 }

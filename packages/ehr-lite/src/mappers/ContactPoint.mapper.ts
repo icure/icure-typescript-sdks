@@ -2,19 +2,19 @@ import { ContactPoint } from '../models/ContactPoint.model'
 import { TelecomDto } from '@icure/typescript-common'
 import { ContactPointTelecomTypeEnum } from '../models/enums/ContactPointTelecomType.enum'
 
-function toTelecomTelecomType(domain: ContactPoint): TelecomDto.TelecomTypeEnum | undefined {
+function toTelecomDtoTelecomType(domain: ContactPoint): TelecomDto.TelecomTypeEnum | undefined {
     return domain.system
 }
 
-function toTelecomTelecomNumber(domain: ContactPoint): string | undefined {
+function toTelecomDtoTelecomNumber(domain: ContactPoint): string | undefined {
     return domain.value
 }
 
-function toTelecomTelecomDescription(domain: ContactPoint): string | undefined {
+function toTelecomDtoTelecomDescription(domain: ContactPoint): string | undefined {
     return domain.description
 }
 
-function toTelecomEncryptedSelf(domain: ContactPoint): string | undefined {
+function toTelecomDtoEncryptedSelf(domain: ContactPoint): string | undefined {
     return domain.encryptedSelf
 }
 
@@ -34,7 +34,7 @@ function toContactPointEncryptedSelf(dto: TelecomDto): string | undefined {
     return dto.encryptedSelf
 }
 
-export function mapTelecomToContactPoint(dto: TelecomDto): ContactPoint {
+export function mapTelecomDtoToContactPoint(dto: TelecomDto): ContactPoint {
     return new ContactPoint({
         system: toContactPointSystem(dto),
         value: toContactPointValue(dto),
@@ -43,11 +43,11 @@ export function mapTelecomToContactPoint(dto: TelecomDto): ContactPoint {
     })
 }
 
-export function mapContactPointToTelecom(domain: ContactPoint): TelecomDto {
+export function mapContactPointToTelecomDto(domain: ContactPoint): TelecomDto {
     return new TelecomDto({
-        telecomType: toTelecomTelecomType(domain),
-        telecomNumber: toTelecomTelecomNumber(domain),
-        telecomDescription: toTelecomTelecomDescription(domain),
-        encryptedSelf: toTelecomEncryptedSelf(domain),
+        telecomType: toTelecomDtoTelecomType(domain),
+        telecomNumber: toTelecomDtoTelecomNumber(domain),
+        telecomDescription: toTelecomDtoTelecomDescription(domain),
+        encryptedSelf: toTelecomDtoEncryptedSelf(domain),
     })
 }

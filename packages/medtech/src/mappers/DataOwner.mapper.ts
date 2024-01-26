@@ -2,8 +2,8 @@ import { Mapper } from '@icure/typescript-common'
 import { DataOwnerWithType, DataOwnerTypeEnumDto, DataOwnerWithTypeDto } from '@icure/typescript-common'
 import { DataOwnerTypeEnum } from '../models/DataOwner.model'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from './Patient.mapper'
-import { mapHealthcarePartyToHealthcareProfessional, mapHealthcareProfessionalToHealthcareParty } from './HealthcareProfessional.mapper'
-import { mapDeviceToMedicalDevice, mapMedicalDeviceToDevice } from './MedicalDevice.mapper'
+import { mapHealthcarePartyDtoToHealthcareProfessional, mapHealthcareProfessionalToHealthcarePartyDto } from './HealthcareProfessional.mapper'
+import { mapDeviceDtoToMedicalDevice, mapMedicalDeviceToDeviceDto } from './MedicalDevice.mapper'
 
 class DataOwnerMapper implements Mapper<DataOwnerWithType, DataOwnerWithTypeDto> {
     toDomain({ dataOwner, type }: DataOwnerWithTypeDto): DataOwnerWithType {
@@ -17,13 +17,13 @@ class DataOwnerMapper implements Mapper<DataOwnerWithType, DataOwnerWithTypeDto>
             case DataOwnerTypeEnumDto.Hcp: {
                 return {
                     type: DataOwnerTypeEnum.HealthcareProfessional,
-                    dataOwner: mapHealthcarePartyToHealthcareProfessional(dataOwner),
+                    dataOwner: mapHealthcarePartyDtoToHealthcareProfessional(dataOwner),
                 }
             }
             case DataOwnerTypeEnumDto.Device: {
                 return {
                     type: DataOwnerTypeEnum.MedicalDevice,
-                    dataOwner: mapDeviceToMedicalDevice(dataOwner),
+                    dataOwner: mapDeviceDtoToMedicalDevice(dataOwner),
                 }
             }
             default: {
@@ -41,12 +41,12 @@ class DataOwnerMapper implements Mapper<DataOwnerWithType, DataOwnerWithTypeDto>
         } else if (type === DataOwnerTypeEnum.HealthcareProfessional) {
             return {
                 type: DataOwnerTypeEnumDto.Hcp,
-                dataOwner: mapHealthcareProfessionalToHealthcareParty(dataOwner),
+                dataOwner: mapHealthcareProfessionalToHealthcarePartyDto(dataOwner),
             }
         } else if (type === DataOwnerTypeEnum.MedicalDevice) {
             return {
                 type: DataOwnerTypeEnumDto.Device,
-                dataOwner: mapMedicalDeviceToDevice(dataOwner),
+                dataOwner: mapMedicalDeviceToDeviceDto(dataOwner),
             }
         } else {
             // @ts-ignore

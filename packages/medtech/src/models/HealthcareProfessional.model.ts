@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 
-import { CodingReference, forceUuid, mapTo, Property, SystemMetaDataOwner, b64_2ab, HealthcarePartyDto, ua2b64 } from '@icure/typescript-common'
+import { CodingReference, HealthcarePartyDto, Property, SystemMetaDataOwner, b64_2ab, forceUuid, mapTo, ua2b64 } from '@icure/typescript-common'
 import { Address } from './Address.model'
 import { PersonName } from './PersonName.model'
 

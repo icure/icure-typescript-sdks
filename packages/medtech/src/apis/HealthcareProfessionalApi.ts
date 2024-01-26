@@ -1,6 +1,6 @@
 import { CommonApi, CommonFilter, HealthcarePartyLikeApi, HealthcarePartyLikeApiImpl, PaginatedList, HealthcarePartyDto } from '@icure/typescript-common'
 import { HealthcareProfessional } from '../models/HealthcareProfessional.model'
-import { mapHealthcarePartyToHealthcareProfessional, mapHealthcareProfessionalToHealthcareParty } from '../mappers/HealthcareProfessional.mapper'
+import { mapHealthcarePartyDtoToHealthcareProfessional, mapHealthcareProfessionalToHealthcarePartyDto } from '../mappers/HealthcareProfessional.mapper'
 
 export interface HealthcareProfessionalApi extends HealthcarePartyLikeApi<HealthcareProfessional> {
     /**
@@ -73,10 +73,10 @@ export const healthcareProfessionalApi = (api: CommonApi, basePath: string): Hea
     return new HealthcareProfessionalApiImpl(
         {
             toDomain(dto: HealthcarePartyDto): HealthcareProfessional {
-                return mapHealthcarePartyToHealthcareProfessional(dto)
+                return mapHealthcarePartyDtoToHealthcareProfessional(dto)
             },
             toDto(domain: HealthcareProfessional): HealthcarePartyDto {
-                return mapHealthcareProfessionalToHealthcareParty(domain)
+                return mapHealthcareProfessionalToHealthcarePartyDto(domain)
             },
         },
         api.errorHandler,
