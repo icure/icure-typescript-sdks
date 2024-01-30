@@ -2,8 +2,8 @@ import { Mapper, DataOwnerTypeEnumDto, DataOwnerWithTypeDto } from '@icure/types
 import { DataOwnerWithType, extractDataOwnerDomainType } from '@icure/typescript-common'
 import { DataOwnerTypeEnum } from '../models/DataOwner.model'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from './Patient.mapper'
-import { mapHealthcarePartyToPractitioner, mapPractitionerToHealthcareParty } from './Practitioner.mapper'
-import { mapHealthcarePartyToOrganisation, mapOrganisationToHealthcareParty } from './Organisation.mapper'
+import { mapHealthcarePartyDtoToPractitioner, mapPractitionerToHealthcarePartyDto } from './Practitioner.mapper'
+import { mapHealthcarePartyDtoToOrganisation, mapOrganisationToHealthcarePartyDto } from './Organisation.mapper'
 
 class DataOwnerMapper implements Mapper<DataOwnerWithType, DataOwnerWithTypeDto> {
     toDomain(dto: DataOwnerWithTypeDto): DataOwnerWithType {
@@ -20,12 +20,12 @@ class DataOwnerMapper implements Mapper<DataOwnerWithType, DataOwnerWithTypeDto>
                 if (domainType === DataOwnerTypeEnum.PRACTITIONER) {
                     return {
                         type: DataOwnerTypeEnum.PRACTITIONER,
-                        dataOwner: mapHealthcarePartyToPractitioner(dto.dataOwner),
+                        dataOwner: mapHealthcarePartyDtoToPractitioner(dto.dataOwner),
                     }
                 } else if (domainType === DataOwnerTypeEnum.ORGANISATION) {
                     return {
                         type: DataOwnerTypeEnum.ORGANISATION,
-                        dataOwner: mapHealthcarePartyToOrganisation(dto.dataOwner),
+                        dataOwner: mapHealthcarePartyDtoToOrganisation(dto.dataOwner),
                     }
                 } else {
                     throw new Error(`Unknown data owner domain type ${domainType}`)
@@ -46,12 +46,12 @@ class DataOwnerMapper implements Mapper<DataOwnerWithType, DataOwnerWithTypeDto>
         } else if (domain.type === DataOwnerTypeEnum.PRACTITIONER) {
             return {
                 type: DataOwnerTypeEnumDto.Hcp,
-                dataOwner: mapPractitionerToHealthcareParty(domain.dataOwner),
+                dataOwner: mapPractitionerToHealthcarePartyDto(domain.dataOwner),
             }
         } else if (domain.type === DataOwnerTypeEnum.ORGANISATION) {
             return {
                 type: DataOwnerTypeEnumDto.Hcp,
-                dataOwner: mapOrganisationToHealthcareParty(domain.dataOwner),
+                dataOwner: mapOrganisationToHealthcarePartyDto(domain.dataOwner),
             }
         } else {
             // @ts-ignore

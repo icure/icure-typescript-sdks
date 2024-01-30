@@ -47,6 +47,14 @@ export class User {
      */
     'roles': Set<string>
     /**
+     * If the user is considered as an admin by the cloud environment
+     */
+    isAdmin?: boolean
+    /**
+     * True if the content of roles is inherited from the user's group configuration, false if the roles are defined specifically for the use
+     */
+    inheritsRoles?: boolean
+    /**
      * Username for this user. We encourage using an email address
      */
     'login'?: string
@@ -103,6 +111,8 @@ export class User {
         this.name = json.name
         this.properties = json.properties ?? new Set()
         this.roles = json.roles ?? new Set()
+        this.isAdmin = json.isAdmin
+        this.inheritsRoles = json.inheritsRoles
         this.login = json.login
         this.passwordHash = json.passwordHash
         this.secret = json.secret
@@ -126,6 +136,8 @@ export class User {
         if (instance.name !== undefined) pojo['name'] = instance.name
         pojo['properties'] = Array.from([...instance.properties].map((item) => Property.toJSON(item)))
         pojo['roles'] = Array.from([...instance.roles].map((item) => item))
+        if (instance.isAdmin !== undefined) pojo['isAdmin'] = instance.isAdmin
+        if (instance.inheritsRoles !== undefined) pojo['inheritsRoles'] = instance.inheritsRoles
         if (instance.login !== undefined) pojo['login'] = instance.login
         if (instance.passwordHash !== undefined) pojo['passwordHash'] = instance.passwordHash
         if (instance.secret !== undefined) pojo['secret'] = instance.secret
@@ -158,6 +170,12 @@ export class User {
         }
         obj['properties'] = new Set(pojo['properties'].map((item: any) => Property.fromJSON(item)))
         obj['roles'] = new Set(pojo['roles'].map((item: any) => item))
+        if (pojo['isAdmin'] !== undefined) {
+            obj['isAdmin'] = pojo['isAdmin']
+        }
+        if (pojo['inheritsRoles'] !== undefined) {
+            obj['inheritsRoles'] = pojo['inheritsRoles']
+        }
         if (pojo['login'] !== undefined) {
             obj['login'] = pojo['login']
         }
@@ -204,6 +222,8 @@ interface IUser {
     name?: string
     properties?: Set<Property>
     roles?: Set<string>
+    isAdmin?: boolean
+    inheritsRoles?: boolean
     login?: string
     passwordHash?: string
     secret?: string

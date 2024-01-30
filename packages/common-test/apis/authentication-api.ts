@@ -3,7 +3,7 @@ import { getEnvironmentInitializer, hcp1Username, hcp3Username, setLocalStorage,
 import { webcrypto } from 'crypto'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import { TestKeyStorage, TestStorage, testStorageForUser } from '../test-storage'
-import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, forceUuid, NotificationTypeEnum } from '@icure/typescript-common'
+import { AnonymousApiBuilder, AuthSecretDetails, AuthSecretType, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, forceUuid, NotificationTypeEnum, SecretRequest } from '@icure/typescript-common'
 import { assert } from 'chai'
 import { BaseApiTestContext, WithAuthenticationApi, WithDataOwnerApi, WithHcpApi, WithMaintenanceTaskApi, WithPatientApi, WithServiceApi } from './TestContexts'
 import { expectArrayContainsExactlyInAnyOrder } from '../assertions'
@@ -133,7 +133,13 @@ export function testAuthenticationApi<
                 .withCryptoStrategies(ctx.newSimpleCryptoStrategies([]))
                 .build()
 
-            await expect(anonymousMedTechApi.authenticationApi.startAuthentication(env!.recaptcha, undefined, undefined, 'Tom', 'Gideon', env!.hcpAuthProcessId, false)).rejects.toBeInstanceOf(Error)
+            await expect(
+                anonymousMedTechApi.authenticationApi.startAuthentication({
+                    recaptcha: env!.recaptcha,
+                    firstName: 'Tom',
+                    lastName: 'Gideon',
+                }),
+            ).rejects.toBeInstanceOf(Error)
         })
 
         it('User should not be able to start authentication if he provided an empty email and mobilePhone', async () => {
@@ -150,7 +156,15 @@ export function testAuthenticationApi<
                 .withCryptoStrategies(ctx.newSimpleCryptoStrategies([]))
                 .build()
 
-            await expect(anonymousMedTechApi.authenticationApi.startAuthentication(env!.recaptcha, '', '', 'Tom', 'Gideon', env!.patAuthProcessId, false)).rejects.toBeInstanceOf(Error)
+            await expect(
+                anonymousMedTechApi.authenticationApi.startAuthentication({
+                    recaptcha: env!.recaptcha,
+                    email: '',
+                    phoneNumber: '',
+                    firstName: 'Tom',
+                    lastName: 'Gideon',
+                }),
+            ).rejects.toBeInstanceOf(Error)
         })
 
         it('User should not be able to start authentication if he provided an email but no AuthProcessByEmailId', async () => {
@@ -166,7 +180,14 @@ export function testAuthenticationApi<
                 .withCryptoStrategies(ctx.newSimpleCryptoStrategies([]))
                 .build()
 
-            await expect(anonymousMedTechApi.authenticationApi.startAuthentication(env!.recaptcha, 'a-fake-email', undefined, 'Tom', 'Gideon', env!.hcpAuthProcessId, false)).rejects.toBeInstanceOf(Error)
+            await expect(
+                anonymousMedTechApi.authenticationApi.startAuthentication({
+                    recaptcha: env!.recaptcha,
+                    email: 'a-fake-email',
+                    firstName: 'Tom',
+                    lastName: 'Gideon',
+                }),
+            ).rejects.toBeInstanceOf(Error)
         })
 
         it('User should not be able to start authentication if he provided an sms but no AuthProcessBySMSId', async () => {
@@ -182,7 +203,14 @@ export function testAuthenticationApi<
                 .withCryptoStrategies(ctx.newSimpleCryptoStrategies([]))
                 .build()
 
-            await expect(anonymousMedTechApi.authenticationApi.startAuthentication(env!.recaptcha, undefined, 'a-fake-phone-number', 'Tom', 'Gideon', env!.hcpAuthProcessId, false)).rejects.toBeInstanceOf(Error)
+            await expect(
+                anonymousMedTechApi.authenticationApi.startAuthentication({
+                    recaptcha: env!.recaptcha,
+                    phoneNumber: 'a-fake-phone-number',
+                    firstName: 'Tom',
+                    lastName: 'Gideon',
+                }),
+            ).rejects.toBeInstanceOf(Error)
         })
 
         it('A User should be able to start the authentication by sms', async () => {
@@ -200,7 +228,12 @@ export function testAuthenticationApi<
 
             // When
             const phoneNumber = `+${Math.ceil(Math.random() * 10000000 + 10000000)}`
-            await anonymousMedTechApi.authenticationApi.startAuthentication(env!.recaptcha, undefined, phoneNumber, 'Tom', 'Gideon', env!.hcpAuthProcessId, false)
+            await anonymousMedTechApi.authenticationApi.startAuthentication({
+                recaptcha: env!.recaptcha,
+                phoneNumber: phoneNumber,
+                firstName: 'Tom',
+                lastName: 'Gideon',
+            })
             const messages = await TestUtils.getSMS(phoneNumber)
             expect(messages?.message).not.toBeFalsy()
         })
@@ -219,10 +252,26 @@ export function testAuthenticationApi<
             expect(forceUuid(currentUser.healthcarePartyId)).toEqual(currentUser.healthcarePartyId)
             expect(currentUser.healthcarePartyId).not.toEqual(hcpId!)
 
-            const currentHcp = ctx.toHcpDto(await ctx.hcpApi(hcpApiAndUser.api).get(currentUser.healthcarePartyId!))
-            expect(currentHcp).toBeTruthy()
-            expect(currentHcp.firstName).toEqual(firstName)
-            expect(currentHcp.lastName).toEqual(lastName)
+            expect(ctx.toUserDto(await ctx.userApi(hcpApiAndUser.api).getLogged()).id).toEqual(currentUser.id)
+        })
+
+        it('A user should be able of logging in with a long token', async () => {
+            if (shouldSkip()) return
+            // When
+            const firstName = `Gigio${forceUuid()}`
+            const lastName = `Bagigio${forceUuid()}`
+            const hcpApiAndUserFromMailSignup = await ctx.signUpUserUsingEmail(env!, firstName, lastName, 'hcp', hcpId!, 'recaptcha')
+            const hcpApiAndUserFromTokenLogin = await ctx
+                .newApiBuilder()
+                .withICureBaseUrl(env.iCureUrl)
+                .withUserName(hcpApiAndUserFromMailSignup.user.login!)
+                .withPassword(hcpApiAndUserFromMailSignup.token)
+                .withCrypto(webcrypto as any)
+                .withStorage(hcpApiAndUserFromMailSignup.api.baseApi.cryptoApi.storage)
+                .withKeyStorage(hcpApiAndUserFromMailSignup.api.baseApi.cryptoApi.keyStorage)
+                .withCryptoStrategies(ctx.newSimpleCryptoStrategies())
+                .build()
+            expect(ctx.toUserDto(await ctx.userApi(hcpApiAndUserFromTokenLogin).getLogged()).id).toEqual(hcpApiAndUserFromMailSignup.user.id)
         })
 
         it('HCP should be capable of signing up using email with friendlyCaptchaData', async () => {
@@ -239,10 +288,7 @@ export function testAuthenticationApi<
             expect(forceUuid(currentUser.healthcarePartyId)).toEqual(currentUser.healthcarePartyId)
             expect(currentUser.healthcarePartyId).not.toEqual(hcpId!)
 
-            const currentHcp = ctx.toHcpDto(await ctx.hcpApi(hcpApiAndUser.api).get(currentUser.healthcarePartyId!))
-            expect(currentHcp).toBeTruthy()
-            expect(currentHcp.firstName).toEqual(firstName)
-            expect(currentHcp.lastName).toEqual(lastName)
+            expect(ctx.toUserDto(await ctx.userApi(hcpApiAndUser.api).getLogged()).id).toEqual(currentUser.id)
         })
 
         it('Patient should be able to signing up through email', async () => {
@@ -356,7 +402,10 @@ export function testAuthenticationApi<
                 .withCryptoStrategies(newCryptoStrategies)
                 .build()
 
-            const loginProcess = await anonymousMedTechApi.authenticationApi.startAuthentication(env!.recaptcha, patApiAndUser.user.email)
+            const loginProcess = await anonymousMedTechApi.authenticationApi.startAuthentication({
+                recaptcha: env!.recaptcha,
+                email: patApiAndUser.user.email,
+            })
 
             // When
             const subjectCode = (await TestUtils.getEmail(patApiAndUser.user.email!)).subject!
@@ -412,7 +461,10 @@ export function testAuthenticationApi<
                 .withCryptoStrategies(newCryptoStrategies)
                 .build()
 
-            const loginProcess = await anonymousMedTechApi.authenticationApi.startAuthentication(env!.recaptcha, patApiAndUser.user.email)
+            const loginProcess = await anonymousMedTechApi.authenticationApi.startAuthentication({
+                recaptcha: env!.recaptcha,
+                email: patApiAndUser.user.email,
+            })
 
             // When
             const subjectCode = (await TestUtils.getEmail(patApiAndUser.user.email!)).subject!
@@ -471,6 +523,76 @@ export function testAuthenticationApi<
             // Then
             expect(response.status).toBe(200)
             expect(((await response.json()) as User).id).toEqual(user.id)
+        }, 120_000)
+
+        it('Should be able to use an auth secret provider for login', async () => {
+            const firstName = `Gigio${forceUuid()}`
+            const lastName = `Bagigio${forceUuid()}`
+            const signupApiInfo = await ctx.signUpUserUsingEmail(env!, firstName, lastName, 'hcp', hcpId!, 'recaptcha')
+            let secretProviderCalled = false
+            const apiWithProvider = await ctx
+                .newApiBuilder()
+                .withICureBaseUrl(env.iCureUrl)
+                .withUserName(signupApiInfo.user.login!)
+                .withAuthSecretProvider({
+                    getSecret(request: SecretRequest, previousAttempts: AuthSecretDetails[]): Promise<AuthSecretDetails> {
+                        secretProviderCalled = true
+                        expect(request[AuthSecretType.LONG_LIVED_TOKEN].accepted).toBe(true)
+                        expect(previousAttempts).toHaveLength(0)
+                        return Promise.resolve({ value: signupApiInfo.token, secretType: AuthSecretType.LONG_LIVED_TOKEN })
+                    },
+                })
+                .withCrypto(webcrypto as any)
+                .withStorage(signupApiInfo.api.baseApi.cryptoApi.storage)
+                .withKeyStorage(signupApiInfo.api.baseApi.cryptoApi.keyStorage)
+                .withCryptoStrategies(ctx.newSimpleCryptoStrategies())
+                .build()
+            expect(ctx.toUserDto(await ctx.userApi(apiWithProvider).getLogged()).id).toEqual(signupApiInfo.user.id)
+            expect(secretProviderCalled).toBeTruthy()
+        }, 120_000)
+
+        it('Should be able to use an auth secret provider with short token for login', async () => {
+            const firstName = `Gigio${forceUuid()}`
+            const lastName = `Bagigio${forceUuid()}`
+            const signupApiInfo = await ctx.signUpUserUsingEmail(env!, firstName, lastName, 'hcp', hcpId!, 'recaptcha')
+            let secretProviderCalled = false
+            const apiWithProvider = await ctx
+                .newApiBuilder()
+                .withICureBaseUrl(env.iCureUrl)
+                .withMsgGwUrl(env.msgGtwUrl)
+                .withMsgGwSpecId(env.specId)
+                .withAuthProcessByEmailId(signupApiInfo.registrationProcessId)
+                .withUserName(signupApiInfo.user.email!)
+                .withAuthSecretProvider({
+                    async getSecret(request: SecretRequest, previousAttempts: AuthSecretDetails[]): Promise<AuthSecretDetails> {
+                        secretProviderCalled = true
+                        expect(previousAttempts).toHaveLength(0)
+                        const shortTokenRequestInfo = request[AuthSecretType.SHORT_LIVED_TOKEN]
+                        if (shortTokenRequestInfo.accepted) {
+                            const tokenRequest = await shortTokenRequestInfo.requestToken({
+                                recaptcha: 'faketoken',
+                                recaptchaType: 'recaptcha',
+                            })
+                            const retrievedMail = await TestUtils.getEmail(signupApiInfo.user.email!)
+                            const subjectCode = retrievedMail.subject
+                            expect(subjectCode).toBeTruthy()
+                            return Promise.resolve({
+                                value: subjectCode,
+                                secretType: AuthSecretType.SHORT_LIVED_TOKEN,
+                                tokenRequestId: tokenRequest.tokenRequestId,
+                            })
+                        } else {
+                            throw new Error('Should have accepted short lived token')
+                        }
+                    },
+                })
+                .withCrypto(webcrypto as any)
+                .withStorage(signupApiInfo.api.baseApi.cryptoApi.storage)
+                .withKeyStorage(signupApiInfo.api.baseApi.cryptoApi.keyStorage)
+                .withCryptoStrategies(ctx.newSimpleCryptoStrategies())
+                .build()
+            expect(ctx.toUserDto(await ctx.userApi(apiWithProvider).getLogged()).id).toEqual(signupApiInfo.user.id)
+            expect(secretProviderCalled).toBeTruthy()
         }, 120_000)
     })
 }

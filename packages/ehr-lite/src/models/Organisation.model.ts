@@ -1,4 +1,4 @@
-import { CodingReference, forceUuid, Identifier, mapTo, Property, SystemMetaDataOwner, b64_2ab, HealthcarePartyDto, ISO639_1, ua2b64 } from '@icure/typescript-common'
+import { CodingReference, HealthcarePartyDto, ISO639_1, Identifier, Property, SystemMetaDataOwner, b64_2ab, forceUuid, mapTo, ua2b64 } from '@icure/typescript-common'
 import { Location } from './Location.model'
 
 @mapTo(HealthcarePartyDto)

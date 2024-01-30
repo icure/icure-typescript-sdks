@@ -1,7 +1,7 @@
 import { ServiceLikeApiImpl, Document, mapDocumentDtoToDocument, mapDocumentToDocumentDto, CommonApi, ServiceLikeApi, DocumentDto, PatientDto, ServiceDto } from '@icure/typescript-common'
 import { Patient } from '../models/Patient.model'
 import { Observation } from '../models/Observation.model'
-import { mapObservationToService, mapServiceToObservation } from '../mappers/Observation.mapper'
+import { mapObservationToServiceDto, mapServiceDtoToObservation } from '../mappers/Observation.mapper'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
 
 export interface ObservationApi extends ServiceLikeApi<Observation, Patient, Document> {}
@@ -12,10 +12,10 @@ export const observationApi = (api: CommonApi, basePath: string): ObservationApi
     new ObservationApiImpl(
         {
             toDomain(dto: ServiceDto): Observation {
-                return mapServiceToObservation(dto)
+                return mapServiceDtoToObservation(dto)
             },
             toDto(domain: Observation): ServiceDto {
-                return mapObservationToService(domain)
+                return mapObservationToServiceDto(domain)
             },
         },
         {

@@ -12,6 +12,7 @@ import { forceUuid } from '../../utils/uuidUtils'
 import { NotificationTypeEnum } from '../../models/Notification.model'
 import { JwtBridgedAuthService } from '@icure/api/icc-x-api/auth/JwtBridgedAuthService'
 import { EnsembleAuthService } from '@icure/api/icc-x-api/auth/EnsembleAuthService'
+import { AuthenticationProvider } from '@icure/api/icc-x-api/auth/AuthenticationProvider'
 
 const DEVICE_ID_KEY = 'ICURE.DEVICE_ID'
 
@@ -26,7 +27,7 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
         protected readonly storage: StorageFacade<string>,
         protected readonly msgGtwSpecId: string,
         protected readonly msgGtwUrl: string,
-        private readonly jwtAuthService?: JwtBridgedAuthService,
+        private readonly authProvider: AuthenticationProvider | undefined,
         private readonly fetchImpl: (input: RequestInfo, init?: RequestInit) => Promise<Response> = typeof window !== 'undefined' ? window.fetch : typeof self !== 'undefined' ? self.fetch : fetch,
     ) {}
 
@@ -45,17 +46,25 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
         throw this.errorHandler.createErrorWithMessage(`iCure could not complete authentication process with requestId ${process.requestId}. Try again later.`)
     }
 
-    async startAuthentication(
-        recaptcha: string,
-        email?: string,
-        phoneNumber?: string,
-        firstName: string = '',
-        lastName: string = '',
-        healthcareProfessionalId: string = '',
-        bypassTokenCheck: boolean = false,
-        validationCodeLength: number = 6,
-        recaptchaType: RecaptchaType = 'recaptcha',
-    ): Promise<AuthenticationProcess> {
+    async startAuthentication({
+        recaptcha,
+        email,
+        phoneNumber,
+        firstName = '',
+        lastName = '',
+        bypassTokenCheck = false,
+        validationCodeLength = 6,
+        recaptchaType = 'recaptcha',
+    }: {
+        recaptcha: string
+        email?: string
+        phoneNumber?: string
+        firstName?: string
+        lastName?: string
+        bypassTokenCheck?: boolean
+        validationCodeLength?: number
+        recaptchaType?: RecaptchaType
+    }): Promise<AuthenticationProcess> {
         if (!email && !phoneNumber) {
             throw this.errorHandler.createErrorWithMessage(`In order to start authentication of a user, you should at least provide its email OR its phone number`)
         }
@@ -78,7 +87,6 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
                 from: email != undefined ? this.sanitizer.validateEmail(email) : this.sanitizer.validateMobilePhone(phoneNumber!),
                 email: email,
                 mobilePhone: phoneNumber,
-                hcpId: healthcareProfessionalId,
             },
             validationCodeLength,
         )
@@ -150,8 +158,8 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
     }
 
     protected async _initUserAuthTokenAndCrypto(login: string, token: string, tokenDurationInSeconds?: number): Promise<AuthenticationResult<DSApi>> {
-        const { user, password } = await retry(() => this._generateAndAssignAuthenticationToken(login, token, tokenDurationInSeconds), 5, 500, 2)
-        const authenticatedApi = await this.initApi(login, password)
+        const { user, password, initialTokens } = await retry(() => this._generateAndAssignAuthenticationToken(login, token, tokenDurationInSeconds), 5, 500, 2)
+        const authenticatedApi = await this.initApi(login, password, initialTokens)
 
         const userKeyPairs: KeyPair<string>[] = []
         for (const keyPair of Object.values(authenticatedApi.baseApi.cryptoApi.userKeysManager.getDecryptionKeys())) {
@@ -186,7 +194,7 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
         return newDeviceId
     }
 
-    protected abstract initApi(username: string, password: string): Promise<DSApi>
+    protected abstract initApi(username: string, password: string, initialTokens: { token: string; refreshToken: string } | undefined): Promise<DSApi>
 
     protected abstract validatePatient(patientDto: Patient): void
 
@@ -201,8 +209,10 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
     ): Promise<{
         user: User
         password: string
+        initialTokens: { token: string; refreshToken: string } | undefined
     }> {
-        const userApi = (await BasicApis(this.iCureBasePath, new JwtAuthenticationProvider(new IccAuthApi(this.iCureBasePath, {}, new NoAuthenticationProvider(), this.fetchImpl), login, validationCode))).userApi
+        const authProvider = new JwtAuthenticationProvider(new IccAuthApi(this.iCureBasePath, {}, new NoAuthenticationProvider(), this.fetchImpl), login, validationCode)
+        const userApi = (await BasicApis(this.iCureBasePath, authProvider)).userApi
         const user = await userApi.getCurrentUser()
         if (!user) {
             throw this.errorHandler.createErrorWithMessage(`Your validation code ${validationCode} expired. Start a new authentication process for your user`)
@@ -211,14 +221,21 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
         if (!token) {
             throw this.errorHandler.createErrorWithMessage(`Your validation code ${validationCode} expired. Start a new authentication process for your user`)
         }
-        return { user, password: token }
+        const initialTokens = await authProvider.getIcureTokens()
+        if (!initialTokens) {
+            console.warn('Could not retrieve initial auth tokens from the auth provider.')
+        }
+        return { user, password: token, initialTokens }
     }
 
-    public getJsonWebToken(): Promise<string | undefined> {
-        if (this.jwtAuthService === undefined) {
+    public async getJsonWebToken(): Promise<string | undefined> {
+        if (this.authProvider === undefined) {
             throw this.errorHandler.createErrorWithMessage('This method is only available for authenticated APIs')
         }
-
-        return this.jwtAuthService.getJWT()
+        const tokens = await this.authProvider.getIcureTokens()
+        if (!tokens) {
+            throw this.errorHandler.createErrorWithMessage('This method is only available for APIs using JWT authentication')
+        }
+        return tokens.token
     }
 }

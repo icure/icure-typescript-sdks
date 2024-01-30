@@ -1,12 +1,12 @@
 import { generateComponent } from '../models/Component.model'
 import { Component } from '../../src'
-import { mapComponentToContent, mapContentToComponent } from '../../src/mappers/Component.mapper'
+import { mapComponentToContentDto, mapContentDtoToComponent } from '../../src/mappers/Component.mapper'
 
 describe('Component', function () {
     it('should correctly map to Content and back to Component', () => {
         const instance = generateComponent()
-        const iCureInstance = mapComponentToContent(instance)
-        const newInstance = mapContentToComponent(iCureInstance)
+        const iCureInstance = mapComponentToContentDto(instance)
+        const newInstance = mapContentDtoToComponent(iCureInstance)
 
         expect(newInstance).toEqual(instance)
     })

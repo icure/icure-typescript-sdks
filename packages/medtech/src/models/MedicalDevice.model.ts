@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 
-import { CodingReference, forceUuid, Identifier, mapTo, Property, SystemMetaDataOwner, b64_2ab, DeviceDto, ua2b64 } from '@icure/typescript-common'
+import { CodingReference, DeviceDto, Identifier, Property, SystemMetaDataOwner, b64_2ab, forceUuid, mapTo, ua2b64 } from '@icure/typescript-common'
 
 @mapTo(DeviceDto)
 export class MedicalDevice {

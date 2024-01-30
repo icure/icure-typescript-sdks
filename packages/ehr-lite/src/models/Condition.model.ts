@@ -1,4 +1,4 @@
-import { Annotation, CodingReference, Identifier, SystemMetaDataEncrypted, forceUuid, mapTo, HealthElementDto } from '@icure/typescript-common'
+import { Annotation, CodingReference, HealthElementDto, Identifier, SystemMetaDataEncrypted, forceUuid, mapTo } from '@icure/typescript-common'
 import { CategoryEnum } from './enums/Category.enum'
 import { ClinicalStatusEnum } from './enums/ClinicalStatus.enum'
 import { SeverityEnum } from './enums/Severity.enum'

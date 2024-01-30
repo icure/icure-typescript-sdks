@@ -1,5 +1,5 @@
 import { CommonApi, CommonFilter, HealthElementLikeApi, HealthElementLikeApiImpl, PaginatedList, Connection, HealthElementDto, PatientDto, SubscriptionOptions } from '@icure/typescript-common'
-import { mapHealthcareElementToHealthElement, mapHealthElementToHealthcareElement } from '../mappers/HealthcareElement.mapper'
+import { mapHealthcareElementToHealthElementDto, mapHealthElementDtoToHealthcareElement } from '../mappers/HealthcareElement.mapper'
 import { Patient } from '../models/Patient.model'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
 import { HealthcareElement } from '../models/HealthcareElement.model'
@@ -146,10 +146,10 @@ export const healthcareElementApi = (api: CommonApi, basePath: string): Healthca
     return new HealthcareElementApiImpl(
         {
             toDomain(dto: HealthElementDto): HealthcareElement {
-                return mapHealthElementToHealthcareElement(dto)
+                return mapHealthElementDtoToHealthcareElement(dto)
             },
             toDto(domain: HealthcareElement): HealthElementDto {
-                return mapHealthcareElementToHealthElement(domain)
+                return mapHealthcareElementToHealthElementDto(domain)
             },
         },
         {

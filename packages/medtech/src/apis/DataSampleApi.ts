@@ -1,7 +1,7 @@
 import { CommonApi, CommonFilter, Document, mapDocumentDtoToDocument, mapDocumentToDocumentDto, PaginatedList, ServiceLikeApi, ServiceLikeApiImpl, Connection, DocumentDto, PatientDto, ServiceDto, SubscriptionOptions } from '@icure/typescript-common'
 import { DataSample } from '../models/DataSample.model'
 import { Patient } from '../models/Patient.model'
-import { mapDataSampleToService, mapServiceToDataSample } from '../mappers/DataSample.mapper'
+import { mapDataSampleToServiceDto, mapServiceDtoToDataSample } from '../mappers/DataSample.mapper'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
 
 /**
@@ -186,10 +186,10 @@ export const dataSampleApi = (api: CommonApi, basePath: string): DataSampleApi =
     return new DataSampleApiImpl(
         {
             toDomain(dto: ServiceDto): DataSample {
-                return mapServiceToDataSample(dto)
+                return mapServiceDtoToDataSample(dto)
             },
             toDto(domain: DataSample): ServiceDto {
-                return mapDataSampleToService(domain)
+                return mapDataSampleToServiceDto(domain)
             },
         },
         {

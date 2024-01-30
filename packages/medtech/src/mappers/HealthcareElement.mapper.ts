@@ -29,136 +29,136 @@ import {
     SecurityMetadataDto,
 } from '@icure/typescript-common'
 
-function toHealthElementId(domain: HealthcareElement): string {
+function toHealthElementDtoId(domain: HealthcareElement): string {
     return forceUuid(domain.id)
 }
 
-function toHealthElementIdentifiers(domain: HealthcareElement): IdentifierDto[] | undefined {
+function toHealthElementDtoIdentifiers(domain: HealthcareElement): IdentifierDto[] | undefined {
     return domain.identifiers?.map(mapIdentifierToIdentifierDto)
 }
 
-function toHealthElementRev(domain: HealthcareElement): string | undefined {
+function toHealthElementDtoRev(domain: HealthcareElement): string | undefined {
     return domain.rev
 }
 
-function toHealthElementCreated(domain: HealthcareElement): number | undefined {
+function toHealthElementDtoCreated(domain: HealthcareElement): number | undefined {
     return domain.created
 }
 
-function toHealthElementModified(domain: HealthcareElement): number | undefined {
+function toHealthElementDtoModified(domain: HealthcareElement): number | undefined {
     return domain.modified
 }
 
-function toHealthElementAuthor(domain: HealthcareElement): string | undefined {
+function toHealthElementDtoAuthor(domain: HealthcareElement): string | undefined {
     return domain.author
 }
 
-function toHealthElementResponsible(domain: HealthcareElement): string | undefined {
+function toHealthElementDtoResponsible(domain: HealthcareElement): string | undefined {
     return domain.responsible
 }
 
-function toHealthElementMedicalLocationId(domain: HealthcareElement): string | undefined {
+function toHealthElementDtoMedicalLocationId(domain: HealthcareElement): string | undefined {
     return domain.medicalLocationId
 }
 
-function toHealthElementTags(domain: HealthcareElement): CodeStub[] | undefined {
+function toHealthElementDtoTags(domain: HealthcareElement): CodeStub[] | undefined {
     return domain.labels ? [...domain.labels].map(mapCodingReferenceToCodeStub) : undefined
 }
 
-function toHealthElementCodes(domain: HealthcareElement): CodeStub[] | undefined {
+function toHealthElementDtoCodes(domain: HealthcareElement): CodeStub[] | undefined {
     return domain.codes ? [...domain.codes].map(mapCodingReferenceToCodeStub) : undefined
 }
 
-function toHealthElementEndOfLife(domain: HealthcareElement): number | undefined {
+function toHealthElementDtoEndOfLife(domain: HealthcareElement): number | undefined {
     return domain.endOfLife
 }
 
-function toHealthElementDeletionDate(domain: HealthcareElement): number | undefined {
+function toHealthElementDtoDeletionDate(domain: HealthcareElement): number | undefined {
     return domain.deletionDate
 }
 
 // If domain.healthcareElementId is undefined we take the chosen "main" id for the dto
-function toHealthElementHealthElementId(domain: HealthcareElement, initialisedId: string): string {
+function toHealthElementDtoHealthElementId(domain: HealthcareElement, initialisedId: string): string {
     return domain.healthcareElementId ?? initialisedId
 }
 
-function toHealthElementValueDate(domain: HealthcareElement): number | undefined {
+function toHealthElementDtoValueDate(domain: HealthcareElement): number | undefined {
     return domain.valueDate
 }
 
-function toHealthElementOpeningDate(domain: HealthcareElement): number | undefined {
+function toHealthElementDtoOpeningDate(domain: HealthcareElement): number | undefined {
     return domain.openingDate
 }
 
-function toHealthElementClosingDate(domain: HealthcareElement): number | undefined {
+function toHealthElementDtoClosingDate(domain: HealthcareElement): number | undefined {
     return domain.closingDate
 }
 
-function toHealthElementDescr(domain: HealthcareElement): string | undefined {
+function toHealthElementDtoDescr(domain: HealthcareElement): string | undefined {
     return domain.description
 }
 
-function toHealthElementNote(domain: HealthcareElement): string | undefined {
+function toHealthElementDtoNote(domain: HealthcareElement): string | undefined {
     return domain.note
 }
 
-function toHealthElementNotes(domain: HealthcareElement): AnnotationDto[] | undefined {
+function toHealthElementDtoNotes(domain: HealthcareElement): AnnotationDto[] | undefined {
     return domain.notes ? [...domain.notes].map(mapAnnotationToAnnotationDto) : undefined
 }
 
-function toHealthElementRelevant(domain: HealthcareElement): boolean | undefined {
+function toHealthElementDtoRelevant(domain: HealthcareElement): boolean | undefined {
     return true
 }
 
-function toHealthElementIdOpeningContact(domain: HealthcareElement): string | undefined {
+function toHealthElementDtoIdOpeningContact(domain: HealthcareElement): string | undefined {
     return undefined
 }
 
-function toHealthElementIdClosingContact(domain: HealthcareElement): string | undefined {
+function toHealthElementDtoIdClosingContact(domain: HealthcareElement): string | undefined {
     return undefined
 }
 
-function toHealthElementIdService(domain: HealthcareElement): string | undefined {
+function toHealthElementDtoIdService(domain: HealthcareElement): string | undefined {
     return undefined
 }
 
-function toHealthElementStatus(domain: HealthcareElement): number | undefined {
+function toHealthElementDtoStatus(domain: HealthcareElement): number | undefined {
     return 0
 }
 
-function toHealthElementLaterality(domain: HealthcareElement): HealthElementDto.LateralityEnum | undefined {
+function toHealthElementDtoLaterality(domain: HealthcareElement): HealthElementDto.LateralityEnum | undefined {
     return undefined
 }
 
-function toHealthElementPlansOfAction(domain: HealthcareElement): PlanOfAction[] | undefined {
+function toHealthElementDtoPlansOfAction(domain: HealthcareElement): PlanOfAction[] | undefined {
     return undefined
 }
 
-function toHealthElementEpisodes(domain: HealthcareElement): Episode[] | undefined {
+function toHealthElementDtoEpisodes(domain: HealthcareElement): Episode[] | undefined {
     return undefined
 }
 
-function toHealthElementCareTeam(domain: HealthcareElement): CareTeamMember[] | undefined {
+function toHealthElementDtoCareTeam(domain: HealthcareElement): CareTeamMember[] | undefined {
     return undefined
 }
 
-function toHealthElementSecretForeignKeys(domain: HealthcareElement): string[] | undefined {
+function toHealthElementDtoSecretForeignKeys(domain: HealthcareElement): string[] | undefined {
     return !!domain.systemMetaData ? toSecretForeignKeys(domain.systemMetaData) : undefined
 }
 
-function toHealthElementCryptedForeignKeys(domain: HealthcareElement): { [key: string]: DelegationDto[] } | undefined {
+function toHealthElementDtoCryptedForeignKeys(domain: HealthcareElement): { [key: string]: DelegationDto[] } | undefined {
     return !!domain.systemMetaData ? toCryptedForeignKeys(domain.systemMetaData) : undefined
 }
 
-function toHealthElementDelegations(domain: HealthcareElement): { [key: string]: DelegationDto[] } | undefined {
+function toHealthElementDtoDelegations(domain: HealthcareElement): { [key: string]: DelegationDto[] } | undefined {
     return !!domain.systemMetaData ? toDelegations(domain.systemMetaData) : undefined
 }
 
-function toHealthElementEncryptionKeys(domain: HealthcareElement): { [key: string]: DelegationDto[] } | undefined {
+function toHealthElementDtoEncryptionKeys(domain: HealthcareElement): { [key: string]: DelegationDto[] } | undefined {
     return !!domain.systemMetaData ? toEncryptionKeys(domain.systemMetaData) : undefined
 }
 
-function toHealthElementEncryptedSelf(domain: HealthcareElement): string | undefined {
+function toHealthElementDtoEncryptedSelf(domain: HealthcareElement): string | undefined {
     return !!domain.systemMetaData ? toEncryptedSelf(domain.systemMetaData) : undefined
 }
 
@@ -242,11 +242,11 @@ function toHealthcareElementNotes(dto: HealthElementDto): Annotation[] | undefin
     return dto.notes?.map(mapAnnotationDtoToAnnotation)
 }
 
-function toHealthElementSecurityMetadata(domain: HealthcareElement): SecurityMetadataDto | undefined {
+function toHealthElementDtoSecurityMetadata(domain: HealthcareElement): SecurityMetadataDto | undefined {
     return toSecurityMetadataDto(domain.systemMetaData)
 }
 
-export function mapHealthElementToHealthcareElement(dto: HealthElementDto): HealthcareElement {
+export function mapHealthElementDtoToHealthcareElement(dto: HealthElementDto): HealthcareElement {
     return new HealthcareElement({
         id: toHealthcareElementId(dto),
         identifiers: toHealthcareElementIdentifiers(dto),
@@ -271,42 +271,43 @@ export function mapHealthElementToHealthcareElement(dto: HealthElementDto): Heal
     })
 }
 
-export function mapHealthcareElementToHealthElement(domain: HealthcareElement): HealthElementDto {
-    const id = toHealthElementId(domain)
+export function mapHealthcareElementToHealthElementDto(domain: HealthcareElement): HealthElementDto {
+    const id = toHealthElementDtoId(domain)
+
     return new HealthElementDto({
-        id,
-        identifiers: toHealthElementIdentifiers(domain),
-        rev: toHealthElementRev(domain),
-        created: toHealthElementCreated(domain),
-        modified: toHealthElementModified(domain),
-        author: toHealthElementAuthor(domain),
-        responsible: toHealthElementResponsible(domain),
-        medicalLocationId: toHealthElementMedicalLocationId(domain),
-        tags: toHealthElementTags(domain),
-        codes: toHealthElementCodes(domain),
-        endOfLife: toHealthElementEndOfLife(domain),
-        deletionDate: toHealthElementDeletionDate(domain),
-        healthElementId: toHealthElementHealthElementId(domain, id),
-        valueDate: toHealthElementValueDate(domain),
-        openingDate: toHealthElementOpeningDate(domain),
-        closingDate: toHealthElementClosingDate(domain),
-        descr: toHealthElementDescr(domain),
-        note: toHealthElementNote(domain),
-        notes: toHealthElementNotes(domain),
-        relevant: toHealthElementRelevant(domain),
-        idOpeningContact: toHealthElementIdOpeningContact(domain),
-        idClosingContact: toHealthElementIdClosingContact(domain),
-        idService: toHealthElementIdService(domain),
-        status: toHealthElementStatus(domain),
-        laterality: toHealthElementLaterality(domain),
-        plansOfAction: toHealthElementPlansOfAction(domain),
-        episodes: toHealthElementEpisodes(domain),
-        careTeam: toHealthElementCareTeam(domain),
-        secretForeignKeys: toHealthElementSecretForeignKeys(domain),
-        cryptedForeignKeys: toHealthElementCryptedForeignKeys(domain),
-        delegations: toHealthElementDelegations(domain),
-        encryptionKeys: toHealthElementEncryptionKeys(domain),
-        encryptedSelf: toHealthElementEncryptedSelf(domain),
-        securityMetadata: toHealthElementSecurityMetadata(domain),
+        id: toHealthElementDtoId(domain),
+        identifiers: toHealthElementDtoIdentifiers(domain),
+        rev: toHealthElementDtoRev(domain),
+        created: toHealthElementDtoCreated(domain),
+        modified: toHealthElementDtoModified(domain),
+        author: toHealthElementDtoAuthor(domain),
+        responsible: toHealthElementDtoResponsible(domain),
+        medicalLocationId: toHealthElementDtoMedicalLocationId(domain),
+        tags: toHealthElementDtoTags(domain),
+        codes: toHealthElementDtoCodes(domain),
+        endOfLife: toHealthElementDtoEndOfLife(domain),
+        deletionDate: toHealthElementDtoDeletionDate(domain),
+        healthElementId: toHealthElementDtoHealthElementId(domain, id),
+        valueDate: toHealthElementDtoValueDate(domain),
+        openingDate: toHealthElementDtoOpeningDate(domain),
+        closingDate: toHealthElementDtoClosingDate(domain),
+        descr: toHealthElementDtoDescr(domain),
+        note: toHealthElementDtoNote(domain),
+        notes: toHealthElementDtoNotes(domain),
+        relevant: toHealthElementDtoRelevant(domain),
+        idOpeningContact: toHealthElementDtoIdOpeningContact(domain),
+        idClosingContact: toHealthElementDtoIdClosingContact(domain),
+        idService: toHealthElementDtoIdService(domain),
+        status: toHealthElementDtoStatus(domain),
+        laterality: toHealthElementDtoLaterality(domain),
+        plansOfAction: toHealthElementDtoPlansOfAction(domain),
+        episodes: toHealthElementDtoEpisodes(domain),
+        careTeam: toHealthElementDtoCareTeam(domain),
+        secretForeignKeys: toHealthElementDtoSecretForeignKeys(domain),
+        cryptedForeignKeys: toHealthElementDtoCryptedForeignKeys(domain),
+        delegations: toHealthElementDtoDelegations(domain),
+        encryptionKeys: toHealthElementDtoEncryptionKeys(domain),
+        encryptedSelf: toHealthElementDtoEncryptedSelf(domain),
+        securityMetadata: toHealthElementDtoSecurityMetadata(domain),
     })
 }

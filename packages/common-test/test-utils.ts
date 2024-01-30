@@ -102,4 +102,15 @@ export class TestUtils {
         const { data: response } = await axios.request(smsOptions)
         return response
     }
+
+    static async createTestProcess(hcpId: string | undefined, userType: 'PATIENT' | 'HCP' | 'ORGANISATION' | 'PRACTITIONER', groupId: string): Promise<string> {
+        const { msgGtwUrl, specId } = getEnvVariables()
+        const newProcessId = uuid()
+        await axios.post(`${msgGtwUrl}/${specId}/customProcess/${newProcessId}`, {
+            hcpId,
+            userType,
+            groupId,
+        })
+        return newProcessId
+    }
 }

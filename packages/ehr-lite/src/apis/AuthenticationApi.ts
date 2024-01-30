@@ -2,6 +2,7 @@ import { AuthenticationApiImpl, CryptoStrategies, DataOwnerWithType, ErrorHandle
 import { EHRLiteApi } from './EHRLiteApi'
 import Crypto from 'crypto'
 import { DataOwnerTypeEnum } from '../models/DataOwner.model'
+import { AuthenticationProvider } from '@icure/api/icc-x-api/auth/AuthenticationProvider'
 
 export class AuthenticationApi extends AuthenticationApiImpl<EHRLiteApi> {
     constructor(
@@ -18,13 +19,13 @@ export class AuthenticationApi extends AuthenticationApiImpl<EHRLiteApi> {
         private readonly messageCharactersLimit: number | undefined,
         msgGtwSpecId: string,
         msgGtwUrl: string,
-        jwtAuthService?: JwtBridgedAuthService,
+        authProvider?: AuthenticationProvider,
         fetchImpl: (input: RequestInfo, init?: RequestInit) => Promise<Response> = typeof window !== 'undefined' ? window.fetch : typeof self !== 'undefined' ? self.fetch : fetch,
     ) {
-        super(messageGatewayApi, errorHandler, sanitizer, iCureBasePath, authProcessByEmailId, authProcessBySmsId, storage, msgGtwSpecId, msgGtwUrl, jwtAuthService, fetchImpl)
+        super(messageGatewayApi, errorHandler, sanitizer, iCureBasePath, authProcessByEmailId, authProcessBySmsId, storage, msgGtwSpecId, msgGtwUrl, authProvider, fetchImpl)
     }
 
-    protected initApi(username: string, password: string): Promise<EHRLiteApi> {
+    protected initApi(username: string, password: string, initialTokens: { token: string; refreshToken: string } | undefined): Promise<EHRLiteApi> {
         const builder = new EHRLiteApi.Builder()
             .withICureBaseUrl(this.iCureBasePath)
             .withUserName(username)
@@ -36,6 +37,9 @@ export class AuthenticationApi extends AuthenticationApiImpl<EHRLiteApi> {
             .withMessageCharactersLimit(this.messageCharactersLimit)
             .withMsgGwUrl(this.msgGtwUrl)
             .withMsgGwSpecId(this.msgGtwSpecId)
+        if (!!initialTokens) {
+            builder.withInitialTokens(initialTokens)
+        }
         if (this.authProcessBySmsId) {
             builder.withAuthProcessBySmsId(this.authProcessBySmsId)
         }
@@ -80,6 +84,6 @@ export const authenticationApi = (
     messageCharactersLimit: number | undefined,
     msgGtwSpecId: string,
     msgGtwUrl: string,
-    jwtAuthService?: JwtBridgedAuthService,
+    authProvider?: AuthenticationProvider,
     fetchImpl?: (input: RequestInfo, init?: RequestInit) => Promise<Response>,
-) => new AuthenticationApi(messageGatewayApi, iCureBasePath, authProcessByEmailId, authProcessBySmsId, errorHandler, sanitizer, crypto, storage, keyStorage, cryptoStrategies, messageCharactersLimit, msgGtwSpecId, msgGtwUrl, jwtAuthService, fetchImpl)
+) => new AuthenticationApi(messageGatewayApi, iCureBasePath, authProcessByEmailId, authProcessBySmsId, errorHandler, sanitizer, crypto, storage, keyStorage, cryptoStrategies, messageCharactersLimit, msgGtwSpecId, msgGtwUrl, authProvider, fetchImpl)

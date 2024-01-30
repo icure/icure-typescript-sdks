@@ -16,6 +16,7 @@ import {
 } from '@icure/typescript-common'
 import Crypto from 'crypto'
 import { MedTechApi } from './MedTechApi'
+import { AuthenticationProvider } from '@icure/api/icc-x-api/auth/AuthenticationProvider'
 
 export interface MedTechAuthenticationResult extends AuthenticationResult<MedTechApi> {
     /**
@@ -38,10 +39,10 @@ export class AuthenticationApi extends AuthenticationApiImpl<MedTechApi> {
         private readonly cryptoStrategies: CryptoStrategies<DataOwnerWithType>,
         msgGtwSpecId: string,
         msgGtwUrl: string,
-        jwtAuthService?: JwtBridgedAuthService,
+        authProvider?: AuthenticationProvider,
         fetchImpl: (input: RequestInfo, init?: RequestInit) => Promise<Response> = typeof window !== 'undefined' ? window.fetch : typeof self !== 'undefined' ? self.fetch : fetch,
     ) {
-        super(messageGatewayApi, errorHandler, sanitizer, iCureBasePath, authProcessByEmailId, authProcessBySmsId, storage, msgGtwSpecId, msgGtwUrl, jwtAuthService, fetchImpl)
+        super(messageGatewayApi, errorHandler, sanitizer, iCureBasePath, authProcessByEmailId, authProcessBySmsId, storage, msgGtwSpecId, msgGtwUrl, authProvider, fetchImpl)
     }
 
     async completeAuthentication(process: AuthenticationProcess, validationCode: string, tokenDurationInSeconds?: number): Promise<MedTechAuthenticationResult> {
@@ -49,7 +50,7 @@ export class AuthenticationApi extends AuthenticationApiImpl<MedTechApi> {
         return { ...res, medTechApi: res.api }
     }
 
-    protected initApi(username: string, password: string): Promise<MedTechApi> {
+    protected initApi(username: string, password: string, initialTokens: { token: string; refreshToken: string } | undefined): Promise<MedTechApi> {
         const builder = new MedTechApi.Builder()
             .withICureBaseUrl(this.iCureBasePath)
             .withUserName(username)
@@ -60,6 +61,9 @@ export class AuthenticationApi extends AuthenticationApiImpl<MedTechApi> {
             .withCryptoStrategies(this.cryptoStrategies)
             .withMsgGwSpecId(this.msgGtwSpecId)
             .withMsgGwUrl(this.msgGtwUrl)
+        if (!!initialTokens) {
+            builder.withInitialTokens(initialTokens)
+        }
         if (this.authProcessBySmsId) {
             builder.withAuthProcessBySmsId(this.authProcessBySmsId)
         }
@@ -93,8 +97,8 @@ export const authenticationApi = (
     storage: StorageFacade<string>,
     keyStorage: KeyStorageFacade,
     cryptoStrategies: CryptoStrategies<DataOwnerWithType>,
-    jwtAuthService: JwtBridgedAuthService,
+    authProvider: AuthenticationProvider,
     msgGtwSpecId: string,
     msgGtwUrl: string,
     fetchImpl?: (input: RequestInfo, init?: RequestInit) => Promise<Response>,
-) => new AuthenticationApi(messageGatewayApi, iCureBasePath, authProcessByEmailId, authProcessBySmsId, errorHandler, sanitizer, crypto, storage, keyStorage, cryptoStrategies, msgGtwSpecId, msgGtwUrl, jwtAuthService, fetchImpl)
+) => new AuthenticationApi(messageGatewayApi, iCureBasePath, authProcessByEmailId, authProcessBySmsId, errorHandler, sanitizer, crypto, storage, keyStorage, cryptoStrategies, msgGtwSpecId, msgGtwUrl, authProvider, fetchImpl)

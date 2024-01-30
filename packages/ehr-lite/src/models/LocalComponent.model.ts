@@ -1,4 +1,4 @@
-import { mapTo, ContentDto } from '@icure/typescript-common'
+import { ContentDto, mapTo } from '@icure/typescript-common'
 
 @mapTo(ContentDto)
 export class LocalComponent {

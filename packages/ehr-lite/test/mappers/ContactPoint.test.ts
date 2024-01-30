@@ -1,12 +1,12 @@
 import { generateContactPoint } from '../models/ContactPoint.model'
 import { ContactPoint } from '../../src'
-import { mapContactPointToTelecom, mapTelecomToContactPoint } from '../../src/mappers/ContactPoint.mapper'
+import { mapContactPointToTelecomDto, mapTelecomDtoToContactPoint } from '../../src/mappers/ContactPoint.mapper'
 
 describe('ContactPoint', function () {
     it('should correctly map to Telecom and back to ContactPoint', () => {
         const instance = generateContactPoint()
-        const iCureInstance = mapContactPointToTelecom(instance)
-        const newInstance = mapTelecomToContactPoint(iCureInstance)
+        const iCureInstance = mapContactPointToTelecomDto(instance)
+        const newInstance = mapTelecomDtoToContactPoint(iCureInstance)
 
         expect(newInstance).toEqual(instance)
     })

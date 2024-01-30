@@ -2,35 +2,35 @@ import { HumanName } from '../models/HumanName.model'
 import { PersonNameDto } from '@icure/typescript-common'
 import { HumanNameUseEnum } from '../models/enums/HumanNameUse.enum'
 
-function toPersonNameLastName(domain: HumanName): string | undefined {
+function toPersonNameDtoLastName(domain: HumanName): string | undefined {
     return domain.family
 }
 
-function toPersonNameFirstNames(domain: HumanName): string[] | undefined {
+function toPersonNameDtoFirstNames(domain: HumanName): string[] | undefined {
     return domain.given
 }
 
-function toPersonNameStart(domain: HumanName): number | undefined {
+function toPersonNameDtoStart(domain: HumanName): number | undefined {
     return domain.start
 }
 
-function toPersonNameEnd(domain: HumanName): number | undefined {
+function toPersonNameDtoEnd(domain: HumanName): number | undefined {
     return domain.end
 }
 
-function toPersonNamePrefix(domain: HumanName): string[] | undefined {
+function toPersonNameDtoPrefix(domain: HumanName): string[] | undefined {
     return domain.prefix
 }
 
-function toPersonNameSuffix(domain: HumanName): string[] | undefined {
+function toPersonNameDtoSuffix(domain: HumanName): string[] | undefined {
     return domain.suffix
 }
 
-function toPersonNameText(domain: HumanName): string | undefined {
+function toPersonNameDtoText(domain: HumanName): string | undefined {
     return domain.text
 }
 
-function toPersonNameUse(domain: HumanName): PersonNameDto.UseEnum | undefined {
+function toPersonNameDtoUse(domain: HumanName): PersonNameDto.UseEnum | undefined {
     return domain.use as PersonNameDto.UseEnum | undefined
 }
 
@@ -66,7 +66,7 @@ function toHumanNameUse(dto: PersonNameDto): HumanNameUseEnum | undefined {
     return dto.use as HumanNameUseEnum
 }
 
-export function mapPersonNameToHumanName(dto: PersonNameDto): HumanName {
+export function mapPersonNameDtoToHumanName(dto: PersonNameDto): HumanName {
     return new HumanName({
         family: toHumanNameFamily(dto),
         given: toHumanNameGiven(dto),
@@ -79,15 +79,15 @@ export function mapPersonNameToHumanName(dto: PersonNameDto): HumanName {
     })
 }
 
-export function mapHumanNameToPersonName(domain: HumanName): PersonNameDto {
+export function mapHumanNameToPersonNameDto(domain: HumanName): PersonNameDto {
     return new PersonNameDto({
-        lastName: toPersonNameLastName(domain),
-        firstNames: toPersonNameFirstNames(domain),
-        start: toPersonNameStart(domain),
-        end: toPersonNameEnd(domain),
-        prefix: toPersonNamePrefix(domain),
-        suffix: toPersonNameSuffix(domain),
-        text: toPersonNameText(domain),
-        use: toPersonNameUse(domain),
+        lastName: toPersonNameDtoLastName(domain),
+        firstNames: toPersonNameDtoFirstNames(domain),
+        start: toPersonNameDtoStart(domain),
+        end: toPersonNameDtoEnd(domain),
+        prefix: toPersonNameDtoPrefix(domain),
+        suffix: toPersonNameDtoSuffix(domain),
+        text: toPersonNameDtoText(domain),
+        use: toPersonNameDtoUse(domain),
     })
 }

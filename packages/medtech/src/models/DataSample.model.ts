@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 
-import { CodingReference, Identifier, SystemMetaDataEncrypted, forceUuid, mapTo, ISO639_1, ServiceDto } from '@icure/typescript-common'
+import { CodingReference, ISO639_1, Identifier, ServiceDto, SystemMetaDataEncrypted, forceUuid, mapTo } from '@icure/typescript-common'
 import { Content } from './Content.model'
 
 /**

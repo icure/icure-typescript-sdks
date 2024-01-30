@@ -1,7 +1,7 @@
 import { Condition } from '../models/Condition.model'
 import { CommonApi, HealthElementLikeApi, HealthElementLikeApiImpl, HealthElementDto, PatientDto } from '@icure/typescript-common'
 import { Patient } from '../models/Patient.model'
-import { mapConditionToHealthElement, mapHealthElementToCondition } from '../mappers/Condition.mapper'
+import { mapConditionToHealthElementDto, mapHealthElementDtoToCondition } from '../mappers/Condition.mapper'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
 
 export interface ConditionApi extends HealthElementLikeApi<Condition, Patient> {}
@@ -11,10 +11,10 @@ export const conditionApi = (api: CommonApi, basePath: string): ConditionApi =>
     new ConditionApiImpl(
         {
             toDomain(dto: HealthElementDto): Condition {
-                return mapHealthElementToCondition(dto)
+                return mapHealthElementDtoToCondition(dto)
             },
             toDto(domain: Condition): HealthElementDto {
-                return mapConditionToHealthElement(domain)
+                return mapConditionToHealthElementDto(domain)
             },
         },
         {

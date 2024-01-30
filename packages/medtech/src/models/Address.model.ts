@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 
-import { Annotation, mapTo, AddressDto } from '@icure/typescript-common'
+import { AddressDto, Annotation, mapTo } from '@icure/typescript-common'
 import { Telecom } from './Telecom.model'
 
 /**

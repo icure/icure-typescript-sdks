@@ -1,57 +1,57 @@
 import { Component } from '../models/Component.model'
 import { Observation } from '../models/Observation.model'
 import { mapMeasureDtoToMeasure, mapMeasureToMeasureDto, mapTimeSeriesDtoToTimeSeries, mapTimeSeriesToTimeSeriesDto, Measure, TimeSeries, ContentDto, MeasureDto, MedicationDto, ServiceDto, TimeSeriesDto } from '@icure/typescript-common'
-import { mapObservationToService, mapServiceToObservation } from './Observation.mapper'
+import { mapObservationToServiceDto, mapServiceDtoToObservation } from './Observation.mapper'
 
-function toContentStringValue(domain: Component): string | undefined {
+function toContentDtoStringValue(domain: Component): string | undefined {
     return undefined
 }
 
-function toContentNumberValue(domain: Component): number | undefined {
+function toContentDtoNumberValue(domain: Component): number | undefined {
     return domain.numberValue
 }
 
-function toContentBooleanValue(domain: Component): boolean | undefined {
+function toContentDtoBooleanValue(domain: Component): boolean | undefined {
     return domain.booleanValue
 }
 
-function toContentInstantValue(domain: Component): number | undefined {
+function toContentDtoInstantValue(domain: Component): number | undefined {
     return domain.instantValue
 }
 
-function toContentFuzzyDateValue(domain: Component): number | undefined {
+function toContentDtoFuzzyDateValue(domain: Component): number | undefined {
     return domain.fuzzyDateValue
 }
 
-function toContentBinaryValue(domain: Component): ArrayBuffer | undefined {
+function toContentDtoBinaryValue(domain: Component): ArrayBuffer | undefined {
     return undefined
 }
 
-function toContentDocumentId(domain: Component): string | undefined {
+function toContentDtoDocumentId(domain: Component): string | undefined {
     return undefined
 }
 
-function toContentMeasureValue(domain: Component): MeasureDto | undefined {
+function toContentDtoMeasureValue(domain: Component): MeasureDto | undefined {
     return !!domain.measureValue ? mapMeasureToMeasureDto(domain.measureValue) : undefined
 }
 
-function toContentMedicationValue(domain: Component): MedicationDto | undefined {
+function toContentDtoMedicationValue(domain: Component): MedicationDto | undefined {
     return undefined
 }
 
-function toContentTimeSeries(domain: Component): TimeSeriesDto | undefined {
+function toContentDtoTimeSeries(domain: Component): TimeSeriesDto | undefined {
     return !!domain.timeSeries ? mapTimeSeriesToTimeSeriesDto(domain.timeSeries) : undefined
 }
 
-function toContentCompoundValue(domain: Component): ServiceDto[] | undefined {
-    return !!domain.compoundValue ? domain.compoundValue.map(mapObservationToService) : undefined
+function toContentDtoCompoundValue(domain: Component): ServiceDto[] | undefined {
+    return !!domain.compoundValue ? domain.compoundValue.map(mapObservationToServiceDto) : undefined
 }
 
-function toContentRatio(domain: Component): MeasureDto[] | undefined {
+function toContentDtoRatio(domain: Component): MeasureDto[] | undefined {
     return !!domain.ratio ? domain.ratio.map(mapMeasureToMeasureDto) : undefined
 }
 
-function toContentRange(domain: Component): MeasureDto[] | undefined {
+function toContentDtoRange(domain: Component): MeasureDto[] | undefined {
     return !!domain.range ? domain.range.map(mapMeasureToMeasureDto) : undefined
 }
 
@@ -80,7 +80,7 @@ function toComponentTimeSeries(dto: ContentDto): TimeSeries | undefined {
 }
 
 function toComponentCompoundValue(dto: ContentDto): Observation[] | undefined {
-    return !!dto.compoundValue ? dto.compoundValue.map(mapServiceToObservation) : undefined
+    return !!dto.compoundValue ? dto.compoundValue.map(mapServiceDtoToObservation) : undefined
 }
 
 function toComponentRatio(dto: ContentDto): Measure[] | undefined {
@@ -91,7 +91,7 @@ function toComponentRange(dto: ContentDto): Measure[] | undefined {
     return !!dto.range ? dto.range.map(mapMeasureDtoToMeasure) : undefined
 }
 
-export function mapContentToComponent(dto: ContentDto): Component {
+export function mapContentDtoToComponent(dto: ContentDto): Component {
     return new Component({
         numberValue: toComponentNumberValue(dto),
         booleanValue: toComponentBooleanValue(dto),
@@ -105,20 +105,20 @@ export function mapContentToComponent(dto: ContentDto): Component {
     })
 }
 
-export function mapComponentToContent(domain: Component): ContentDto {
+export function mapComponentToContentDto(domain: Component): ContentDto {
     return new ContentDto({
-        stringValue: toContentStringValue(domain),
-        numberValue: toContentNumberValue(domain),
-        booleanValue: toContentBooleanValue(domain),
-        instantValue: toContentInstantValue(domain),
-        fuzzyDateValue: toContentFuzzyDateValue(domain),
-        binaryValue: toContentBinaryValue(domain),
-        documentId: toContentDocumentId(domain),
-        measureValue: toContentMeasureValue(domain),
-        medicationValue: toContentMedicationValue(domain),
-        timeSeries: toContentTimeSeries(domain),
-        compoundValue: toContentCompoundValue(domain),
-        ratio: toContentRatio(domain),
-        range: toContentRange(domain),
+        stringValue: toContentDtoStringValue(domain),
+        numberValue: toContentDtoNumberValue(domain),
+        booleanValue: toContentDtoBooleanValue(domain),
+        instantValue: toContentDtoInstantValue(domain),
+        fuzzyDateValue: toContentDtoFuzzyDateValue(domain),
+        binaryValue: toContentDtoBinaryValue(domain),
+        documentId: toContentDtoDocumentId(domain),
+        measureValue: toContentDtoMeasureValue(domain),
+        medicationValue: toContentDtoMedicationValue(domain),
+        timeSeries: toContentDtoTimeSeries(domain),
+        compoundValue: toContentDtoCompoundValue(domain),
+        ratio: toContentDtoRatio(domain),
+        range: toContentDtoRange(domain),
     })
 }

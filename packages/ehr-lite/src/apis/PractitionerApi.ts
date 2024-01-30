@@ -1,6 +1,6 @@
 import { CommonApi, HealthcarePartyLikeApi, HealthcarePartyLikeApiImpl, HealthcarePartyDto } from '@icure/typescript-common'
 import { Practitioner } from '../models/Practitioner.model'
-import { mapHealthcarePartyToPractitioner, mapPractitionerToHealthcareParty } from '../mappers/Practitioner.mapper'
+import { mapHealthcarePartyDtoToPractitioner, mapPractitionerToHealthcarePartyDto } from '../mappers/Practitioner.mapper'
 
 export interface PractitionerApi extends HealthcarePartyLikeApi<Practitioner> {}
 class PractitionerApiImpl extends HealthcarePartyLikeApiImpl<Practitioner> {}
@@ -9,10 +9,10 @@ export const practitionerApi = (api: CommonApi, basePath: string): PractitionerA
     new PractitionerApiImpl(
         {
             toDomain(dto: HealthcarePartyDto): Practitioner {
-                return mapHealthcarePartyToPractitioner(dto)
+                return mapHealthcarePartyDtoToPractitioner(dto)
             },
             toDto(domain: Practitioner): HealthcarePartyDto {
-                return mapPractitionerToHealthcareParty(domain)
+                return mapPractitionerToHealthcarePartyDto(domain)
             },
         },
         api.errorHandler,
