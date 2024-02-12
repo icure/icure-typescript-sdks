@@ -275,7 +275,7 @@ export function mapHealthcareElementToHealthElementDto(domain: HealthcareElement
     const id = toHealthElementDtoId(domain)
 
     return new HealthElementDto({
-        id: toHealthElementDtoId(domain),
+        id: id,
         identifiers: toHealthElementDtoIdentifiers(domain),
         rev: toHealthElementDtoRev(domain),
         created: toHealthElementDtoCreated(domain),
