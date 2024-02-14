@@ -2,17 +2,7 @@ import { PaginatedList } from '../../models/PaginatedList.model'
 import { SharedDataType } from '../../models/User.model'
 import { UserLikeApi } from '../UserLikeApi'
 import { ErrorHandler } from '../../services/ErrorHandler'
-import {
-    Connection,
-    ConnectionImpl,
-    FilterChainUser,
-    IccAuthApi,
-    IccUserXApi,
-    PersonName,
-    retry,
-    subscribeToEntityEvents,
-    SubscriptionOptions
-} from '@icure/api'
+import { Connection, ConnectionImpl, FilterChainUser, IccAuthApi, IccUserXApi, PersonName, retry, subscribeToEntityEvents, SubscriptionOptions } from '@icure/api'
 import { Mapper } from '../Mapper'
 import { MessageGatewayApi } from '../MessageGatewayApi'
 import { Sanitizer } from '../../services/Sanitizer'
@@ -28,7 +18,7 @@ import { DataOwnerTypeEnum } from '@icure/api/icc-api/model/DataOwnerTypeEnum'
 import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
 import { iccRestApiPath } from '@icure/api/icc-api/api/IccRestApiPath'
 import { HealthcarePartyDto, PatientDto, UserDto } from '../../index'
-import UseEnum = PersonName.UseEnum;
+import UseEnum = PersonName.UseEnum
 export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements UserLikeApi<DSUser, DSPatient> {
     constructor(
         private readonly userMapper: Mapper<DSUser, UserDto>,
@@ -83,9 +73,9 @@ export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements Us
         const favouredMobile = contacts.find((contact) => contact?.telecomType == 'mobile')
         if (!favouredEmail && !favouredMobile) throw this.errorHandler.createErrorWithMessage('No email or mobile phone information provided in patient')
 
-        const userOfficialName = patientDto.names?.find(nameItem => nameItem.use ===  UseEnum.Official)
-        const firstName =  userOfficialName?.firstNames?.length !== 0 ? userOfficialName?.firstNames?.join(' ')  : patientDto.firstName
-        const lastName = userOfficialName?.lastName  ?? patientDto.lastName
+        const userOfficialName = patientDto.names?.find((nameItem) => nameItem.use === UseEnum.Official)
+        const firstName = userOfficialName?.firstNames?.length !== 0 ? userOfficialName?.firstNames?.join(' ') : patientDto.firstName
+        const lastName = userOfficialName?.lastName ?? patientDto.lastName
         const userName = firstName && lastName ? firstName.concat(' ', lastName) : firstName ?? lastName
 
         // Creates the user

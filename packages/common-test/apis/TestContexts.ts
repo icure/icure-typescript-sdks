@@ -29,25 +29,7 @@ import { testStorageWithKeys } from '../test-storage'
 import { webcrypto } from 'crypto'
 import { getTempEmail, TestUtils } from '../test-utils'
 import { assert } from 'chai'
-import {
-    DataOwnerWithType as DataOwnerWithTypeDto,
-    HealthcareParty,
-    HealthElement,
-    KeyStorageFacade,
-    MaintenanceTask,
-    Patient,
-    Service,
-    sleep,
-    StorageFacade,
-    User,
-    Document,
-    Device,
-    retry,
-    Topic,
-    Message,
-    IccDocumentXApi,
-    ShaVersion
-} from '@icure/api'
+import { DataOwnerWithType as DataOwnerWithTypeDto, HealthcareParty, HealthElement, KeyStorageFacade, MaintenanceTask, Patient, Service, sleep, StorageFacade, User, Document, Device, retry, Topic, Message, IccDocumentXApi, ShaVersion } from '@icure/api'
 import { TestVars, UserDetails } from '@icure/test-setup/types'
 import { DefaultStorageEntryKeysFactory } from '@icure/api/icc-x-api/storage/DefaultStorageEntryKeysFactory'
 import { Binary } from '@icure/ehr-lite-sdk'

@@ -1,6 +1,6 @@
 import { CryptoStrategies as BaseCryptoStrategies } from '@icure/api/icc-x-api/crypto/CryptoStrategies'
 import { CryptoStrategies } from '../../services/CryptoStrategies'
-import {DataOwnerWithType as DataOwnerWithTypeDto, hex2ua, ShaVersion, ua2hex} from '@icure/api'
+import { DataOwnerWithType as DataOwnerWithTypeDto, hex2ua, ShaVersion, ua2hex } from '@icure/api'
 import { CryptoPrimitives } from '@icure/api/icc-x-api/crypto/CryptoPrimitives'
 import { KeyPair } from '@icure/api/icc-x-api/crypto/RSA'
 import { CryptoActorStubWithType } from '@icure/api/icc-api/model/CryptoActorStub'

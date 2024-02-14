@@ -1,11 +1,4 @@
-import {
-    EntityWithDelegationTypeName,
-    HealthElement,
-    Identifier as IdentifierDto,
-    IntersectionFilter,
-    Patient,
-    Service
-} from '@icure/api'
+import { EntityWithDelegationTypeName, HealthElement, Identifier as IdentifierDto, IntersectionFilter, Patient, Service } from '@icure/api'
 import { Filter } from '../Filter'
 import { DataOwnerFilterBuilder, FilterBuilder, NoOpFilter, SortableFilterBuilder } from './filterDsl'
 import { CommonApi } from '../../apis/CommonApi'

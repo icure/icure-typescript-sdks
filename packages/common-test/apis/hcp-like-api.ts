@@ -4,7 +4,7 @@ import { webcrypto } from 'crypto'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, forceUuid, HealthcarePartyFilter } from '@icure/typescript-common'
 import { BaseApiTestContext, WithDataOwnerApi, WithHcpApi, WithPatientApi } from './TestContexts'
-import {HealthcareParty, jwk2spki, ShaVersion, sleep, User} from '@icure/api'
+import { HealthcareParty, jwk2spki, ShaVersion, sleep, User } from '@icure/api'
 import { doXOnYAndSubscribe } from '../websocket-utils'
 import { describe, it, beforeAll } from '@jest/globals'
 
