@@ -4,7 +4,7 @@ import { webcrypto } from 'crypto'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, forceUuid, MessageFactory, NotificationStatusEnum, NotificationTypeEnum, UserFilter } from '@icure/typescript-common'
 import { BaseApiTestContext, WithHelementApi, WithMaintenanceTaskApi, WithPatientApi, WithServiceApi } from './TestContexts'
-import { Patient, sleep, User } from '@icure/api'
+import { Patient, PersonName, sleep, User } from '@icure/api'
 import { doXOnYAndSubscribe } from '../websocket-utils'
 import { v4 } from 'uuid'
 import { describe, it, beforeAll } from '@jest/globals'
@@ -46,6 +46,36 @@ export function testUserLikeApi<
             hcp1Api = hcp1ApiAndUser.api
             hcp1User = hcp1ApiAndUser.user
         }, 600_000)
+
+        it('should be able to create a new User from an existing Patient', async () => {
+            // The Patient exists
+            const email = getTempEmail()
+            const newPatient = await ctx.patientApi(hcp1Api).createOrModify(
+                ctx.toDSPatient(
+                    new Patient({
+                        firstName: 'Marcus',
+                        lastName: 'Specter',
+                        addresses: [
+                            {
+                                addressType: 'home',
+                                description: 'London',
+                                telecoms: [
+                                    {
+                                        telecomType: 'email',
+                                        telecomNumber: email,
+                                    },
+                                ],
+                            },
+                        ],
+                    }),
+                ),
+            )
+            expect(newPatient).toBeTruthy()
+            const createdPatient = await ctx.userApi(hcp1Api).createAndInviteFor(newPatient, 5 * 60)
+
+            // if the name of the user was saved correctly
+            expect(createdPatient).toMatchObject({ name: 'Marcus Specter' })
+        }, 300_000)
 
         // it('If sharedDataType already shared with ownerIds return user (no treatment needed)', async () => {
         //     const { api } = await ctx.signUpUserUsingEmail(env!, 'A', 'B', 'patient', env.dataOwnerDetails[hcp1Username].dataOwnerId)

@@ -4,7 +4,7 @@ import { webcrypto } from 'crypto'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, forceUuid, HealthcarePartyFilter } from '@icure/typescript-common'
 import { BaseApiTestContext, WithDataOwnerApi, WithHcpApi, WithPatientApi } from './TestContexts'
-import { HealthcareParty, jwk2spki, sleep, User } from '@icure/api'
+import { HealthcareParty, jwk2spki, ShaVersion, sleep, User } from '@icure/api'
 import { doXOnYAndSubscribe } from '../websocket-utils'
 import { describe, it, beforeAll } from '@jest/globals'
 
@@ -30,7 +30,7 @@ export function testHcpLikeApi<
 
         it('should be capable of creating a healthcare professional from scratch', async () => {
             const { api } = await ctx.masterApi(env)
-            const rawKeyPair: CryptoKeyPair = await api.baseApi.cryptoApi.primitives.RSA.generateKeyPair('sha-256')
+            const rawKeyPair: CryptoKeyPair = await api.baseApi.cryptoApi.primitives.RSA.generateKeyPair(ShaVersion.Sha256)
             const keyPair = await api.baseApi.cryptoApi.primitives.RSA.exportKeys(
                 rawKeyPair as {
                     publicKey: CryptoKey
