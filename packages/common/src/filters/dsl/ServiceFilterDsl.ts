@@ -2,7 +2,7 @@ import { Filter } from '../Filter'
 import { DataOwnerFilterBuilder, FilterBuilder, NoOpFilter, SortableFilterBuilder } from './filterDsl'
 import { IntersectionFilter } from '../IntersectionFilter'
 import { ServiceByHealthcarePartyFilter, ServiceByHealthcarePartyHealthElementIdsFilter } from '../service'
-import { Patient, Service } from '@icure/api'
+import {EntityWithDelegationTypeName, Patient, Service} from '@icure/api'
 import { CommonApi } from '../../apis/CommonApi'
 import { Mapper } from '../../apis/Mapper'
 import { mapIdentifierToIdentifierDto } from '../../mappers/Identifier.mapper'
@@ -125,7 +125,7 @@ export class ServiceFilterWithDataOwner<DSPatient> extends SortableFilterBuilder
     forPatients(patients: DSPatient[]): ServiceFilterWithDataOwner<DSPatient> {
         const filter = this._dataOwnerId.then((id) => {
             const mappedPatients = patients.map((p) => this.patientMapper.toDto(p))
-            return Promise.all(mappedPatients.map((p) => this.api.baseApi.cryptoApi.xapi.secretIdsOf({ entity: p, type: 'Patient' }, undefined)))
+            return Promise.all(mappedPatients.map((p) => this.api.baseApi.cryptoApi.xapi.secretIdsOf({ entity: p, type: EntityWithDelegationTypeName.Patient }, undefined)))
                 .then((sfksForPatients) => sfksForPatients.flat())
                 .then((sfks) => {
                     return {

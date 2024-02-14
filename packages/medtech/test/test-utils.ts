@@ -1,13 +1,14 @@
-import { MedTechApi } from '../src/apis/MedTechApi'
-import { webcrypto } from 'crypto'
-import { DefaultStorageEntryKeysFactory } from '@icure/api/icc-x-api/storage/DefaultStorageEntryKeysFactory'
-import { UserDetails } from '@icure/test-setup/types'
-import { EmailMessage, SMSMessage, User } from '@icure/typescript-common'
-import { Patient } from '../src/models/Patient.model'
-import { SimpleMedTechCryptoStrategies } from '../src/services/MedTechCryptoStrategies'
-import { MedTechMessageFactory } from '../src/services/MedTechMessageFactory'
-import { HealthcareProfessional } from '../src/models/HealthcareProfessional.model'
-import { testStorageWithKeys } from '../../common-test/test-storage'
+import {MedTechApi} from '../src/apis/MedTechApi'
+import {webcrypto} from 'crypto'
+import {DefaultStorageEntryKeysFactory} from '@icure/api/icc-x-api/storage/DefaultStorageEntryKeysFactory'
+import {UserDetails} from '@icure/test-setup/types'
+import {EmailMessage, SMSMessage, User} from '@icure/typescript-common'
+import {Patient} from '../src/models/Patient.model'
+import {SimpleMedTechCryptoStrategies} from '../src/services/MedTechCryptoStrategies'
+import {MedTechMessageFactory} from '../src/services/MedTechMessageFactory'
+import {HealthcareProfessional} from '../src/models/HealthcareProfessional.model'
+import {testStorageWithKeys} from '../../common-test/test-storage'
+import {ShaVersion} from "@icure/api";
 
 export class TestMessageFactory implements MedTechMessageFactory {
     readonly preferredMessageType = 'email'
@@ -32,7 +33,7 @@ export class TestUtils {
         const storage = await testStorageWithKeys(new DefaultStorageEntryKeysFactory(), [
             {
                 dataOwnerId: credentials.dataOwnerId,
-                pairs: [{ keyPair: { publicKey: credentials.publicKey, privateKey: credentials.privateKey }, shaVersion: 'sha-1' }],
+                pairs: [{ keyPair: { publicKey: credentials.publicKey, privateKey: credentials.privateKey }, shaVersion: ShaVersion.Sha256 }],
             },
         ])
         const builderApi = new MedTechApi.Builder()
