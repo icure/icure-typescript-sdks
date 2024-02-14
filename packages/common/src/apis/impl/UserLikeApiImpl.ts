@@ -29,8 +29,6 @@ import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
 import { iccRestApiPath } from '@icure/api/icc-api/api/IccRestApiPath'
 import { HealthcarePartyDto, PatientDto, UserDto } from '../../index'
 import UseEnum = PersonName.UseEnum;
-import {HumanName} from "@icure/ehr-lite-sdk";
-
 export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements UserLikeApi<DSUser, DSPatient> {
     constructor(
         private readonly userMapper: Mapper<DSUser, UserDto>,
@@ -85,7 +83,7 @@ export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements Us
         const favouredMobile = contacts.find((contact) => contact?.telecomType == 'mobile')
         if (!favouredEmail && !favouredMobile) throw this.errorHandler.createErrorWithMessage('No email or mobile phone information provided in patient')
 
-        const userOfficialName:  PersonName | undefined = patientDto.names?.find(nameItem => nameItem.use ===  UseEnum.Official)
+        const userOfficialName = patientDto.names?.find(nameItem => nameItem.use ===  UseEnum.Official)
         const firstName =  userOfficialName?.firstNames?.length !== 0 ? userOfficialName?.firstNames?.join(' ')  : patientDto.firstName
         const lastName = userOfficialName?.lastName  ?? patientDto.lastName
         const userName = firstName && lastName ? firstName.concat(' ', lastName) : firstName ?? lastName
