@@ -1,6 +1,6 @@
 {
     "name": "@icure/medical-device-sdk",
-    "version": "3.1.0",
+    "version": "3.1.1",
     "description": "iCure SDK for medical device applications",
     "author": "iCure",
     "license": "Apache-2.0",
@@ -14,7 +14,7 @@
         "build": "tsc"
     },
     "dependencies": {
-        "@icure/typescript-common": "3.1.0",
+        "@icure/typescript-common": "3.1.1",
         "browser-or-node": "^2.1.1",
         "date-fns": "^2.28.0",
         "es6-promise": "^4.2.4",

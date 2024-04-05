@@ -14,7 +14,7 @@ export class Measure {
     unitCodes?: CodingReference[]
     comment?: string
     comparator?: string
-    referenceRange?: ReferenceRange[]
+    referenceRanges?: ReferenceRange[]
 
     constructor(measure: IMeasure) {
         this.value = measure.value
@@ -26,7 +26,7 @@ export class Measure {
         this.unitCodes = measure.unitCodes
         this.comment = measure.comment
         this.comparator = measure.comparator
-        this.referenceRange = measure.referenceRange
+        this.referenceRanges = measure.referenceRanges
     }
 
     static toJSON(instance: Measure): any {
@@ -40,7 +40,7 @@ export class Measure {
         if (instance.unitCodes !== undefined) pojo['unitCodes'] = instance.unitCodes?.map((item) => CodingReference.toJSON(item))
         if (instance.comment !== undefined) pojo['comment'] = instance.comment
         if (instance.comparator !== undefined) pojo['comparator'] = instance.comparator
-        if (instance.referenceRange !== undefined) pojo['referenceRange'] = instance.referenceRange?.map((item) => ReferenceRange.toJSON(item))
+        if (instance.referenceRanges !== undefined) pojo['referenceRanges'] = instance.referenceRanges?.map((item) => ReferenceRange.toJSON(item))
         return pojo
     }
 
@@ -73,8 +73,8 @@ export class Measure {
         if (pojo['comparator'] !== undefined) {
             obj['comparator'] = pojo['comparator']
         }
-        if (pojo['referenceRange'] !== undefined) {
-            obj['referenceRange'] = pojo['referenceRange']?.map((item: any) => ReferenceRange.fromJSON(item))
+        if (pojo['referenceRanges'] !== undefined) {
+            obj['referenceRanges'] = pojo['referenceRanges']?.map((item: any) => ReferenceRange.fromJSON(item))
         }
         return new Measure(obj)
     }
@@ -92,5 +92,5 @@ export interface IMeasure {
     unitCodes?: CodingReference[]
     comment?: string
     comparator?: string
-    referenceRange?: ReferenceRange[]
+    referenceRanges?: ReferenceRange[]
 }
