@@ -81,12 +81,12 @@ function toMeasureComparator(dto: MeasureDto): string | undefined {
     return dto.comparator
 }
 
-function toMeasureDtoReferenceRange(domain: Measure): ReferenceRangeDto[] | undefined {
-    return domain.referenceRange ? domain.referenceRange.map(mapReferenceRangeToReferenceRangeDto) : undefined
+function toMeasureDtoReferenceRanges(domain: Measure): ReferenceRangeDto[] | undefined {
+    return domain.referenceRanges ? domain.referenceRanges.map(mapReferenceRangeToReferenceRangeDto) : undefined
 }
 
-function toMeasureReferenceRange(dto: MeasureDto): ReferenceRange[] | undefined {
-    return dto.referenceRange ? dto.referenceRange.map(mapReferenceRangeDtoToReferenceRange) : undefined
+function toMeasureReferenceRanges(dto: MeasureDto): ReferenceRange[] | undefined {
+    return dto.referenceRanges ? dto.referenceRanges.map(mapReferenceRangeDtoToReferenceRange) : undefined
 }
 
 export function mapMeasureDtoToMeasure(dto: MeasureDto): Measure {
@@ -100,7 +100,7 @@ export function mapMeasureDtoToMeasure(dto: MeasureDto): Measure {
         unitCodes: toMeasureUnitCodes(dto),
         comment: toMeasureComment(dto),
         comparator: toMeasureComparator(dto),
-        referenceRange: toMeasureReferenceRange(dto),
+        referenceRanges: toMeasureReferenceRanges(dto),
     })
 }
 
@@ -116,6 +116,6 @@ export function mapMeasureToMeasureDto(domain: Measure): MeasureDto {
         unitCodes: toMeasureDtoUnitCodes(domain),
         comment: toMeasureDtoComment(domain),
         comparator: toMeasureDtoComparator(domain),
-        referenceRange: toMeasureDtoReferenceRange(domain),
+        referenceRanges: toMeasureDtoReferenceRanges(domain),
     })
 }
