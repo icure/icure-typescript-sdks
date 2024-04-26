@@ -63,6 +63,7 @@ export {
     Topic as TopicDto,
     ReferenceRange as ReferenceRangeDto,
 } from '@icure/api'
+export { NativeCryptoPrimitivesBridge } from '@icure/api/icc-x-api/crypto/NativeCryptoPrimitivesBridge'
 export { DataOwnerTypeEnum as DataOwnerTypeEnumDto } from '@icure/api/icc-api/model/DataOwnerTypeEnum'
 export { JwtBridgedAuthService } from '@icure/api/icc-x-api/auth/JwtBridgedAuthService'
 
