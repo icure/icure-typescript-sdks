@@ -1,4 +1,4 @@
-import { AuthenticationApiImpl, CryptoStrategies, DataOwnerWithType, ErrorHandler, extractDomainType, MessageGatewayApi, Sanitizer, DeviceDto, HealthcarePartyDto, KeyStorageFacade, PatientDto, StorageFacade, JwtBridgedAuthService } from '@icure/typescript-common'
+import { AuthenticationApiImpl, CryptoStrategies, DataOwnerWithType, ErrorHandler, extractDomainType, MessageGatewayApi, Sanitizer, DeviceDto, HealthcarePartyDto, KeyStorageFacade, PatientDto, StorageFacade, CryptoPrimitives } from '@icure/typescript-common'
 import { EHRLiteApi } from './EHRLiteApi'
 import Crypto from 'crypto'
 import { DataOwnerTypeEnum } from '../models/DataOwner.model'
@@ -12,7 +12,7 @@ export class AuthenticationApi extends AuthenticationApiImpl<EHRLiteApi> {
         authProcessBySmsId: string | undefined,
         errorHandler: ErrorHandler,
         sanitizer: Sanitizer,
-        private readonly crypto: Crypto,
+        private readonly crypto: CryptoPrimitives,
         storage: StorageFacade<string>,
         private readonly keyStorage: KeyStorageFacade,
         private readonly cryptoStrategies: CryptoStrategies<DataOwnerWithType>,
@@ -77,7 +77,7 @@ export const authenticationApi = (
     iCureBasePath: string,
     authProcessByEmailId: string | undefined,
     authProcessBySmsId: string | undefined,
-    crypto: Crypto,
+    crypto: CryptoPrimitives,
     storage: StorageFacade<string>,
     keyStorage: KeyStorageFacade,
     cryptoStrategies: CryptoStrategies<DataOwnerWithType>,

@@ -26,7 +26,7 @@ export class AnonymousEHRLiteApi extends CommonAnonymousApi<EHRLiteApi> {
             iCureUrlPath,
             authProcessInfo.authProcessByEmailId,
             authProcessInfo.authProcessBySmsId,
-            cryptoPrimitives.crypto,
+            cryptoPrimitives,
             storage,
             keyStorage,
             this.cryptoStrategies,

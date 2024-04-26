@@ -1,8 +1,6 @@
 import { CryptoStrategies } from '../services/CryptoStrategies'
 import { AuthSecretProvider, CommonApi, ErrorHandler, ErrorHandlerImpl, formatICureApiUrl, ICURE_CLOUD_URL, MessageFactory, MessageGatewayApi, MessageGatewayApiImpl, MSG_GW_CLOUD_URL, Sanitizer, SanitizerImpl } from '../index'
-import { KeyStorageFacade, KeyStorageImpl, LocalStorageImpl, StorageFacade } from '@icure/api'
-import { CryptoPrimitives } from '@icure/api/icc-x-api/crypto/CryptoPrimitives'
-import { AuthSecretProvider as BaseAuthSecretProvider } from '@icure/api/icc-x-api/auth/SmartAuthProvider'
+import { KeyStorageFacade, KeyStorageImpl, LocalStorageImpl, StorageFacade, CryptoPrimitives, WebCryptoPrimitives } from '@icure/api'
 import { CommonAnonymousApi } from '../apis/CommonAnonymousApi'
 import { AuthSecretProviderBridge } from '../services/impl/AuthSecretProviderBridge'
 
@@ -12,7 +10,7 @@ export abstract class ApiBuilder<DSCryptoStrategies extends CryptoStrategies<any
     protected msgGwSpecId?: string
     protected authProcessByEmailId?: string
     protected authProcessBySmsId?: string
-    protected crypto?: Crypto
+    protected crypto?: Crypto | CryptoPrimitives
     protected storage?: StorageFacade<string>
     protected keyStorage?: KeyStorageFacade
     protected cryptoStrategies?: DSCryptoStrategies
@@ -48,7 +46,7 @@ export abstract class ApiBuilder<DSCryptoStrategies extends CryptoStrategies<any
         return this
     }
 
-    withCrypto(crypto: Crypto): this {
+    withCrypto(crypto: Crypto | CryptoPrimitives): this {
         this.crypto = crypto
         return this
     }
@@ -66,6 +64,10 @@ export abstract class ApiBuilder<DSCryptoStrategies extends CryptoStrategies<any
     withCryptoStrategies(strategies: DSCryptoStrategies): this {
         this.cryptoStrategies = strategies
         return this
+    }
+
+    protected getCryptoPrimitives(): CryptoPrimitives {
+        return !!this.crypto && 'RSA' in this.crypto ? this.crypto : new WebCryptoPrimitives(this.crypto)
     }
 
     abstract build(): Promise<DSApi>
@@ -99,7 +101,7 @@ export abstract class AnonymousApiBuilder<DSCryptoStrategies extends CryptoStrat
             msgGwSpecId,
             storage,
             keyStorage,
-            primitives: new CryptoPrimitives(this.crypto),
+            primitives: this.getCryptoPrimitives(),
             cryptoStrategies: cryptoStrategies,
             authProcessInfo,
         })
@@ -148,7 +150,7 @@ export abstract class AuthenticatedApiBuilder<DSCryptoStrategies extends CryptoS
         const username = this.userName
         const password = this.password
         const cryptoStrategies = this.cryptoStrategies
-        const crypto = this.crypto
+        const crypto = this.getCryptoPrimitives()
         const msgGwUrl = this.msgGwUrl
         const msgGwSpecId = this.msgGwSpecId
         const authProcessByEmailId = this.authProcessByEmailId
@@ -234,7 +236,7 @@ export abstract class AuthenticatedApiBuilder<DSCryptoStrategies extends CryptoS
                   initialAuthToken: string | undefined
                   initialRefreshToken: string | undefined
               }
-        crypto: Crypto | undefined
+        crypto: CryptoPrimitives
         authProcessByEmailId: string | undefined
         authProcessBySmsId: string | undefined
         messageFactory: DSMessageFactory | undefined

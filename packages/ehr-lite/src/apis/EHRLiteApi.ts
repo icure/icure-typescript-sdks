@@ -14,7 +14,7 @@ import {
     JwtBridgedAuthService,
     ErrorHandler,
     Sanitizer,
-    MessageGatewayApi,
+    CryptoPrimitives,
     AuthSecretProvider,
 } from '@icure/typescript-common'
 import { DataOwnerTypeEnum, DataOwnerWithType } from '../models/DataOwner.model'
@@ -100,7 +100,7 @@ export class EHRLiteApi extends CommonApi {
                       _iCureBaseUrl,
                       _authProcessByEmailId,
                       _authProcessBySmsId,
-                      _baseApi.cryptoApi.primitives.crypto,
+                      _baseApi.cryptoApi.primitives,
                       this._storage,
                       this._keyStorage,
                       _cryptoStrategies,
@@ -240,7 +240,7 @@ export namespace EHRLiteApi {
             super()
             if (initialisationApi) {
                 super.withICureBaseUrl(initialisationApi.iCureBaseUrl)
-                super.withCrypto(initialisationApi.cryptoApi.primitives.crypto)
+                super.withCrypto(initialisationApi.cryptoApi.primitives)
                 super.withUserName(initialisationApi.username)
                 if (!!initialisationApi.password) {
                     super.withPassword(initialisationApi.password)
@@ -279,7 +279,7 @@ export namespace EHRLiteApi {
                       initialAuthToken: string | undefined
                       initialRefreshToken: string | undefined
                   }
-            crypto: Crypto | undefined
+            crypto: CryptoPrimitives
             authProcessByEmailId: string | undefined
             authProcessBySmsId: string | undefined
             messageFactory: EHRLiteMessageFactory | undefined
@@ -328,7 +328,7 @@ export namespace EHRLiteApi {
                         }
                     },
                 ),
-                this.crypto,
+                props.crypto,
                 fetch,
                 {
                     storage: props.storage,

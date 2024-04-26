@@ -33,7 +33,7 @@ import {
     IccCryptoXApi,
     DataOwnerWithTypeDto,
     DataOwnerTypeEnumDto,
-    JwtBridgedAuthService,
+    CryptoPrimitives,
     IcureApi,
     AuthSecretProvider,
     ErrorHandler,
@@ -99,7 +99,7 @@ export class MedTechApi extends CommonApi {
                       basePath,
                       authProcessByEmailId,
                       authProcessBySmsId,
-                      api.cryptoApi.primitives.crypto,
+                      api.cryptoApi.primitives,
                       this.storage,
                       this.keyStorage,
                       this.cryptoStrategies,
@@ -227,7 +227,7 @@ export namespace MedTechApi {
             super()
             if (initialisationApi) {
                 super.withICureBaseUrl(initialisationApi.iCureBaseUrl)
-                super.withCrypto(initialisationApi.cryptoApi.primitives.crypto)
+                super.withCrypto(initialisationApi.cryptoApi.primitives)
                 super.withUserName(initialisationApi.username)
                 if (!!initialisationApi.password) {
                     super.withPassword(initialisationApi.password)
@@ -265,7 +265,7 @@ export namespace MedTechApi {
                       initialAuthToken: string | undefined
                       initialRefreshToken: string | undefined
                   }
-            crypto: Crypto | undefined
+            crypto: CryptoPrimitives
             authProcessByEmailId: string | undefined
             authProcessBySmsId: string | undefined
             messageFactory: MedTechMessageFactory | undefined
