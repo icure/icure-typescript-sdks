@@ -42,7 +42,7 @@ import {
 import dataOwnerMapper from '../mappers/DataOwner.mapper'
 import { MedTechCryptoStrategies } from '../services/MedTechCryptoStrategies'
 import { iCureMedTechMessageFactory, MedTechMessageFactory } from '../services/MedTechMessageFactory'
-import { AuthSecretProviderBridge } from '@icure/typescript-common/dist/services/impl/AuthSecretProviderBridge'
+import { AuthSecretProviderBridge } from '@icure/typescript-common'
 
 export class MedTechApi extends CommonApi {
     private readonly _codingApi: CodingApi

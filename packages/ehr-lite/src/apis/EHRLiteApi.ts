@@ -16,6 +16,7 @@ import {
     Sanitizer,
     CryptoPrimitives,
     AuthSecretProvider,
+    AuthSecretProviderBridge,
 } from '@icure/typescript-common'
 import { DataOwnerTypeEnum, DataOwnerWithType } from '../models/DataOwner.model'
 import { DataOwnerApi, dataOwnerApi } from './DataOwnerApi'
@@ -33,8 +34,6 @@ import { EHRLiteCryptoStrategies } from '../services/EHRLiteCryptoStrategies'
 import { EHRLiteMessageFactory, iCureEHRLiteMessageFactory } from '../services/EHRLiteMessageFactory'
 import { topicApi, TopicApi } from './TopicApi'
 import { messageApi, MessageApi } from './MessageApi'
-import { AuthSecretProvider as BaseAuthSecretProvider } from '@icure/api/icc-x-api/auth/SmartAuthProvider'
-import { AuthSecretProviderBridge } from '@icure/typescript-common/dist/services/impl/AuthSecretProviderBridge'
 
 export class EHRLiteApi extends CommonApi {
     private readonly _codingApi: CodingApi

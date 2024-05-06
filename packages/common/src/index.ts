@@ -66,6 +66,7 @@ export {
 export { NativeCryptoPrimitivesBridge } from '@icure/api/icc-x-api/crypto/NativeCryptoPrimitivesBridge'
 export { DataOwnerTypeEnum as DataOwnerTypeEnumDto } from '@icure/api/icc-api/model/DataOwnerTypeEnum'
 export { JwtBridgedAuthService } from '@icure/api/icc-x-api/auth/JwtBridgedAuthService'
+export { AuthSecretProviderBridge } from './services/impl/AuthSecretProviderBridge'
 
 export { toMapSet } from './utils/mapUtils'
 export { toMapSetTransform } from './utils/mapUtils'

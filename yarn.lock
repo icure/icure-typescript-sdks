@@ -1456,11 +1456,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@icure/api@npm:^8.0.26":
-  version: 8.0.26
-  resolution: "@icure/api@npm:8.0.26"
+"@icure/api@npm:^8.0.29":
+  version: 8.0.29
+  resolution: "@icure/api@npm:8.0.29"
   dependencies:
-    browser-or-node: ^2.1.1
+    browser-or-node: ^3.0.0
     date-fns: ^2.23.0
     libphonenumber-js: ^1.7.18
     lodash: ^4.17.21
@@ -1468,7 +1468,7 @@ __metadata:
     text-encoding: ^0.7.0
     uuid: ^8.3.2
     uuid-encoder: ^1.1.0
-  checksum: a53b1697db7b184e8d55444f01804c84843bf1fc0f6f5d771117263d4b5387886bf32be0745df99cbc45a318dbbb45bba2df7d736c66e64a06919ec4249763a8
+  checksum: 01ba4825a110e4d5c64576ef4c4d5d7fb7e2d370ef68af8734b3492dd4019f4a48c179673826efc15b00f05c6bb941e4f104e9c3069b839743edaaf8b6dd10ab
   languageName: node
   linkType: hard
 
@@ -1480,7 +1480,7 @@ __metadata:
     "@babel/plugin-proposal-decorators": ^7.22.5
     "@babel/preset-env": ^7.22.5
     "@babel/preset-typescript": ^7.22.5
-    "@icure/typescript-common": 3.1.1
+    "@icure/typescript-common": 3.2.0
     "@types/jest": ^29.5.2
     babel-jest: ^29.5.0
     jest: ^29.5.0
@@ -1498,7 +1498,7 @@ __metadata:
     "@babel/plugin-proposal-decorators": ^7.22.5
     "@babel/preset-env": ^7.22.5
     "@babel/preset-typescript": ^7.22.5
-    "@icure/typescript-common": 3.1.1
+    "@icure/typescript-common": 3.2.0
     "@types/chai": ^4.3.0
     "@types/chai-as-promised": ^7.1.1
     "@types/isomorphic-fetch": ^0.0.36
@@ -1549,7 +1549,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@icure/typescript-common@3.1.1, @icure/typescript-common@workspace:packages/common":
+"@icure/typescript-common@3.2.0, @icure/typescript-common@workspace:packages/common":
   version: 0.0.0-use.local
   resolution: "@icure/typescript-common@workspace:packages/common"
   dependencies:
@@ -1557,7 +1557,7 @@ __metadata:
     "@babel/plugin-proposal-decorators": ^7.22.5
     "@babel/preset-env": ^7.22.5
     "@babel/preset-typescript": ^7.22.5
-    "@icure/api": ^8.0.26
+    "@icure/api": ^8.0.29
     "@types/jest": ^29.5.2
     "@types/uuid": ^9.0.1
     babel-jest: ^29.5.0
@@ -2829,6 +2829,13 @@ __metadata:
   version: 2.1.1
   resolution: "browser-or-node@npm:2.1.1"
   checksum: b1650b579345574d2c1905c73d385915a032523066ef9589036cf129b23b27b85096b6713476dffb88feb83cda798ed0774363e699117aa2724a0409adea25aa
+  languageName: node
+  linkType: hard
+
+"browser-or-node@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "browser-or-node@npm:3.0.0"
+  checksum: 51d74cc5d0139da3d37e83ff3906fcca20d02c42aa8b81a48d9ea01806f36df1a4b55006670071b1d7423967777275920054ec8b723410534b580b0232c5093d
   languageName: node
   linkType: hard
 
