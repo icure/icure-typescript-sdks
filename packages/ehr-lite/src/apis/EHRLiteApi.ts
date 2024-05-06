@@ -14,8 +14,9 @@ import {
     JwtBridgedAuthService,
     ErrorHandler,
     Sanitizer,
-    MessageGatewayApi,
+    CryptoPrimitives,
     AuthSecretProvider,
+    AuthSecretProviderBridge,
 } from '@icure/typescript-common'
 import { DataOwnerTypeEnum, DataOwnerWithType } from '../models/DataOwner.model'
 import { DataOwnerApi, dataOwnerApi } from './DataOwnerApi'
@@ -33,8 +34,6 @@ import { EHRLiteCryptoStrategies } from '../services/EHRLiteCryptoStrategies'
 import { EHRLiteMessageFactory, iCureEHRLiteMessageFactory } from '../services/EHRLiteMessageFactory'
 import { topicApi, TopicApi } from './TopicApi'
 import { messageApi, MessageApi } from './MessageApi'
-import { AuthSecretProvider as BaseAuthSecretProvider } from '@icure/api/icc-x-api/auth/SmartAuthProvider'
-import { AuthSecretProviderBridge } from '@icure/typescript-common/dist/services/impl/AuthSecretProviderBridge'
 
 export class EHRLiteApi extends CommonApi {
     private readonly _codingApi: CodingApi
@@ -100,7 +99,7 @@ export class EHRLiteApi extends CommonApi {
                       _iCureBaseUrl,
                       _authProcessByEmailId,
                       _authProcessBySmsId,
-                      _baseApi.cryptoApi.primitives.crypto,
+                      _baseApi.cryptoApi.primitives,
                       this._storage,
                       this._keyStorage,
                       _cryptoStrategies,
@@ -240,7 +239,7 @@ export namespace EHRLiteApi {
             super()
             if (initialisationApi) {
                 super.withICureBaseUrl(initialisationApi.iCureBaseUrl)
-                super.withCrypto(initialisationApi.cryptoApi.primitives.crypto)
+                super.withCrypto(initialisationApi.cryptoApi.primitives)
                 super.withUserName(initialisationApi.username)
                 if (!!initialisationApi.password) {
                     super.withPassword(initialisationApi.password)
@@ -279,7 +278,7 @@ export namespace EHRLiteApi {
                       initialAuthToken: string | undefined
                       initialRefreshToken: string | undefined
                   }
-            crypto: Crypto | undefined
+            crypto: CryptoPrimitives
             authProcessByEmailId: string | undefined
             authProcessBySmsId: string | undefined
             messageFactory: EHRLiteMessageFactory | undefined
@@ -328,7 +327,7 @@ export namespace EHRLiteApi {
                         }
                     },
                 ),
-                this.crypto,
+                props.crypto,
                 fetch,
                 {
                     storage: props.storage,

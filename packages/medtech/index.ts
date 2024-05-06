@@ -13,7 +13,7 @@ export * from './src/apis/DataOwnerApi'
 export * from './src/apis/MedTechApi'
 export * from './src/filter'
 
-export { CryptoStrategies, CryptoStrategiesBridge, SimpleCryptoStrategies } from '@icure/typescript-common'
+export { CryptoStrategies, CryptoStrategiesBridge, SimpleCryptoStrategies, NativeCryptoPrimitivesBridge } from '@icure/typescript-common'
 
 export { mapOf } from '@icure/typescript-common'
 

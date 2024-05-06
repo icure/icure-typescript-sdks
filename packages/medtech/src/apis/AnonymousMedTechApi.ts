@@ -30,7 +30,7 @@ export class AnonymousMedTechApi extends CommonAnonymousApi<MedTechApi> {
             authProcessInfo.authProcessBySmsId,
             this._errorHandler,
             this._sanitizer,
-            cryptoPrimitives.crypto,
+            cryptoPrimitives,
             storage,
             keyStorage,
             this.cryptoStrategies,

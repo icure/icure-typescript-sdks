@@ -12,7 +12,7 @@ import {
     KeyStorageFacade,
     PatientDto,
     StorageFacade,
-    JwtBridgedAuthService,
+    CryptoPrimitives,
 } from '@icure/typescript-common'
 import Crypto from 'crypto'
 import { MedTechApi } from './MedTechApi'
@@ -33,7 +33,7 @@ export class AuthenticationApi extends AuthenticationApiImpl<MedTechApi> {
         authProcessBySmsId: string | undefined,
         errorHandler: ErrorHandler,
         sanitizer: Sanitizer,
-        private readonly crypto: Crypto,
+        private readonly crypto: CryptoPrimitives,
         storage: StorageFacade<string>,
         private readonly keyStorage: KeyStorageFacade,
         private readonly cryptoStrategies: CryptoStrategies<DataOwnerWithType>,
@@ -93,7 +93,7 @@ export const authenticationApi = (
     iCureBasePath: string,
     authProcessByEmailId: string | undefined,
     authProcessBySmsId: string | undefined,
-    crypto: Crypto,
+    crypto: CryptoPrimitives,
     storage: StorageFacade<string>,
     keyStorage: KeyStorageFacade,
     cryptoStrategies: CryptoStrategies<DataOwnerWithType>,
