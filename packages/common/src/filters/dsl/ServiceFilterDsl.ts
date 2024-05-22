@@ -1,7 +1,7 @@
 import { Filter } from '../Filter'
 import { DataOwnerFilterBuilder, FilterBuilder, NoOpFilter, SortableFilterBuilder } from './filterDsl'
 import { IntersectionFilter } from '../IntersectionFilter'
-import { ServiceByHealthcarePartyFilter, ServiceByHealthcarePartyHealthElementIdsFilter } from '../service'
+import { ServiceByHealthcarePartyFilter } from '../service'
 import { EntityWithDelegationTypeName, Patient, Service } from '@icure/api'
 import { CommonApi } from '../../apis/CommonApi'
 import { Mapper } from '../../apis/Mapper'

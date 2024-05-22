@@ -101,7 +101,7 @@ export function toUserDtoAutoDelegations(domain: User):
           cdItemVaccine?: string[] | undefined
       }
     | undefined {
-    return Object.fromEntries([...domain.sharingDataWith.entries()].map(([k, v]) => [k, [...v]]))
+    return Object.fromEntries([...(domain.sharingDataWith?.entries() ?? {})].map(([k, v]) => [k, [...v]]))
 }
 
 export function toUserDtoCreatedDate(domain: User): number | undefined {

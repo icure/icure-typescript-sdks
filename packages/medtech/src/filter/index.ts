@@ -6,3 +6,5 @@ export * from './DataSampleFilterDsl'
 export * from './PatientFilterDsl'
 export * from './UserFilterDsl'
 export * from './MedicalDeviceFilterDsl'
+
+export { FilterComposition } from '@icure/typescript-common'
