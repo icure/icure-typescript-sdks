@@ -297,10 +297,9 @@ function toConditionBodySite(dto: HealthElementDto): Array<CodingReference> | un
     return bodySites.map(mapCodeStubToCodingReference)
 }
 
-function toConditionTags(dto: HealthElementDto): Array<CodingReference> {
-    const tags = dto.tags?.filter((v) => (!!v.context ? !CONTEXTS.includes(v.context) : true))
-
-    return filteringOutInternalTags(CONDITION_FHIR_TYPE, tags) ?? []
+function toConditionTags(dto: HealthElementDto): CodingReference[] {
+	const filteredTags = filteringOutInternalTags(CONDITION_FHIR_TYPE, tags?.filter((v) => (!!v.context ? !CONTEXTS.includes(v.context) : true)))
+	return filteredTags ?? []
 }
 
 function toConditionCodes(dto: HealthElementDto): Array<CodingReference> {

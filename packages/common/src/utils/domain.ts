@@ -44,7 +44,7 @@ export const domainTypeTag = (domainType: string): CodeStub => {
     })
 }
 
-export const filteringOutInternalTags = (fhirType: string, tags: CodeStub[] | undefined, throwOnMissing: boolean = true): Array<CodingReference> | undefined => {
+export const filteringOutInternalTags = (fhirType: string, tags: CodeStub[] | undefined, throwOnMissing: boolean = true): CodingReference[] | undefined => {
     const domainTypeTag = extractDomainTypeTag(tags)
     const fhirTypeUpperCased = fhirType.toUpperCase()
     if ((!domainTypeTag || domainTypeTag.code?.toUpperCase() !== fhirTypeUpperCased) && throwOnMissing) throw new Error(`${fhirTypeUpperCased} domain tag type is missing`)

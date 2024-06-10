@@ -8,6 +8,7 @@ import {
     ContactDto,
     Delegation,
     domainTypeTag,
+    filteringOutInternalTags,
     forceUuid,
     Identifier,
     IdentifierDto,
@@ -194,7 +195,7 @@ function toEncounterCodes({ codes }: ContactDto): CodingReference[] | undefined 
 }
 
 function toEncounterTags({ tags }: ContactDto): CodingReference[] | undefined {
-    return tags?.map(mapCodeStubToCodingReference).filter((tag) => {})
+    return filteringOutInternalTags(ENCOUNTER_FHIR_TYPE, tags?.filter((tag) => (tag.context ? !CONTEXTS.includes(tag.context) : true)))
 }
 
 function toEncounterType({ encounterType }: ContactDto): CodingReference | undefined {
