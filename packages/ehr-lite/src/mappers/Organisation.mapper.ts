@@ -62,7 +62,7 @@ function toHealthcarePartyDtoIdentifier(domain: Organisation): IdentifierDto[] |
 }
 
 function toHealthcarePartyDtoTags(domain: Organisation): CodeStub[] | undefined {
-    return mergeTagsWithInternalTags('organisation', domain.tags, domain.systemMetaData)
+    return mergeTagsWithInternalTags('organisation', [...domain.tags], domain.systemMetaData)
 }
 
 function toHealthcarePartyDtoCodes(domain: Organisation): CodeStub[] | undefined {

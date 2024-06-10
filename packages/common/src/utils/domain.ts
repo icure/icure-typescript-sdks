@@ -52,11 +52,10 @@ export const filteringOutInternalTags = (fhirType: string, tags: CodeStub[] | un
     return !!filteredTags?.length ? filteredTags.map(mapCodeStubToCodingReference) : undefined
 }
 
-export const mergeTagsWithInternalTags = (fhir: string, tags: Array<CodingReference> | undefined, systemMetaData: SystemMetaDataEncrypted | SystemMetaDataOwnerEncrypted | SystemMetaDataOwner | undefined): CodeStub[] => {
-    const tagArray = [...(tags ?? [])]
+export const mergeTagsWithInternalTags = (fhir: string, tags: CodingReference[] | undefined, systemMetaData: SystemMetaDataEncrypted | SystemMetaDataOwnerEncrypted | SystemMetaDataOwner | undefined): CodeStub[] => {
     if (!systemMetaData) {
-        return addUniqueObjectsToArray(tagArray?.map(mapCodingReferenceToCodeStub) ?? [], domainTypeTag(fhir))
+        return addUniqueObjectsToArray(tags?.map(mapCodingReferenceToCodeStub) ?? [], domainTypeTag(fhir))
     }
     const systemMetaDataCodeStubs = systemMetaDataTags(systemMetaData)
-    return addUniqueObjectsToArray(tagArray, ...systemMetaDataCodeStubs).map(mapCodingReferenceToCodeStub)
+    return addUniqueObjectsToArray(tags ?? [], ...systemMetaDataCodeStubs).map(mapCodingReferenceToCodeStub)
 }
