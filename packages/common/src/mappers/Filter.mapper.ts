@@ -58,6 +58,11 @@ import {
     UnionFilter as UnionFilterDto,
     User as UserDto,
     UserByIdsFilter as UserByIdsFilterDto,
+    AbstractFilterContact,
+    ContactByHcPartyFilter as ContactByHcPartyFilterDto,
+    ContactByHcPartyPatientTagCodeDateFilter as ContactByHcPartyPatientTagCodeDateFilterDto,
+    ContactByHcPartyTagCodeDateFilter as ContactByHcPartyTagCodeDateFilterDto,
+    ContactByServiceIdsFilter as ContactByServiceIdsFilterDto,
 } from '@icure/api'
 import { UsersByPatientIdFilter as UsersByPatientIdFilterDto } from '@icure/api/icc-x-api/filters/UsersByPatientIdFilter'
 import { ComplementFilter } from '../filters/ComplementFilter'
@@ -84,6 +89,7 @@ import { AbstractFilterTopic } from '@icure/api/icc-api/model/AbstractFilterTopi
 import { AbstractFilterMessage } from '@icure/api/icc-api/model/AbstractFilterMessage'
 import { TopicByHcPartyFilter, TopicByParticipantFilter } from '../filters/topic'
 import { LatestMessageByHcPartyTransportGuidFilter, MessageByHcPartyFilter, MessageByHcPartyTransportGuidFilter } from '../filters/message'
+import { ContactByHcPartyFilter, ContactByHcPartyPatientTagCodeDateFilter, ContactByHcPartyTagCodeDateFilter, ContactByServiceIdsFilter, ContactDto } from '../index'
 
 export namespace FilterMapper {
     export function toAbstractFilterDto<ServiceDto>(filter: Filter<ServiceDto>, input: 'Service'): AbstractFilterService
@@ -96,10 +102,11 @@ export namespace FilterMapper {
     export function toAbstractFilterDto<MaintenanceTaskDto>(filter: Filter<MaintenanceTaskDto>, input: 'MaintenanceTask'): AbstractFilterMaintenanceTask
     export function toAbstractFilterDto<TopicDto>(filter: Filter<TopicDto>, input: 'Topic'): AbstractFilterTopic
     export function toAbstractFilterDto<MessageDto>(filter: Filter<MessageDto>, input: 'Message'): AbstractFilterMessage
+    export function toAbstractFilterDto<ContactDto>(filter: Filter<ContactDto>, input: 'Contact'): AbstractFilterContact
     export function toAbstractFilterDto<T>(
         filter: Filter<T>,
-        input: 'Service' | 'Code' | 'Device' | 'HealthcareParty' | 'HealthElement' | 'Patient' | 'User' | 'MaintenanceTask' | 'Topic' | 'Message',
-    ): AbstractFilter<ServiceDto | CodeDto | DeviceDto | HealthcarePartyDto | HealthElementDto | PatientDto | UserDto | MaintenanceTaskDto | TopicDto | MessageDto> {
+        input: 'Service' | 'Code' | 'Device' | 'HealthcareParty' | 'HealthElement' | 'Patient' | 'User' | 'MaintenanceTask' | 'Topic' | 'Message' | 'Contact',
+    ): AbstractFilter<ServiceDto | CodeDto | DeviceDto | HealthcarePartyDto | HealthElementDto | PatientDto | UserDto | MaintenanceTaskDto | TopicDto | MessageDto | ContactDto> {
         const res =
             input === 'Service'
                 ? toAbstractFilterServiceDto(filter)
@@ -121,6 +128,8 @@ export namespace FilterMapper {
                 ? toAbstractFilterTopicDto(filter)
                 : input === 'Message'
                 ? toAbstractFilterMessageDto(filter)
+                : input === 'Contact'
+                ? toAbstractFilterContactDto(filter)
                 : null
         if (!res) {
             throw Error('Filter is not recognized')
@@ -676,5 +685,74 @@ export namespace FilterMapper {
         new MessageByHcPartyFilterDto({
             hcpId: filter.hcpId,
             desc: filter.description,
+        })
+
+    function toAbstractFilterContactDto(filter: Filter<ContactDto>): AbstractFilter<ContactDto> {
+        if (filter['$type'] === 'ComplementFilter') {
+            return toComplementFilterContactDto(filter as ComplementFilter<ContactDto>)
+        }
+        if (filter['$type'] === 'UnionFilter') {
+            return toUnionFilterContactDto(filter as UnionFilter<ContactDto>)
+        }
+        if (filter['$type'] === 'IntersectionFilter') {
+            return toIntersectionFilterContactDto(filter as IntersectionFilter<ContactDto>)
+        }
+        if (filter['$type'] === 'ContactByHcPartyFilter') {
+            return toContactByHcPartyFilterDto(filter as ContactByHcPartyFilter)
+        }
+        if (filter['$type'] === 'ContactByHcPartyPatientTagCodeDateFilter') {
+            return toContactByHcPartyPatientTagCodeDateFilterDto(filter as ContactByHcPartyPatientTagCodeDateFilter)
+        }
+        if (filter['$type'] === 'ContactByHcPartyTagCodeDateFilter') {
+            return toContactByHcPartyTagCodeDateFilterDto(filter as ContactByHcPartyTagCodeDateFilter)
+        }
+        if (filter['$type'] === 'ContactByServiceIdsFilter') {
+            return toContactByServiceIdsFilterDto(filter as ContactByServiceIdsFilter)
+        }
+        throw Error(`No mapper for ${filter['$type']}`)
+    }
+
+    const toComplementFilterContactDto = (filter: ComplementFilter<ContactDto>) => new ComplementFilterDto<ContactDto>(toAbstractFilterContactDto(filter.superSet), toAbstractFilterContactDto(filter.subSet))
+
+    const toUnionFilterContactDto = (filter: UnionFilter<ContactDto>) => new UnionFilterDto<ContactDto>(filter.filters.map((it) => toAbstractFilterContactDto(it)))
+
+    const toIntersectionFilterContactDto = (filter: IntersectionFilter<ContactDto>) => new IntersectionFilterDto<ContactDto>(filter.filters.map((it) => toAbstractFilterContactDto(it)))
+
+    const toContactByHcPartyFilterDto = (filter: ContactByHcPartyFilter) =>
+        new ContactByHcPartyFilterDto({
+            hcpId: filter.hcpId,
+            desc: filter.description,
+        })
+
+    const toContactByHcPartyPatientTagCodeDateFilterDto = (filter: ContactByHcPartyPatientTagCodeDateFilter) =>
+        new ContactByHcPartyPatientTagCodeDateFilterDto({
+            desc: filter.desc,
+            healthcarePartyId: filter.healthcarePartyId,
+            patientSecretForeignKey: filter.patientSecretForeignKey,
+            patientSecretForeignKeys: filter.patientSecretForeignKeys,
+            tagType: filter.tagType,
+            tagCode: filter.tagCode,
+            codeType: filter.codeType,
+            codeCode: filter.codeCode,
+            startServiceValueDate: filter.startServiceValueDate,
+            endServiceValueDate: filter.endServiceValueDate,
+        })
+
+    const toContactByHcPartyTagCodeDateFilterDto = (filter: ContactByHcPartyTagCodeDateFilter) =>
+        new ContactByHcPartyTagCodeDateFilterDto({
+            desc: filter.desc,
+            healthcarePartyId: filter.healthcarePartyId,
+            tagType: filter.tagType,
+            tagCode: filter.tagCode,
+            codeType: filter.codeType,
+            codeCode: filter.codeCode,
+            startOfContactOpeningDate: filter.startOfContactOpeningDate,
+            endOfContactOpeningDate: filter.endOfContactOpeningDate,
+        })
+
+    const toContactByServiceIdsFilterDto = (filter: ContactByServiceIdsFilter) =>
+        new ContactByServiceIdsFilterDto({
+            desc: filter.desc,
+            ids: filter.ids,
         })
 }

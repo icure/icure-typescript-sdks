@@ -1,4 +1,5 @@
 export * from './code'
+export * from './contact'
 export * from './device'
 export * from './dsl'
 export * from './hcp'
