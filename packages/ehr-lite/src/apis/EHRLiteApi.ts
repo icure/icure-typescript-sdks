@@ -14,6 +14,9 @@ import {
     IccCryptoXApi,
     IcureApi,
     KeyStorageFacade,
+    StorageFacade,
+    DataOwnerTypeEnumDto,
+    ErrorHandler,
     Sanitizer,
     StorageFacade,
 } from '@icure/typescript-common'
@@ -33,11 +36,15 @@ import { EHRLiteCryptoStrategies } from '../services/EHRLiteCryptoStrategies'
 import { EHRLiteMessageFactory, iCureEHRLiteMessageFactory } from '../services/EHRLiteMessageFactory'
 import { topicApi, TopicApi } from './TopicApi'
 import { messageApi, MessageApi } from './MessageApi'
+import { encounterApi, EncounterApi } from './EncounterApi'
+import { immunizationApi, ImmunizationApi } from './ImmunizationApi'
 
 export class EHRLiteApi extends CommonApi {
     private readonly _codingApi: CodingApi
     private readonly _conditionApi: ConditionApi
     private readonly _dataOwnerApi: DataOwnerApi
+    private readonly _encounterApi: EncounterApi
+    private readonly _immunizationApi: ImmunizationApi
     private readonly _observationApi: ObservationApi
     private readonly _organisationApi: OrganisationApi
     private readonly _patientApi: PatientApi
@@ -80,6 +87,10 @@ export class EHRLiteApi extends CommonApi {
         this._codingApi = codingApi(this)
 
         this._conditionApi = conditionApi(this, _iCureBaseUrl)
+
+        this._encounterApi = encounterApi(this, _iCureBaseUrl)
+
+        this._immunizationApi = immunizationApi(this, _iCureBaseUrl)
 
         this._observationApi = observationApi(this, _iCureBaseUrl)
 
@@ -130,6 +141,14 @@ export class EHRLiteApi extends CommonApi {
 
     get conditionApi(): ConditionApi {
         return this._conditionApi
+    }
+
+    get encounterApi(): EncounterApi {
+        return this._encounterApi
+    }
+
+    get immunizationApi(): ImmunizationApi {
+        return this._immunizationApi
     }
 
     get observationApi(): ObservationApi {

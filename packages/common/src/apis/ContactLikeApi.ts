@@ -5,7 +5,7 @@ import { CommonFilter } from '../filters/filters'
 /**
  * The ContactApi interface provides methods to manage Contacts.
  */
-export interface ContactLikeApi<DSContact, DSPatient, DSDocument> {
+export interface ContactLikeApi<DSContact> {
     /**
      *
      * Create or update a [Contact] for a patient.

@@ -1,4 +1,4 @@
-import { Connection, ConnectionImpl, Contact, FilterChainContact, FilterChainHealthElement, HealthElement, IccAuthApi, IccContactXApi, IccPatientXApi, IccUserXApi, ListOfIds, subscribeToEntityEvents, SubscriptionOptions, User } from '@icure/api'
+import { Connection, ConnectionImpl, Contact, FilterChainContact, IccAuthApi, IccContactXApi, IccPatientXApi, IccUserXApi, ListOfIds, subscribeToEntityEvents, SubscriptionOptions, User } from '@icure/api'
 import { PaginatedList } from '../../models/PaginatedList.model'
 import { ContactLikeApi } from '../ContactLikeApi'
 import { CommonFilter, NoOpFilter } from '../../filters/filters'
@@ -7,7 +7,7 @@ import { ContactDto, ErrorHandler, FilterMapper, firstOrNull, forceUuid, toPagin
 import { iccRestApiPath } from '@icure/api/icc-api/api/IccRestApiPath'
 import { IccDataOwnerXApi } from '@icure/api/icc-x-api/icc-data-owner-x-api'
 
-class ContactLikeApiImpl<DSContact, DSPatient, DSDocument> implements ContactLikeApi<DSContact, DSPatient, DSDocument> {
+export class ContactLikeApiImpl<DSContact> implements ContactLikeApi<DSContact> {
     constructor(
         private readonly contactMapper: Mapper<DSContact, ContactDto>,
         private readonly errorHandler: ErrorHandler,
