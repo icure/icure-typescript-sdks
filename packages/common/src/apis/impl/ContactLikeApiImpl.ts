@@ -36,7 +36,7 @@ class ContactLikeApiImpl<DSContact, DSPatient, DSDocument> implements ContactLik
         const contactsToUpdate = mappedContacts.filter((contact) => !!contact.rev)
 
         if (!contactsToUpdate.every((contact) => contact.id != null && forceUuid(contact.id))) {
-            throw this.errorHandler.createErrorWithMessage('Error while updating: HealthElement id should be provided as an UUID v4 (String)')
+            throw this.errorHandler.createErrorWithMessage('Error while updating: Contact id should be provided as an UUID v4 (String)')
         }
 
         const currentUser = await this.userApi.getCurrentUser().catch((e) => {
