@@ -52,7 +52,7 @@ interface BaseHealthElementFilterBuilder<F, DSPatient> {
     forPatients(patients: DSPatient[]): F
 }
 
-export class HealthElementFilterWithDataOwner<DSPatient> extends SortableFilterBuilder<HealthElement, DeviceFilterSortStepDecorator<DSPatient>> implements BaseHealthElementFilterBuilder<HealthElementFilterWithDataOwner<DSPatient>, DSPatient>, FilterBuilder<HealthElement> {
+export class HealthElementFilterWithDataOwner<DSPatient> extends SortableFilterBuilder<HealthElement, HealthElementFilterSortStepDecorator<DSPatient>> implements BaseHealthElementFilterBuilder<HealthElementFilterWithDataOwner<DSPatient>, DSPatient>, FilterBuilder<HealthElement> {
     _dataOwnerId: Promise<string>
 
     constructor(
@@ -64,8 +64,8 @@ export class HealthElementFilterWithDataOwner<DSPatient> extends SortableFilterB
         this._dataOwnerId = !!dataOwnerId ? Promise.resolve(dataOwnerId) : api.baseApi.userApi.getCurrentUser().then((u) => api.baseApi.dataOwnerApi.getDataOwnerIdOf(u))
     }
 
-    get sort(): DeviceFilterSortStepDecorator<DSPatient> {
-        return new DeviceFilterSortStepDecorator(this)
+    get sort(): HealthElementFilterSortStepDecorator<DSPatient> {
+        return new HealthElementFilterSortStepDecorator(this)
     }
 
     getDataOwner() {
@@ -161,7 +161,7 @@ export class HealthElementFilterWithDataOwner<DSPatient> extends SortableFilterB
 
 type NonSortableHealthElementFilter<DSPatient> = BaseHealthElementFilterBuilder<HealthElementFilterWithDataOwner<DSPatient>, DSPatient> & FilterBuilder<HealthElement>
 
-class DeviceFilterSortStepDecorator<DSPatient> implements BaseHealthElementFilterBuilder<NonSortableHealthElementFilter<DSPatient>, DSPatient> {
+class HealthElementFilterSortStepDecorator<DSPatient> implements BaseHealthElementFilterBuilder<NonSortableHealthElementFilter<DSPatient>, DSPatient> {
     constructor(private healthcareElementFilter: HealthElementFilterWithDataOwner<DSPatient>) {}
 
     byIds(byIds: string[]): NonSortableHealthElementFilter<DSPatient> {
