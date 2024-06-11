@@ -60,6 +60,8 @@ export class Encounter {
         this.endOfLife = encounter.endOfLife
         this.author = encounter.author
         this.performer = encounter.performer
+        this.immunizations = encounter.immunizations
+        this.observations = encounter.observations
         this.notes = encounter.notes
         this.systemMetaData = encounter.systemMetaData
     }
