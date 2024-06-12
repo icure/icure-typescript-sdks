@@ -6,7 +6,7 @@ import { generateProperty } from '../../../common/test/models/Property.model'
 import { generateSystemMetaDataOwner } from '../../../common/test/models/SystemMetaDataOwner.model'
 import { v4 } from 'uuid'
 import { domainTypeTag, mapCodeStubToCodingReference } from '@icure/typescript-common'
-import { ISO639_1 } from '@icure/api';
+import { ISO639_1 } from '@icure/api'
 
 export function generateOrganisation(): Organisation {
     const org = new Organisation({
@@ -15,20 +15,19 @@ export function generateOrganisation(): Organisation {
         created: Date.now(),
         modified: Date.now(),
         identifiers: [generateIdentifier()],
-        tags: ([generateCodingReference()]),
-        codes: ([generateCodingReference()]),
+        tags: [generateCodingReference()],
+        codes: [generateCodingReference()],
         deletionDate: Date.now(),
         name: 'Fake Organisation',
         parentId: 'fakeParentId',
         userId: 'fakeUserId',
         addresses: [generateLocation()],
         languages: ['en', 'fr'],
-        picture: new ArrayBuffer(8),
         description: Object.fromEntries([
             ['en', 'This is a fake organisation'],
             ['fr', 'Ceci est un organisation factice'],
         ]) as Record<ISO639_1, string>,
-        properties: ([generateProperty()]),
+        properties: [generateProperty()],
         systemMetaData: generateSystemMetaDataOwner(mapCodeStubToCodingReference(domainTypeTag('organisation'))),
     })
 

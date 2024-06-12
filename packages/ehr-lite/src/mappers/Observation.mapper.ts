@@ -255,7 +255,7 @@ function toObservationLocalContent(dto: ServiceDto): Record<ISO639_1, LocalCompo
     return Object.fromEntries(
         localizedContent.map(([key, value]) => {
             return [key as ISO639_1, mapContentDtoToLocalComponent(value)]
-        }),
+        })
     ) as Record<ISO639_1, LocalComponent>
 }
 
@@ -264,7 +264,7 @@ function toObservationQualifiedLinks(dto: ServiceDto): Record<string, Record<str
 }
 
 function toObservationCodes(dto: ServiceDto): Array<CodingReference> | undefined {
-    return !!dto.codes ? (dto.codes.map(mapCodeStubToCodingReference)) : undefined
+    return !!dto.codes ? dto.codes.map(mapCodeStubToCodingReference) : undefined
 }
 
 function toObservationTags(dto: ServiceDto): Array<CodingReference> | undefined {

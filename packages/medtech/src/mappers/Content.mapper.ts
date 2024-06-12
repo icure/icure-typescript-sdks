@@ -2,6 +2,7 @@ import { Content } from '../models/Content.model'
 import { mapMeasureDtoToMeasure, mapMeasureToMeasureDto, mapTimeSeriesDtoToTimeSeries, mapTimeSeriesToTimeSeriesDto, Measure, TimeSeries, ContentDto, MedicationDto, ServiceDto, MeasureDto, TimeSeriesDto } from '@icure/typescript-common'
 import { DataSample } from '../models/DataSample.model'
 import { mapDataSampleToServiceDto, mapServiceDtoToDataSample } from './DataSample.mapper'
+import { b64_2ab, ua2b64 } from '@icure/api'
 
 function toContentDtoStringValue(domain: Content): string | undefined {
     return domain.stringValue
@@ -24,7 +25,7 @@ function toContentDtoFuzzyDateValue(domain: Content): number | undefined {
 }
 
 function toContentDtoBinaryValue(domain: Content): ArrayBuffer | undefined {
-    return domain.binaryValue
+    return domain.binaryValue ? b64_2ab(domain.binaryValue) : undefined
 }
 
 function toContentDtoDocumentId(domain: Content): string | undefined {
@@ -75,8 +76,8 @@ function toContentFuzzyDateValue(dto: ContentDto): number | undefined {
     return dto.fuzzyDateValue
 }
 
-function toContentBinaryValue(dto: ContentDto): ArrayBuffer | undefined {
-    return dto.binaryValue
+function toContentBinaryValue(dto: ContentDto): string | undefined {
+    return dto.binaryValue ? ua2b64(dto.binaryValue) : undefined
 }
 
 function toContentDocumentId(dto: ContentDto): string | undefined {

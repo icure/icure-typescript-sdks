@@ -23,6 +23,7 @@ import {
     IdentifierDto,
     PropertyStub,
 } from '@icure/typescript-common'
+import { b64_2ab, ua2b64 } from '@icure/api'
 
 function toDeviceDtoId(domain: MedicalDevice): string {
     return forceUuid(domain.id)
@@ -101,7 +102,7 @@ function toDeviceDtoParentId(domain: MedicalDevice): string | undefined {
 }
 
 function toDeviceDtoPicture(domain: MedicalDevice): ArrayBuffer | undefined {
-    return domain.picture
+    return domain.picture ? b64_2ab(domain.picture) : undefined
 }
 
 function toDeviceDtoProperties(domain: MedicalDevice): PropertyStub[] | undefined {
@@ -208,8 +209,8 @@ function toMedicalDeviceParentId(dto: DeviceDto): string | undefined {
     return dto.parentId
 }
 
-function toMedicalDevicePicture(dto: DeviceDto): ArrayBuffer | undefined {
-    return dto.picture
+function toMedicalDevicePicture(dto: DeviceDto): string | undefined {
+    return dto.picture ? ua2b64(dto.picture) : undefined
 }
 
 function toMedicalDeviceProperties(dto: DeviceDto): Array<Property> {

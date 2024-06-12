@@ -5,6 +5,10 @@ export class MapComponent extends ClassComponent {
         super(nullable, [keyType, valueType])
     }
 
+    public notNullable(): ClassComponent {
+        return new MapComponent(false, this.keyType, this.valueType)
+    }
+
     get keyType(): ClassComponent {
         return this.children![0]
     }

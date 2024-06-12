@@ -13,7 +13,7 @@ import { mapTo, TelecomDto } from '@icure/typescript-common'
 
 @mapTo(TelecomDto)
 export class Telecom {
-    constructor(json: ITelecom) {
+    constructor(json: Partial<ITelecom>) {
         Object.assign(this as Telecom, json as ITelecom)
     }
 
@@ -21,24 +21,24 @@ export class Telecom {
     'telecomNumber'?: string
     'telecomDescription'?: string
 
-    static toJSON(instance: Telecom): any {
-        const pojo: any = {}
-        if (instance.telecomType !== undefined) pojo['telecomType'] = instance.telecomType
-        if (instance.telecomNumber !== undefined) pojo['telecomNumber'] = instance.telecomNumber
-        if (instance.telecomDescription !== undefined) pojo['telecomDescription'] = instance.telecomDescription
+    static toJSON(instance: Telecom): ITelecom {
+        const pojo: ITelecom = {} as ITelecom
+        if (instance.telecomType !== undefined) pojo["telecomType"] = instance.telecomType
+        if (instance.telecomNumber !== undefined) pojo["telecomNumber"] = instance.telecomNumber
+        if (instance.telecomDescription !== undefined) pojo["telecomDescription"] = instance.telecomDescription
         return pojo
     }
 
-    static fromJSON(pojo: any): Telecom {
+    static fromJSON(pojo: ITelecom): Telecom {
         const obj = {} as ITelecom
-        if (pojo['telecomType'] !== undefined) {
-            obj['telecomType'] = pojo['telecomType']
+        if (pojo["telecomType"] !== undefined) {
+            obj['telecomType'] = pojo["telecomType"]!
         }
-        if (pojo['telecomNumber'] !== undefined) {
-            obj['telecomNumber'] = pojo['telecomNumber']
+        if (pojo["telecomNumber"] !== undefined) {
+            obj['telecomNumber'] = pojo["telecomNumber"]!
         }
-        if (pojo['telecomDescription'] !== undefined) {
-            obj['telecomDescription'] = pojo['telecomDescription']
+        if (pojo["telecomDescription"] !== undefined) {
+            obj['telecomDescription'] = pojo["telecomDescription"]!
         }
         return new Telecom(obj)
     }

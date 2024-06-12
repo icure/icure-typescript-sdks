@@ -35,6 +35,7 @@ import {
 } from '@icure/typescript-common'
 import { mapAddressDtoToLocation, mapLocationToAddressDto } from './Location.mapper'
 import { healthcareProfessionalIdentifiers } from './utils/HealthProfessional.utils'
+import { b64_2ab, ua2b64 } from '@icure/api'
 
 function toHealthcarePartyDtoId(domain: Organisation): string | undefined {
     return domain.id
@@ -161,7 +162,7 @@ function toHealthcarePartyDtoLanguages(domain: Organisation): string[] | undefin
 }
 
 function toHealthcarePartyDtoPicture(domain: Organisation): ArrayBuffer | undefined {
-    return domain.picture
+    return domain.picture ? b64_2ab(domain.picture) : undefined
 }
 
 function toHealthcarePartyDtoStatuses(domain: Organisation): HealthcarePartyDto.StatusesEnum[] | undefined {
@@ -289,7 +290,7 @@ function toOrganisationTags(dto: HealthcarePartyDto): Array<CodingReference> | u
 }
 
 function toOrganisationCodes(dto: HealthcarePartyDto): Array<CodingReference> | undefined {
-    return !!dto.codes ? (dto.codes.map(mapCodeStubToCodingReference)) : undefined
+    return !!dto.codes ? dto.codes.map(mapCodeStubToCodingReference) : undefined
 }
 
 function toOrganisationDeletionDate(dto: HealthcarePartyDto): number | undefined {
@@ -316,8 +317,8 @@ function toOrganisationLanguages(dto: HealthcarePartyDto): string[] | undefined 
     return dto.languages
 }
 
-function toOrganisationPicture(dto: HealthcarePartyDto): ArrayBuffer | undefined {
-    return dto.picture
+function toOrganisationPicture(dto: HealthcarePartyDto): string | undefined {
+    return dto.picture ? ua2b64(dto.picture) : undefined
 }
 
 function toOrganisationDescription(dto: HealthcarePartyDto): Record<ISO639_1, string> | undefined {
@@ -325,7 +326,7 @@ function toOrganisationDescription(dto: HealthcarePartyDto): Record<ISO639_1, st
 }
 
 function toOrganisationProperties(dto: HealthcarePartyDto): Array<Property> | undefined {
-    return !!dto.properties ? (dto.properties.map(mapPropertyStubToProperty)) : undefined
+    return !!dto.properties ? dto.properties.map(mapPropertyStubToProperty) : undefined
 }
 
 function toOrganisationSystemMetaData(dto: HealthcarePartyDto): SystemMetaDataOwner | undefined {

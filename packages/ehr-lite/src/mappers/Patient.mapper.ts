@@ -54,6 +54,7 @@ import { mapAddressDtoToLocation, mapLocationToAddressDto } from './Location.map
 import { GenderEnum } from '../models/enums/Gender.enum'
 import { PatientDeactivationReasonEnum } from '../models/enums/PatientDeactivationReason.enum'
 import { PatientPersonalStatusEnum } from '../models/enums/PatientPersonalStatus.enum'
+import { b64_2ab, ua2b64 } from '@icure/api'
 
 function toPatientDtoId(domain: Patient): string | undefined {
     return domain.id
@@ -240,7 +241,7 @@ function toPatientDtoPreferredUserId(domain: Patient): string | undefined {
 }
 
 function toPatientDtoPicture(domain: Patient): ArrayBuffer | undefined {
-    return domain.picture
+    return domain.picture ? b64_2ab(domain.picture) : undefined
 }
 
 function toPatientDtoExternalId(domain: Patient): string | undefined {
@@ -404,11 +405,11 @@ function toPatientResponsible(dto: PatientDto): string | undefined {
 }
 
 function toPatientTags(dto: PatientDto): Array<CodingReference> | undefined {
-    return !!dto.tags?.length ? (dto.tags.map(mapCodeStubToCodingReference)) : undefined
+    return !!dto.tags?.length ? dto.tags.map(mapCodeStubToCodingReference) : undefined
 }
 
 function toPatientCodes(dto: PatientDto): Array<CodingReference> | undefined {
-    return !!dto.codes?.length ? (dto.codes.map(mapCodeStubToCodingReference)) : undefined
+    return !!dto.codes?.length ? dto.codes.map(mapCodeStubToCodingReference) : undefined
 }
 
 function toPatientEndOfLife(dto: PatientDto): number | undefined {
@@ -515,8 +516,8 @@ function toPatientEthnicity(dto: PatientDto): string | undefined {
     return dto.ethnicity
 }
 
-function toPatientPicture(dto: PatientDto): ArrayBuffer | undefined {
-    return dto.picture
+function toPatientPicture(dto: PatientDto): string | undefined {
+    return dto.picture ? ua2b64(dto.picture) : undefined
 }
 
 function toPatientExternalId(dto: PatientDto): string | undefined {
@@ -536,7 +537,7 @@ function toPatientPatientProfessions(dto: PatientDto): CodingReference[] | undef
 }
 
 function toPatientProperties(dto: PatientDto): Array<Property> | undefined {
-    return !!dto.properties ? (dto.properties.map(mapPropertyStubToProperty)) : undefined
+    return !!dto.properties ? dto.properties.map(mapPropertyStubToProperty) : undefined
 }
 
 function toPatientSystemMetaData(dto: PatientDto): SystemMetaDataOwnerEncrypted | undefined {

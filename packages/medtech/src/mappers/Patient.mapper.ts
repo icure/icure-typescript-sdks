@@ -52,6 +52,7 @@ import { mapPersonNameDtoToPersonName, mapPersonNameToPersonNameDto } from './Pe
 import { mapAddressDtoToAddress, mapAddressToAddressDto } from './Address.mapper'
 import { mapPartnershipDtoToPartnership, mapPartnershipToPartnershipDto } from './Partnership.mapper'
 import { mapPatientHealthCarePartyDtoToPatientHealthCareParty, mapPatientHealthCarePartyToPatientHealthCarePartyDto } from './PatientHealthCareParty.mapper'
+import { b64_2ab, ua2b64 } from '@icure/api'
 
 function toPatientDtoId(domain: Patient): string | undefined {
     return forceUuid(domain.id)
@@ -238,7 +239,7 @@ function toPatientDtoPreferredUserId(domain: Patient): string | undefined {
 }
 
 function toPatientDtoPicture(domain: Patient): ArrayBuffer | undefined {
-    return domain.picture
+    return domain.picture ? b64_2ab(domain.picture) : undefined
 }
 
 function toPatientDtoExternalId(domain: Patient): string | undefined {
@@ -553,8 +554,8 @@ function toPatientEthnicity(dto: PatientDto): string | undefined {
     return dto.ethnicity
 }
 
-function toPatientPicture(dto: PatientDto): ArrayBuffer | undefined {
-    return dto.picture ? dto.picture : undefined
+function toPatientPicture(dto: PatientDto): string | undefined {
+    return dto.picture ? ua2b64(dto.picture) : undefined
 }
 
 function toPatientExternalId(dto: PatientDto): string | undefined {

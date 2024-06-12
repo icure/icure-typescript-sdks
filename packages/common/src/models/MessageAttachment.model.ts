@@ -6,24 +6,24 @@ export class MessageAttachment {
     type?: 'annex' | 'body'
     ids?: string[]
 
-    constructor(data: IMessageAttachment) {
+    constructor(data: Partial<IMessageAttachment>) {
         Object.assign(this, data)
     }
 
-    static toJSON(instance: MessageAttachment): any {
-        const pojo: any = {}
-        if (instance.type !== undefined) pojo['type'] = instance.type
-        if (instance.ids !== undefined) pojo['ids'] = instance.ids?.map((item) => item)
+    static toJSON(instance: MessageAttachment): IMessageAttachment {
+        const pojo: IMessageAttachment = {} as IMessageAttachment
+        if (instance.type !== undefined) pojo["type"] = instance.type
+        if (instance.ids !== undefined) pojo["ids"] = instance.ids.map(item => item)
         return pojo
     }
 
-    static fromJSON(pojo: any): MessageAttachment {
+    static fromJSON(pojo: IMessageAttachment): MessageAttachment {
         const obj = {} as IMessageAttachment
-        if (pojo['type'] !== undefined) {
-            obj['type'] = pojo['type']
+        if (pojo["type"] !== undefined) {
+            obj['type'] = pojo["type"]!
         }
-        if (pojo['ids'] !== undefined) {
-            obj['ids'] = pojo['ids']?.map((item: any) => item)
+        if (pojo["ids"] !== undefined) {
+            obj['ids'] = pojo["ids"]!.map((item: any) => item)
         }
         return new MessageAttachment(obj)
     }

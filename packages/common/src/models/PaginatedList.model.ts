@@ -2,7 +2,7 @@
 import { PaginatedDocumentKeyAndIdPairObject } from './PaginatedDocumentKeyAndIdPairObject.model'
 
 export class PaginatedList<T> {
-    constructor(json: IPaginatedList<T>) {
+    constructor(json: Partial<IPaginatedList<T>>) {
         Object.assign(this as PaginatedList<T>, json)
     }
 

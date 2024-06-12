@@ -100,7 +100,7 @@ export class DataSample {
     'labels': Array<CodingReference>
     'systemMetaData'?: SystemMetaDataEncrypted
 
-    constructor(json: IDataSample) {
+    constructor(json: Partial<IDataSample>) {
         this.id = forceUuid(json.id)
         this.transactionId = json.transactionId
         this.identifiers = json.identifiers ?? []
@@ -124,98 +124,98 @@ export class DataSample {
         this.endOfLife = json.endOfLife
     }
 
-    static toJSON(instance: DataSample): any {
-        const pojo: any = {}
-        pojo['id'] = instance.id
-        if (instance.transactionId !== undefined) pojo['transactionId'] = instance.transactionId
-        pojo['identifiers'] = instance.identifiers.map((item) => Identifier.toJSON(item))
-        if (instance.batchId !== undefined) pojo['batchId'] = instance.batchId
-        if (instance.healthcareElementIds !== undefined) pojo['healthcareElementIds'] = ([...(instance.healthcareElementIds ?? [])]?.map((item) => item) ?? [])
-        if (instance.canvasesIds !== undefined) pojo['canvasesIds'] = ([...(instance.canvasesIds ?? [])]?.map((item) => item) ?? [])
-        if (instance.index !== undefined) pojo['index'] = instance.index
-        pojo['content'] = Object.fromEntries([...Object.entries(instance.content)].map(([k, v]) => [k, Content.toJSON(v)]))
-        if (instance.valueDate !== undefined) pojo['valueDate'] = instance.valueDate
-        if (instance.openingDate !== undefined) pojo['openingDate'] = instance.openingDate
-        if (instance.closingDate !== undefined) pojo['closingDate'] = instance.closingDate
-        if (instance.created !== undefined) pojo['created'] = instance.created
-        if (instance.modified !== undefined) pojo['modified'] = instance.modified
-        if (instance.endOfLife !== undefined) pojo['endOfLife'] = instance.endOfLife
-        if (instance.author !== undefined) pojo['author'] = instance.author
-        if (instance.responsible !== undefined) pojo['responsible'] = instance.responsible
-        if (instance.comment !== undefined) pojo['comment'] = instance.comment
-        pojo['qualifiedLinks'] = Object.fromEntries([...Object.entries(instance.qualifiedLinks.entries)].map(([k, v]) => [k, Object.fromEntries([...Object.entries(v)].map(([k, v]) => [k, v]))]))
-        pojo['codes'] = ([...instance.codes].map((item) => CodingReference.toJSON(item)))
-        pojo['labels'] = ([...instance.labels].map((item) => CodingReference.toJSON(item)))
-        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataEncrypted.toJSON(instance.systemMetaData) : undefined
+    static toJSON(instance: DataSample): IDataSample {
+        const pojo: IDataSample = {} as IDataSample
+        pojo["id"] = instance.id
+        if (instance.transactionId !== undefined) pojo["transactionId"] = instance.transactionId
+        pojo["identifiers"] = instance.identifiers.map(item => Identifier.toJSON(item))
+        if (instance.batchId !== undefined) pojo["batchId"] = instance.batchId
+        if (instance.healthcareElementIds !== undefined) pojo["healthcareElementIds"] = instance.healthcareElementIds.map(item => item)
+        if (instance.canvasesIds !== undefined) pojo["canvasesIds"] = instance.canvasesIds.map(item => item)
+        if (instance.index !== undefined) pojo["index"] = instance.index
+        pojo["content"] = {...instance.content}
+        if (instance.valueDate !== undefined) pojo["valueDate"] = instance.valueDate
+        if (instance.openingDate !== undefined) pojo["openingDate"] = instance.openingDate
+        if (instance.closingDate !== undefined) pojo["closingDate"] = instance.closingDate
+        if (instance.created !== undefined) pojo["created"] = instance.created
+        if (instance.modified !== undefined) pojo["modified"] = instance.modified
+        if (instance.endOfLife !== undefined) pojo["endOfLife"] = instance.endOfLife
+        if (instance.author !== undefined) pojo["author"] = instance.author
+        if (instance.responsible !== undefined) pojo["responsible"] = instance.responsible
+        if (instance.comment !== undefined) pojo["comment"] = instance.comment
+        pojo["qualifiedLinks"] = {...instance.qualifiedLinks}
+        pojo["codes"] = instance.codes.map(item => CodingReference.toJSON(item))
+        pojo["labels"] = instance.labels.map(item => CodingReference.toJSON(item))
+        if (instance.systemMetaData !== undefined) pojo["systemMetaData"] = SystemMetaDataEncrypted.toJSON(instance.systemMetaData)
         return pojo
     }
 
-    static fromJSON(pojo: any): DataSample {
+    static fromJSON(pojo: IDataSample): DataSample {
         const obj = {} as IDataSample
-        obj['id'] = pojo['id']
-        if (pojo['transactionId'] !== undefined) {
-            obj['transactionId'] = pojo['transactionId']
+        obj['id'] = pojo["id"]
+        if (pojo["transactionId"] !== undefined) {
+            obj['transactionId'] = pojo["transactionId"]!
         }
-        obj['identifiers'] = pojo['identifiers'].map((item: any) => Identifier.fromJSON(item))
-        if (pojo['batchId'] !== undefined) {
-            obj['batchId'] = pojo['batchId']
+        obj['identifiers'] = pojo["identifiers"].map((item: any) => Identifier.fromJSON(item))
+        if (pojo["batchId"] !== undefined) {
+            obj['batchId'] = pojo["batchId"]!
         }
-        if (pojo['healthcareElementIds'] !== undefined) {
-            obj['healthcareElementIds'] = pojo['healthcareElementIds']?.map((item: any) => item) ?? []
+        if (pojo["healthcareElementIds"] !== undefined) {
+            obj['healthcareElementIds'] = pojo["healthcareElementIds"]!.map((item: any) => item)
         }
-        if (pojo['canvasesIds'] !== undefined) {
-            obj['canvasesIds'] = pojo['canvasesIds']?.map((item: any) => item) ?? []
+        if (pojo["canvasesIds"] !== undefined) {
+            obj['canvasesIds'] = pojo["canvasesIds"]!.map((item: any) => item)
         }
-        if (pojo['index'] !== undefined) {
-            obj['index'] = pojo['index']
+        if (pojo["index"] !== undefined) {
+            obj['index'] = pojo["index"]!
         }
-        obj['content'] = Object.fromEntries(Object.entries(pojo['content']).map(([k, v]: [any, any]) => [k, Content.fromJSON(v)]))
-        if (pojo['valueDate'] !== undefined) {
-            obj['valueDate'] = pojo['valueDate']
+        obj['content'] = {...pojo["content"]}
+        if (pojo["valueDate"] !== undefined) {
+            obj['valueDate'] = pojo["valueDate"]!
         }
-        if (pojo['openingDate'] !== undefined) {
-            obj['openingDate'] = pojo['openingDate']
+        if (pojo["openingDate"] !== undefined) {
+            obj['openingDate'] = pojo["openingDate"]!
         }
-        if (pojo['closingDate'] !== undefined) {
-            obj['closingDate'] = pojo['closingDate']
+        if (pojo["closingDate"] !== undefined) {
+            obj['closingDate'] = pojo["closingDate"]!
         }
-        if (pojo['created'] !== undefined) {
-            obj['created'] = pojo['created']
+        if (pojo["created"] !== undefined) {
+            obj['created'] = pojo["created"]!
         }
-        if (pojo['modified'] !== undefined) {
-            obj['modified'] = pojo['modified']
+        if (pojo["modified"] !== undefined) {
+            obj['modified'] = pojo["modified"]!
         }
-        if (pojo['endOfLife'] !== undefined) {
-            obj['endOfLife'] = pojo['endOfLife']
+        if (pojo["endOfLife"] !== undefined) {
+            obj['endOfLife'] = pojo["endOfLife"]!
         }
-        if (pojo['author'] !== undefined) {
-            obj['author'] = pojo['author']
+        if (pojo["author"] !== undefined) {
+            obj['author'] = pojo["author"]!
         }
-        if (pojo['responsible'] !== undefined) {
-            obj['responsible'] = pojo['responsible']
+        if (pojo["responsible"] !== undefined) {
+            obj['responsible'] = pojo["responsible"]!
         }
-        if (pojo['comment'] !== undefined) {
-            obj['comment'] = pojo['comment']
+        if (pojo["comment"] !== undefined) {
+            obj['comment'] = pojo["comment"]!
         }
-        obj['qualifiedLinks'] = Object.fromEntries(Object.entries(pojo['qualifiedLinks']).map(([k, v]: [any, any]) => [k, Object.fromEntries(Object.entries(v).map(([k, v]: [any, any]) => [k, v]))]))
-        obj['codes'] = pojo['codes'].map((item: any) => CodingReference.fromJSON(item))
-        obj['labels'] = pojo['labels'].map((item: any) => CodingReference.fromJSON(item))
-        if (pojo['systemMetaData'] !== undefined) {
-            obj['systemMetaData'] = !!pojo['systemMetaData'] ? SystemMetaDataEncrypted.fromJSON(pojo['systemMetaData']) : undefined
+        obj['qualifiedLinks'] = {...pojo["qualifiedLinks"]}
+        obj['codes'] = pojo["codes"].map((item: any) => CodingReference.fromJSON(item))
+        obj['labels'] = pojo["labels"].map((item: any) => CodingReference.fromJSON(item))
+        if (pojo["systemMetaData"] !== undefined) {
+            obj['systemMetaData'] = SystemMetaDataEncrypted.fromJSON(pojo["systemMetaData"]!)
         }
         return new DataSample(obj)
     }
 }
 
 interface IDataSample {
-    id?: string
+    id: string
     transactionId?: string
-    identifiers?: Array<Identifier>
+    identifiers: Array<Identifier>
     batchId?: string
     healthcareElementIds?: Array<string>
     canvasesIds?: Array<string>
     index?: number
-    content?: Record<ISO639_1, Content>
+    content: Record<ISO639_1, Content>
     valueDate?: number
     openingDate?: number
     closingDate?: number
@@ -225,8 +225,8 @@ interface IDataSample {
     author?: string
     responsible?: string
     comment?: string
-    qualifiedLinks?: Record<string, Record<string, string>>
-    codes?: Array<CodingReference>
-    labels?: Array<CodingReference>
+    qualifiedLinks: Record<string, Record<string, string>>
+    codes: Array<CodingReference>
+    labels: Array<CodingReference>
     systemMetaData?: SystemMetaDataEncrypted
 }

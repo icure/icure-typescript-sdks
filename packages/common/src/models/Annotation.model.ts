@@ -14,7 +14,7 @@ export class Annotation {
     target?: string
     encryptedSelf?: string
 
-    constructor(annotation: IAnnotation) {
+    constructor(annotation: Partial<IAnnotation>) {
         this.id = forceUuid(annotation.id)
         this.tags = annotation.tags ?? []
         this.author = annotation.author
@@ -25,50 +25,50 @@ export class Annotation {
         this.encryptedSelf = annotation.encryptedSelf
     }
 
-    static toJSON(instance: Annotation): any {
-        const pojo: any = {}
-        pojo['id'] = instance.id
-        pojo['tags'] = ([...instance.tags].map((item) => CodingReference.toJSON(item)))
-        if (instance.author !== undefined) pojo['author'] = instance.author
-        if (instance.created !== undefined) pojo['created'] = instance.created
-        if (instance.modified !== undefined) pojo['modified'] = instance.modified
-        pojo['markdown'] = Object.fromEntries(Object.entries(instance.markdown).map(([k, v]) => [k, v]))
-        if (instance.target !== undefined) pojo['target'] = instance.target
-        if (instance.encryptedSelf !== undefined) pojo['encryptedSelf'] = instance.encryptedSelf
+    static toJSON(instance: Annotation): IAnnotation {
+        const pojo: IAnnotation = {} as IAnnotation
+        pojo["id"] = instance.id
+        pojo["tags"] = instance.tags.map(item => CodingReference.toJSON(item))
+        if (instance.author !== undefined) pojo["author"] = instance.author
+        if (instance.created !== undefined) pojo["created"] = instance.created
+        if (instance.modified !== undefined) pojo["modified"] = instance.modified
+        pojo["markdown"] = {...instance.markdown}
+        if (instance.target !== undefined) pojo["target"] = instance.target
+        if (instance.encryptedSelf !== undefined) pojo["encryptedSelf"] = instance.encryptedSelf
         return pojo
     }
 
-    static fromJSON(pojo: any): Annotation {
+    static fromJSON(pojo: IAnnotation): Annotation {
         const obj = {} as IAnnotation
-        obj['id'] = pojo['id']
-        obj['tags'] = (pojo['tags'].map((item: any) => CodingReference.fromJSON(item)))
-        if (pojo['author'] !== undefined) {
-            obj['author'] = pojo['author']
+        obj['id'] = pojo["id"]
+        obj['tags'] = pojo["tags"].map((item: any) => CodingReference.fromJSON(item))
+        if (pojo["author"] !== undefined) {
+            obj['author'] = pojo["author"]!
         }
-        if (pojo['created'] !== undefined) {
-            obj['created'] = pojo['created']
+        if (pojo["created"] !== undefined) {
+            obj['created'] = pojo["created"]!
         }
-        if (pojo['modified'] !== undefined) {
-            obj['modified'] = pojo['modified']
+        if (pojo["modified"] !== undefined) {
+            obj['modified'] = pojo["modified"]!
         }
-        obj['markdown'] = Object.fromEntries(Object.entries(pojo['markdown']).map(([k, v]: [any, any]) => [k, v]))
-        if (pojo['target'] !== undefined) {
-            obj['target'] = pojo['target']
+        obj['markdown'] = {...pojo["markdown"]}
+        if (pojo["target"] !== undefined) {
+            obj['target'] = pojo["target"]!
         }
-        if (pojo['encryptedSelf'] !== undefined) {
-            obj['encryptedSelf'] = pojo['encryptedSelf']
+        if (pojo["encryptedSelf"] !== undefined) {
+            obj['encryptedSelf'] = pojo["encryptedSelf"]!
         }
         return new Annotation(obj)
     }
 }
 
 interface IAnnotation {
-    id?: string
-    tags?: Array<CodingReference>
+    id: string
+    tags: Array<CodingReference>
     author?: string
     created?: number
     modified?: number
-    markdown?: Record<ISO639_1, string>
+    markdown: Record<ISO639_1, string>
     target?: string
     encryptedSelf?: string
 }

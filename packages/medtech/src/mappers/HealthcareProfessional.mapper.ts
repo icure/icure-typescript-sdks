@@ -29,6 +29,7 @@ import {
 } from '@icure/typescript-common'
 import { mapPersonNameDtoToPersonName, mapPersonNameToPersonNameDto } from './PersonName.mapper'
 import { mapAddressDtoToAddress, mapAddressToAddressDto } from './Address.mapper'
+import { b64_2ab, ua2b64 } from '@icure/api'
 
 function toHealthcarePartyDtoId(domain: HealthcareProfessional): string | undefined {
     return forceUuid(domain.id)
@@ -155,7 +156,7 @@ function toHealthcarePartyDtoLanguages(domain: HealthcareProfessional): string[]
 }
 
 function toHealthcarePartyDtoPicture(domain: HealthcareProfessional): ArrayBuffer | undefined {
-    return domain.picture
+    return domain.picture ? b64_2ab(domain.picture) : undefined
 }
 
 function toHealthcarePartyDtoStatuses(domain: HealthcareProfessional): HealthcarePartyDto.StatusesEnum[] | undefined {
@@ -326,8 +327,8 @@ function toHealthcareProfessionalLanguages(dto: HealthcarePartyDto): string[] {
     return dto.languages ?? []
 }
 
-function toHealthcareProfessionalPicture(dto: HealthcarePartyDto): ArrayBuffer | undefined {
-    return dto.picture
+function toHealthcareProfessionalPicture(dto: HealthcarePartyDto): string | undefined {
+    return dto.picture ? ua2b64(dto.picture) : undefined
 }
 
 function toHealthcareProfessionalSpecialityCodes(dto: HealthcarePartyDto): Array<CodingReference> | undefined {

@@ -15,7 +15,7 @@ import { mapTo } from '../utils/decorators'
 
 @mapTo(Code)
 export class Coding {
-    constructor(json: ICoding) {
+    constructor(json: Partial<ICoding>) {
         this.id = json.id ?? `${json.type}|${json.code}|${json.version}`
         this.rev = json.rev
         this.type = json.type
@@ -55,53 +55,53 @@ export class Coding {
      */
     'searchTerms': Record<string, Array<string>>
 
-    static toJSON(instance: Coding): any {
-        const pojo: any = {}
-        pojo['id'] = instance.id
-        if (instance.rev !== undefined) pojo['rev'] = instance.rev
-        if (instance.type !== undefined) pojo['type'] = instance.type
-        if (instance.code !== undefined) pojo['code'] = instance.code
-        if (instance.version !== undefined) pojo['version'] = instance.version
-        pojo['regions'] = ([...instance.regions].map((item) => item))
-        if (instance.description !== undefined) pojo['description'] = !!instance.description ? Object.fromEntries(Object.entries(instance.description).map(([k, v]) => [k, v])) : undefined
-        pojo['qualifiedLinks'] = Object.fromEntries(Object.entries(instance.qualifiedLinks).map(([k, v]) => [k, v.map((item) => item)]))
-        pojo['searchTerms'] = Object.fromEntries(Object.entries(instance.searchTerms).map(([k, v]) => [k, ([...v].map((item) => item))]))
+    static toJSON(instance: Coding): ICoding {
+        const pojo: ICoding = {} as ICoding
+        pojo["id"] = instance.id
+        if (instance.rev !== undefined) pojo["rev"] = instance.rev
+        if (instance.type !== undefined) pojo["type"] = instance.type
+        if (instance.code !== undefined) pojo["code"] = instance.code
+        if (instance.version !== undefined) pojo["version"] = instance.version
+        pojo["regions"] = instance.regions.map(item => item)
+        if (instance.description !== undefined) pojo["description"] = {...instance.description}
+        pojo["qualifiedLinks"] = {...instance.qualifiedLinks}
+        pojo["searchTerms"] = {...instance.searchTerms}
         return pojo
     }
 
-    static fromJSON(pojo: any): Coding {
+    static fromJSON(pojo: ICoding): Coding {
         const obj = {} as ICoding
-        obj['id'] = pojo['id']
-        if (pojo['rev'] !== undefined) {
-            obj['rev'] = pojo['rev']
+        obj['id'] = pojo["id"]
+        if (pojo["rev"] !== undefined) {
+            obj['rev'] = pojo["rev"]!
         }
-        if (pojo['type'] !== undefined) {
-            obj['type'] = pojo['type']
+        if (pojo["type"] !== undefined) {
+            obj['type'] = pojo["type"]!
         }
-        if (pojo['code'] !== undefined) {
-            obj['code'] = pojo['code']
+        if (pojo["code"] !== undefined) {
+            obj['code'] = pojo["code"]!
         }
-        if (pojo['version'] !== undefined) {
-            obj['version'] = pojo['version']
+        if (pojo["version"] !== undefined) {
+            obj['version'] = pojo["version"]!
         }
-        obj['regions'] = (pojo['regions'].map((item: any) => item))
-        if (pojo['description'] !== undefined) {
-            obj['description'] = pojo['description'] ? Object.fromEntries(Object.entries(pojo['description']).map(([k, v]: [any, any]) => [k, v])) : undefined
+        obj['regions'] = pojo["regions"].map((item: any) => item)
+        if (pojo["description"] !== undefined) {
+            obj['description'] = {...pojo["description"]!}
         }
-        obj['qualifiedLinks'] = Object.fromEntries(Object.entries(pojo['qualifiedLinks']).map(([k, v]: [any, any]) => [k, v.map((item: any) => item)]))
-        obj['searchTerms'] = Object.fromEntries(Object.entries(pojo['searchTerms']).map(([k, v]: [any, any]) => [k, (v.map((item: any) => item))]))
+        obj['qualifiedLinks'] = {...pojo["qualifiedLinks"]}
+        obj['searchTerms'] = {...pojo["searchTerms"]}
         return new Coding(obj)
     }
 }
 
 interface ICoding {
-    id?: string
+    id: string
     rev?: string
     type?: string
     code?: string
     version?: string
-    regions?: Array<string>
+    regions: Array<string>
     description?: Record<string, string>
-    qualifiedLinks?: Record<string, Array<string>>
-    searchTerms?: Record<string, Array<string>>
+    qualifiedLinks: Record<string, Array<string>>
+    searchTerms: Record<string, Array<string>>
 }

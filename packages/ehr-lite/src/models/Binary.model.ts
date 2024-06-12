@@ -1,8 +1,8 @@
-import { b64_2ab, ua2b64 } from '@icure/typescript-common'
+import { base64string } from '@icure/typescript-common'
 
 export class Binary implements IBinary {
     contentType: string
-    data: ArrayBuffer
+    data: base64string
     filename: string
 
     constructor(binary: IBinary) {
@@ -12,9 +12,9 @@ export class Binary implements IBinary {
     }
 
     static toJSON(instance: Binary): IBinary {
-        const pojo: any = {}
+        const pojo: IBinary = {} as IBinary
         pojo['contentType'] = instance.contentType
-        pojo['data'] = ua2b64(instance.data)
+        pojo['data'] = instance.data
         pojo['filename'] = instance.filename
         return pojo
     }
@@ -22,7 +22,7 @@ export class Binary implements IBinary {
     static fromJSON(pojo: IBinary): Binary {
         const obj = {} as IBinary
         obj['contentType'] = pojo['contentType']
-        obj['data'] = b64_2ab(pojo['data'])
+        obj['data'] = pojo['data']
         obj['filename'] = pojo['filename']
         return new Binary(obj)
     }
@@ -30,6 +30,6 @@ export class Binary implements IBinary {
 
 interface IBinary {
     contentType: string
-    data: ArrayBuffer
+    data: base64string
     filename: string
 }

@@ -10,13 +10,21 @@
  * Do not edit the class manually.
  */
 
-import { CodingReference, HealthcarePartyDto, Property, SystemMetaDataOwner, b64_2ab, forceUuid, mapTo, ua2b64 } from '@icure/typescript-common'
-import { Address } from './Address.model'
-import { PersonName } from './PersonName.model'
+import {
+    CodingReference,
+    HealthcarePartyDto,
+    Property,
+    SystemMetaDataOwner,
+    base64string,
+    forceUuid,
+    mapTo
+} from '@icure/typescript-common';
+import { Address } from './Address.model';
+import { PersonName } from './PersonName.model';
 
 @mapTo(HealthcarePartyDto)
 export class HealthcareProfessional {
-    constructor(json: IHealthcareProfessional) {
+    constructor(json: Partial<IHealthcareProfessional>) {
         this.id = forceUuid(json.id)
         this.rev = json.rev
         this.created = json.created
@@ -114,7 +122,7 @@ export class HealthcareProfessional {
     /**
      * A picture usually saved in JPEG format.
      */
-    'picture'?: ArrayBuffer
+    'picture'?: base64string
     /**
      * Medical specialty of the healthcare party codified using FHIR or Kmehr codificaiton scheme
      */
@@ -126,84 +134,84 @@ export class HealthcareProfessional {
     'properties': Array<Property>
     'systemMetaData'?: SystemMetaDataOwner
 
-    static toJSON(instance: HealthcareProfessional): any {
-        const pojo: any = {}
-        pojo['id'] = instance.id
-        if (instance.rev !== undefined) pojo['rev'] = instance.rev
-        if (instance.created !== undefined) pojo['created'] = instance.created
-        if (instance.modified !== undefined) pojo['modified'] = instance.modified
-        pojo['labels'] = ([...instance.labels].map((item) => CodingReference.toJSON(item)))
-        pojo['codes'] = ([...instance.codes].map((item) => CodingReference.toJSON(item)))
-        if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
-        if (instance.name !== undefined) pojo['name'] = instance.name
-        if (instance.lastName !== undefined) pojo['lastName'] = instance.lastName
-        if (instance.firstName !== undefined) pojo['firstName'] = instance.firstName
-        pojo['names'] = instance.names.map((item) => PersonName.toJSON(item))
-        if (instance.gender !== undefined) pojo['gender'] = instance.gender
-        if (instance.civility !== undefined) pojo['civility'] = instance.civility
-        if (instance.speciality !== undefined) pojo['speciality'] = instance.speciality
-        if (instance.parentId !== undefined) pojo['parentId'] = instance.parentId
-        pojo['addresses'] = instance.addresses.map((item) => Address.toJSON(item))
-        pojo['languages'] = instance.languages.map((item) => item)
-        if (instance.picture !== undefined) pojo['picture'] = !!instance.picture ? ua2b64(instance.picture) : undefined
-        pojo['specialityCodes'] = ([...instance.specialityCodes].map((item) => CodingReference.toJSON(item)))
-        if (instance.notes !== undefined) pojo['notes'] = instance.notes
-        pojo['properties'] = ([...instance.properties].map((item) => Property.toJSON(item)))
-        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataOwner.toJSON(instance.systemMetaData) : undefined
+    static toJSON(instance: HealthcareProfessional): IHealthcareProfessional {
+        const pojo: IHealthcareProfessional = {} as IHealthcareProfessional
+        pojo["id"] = instance.id
+        if (instance.rev !== undefined) pojo["rev"] = instance.rev
+        if (instance.created !== undefined) pojo["created"] = instance.created
+        if (instance.modified !== undefined) pojo["modified"] = instance.modified
+        pojo["labels"] = instance.labels.map(item => CodingReference.toJSON(item))
+        pojo["codes"] = instance.codes.map(item => CodingReference.toJSON(item))
+        if (instance.deletionDate !== undefined) pojo["deletionDate"] = instance.deletionDate
+        if (instance.name !== undefined) pojo["name"] = instance.name
+        if (instance.lastName !== undefined) pojo["lastName"] = instance.lastName
+        if (instance.firstName !== undefined) pojo["firstName"] = instance.firstName
+        pojo["names"] = instance.names.map(item => PersonName.toJSON(item))
+        if (instance.gender !== undefined) pojo["gender"] = instance.gender
+        if (instance.civility !== undefined) pojo["civility"] = instance.civility
+        if (instance.speciality !== undefined) pojo["speciality"] = instance.speciality
+        if (instance.parentId !== undefined) pojo["parentId"] = instance.parentId
+        pojo["addresses"] = instance.addresses.map(item => Address.toJSON(item))
+        pojo["languages"] = instance.languages.map(item => item)
+        if (instance.picture !== undefined) pojo["picture"] = instance.picture
+        pojo["specialityCodes"] = instance.specialityCodes.map(item => CodingReference.toJSON(item))
+        if (instance.notes !== undefined) pojo["notes"] = instance.notes
+        pojo["properties"] = instance.properties.map(item => Property.toJSON(item))
+        if (instance.systemMetaData !== undefined) pojo["systemMetaData"] = SystemMetaDataOwner.toJSON(instance.systemMetaData)
         return pojo
     }
 
-    static fromJSON(pojo: any): HealthcareProfessional {
+    static fromJSON(pojo: IHealthcareProfessional): HealthcareProfessional {
         const obj = {} as IHealthcareProfessional
-        obj['id'] = pojo['id']
-        if (pojo['rev'] !== undefined) {
-            obj['rev'] = pojo['rev']
+        obj['id'] = pojo["id"]
+        if (pojo["rev"] !== undefined) {
+            obj['rev'] = pojo["rev"]!
         }
-        if (pojo['created'] !== undefined) {
-            obj['created'] = pojo['created']
+        if (pojo["created"] !== undefined) {
+            obj['created'] = pojo["created"]!
         }
-        if (pojo['modified'] !== undefined) {
-            obj['modified'] = pojo['modified']
+        if (pojo["modified"] !== undefined) {
+            obj['modified'] = pojo["modified"]!
         }
-        obj['labels'] = pojo['labels'].map((item: any) => CodingReference.fromJSON(item))
-        obj['codes'] = pojo['codes'].map((item: any) => CodingReference.fromJSON(item))
-        if (pojo['deletionDate'] !== undefined) {
-            obj['deletionDate'] = pojo['deletionDate']
+        obj['labels'] = pojo["labels"].map((item: any) => CodingReference.fromJSON(item))
+        obj['codes'] = pojo["codes"].map((item: any) => CodingReference.fromJSON(item))
+        if (pojo["deletionDate"] !== undefined) {
+            obj['deletionDate'] = pojo["deletionDate"]!
         }
-        if (pojo['name'] !== undefined) {
-            obj['name'] = pojo['name']
+        if (pojo["name"] !== undefined) {
+            obj['name'] = pojo["name"]!
         }
-        if (pojo['lastName'] !== undefined) {
-            obj['lastName'] = pojo['lastName']
+        if (pojo["lastName"] !== undefined) {
+            obj['lastName'] = pojo["lastName"]!
         }
-        if (pojo['firstName'] !== undefined) {
-            obj['firstName'] = pojo['firstName']
+        if (pojo["firstName"] !== undefined) {
+            obj['firstName'] = pojo["firstName"]!
         }
-        obj['names'] = pojo['names'].map((item: any) => PersonName.fromJSON(item))
-        if (pojo['gender'] !== undefined) {
-            obj['gender'] = pojo['gender']
+        obj['names'] = pojo["names"].map((item: any) => PersonName.fromJSON(item))
+        if (pojo["gender"] !== undefined) {
+            obj['gender'] = pojo["gender"]!
         }
-        if (pojo['civility'] !== undefined) {
-            obj['civility'] = pojo['civility']
+        if (pojo["civility"] !== undefined) {
+            obj['civility'] = pojo["civility"]!
         }
-        if (pojo['speciality'] !== undefined) {
-            obj['speciality'] = pojo['speciality']
+        if (pojo["speciality"] !== undefined) {
+            obj['speciality'] = pojo["speciality"]!
         }
-        if (pojo['parentId'] !== undefined) {
-            obj['parentId'] = pojo['parentId']
+        if (pojo["parentId"] !== undefined) {
+            obj['parentId'] = pojo["parentId"]!
         }
-        obj['addresses'] = pojo['addresses'].map((item: any) => Address.fromJSON(item))
-        obj['languages'] = pojo['languages'].map((item: any) => item)
-        if (pojo['picture'] !== undefined) {
-            obj['picture'] = !!pojo['picture'] ? b64_2ab(pojo['picture']) : undefined
+        obj['addresses'] = pojo["addresses"].map((item: any) => Address.fromJSON(item))
+        obj['languages'] = pojo["languages"].map((item: any) => item)
+        if (pojo["picture"] !== undefined) {
+            obj['picture'] = pojo["picture"]!
         }
-        obj['specialityCodes'] = pojo['specialityCodes'].map((item: any) => CodingReference.fromJSON(item))
-        if (pojo['notes'] !== undefined) {
-            obj['notes'] = pojo['notes']
+        obj['specialityCodes'] = pojo["specialityCodes"].map((item: any) => CodingReference.fromJSON(item))
+        if (pojo["notes"] !== undefined) {
+            obj['notes'] = pojo["notes"]!
         }
-        obj['properties'] = pojo['properties'].map((item: any) => Property.fromJSON(item))
-        if (pojo['systemMetaData'] !== undefined) {
-            obj['systemMetaData'] = !!pojo['systemMetaData'] ? SystemMetaDataOwner.fromJSON(pojo['systemMetaData']) : undefined
+        obj['properties'] = pojo["properties"].map((item: any) => Property.fromJSON(item))
+        if (pojo["systemMetaData"] !== undefined) {
+            obj['systemMetaData'] = SystemMetaDataOwner.fromJSON(pojo["systemMetaData"]!)
         }
         return new HealthcareProfessional(obj)
     }
@@ -214,23 +222,23 @@ interface IHealthcareProfessional {
     rev?: string
     created?: number
     modified?: number
-    labels?: Array<CodingReference>
-    codes?: Array<CodingReference>
+    labels: Array<CodingReference>
+    codes: Array<CodingReference>
     deletionDate?: number
     name?: string
     lastName?: string
     firstName?: string
-    names?: Array<PersonName>
+    names: Array<PersonName>
     gender?: HealthcareProfessionalGenderEnum
     civility?: string
     speciality?: string
     parentId?: string
-    addresses?: Array<Address>
-    languages?: Array<string>
-    picture?: ArrayBuffer
-    specialityCodes?: Array<CodingReference>
+    addresses: Array<Address>
+    languages: Array<string>
+    picture?: base64string
+    specialityCodes: Array<CodingReference>
     notes?: string
-    properties?: Array<Property>
+    properties: Array<Property>
     systemMetaData?: SystemMetaDataOwner
 }
 

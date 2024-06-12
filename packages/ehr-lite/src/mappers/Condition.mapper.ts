@@ -35,6 +35,7 @@ import { ClinicalStatusEnum } from '../models/enums/ClinicalStatus.enum'
 import { VerificationStatusEnum } from '../models/enums/VerificationStatus.enum'
 import { CategoryEnum } from '../models/enums/Category.enum'
 import { SeverityEnum } from '../models/enums/Severity.enum'
+import { b64_2ab, ua2b64 } from '@icure/api'
 
 function toHealthElementDtoId(domain: Condition): string {
     return forceUuid(domain.id)
@@ -231,8 +232,8 @@ function toConditionId(dto: HealthElementDto): string | undefined {
     return dto.id
 }
 
-function toConditionIdentifiers(dto: HealthElementDto): Identifier[] | undefined {
-    return !!dto.identifiers ? [...dto.identifiers].map(mapIdentifierDtoToIdentifier) : undefined
+function toConditionIdentifiers(dto: HealthElementDto): Identifier[] {
+    return !!dto.identifiers ? [...dto.identifiers].map(mapIdentifierDtoToIdentifier) : []
 }
 
 function toConditionRev(dto: HealthElementDto): string | undefined {
@@ -286,18 +287,18 @@ function toConditionBodySite(dto: HealthElementDto): Array<CodingReference> | un
         return undefined
     }
 
-    return (bodySites.map(mapCodeStubToCodingReference))
+    return bodySites.map(mapCodeStubToCodingReference)
 }
 
-function toConditionTags(dto: HealthElementDto): Array<CodingReference> | undefined {
+function toConditionTags(dto: HealthElementDto): Array<CodingReference> {
     const contexts = ['clinicalStatus', 'verificationStatus', 'category', 'severity', 'bodySite'].map((v) => `Condition.${v}`)
     const tags = dto.tags?.filter((v) => (!!v.context ? !contexts.includes(v.context) : true))
 
-    return filteringOutInternalTags('condition', tags)
+    return filteringOutInternalTags('condition', tags) ?? []
 }
 
-function toConditionCodes(dto: HealthElementDto): Array<CodingReference> | undefined {
-    return dto.codes ? ([...dto.codes].map(mapCodeStubToCodingReference)) : undefined
+function toConditionCodes(dto: HealthElementDto): Array<CodingReference> {
+    return dto.codes ? [...dto.codes].map(mapCodeStubToCodingReference) : []
 }
 
 function toConditionEndOfLife(dto: HealthElementDto): number | undefined {
@@ -328,8 +329,8 @@ function toConditionDescription(dto: HealthElementDto): string | undefined {
     return dto.descr
 }
 
-function toConditionNotes(dto: HealthElementDto): Annotation[] | undefined {
-    return dto.notes ? [...dto.notes].map(mapAnnotationDtoToAnnotation) : undefined
+function toConditionNotes(dto: HealthElementDto): Annotation[] {
+    return dto.notes ? [...dto.notes].map(mapAnnotationDtoToAnnotation) : []
 }
 
 function toConditionSystemMetaData(dto: HealthElementDto): SystemMetaDataEncrypted | undefined {

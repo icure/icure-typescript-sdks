@@ -2,6 +2,10 @@ import { ClassComponent } from './ClassComponent'
 import { ImportDeclaration, SourceFile } from 'ts-morph'
 
 export class ArrayBufferComponent extends ClassComponent {
+    public notNullable(): ArrayBufferComponent {
+        return new ArrayBufferComponent(false, this.children)
+    }
+
     computeDeserializer(value: string): string {
         return this.nullable ? `!!${value} ? b64_2ab(${value}) : undefined` : `b64_2ab(${value})`
     }

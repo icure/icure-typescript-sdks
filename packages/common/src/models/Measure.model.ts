@@ -16,7 +16,7 @@ export class Measure {
     comparator?: string
     referenceRanges?: ReferenceRange[]
 
-    constructor(measure: IMeasure) {
+    constructor(measure: Partial<IMeasure>) {
         this.value = measure.value
         this.ref = measure.ref
         this.severity = measure.severity
@@ -29,52 +29,52 @@ export class Measure {
         this.referenceRanges = measure.referenceRanges
     }
 
-    static toJSON(instance: Measure): any {
-        const pojo: any = {}
-        if (instance.value !== undefined) pojo['value'] = instance.value
-        if (instance.ref !== undefined) pojo['ref'] = instance.ref
-        if (instance.severity !== undefined) pojo['severity'] = instance.severity
-        if (instance.severityCode !== undefined) pojo['severityCode'] = instance.severityCode
-        if (instance.evolution !== undefined) pojo['evolution'] = instance.evolution
-        if (instance.unit !== undefined) pojo['unit'] = instance.unit
-        if (instance.unitCodes !== undefined) pojo['unitCodes'] = instance.unitCodes?.map((item) => CodingReference.toJSON(item))
-        if (instance.comment !== undefined) pojo['comment'] = instance.comment
-        if (instance.comparator !== undefined) pojo['comparator'] = instance.comparator
-        if (instance.referenceRanges !== undefined) pojo['referenceRanges'] = instance.referenceRanges?.map((item) => ReferenceRange.toJSON(item))
+    static toJSON(instance: Measure): IMeasure {
+        const pojo: IMeasure = {} as IMeasure
+        if (instance.value !== undefined) pojo["value"] = instance.value
+        if (instance.ref !== undefined) pojo["ref"] = instance.ref
+        if (instance.severity !== undefined) pojo["severity"] = instance.severity
+        if (instance.severityCode !== undefined) pojo["severityCode"] = instance.severityCode
+        if (instance.evolution !== undefined) pojo["evolution"] = instance.evolution
+        if (instance.unit !== undefined) pojo["unit"] = instance.unit
+        if (instance.unitCodes !== undefined) pojo["unitCodes"] = instance.unitCodes.map(item => CodingReference.toJSON(item))
+        if (instance.comment !== undefined) pojo["comment"] = instance.comment
+        if (instance.comparator !== undefined) pojo["comparator"] = instance.comparator
+        if (instance.referenceRanges !== undefined) pojo["referenceRanges"] = instance.referenceRanges.map(item => ReferenceRange.toJSON(item))
         return pojo
     }
 
-    static fromJSON(pojo: any): Measure {
+    static fromJSON(pojo: IMeasure): Measure {
         const obj = {} as IMeasure
-        if (pojo['value'] !== undefined) {
-            obj['value'] = pojo['value']
+        if (pojo["value"] !== undefined) {
+            obj['value'] = pojo["value"]!
         }
-        if (pojo['ref'] !== undefined) {
-            obj['ref'] = pojo['ref']
+        if (pojo["ref"] !== undefined) {
+            obj['ref'] = pojo["ref"]!
         }
-        if (pojo['severity'] !== undefined) {
-            obj['severity'] = pojo['severity']
+        if (pojo["severity"] !== undefined) {
+            obj['severity'] = pojo["severity"]!
         }
-        if (pojo['severityCode'] !== undefined) {
-            obj['severityCode'] = pojo['severityCode']
+        if (pojo["severityCode"] !== undefined) {
+            obj['severityCode'] = pojo["severityCode"]!
         }
-        if (pojo['evolution'] !== undefined) {
-            obj['evolution'] = pojo['evolution']
+        if (pojo["evolution"] !== undefined) {
+            obj['evolution'] = pojo["evolution"]!
         }
-        if (pojo['unit'] !== undefined) {
-            obj['unit'] = pojo['unit']
+        if (pojo["unit"] !== undefined) {
+            obj['unit'] = pojo["unit"]!
         }
-        if (pojo['unitCodes'] !== undefined) {
-            obj['unitCodes'] = pojo['unitCodes']?.map((item: any) => CodingReference.fromJSON(item))
+        if (pojo["unitCodes"] !== undefined) {
+            obj['unitCodes'] = pojo["unitCodes"]!.map((item: any) => CodingReference.fromJSON(item))
         }
-        if (pojo['comment'] !== undefined) {
-            obj['comment'] = pojo['comment']
+        if (pojo["comment"] !== undefined) {
+            obj['comment'] = pojo["comment"]!
         }
-        if (pojo['comparator'] !== undefined) {
-            obj['comparator'] = pojo['comparator']
+        if (pojo["comparator"] !== undefined) {
+            obj['comparator'] = pojo["comparator"]!
         }
-        if (pojo['referenceRanges'] !== undefined) {
-            obj['referenceRanges'] = pojo['referenceRanges']?.map((item: any) => ReferenceRange.fromJSON(item))
+        if (pojo["referenceRanges"] !== undefined) {
+            obj['referenceRanges'] = pojo["referenceRanges"]!.map((item: any) => ReferenceRange.fromJSON(item))
         }
         return new Measure(obj)
     }

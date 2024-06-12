@@ -13,7 +13,7 @@ export class ClassBundle {
     public computeSerializer(variableName: string, instanceName: string): string[] {
         return [...this.components.entries()].map(([propertyName, component]) => {
             if (component.nullable) {
-                return `if (${instanceName}.${propertyName} !== undefined) ${variableName}["${propertyName}"] = ${component.computeSerializer(`${instanceName}.${propertyName}`)}`
+                return `if (${instanceName}.${propertyName} !== undefined) ${variableName}["${propertyName}"] = ${component.notNullable().computeSerializer(`${instanceName}.${propertyName}`)}`
             }
             return `${variableName}["${propertyName}"] = ${component.computeSerializer(`${instanceName}.${propertyName}`)}`
         })
@@ -22,7 +22,7 @@ export class ClassBundle {
     public computeDeserializer(variableName: string): string[] {
         return [...this.components.entries()].flatMap(([propertyName, component]) => {
             if (component.nullable) {
-                return [`if (${variableName}["${propertyName}"] !== undefined) {`, `    obj['${propertyName}'] = ${component.computeDeserializer(`${variableName}["${propertyName}"]`)}`, '}']
+                return [`if (${variableName}["${propertyName}"] !== undefined) {`, `    obj['${propertyName}'] = ${component.notNullable().computeDeserializer(`${variableName}["${propertyName}"]!`)}`, '}']
             }
 
             return [`obj['${propertyName}'] = ${component.computeDeserializer(`${variableName}["${propertyName}"]`)}`]

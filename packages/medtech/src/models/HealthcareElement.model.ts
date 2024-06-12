@@ -58,7 +58,7 @@ export class HealthcareElement {
     notes: Annotation[]
     'systemMetaData'?: SystemMetaDataEncrypted
 
-    constructor(json: IHealthcareElement) {
+    constructor(json: Partial<IHealthcareElement>) {
         this.id = forceUuid(json.id)
         this.identifiers = json.identifiers ?? []
         this.rev = json.rev
@@ -81,82 +81,82 @@ export class HealthcareElement {
         this.systemMetaData = json.systemMetaData
     }
 
-    static toJSON(instance: HealthcareElement): any {
-        const pojo: any = {}
-        pojo['id'] = instance.id
-        pojo['identifiers'] = instance.identifiers.map((item) => Identifier.toJSON(item))
-        if (instance.rev !== undefined) pojo['rev'] = instance.rev
-        if (instance.created !== undefined) pojo['created'] = instance.created
-        if (instance.modified !== undefined) pojo['modified'] = instance.modified
-        if (instance.author !== undefined) pojo['author'] = instance.author
-        if (instance.responsible !== undefined) pojo['responsible'] = instance.responsible
-        if (instance.medicalLocationId !== undefined) pojo['medicalLocationId'] = instance.medicalLocationId
-        pojo['labels'] = ([...instance.labels].map((item) => CodingReference.toJSON(item)))
-        pojo['codes'] = ([...instance.codes].map((item) => CodingReference.toJSON(item)))
-        if (instance.endOfLife !== undefined) pojo['endOfLife'] = instance.endOfLife
-        if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
-        if (instance.healthcareElementId !== undefined) pojo['healthcareElementId'] = instance.healthcareElementId
-        if (instance.valueDate !== undefined) pojo['valueDate'] = instance.valueDate
-        if (instance.openingDate !== undefined) pojo['openingDate'] = instance.openingDate
-        if (instance.closingDate !== undefined) pojo['closingDate'] = instance.closingDate
-        if (instance.description !== undefined) pojo['description'] = instance.description
-        if (instance.note !== undefined) pojo['note'] = instance.note
-        pojo['notes'] = instance.notes.map((item) => Annotation.toJSON(item))
-        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataEncrypted.toJSON(instance.systemMetaData) : undefined
+    static toJSON(instance: HealthcareElement): IHealthcareElement {
+        const pojo: IHealthcareElement = {} as IHealthcareElement
+        pojo["id"] = instance.id
+        pojo["identifiers"] = instance.identifiers.map(item => Identifier.toJSON(item))
+        if (instance.rev !== undefined) pojo["rev"] = instance.rev
+        if (instance.created !== undefined) pojo["created"] = instance.created
+        if (instance.modified !== undefined) pojo["modified"] = instance.modified
+        if (instance.author !== undefined) pojo["author"] = instance.author
+        if (instance.responsible !== undefined) pojo["responsible"] = instance.responsible
+        if (instance.medicalLocationId !== undefined) pojo["medicalLocationId"] = instance.medicalLocationId
+        pojo["labels"] = instance.labels.map(item => CodingReference.toJSON(item))
+        pojo["codes"] = instance.codes.map(item => CodingReference.toJSON(item))
+        if (instance.endOfLife !== undefined) pojo["endOfLife"] = instance.endOfLife
+        if (instance.deletionDate !== undefined) pojo["deletionDate"] = instance.deletionDate
+        if (instance.healthcareElementId !== undefined) pojo["healthcareElementId"] = instance.healthcareElementId
+        if (instance.valueDate !== undefined) pojo["valueDate"] = instance.valueDate
+        if (instance.openingDate !== undefined) pojo["openingDate"] = instance.openingDate
+        if (instance.closingDate !== undefined) pojo["closingDate"] = instance.closingDate
+        if (instance.description !== undefined) pojo["description"] = instance.description
+        if (instance.note !== undefined) pojo["note"] = instance.note
+        pojo["notes"] = instance.notes.map(item => Annotation.toJSON(item))
+        if (instance.systemMetaData !== undefined) pojo["systemMetaData"] = SystemMetaDataEncrypted.toJSON(instance.systemMetaData)
         return pojo
     }
 
-    static fromJSON(pojo: any): HealthcareElement {
+    static fromJSON(pojo: IHealthcareElement): HealthcareElement {
         const obj = {} as IHealthcareElement
-        obj['id'] = pojo['id']
-        obj['identifiers'] = pojo['identifiers'].map((item: any) => Identifier.fromJSON(item))
-        if (pojo['rev'] !== undefined) {
-            obj['rev'] = pojo['rev']
+        obj['id'] = pojo["id"]
+        obj['identifiers'] = pojo["identifiers"].map((item: any) => Identifier.fromJSON(item))
+        if (pojo["rev"] !== undefined) {
+            obj['rev'] = pojo["rev"]!
         }
-        if (pojo['created'] !== undefined) {
-            obj['created'] = pojo['created']
+        if (pojo["created"] !== undefined) {
+            obj['created'] = pojo["created"]!
         }
-        if (pojo['modified'] !== undefined) {
-            obj['modified'] = pojo['modified']
+        if (pojo["modified"] !== undefined) {
+            obj['modified'] = pojo["modified"]!
         }
-        if (pojo['author'] !== undefined) {
-            obj['author'] = pojo['author']
+        if (pojo["author"] !== undefined) {
+            obj['author'] = pojo["author"]!
         }
-        if (pojo['responsible'] !== undefined) {
-            obj['responsible'] = pojo['responsible']
+        if (pojo["responsible"] !== undefined) {
+            obj['responsible'] = pojo["responsible"]!
         }
-        if (pojo['medicalLocationId'] !== undefined) {
-            obj['medicalLocationId'] = pojo['medicalLocationId']
+        if (pojo["medicalLocationId"] !== undefined) {
+            obj['medicalLocationId'] = pojo["medicalLocationId"]!
         }
-        obj['labels'] = pojo['labels'].map((item: any) => CodingReference.fromJSON(item))
-        obj['codes'] = pojo['codes'].map((item: any) => CodingReference.fromJSON(item))
-        if (pojo['endOfLife'] !== undefined) {
-            obj['endOfLife'] = pojo['endOfLife']
+        obj['labels'] = pojo["labels"].map((item: any) => CodingReference.fromJSON(item))
+        obj['codes'] = pojo["codes"].map((item: any) => CodingReference.fromJSON(item))
+        if (pojo["endOfLife"] !== undefined) {
+            obj['endOfLife'] = pojo["endOfLife"]!
         }
-        if (pojo['deletionDate'] !== undefined) {
-            obj['deletionDate'] = pojo['deletionDate']
+        if (pojo["deletionDate"] !== undefined) {
+            obj['deletionDate'] = pojo["deletionDate"]!
         }
-        if (pojo['healthcareElementId'] !== undefined) {
-            obj['healthcareElementId'] = pojo['healthcareElementId']
+        if (pojo["healthcareElementId"] !== undefined) {
+            obj['healthcareElementId'] = pojo["healthcareElementId"]!
         }
-        if (pojo['valueDate'] !== undefined) {
-            obj['valueDate'] = pojo['valueDate']
+        if (pojo["valueDate"] !== undefined) {
+            obj['valueDate'] = pojo["valueDate"]!
         }
-        if (pojo['openingDate'] !== undefined) {
-            obj['openingDate'] = pojo['openingDate']
+        if (pojo["openingDate"] !== undefined) {
+            obj['openingDate'] = pojo["openingDate"]!
         }
-        if (pojo['closingDate'] !== undefined) {
-            obj['closingDate'] = pojo['closingDate']
+        if (pojo["closingDate"] !== undefined) {
+            obj['closingDate'] = pojo["closingDate"]!
         }
-        if (pojo['description'] !== undefined) {
-            obj['description'] = pojo['description']
+        if (pojo["description"] !== undefined) {
+            obj['description'] = pojo["description"]!
         }
-        if (pojo['note'] !== undefined) {
-            obj['note'] = pojo['note']
+        if (pojo["note"] !== undefined) {
+            obj['note'] = pojo["note"]!
         }
-        obj['notes'] = pojo['notes'].map((item: any) => Annotation.fromJSON(item))
-        if (pojo['systemMetaData'] !== undefined) {
-            obj['systemMetaData'] = !!pojo['systemMetaData'] ? SystemMetaDataEncrypted.fromJSON(pojo['systemMetaData']) : undefined
+        obj['notes'] = pojo["notes"].map((item: any) => Annotation.fromJSON(item))
+        if (pojo["systemMetaData"] !== undefined) {
+            obj['systemMetaData'] = SystemMetaDataEncrypted.fromJSON(pojo["systemMetaData"]!)
         }
         return new HealthcareElement(obj)
     }
@@ -164,15 +164,15 @@ export class HealthcareElement {
 
 interface IHealthcareElement {
     id?: string
-    identifiers?: Array<Identifier>
+    identifiers: Array<Identifier>
     rev?: string
     created?: number
     modified?: number
     author?: string
     responsible?: string
     medicalLocationId?: string
-    labels?: Array<CodingReference>
-    codes?: Array<CodingReference>
+    labels: Array<CodingReference>
+    codes: Array<CodingReference>
     endOfLife?: number
     deletionDate?: number
     healthcareElementId?: string
@@ -181,6 +181,6 @@ interface IHealthcareElement {
     closingDate?: number
     description?: string
     note?: string
-    notes?: Annotation[]
+    notes: Annotation[]
     systemMetaData?: SystemMetaDataEncrypted
 }

@@ -38,6 +38,7 @@ import { mapHumanNameToPersonNameDto, mapPersonNameDtoToHumanName } from './Huma
 import { mapAddressDtoToLocation, mapLocationToAddressDto } from './Location.mapper'
 import { GenderEnum } from '../models/enums/Gender.enum'
 import { healthcareProfessionalIdentifiers } from './utils/HealthProfessional.utils'
+import { b64_2ab, ua2b64 } from '@icure/api'
 
 function toHealthcarePartyDtoId(domain: Practitioner): string | undefined {
     return domain.id
@@ -164,7 +165,7 @@ function toHealthcarePartyDtoLanguages(domain: Practitioner): string[] | undefin
 }
 
 function toHealthcarePartyDtoPicture(domain: Practitioner): ArrayBuffer | undefined {
-    return domain.picture
+    return domain.picture ? b64_2ab(domain.picture) : undefined
 }
 
 function toHealthcarePartyDtoStatuses(domain: Practitioner): HealthcarePartyDto.StatusesEnum[] | undefined {
@@ -292,7 +293,7 @@ function toPractitionerTags(dto: HealthcarePartyDto): Array<CodingReference> | u
 }
 
 function toPractitionerCodes(dto: HealthcarePartyDto): Array<CodingReference> | undefined {
-    return !!dto.codes ? (dto.codes.map(mapCodeStubToCodingReference)) : undefined
+    return !!dto.codes ? dto.codes.map(mapCodeStubToCodingReference) : undefined
 }
 
 function toPractitionerDeletionDate(dto: HealthcarePartyDto): number | undefined {
@@ -343,12 +344,12 @@ function toPractitionerLanguages(dto: HealthcarePartyDto): string[] | undefined 
     return dto.languages
 }
 
-function toPractitionerPicture(dto: HealthcarePartyDto): ArrayBuffer | undefined {
-    return dto.picture
+function toPractitionerPicture(dto: HealthcarePartyDto): string | undefined {
+    return dto.picture ? ua2b64(dto.picture) : undefined
 }
 
 function toPractitionerSpecialityCodes(dto: HealthcarePartyDto): Array<CodingReference> | undefined {
-    return !!dto.specialityCodes ? (dto.specialityCodes.map(mapCodeStubToCodingReference)) : undefined
+    return !!dto.specialityCodes ? dto.specialityCodes.map(mapCodeStubToCodingReference) : undefined
 }
 
 function toPractitionerDescription(dto: HealthcarePartyDto): Record<ISO639_1, string> | undefined {
@@ -356,7 +357,7 @@ function toPractitionerDescription(dto: HealthcarePartyDto): Record<ISO639_1, st
 }
 
 function toPractitionerProperties(dto: HealthcarePartyDto): Array<Property> | undefined {
-    return !!dto.properties ? (dto.properties.map(mapPropertyStubToProperty)) : undefined
+    return !!dto.properties ? dto.properties.map(mapPropertyStubToProperty) : undefined
 }
 
 function toPractitionerSystemMetaData(dto: HealthcarePartyDto): SystemMetaDataOwner | undefined {

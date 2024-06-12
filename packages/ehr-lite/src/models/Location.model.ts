@@ -17,7 +17,7 @@ export class Location implements ILocation {
     telecoms: ContactPoint[]
     encryptedSelf?: string
 
-    constructor(location: ILocation) {
+    constructor(location: Partial<ILocation>) {
         this.addressType = location.addressType
         this.description = location.description
         this.street = location.street
@@ -32,7 +32,7 @@ export class Location implements ILocation {
     }
 
     static toJSON(instance: Location): ILocation {
-        const pojo: any = {}
+        const pojo: ILocation = {} as ILocation
         if (instance.addressType !== undefined) pojo['addressType'] = instance.addressType
         if (instance.description !== undefined) pojo['description'] = instance.description
         if (instance.street !== undefined) pojo['street'] = instance.street
@@ -51,38 +51,38 @@ export class Location implements ILocation {
     static fromJSON(pojo: ILocation): Location {
         const obj = {} as ILocation
         if (pojo['addressType'] !== undefined) {
-            obj['addressType'] = pojo['addressType']
+            obj['addressType'] = pojo['addressType']!
         }
         if (pojo['description'] !== undefined) {
-            obj['description'] = pojo['description']
+            obj['description'] = pojo['description']!
         }
         if (pojo['street'] !== undefined) {
-            obj['street'] = pojo['street']
+            obj['street'] = pojo['street']!
         }
         if (pojo['houseNumber'] !== undefined) {
-            obj['houseNumber'] = pojo['houseNumber']
+            obj['houseNumber'] = pojo['houseNumber']!
         }
         if (pojo['postboxNumber'] !== undefined) {
-            obj['postboxNumber'] = pojo['postboxNumber']
+            obj['postboxNumber'] = pojo['postboxNumber']!
         }
         if (pojo['postalCode'] !== undefined) {
-            obj['postalCode'] = pojo['postalCode']
+            obj['postalCode'] = pojo['postalCode']!
         }
         if (pojo['city'] !== undefined) {
-            obj['city'] = pojo['city']
+            obj['city'] = pojo['city']!
         }
         if (pojo['state'] !== undefined) {
-            obj['state'] = pojo['state']
+            obj['state'] = pojo['state']!
         }
         if (pojo['country'] !== undefined) {
-            obj['country'] = pojo['country']
+            obj['country'] = pojo['country']!
         }
         if (pojo['notes'] !== undefined) {
-            obj['notes'] = pojo['notes']?.map((item: any) => Annotation.fromJSON(item))
+            obj['notes'] = pojo['notes']!?.map((item: any) => Annotation.fromJSON(item))
         }
         obj['telecoms'] = pojo['telecoms'].map((item: any) => ContactPoint.fromJSON(item))
         if (pojo['encryptedSelf'] !== undefined) {
-            obj['encryptedSelf'] = pojo['encryptedSelf']
+            obj['encryptedSelf'] = pojo['encryptedSelf']!
         }
         return new Location(obj)
     }

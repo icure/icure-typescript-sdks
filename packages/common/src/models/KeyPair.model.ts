@@ -2,21 +2,21 @@ export class KeyPair implements IKeyPair {
     privateKey!: string
     publicKey!: string
 
-    constructor(json: IKeyPair | undefined) {
+    constructor(json: Partial<IKeyPair>) {
         Object.assign(this as KeyPair, json)
     }
 
-    static toJSON(instance: KeyPair): any {
-        const pojo: any = {}
-        pojo['privateKey'] = instance.privateKey
-        pojo['publicKey'] = instance.publicKey
+    static toJSON(instance: KeyPair): IKeyPair {
+        const pojo: IKeyPair = {} as IKeyPair
+        pojo["privateKey"] = instance.privateKey
+        pojo["publicKey"] = instance.publicKey
         return pojo
     }
 
-    static fromJSON(pojo: any): KeyPair {
+    static fromJSON(pojo: IKeyPair): KeyPair {
         const obj = {} as IKeyPair
-        obj['privateKey'] = pojo['privateKey']
-        obj['publicKey'] = pojo['publicKey']
+        obj['privateKey'] = pojo["privateKey"]
+        obj['publicKey'] = pojo["publicKey"]
         return new KeyPair(obj)
     }
 }

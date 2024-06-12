@@ -14,7 +14,7 @@ export class ReferenceRange {
     age?: Range
     stringValue?: string
 
-    constructor(referenceRange: IReferenceRange) {
+    constructor(referenceRange: Partial<IReferenceRange>) {
         this.low = referenceRange.low
         this.high = referenceRange.high
         this.tags = referenceRange.tags
@@ -24,40 +24,40 @@ export class ReferenceRange {
         this.stringValue = referenceRange.stringValue
     }
 
-    static toJSON(instance: ReferenceRange): any {
-        const pojo: any = {}
-        if (instance.low !== undefined) pojo['low'] = instance.low
-        if (instance.high !== undefined) pojo['high'] = instance.high
-        if (instance.tags !== undefined) pojo['tags'] = instance.tags?.map((item) => CodingReference.toJSON(item))
-        if (instance.codes !== undefined) pojo['codes'] = instance.codes?.map((item) => CodingReference.toJSON(item))
-        if (instance.notes !== undefined) pojo['notes'] = instance.notes?.map((item) => Annotation.toJSON(item))
-        if (instance.age !== undefined) pojo['age'] = !!instance.age ? Range.toJSON(instance.age) : undefined
-        if (instance.stringValue !== undefined) pojo['stringValue'] = instance.stringValue
+    static toJSON(instance: ReferenceRange): IReferenceRange {
+        const pojo: IReferenceRange = {} as IReferenceRange
+        if (instance.low !== undefined) pojo["low"] = instance.low
+        if (instance.high !== undefined) pojo["high"] = instance.high
+        if (instance.tags !== undefined) pojo["tags"] = instance.tags.map(item => CodingReference.toJSON(item))
+        if (instance.codes !== undefined) pojo["codes"] = instance.codes.map(item => CodingReference.toJSON(item))
+        if (instance.notes !== undefined) pojo["notes"] = instance.notes.map(item => Annotation.toJSON(item))
+        if (instance.age !== undefined) pojo["age"] = Range.toJSON(instance.age)
+        if (instance.stringValue !== undefined) pojo["stringValue"] = instance.stringValue
         return pojo
     }
 
-    static fromJSON(pojo: any): ReferenceRange {
+    static fromJSON(pojo: IReferenceRange): ReferenceRange {
         const obj = {} as IReferenceRange
-        if (pojo['low'] !== undefined) {
-            obj['low'] = pojo['low']
+        if (pojo["low"] !== undefined) {
+            obj['low'] = pojo["low"]!
         }
-        if (pojo['high'] !== undefined) {
-            obj['high'] = pojo['high']
+        if (pojo["high"] !== undefined) {
+            obj['high'] = pojo["high"]!
         }
-        if (pojo['tags'] !== undefined) {
-            obj['tags'] = pojo['tags']?.map((item: any) => CodingReference.fromJSON(item))
+        if (pojo["tags"] !== undefined) {
+            obj['tags'] = pojo["tags"]!.map((item: any) => CodingReference.fromJSON(item))
         }
-        if (pojo['codes'] !== undefined) {
-            obj['codes'] = pojo['codes']?.map((item: any) => CodingReference.fromJSON(item))
+        if (pojo["codes"] !== undefined) {
+            obj['codes'] = pojo["codes"]!.map((item: any) => CodingReference.fromJSON(item))
         }
-        if (pojo['notes'] !== undefined) {
-            obj['notes'] = pojo['notes']?.map((item: any) => Annotation.fromJSON(item))
+        if (pojo["notes"] !== undefined) {
+            obj['notes'] = pojo["notes"]!.map((item: any) => Annotation.fromJSON(item))
         }
-        if (pojo['age'] !== undefined) {
-            obj['age'] = !!pojo['age'] ? Range.fromJSON(pojo['age']) : undefined
+        if (pojo["age"] !== undefined) {
+            obj['age'] = Range.fromJSON(pojo["age"]!)
         }
-        if (pojo['stringValue'] !== undefined) {
-            obj['stringValue'] = pojo['stringValue']
+        if (pojo["stringValue"] !== undefined) {
+            obj['stringValue'] = pojo["stringValue"]!
         }
         return new ReferenceRange(obj)
     }

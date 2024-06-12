@@ -1,0 +1,18 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Test MedTech" type="mocha-javascript-test-runner">
+    <node-interpreter>$PROJECT_DIR$/../.nvm/versions/node/v17.9.1/bin/node</node-interpreter>
+    <node-options />
+    <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+    <working-directory>$PROJECT_DIR$/packages/medtech</working-directory>
+    <pass-parent-env>true</pass-parent-env>
+    <envs>
+      <env name="COMPOSE_FILE_URL" value="file://$PROJECT_DIR$/../icure-typescript-sdk/test/scratch/docker-compose-cloud-debuggable.yaml" />
+      <env name="ICURE_TS_TEST_URL" value="http://127.0.0.1:16044" />
+    </envs>
+    <ui>bdd</ui>
+    <extra-mocha-options />
+    <test-kind>PATTERN</test-kind>
+    <test-pattern>test/**/*.ts</test-pattern>
+    <method v="2" />
+  </configuration>
+</component>

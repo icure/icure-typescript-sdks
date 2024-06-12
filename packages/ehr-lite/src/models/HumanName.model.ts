@@ -12,7 +12,7 @@ export class HumanName implements IHumanName {
     text?: string
     use?: HumanNameUseEnum
 
-    constructor(humanName: IHumanName) {
+    constructor(humanName: Partial<IHumanName>) {
         this.family = humanName.family
         this.given = humanName.given ?? []
         this.start = humanName.start
@@ -46,7 +46,7 @@ export class HumanName implements IHumanName {
     // }
 
     static toJSON(instance: HumanName): IHumanName {
-        const pojo: any = {}
+        const pojo: IHumanName = {} as IHumanName
         if (instance.family !== undefined) pojo['family'] = instance.family
         pojo['given'] = instance.given.map((item) => item)
         if (instance.start !== undefined) pojo['start'] = instance.start
@@ -61,22 +61,22 @@ export class HumanName implements IHumanName {
     static fromJSON(pojo: IHumanName): HumanName {
         const obj = {} as IHumanName
         if (pojo['family'] !== undefined) {
-            obj['family'] = pojo['family']
+            obj['family'] = pojo['family']!
         }
         obj['given'] = pojo['given'].map((item: any) => item)
         if (pojo['start'] !== undefined) {
-            obj['start'] = pojo['start']
+            obj['start'] = pojo['start']!
         }
         if (pojo['end'] !== undefined) {
-            obj['end'] = pojo['end']
+            obj['end'] = pojo['end']!
         }
         obj['prefix'] = pojo['prefix'].map((item: any) => item)
         obj['suffix'] = pojo['suffix'].map((item: any) => item)
         if (pojo['text'] !== undefined) {
-            obj['text'] = pojo['text']
+            obj['text'] = pojo['text']!
         }
         if (pojo['use'] !== undefined) {
-            obj['use'] = pojo['use']
+            obj['use'] = pojo['use']!
         }
         return new HumanName(obj)
     }
