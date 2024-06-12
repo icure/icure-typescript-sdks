@@ -26,8 +26,8 @@ export class Patient {
     'modified'?: number
     'author'?: string
     'responsible'?: string
-    'labels': Set<CodingReference>
-    'codes': Set<CodingReference>
+    'labels': Array<CodingReference>
+    'codes': Array<CodingReference>
     'endOfLife'?: number
     'deletionDate'?: number
     'firstName'?: string
@@ -40,7 +40,7 @@ export class Patient {
     'gender'?: PatientGenderEnum
     'birthSex'?: PatientBirthSexEnum
     'mergeToPatientId'?: string
-    'mergedIds': Set<string>
+    'mergedIds': Array<string>
     'alias'?: string
     'active': boolean
     deactivationDate?: number
@@ -68,8 +68,8 @@ export class Patient {
     'partnerships': Partnership[]
     'patientHealthCareParties': PatientHealthCareParty[]
     'patientProfessions': CodingReference[]
-    'parameters': Map<string, string[]>
-    'properties': Set<Property>
+    'parameters': Record<string, string[]>
+    'properties': Array<Property>
     'systemMetaData'?: SystemMetaDataOwnerEncrypted
 
     constructor(json: IPatient) {
@@ -79,15 +79,15 @@ export class Patient {
 
         this.identifiers = identifiers ? [...identifiers]?.map((p) => new Identifier(p)) : []
 
-        this.labels = labels ? new Set([...labels].map((it) => new CodingReference(it))) : new Set()
-        this.codes = codes ? new Set([...codes].map((it) => new CodingReference(it))) : new Set()
+        this.labels = labels ? [...labels].map((it) => new CodingReference(it)) : []
+        this.codes = codes ? [...codes].map((it) => new CodingReference(it)) : []
         this.notes = notes ? [...notes]?.map((it) => new Annotation(it)) : []
 
         this.names = names?.map((n) => new PersonName(n)) ?? []
         this.addresses = addresses?.map((a) => new Address(a)) ?? []
         this.gender = gender as HealthcareProfessionalGenderEnum
         this.birthSex = birthSex as HealthcareProfessionalGenderEnum
-        this.mergedIds = mergedIds ? new Set([...mergedIds]) : new Set()
+        this.mergedIds = mergedIds ? [...mergedIds] : []
         this.deactivationReason = deactivationReason as PatientDeactivationReasonEnum
         this.personalStatus = personalStatus as PatientPersonalStatusEnum
 
@@ -97,7 +97,7 @@ export class Patient {
         this.patientHealthCareParties = patientHealthCareParties ? [...patientHealthCareParties]?.map((p) => new PatientHealthCareParty(p)) : []
         this.patientProfessions = patientProfessions ? [...patientProfessions]?.map((p) => new CodingReference(p)) : []
 
-        this.properties = properties ? new Set([...properties]?.map((p) => new Property(p))) : new Set()
+        this.properties = properties ? [...properties]?.map((p) => new Property(p)) : []
 
         this.systemMetaData = systemMetaData && new SystemMetaDataOwnerEncrypted(systemMetaData)
     }
@@ -111,8 +111,8 @@ export class Patient {
         if (instance.modified !== undefined) pojo['modified'] = instance.modified
         if (instance.author !== undefined) pojo['author'] = instance.author
         if (instance.responsible !== undefined) pojo['responsible'] = instance.responsible
-        pojo['labels'] = Array.from([...instance.labels].map((item) => CodingReference.toJSON(item)))
-        pojo['codes'] = Array.from([...instance.codes].map((item) => CodingReference.toJSON(item)))
+        pojo['labels'] = ([...instance.labels].map((item) => CodingReference.toJSON(item)))
+        pojo['codes'] = ([...instance.codes].map((item) => CodingReference.toJSON(item)))
         if (instance.endOfLife !== undefined) pojo['endOfLife'] = instance.endOfLife
         if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
         if (instance.firstName !== undefined) pojo['firstName'] = instance.firstName
@@ -125,7 +125,7 @@ export class Patient {
         if (instance.gender !== undefined) pojo['gender'] = instance.gender
         if (instance.birthSex !== undefined) pojo['birthSex'] = instance.birthSex
         if (instance.mergeToPatientId !== undefined) pojo['mergeToPatientId'] = instance.mergeToPatientId
-        pojo['mergedIds'] = Array.from([...instance.mergedIds].map((item) => item))
+        pojo['mergedIds'] = ([...instance.mergedIds].map((item) => item))
         if (instance.alias !== undefined) pojo['alias'] = instance.alias
         pojo['active'] = instance.active
         if (instance.deactivationDate !== undefined) pojo['deactivationDate'] = instance.deactivationDate
@@ -153,8 +153,8 @@ export class Patient {
         pojo['partnerships'] = instance.partnerships.map((item) => Partnership.toJSON(item))
         pojo['patientHealthCareParties'] = instance.patientHealthCareParties.map((item) => PatientHealthCareParty.toJSON(item))
         pojo['patientProfessions'] = instance.patientProfessions.map((item) => CodingReference.toJSON(item))
-        pojo['parameters'] = Object.fromEntries([...instance.parameters.entries()].map(([k, v]) => [k, v.map((item) => item)]))
-        pojo['properties'] = Array.from([...instance.properties].map((item) => Property.toJSON(item)))
+        pojo['parameters'] = Object.fromEntries([...Object.entries(instance.parameters)].map(([k, v]) => [k, v.map((item) => item)]))
+        pojo['properties'] = ([...instance.properties].map((item) => Property.toJSON(item)))
         if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataOwnerEncrypted.toJSON(instance.systemMetaData) : undefined
         return pojo
     }
@@ -178,8 +178,8 @@ export class Patient {
         if (pojo['responsible'] !== undefined) {
             obj['responsible'] = pojo['responsible']
         }
-        obj['labels'] = new Set(pojo['labels'].map((item: any) => CodingReference.fromJSON(item)))
-        obj['codes'] = new Set(pojo['codes'].map((item: any) => CodingReference.fromJSON(item)))
+        obj['labels'] = pojo['labels'].map((item: any) => CodingReference.fromJSON(item))
+        obj['codes'] = pojo['codes'].map((item: any) => CodingReference.fromJSON(item))
         if (pojo['endOfLife'] !== undefined) {
             obj['endOfLife'] = pojo['endOfLife']
         }
@@ -210,7 +210,7 @@ export class Patient {
         if (pojo['mergeToPatientId'] !== undefined) {
             obj['mergeToPatientId'] = pojo['mergeToPatientId']
         }
-        obj['mergedIds'] = new Set(pojo['mergedIds'].map((item: any) => item))
+        obj['mergedIds'] = pojo['mergedIds'].map((item: any) => item)
         if (pojo['alias'] !== undefined) {
             obj['alias'] = pojo['alias']
         }
@@ -280,8 +280,8 @@ export class Patient {
         obj['partnerships'] = pojo['partnerships'].map((item: any) => Partnership.fromJSON(item))
         obj['patientHealthCareParties'] = pojo['patientHealthCareParties'].map((item: any) => PatientHealthCareParty.fromJSON(item))
         obj['patientProfessions'] = pojo['patientProfessions'].map((item: any) => CodingReference.fromJSON(item))
-        obj['parameters'] = new Map(Object.entries(pojo['parameters']).map(([k, v]: [any, any]) => [k, v.map((item: any) => item)]))
-        obj['properties'] = new Set(pojo['properties'].map((item: any) => Property.fromJSON(item)))
+        obj['parameters'] = Object.fromEntries(Object.entries(pojo['parameters']).map(([k, v]: [any, any]) => [k, v.map((item: any) => item)]))
+        obj['properties'] = pojo['properties'].map((item: any) => Property.fromJSON(item))
         if (pojo['systemMetaData'] !== undefined) {
             obj['systemMetaData'] = !!pojo['systemMetaData'] ? SystemMetaDataOwnerEncrypted.fromJSON(pojo['systemMetaData']) : undefined
         }
@@ -297,8 +297,8 @@ interface IPatient {
     modified?: number
     author?: string
     responsible?: string
-    labels?: Set<CodingReference>
-    codes?: Set<CodingReference>
+    labels?: Array<CodingReference>
+    codes?: Array<CodingReference>
     endOfLife?: number
     deletionDate?: number
     firstName?: string
@@ -311,7 +311,7 @@ interface IPatient {
     gender?: PatientGenderEnum
     birthSex?: PatientBirthSexEnum
     mergeToPatientId?: string
-    mergedIds?: Set<string>
+    mergedIds?: Array<string>
     alias?: string
     active?: boolean
     deactivationDate?: number
@@ -339,8 +339,8 @@ interface IPatient {
     partnerships?: Array<Partnership>
     patientHealthCareParties?: Array<PatientHealthCareParty>
     patientProfessions?: Array<CodingReference>
-    parameters?: Map<string, string[]>
-    properties?: Set<Property>
+    parameters?: Record<string, string[]>
+    properties?: Array<Property>
     systemMetaData?: SystemMetaDataOwnerEncrypted
 }
 

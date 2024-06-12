@@ -21,11 +21,11 @@ export class HealthcareProfessional {
         this.rev = json.rev
         this.created = json.created
         this.modified = json.modified
-        this.labels = json.labels ?? new Set()
-        this.codes = json.codes ?? new Set()
+        this.labels = json.labels ?? []
+        this.codes = json.codes ?? []
         this.names = json.names ?? []
         this.addresses = json.addresses ?? []
-        this.properties = json.properties ?? new Set()
+        this.properties = json.properties ?? []
         this.notes = json.notes
         this.deletionDate = json.deletionDate
         this.name = json.name
@@ -37,7 +37,7 @@ export class HealthcareProfessional {
         this.parentId = json.parentId
         this.languages = json.languages ?? []
         this.picture = json.picture
-        this.specialityCodes = json.specialityCodes ?? new Set()
+        this.specialityCodes = json.specialityCodes ?? []
         this.systemMetaData = json.systemMetaData
     }
 
@@ -61,12 +61,12 @@ export class HealthcareProfessional {
      * A label is an item from a codification system that qualifies a doctor as being member of a certain class, whatever the value it might have taken. If the label qualifies the content of a field, it means that whatever the content of the field, the label will always apply. LOINC is a codification system typically used for labels.
      * Example: HealthcareProfessional is an organisation
      */
-    'labels': Set<CodingReference>
+    'labels': Array<CodingReference>
     /**
      * A code is an item from a codification system that qualifies the content of this doctor.
      * Example: doctor's specialty
      */
-    'codes': Set<CodingReference>
+    'codes': Array<CodingReference>
     /**
      * the soft delete timestamp. When a user is ”deleted“, this is set to a non null value: the moment of the deletion
      */
@@ -118,12 +118,12 @@ export class HealthcareProfessional {
     /**
      * Medical specialty of the healthcare party codified using FHIR or Kmehr codificaiton scheme
      */
-    'specialityCodes': Set<CodingReference>
+    'specialityCodes': Array<CodingReference>
     /**
      * Text notes.
      */
     'notes'?: string
-    'properties': Set<Property>
+    'properties': Array<Property>
     'systemMetaData'?: SystemMetaDataOwner
 
     static toJSON(instance: HealthcareProfessional): any {
@@ -132,8 +132,8 @@ export class HealthcareProfessional {
         if (instance.rev !== undefined) pojo['rev'] = instance.rev
         if (instance.created !== undefined) pojo['created'] = instance.created
         if (instance.modified !== undefined) pojo['modified'] = instance.modified
-        pojo['labels'] = Array.from([...instance.labels].map((item) => CodingReference.toJSON(item)))
-        pojo['codes'] = Array.from([...instance.codes].map((item) => CodingReference.toJSON(item)))
+        pojo['labels'] = ([...instance.labels].map((item) => CodingReference.toJSON(item)))
+        pojo['codes'] = ([...instance.codes].map((item) => CodingReference.toJSON(item)))
         if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
         if (instance.name !== undefined) pojo['name'] = instance.name
         if (instance.lastName !== undefined) pojo['lastName'] = instance.lastName
@@ -146,9 +146,9 @@ export class HealthcareProfessional {
         pojo['addresses'] = instance.addresses.map((item) => Address.toJSON(item))
         pojo['languages'] = instance.languages.map((item) => item)
         if (instance.picture !== undefined) pojo['picture'] = !!instance.picture ? ua2b64(instance.picture) : undefined
-        pojo['specialityCodes'] = Array.from([...instance.specialityCodes].map((item) => CodingReference.toJSON(item)))
+        pojo['specialityCodes'] = ([...instance.specialityCodes].map((item) => CodingReference.toJSON(item)))
         if (instance.notes !== undefined) pojo['notes'] = instance.notes
-        pojo['properties'] = Array.from([...instance.properties].map((item) => Property.toJSON(item)))
+        pojo['properties'] = ([...instance.properties].map((item) => Property.toJSON(item)))
         if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataOwner.toJSON(instance.systemMetaData) : undefined
         return pojo
     }
@@ -165,8 +165,8 @@ export class HealthcareProfessional {
         if (pojo['modified'] !== undefined) {
             obj['modified'] = pojo['modified']
         }
-        obj['labels'] = new Set(pojo['labels'].map((item: any) => CodingReference.fromJSON(item)))
-        obj['codes'] = new Set(pojo['codes'].map((item: any) => CodingReference.fromJSON(item)))
+        obj['labels'] = pojo['labels'].map((item: any) => CodingReference.fromJSON(item))
+        obj['codes'] = pojo['codes'].map((item: any) => CodingReference.fromJSON(item))
         if (pojo['deletionDate'] !== undefined) {
             obj['deletionDate'] = pojo['deletionDate']
         }
@@ -197,11 +197,11 @@ export class HealthcareProfessional {
         if (pojo['picture'] !== undefined) {
             obj['picture'] = !!pojo['picture'] ? b64_2ab(pojo['picture']) : undefined
         }
-        obj['specialityCodes'] = new Set(pojo['specialityCodes'].map((item: any) => CodingReference.fromJSON(item)))
+        obj['specialityCodes'] = pojo['specialityCodes'].map((item: any) => CodingReference.fromJSON(item))
         if (pojo['notes'] !== undefined) {
             obj['notes'] = pojo['notes']
         }
-        obj['properties'] = new Set(pojo['properties'].map((item: any) => Property.fromJSON(item)))
+        obj['properties'] = pojo['properties'].map((item: any) => Property.fromJSON(item))
         if (pojo['systemMetaData'] !== undefined) {
             obj['systemMetaData'] = !!pojo['systemMetaData'] ? SystemMetaDataOwner.fromJSON(pojo['systemMetaData']) : undefined
         }
@@ -214,8 +214,8 @@ interface IHealthcareProfessional {
     rev?: string
     created?: number
     modified?: number
-    labels?: Set<CodingReference>
-    codes?: Set<CodingReference>
+    labels?: Array<CodingReference>
+    codes?: Array<CodingReference>
     deletionDate?: number
     name?: string
     lastName?: string
@@ -228,9 +228,9 @@ interface IHealthcareProfessional {
     addresses?: Array<Address>
     languages?: Array<string>
     picture?: ArrayBuffer
-    specialityCodes?: Set<CodingReference>
+    specialityCodes?: Array<CodingReference>
     notes?: string
-    properties?: Set<Property>
+    properties?: Array<Property>
     systemMetaData?: SystemMetaDataOwner
 }
 

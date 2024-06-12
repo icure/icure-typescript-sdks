@@ -8,7 +8,7 @@ import { PatientDeactivationReasonEnum } from './enums/PatientDeactivationReason
 import { PatientPersonalStatusEnum } from './enums/PatientPersonalStatus.enum'
 
 @mapTo(PatientDto)
-export class Patient {
+export class Patient implements IPatient {
     id: string
     rev?: string
     identifiers: Identifier[]
@@ -16,8 +16,8 @@ export class Patient {
     modified?: number
     author?: string
     responsible?: string
-    tags: Set<CodingReference>
-    codes: Set<CodingReference>
+    tags: Array<CodingReference>
+    codes: Array<CodingReference>
     endOfLife?: number
     deletionDate?: number
     // /**
@@ -69,11 +69,11 @@ export class Patient {
     externalId?: string
     relatives: RelatedPerson[]
     patientPractitioners: RelatedPractitioner[]
-    patientProfessions?: CodingReference[]
-    properties: Set<Property>
+    patientProfessions: CodingReference[]
+    properties: Array<Property>
     systemMetaData?: SystemMetaDataOwnerEncrypted
 
-    constructor(patient: IPatient) {
+    constructor(patient: Partial<IPatient>) {
         this.id = forceUuid(patient.id)
         this.rev = patient.rev
         this.identifiers = patient.identifiers ?? []
@@ -81,8 +81,8 @@ export class Patient {
         this.modified = patient.modified
         this.author = patient.author
         this.responsible = patient.responsible
-        this.tags = patient.tags ?? new Set()
-        this.codes = patient.codes ?? new Set()
+        this.tags = patient.tags ?? []
+        this.codes = patient.codes ?? []
         this.endOfLife = patient.endOfLife
         this.deletionDate = patient.deletionDate
         this.names = patient.names ?? []
@@ -113,8 +113,8 @@ export class Patient {
         this.externalId = patient.externalId
         this.relatives = patient.relatives ?? []
         this.patientPractitioners = patient.patientPractitioners ?? []
-        this.patientProfessions = patient.patientProfessions
-        this.properties = patient.properties ?? new Set()
+        this.patientProfessions = patient.patientProfessions ?? []
+        this.properties = patient.properties ?? []
         this.systemMetaData = patient.systemMetaData
         this.firstName = patient.firstName
         this.lastName = patient.lastName
@@ -130,7 +130,7 @@ export class Patient {
     //     return HumanName.preferredNameFrom(patient.names)
     // }
 
-    static toJSON(instance: Patient): any {
+    static toJSON(instance: Patient): IPatient {
         const pojo: any = {}
         pojo['id'] = instance.id
         if (instance.rev !== undefined) pojo['rev'] = instance.rev
@@ -139,8 +139,8 @@ export class Patient {
         if (instance.modified !== undefined) pojo['modified'] = instance.modified
         if (instance.author !== undefined) pojo['author'] = instance.author
         if (instance.responsible !== undefined) pojo['responsible'] = instance.responsible
-        pojo['tags'] = Array.from([...instance.tags].map((item) => CodingReference.toJSON(item)))
-        pojo['codes'] = Array.from([...instance.codes].map((item) => CodingReference.toJSON(item)))
+        pojo['tags'] = ([...instance.tags].map((item) => CodingReference.toJSON(item)))
+        pojo['codes'] = ([...instance.codes].map((item) => CodingReference.toJSON(item)))
         if (instance.endOfLife !== undefined) pojo['endOfLife'] = instance.endOfLife
         if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
         if (instance.firstName !== undefined) pojo['firstName'] = instance.firstName
@@ -174,12 +174,12 @@ export class Patient {
         pojo['relatives'] = instance.relatives.map((item) => RelatedPerson.toJSON(item))
         pojo['patientPractitioners'] = instance.patientPractitioners.map((item) => RelatedPractitioner.toJSON(item))
         if (instance.patientProfessions !== undefined) pojo['patientProfessions'] = instance.patientProfessions?.map((item) => CodingReference.toJSON(item))
-        pojo['properties'] = Array.from([...instance.properties].map((item) => Property.toJSON(item)))
+        pojo['properties'] = ([...instance.properties].map((item) => Property.toJSON(item)))
         if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataOwnerEncrypted.toJSON(instance.systemMetaData) : undefined
         return pojo
     }
 
-    static fromJSON(pojo: any): Patient {
+    static fromJSON(pojo: IPatient): Patient {
         const obj = {} as IPatient
         obj['id'] = pojo['id']
         if (pojo['rev'] !== undefined) {
@@ -198,8 +198,8 @@ export class Patient {
         if (pojo['responsible'] !== undefined) {
             obj['responsible'] = pojo['responsible']
         }
-        obj['tags'] = new Set(pojo['tags'].map((item: any) => CodingReference.fromJSON(item)))
-        obj['codes'] = new Set(pojo['codes'].map((item: any) => CodingReference.fromJSON(item)))
+        obj['tags'] = (pojo['tags'].map((item: any) => CodingReference.fromJSON(item)))
+        obj['codes'] = (pojo['codes'].map((item: any) => CodingReference.fromJSON(item)))
         if (pojo['endOfLife'] !== undefined) {
             obj['endOfLife'] = pojo['endOfLife']
         }
@@ -285,7 +285,7 @@ export class Patient {
         if (pojo['patientProfessions'] !== undefined) {
             obj['patientProfessions'] = pojo['patientProfessions']?.map((item: any) => CodingReference.fromJSON(item))
         }
-        obj['properties'] = new Set(pojo['properties'].map((item: any) => Property.fromJSON(item)))
+        obj['properties'] = (pojo['properties'].map((item: any) => Property.fromJSON(item)))
         if (pojo['systemMetaData'] !== undefined) {
             obj['systemMetaData'] = !!pojo['systemMetaData'] ? SystemMetaDataOwnerEncrypted.fromJSON(pojo['systemMetaData']) : undefined
         }
@@ -294,25 +294,25 @@ export class Patient {
 }
 
 interface IPatient {
-    id?: string
+    id: string
     rev?: string
-    identifiers?: Identifier[]
+    identifiers: Identifier[]
     created?: number
     modified?: number
     author?: string
     responsible?: string
-    tags?: Set<CodingReference>
-    codes?: Set<CodingReference>
+    tags: Array<CodingReference>
+    codes: Array<CodingReference>
     endOfLife?: number
     deletionDate?: number
-    names?: HumanName[]
-    languages?: string[]
-    addresses?: Location[]
+    names: HumanName[]
+    languages: string[]
+    addresses: Location[]
     civility?: string
     gender?: GenderEnum
     birthSex?: GenderEnum
     mergeToPatientId?: string
-    mergedIds?: string[]
+    mergedIds: string[]
     active?: boolean
     deactivationDate?: number
     deactivationReason?: PatientDeactivationReasonEnum
@@ -325,16 +325,16 @@ interface IPatient {
     deceased?: boolean
     education?: string
     profession?: string
-    notes?: Annotation[]
+    notes: Annotation[]
     nationality?: string
     race?: string
     ethnicity?: string
     picture?: ArrayBuffer
     externalId?: string
-    relatives?: RelatedPerson[]
-    patientPractitioners?: RelatedPractitioner[]
-    patientProfessions?: CodingReference[]
-    properties?: Set<Property>
+    relatives: RelatedPerson[]
+    patientPractitioners: RelatedPractitioner[]
+    patientProfessions: CodingReference[]
+    properties: Array<Property>
     systemMetaData?: SystemMetaDataOwnerEncrypted
     firstName?: string
     lastName?: string

@@ -23,7 +23,7 @@ export class SimpleCryptoStrategies<DSDataOwnerWithType extends DataOwnerWithTyp
      */
     constructor(
         private readonly availableKeys: KeyPair[],
-        private readonly anonymousDataOwnerTypes: Set<DSDataOwnerWithType['type']>,
+        private readonly anonymousDataOwnerTypes: Array<DSDataOwnerWithType['type']>,
     ) {}
 
     /**
@@ -50,10 +50,10 @@ export class SimpleCryptoStrategies<DSDataOwnerWithType extends DataOwnerWithTyp
             const availableKey = availableKeysByPublic[missingKey]
             return availableKey ? [availableKey] : []
         })
-        const recoveredPublicKeysSet = new Set(recoveredKeyPairs.map((keyPair) => keyPair.publicKey))
+        const recoveredPublicKeysSet = (recoveredKeyPairs.map((keyPair) => keyPair.publicKey))
         const verifiedKeys = Object.fromEntries(
             unverifiedKeys
-                .filter((unverifiedKey) => !recoveredPublicKeysSet.has(unverifiedKey))
+                .filter((unverifiedKey) => !recoveredPublicKeysSet.includes(unverifiedKey))
                 .map((unverifiedKey) => [unverifiedKey, !!availableKeysByPublic[unverifiedKey] ? CryptoStrategies.KeyVerificationBehaviour.MARK_VERIFIED : CryptoStrategies.KeyVerificationBehaviour.TEMPORARILY_UNVERIFIED] as [string, CryptoStrategies.KeyVerificationBehaviour]),
         )
         return Promise.resolve({ recoveredKeyPairs, verifiedKeys })
@@ -69,6 +69,6 @@ export class SimpleCryptoStrategies<DSDataOwnerWithType extends DataOwnerWithTyp
     }
 
     dataOwnerRequiresAnonymousDelegation(dataOwnerId: string, dataOwnerType: DSDataOwnerWithType['type']): boolean {
-        return this.anonymousDataOwnerTypes.has(dataOwnerType)
+        return this.anonymousDataOwnerTypes.includes(dataOwnerType)
     }
 }

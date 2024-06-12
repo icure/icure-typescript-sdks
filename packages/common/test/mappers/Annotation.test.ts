@@ -1,5 +1,4 @@
 import { generateAnnotation } from '../models/Annotation.model'
-import { Annotation } from '../../src'
 import { mapAnnotationDtoToAnnotation, mapAnnotationToAnnotationDto } from '../../src'
 
 describe('Annotation', function () {

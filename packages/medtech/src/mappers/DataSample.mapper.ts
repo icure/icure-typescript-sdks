@@ -89,7 +89,7 @@ function toServiceDtoIndex(domain: DataSample): number | undefined {
 }
 
 function toServiceDtoContent(domain: DataSample): { [key: string]: ContentDto } | undefined {
-    const mappedEntries = [...(domain.content?.entries() ?? [])]?.map(([lang, content]) => [lang, mapContentToContentDto(content)])
+    const mappedEntries = [...Object.entries(domain.content)]?.map(([lang, content]) => [lang, mapContentToContentDto(content)])
     return !!mappedEntries ? Object.fromEntries(mappedEntries) : undefined
 }
 
@@ -158,7 +158,7 @@ function toServiceDtoNotes(domain: DataSample): AnnotationDto[] | undefined {
 }
 
 function toServiceDtoQualifiedLinks(domain: DataSample): { [key: string]: { [key: string]: string } } | undefined {
-    return domain.qualifiedLinks ? Object.fromEntries([...domain.qualifiedLinks.entries()].map(([key, value]) => [key, Object.fromEntries([...value.entries()])])) : undefined
+    return domain.qualifiedLinks ? Object.fromEntries([...Object.entries(domain.qualifiedLinks)].map(([key, value]) => [key, Object.fromEntries([...Object.entries(value)])])) : undefined
 }
 
 function toServiceDtoCodes(domain: DataSample): CodeStub[] | undefined {
@@ -189,20 +189,20 @@ function toDataSampleBatchId(dto: ServiceDto): string | undefined {
     return dto.contactId
 }
 
-function toDataSampleHealthcareElementIds(dto: ServiceDto): Set<string> | undefined {
-    return dto.healthElementsIds ? new Set(dto.healthElementsIds) : undefined
+function toDataSampleHealthcareElementIds(dto: ServiceDto): Array<string> | undefined {
+    return dto.healthElementsIds ? dto.healthElementsIds : undefined
 }
 
-function toDataSampleCanvasesIds(dto: ServiceDto): Set<string> | undefined {
-    return dto.formIds ? new Set(dto.formIds) : undefined
+function toDataSampleCanvasesIds(dto: ServiceDto): Array<string> | undefined {
+    return dto.formIds ? dto.formIds : undefined
 }
 
 function toDataSampleIndex(dto: ServiceDto): number | undefined {
     return dto.index
 }
 
-function toDataSampleContent(dto: ServiceDto): Map<ISO639_1, Content> {
-    return dto.content ? new Map([...Object.entries(dto.content)].map(([key, value]) => [key, mapContentDtoToContent(value)])) : new Map()
+function toDataSampleContent(dto: ServiceDto): Record<ISO639_1, Content> {
+    return dto.content ? Object.fromEntries([...Object.entries(dto.content)].map(([key, value]) => [key, mapContentDtoToContent(value)])) as Record<ISO639_1, Content> : {} as Record<ISO639_1, Content>
 }
 
 function toDataSampleValueDate(dto: ServiceDto): number | undefined {
@@ -241,16 +241,16 @@ function toDataSampleComment(dto: ServiceDto): string | undefined {
     return dto.comment
 }
 
-function toDataSampleQualifiedLinks(dto: ServiceDto): Map<string, Map<string, string>> {
-    return dto.qualifiedLinks ? new Map([...Object.entries(dto.qualifiedLinks)].map(([key, value]) => [key, new Map([...Object.entries(value)])])) : new Map()
+function toDataSampleQualifiedLinks(dto: ServiceDto): Record<string, Record<string, string>> {
+    return dto.qualifiedLinks ? Object.fromEntries([...Object.entries(dto.qualifiedLinks)].map(([key, value]) => [key, Object.fromEntries([...Object.entries(value)])])) : {}
 }
 
-function toDataSampleCodes(dto: ServiceDto): Set<CodingReference> {
-    return dto.codes ? new Set(dto.codes.map(mapCodeStubToCodingReference)) : new Set()
+function toDataSampleCodes(dto: ServiceDto): Array<CodingReference> {
+    return dto.codes ? dto.codes.map(mapCodeStubToCodingReference) : []
 }
 
-function toDataSampleLabels(dto: ServiceDto): Set<CodingReference> {
-    return dto.tags ? new Set(dto.tags.map(mapCodeStubToCodingReference)) : new Set()
+function toDataSampleLabels(dto: ServiceDto): Array<CodingReference> {
+    return dto.tags ? dto.tags.map(mapCodeStubToCodingReference) : []
 }
 
 function toDataSampleSystemMetaData(dto: ServiceDto): SystemMetaDataEncrypted | undefined {

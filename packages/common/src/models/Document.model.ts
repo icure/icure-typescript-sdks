@@ -32,7 +32,7 @@ export class Document {
         this.attachmentId = json.attachmentId
         this.name = json.name
         this.version = json.version
-        this.otherUtis = json.otherUtis ?? new Set()
+        this.otherUtis = json.otherUtis ?? []
         this.systemMetaData = json.systemMetaData
     }
 
@@ -69,7 +69,7 @@ export class Document {
     /**
      * Extra Uniform Type Identifiers
      */
-    'otherUtis': Set<string>
+    'otherUtis': Array<string>
     /**
      * A unique external id (from another external source).
      */
@@ -103,7 +103,7 @@ export class Document {
         if (instance.mainUti !== undefined) pojo['mainUti'] = instance.mainUti
         if (instance.name !== undefined) pojo['name'] = instance.name
         if (instance.version !== undefined) pojo['version'] = instance.version
-        pojo['otherUtis'] = Array.from([...instance.otherUtis].map((item) => item))
+        pojo['otherUtis'] = ([...instance.otherUtis].map((item) => item))
         if (instance.externalUuid !== undefined) pojo['externalUuid'] = instance.externalUuid
         if (instance.size !== undefined) pojo['size'] = instance.size
         if (instance.hash !== undefined) pojo['hash'] = instance.hash
@@ -148,7 +148,7 @@ export class Document {
         if (pojo['version'] !== undefined) {
             obj['version'] = pojo['version']
         }
-        obj['otherUtis'] = new Set(pojo['otherUtis'].map((item: any) => item))
+        obj['otherUtis'] = (pojo['otherUtis'].map((item: any) => item))
         if (pojo['externalUuid'] !== undefined) {
             obj['externalUuid'] = pojo['externalUuid']
         }
@@ -181,7 +181,7 @@ interface IDocument {
     mainUti?: string
     name?: string
     version?: string
-    otherUtis?: Set<string>
+    otherUtis?: Array<string>
     externalUuid?: string
     size?: number
     hash?: string

@@ -20,11 +20,11 @@ export function newNotification(): Notification {
         endOfLife: new Date().getTime(),
         author: uuid(),
         responsible: uuid(),
-        properties: new Set([new Property({ id: uuid() })]),
+        properties: ([new Property({ id: uuid() })]),
         type: NotificationTypeEnum.Other,
         systemMetaData: new SystemMetaDataEncrypted({
-            delegations: mapOf({ TEST_ID: new Set([new Delegation({ owner: uuid(), delegatedTo: uuid() })]) }),
-            encryptionKeys: mapOf({ TEST_ID: new Set([new Delegation({ owner: uuid(), delegatedTo: uuid() })]) }),
+            delegations: mapOf({ TEST_ID: ([new Delegation({ owner: uuid(), delegatedTo: uuid() })]) }),
+            encryptionKeys: mapOf({ TEST_ID: ([new Delegation({ owner: uuid(), delegatedTo: uuid() })]) }),
         }),
     })
 }

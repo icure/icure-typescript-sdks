@@ -47,7 +47,7 @@ describe('Data Sample Filters Tests', function () {
         ds1 = await hcp1Api.dataSampleApi.createOrModifyDataSampleFor(
             patient.id!,
             new DataSample({
-                codes: new Set([
+                codes: ([
                     new CodingReference({
                         id: 'SNOMEDCT|617|20020131',
                         type: 'SNOMEDCT',
@@ -62,7 +62,7 @@ describe('Data Sample Filters Tests', function () {
         he1 = await hcp1Api.healthcareElementApi.createOrModifyHealthcareElement(
             new HealthcareElement({
                 description: 'The patient has been diagnosed Pararibulitis',
-                codes: new Set([
+                codes: ([
                     new CodingReference({
                         id: 'SNOMEDCT|617|20020131',
                         type: 'SNOMEDCT',
@@ -77,8 +77,8 @@ describe('Data Sample Filters Tests', function () {
         ds2 = await hcp1Api.dataSampleApi.createOrModifyDataSampleFor(
             patient.id!,
             new DataSample({
-                healthcareElementIds: new Set([he1.id!]),
-                codes: new Set([
+                healthcareElementIds: ([he1.id!]),
+                codes: ([
                     new CodingReference({
                         id: 'SNOMEDCT|617|20020131',
                         type: 'SNOMEDCT',
@@ -93,7 +93,7 @@ describe('Data Sample Filters Tests', function () {
         ds3 = await hcp1Api.dataSampleApi.createOrModifyDataSampleFor(
             patient.id!,
             new DataSample({
-                labels: new Set([
+                labels: ([
                     new CodingReference({
                         id: 'SNOMEDCT|617|20020131',
                         type: 'SNOMEDCT',
@@ -140,8 +140,8 @@ describe('Data Sample Filters Tests', function () {
 
         expect(samples.rows.length).to.be.greaterThan(0)
         samples.rows.forEach((sample) => {
-            expect(Array.from(sample.labels).map((it) => it.code)).to.contain('617')
-            expect(Array.from(sample.labels).map((it) => it.type)).to.contain('SNOMEDCT')
+            expect((sample.labels).map((it) => it.code)).to.contain('617')
+            expect((sample.labels).map((it) => it.type)).to.contain('SNOMEDCT')
         })
     })
 
@@ -150,8 +150,8 @@ describe('Data Sample Filters Tests', function () {
 
         expect(samples.rows.length).to.be.greaterThan(0)
         samples.rows.forEach((sample) => {
-            expect(Array.from(sample.codes).map((it) => it.code)).to.contain('617')
-            expect(Array.from(sample.codes).map((it) => it.type)).to.contain('SNOMEDCT')
+            expect((sample.codes).map((it) => it.code)).to.contain('617')
+            expect((sample.codes).map((it) => it.type)).to.contain('SNOMEDCT')
         })
     })
 
@@ -167,7 +167,7 @@ describe('Data Sample Filters Tests', function () {
         expect(samples.rows.length).to.be.greaterThan(0)
         samples.rows.forEach((sample) => {
             expect(sample).to.satisfy((s: DataSample) => {
-                return s.id === ds1.id! || Array.from(s.healthcareElementIds ?? []).includes(he1.id!)
+                return s.id === ds1.id! || (s.healthcareElementIds ?? []).includes(he1.id!)
             })
         })
     })

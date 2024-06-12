@@ -8,6 +8,7 @@ import { generateProperty } from '../../../common/test/models/Property.model'
 import { generateSystemMetaDataOwner } from '../../../common/test/models/SystemMetaDataOwner.model'
 import { v4 } from 'uuid'
 import { domainTypeTag, mapCodeStubToCodingReference } from '@icure/typescript-common'
+import { ISO639_1 } from '@icure/api';
 
 export function generatePractitioner(): Practitioner {
     const practitioner = {
@@ -17,8 +18,8 @@ export function generatePractitioner(): Practitioner {
         modified: Date.now(),
         identifiers: [generateIdentifier()],
         // identifiers: [],
-        tags: new Set([generateCodingReference()]),
-        codes: new Set([generateCodingReference()]),
+        tags: ([generateCodingReference()]),
+        codes: ([generateCodingReference()]),
         deletionDate: undefined,
         name: 'dummyName',
         lastName: 'dummyLastName',
@@ -32,12 +33,12 @@ export function generatePractitioner(): Practitioner {
         addresses: [generateLocation()],
         languages: ['English'],
         picture: new ArrayBuffer(8),
-        specialityCodes: new Set([generateCodingReference()]),
-        description: new Map([
+        specialityCodes: ([generateCodingReference()]),
+        description: Object.fromEntries([
             ['en', 'This is a fake practitioner'],
             ['fr', 'Ceci est un praticien factice'],
-        ]),
-        properties: new Set([generateProperty(), generateProperty()]),
+        ]) as Record<ISO639_1, string>,
+        properties: ([generateProperty(), generateProperty()]),
         systemMetaData: generateSystemMetaDataOwner(mapCodeStubToCodingReference(domainTypeTag('practitioner'))),
     } satisfies Practitioner
 

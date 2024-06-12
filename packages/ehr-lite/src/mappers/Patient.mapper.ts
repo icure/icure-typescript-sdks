@@ -403,12 +403,12 @@ function toPatientResponsible(dto: PatientDto): string | undefined {
     return dto.responsible
 }
 
-function toPatientTags(dto: PatientDto): Set<CodingReference> | undefined {
-    return !!dto.tags?.length ? new Set(dto.tags.map(mapCodeStubToCodingReference)) : undefined
+function toPatientTags(dto: PatientDto): Array<CodingReference> | undefined {
+    return !!dto.tags?.length ? (dto.tags.map(mapCodeStubToCodingReference)) : undefined
 }
 
-function toPatientCodes(dto: PatientDto): Set<CodingReference> | undefined {
-    return !!dto.codes?.length ? new Set(dto.codes.map(mapCodeStubToCodingReference)) : undefined
+function toPatientCodes(dto: PatientDto): Array<CodingReference> | undefined {
+    return !!dto.codes?.length ? (dto.codes.map(mapCodeStubToCodingReference)) : undefined
 }
 
 function toPatientEndOfLife(dto: PatientDto): number | undefined {
@@ -535,8 +535,8 @@ function toPatientPatientProfessions(dto: PatientDto): CodingReference[] | undef
     return !!dto.patientProfessions ? dto.patientProfessions.map(mapCodeStubToCodingReference) : undefined
 }
 
-function toPatientProperties(dto: PatientDto): Set<Property> | undefined {
-    return !!dto.properties ? new Set(dto.properties.map(mapPropertyStubToProperty)) : undefined
+function toPatientProperties(dto: PatientDto): Array<Property> | undefined {
+    return !!dto.properties ? (dto.properties.map(mapPropertyStubToProperty)) : undefined
 }
 
 function toPatientSystemMetaData(dto: PatientDto): SystemMetaDataOwnerEncrypted | undefined {

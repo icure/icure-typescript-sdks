@@ -52,12 +52,12 @@ export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithTyp
         const { dataOwner: dataOwnerWithType, unknownKeys: unverifiedKeys, unavailableKeys: missingKeys } = keysData[keysData.length - 1]
 
         const { recoveredKeyPairs, verifiedKeys } = await this.dsStrategies.recoverAndVerifyKeys(this.dataOwnerMapper.toDomain(dataOwnerWithType), missingKeys, unverifiedKeys)
-        const missingKeysSet = new Set(missingKeys)
-        const unverifiedKeysSet = new Set(unverifiedKeys)
-        if (recoveredKeyPairs.some(({ publicKey }) => !missingKeysSet.has(publicKey))) {
+        const missingKeysSet = (missingKeys)
+        const unverifiedKeysSet = (unverifiedKeys)
+        if (recoveredKeyPairs.some(({ publicKey }) => !missingKeysSet.includes(publicKey))) {
             throw new Error('Recovered keys should only contain keys which were originally missing')
         }
-        if (Object.keys(verifiedKeys).some((publicKey) => !unverifiedKeysSet.has(publicKey))) {
+        if (Object.keys(verifiedKeys).some((publicKey) => !unverifiedKeysSet.includes(publicKey))) {
             throw new Error('Verified keys should only contain keys which were originally unverified')
         }
         if (unverifiedKeys.some((unverifiedKey) => !verifiedKeys[unverifiedKey] && !recoveredKeyPairs.find((recoveredKeyPair) => recoveredKeyPair.publicKey === unverifiedKey))) {

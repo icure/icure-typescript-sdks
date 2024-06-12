@@ -2,7 +2,7 @@ import { ContentDto, Measure, TimeSeries, mapTo } from '@icure/typescript-common
 import { Observation } from './Observation.model'
 
 @mapTo(ContentDto)
-export class Component {
+export class Component implements IComponent {
     numberValue?: number
     booleanValue?: boolean
     instantValue?: number
@@ -25,7 +25,7 @@ export class Component {
         this.range = component?.range
     }
 
-    static toJSON(instance: Component): any {
+    static toJSON(instance: Component): IComponent {
         const pojo: any = {}
         if (instance.numberValue !== undefined) pojo['numberValue'] = instance.numberValue
         if (instance.booleanValue !== undefined) pojo['booleanValue'] = instance.booleanValue
@@ -39,7 +39,7 @@ export class Component {
         return pojo
     }
 
-    static fromJSON(pojo: any): Component {
+    static fromJSON(pojo: IComponent): Component {
         const obj = {} as IComponent
         if (pojo['numberValue'] !== undefined) {
             obj['numberValue'] = pojo['numberValue']

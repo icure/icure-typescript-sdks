@@ -3,7 +3,7 @@ import { RelatedPersonStatusEnum } from './enums/RelatedPersonStatus.enum'
 import { RelatedPersonTypeEnum } from './enums/RelatedPersonType.enum'
 
 @mapTo(PartnershipDto)
-export class RelatedPerson {
+export class RelatedPerson implements IRelatedPerson {
     type?: RelatedPersonTypeEnum
     status?: RelatedPersonStatusEnum
     personId?: string
@@ -14,7 +14,7 @@ export class RelatedPerson {
         this.personId = relatedPerson?.personId
     }
 
-    static toJSON(instance: RelatedPerson): any {
+    static toJSON(instance: RelatedPerson): IRelatedPerson {
         const pojo: any = {}
         if (instance.type !== undefined) pojo['type'] = instance.type
         if (instance.status !== undefined) pojo['status'] = instance.status
@@ -22,7 +22,7 @@ export class RelatedPerson {
         return pojo
     }
 
-    static fromJSON(pojo: any): RelatedPerson {
+    static fromJSON(pojo: IRelatedPerson): RelatedPerson {
         const obj = {} as IRelatedPerson
         if (pojo['type'] !== undefined) {
             obj['type'] = pojo['type']

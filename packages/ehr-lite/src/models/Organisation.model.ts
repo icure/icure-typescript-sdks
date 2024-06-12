@@ -2,14 +2,14 @@ import { CodingReference, HealthcarePartyDto, ISO639_1, Identifier, Property, Sy
 import { Location } from './Location.model'
 
 @mapTo(HealthcarePartyDto)
-export class Organisation {
+export class Organisation implements IOrganisation {
     id: string
     rev?: string
     created?: number
     modified?: number
     identifiers: Identifier[]
-    tags: Set<CodingReference>
-    codes: Set<CodingReference>
+    tags: Array<CodingReference>
+    codes: Array<CodingReference>
     deletionDate?: number
     name?: string
     parentId?: string
@@ -17,8 +17,8 @@ export class Organisation {
     addresses: Location[]
     languages: string[]
     picture?: ArrayBuffer
-    description: Map<ISO639_1, string>
-    properties: Set<Property>
+    description: Record<ISO639_1, string>
+    properties: Array<Property>
     systemMetaData?: SystemMetaDataOwner
 
     constructor(organisation: IOrganisation) {
@@ -27,8 +27,8 @@ export class Organisation {
         this.created = organisation.created
         this.modified = organisation.modified
         this.identifiers = organisation.identifiers ?? []
-        this.tags = organisation.tags ?? new Set()
-        this.codes = organisation.codes ?? new Set()
+        this.tags = organisation.tags ?? []
+        this.codes = organisation.codes ?? []
         this.deletionDate = organisation.deletionDate
         this.name = organisation.name
         this.parentId = organisation.parentId
@@ -36,20 +36,20 @@ export class Organisation {
         this.addresses = organisation.addresses ?? []
         this.languages = organisation.languages ?? []
         this.picture = organisation.picture
-        this.description = organisation.description ?? new Map()
-        this.properties = organisation.properties ?? new Set()
+        this.description = organisation.description ?? {} as Record<ISO639_1, string>
+        this.properties = organisation.properties ?? []
         this.systemMetaData = organisation.systemMetaData
     }
 
-    static toJSON(instance: Organisation): any {
+    static toJSON(instance: Organisation): IOrganisation {
         const pojo: any = {}
         pojo['id'] = instance.id
         if (instance.rev !== undefined) pojo['rev'] = instance.rev
         if (instance.created !== undefined) pojo['created'] = instance.created
         if (instance.modified !== undefined) pojo['modified'] = instance.modified
         pojo['identifiers'] = instance.identifiers.map((item) => Identifier.toJSON(item))
-        pojo['tags'] = Array.from([...instance.tags].map((item) => CodingReference.toJSON(item)))
-        pojo['codes'] = Array.from([...instance.codes].map((item) => CodingReference.toJSON(item)))
+        pojo['tags'] = ([...instance.tags].map((item) => CodingReference.toJSON(item)))
+        pojo['codes'] = ([...instance.codes].map((item) => CodingReference.toJSON(item)))
         if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
         if (instance.name !== undefined) pojo['name'] = instance.name
         if (instance.parentId !== undefined) pojo['parentId'] = instance.parentId
@@ -57,13 +57,13 @@ export class Organisation {
         pojo['addresses'] = instance.addresses.map((item) => Location.toJSON(item))
         pojo['languages'] = instance.languages.map((item) => item)
         if (instance.picture !== undefined) pojo['picture'] = !!instance.picture ? ua2b64(instance.picture) : undefined
-        pojo['description'] = Object.fromEntries([...instance.description.entries()].map(([k, v]) => [k, v]))
-        pojo['properties'] = Array.from([...instance.properties].map((item) => Property.toJSON(item)))
+        pojo['description'] = Object.fromEntries(Object.entries(instance.description).map(([k, v]) => [k, v]))
+        pojo['properties'] = ([...instance.properties].map((item) => Property.toJSON(item)))
         if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataOwner.toJSON(instance.systemMetaData) : undefined
         return pojo
     }
 
-    static fromJSON(pojo: any): Organisation {
+    static fromJSON(pojo: IOrganisation): Organisation {
         const obj = {} as IOrganisation
         obj['id'] = pojo['id']
         if (pojo['rev'] !== undefined) {
@@ -75,9 +75,9 @@ export class Organisation {
         if (pojo['modified'] !== undefined) {
             obj['modified'] = pojo['modified']
         }
-        obj['identifiers'] = pojo['identifiers'].map((item: any) => Identifier.fromJSON(item))
-        obj['tags'] = new Set(pojo['tags'].map((item: any) => CodingReference.fromJSON(item)))
-        obj['codes'] = new Set(pojo['codes'].map((item: any) => CodingReference.fromJSON(item)))
+        obj['identifiers'] = pojo['identifiers']?.map((item: any) => Identifier.fromJSON(item))
+        obj['tags'] = (pojo['tags'].map((item: any) => CodingReference.fromJSON(item)))
+        obj['codes'] = (pojo['codes'].map((item: any) => CodingReference.fromJSON(item)))
         if (pojo['deletionDate'] !== undefined) {
             obj['deletionDate'] = pojo['deletionDate']
         }
@@ -95,8 +95,8 @@ export class Organisation {
         if (pojo['picture'] !== undefined) {
             obj['picture'] = !!pojo['picture'] ? b64_2ab(pojo['picture']) : undefined
         }
-        obj['description'] = new Map(Object.entries(pojo['description']).map(([k, v]: [any, any]) => [k, v]))
-        obj['properties'] = new Set(pojo['properties'].map((item: any) => Property.fromJSON(item)))
+        obj['description'] = Object.fromEntries(Object.entries(pojo['description']).map(([k, v]: [any, any]) => [k, v]))
+        obj['properties'] = (pojo['properties'].map((item: any) => Property.fromJSON(item)))
         if (pojo['systemMetaData'] !== undefined) {
             obj['systemMetaData'] = !!pojo['systemMetaData'] ? SystemMetaDataOwner.fromJSON(pojo['systemMetaData']) : undefined
         }
@@ -110,16 +110,16 @@ interface IOrganisation {
     created?: number
     modified?: number
     identifiers?: Identifier[]
-    tags?: Set<CodingReference>
-    codes?: Set<CodingReference>
+    tags: Array<CodingReference>
+    codes: Array<CodingReference>
     deletionDate?: number
     name?: string
     parentId?: string
     userId?: string
-    addresses?: Location[]
-    languages?: string[]
+    addresses: Location[]
+    languages: string[]
     picture?: ArrayBuffer
-    description?: Map<ISO639_1, string>
-    properties?: Set<Property>
+    description: Record<ISO639_1, string>
+    properties: Array<Property>
     systemMetaData?: SystemMetaDataOwner
 }

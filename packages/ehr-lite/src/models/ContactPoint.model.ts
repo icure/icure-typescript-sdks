@@ -2,7 +2,7 @@ import { mapTo, TelecomDto } from '@icure/typescript-common'
 import { ContactPointTelecomTypeEnum } from './enums/ContactPointTelecomType.enum'
 
 @mapTo(TelecomDto)
-export class ContactPoint {
+export class ContactPoint implements IContactPoint {
     system?: ContactPointTelecomTypeEnum
     value?: string
     description?: string
@@ -14,7 +14,7 @@ export class ContactPoint {
         this.description = contactPoint?.description
     }
 
-    static toJSON(instance: ContactPoint): any {
+    static toJSON(instance: ContactPoint): IContactPoint {
         const pojo: any = {}
         if (instance.system !== undefined) pojo['system'] = instance.system
         if (instance.value !== undefined) pojo['value'] = instance.value
@@ -23,7 +23,7 @@ export class ContactPoint {
         return pojo
     }
 
-    static fromJSON(pojo: any): ContactPoint {
+    static fromJSON(pojo: IContactPoint): ContactPoint {
         const obj = {} as IContactPoint
         if (pojo['system'] !== undefined) {
             obj['system'] = pojo['system']

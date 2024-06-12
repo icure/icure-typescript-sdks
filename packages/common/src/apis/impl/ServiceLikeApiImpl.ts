@@ -229,10 +229,10 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         })
         const mappedServices = services.map(this.serviceMapper.toDto)
 
-        if (distinctBy(mappedServices, (s) => s.contactId).size > 1) {
+        if (distinctBy(mappedServices, (s) => s.contactId).length > 1) {
             throw this.errorHandler.createErrorWithMessage('Only data samples of a same batch (with the same batchId) can be processed together')
         }
-        if (distinctBy(mappedServices, (s) => s.id).size < services.length) {
+        if (distinctBy(mappedServices, (s) => s.id).length < services.length) {
             throw this.errorHandler.createErrorWithMessage('Some services have the same id')
         }
 
@@ -430,7 +430,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
             return Promise.resolve([])
         }
 
-        if (distinctBy(services, (ds) => ds.contactId).size > 1) {
+        if (distinctBy(services, (ds) => ds.contactId).length > 1) {
             throw this.errorHandler.createErrorWithMessage('Only data samples of a same batch (with the same batchId) can be processed together')
         }
 
@@ -556,7 +556,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
             return []
         }
 
-        const distinctIds = Array.from(new Set(healthElementIds).values())
+        const distinctIds = Array.from((healthElementIds).values())
         return await this.healthElementApi.getHealthElementsWithUser(currentUser, new ListOfIds({ ids: distinctIds })).then((healthElements) => {
             const foundIds = (healthElements ?? []).map((he) => he.id!)
             if (healthElements.length < distinctIds.length) {

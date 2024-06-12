@@ -284,12 +284,12 @@ function toOrganisationIdentifiers(dto: HealthcarePartyDto): Identifier[] | unde
     return identifiers.map(mapIdentifierDtoToIdentifier)
 }
 
-function toOrganisationTags(dto: HealthcarePartyDto): Set<CodingReference> | undefined {
+function toOrganisationTags(dto: HealthcarePartyDto): Array<CodingReference> | undefined {
     return filteringOutInternalTags('organisation', dto.tags)
 }
 
-function toOrganisationCodes(dto: HealthcarePartyDto): Set<CodingReference> | undefined {
-    return !!dto.codes ? new Set(dto.codes.map(mapCodeStubToCodingReference)) : undefined
+function toOrganisationCodes(dto: HealthcarePartyDto): Array<CodingReference> | undefined {
+    return !!dto.codes ? (dto.codes.map(mapCodeStubToCodingReference)) : undefined
 }
 
 function toOrganisationDeletionDate(dto: HealthcarePartyDto): number | undefined {
@@ -320,12 +320,12 @@ function toOrganisationPicture(dto: HealthcarePartyDto): ArrayBuffer | undefined
     return dto.picture
 }
 
-function toOrganisationDescription(dto: HealthcarePartyDto): Map<ISO639_1, string> | undefined {
-    return !!dto.descr ? (convertObjectToMap(dto.descr) as Map<ISO639_1, string>) : undefined
+function toOrganisationDescription(dto: HealthcarePartyDto): Record<ISO639_1, string> | undefined {
+    return !!dto.descr ? (convertObjectToMap(dto.descr) as Record<ISO639_1, string>) : undefined
 }
 
-function toOrganisationProperties(dto: HealthcarePartyDto): Set<Property> | undefined {
-    return !!dto.properties ? new Set(dto.properties.map(mapPropertyStubToProperty)) : undefined
+function toOrganisationProperties(dto: HealthcarePartyDto): Array<Property> | undefined {
+    return !!dto.properties ? (dto.properties.map(mapPropertyStubToProperty)) : undefined
 }
 
 function toOrganisationSystemMetaData(dto: HealthcarePartyDto): SystemMetaDataOwner | undefined {

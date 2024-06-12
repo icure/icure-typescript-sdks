@@ -2,7 +2,7 @@ import { mapTo, PatientHealthCarePartyDto } from '@icure/typescript-common'
 import { PractitionerTypeEnum } from './enums/PractitionerType.enum'
 
 @mapTo(PatientHealthCarePartyDto)
-export class RelatedPractitioner {
+export class RelatedPractitioner implements IRelatedPractitioner {
     type?: PractitionerTypeEnum
     healthcarePartyId?: string
     encryptedSelf?: string
@@ -13,7 +13,7 @@ export class RelatedPractitioner {
         this.encryptedSelf = relatedPractitioner?.encryptedSelf
     }
 
-    static toJSON(instance: RelatedPractitioner): any {
+    static toJSON(instance: RelatedPractitioner): IRelatedPractitioner {
         const pojo: any = {}
         if (instance.type !== undefined) pojo['type'] = instance.type
         if (instance.healthcarePartyId !== undefined) pojo['healthcarePartyId'] = instance.healthcarePartyId
@@ -21,7 +21,7 @@ export class RelatedPractitioner {
         return pojo
     }
 
-    static fromJSON(pojo: any): RelatedPractitioner {
+    static fromJSON(pojo: IRelatedPractitioner): RelatedPractitioner {
         const obj = {} as IRelatedPractitioner
         if (pojo['type'] !== undefined) {
             obj['type'] = pojo['type']

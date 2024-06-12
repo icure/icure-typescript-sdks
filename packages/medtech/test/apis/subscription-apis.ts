@@ -137,7 +137,7 @@
 //       return await medtechApi!!.dataSampleApi.createOrModifyDataSampleFor(
 //         patient.id!,
 //         new DataSample({
-//           labels: new Set([new CodingReference({ type: testType, code: testCode })]),
+//           labels: ([new CodingReference({ type: testType, code: testCode })]),
 //           content: mapOf({ en: new Content({ stringValue: 'Hello world' }) }),
 //         })
 //       )
@@ -321,7 +321,7 @@
 //           await medtechApi!!.healthcareElementApi.createOrModifyHealthcareElement(
 //             new HealthcareElement({
 //               note: 'Hero Syndrome',
-//               labels: new Set([new CodingReference({ id: 'id', code: testCode, type: testType })]),
+//               labels: ([new CodingReference({ id: 'id', code: testCode, type: testType })]),
 //             }),
 //             patient.id
 //           )

@@ -50,7 +50,7 @@ export class Notification {
     /**
      * Additional properties for the notification.
      */
-    'properties': Set<Property>
+    'properties': Array<Property>
     /**
      * The type of the notification.
      */
@@ -68,7 +68,7 @@ export class Notification {
         this.modified = notification.modified
         this.author = notification.author
         this.responsible = notification.responsible
-        this.properties = notification.properties ?? new Set()
+        this.properties = notification.properties ?? []
         this.type = notification.type
         this.systemMetaData = notification.systemMetaData
     }
@@ -85,7 +85,7 @@ export class Notification {
         if (instance.modified !== undefined) pojo['modified'] = instance.modified
         if (instance.author !== undefined) pojo['author'] = instance.author
         if (instance.responsible !== undefined) pojo['responsible'] = instance.responsible
-        pojo['properties'] = Array.from([...instance.properties].map((item) => Property.toJSON(item)))
+        pojo['properties'] = ([...instance.properties].map((item) => Property.toJSON(item)))
         if (instance.type !== undefined) pojo['type'] = instance.type
         if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataEncrypted.toJSON(instance.systemMetaData) : undefined
         return pojo
@@ -119,7 +119,7 @@ export class Notification {
         if (pojo['responsible'] !== undefined) {
             obj['responsible'] = pojo['responsible']
         }
-        obj['properties'] = new Set(pojo['properties'].map((item: any) => Property.fromJSON(item)))
+        obj['properties'] = (pojo['properties'].map((item: any) => Property.fromJSON(item)))
         if (pojo['type'] !== undefined) {
             obj['type'] = pojo['type']
         }
@@ -141,7 +141,7 @@ export interface INotification {
     deletionDate?: number
     author?: string
     responsible?: string
-    properties?: Set<Property>
+    properties?: Array<Property>
     type?: NotificationTypeEnum
     systemMetaData?: SystemMetaDataEncrypted
 }

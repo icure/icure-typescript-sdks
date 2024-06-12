@@ -139,7 +139,7 @@ export function PatientApiAware<TBase extends Constructor<any>>(Base: TBase): TB
             expect(retrieved.notes.length).toBeGreaterThan(0)
             retrieved.notes.forEach((note) => {
                 expect(note.markdown).toBeTruthy()
-                expect(note.markdown.size).toBeGreaterThan(0)
+                expect(Object.keys(note.markdown).length).toBeGreaterThan(0)
             })
             if (checkDeepEquals) {
                 expect(retrieved).toEqual(patient)
@@ -194,7 +194,7 @@ export function ConditionApiAware<TBase extends Constructor<any>>(Base: TBase): 
             expect(retrieved.notes.length).toBeGreaterThan(0)
             retrieved.notes.forEach((note) => {
                 expect(note.markdown).toBeTruthy()
-                expect(note.markdown.size).toBeGreaterThan(0)
+                expect(Object.keys(note.markdown).length).toBeGreaterThan(0)
             })
             if (checkDeepEquals) {
                 expect(retrieved).toEqual(helement)
@@ -244,14 +244,14 @@ export function ObservationApiAware<TBase extends Constructor<any>>(Base: TBase)
         async checkServiceAccessibleAndDecrypted(api: EHRLiteApi, service: Observation, checkDeepEquals: boolean): Promise<void> {
             const retrieved = await api.observationApi.get(service.id!)
             expect(retrieved).toBeTruthy()
-            expect(Array.from(retrieved.localContent.entries()).length).toBeGreaterThan(0)
+            expect((Object.keys(retrieved.localContent)).length).toBeGreaterThan(0)
             if (checkDeepEquals) expect(retrieved).toEqual(service)
         }
 
         async checkServiceAccessibleButEncrypted(api: EHRLiteApi, service: Observation): Promise<void> {
             const retrieved = await api.observationApi.get(service.id!)
             expect(retrieved).toBeTruthy()
-            expect(Array.from(retrieved.localContent.entries())).toHaveLength(0)
+            expect(Object.keys(retrieved.localContent)).toHaveLength(0)
         }
 
         async checkServiceInaccessible(api: EHRLiteApi, service: Observation): Promise<void> {
@@ -262,7 +262,7 @@ export function ObservationApiAware<TBase extends Constructor<any>>(Base: TBase)
             return api.observationApi.createOrModifyFor(
                 patient.id!,
                 new Observation({
-                    tags: new Set([new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })]),
+                    tags: ([new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })]),
                     localContent: mapOf({ en: new LocalComponent({ stringValue: 'Hello world' }) }),
                 }),
             )
@@ -271,11 +271,11 @@ export function ObservationApiAware<TBase extends Constructor<any>>(Base: TBase)
         createServicesForPatient(api: EHRLiteApi, patient: Patient): Promise<Observation[]> {
             return api.observationApi.createOrModifyManyFor(patient.id!, [
                 new Observation({
-                    tags: new Set([new CodingReference({ id: 'testid2', type: 'IC-TEST', code: 'TEST' })]),
+                    tags: ([new CodingReference({ id: 'testid2', type: 'IC-TEST', code: 'TEST' })]),
                     localContent: mapOf({ en: new LocalComponent({ stringValue: 'Hello world' }) }),
                 }),
                 new Observation({
-                    tags: new Set([new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })]),
+                    tags: ([new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })]),
                     localContent: mapOf({ en: new LocalComponent({ stringValue: 'Good night world' }) }),
                 }),
             ])

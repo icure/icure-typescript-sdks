@@ -17,8 +17,8 @@ export function newPatient(): Patient {
         rev: 'rev',
         created: 123,
         modified: 456,
-        labels: new Set([newCodingReference()]),
-        codes: new Set([newCodingReference()]),
+        labels: ([newCodingReference()]),
+        codes: ([newCodingReference()]),
         deletionDate: 789,
         lastName: 'lastName',
         firstName: 'firstName',
@@ -34,7 +34,7 @@ export function newPatient(): Patient {
         civility: 'civility',
         birthSex: 'male',
         mergeToPatientId: 'mergeToPatientId',
-        mergedIds: new Set(['mergedIds']),
+        mergedIds: (['mergedIds']),
         alias: 'alias',
         active: true,
         deactivationReason: 'deceased',
@@ -61,7 +61,7 @@ export function newPatient(): Patient {
         patientHealthCareParties: [newPatientHealthCareParty()],
         patientProfessions: [newCodingReference()],
         parameters: mapOf({ key: ['parameters'] }),
-        properties: new Set([newProperty()]),
+        properties: ([newProperty()]),
         systemMetaData: newSystemMetaDataOwnerEncrypted(),
     })
 }

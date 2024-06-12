@@ -27,11 +27,11 @@ function toTopicDtoDescription(domain: Topic): string | undefined {
 }
 
 function toTopicDtoTags(domain: Topic): CodeStub[] | undefined {
-    return Array.from(domain.tags ?? []).map((item) => mapCodeStubToCodingReference(item))
+    return (domain.tags ?? []).map((item) => mapCodeStubToCodingReference(item))
 }
 
 function toTopicDtoCodes(domain: Topic): CodeStub[] | undefined {
-    return Array.from(domain.codes ?? []).map((item) => mapCodeStubToCodingReference(item))
+    return (domain.codes ?? []).map((item) => mapCodeStubToCodingReference(item))
 }
 
 function toTopicDtoAuthor(domain: Topic): string | undefined {
@@ -55,7 +55,7 @@ function toTopicDtoDeletionDate(domain: Topic): number | undefined {
 }
 
 function toTopicDtoActiveParticipants(domain: Topic): { [key: string]: TopicRoleDto } | undefined {
-    return Object.fromEntries([...(domain.activeParticipants.entries() ?? [])].map(([k, v]) => [k, v as TopicRoleDto]))
+    return Object.fromEntries(Object.entries(domain.activeParticipants ?? {}).map(([k, v]) => [k, v as TopicRoleDto]))
 }
 
 function toTopicDtoSecurityMetadata(domain: Topic): SecurityMetadataDto | undefined {
@@ -110,12 +110,12 @@ function toTopicMedicalLocationId(dto: TopicDto): string | undefined {
     return dto.medicalLocationId
 }
 
-function toTopicTags(dto: TopicDto): Set<CodingReference> | undefined {
-    return !!dto.tags ? new Set(dto.tags.map((item) => mapCodeStubToCodingReference(item))) : undefined
+function toTopicTags(dto: TopicDto): Array<CodingReference> | undefined {
+    return !!dto.tags ? (dto.tags.map((item) => mapCodeStubToCodingReference(item))) : undefined
 }
 
-function toTopicCodes(dto: TopicDto): Set<CodingReference> | undefined {
-    return !!dto.codes ? new Set(dto.codes.map((item) => mapCodeStubToCodingReference(item))) : undefined
+function toTopicCodes(dto: TopicDto): Array<CodingReference> | undefined {
+    return !!dto.codes ? (dto.codes.map((item) => mapCodeStubToCodingReference(item))) : undefined
 }
 
 function toTopicEndOfLife(dto: TopicDto): number | undefined {
@@ -130,8 +130,8 @@ function toTopicDescr(dto: TopicDto): string | undefined {
     return dto.description
 }
 
-function toTopicActiveParticipants(dto: TopicDto): Map<string, TopicRole> {
-    return new Map(Object.entries(dto.activeParticipants ?? {}).map(([k, v]) => [k, v as TopicRole]))
+function toTopicActiveParticipants(dto: TopicDto): Record<string, TopicRole> {
+    return Object.fromEntries(Object.entries(dto.activeParticipants ?? {}).map(([k, v]) => [k, v as TopicRole]))
 }
 
 function toTopicSystemMetadata(dto: TopicDto): SystemMetaDataEncrypted | undefined {
@@ -139,19 +139,19 @@ function toTopicSystemMetadata(dto: TopicDto): SystemMetaDataEncrypted | undefin
 }
 
 function toTopicDtoLinkedServices(domain: Topic): string[] | undefined {
-    return domain.linkedServices ? Array.from(domain.linkedServices) : undefined
+    return domain.linkedServices ? (domain.linkedServices) : undefined
 }
 
 function toTopicDtoLinkedHealthElements(domain: Topic): string[] | undefined {
-    return domain.linkedHealthElements ? Array.from(domain.linkedHealthElements) : undefined
+    return domain.linkedHealthElements ? (domain.linkedHealthElements) : undefined
 }
 
-function toTopicLinkedHealthElements(dto: TopicDto): Set<string> | undefined {
-    return dto.linkedHealthElements ? new Set(dto.linkedHealthElements) : undefined
+function toTopicLinkedHealthElements(dto: TopicDto): Array<string> | undefined {
+    return dto.linkedHealthElements ? (dto.linkedHealthElements) : undefined
 }
 
-function toTopicLinkedServices(dto: TopicDto): Set<string> | undefined {
-    return dto.linkedServices ? new Set(dto.linkedServices) : undefined
+function toTopicLinkedServices(dto: TopicDto): Array<string> | undefined {
+    return dto.linkedServices ? (dto.linkedServices) : undefined
 }
 
 export function mapTopicDtoToTopic(dto: TopicDto): Topic {

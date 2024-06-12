@@ -279,25 +279,25 @@ function toConditionSeverity(dto: HealthElementDto): SeverityEnum | undefined {
     return severityTag ? SeverityEnum.fromCodeStub(severityTag) : undefined
 }
 
-function toConditionBodySite(dto: HealthElementDto): Set<CodingReference> | undefined {
+function toConditionBodySite(dto: HealthElementDto): Array<CodingReference> | undefined {
     const bodySites = dto.tags?.filter((v) => v.context === 'Condition.bodySite')
 
     if (!bodySites) {
         return undefined
     }
 
-    return new Set(bodySites.map(mapCodeStubToCodingReference))
+    return (bodySites.map(mapCodeStubToCodingReference))
 }
 
-function toConditionTags(dto: HealthElementDto): Set<CodingReference> | undefined {
+function toConditionTags(dto: HealthElementDto): Array<CodingReference> | undefined {
     const contexts = ['clinicalStatus', 'verificationStatus', 'category', 'severity', 'bodySite'].map((v) => `Condition.${v}`)
     const tags = dto.tags?.filter((v) => (!!v.context ? !contexts.includes(v.context) : true))
 
     return filteringOutInternalTags('condition', tags)
 }
 
-function toConditionCodes(dto: HealthElementDto): Set<CodingReference> | undefined {
-    return dto.codes ? new Set([...dto.codes].map(mapCodeStubToCodingReference)) : undefined
+function toConditionCodes(dto: HealthElementDto): Array<CodingReference> | undefined {
+    return dto.codes ? ([...dto.codes].map(mapCodeStubToCodingReference)) : undefined
 }
 
 function toConditionEndOfLife(dto: HealthElementDto): number | undefined {

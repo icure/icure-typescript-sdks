@@ -29,12 +29,12 @@ import { CodingReference } from '../models/CodingReference.model'
 import { ICURE_INTERNAL_FHIR_TAG_TYPE } from '../utils/domain'
 import { mapSecurityMetadataDtoToSecurityMetadata, mapSecurityMetadataToSecurityMetadataDto } from './SecurityMetadata.mapper'
 
-function toMapOfSetOfDelegations(delegations: { [p: string]: DelegationDto[] }): Map<string, Set<DelegationDto>> {
-    return new Map(Object.entries(delegations).map(([k, v]) => [k, new Set(v.map(mapDelegationDtoToDelegation))]))
+function toMapOfSetOfDelegations(delegations: { [p: string]: DelegationDto[] }): Record<string, Array<DelegationDto>> {
+    return Object.fromEntries(Object.entries(delegations).map(([k, v]) => [k, (v.map(mapDelegationDtoToDelegation))]))
 }
 
-function extractInternalTags(dto: HealthElement | Service | MaintenanceTask | HealthcareParty | Patient | Device): Set<CodingReference> | undefined {
-    return !!dto.tags ? new Set(dto.tags.filter((t) => t.type === ICURE_INTERNAL_FHIR_TAG_TYPE).map(mapCodeStubToCodingReference)) : undefined
+function extractInternalTags(dto: HealthElement | Service | MaintenanceTask | HealthcareParty | Patient | Device): Array<CodingReference> | undefined {
+    return !!dto.tags ? (dto.tags.filter((t) => t.type === ICURE_INTERNAL_FHIR_TAG_TYPE).map(mapCodeStubToCodingReference)) : undefined
 }
 
 export function toSystemMetaDataEncrypted(dto: HealthElement | Service | MaintenanceTask | DocumentDto | MessageDto | TopicDto): SystemMetaDataEncrypted | undefined {
@@ -51,7 +51,7 @@ export function toSystemMetaDataEncrypted(dto: HealthElement | Service | Mainten
 
 export function toSystemMetaDataOwner(dto: HealthcareParty | Patient | Device): SystemMetaDataOwner | undefined {
     return new SystemMetaDataOwner({
-        hcPartyKeys: !!dto.hcPartyKeys ? new Map(Object.entries(dto.hcPartyKeys)) : undefined,
+        hcPartyKeys: !!dto.hcPartyKeys ? Object.fromEntries(Object.entries(dto.hcPartyKeys)) : undefined,
         publicKey: dto.publicKey,
         aesExchangeKeys: !!dto.aesExchangeKeys ? convertObjectToDeepNestedMap(dto.aesExchangeKeys) : undefined,
         transferKeys: !!dto.transferKeys ? convertObjectToNestedMap(dto.transferKeys) : undefined,
@@ -68,7 +68,7 @@ export function toSystemMetaDataOwnerEncrypted(dto: Patient): SystemMetaDataOwne
         delegations: !!dto.delegations ? toMapOfSetOfDelegations(dto.delegations) : undefined,
         encryptionKeys: !!dto.encryptionKeys ? toMapOfSetOfDelegations(dto.encryptionKeys) : undefined,
         secretForeignKeys: dto.secretForeignKeys,
-        hcPartyKeys: !!dto.hcPartyKeys ? new Map(Object.entries(dto.hcPartyKeys)) : undefined,
+        hcPartyKeys: !!dto.hcPartyKeys ? Object.fromEntries(Object.entries(dto.hcPartyKeys)) : undefined,
         publicKey: dto.publicKey,
         aesExchangeKeys: !!dto.aesExchangeKeys ? convertObjectToDeepNestedMap(dto.aesExchangeKeys) : undefined,
         transferKeys: !!dto.transferKeys ? convertObjectToNestedMap(dto.transferKeys) : undefined,
@@ -85,7 +85,7 @@ export function toHcPartyKeys(systemMetaData: SystemMetaDataOwnerEncrypted | Sys
       }
     | undefined {
     const hcPartyKeys = extractHcPartyKeys(systemMetaData)
-    return !!hcPartyKeys ? Object.fromEntries(hcPartyKeys.entries()) : undefined
+    return !!hcPartyKeys ? {...hcPartyKeys} : undefined
 }
 
 export function toAesExchangeKeys(systemMetaData: SystemMetaDataOwnerEncrypted | SystemMetaDataOwner):
@@ -158,12 +158,12 @@ export function toEncryptionKeys(systemMetaData: SystemMetaDataOwnerEncrypted | 
     return !!delegations ? toObjectOfArrayOfDelegations(delegations) : undefined
 }
 
-function toObjectOfArrayOfDelegations(delegations: Map<string, Set<Delegation>>):
+function toObjectOfArrayOfDelegations(delegations: Record<string, Array<Delegation>>):
     | {
           [key: string]: DelegationDto[]
       }
     | undefined {
-    return Object.fromEntries(Array.from(delegations.entries()).map(([k, v]) => [k, Array.from(v).map(mapDelegationToDelegationDto)]))
+    return Object.fromEntries(Object.entries(delegations).map(([k, v]) => [k, v.map(mapDelegationToDelegationDto)]))
 }
 
 export function toEncryptedSelf(systemMetaData: SystemMetaDataOwnerEncrypted | SystemMetaDataEncrypted | undefined): string | undefined {
@@ -174,6 +174,6 @@ export function toSecurityMetadataDto(systemMetaData: SystemMetaDataOwnerEncrypt
     return !!systemMetaData?.securityMetadata ? mapSecurityMetadataToSecurityMetadataDto(systemMetaData.securityMetadata) : undefined
 }
 
-export function systemMetaDataTags(systemMetaData: SystemMetaDataOwnerEncrypted | SystemMetaDataEncrypted | SystemMetaDataOwner | undefined): Set<CodingReference> {
-    return systemMetaData?.tags ?? new Set<CodingReference>()
+export function systemMetaDataTags(systemMetaData: SystemMetaDataOwnerEncrypted | SystemMetaDataEncrypted | SystemMetaDataOwner | undefined): Array<CodingReference> {
+    return systemMetaData?.tags ?? new Array<CodingReference>()
 }

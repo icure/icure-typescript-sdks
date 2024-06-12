@@ -101,7 +101,7 @@ export function toUserDtoAutoDelegations(domain: User):
           cdItemVaccine?: string[] | undefined
       }
     | undefined {
-    return Object.fromEntries([...(domain.sharingDataWith?.entries() ?? {})].map(([k, v]) => [k, [...v]]))
+    return Object.fromEntries(Object.entries(domain.sharingDataWith ?? {}).map(([k, v]) => [k, [...v]]))
 }
 
 export function toUserDtoCreatedDate(domain: User): number | undefined {
@@ -129,7 +129,7 @@ export function toUserDtoAuthenticationTokens(domain: User):
           [key: string]: AuthenticationToken
       }
     | undefined {
-    return Object.fromEntries([...domain.authenticationTokens.entries()])
+    return Object.fromEntries(Object.entries(domain.authenticationTokens))
 }
 
 export function toUserId(dto: UserDto): string | undefined {
@@ -152,12 +152,12 @@ export function toUserName(dto: UserDto): string | undefined {
     return dto.name
 }
 
-export function toUserProperties(dto: UserDto): Set<Property> {
-    return !!dto.properties ? new Set([...dto.properties].map(mapPropertyStubToProperty)) : new Set()
+export function toUserProperties(dto: UserDto): Array<Property> {
+    return !!dto.properties ? ([...dto.properties].map(mapPropertyStubToProperty)) : []
 }
 
-export function toUserRoles(dto: UserDto): Set<string> {
-    return !!dto.systemMetadata?.roles ? new Set(dto.systemMetadata?.roles) : new Set()
+export function toUserRoles(dto: UserDto): Array<string> {
+    return !!dto.systemMetadata?.roles ? (dto.systemMetadata?.roles) : []
 }
 
 export function toUserLogin(dto: UserDto): string | undefined {
@@ -192,8 +192,8 @@ export function toUserDeviceId(dto: UserDto): string | undefined {
     return dto.deviceId
 }
 
-export function toUserSharingDataWith(dto: UserDto): Map<SharedDataType, Set<string>> {
-    return new Map(Object.entries(dto.autoDelegations ?? {}).map(([k, v]) => [k, new Set(v)])) as Map<SharedDataType, Set<string>>
+export function toUserSharingDataWith(dto: UserDto): Record<SharedDataType, Array<string>> {
+    return Object.fromEntries(Object.entries(dto.autoDelegations ?? {}).map(([k, v]) => [k, (v)])) as Record<SharedDataType, Array<string>>
 }
 
 export function toUserEmail(dto: UserDto): string | undefined {
@@ -204,8 +204,8 @@ export function toUserMobilePhone(dto: UserDto): string | undefined {
     return dto.mobilePhone
 }
 
-export function toUserAuthenticationTokens(dto: UserDto): Map<string, AuthenticationToken> {
-    return !!dto.authenticationTokens ? new Map(Object.entries(dto.authenticationTokens)) : new Map()
+export function toUserAuthenticationTokens(dto: UserDto): Record<string, AuthenticationToken> {
+    return (!!dto.authenticationTokens ? {...dto.authenticationTokens} : {}) as Record<string, AuthenticationToken>
 }
 
 function toUserDtoSystemMetadata(domain: User): SystemMetadata | undefined {

@@ -287,12 +287,12 @@ function toPractitionerIdentifiers(dto: HealthcarePartyDto): Identifier[] | unde
     return identifiers.map(mapIdentifierDtoToIdentifier)
 }
 
-function toPractitionerTags(dto: HealthcarePartyDto): Set<CodingReference> | undefined {
+function toPractitionerTags(dto: HealthcarePartyDto): Array<CodingReference> | undefined {
     return filteringOutInternalTags('practitioner', dto.tags)
 }
 
-function toPractitionerCodes(dto: HealthcarePartyDto): Set<CodingReference> | undefined {
-    return !!dto.codes ? new Set(dto.codes.map(mapCodeStubToCodingReference)) : undefined
+function toPractitionerCodes(dto: HealthcarePartyDto): Array<CodingReference> | undefined {
+    return !!dto.codes ? (dto.codes.map(mapCodeStubToCodingReference)) : undefined
 }
 
 function toPractitionerDeletionDate(dto: HealthcarePartyDto): number | undefined {
@@ -347,16 +347,16 @@ function toPractitionerPicture(dto: HealthcarePartyDto): ArrayBuffer | undefined
     return dto.picture
 }
 
-function toPractitionerSpecialityCodes(dto: HealthcarePartyDto): Set<CodingReference> | undefined {
-    return !!dto.specialityCodes ? new Set(dto.specialityCodes.map(mapCodeStubToCodingReference)) : undefined
+function toPractitionerSpecialityCodes(dto: HealthcarePartyDto): Array<CodingReference> | undefined {
+    return !!dto.specialityCodes ? (dto.specialityCodes.map(mapCodeStubToCodingReference)) : undefined
 }
 
-function toPractitionerDescription(dto: HealthcarePartyDto): Map<ISO639_1, string> | undefined {
-    return !!dto.descr ? (convertObjectToMap(dto.descr) as Map<ISO639_1, string>) : undefined
+function toPractitionerDescription(dto: HealthcarePartyDto): Record<ISO639_1, string> | undefined {
+    return !!dto.descr ? (convertObjectToMap(dto.descr) as Record<ISO639_1, string>) : undefined
 }
 
-function toPractitionerProperties(dto: HealthcarePartyDto): Set<Property> | undefined {
-    return !!dto.properties ? new Set(dto.properties.map(mapPropertyStubToProperty)) : undefined
+function toPractitionerProperties(dto: HealthcarePartyDto): Array<Property> | undefined {
+    return !!dto.properties ? (dto.properties.map(mapPropertyStubToProperty)) : undefined
 }
 
 function toPractitionerSystemMetaData(dto: HealthcarePartyDto): SystemMetaDataOwner | undefined {

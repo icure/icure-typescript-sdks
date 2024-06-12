@@ -168,12 +168,12 @@ function toMedicalDeviceResponsible(dto: DeviceDto): string | undefined {
     return dto.responsible
 }
 
-function toMedicalDeviceLabels(dto: DeviceDto): Set<CodingReference> {
-    return dto.tags ? new Set([...dto.tags].map(mapCodeStubToCodingReference)) : new Set()
+function toMedicalDeviceLabels(dto: DeviceDto): Array<CodingReference> {
+    return dto.tags ? [...dto.tags].map(mapCodeStubToCodingReference) : []
 }
 
-function toMedicalDeviceCodes(dto: DeviceDto): Set<CodingReference> {
-    return dto.codes ? new Set([...dto.codes].map(mapCodeStubToCodingReference)) : new Set()
+function toMedicalDeviceCodes(dto: DeviceDto): Array<CodingReference> {
+    return dto.codes ? [...dto.codes].map(mapCodeStubToCodingReference) : []
 }
 
 function toMedicalDeviceEndOfLife(dto: DeviceDto): number | undefined {
@@ -212,8 +212,8 @@ function toMedicalDevicePicture(dto: DeviceDto): ArrayBuffer | undefined {
     return dto.picture
 }
 
-function toMedicalDeviceProperties(dto: DeviceDto): Set<Property> {
-    return dto.properties ? new Set([...dto.properties].map(mapPropertyStubToProperty)) : new Set()
+function toMedicalDeviceProperties(dto: DeviceDto): Array<Property> {
+    return dto.properties ? [...dto.properties].map(mapPropertyStubToProperty) : []
 }
 
 function toMedicalDeviceSystemMetaData(dto: DeviceDto): SystemMetaDataOwner | undefined {

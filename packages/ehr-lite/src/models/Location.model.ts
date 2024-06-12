@@ -3,7 +3,7 @@ import { ContactPoint } from './ContactPoint.model'
 import { LocationAddressTypeEnum } from './enums/LocationAddressType.enum'
 
 @mapTo(AddressDto)
-export class Location {
+export class Location implements ILocation {
     addressType?: LocationAddressTypeEnum
     description?: string
     street?: string
@@ -31,7 +31,7 @@ export class Location {
         this.telecoms = location.telecoms ?? []
     }
 
-    static toJSON(instance: Location): any {
+    static toJSON(instance: Location): ILocation {
         const pojo: any = {}
         if (instance.addressType !== undefined) pojo['addressType'] = instance.addressType
         if (instance.description !== undefined) pojo['description'] = instance.description
@@ -48,7 +48,7 @@ export class Location {
         return pojo
     }
 
-    static fromJSON(pojo: any): Location {
+    static fromJSON(pojo: ILocation): Location {
         const obj = {} as ILocation
         if (pojo['addressType'] !== undefined) {
             obj['addressType'] = pojo['addressType']
@@ -99,6 +99,6 @@ interface ILocation {
     state?: string
     country?: string
     notes?: Annotation[]
-    telecoms?: ContactPoint[]
+    telecoms: ContactPoint[]
     encryptedSelf?: string
 }

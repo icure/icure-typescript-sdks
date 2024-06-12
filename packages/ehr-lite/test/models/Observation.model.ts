@@ -7,6 +7,7 @@ import { generateAnnotation } from '../../../common/test/models/Annotation.model
 import { generateSystemMetaDataEncrypted } from '../../../common/test/models/SystemMetaDataEncrypted.model'
 import { v4 } from 'uuid'
 import { domainTypeTag, mapCodeStubToCodingReference } from '@icure/typescript-common'
+import { LocalComponent } from '../../src'
 
 export function generateObservation(): Observation {
     const observation = {
@@ -25,10 +26,10 @@ export function generateObservation(): Observation {
         endOfLife: 1621872000000,
         author: 'sampleAuthor',
         performer: 'samplePerformer',
-        localContent: new Map([['en', generateLocalComponent()]]),
-        qualifiedLinks: new Map([['linkType', new Map([['linkId', 'linkValue']])]]),
-        codes: new Set([generateCodingReference()]),
-        tags: new Set([generateCodingReference()]),
+        localContent: Object.fromEntries([['en', generateLocalComponent()]]) as Record<string, LocalComponent>,
+        qualifiedLinks: Object.fromEntries([['linkType', Object.fromEntries([['linkId', 'linkValue']])]]),
+        codes: ([generateCodingReference()]),
+        tags: ([generateCodingReference()]),
         systemMetaData: generateSystemMetaDataEncrypted(mapCodeStubToCodingReference(domainTypeTag('observation'))),
         notes: [generateAnnotation()],
     } satisfies Observation

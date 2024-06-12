@@ -6,21 +6,21 @@ import { CodingReference } from './CodingReference.model'
 @mapTo(AnnotationDto)
 export class Annotation {
     id: string
-    tags: Set<CodingReference>
+    tags: Array<CodingReference>
     author?: string
     created?: number
     modified?: number
-    markdown: Map<ISO639_1, string>
+    markdown: Record<ISO639_1, string>
     target?: string
     encryptedSelf?: string
 
     constructor(annotation: IAnnotation) {
         this.id = forceUuid(annotation.id)
-        this.tags = annotation.tags ?? new Set()
+        this.tags = annotation.tags ?? []
         this.author = annotation.author
         this.created = annotation.created
         this.modified = annotation.modified
-        this.markdown = annotation.markdown ?? new Map()
+        this.markdown = annotation.markdown ?? {} as Record<ISO639_1, string>
         this.target = annotation.target
         this.encryptedSelf = annotation.encryptedSelf
     }
@@ -28,11 +28,11 @@ export class Annotation {
     static toJSON(instance: Annotation): any {
         const pojo: any = {}
         pojo['id'] = instance.id
-        pojo['tags'] = Array.from([...instance.tags].map((item) => CodingReference.toJSON(item)))
+        pojo['tags'] = ([...instance.tags].map((item) => CodingReference.toJSON(item)))
         if (instance.author !== undefined) pojo['author'] = instance.author
         if (instance.created !== undefined) pojo['created'] = instance.created
         if (instance.modified !== undefined) pojo['modified'] = instance.modified
-        pojo['markdown'] = Object.fromEntries([...instance.markdown.entries()].map(([k, v]) => [k, v]))
+        pojo['markdown'] = Object.fromEntries(Object.entries(instance.markdown).map(([k, v]) => [k, v]))
         if (instance.target !== undefined) pojo['target'] = instance.target
         if (instance.encryptedSelf !== undefined) pojo['encryptedSelf'] = instance.encryptedSelf
         return pojo
@@ -41,7 +41,7 @@ export class Annotation {
     static fromJSON(pojo: any): Annotation {
         const obj = {} as IAnnotation
         obj['id'] = pojo['id']
-        obj['tags'] = new Set(pojo['tags'].map((item: any) => CodingReference.fromJSON(item)))
+        obj['tags'] = (pojo['tags'].map((item: any) => CodingReference.fromJSON(item)))
         if (pojo['author'] !== undefined) {
             obj['author'] = pojo['author']
         }
@@ -51,7 +51,7 @@ export class Annotation {
         if (pojo['modified'] !== undefined) {
             obj['modified'] = pojo['modified']
         }
-        obj['markdown'] = new Map(Object.entries(pojo['markdown']).map(([k, v]: [any, any]) => [k, v]))
+        obj['markdown'] = Object.fromEntries(Object.entries(pojo['markdown']).map(([k, v]: [any, any]) => [k, v]))
         if (pojo['target'] !== undefined) {
             obj['target'] = pojo['target']
         }
@@ -64,11 +64,11 @@ export class Annotation {
 
 interface IAnnotation {
     id?: string
-    tags?: Set<CodingReference>
+    tags?: Array<CodingReference>
     author?: string
     created?: number
     modified?: number
-    markdown?: Map<ISO639_1, string>
+    markdown?: Record<ISO639_1, string>
     target?: string
     encryptedSelf?: string
 }

@@ -223,7 +223,7 @@ export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements Us
                 newDataSharing = Object.entries(user.autoDelegations ?? []).reduce((accumulator, [key, values]) => {
                     return {
                         ...accumulator,
-                        [key]: [...new Set(Array.of(...values, ...(type === key ? delegationsToAdd : [])))],
+                        [key]: [...(Array.of(...values, ...(type === key ? delegationsToAdd : [])))],
                     }
                 }, {})
             } else {

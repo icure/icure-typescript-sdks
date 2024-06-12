@@ -3,7 +3,7 @@ import { Component } from './Component.model'
 import { LocalComponent } from './LocalComponent.model'
 
 @mapTo(ServiceDto)
-export class Observation {
+export class Observation implements IObservation {
     id: string
     transactionId?: string
     identifiers: Identifier[]
@@ -19,14 +19,14 @@ export class Observation {
     endOfLife?: number
     author?: string
     performer?: string
-    localContent: Map<ISO639_1, LocalComponent>
-    qualifiedLinks: Map<string, Map<string, string>>
-    codes: Set<CodingReference>
-    tags: Set<CodingReference>
+    localContent: Record<ISO639_1, LocalComponent>
+    qualifiedLinks: Record<string, Record<string, string>>
+    codes: Array<CodingReference>
+    tags: Array<CodingReference>
     systemMetaData?: SystemMetaDataEncrypted
     notes: Annotation[]
 
-    constructor(observation: IObservation) {
+    constructor(observation: Partial<IObservation>) {
         this.id = forceUuid(observation.id)
         this.transactionId = observation.transactionId
         this.identifiers = observation.identifiers ?? []
@@ -42,15 +42,15 @@ export class Observation {
         this.endOfLife = observation.endOfLife
         this.author = observation.author
         this.performer = observation.performer
-        this.localContent = observation.localContent ?? new Map()
-        this.qualifiedLinks = observation.qualifiedLinks ?? new Map()
-        this.codes = observation.codes ?? new Set()
-        this.tags = observation.tags ?? new Set()
+        this.localContent = observation.localContent ?? {} as Record<ISO639_1, LocalComponent>
+        this.qualifiedLinks = observation.qualifiedLinks ?? {}
+        this.codes = observation.codes ?? []
+        this.tags = observation.tags ?? []
         this.systemMetaData = observation.systemMetaData
         this.notes = observation.notes ?? []
     }
 
-    static toJSON(instance: Observation): any {
+    static toJSON(instance: Observation): IObservation {
         const pojo: any = {}
         pojo['id'] = instance.id
         if (instance.transactionId !== undefined) pojo['transactionId'] = instance.transactionId
@@ -67,16 +67,16 @@ export class Observation {
         if (instance.endOfLife !== undefined) pojo['endOfLife'] = instance.endOfLife
         if (instance.author !== undefined) pojo['author'] = instance.author
         if (instance.performer !== undefined) pojo['performer'] = instance.performer
-        pojo['localContent'] = Object.fromEntries([...instance.localContent.entries()].map(([k, v]) => [k, LocalComponent.toJSON(v)]))
-        pojo['qualifiedLinks'] = Object.fromEntries([...instance.qualifiedLinks.entries()].map(([k, v]) => [k, Object.fromEntries([...v.entries()].map(([k, v]) => [k, v]))]))
-        pojo['codes'] = Array.from([...instance.codes].map((item) => CodingReference.toJSON(item)))
-        pojo['tags'] = Array.from([...instance.tags].map((item) => CodingReference.toJSON(item)))
+        pojo['localContent'] = Object.fromEntries([...Object.entries(instance.localContent)].map(([k, v]) => [k, LocalComponent.toJSON(v)]))
+        pojo['qualifiedLinks'] = Object.fromEntries([...Object.entries(instance.qualifiedLinks)].map(([k, v]) => [k, Object.fromEntries(Object.entries(v).map(([k, v]) => [k, v]))]))
+        pojo['codes'] = ([...instance.codes].map((item) => CodingReference.toJSON(item)))
+        pojo['tags'] = ([...instance.tags].map((item) => CodingReference.toJSON(item)))
         if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataEncrypted.toJSON(instance.systemMetaData) : undefined
         pojo['notes'] = instance.notes.map((item) => Annotation.toJSON(item))
         return pojo
     }
 
-    static fromJSON(pojo: any): Observation {
+    static fromJSON(pojo: IObservation): Observation {
         const obj = {} as IObservation
         obj['id'] = pojo['id']
         if (pojo['transactionId'] !== undefined) {
@@ -119,10 +119,10 @@ export class Observation {
         if (pojo['performer'] !== undefined) {
             obj['performer'] = pojo['performer']
         }
-        obj['localContent'] = new Map(Object.entries(pojo['localContent']).map(([k, v]: [any, any]) => [k, LocalComponent.fromJSON(v)]))
-        obj['qualifiedLinks'] = new Map(Object.entries(pojo['qualifiedLinks']).map(([k, v]: [any, any]) => [k, new Map(Object.entries(v).map(([k, v]: [any, any]) => [k, v]))]))
-        obj['codes'] = new Set(pojo['codes'].map((item: any) => CodingReference.fromJSON(item)))
-        obj['tags'] = new Set(pojo['tags'].map((item: any) => CodingReference.fromJSON(item)))
+        obj['localContent'] = Object.fromEntries(Object.entries(pojo['localContent']).map(([k, v]: [any, any]) => [k, LocalComponent.fromJSON(v)]))
+        obj['qualifiedLinks'] = Object.fromEntries(Object.entries(pojo['qualifiedLinks']).map(([k, v]: [any, any]) => [k, Object.fromEntries(Object.entries(v).map(([k, v]: [any, any]) => [k, v]))]))
+        obj['codes'] = (pojo['codes'].map((item: any) => CodingReference.fromJSON(item)))
+        obj['tags'] = (pojo['tags'].map((item: any) => CodingReference.fromJSON(item)))
         if (pojo['systemMetaData'] !== undefined) {
             obj['systemMetaData'] = !!pojo['systemMetaData'] ? SystemMetaDataEncrypted.fromJSON(pojo['systemMetaData']) : undefined
         }
@@ -147,10 +147,10 @@ interface IObservation {
     endOfLife?: number
     author?: string
     performer?: string
-    localContent?: Map<ISO639_1, LocalComponent>
-    qualifiedLinks?: Map<string, Map<string, string>>
-    codes?: Set<CodingReference>
-    tags?: Set<CodingReference>
+    localContent: Record<ISO639_1, LocalComponent>
+    qualifiedLinks: Record<string, Record<string, string>>
+    codes: Array<CodingReference>
+    tags: Array<CodingReference>
     systemMetaData?: SystemMetaDataEncrypted
-    notes?: Annotation[]
+    notes: Annotation[]
 }

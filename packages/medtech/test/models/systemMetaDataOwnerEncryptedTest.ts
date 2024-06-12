@@ -13,9 +13,9 @@ export function newSystemMetaDataOwnerEncrypted(): SystemMetaDataOwnerEncrypted 
         aesExchangeKeys: mapOf({ key: mapOf({ key: mapOf({ key: 'aesExchangeKeys' }) }) }),
         transferKeys: mapOf({ key: mapOf({ key: 'aesExchangeKeys' }) }),
         secretForeignKeys: ['secretForeignKeys'],
-        cryptedForeignKeys: mapOf({ key: new Set([newDelegation()]) }),
-        delegations: mapOf({ key: new Set([newDelegation()]) }),
-        encryptionKeys: mapOf({ key: new Set([newDelegation()]) }),
+        cryptedForeignKeys: mapOf({ key: ([newDelegation()]) }),
+        delegations: mapOf({ key: ([newDelegation()]) }),
+        encryptionKeys: mapOf({ key: ([newDelegation()]) }),
     })
 }
 

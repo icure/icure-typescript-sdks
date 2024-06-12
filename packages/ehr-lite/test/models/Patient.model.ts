@@ -22,8 +22,8 @@ export function generatePatient(): Patient {
         modified: 1621872000000,
         author: 'sampleAuthor',
         responsible: 'sampleResponsible',
-        tags: new Set([generateCodingReference()]),
-        codes: new Set([generateCodingReference()]),
+        tags: ([generateCodingReference()]),
+        codes: ([generateCodingReference()]),
         endOfLife: 1621872000000,
         deletionDate: 1621872000000,
         names: [generateHumanName()],
@@ -55,7 +55,7 @@ export function generatePatient(): Patient {
         relatives: [generateRelatedPerson()],
         patientPractitioners: [generateRelatedPractitioner()],
         patientProfessions: [generateCodingReference()],
-        properties: new Set([generateProperty()]),
+        properties: ([generateProperty()]),
         systemMetaData: generateSystemMetaDataOwnerEncrypted(),
     } satisfies Patient
 

@@ -45,7 +45,7 @@ describe('Healthcare Element Filters Test', function () {
         he1 = await hcp1Api.healthcareElementApi.createOrModifyHealthcareElement(
             new HealthcareElement({
                 description: 'The patient has been diagnosed Pararibulitis',
-                codes: new Set([
+                codes: ([
                     new CodingReference({
                         id: 'SNOMEDCT|617|20020131',
                         type: 'SNOMEDCT',
@@ -60,7 +60,7 @@ describe('Healthcare Element Filters Test', function () {
         he2 = await hcp1Api.healthcareElementApi.createOrModifyHealthcareElement(
             new HealthcareElement({
                 description: 'The patient has been diagnosed Pararibulitis',
-                labels: new Set([
+                labels: ([
                     new CodingReference({
                         id: 'SNOMEDCT|617|20020131',
                         type: 'SNOMEDCT',
@@ -109,8 +109,8 @@ describe('Healthcare Element Filters Test', function () {
         expect(!!elements).to.eq(true)
         expect(elements.rows.length).to.be.greaterThan(0)
         elements.rows.forEach((he) => {
-            expect(Array.from(he.labels).map((it) => it.code)).to.contain('617')
-            expect(Array.from(he.labels).map((it) => it.type)).to.contain('SNOMEDCT')
+            expect((he.labels).map((it) => it.code)).to.contain('617')
+            expect((he.labels).map((it) => it.type)).to.contain('SNOMEDCT')
         })
     })
 
@@ -120,8 +120,8 @@ describe('Healthcare Element Filters Test', function () {
         expect(!!elements).to.eq(true)
         expect(elements.rows.length).to.be.greaterThan(0)
         elements.rows.forEach((he) => {
-            expect(Array.from(he.codes).map((it) => it.type)).to.contain('SNOMEDCT')
-            expect(Array.from(he.codes).map((it) => it.code)).to.contain('617')
+            expect((he.codes).map((it) => it.type)).to.contain('SNOMEDCT')
+            expect((he.codes).map((it) => it.code)).to.contain('617')
         })
     })
 
@@ -136,7 +136,7 @@ describe('Healthcare Element Filters Test', function () {
         expect(elements.rows.length).to.be.greaterThan(0)
         elements.rows.forEach((he) => {
             expect(he).to.satisfy((e: HealthcareElement) => {
-                return Array.from(e.codes).some((it) => it.type === 'SNOMEDCT' && it.code === '617') || Array.from(e.labels).some((it) => it.type === 'SNOMEDCT' && it.code === '617')
+                return (e.codes).some((it) => it.type === 'SNOMEDCT' && it.code === '617') || (e.labels).some((it) => it.type === 'SNOMEDCT' && it.code === '617')
             })
         })
     })
@@ -145,8 +145,8 @@ describe('Healthcare Element Filters Test', function () {
         const elements = await hcp1Api.healthcareElementApi.filterHealthcareElement(await new HealthcareElementFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).byIds([he1.id!, he2.id!, he3.id!]).byLabelCodeFilter('SNOMEDCT', '617').build())
         expect(elements.rows.length).to.be.equal(1)
         elements.rows.forEach((he) => {
-            expect(Array.from(he.labels).map((it) => it.code)).to.contain('617')
-            expect(Array.from(he.labels).map((it) => it.type)).to.contain('SNOMEDCT')
+            expect((he.labels).map((it) => it.code)).to.contain('617')
+            expect((he.labels).map((it) => it.type)).to.contain('SNOMEDCT')
         })
     })
 
@@ -159,8 +159,8 @@ describe('Healthcare Element Filters Test', function () {
         const elements = await hcp1Api.healthcareElementApi.filterHealthcareElement(intersectionFilter)
         expect(elements.rows.length).to.be.equal(1)
         elements.rows.forEach((he) => {
-            expect(Array.from(he.labels).map((it) => it.code)).to.contain('617')
-            expect(Array.from(he.labels).map((it) => it.type)).to.contain('SNOMEDCT')
+            expect((he.labels).map((it) => it.code)).to.contain('617')
+            expect((he.labels).map((it) => it.type)).to.contain('SNOMEDCT')
         })
     })
 

@@ -124,8 +124,8 @@ export function PatientApiAware<TBase extends Constructor<any>>(Base: TBase): TB
         }
 
         checkDefaultPatientDecrypted(patient: Patient): void {
-            expect(patient.notes[0].markdown.get('en')).toEqual('Winter is coming')
-            expect(patient.notes[0].markdown.get('da')).toEqual('Vinteren kommer')
+            expect(patient.notes[0].markdown['en']).toEqual('Winter is coming')
+            expect(patient.notes[0].markdown['da']).toEqual('Vinteren kommer')
         }
 
         async checkPatientAccessibleAndDecrypted(api: MedTechApi, patient: Patient, checkDeepEquals: boolean): Promise<void> {
@@ -134,7 +134,7 @@ export function PatientApiAware<TBase extends Constructor<any>>(Base: TBase): TB
             expect(retrieved.notes.length).toBeGreaterThan(0)
             retrieved.notes.forEach((note) => {
                 expect(note.markdown).toBeTruthy()
-                expect(note.markdown.size).toBeGreaterThan(0)
+                expect(Object.keys(note.markdown).length).toBeGreaterThan(0)
             })
             if (checkDeepEquals) {
                 expect(retrieved).toEqual(patient)
@@ -156,14 +156,14 @@ export function DataSampleApiAware<TBase extends Constructor<any>>(Base: TBase):
         async checkServiceAccessibleAndDecrypted(api: MedTechApi, service: DataSample, checkDeepEquals: boolean): Promise<void> {
             const retrieved = await api.dataSampleApi.get(service.id!)
             expect(retrieved).toBeTruthy()
-            expect(Array.from(retrieved.content.entries()).length).toBeGreaterThan(0)
+            expect(Object.keys(retrieved.content).length).toBeGreaterThan(0)
             if (checkDeepEquals) expect(retrieved).toEqual(service)
         }
 
         async checkServiceAccessibleButEncrypted(api: MedTechApi, service: DataSample): Promise<void> {
             const retrieved = await api.dataSampleApi.get(service.id!)
             expect(retrieved).toBeTruthy()
-            expect(Array.from(retrieved.content.entries())).toHaveLength(0)
+            expect(Object.keys(retrieved.content)).toHaveLength(0)
         }
 
         async checkServiceInaccessible(api: MedTechApi, service: DataSample): Promise<void> {
@@ -178,7 +178,7 @@ export function DataSampleApiAware<TBase extends Constructor<any>>(Base: TBase):
             return api.dataSampleApi.createOrModifyFor(
                 patient.id!,
                 new DataSample({
-                    labels: new Set([new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })]),
+                    labels: ([new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })]),
                     content: mapOf({ en: new Content({ stringValue: 'Hello world' }) }),
                 }),
             )
@@ -187,11 +187,11 @@ export function DataSampleApiAware<TBase extends Constructor<any>>(Base: TBase):
         createServicesForPatient(api: MedTechApi, patient: Patient): Promise<DataSample[]> {
             return api.dataSampleApi.createOrModifyManyFor(patient.id!, [
                 new DataSample({
-                    labels: new Set([new CodingReference({ id: 'testid2', type: 'IC-TEST', code: 'TEST' })]),
+                    labels: ([new CodingReference({ id: 'testid2', type: 'IC-TEST', code: 'TEST' })]),
                     content: mapOf({ en: new Content({ stringValue: 'Hello world' }) }),
                 }),
                 new DataSample({
-                    labels: new Set([new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })]),
+                    labels: ([new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })]),
                     content: mapOf({ en: new Content({ stringValue: 'Good night world' }) }),
                 }),
             ])

@@ -12,7 +12,7 @@ export function newCoding(): Coding {
         code: 'code',
         version: 'version',
         searchTerms: mapOf({
-            en: new Set('test'),
+            en: ('test'),
         }),
         qualifiedLinks: mapOf({
             from: ['to'],

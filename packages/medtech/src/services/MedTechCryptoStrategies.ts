@@ -4,7 +4,7 @@ import { DataOwnerTypeEnum, DataOwnerWithType } from '../models/DataOwner.model'
 export interface MedTechCryptoStrategies extends CryptoStrategies<DataOwnerWithType> {}
 
 export class SimpleMedTechCryptoStrategies extends SimpleCryptoStrategies<DataOwnerWithType> {
-    constructor(availableKeys?: KeyPair[], anonymousDataOwnerTypes?: Set<DataOwnerTypeEnum>) {
-        super(availableKeys ?? [], anonymousDataOwnerTypes ?? new Set([DataOwnerTypeEnum.Patient]))
+    constructor(availableKeys?: KeyPair[], anonymousDataOwnerTypes?: Array<DataOwnerTypeEnum>) {
+        super(availableKeys ?? [], anonymousDataOwnerTypes ?? ([DataOwnerTypeEnum.Patient]))
     }
 }

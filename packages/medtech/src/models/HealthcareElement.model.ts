@@ -27,8 +27,8 @@ export class HealthcareElement {
     'author'?: string
     'responsible'?: string
     'medicalLocationId'?: string
-    'labels': Set<CodingReference>
-    'codes': Set<CodingReference>
+    'labels': Array<CodingReference>
+    'codes': Array<CodingReference>
     'endOfLife'?: number
     'deletionDate'?: number
     /**
@@ -67,8 +67,8 @@ export class HealthcareElement {
         this.author = json.author
         this.responsible = json.responsible
         this.medicalLocationId = json.medicalLocationId
-        this.labels = json.labels ?? new Set()
-        this.codes = json.codes ?? new Set()
+        this.labels = json.labels ?? []
+        this.codes = json.codes ?? []
         this.endOfLife = json.endOfLife
         this.deletionDate = json.deletionDate
         this.healthcareElementId = json.healthcareElementId
@@ -91,8 +91,8 @@ export class HealthcareElement {
         if (instance.author !== undefined) pojo['author'] = instance.author
         if (instance.responsible !== undefined) pojo['responsible'] = instance.responsible
         if (instance.medicalLocationId !== undefined) pojo['medicalLocationId'] = instance.medicalLocationId
-        pojo['labels'] = Array.from([...instance.labels].map((item) => CodingReference.toJSON(item)))
-        pojo['codes'] = Array.from([...instance.codes].map((item) => CodingReference.toJSON(item)))
+        pojo['labels'] = ([...instance.labels].map((item) => CodingReference.toJSON(item)))
+        pojo['codes'] = ([...instance.codes].map((item) => CodingReference.toJSON(item)))
         if (instance.endOfLife !== undefined) pojo['endOfLife'] = instance.endOfLife
         if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
         if (instance.healthcareElementId !== undefined) pojo['healthcareElementId'] = instance.healthcareElementId
@@ -128,8 +128,8 @@ export class HealthcareElement {
         if (pojo['medicalLocationId'] !== undefined) {
             obj['medicalLocationId'] = pojo['medicalLocationId']
         }
-        obj['labels'] = new Set(pojo['labels'].map((item: any) => CodingReference.fromJSON(item)))
-        obj['codes'] = new Set(pojo['codes'].map((item: any) => CodingReference.fromJSON(item)))
+        obj['labels'] = pojo['labels'].map((item: any) => CodingReference.fromJSON(item))
+        obj['codes'] = pojo['codes'].map((item: any) => CodingReference.fromJSON(item))
         if (pojo['endOfLife'] !== undefined) {
             obj['endOfLife'] = pojo['endOfLife']
         }
@@ -171,8 +171,8 @@ interface IHealthcareElement {
     author?: string
     responsible?: string
     medicalLocationId?: string
-    labels?: Set<CodingReference>
-    codes?: Set<CodingReference>
+    labels?: Array<CodingReference>
+    codes?: Array<CodingReference>
     endOfLife?: number
     deletionDate?: number
     healthcareElementId?: string

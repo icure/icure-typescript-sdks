@@ -8,9 +8,9 @@ import { mapOf } from '@icure/typescript-common'
 export function newSystemMetaDataEncrypted(): SystemMetaDataEncrypted {
     return new SystemMetaDataEncrypted({
         secretForeignKeys: ['secretForeignKeys'],
-        cryptedForeignKeys: mapOf({ key: new Set([newDelegation()]) }),
-        delegations: mapOf({ key: new Set([newDelegation()]) }),
-        encryptionKeys: mapOf({ key: new Set([newDelegation()]) }),
+        cryptedForeignKeys: mapOf({ key: ([newDelegation()]) }),
+        delegations: mapOf({ key: ([newDelegation()]) }),
+        encryptionKeys: mapOf({ key: ([newDelegation()]) }),
     })
 }
 

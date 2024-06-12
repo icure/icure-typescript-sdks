@@ -14,14 +14,14 @@ export class Topic {
     author?: string
     responsible?: string
     medicalLocationId?: string
-    tags?: Set<CodingReference>
-    codes?: Set<CodingReference>
+    tags?: Array<CodingReference>
+    codes?: Array<CodingReference>
     endOfLife?: number
     deletionDate?: number
     descr?: string
-    linkedHealthElements?: Set<string>
-    linkedServices?: Set<string>
-    activeParticipants: Map<string, TopicRole>
+    linkedHealthElements?: Array<string>
+    linkedServices?: Array<string>
+    activeParticipants: Record<string, TopicRole>
     systemMetadata?: SystemMetaDataEncrypted
 
     constructor(topic: ITopic) {
@@ -39,7 +39,7 @@ export class Topic {
         this.descr = topic.descr
         this.linkedHealthElements = topic.linkedHealthElements
         this.linkedServices = topic.linkedServices
-        this.activeParticipants = topic.activeParticipants ?? new Map()
+        this.activeParticipants = topic.activeParticipants ?? {}
         this.systemMetadata = topic.systemMetadata
     }
 
@@ -52,14 +52,14 @@ export class Topic {
         if (instance.author !== undefined) pojo['author'] = instance.author
         if (instance.responsible !== undefined) pojo['responsible'] = instance.responsible
         if (instance.medicalLocationId !== undefined) pojo['medicalLocationId'] = instance.medicalLocationId
-        if (instance.tags !== undefined) pojo['tags'] = Array.from([...(instance.tags ?? [])]?.map((item) => CodingReference.toJSON(item)) ?? [])
-        if (instance.codes !== undefined) pojo['codes'] = Array.from([...(instance.codes ?? [])]?.map((item) => CodingReference.toJSON(item)) ?? [])
+        if (instance.tags !== undefined) pojo['tags'] = ([...(instance.tags ?? [])]?.map((item) => CodingReference.toJSON(item)) ?? [])
+        if (instance.codes !== undefined) pojo['codes'] = ([...(instance.codes ?? [])]?.map((item) => CodingReference.toJSON(item)) ?? [])
         if (instance.endOfLife !== undefined) pojo['endOfLife'] = instance.endOfLife
         if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
         if (instance.descr !== undefined) pojo['descr'] = instance.descr
-        if (instance.linkedHealthElements !== undefined) pojo['linkedHealthElements'] = Array.from([...(instance.linkedHealthElements ?? [])]?.map((item) => item) ?? [])
-        if (instance.linkedServices !== undefined) pojo['linkedServices'] = Array.from([...(instance.linkedServices ?? [])]?.map((item) => item) ?? [])
-        pojo['activeParticipants'] = Object.fromEntries([...instance.activeParticipants.entries()].map(([k, v]) => [k, v]))
+        if (instance.linkedHealthElements !== undefined) pojo['linkedHealthElements'] = ([...(instance.linkedHealthElements ?? [])]?.map((item) => item) ?? [])
+        if (instance.linkedServices !== undefined) pojo['linkedServices'] = ([...(instance.linkedServices ?? [])]?.map((item) => item) ?? [])
+        pojo['activeParticipants'] = {...instance.activeParticipants}
         if (instance.systemMetadata !== undefined) pojo['systemMetadata'] = !!instance.systemMetadata ? SystemMetaDataEncrypted.toJSON(instance.systemMetadata) : undefined
         return pojo
     }
@@ -88,10 +88,10 @@ export class Topic {
             obj['medicalLocationId'] = pojo['medicalLocationId']
         }
         if (pojo['tags'] !== undefined) {
-            obj['tags'] = new Set(pojo['tags']?.map((item: any) => CodingReference.fromJSON(item)) ?? [])
+            obj['tags'] = (pojo['tags']?.map((item: any) => CodingReference.fromJSON(item)) ?? [])
         }
         if (pojo['codes'] !== undefined) {
-            obj['codes'] = new Set(pojo['codes']?.map((item: any) => CodingReference.fromJSON(item)) ?? [])
+            obj['codes'] = (pojo['codes']?.map((item: any) => CodingReference.fromJSON(item)) ?? [])
         }
         if (pojo['endOfLife'] !== undefined) {
             obj['endOfLife'] = pojo['endOfLife']
@@ -103,12 +103,12 @@ export class Topic {
             obj['descr'] = pojo['descr']
         }
         if (pojo['linkedHealthElements'] !== undefined) {
-            obj['linkedHealthElements'] = new Set(pojo['linkedHealthElements']?.map((item: any) => item) ?? [])
+            obj['linkedHealthElements'] = (pojo['linkedHealthElements']?.map((item: any) => item) ?? [])
         }
         if (pojo['linkedServices'] !== undefined) {
-            obj['linkedServices'] = new Set(pojo['linkedServices']?.map((item: any) => item) ?? [])
+            obj['linkedServices'] = (pojo['linkedServices']?.map((item: any) => item) ?? [])
         }
-        obj['activeParticipants'] = new Map(Object.entries(pojo['activeParticipants']).map(([k, v]: [any, any]) => [k, v]))
+        obj['activeParticipants'] = Object.fromEntries(Object.entries(pojo['activeParticipants']).map(([k, v]: [any, any]) => [k, v]))
         if (pojo['systemMetadata'] !== undefined) {
             obj['systemMetadata'] = !!pojo['systemMetadata'] ? SystemMetaDataEncrypted.fromJSON(pojo['systemMetadata']) : undefined
         }
@@ -124,13 +124,13 @@ interface ITopic {
     author?: string
     responsible?: string
     medicalLocationId?: string
-    tags?: Set<CodingReference>
-    codes?: Set<CodingReference>
+    tags?: Array<CodingReference>
+    codes?: Array<CodingReference>
     endOfLife?: number
     deletionDate?: number
     descr?: string
-    linkedHealthElements?: Set<string>
-    linkedServices?: Set<string>
-    activeParticipants?: Map<string, TopicRole>
+    linkedHealthElements?: Array<string>
+    linkedServices?: Array<string>
+    activeParticipants?: Record<string, TopicRole>
     systemMetadata?: SystemMetaDataEncrypted
 }

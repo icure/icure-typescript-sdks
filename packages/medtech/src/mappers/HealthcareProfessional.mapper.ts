@@ -274,12 +274,12 @@ function toHealthcareProfessionalModified(dto: HealthcarePartyDto): number | und
     return dto.modified
 }
 
-function toHealthcareProfessionalLabels(dto: HealthcarePartyDto): Set<CodingReference> {
-    return dto.tags ? new Set(dto.tags.map(mapCodeStubToCodingReference)) : new Set()
+function toHealthcareProfessionalLabels(dto: HealthcarePartyDto): Array<CodingReference> {
+    return dto.tags ? dto.tags.map(mapCodeStubToCodingReference) : []
 }
 
-function toHealthcareProfessionalCodes(dto: HealthcarePartyDto): Set<CodingReference> {
-    return dto.codes ? new Set(dto.codes.map(mapCodeStubToCodingReference)) : new Set()
+function toHealthcareProfessionalCodes(dto: HealthcarePartyDto): Array<CodingReference> {
+    return dto.codes ? dto.codes.map(mapCodeStubToCodingReference) : []
 }
 
 function toHealthcareProfessionalDeletionDate(dto: HealthcarePartyDto): number | undefined {
@@ -330,16 +330,16 @@ function toHealthcareProfessionalPicture(dto: HealthcarePartyDto): ArrayBuffer |
     return dto.picture
 }
 
-function toHealthcareProfessionalSpecialityCodes(dto: HealthcarePartyDto): Set<CodingReference> | undefined {
-    return dto.specialityCodes ? new Set(dto.specialityCodes.map(mapCodeStubToCodingReference)) : undefined
+function toHealthcareProfessionalSpecialityCodes(dto: HealthcarePartyDto): Array<CodingReference> | undefined {
+    return dto.specialityCodes ? dto.specialityCodes.map(mapCodeStubToCodingReference) : undefined
 }
 
 function toHealthcareProfessionalNotes(dto: HealthcarePartyDto): string | undefined {
     return dto.notes
 }
 
-function toHealthcareProfessionalProperties(dto: HealthcarePartyDto): Set<Property> {
-    return dto.properties ? new Set([...dto.properties].map(mapPropertyStubToProperty)) : new Set()
+function toHealthcareProfessionalProperties(dto: HealthcarePartyDto): Array<Property> {
+    return dto.properties ? [...dto.properties].map(mapPropertyStubToProperty) : []
 }
 
 function toHealthcareProfessionalSystemMetaData(dto: HealthcarePartyDto): SystemMetaDataOwner | undefined {

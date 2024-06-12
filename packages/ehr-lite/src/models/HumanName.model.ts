@@ -2,7 +2,7 @@ import { mapTo, PersonNameDto } from '@icure/typescript-common'
 import { HumanNameUseEnum } from './enums/HumanNameUse.enum'
 
 @mapTo(PersonNameDto)
-export class HumanName {
+export class HumanName implements IHumanName {
     family?: string
     given: string[]
     start?: number
@@ -45,7 +45,7 @@ export class HumanName {
     //       candidates[0]
     // }
 
-    static toJSON(instance: HumanName): any {
+    static toJSON(instance: HumanName): IHumanName {
         const pojo: any = {}
         if (instance.family !== undefined) pojo['family'] = instance.family
         pojo['given'] = instance.given.map((item) => item)
@@ -58,7 +58,7 @@ export class HumanName {
         return pojo
     }
 
-    static fromJSON(pojo: any): HumanName {
+    static fromJSON(pojo: IHumanName): HumanName {
         const obj = {} as IHumanName
         if (pojo['family'] !== undefined) {
             obj['family'] = pojo['family']
@@ -84,11 +84,11 @@ export class HumanName {
 
 interface IHumanName {
     family?: string
-    given?: string[]
+    given: string[]
     start?: number
     end?: number
-    prefix?: string[]
-    suffix?: string[]
+    prefix: string[]
+    suffix: string[]
     text?: string
     use?: HumanNameUseEnum
 }

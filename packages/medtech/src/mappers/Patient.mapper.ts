@@ -270,7 +270,7 @@ function toPatientDtoPatientProfessions(domain: Patient): CodeStub[] | undefined
 }
 
 function toPatientDtoParameters(domain: Patient): { [key: string]: string[] } | undefined {
-    return domain.parameters ? Object.fromEntries(domain.parameters.entries()) : undefined
+    return domain.parameters ? Object.fromEntries(Object.entries(domain.parameters)) : undefined
 }
 
 function toPatientDtoProperties(domain: Patient): PropertyStub[] | undefined {
@@ -413,12 +413,12 @@ function toPatientResponsible(dto: PatientDto): string | undefined {
     return dto.responsible
 }
 
-function toPatientLabels(dto: PatientDto): Set<CodingReference> {
-    return dto.tags ? new Set(dto.tags.map(mapCodeStubToCodingReference)) : new Set()
+function toPatientLabels(dto: PatientDto): Array<CodingReference> {
+    return dto.tags ? dto.tags.map(mapCodeStubToCodingReference) : []
 }
 
-function toPatientCodes(dto: PatientDto): Set<CodingReference> {
-    return dto.codes ? new Set(dto.codes.map(mapCodeStubToCodingReference)) : new Set()
+function toPatientCodes(dto: PatientDto): Array<CodingReference> {
+    return dto.codes ? dto.codes.map(mapCodeStubToCodingReference) : []
 }
 
 function toPatientEndOfLife(dto: PatientDto): number | undefined {
@@ -469,8 +469,8 @@ function toPatientMergeToPatientId(dto: PatientDto): string | undefined {
     return dto.mergeToPatientId
 }
 
-function toPatientMergedIds(dto: PatientDto): Set<string> {
-    return dto.mergedIds ? new Set(dto.mergedIds) : new Set()
+function toPatientMergedIds(dto: PatientDto): Array<string> {
+    return dto.mergedIds ? dto.mergedIds : []
 }
 
 function toPatientAlias(dto: PatientDto): string | undefined {
@@ -573,12 +573,12 @@ function toPatientPatientProfessions(dto: PatientDto): CodingReference[] {
     return dto.patientProfessions ? dto.patientProfessions.map(mapCodeStubToCodingReference) : []
 }
 
-function toPatientParameters(dto: PatientDto): Map<string, string[]> | undefined {
-    return dto.parameters ? new Map(Object.entries(dto.parameters)) : undefined
+function toPatientParameters(dto: PatientDto): Record<string, string[]> | undefined {
+    return dto.parameters ? Object.fromEntries(Object.entries(dto.parameters)) : undefined
 }
 
-function toPatientProperties(dto: PatientDto): Set<Property> {
-    return dto.properties ? new Set(dto.properties.map(mapPropertyStubToProperty)) : new Set()
+function toPatientProperties(dto: PatientDto): Array<Property> {
+    return dto.properties ? dto.properties.map(mapPropertyStubToProperty) : []
 }
 
 function toPatientSystemMetaData(dto: PatientDto): SystemMetaDataOwnerEncrypted | undefined {

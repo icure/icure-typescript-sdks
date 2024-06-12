@@ -23,9 +23,9 @@ export class MedicalDevice {
         this.modified = json.modified
         this.author = json.author
         this.responsible = json.responsible
-        this.properties = json.properties ?? new Set()
-        this.labels = json.labels ?? new Set()
-        this.codes = json.codes ?? new Set()
+        this.properties = json.properties ?? []
+        this.labels = json.labels ?? []
+        this.codes = json.codes ?? []
         this.endOfLife = json.endOfLife
         this.externalId = json.externalId
         this.name = json.name
@@ -73,11 +73,11 @@ export class MedicalDevice {
     /**
      * A label is an item from a codification system that qualifies a medical device as being member of a certain class, whatever the value it might have taken. If the label qualifies the content of a field, it means that whatever the content of the field, the label will always apply. LOINC is a codification system typically used for labels.
      */
-    'labels': Set<CodingReference>
+    'labels': Array<CodingReference>
     /**
      * A code is an item from a codification system that qualifies the content of this medical device. SNOMED-CT, ICPC-2 or ICD-10 codifications systems can be used for codes
      */
-    'codes': Set<CodingReference>
+    'codes': Array<CodingReference>
     /**
      * Soft delete (unix epoch in ms) timestamp of the medical device
      */
@@ -111,7 +111,7 @@ export class MedicalDevice {
      * Picture of the device/application
      */
     'picture'?: ArrayBuffer
-    'properties': Set<Property>
+    'properties': Array<Property>
     'systemMetaData'?: SystemMetaDataOwner
 
     static toJSON(instance: MedicalDevice): any {
@@ -124,8 +124,8 @@ export class MedicalDevice {
         if (instance.modified !== undefined) pojo['modified'] = instance.modified
         if (instance.author !== undefined) pojo['author'] = instance.author
         if (instance.responsible !== undefined) pojo['responsible'] = instance.responsible
-        pojo['labels'] = Array.from([...instance.labels].map((item) => CodingReference.toJSON(item)))
-        pojo['codes'] = Array.from([...instance.codes].map((item) => CodingReference.toJSON(item)))
+        pojo['labels'] = ([...instance.labels].map((item) => CodingReference.toJSON(item)))
+        pojo['codes'] = ([...instance.codes].map((item) => CodingReference.toJSON(item)))
         if (instance.endOfLife !== undefined) pojo['endOfLife'] = instance.endOfLife
         if (instance.externalId !== undefined) pojo['externalId'] = instance.externalId
         if (instance.name !== undefined) pojo['name'] = instance.name
@@ -135,7 +135,7 @@ export class MedicalDevice {
         if (instance.serialNumber !== undefined) pojo['serialNumber'] = instance.serialNumber
         if (instance.parentId !== undefined) pojo['parentId'] = instance.parentId
         if (instance.picture !== undefined) pojo['picture'] = !!instance.picture ? ua2b64(instance.picture) : undefined
-        pojo['properties'] = Array.from([...instance.properties].map((item) => Property.toJSON(item)))
+        pojo['properties'] = ([...instance.properties].map((item) => Property.toJSON(item)))
         if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataOwner.toJSON(instance.systemMetaData) : undefined
         return pojo
     }
@@ -162,8 +162,8 @@ export class MedicalDevice {
         if (pojo['responsible'] !== undefined) {
             obj['responsible'] = pojo['responsible']
         }
-        obj['labels'] = new Set(pojo['labels'].map((item: any) => CodingReference.fromJSON(item)))
-        obj['codes'] = new Set(pojo['codes'].map((item: any) => CodingReference.fromJSON(item)))
+        obj['labels'] = pojo['labels'].map((item: any) => CodingReference.fromJSON(item))
+        obj['codes'] = pojo['codes'].map((item: any) => CodingReference.fromJSON(item))
         if (pojo['endOfLife'] !== undefined) {
             obj['endOfLife'] = pojo['endOfLife']
         }
@@ -191,7 +191,7 @@ export class MedicalDevice {
         if (pojo['picture'] !== undefined) {
             obj['picture'] = !!pojo['picture'] ? b64_2ab(pojo['picture']) : undefined
         }
-        obj['properties'] = new Set(pojo['properties'].map((item: any) => Property.fromJSON(item)))
+        obj['properties'] = pojo['properties'].map((item: any) => Property.fromJSON(item))
         if (pojo['systemMetaData'] !== undefined) {
             obj['systemMetaData'] = !!pojo['systemMetaData'] ? SystemMetaDataOwner.fromJSON(pojo['systemMetaData']) : undefined
         }
@@ -208,8 +208,8 @@ interface IMedicalDevice {
     modified?: number
     author?: string
     responsible?: string
-    labels?: Set<CodingReference>
-    codes?: Set<CodingReference>
+    labels?: Array<CodingReference>
+    codes?: Array<CodingReference>
     endOfLife?: number
     externalId?: string
     name?: string
@@ -219,6 +219,6 @@ interface IMedicalDevice {
     serialNumber?: string
     parentId?: string
     picture?: ArrayBuffer
-    properties?: Set<Property>
+    properties?: Array<Property>
     systemMetaData?: SystemMetaDataOwner
 }

@@ -213,7 +213,7 @@ function toAnnotationDtoMarkdown(domain: Annotation):
           xx?: string | undefined
       }
     | undefined {
-    return !!domain.markdown ? Object.fromEntries(domain.markdown) : undefined
+    return !!domain.markdown ? domain.markdown : undefined
 }
 
 function toAnnotationDtoTags(domain: Annotation): CodeStub[] | undefined {
@@ -232,8 +232,8 @@ function toAnnotationId(dto: AnnotationDto): string {
     return dto.id!
 }
 
-function toAnnotationTags(dto: AnnotationDto): Set<CodingReference> {
-    return new Set(dto.tags?.map((t) => mapCodeStubToCodingReference(t))) ?? new Set()
+function toAnnotationTags(dto: AnnotationDto): Array<CodingReference> {
+    return (dto.tags?.map((t) => mapCodeStubToCodingReference(t))) ?? []
 }
 
 function toAnnotationAuthor(dto: AnnotationDto): string | undefined {
@@ -248,8 +248,8 @@ function toAnnotationModified(dto: AnnotationDto): number | undefined {
     return dto.modified
 }
 
-function toAnnotationMarkdown(dto: AnnotationDto): Map<ISO639_1, string> {
-    return new Map(Object.entries(dto.markdown ?? {})) as Map<ISO639_1, string>
+function toAnnotationMarkdown(dto: AnnotationDto): Record<ISO639_1, string> {
+    return Object.fromEntries(Object.entries(dto.markdown ?? {})) as Record<ISO639_1, string>
 }
 
 function toAnnotationTarget(dto: AnnotationDto): string | undefined {

@@ -12,16 +12,16 @@ export class Message {
     created?: number
     modified?: number
     sent?: number
-    readStatus?: Map<string, MessageReadStatus>
+    readStatus?: Record<string, MessageReadStatus>
     attachments?: MessageAttachment[]
     author?: string
     responsible?: string
-    tags?: Set<CodingReference>
-    codes?: Set<CodingReference>
+    tags?: Array<CodingReference>
+    codes?: Array<CodingReference>
     endOfLife?: number
     deletionDate?: number
     sender?: string
-    metas?: Map<string, string>
+    metas?: Record<string, string>
     content?: string
     topicId?: string
     systemMetadata?: SystemMetaDataEncrypted
@@ -64,16 +64,16 @@ export class Message {
         if (instance.created !== undefined) pojo['created'] = instance.created
         if (instance.modified !== undefined) pojo['modified'] = instance.modified
         if (instance.sent !== undefined) pojo['sent'] = instance.sent
-        if (instance.readStatus !== undefined) pojo['readStatus'] = !!instance.readStatus ? Object.fromEntries([...instance.readStatus.entries()].map(([k, v]) => [k, MessageReadStatus.toJSON(v)])) : undefined
+        if (instance.readStatus !== undefined) pojo['readStatus'] = !!instance.readStatus ? Object.fromEntries(Object.entries(instance.readStatus).map(([k, v]) => [k, MessageReadStatus.toJSON(v)])) : undefined
         if (instance.attachments !== undefined) pojo['attachments'] = instance.attachments?.map((item) => MessageAttachment.toJSON(item))
         if (instance.author !== undefined) pojo['author'] = instance.author
         if (instance.responsible !== undefined) pojo['responsible'] = instance.responsible
-        if (instance.tags !== undefined) pojo['tags'] = Array.from([...(instance.tags ?? [])]?.map((item) => CodingReference.toJSON(item)) ?? [])
-        if (instance.codes !== undefined) pojo['codes'] = Array.from([...(instance.codes ?? [])]?.map((item) => CodingReference.toJSON(item)) ?? [])
+        if (instance.tags !== undefined) pojo['tags'] = ([...(instance.tags ?? [])]?.map((item) => CodingReference.toJSON(item)) ?? [])
+        if (instance.codes !== undefined) pojo['codes'] = ([...(instance.codes ?? [])]?.map((item) => CodingReference.toJSON(item)) ?? [])
         if (instance.endOfLife !== undefined) pojo['endOfLife'] = instance.endOfLife
         if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
         if (instance.sender !== undefined) pojo['sender'] = instance.sender
-        if (instance.metas !== undefined) pojo['metas'] = !!instance.metas ? Object.fromEntries([...instance.metas.entries()].map(([k, v]) => [k, v])) : undefined
+        if (instance.metas !== undefined) pojo['metas'] = !!instance.metas ? Object.fromEntries(Object.entries(instance.metas).map(([k, v]) => [k, v])) : undefined
         if (instance.content !== undefined) pojo['content'] = instance.content
         if (instance.topicId !== undefined) pojo['topicId'] = instance.topicId
         if (instance.systemMetadata !== undefined) pojo['systemMetadata'] = !!instance.systemMetadata ? SystemMetaDataEncrypted.toJSON(instance.systemMetadata) : undefined
@@ -98,7 +98,7 @@ export class Message {
             obj['sent'] = pojo['sent']
         }
         if (pojo['readStatus'] !== undefined) {
-            obj['readStatus'] = pojo['readStatus'] ? new Map(Object.entries(pojo['readStatus']).map(([k, v]: [any, any]) => [k, MessageReadStatus.fromJSON(v)])) : undefined
+            obj['readStatus'] = pojo['readStatus'] ? Object.fromEntries(Object.entries(pojo['readStatus']).map(([k, v]: [any, any]) => [k, MessageReadStatus.fromJSON(v)])) : undefined
         }
         if (pojo['attachments'] !== undefined) {
             obj['attachments'] = pojo['attachments']?.map((item: any) => MessageAttachment.fromJSON(item))
@@ -110,10 +110,10 @@ export class Message {
             obj['responsible'] = pojo['responsible']
         }
         if (pojo['tags'] !== undefined) {
-            obj['tags'] = new Set(pojo['tags']?.map((item: any) => CodingReference.fromJSON(item)) ?? [])
+            obj['tags'] = (pojo['tags']?.map((item: any) => CodingReference.fromJSON(item)) ?? [])
         }
         if (pojo['codes'] !== undefined) {
-            obj['codes'] = new Set(pojo['codes']?.map((item: any) => CodingReference.fromJSON(item)) ?? [])
+            obj['codes'] = (pojo['codes']?.map((item: any) => CodingReference.fromJSON(item)) ?? [])
         }
         if (pojo['endOfLife'] !== undefined) {
             obj['endOfLife'] = pojo['endOfLife']
@@ -125,7 +125,7 @@ export class Message {
             obj['sender'] = pojo['sender']
         }
         if (pojo['metas'] !== undefined) {
-            obj['metas'] = pojo['metas'] ? new Map(Object.entries(pojo['metas']).map(([k, v]: [any, any]) => [k, v])) : undefined
+            obj['metas'] = pojo['metas'] ? Object.fromEntries(Object.entries(pojo['metas']).map(([k, v]: [any, any]) => [k, v])) : undefined
         }
         if (pojo['content'] !== undefined) {
             obj['content'] = pojo['content']
@@ -146,16 +146,16 @@ interface IMessage {
     created?: number
     modified?: number
     sent?: number
-    readStatus?: Map<string, MessageReadStatus>
+    readStatus?: Record<string, MessageReadStatus>
     attachments?: MessageAttachment[]
     author?: string
     responsible?: string
-    tags?: Set<CodingReference>
-    codes?: Set<CodingReference>
+    tags?: Array<CodingReference>
+    codes?: Array<CodingReference>
     endOfLife?: number
     deletionDate?: number
     sender?: string
-    metas?: Map<string, string>
+    metas?: Record<string, string>
     content?: string
     topicId?: string
     systemMetadata?: SystemMetaDataEncrypted

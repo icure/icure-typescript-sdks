@@ -17,7 +17,7 @@ export function newDocument(): Document {
         mainUti: 'mainUti',
         name: 'name',
         version: 'version',
-        otherUtis: new Set(['otherUtis']),
+        otherUtis: (['otherUtis']),
         externalUuid: 'externalUuid',
         size: 101112,
         hash: 'hash',

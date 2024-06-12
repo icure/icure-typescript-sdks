@@ -134,8 +134,8 @@ export function testTopicLikeApi<
                 ],
                 'Topic description',
                 patient,
-                new Set(heIds),
-                new Set(serviceIds),
+                (heIds),
+                (serviceIds),
             )
             expect(topic).toBeTruthy()
 

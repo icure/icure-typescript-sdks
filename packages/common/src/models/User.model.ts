@@ -41,11 +41,11 @@ export class User {
     /**
      * Extra properties for the user. Those properties are typed (see class Property)
      */
-    'properties': Set<Property>
+    'properties': Array<Property>
     /**
      * Roles assigned to this user
      */
-    'roles': Set<string>
+    'roles': Array<string>
     /**
      * If the user is considered as an admin by the cloud environment
      */
@@ -89,7 +89,7 @@ export class User {
     /**
      * Ids of the dataOwners with who the user is sharing all new data he is creating in iCure : All Data Types that may be shared can be found in SharedDataType enum
      */
-    'sharingDataWith': Map<SharedDataType, Set<string>>
+    'sharingDataWith': Record<SharedDataType, Array<string>>
     /**
      * email address of the user (used for token exchange or password recovery).
      */
@@ -101,7 +101,7 @@ export class User {
     /**
      * Encrypted and time-limited Authentication tokens used for inter-applications authentication
      */
-    'authenticationTokens': Map<string, AuthenticationToken>
+    'authenticationTokens': Record<string, AuthenticationToken>
 
     constructor(json: IUser) {
         this.id = forceUuid(json.id)
@@ -109,8 +109,8 @@ export class User {
         this.deletionDate = json.deletionDate
         this.created = json.created
         this.name = json.name
-        this.properties = json.properties ?? new Set()
-        this.roles = json.roles ?? new Set()
+        this.properties = json.properties ?? []
+        this.roles = json.roles ?? []
         this.isAdmin = json.isAdmin
         this.inheritsRoles = json.inheritsRoles
         this.login = json.login
@@ -121,10 +121,10 @@ export class User {
         this.healthcarePartyId = json.healthcarePartyId
         this.patientId = json.patientId
         this.deviceId = json.deviceId
-        this.sharingDataWith = json.sharingDataWith ?? new Map()
+        this.sharingDataWith = json.sharingDataWith ?? {} as Record<SharedDataType, Array<string>>
         this.email = json.email
         this.mobilePhone = json.mobilePhone
-        this.authenticationTokens = json.authenticationTokens ?? new Map()
+        this.authenticationTokens = json.authenticationTokens ?? {}
     }
 
     static toJSON(instance: User): any {
@@ -134,8 +134,8 @@ export class User {
         if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
         if (instance.created !== undefined) pojo['created'] = instance.created
         if (instance.name !== undefined) pojo['name'] = instance.name
-        pojo['properties'] = Array.from([...instance.properties].map((item) => Property.toJSON(item)))
-        pojo['roles'] = Array.from([...instance.roles].map((item) => item))
+        pojo['properties'] = ([...instance.properties].map((item) => Property.toJSON(item)))
+        pojo['roles'] = ([...instance.roles].map((item) => item))
         if (instance.isAdmin !== undefined) pojo['isAdmin'] = instance.isAdmin
         if (instance.inheritsRoles !== undefined) pojo['inheritsRoles'] = instance.inheritsRoles
         if (instance.login !== undefined) pojo['login'] = instance.login
@@ -146,10 +146,10 @@ export class User {
         if (instance.healthcarePartyId !== undefined) pojo['healthcarePartyId'] = instance.healthcarePartyId
         if (instance.patientId !== undefined) pojo['patientId'] = instance.patientId
         if (instance.deviceId !== undefined) pojo['deviceId'] = instance.deviceId
-        pojo['sharingDataWith'] = Object.fromEntries([...instance.sharingDataWith.entries()].map(([k, v]) => [k, Array.from([...v].map((item) => item))]))
+        pojo['sharingDataWith'] = Object.fromEntries(Object.entries(instance.sharingDataWith).map(([k, v]) => [k, ([...v].map((item) => item))]))
         if (instance.email !== undefined) pojo['email'] = instance.email
         if (instance.mobilePhone !== undefined) pojo['mobilePhone'] = instance.mobilePhone
-        pojo['authenticationTokens'] = Object.fromEntries([...instance.authenticationTokens.entries()].map(([k, v]) => [k, AuthenticationToken.toJSON(v)]))
+        pojo['authenticationTokens'] = Object.fromEntries(Object.entries(instance.authenticationTokens).map(([k, v]) => [k, AuthenticationToken.toJSON(v)]))
         return pojo
     }
 
@@ -168,8 +168,8 @@ export class User {
         if (pojo['name'] !== undefined) {
             obj['name'] = pojo['name']
         }
-        obj['properties'] = new Set(pojo['properties'].map((item: any) => Property.fromJSON(item)))
-        obj['roles'] = new Set(pojo['roles'].map((item: any) => item))
+        obj['properties'] = (pojo['properties'].map((item: any) => Property.fromJSON(item)))
+        obj['roles'] = (pojo['roles'].map((item: any) => item))
         if (pojo['isAdmin'] !== undefined) {
             obj['isAdmin'] = pojo['isAdmin']
         }
@@ -200,14 +200,14 @@ export class User {
         if (pojo['deviceId'] !== undefined) {
             obj['deviceId'] = pojo['deviceId']
         }
-        obj['sharingDataWith'] = new Map(Object.entries(pojo['sharingDataWith']).map(([k, v]: [any, any]) => [k, new Set(v.map((item: any) => item))]))
+        obj['sharingDataWith'] = Object.fromEntries(Object.entries(pojo['sharingDataWith']).map(([k, v]: [any, any]) => [k, (v.map((item: any) => item))]))
         if (pojo['email'] !== undefined) {
             obj['email'] = pojo['email']
         }
         if (pojo['mobilePhone'] !== undefined) {
             obj['mobilePhone'] = pojo['mobilePhone']
         }
-        obj['authenticationTokens'] = new Map(Object.entries(pojo['authenticationTokens']).map(([k, v]: [any, any]) => [k, AuthenticationToken.fromJSON(v)]))
+        obj['authenticationTokens'] = Object.fromEntries(Object.entries(pojo['authenticationTokens']).map(([k, v]: [any, any]) => [k, AuthenticationToken.fromJSON(v)]))
         return new User(obj)
     }
 }
@@ -220,8 +220,8 @@ interface IUser {
     deletionDate?: number
     created?: number
     name?: string
-    properties?: Set<Property>
-    roles?: Set<string>
+    properties?: Array<Property>
+    roles?: Array<string>
     isAdmin?: boolean
     inheritsRoles?: boolean
     login?: string
@@ -232,8 +232,8 @@ interface IUser {
     healthcarePartyId?: string
     patientId?: string
     deviceId?: string
-    sharingDataWith?: Map<SharedDataType, Set<string>>
+    sharingDataWith?: Record<SharedDataType, Array<string>>
     email?: string
     mobilePhone?: string
-    authenticationTokens?: Map<string, AuthenticationToken>
+    authenticationTokens?: Record<string, AuthenticationToken>
 }

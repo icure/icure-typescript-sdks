@@ -90,7 +90,7 @@ function toMessageDtoMetas(domain: Message): { [key: string]: string } | undefin
 }
 
 function toMessageDtoReadStatus(domain: Message): { [key: string]: MessageReadStatusDto } | undefined {
-    return Object.fromEntries([...(domain.readStatus?.entries() ?? [])].map(([k, v]) => [k, mapMessageReadStatusToMessageReadStatusDto(v)]))
+    return Object.fromEntries(Object.entries(domain.readStatus ?? {}).map(([k, v]) => [k, mapMessageReadStatusToMessageReadStatusDto(v)]))
 }
 
 function toMessageDtoTransportGuid(domain: Message): string | undefined {
@@ -177,8 +177,8 @@ function toMessageSent(dto: MessageDto): number | undefined {
     return dto.sent
 }
 
-function toMessageReadStatus(dto: MessageDto): Map<string, MessageReadStatus> | undefined {
-    return new Map(Object.entries(dto.readStatus ?? {}).map(([k, v]) => [k, mapMessageReadStatusDtoToMessageReadStatus(v)]))
+function toMessageReadStatus(dto: MessageDto): Record<string, MessageReadStatus> | undefined {
+    return Object.fromEntries(Object.entries(dto.readStatus ?? {}).map(([k, v]) => [k, mapMessageReadStatusDtoToMessageReadStatus(v)]))
 }
 
 function toMessageAuthor(dto: MessageDto): string | undefined {
@@ -189,12 +189,12 @@ function toMessageResponsible(dto: MessageDto): string | undefined {
     return dto.responsible
 }
 
-function toMessageTags({ tags }: MessageDto): Set<CodingReference> | undefined {
-    return !!tags ? new Set(tags.map((item) => mapCodeStubToCodingReference(item))) : undefined
+function toMessageTags({ tags }: MessageDto): Array<CodingReference> | undefined {
+    return !!tags ? (tags.map((item) => mapCodeStubToCodingReference(item))) : undefined
 }
 
-function toMessageCodes({ codes }: MessageDto): Set<CodingReference> | undefined {
-    return !!codes ? new Set(codes.map((item) => mapCodeStubToCodingReference(item))) : undefined
+function toMessageCodes({ codes }: MessageDto): Array<CodingReference> | undefined {
+    return !!codes ? (codes.map((item) => mapCodeStubToCodingReference(item))) : undefined
 }
 
 function toMessageEndOfLife(dto: MessageDto): number | undefined {
@@ -208,8 +208,8 @@ function toMessageDeletionDate(dto: MessageDto): number | undefined {
 function toMessageSender(dto: MessageDto): string | undefined {
     return dto.fromHealthcarePartyId
 }
-function toMessageMetas(dto: MessageDto): Map<string, string> | undefined {
-    return !!dto.metas ? new Map(Object.entries(dto.metas)) : undefined
+function toMessageMetas(dto: MessageDto): Record<string, string> | undefined {
+    return !!dto.metas ? Object.fromEntries(Object.entries(dto.metas)) : undefined
 }
 
 function toMessageContent(dto: MessageDto): string | undefined {

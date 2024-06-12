@@ -16,8 +16,8 @@ export function newDataSample(makeContent = false): DataSample {
         transactionId: 'transactionId',
         identifiers: [newIdentifier()],
         batchId: 'batchId',
-        healthcareElementIds: new Set('healthcareElementIds'),
-        canvasesIds: new Set('canvasesIds'),
+        healthcareElementIds: ('healthcareElementIds'),
+        canvasesIds: ('canvasesIds'),
         index: 123,
         content: makeContent ? mapOf({ en: newContent() }) : undefined,
         valueDate: 456,
@@ -30,8 +30,8 @@ export function newDataSample(makeContent = false): DataSample {
         responsible: 'responsible',
         comment: 'comment',
         qualifiedLinks: mapOf({ from: mapOf({ to: 'to' }) }),
-        codes: new Set([newCodingReference()]),
-        labels: new Set([newCodingReference()]),
+        codes: ([newCodingReference()]),
+        labels: ([newCodingReference()]),
         systemMetaData: newSystemMetaDataEncrypted(),
     })
 }
