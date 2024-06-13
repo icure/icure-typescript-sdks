@@ -45,7 +45,7 @@ export class Delegation {
     }
 }
 
-interface IDelegation {
+export interface IDelegation {
     owner?: string
     delegatedTo?: string
     key?: string

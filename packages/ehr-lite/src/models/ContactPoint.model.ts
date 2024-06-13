@@ -41,7 +41,7 @@ export class ContactPoint implements IContactPoint {
     }
 }
 
-interface IContactPoint {
+export interface IContactPoint {
     system?: ContactPointTelecomTypeEnum
     value?: string
     description?: string

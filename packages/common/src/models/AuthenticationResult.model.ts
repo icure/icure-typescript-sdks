@@ -20,7 +20,7 @@ export class AuthenticationResult<DSApi extends CommonApi> {
     'userId': string
 }
 
-interface IAuthenticationResult<DSApi> {
+export interface IAuthenticationResult<DSApi> {
     api: DSApi
     keyPairs: { privateKey: string; publicKey: string }[]
     token: string

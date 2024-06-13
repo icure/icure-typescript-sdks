@@ -131,7 +131,7 @@ export class Observation implements IObservation {
     }
 }
 
-interface IObservation {
+export interface IObservation {
     id: string
     transactionId?: string
     identifiers: Identifier[]

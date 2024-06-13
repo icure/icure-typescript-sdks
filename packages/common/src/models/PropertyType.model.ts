@@ -29,7 +29,7 @@ export class PropertyType {
     }
 }
 
-interface IPropertyType {
+export interface IPropertyType {
     identifier: string
     type?: TypeEnum
 }

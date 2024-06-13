@@ -33,7 +33,7 @@ export class AuthenticationProcess {
     }
 }
 
-interface IAuthenticationProcess {
+export interface IAuthenticationProcess {
     requestId: string
     bypassTokenCheck: boolean
     login: string

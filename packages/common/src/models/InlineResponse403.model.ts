@@ -67,7 +67,7 @@ export class InlineResponse403 {
     }
 }
 
-interface IInlineResponse403 {
+export interface IInlineResponse403 {
     _short?: number
     _char?: string
     _int?: number

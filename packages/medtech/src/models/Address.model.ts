@@ -109,7 +109,7 @@ export class Address {
     }
 }
 
-interface IAddress {
+export interface IAddress {
     addressType?: AddressAddressTypeEnum
     description?: string
     street?: string

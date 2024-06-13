@@ -28,7 +28,7 @@ export class MessageReadStatus {
     }
 }
 
-interface IMessageReadStatus {
+export interface IMessageReadStatus {
     time?: number
     read: boolean
 }

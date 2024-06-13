@@ -207,7 +207,7 @@ export class DataSample {
     }
 }
 
-interface IDataSample {
+export interface IDataSample {
     id: string
     transactionId?: string
     identifiers: Array<Identifier>

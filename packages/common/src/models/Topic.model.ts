@@ -114,7 +114,7 @@ export class Topic {
     }
 }
 
-interface ITopic {
+export interface ITopic {
     id: string
     rev?: string
     created?: number

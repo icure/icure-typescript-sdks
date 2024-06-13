@@ -155,7 +155,7 @@ export class Condition implements ICondition {
     }
 }
 
-interface ICondition {
+export interface ICondition {
     id?: string
     identifiers: Identifier[]
     rev?: string

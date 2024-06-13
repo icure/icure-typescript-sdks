@@ -94,7 +94,7 @@ export class Coding {
     }
 }
 
-interface ICoding {
+export interface ICoding {
     id: string
     rev?: string
     type?: string

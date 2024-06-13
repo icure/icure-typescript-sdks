@@ -104,7 +104,7 @@ export class Organisation implements IOrganisation {
     }
 }
 
-interface IOrganisation {
+export interface IOrganisation {
     id: string
     rev?: string
     created?: number

@@ -63,7 +63,7 @@ export class ReferenceRange {
     }
 }
 
-interface IReferenceRange {
+export interface IReferenceRange {
     low?: number
     high?: number
     tags?: CodingReference[]

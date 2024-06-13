@@ -88,7 +88,7 @@ export class Location implements ILocation {
     }
 }
 
-interface ILocation {
+export interface ILocation {
     addressType?: LocationAddressTypeEnum
     description?: string
     street?: string

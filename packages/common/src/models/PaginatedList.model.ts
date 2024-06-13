@@ -30,7 +30,7 @@ export class PaginatedList<T> {
     }
 }
 
-interface IPaginatedList<T> {
+export interface IPaginatedList<T> {
     rows: Array<T>
     nextKeyPair?: PaginatedDocumentKeyAndIdPairObject
 }

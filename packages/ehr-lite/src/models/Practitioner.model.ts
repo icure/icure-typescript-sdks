@@ -144,7 +144,7 @@ export class Practitioner implements IPractitioner {
     }
 }
 
-interface IPractitioner {
+export interface IPractitioner {
     id?: string
     rev?: string
     created?: number

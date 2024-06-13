@@ -35,7 +35,7 @@ export class PaginatedDocumentKeyAndIdPairObject {
     }
 }
 
-interface IPaginatedDocumentKeyAndIdPairObject {
+export interface IPaginatedDocumentKeyAndIdPairObject {
     startKey?: any
     startKeyDocId?: string
 }

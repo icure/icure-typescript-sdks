@@ -92,7 +92,7 @@ export class SecureDelegation {
     }
 }
 
-interface ISecureDelegation {
+export interface ISecureDelegation {
     delegator?: string
     delegate?: string
     secretIds: Array<string>

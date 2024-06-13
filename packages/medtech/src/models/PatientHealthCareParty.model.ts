@@ -41,7 +41,7 @@ export class PatientHealthCareParty {
     }
 }
 
-interface IPatientHealthCareParty {
+export interface IPatientHealthCareParty {
     type: PatientHealthCarePartyTypeEnum
     healthcarePartyId?: string
 }

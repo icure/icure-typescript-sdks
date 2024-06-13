@@ -52,7 +52,7 @@ export class CodingReference {
     }
 }
 
-interface ICodingReference {
+export interface ICodingReference {
     id: string
     type?: string
     code?: string

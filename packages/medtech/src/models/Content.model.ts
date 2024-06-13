@@ -101,7 +101,7 @@ export class Content {
     }
 }
 
-interface IContent {
+export interface IContent {
     stringValue?: string
     numberValue?: number
     booleanValue?: boolean
