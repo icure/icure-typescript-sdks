@@ -12,7 +12,7 @@ export function newCoding(): Coding {
         code: 'code',
         version: 'version',
         searchTerms: recordOf({
-            en: 'test',
+            en: ['test'],
         }),
         qualifiedLinks: recordOf({
             from: ['to'],
