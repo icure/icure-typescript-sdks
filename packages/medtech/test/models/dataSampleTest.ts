@@ -16,7 +16,7 @@ export function newDataSample(makeContent = false): DataSample {
         transactionId: 'transactionId',
         identifiers: [newIdentifier()],
         batchId: 'batchId',
-        healthcareElementIds: 'healthcareElementIds',
+        healthcareElementIds: ['healthcareElementIds'],
         canvasesIds: 'canvasesIds',
         index: 123,
         content: makeContent ? recordOf({ en: newContent() }) : undefined,
