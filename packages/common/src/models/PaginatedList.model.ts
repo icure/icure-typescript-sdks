@@ -9,7 +9,7 @@ export class PaginatedList<T> {
     'rows': Array<T>
     'nextKeyPair'?: PaginatedDocumentKeyAndIdPairObject
 
-    static toJSON<T>(instance: PaginatedList<T>, elementToJson: (tInstance: T) => any): any {
+    static toJSON<I, K extends I>(instance: PaginatedList<K>, elementToJson: (tInstance: K) => I): IPaginatedList<I> {
         const pojo: any = {}
         pojo['rows'] = instance.rows.map(elementToJson)
         if (instance.nextKeyPair) {
@@ -18,7 +18,7 @@ export class PaginatedList<T> {
         return pojo
     }
 
-    static fromJSON<T>(pojo: any, elementFromJson: (tPojo: any) => T): PaginatedList<T> {
+    static fromJSON<I, K extends I>(pojo: IPaginatedList<I>, elementFromJson: (tPojo: I) => K): PaginatedList<K> {
         return new PaginatedList({
             rows: pojo['rows'].map(elementFromJson),
             nextKeyPair: pojo['nextKeyPair'] ? PaginatedDocumentKeyAndIdPairObject.fromJSON(pojo['nextKeyPair']) : undefined,
