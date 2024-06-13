@@ -41,7 +41,7 @@ describe('Data Sample Filters Tests', function () {
             new Patient({
                 firstName: 'Dirk',
                 lastName: 'Gently',
-            })
+            }),
         )
 
         ds1 = await hcp1Api.dataSampleApi.createOrModifyDataSampleFor(
@@ -56,7 +56,7 @@ describe('Data Sample Filters Tests', function () {
                     }),
                 ],
                 content: recordOf({ en: new Content({ stringValue: 'Hello world' }) }),
-            })
+            }),
         )
 
         he1 = await hcp1Api.healthcareElementApi.createOrModifyHealthcareElement(
@@ -71,7 +71,7 @@ describe('Data Sample Filters Tests', function () {
                     }),
                 ],
             }),
-            patient.id!
+            patient.id!,
         )
 
         ds2 = await hcp1Api.dataSampleApi.createOrModifyDataSampleFor(
@@ -87,7 +87,7 @@ describe('Data Sample Filters Tests', function () {
                     }),
                 ],
                 content: recordOf({ en: new Content({ stringValue: 'Hello world' }) }),
-            })
+            }),
         )
 
         ds3 = await hcp1Api.dataSampleApi.createOrModifyDataSampleFor(
@@ -102,7 +102,7 @@ describe('Data Sample Filters Tests', function () {
                     }),
                 ],
                 content: recordOf({ en: new Content({ stringValue: 'Hello world' }) }),
-            })
+            }),
         )
     })
 

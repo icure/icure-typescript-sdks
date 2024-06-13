@@ -39,7 +39,7 @@ describe('Healthcare Element Filters Test', function () {
             new Patient({
                 firstName: 'Dirk',
                 lastName: 'Gently',
-            })
+            }),
         )
 
         he1 = await hcp1Api.healthcareElementApi.createOrModifyHealthcareElement(
@@ -54,7 +54,7 @@ describe('Healthcare Element Filters Test', function () {
                     }),
                 ],
             }),
-            patient.id!
+            patient.id!,
         )
 
         he2 = await hcp1Api.healthcareElementApi.createOrModifyHealthcareElement(
@@ -69,14 +69,14 @@ describe('Healthcare Element Filters Test', function () {
                     }),
                 ],
             }),
-            patient.id!
+            patient.id!,
         )
 
         he3 = await hcp1Api.healthcareElementApi.createOrModifyHealthcareElement(
             new HealthcareElement({
                 description: 'The patient is allergic to Vogon poetry',
             }),
-            patient.id!
+            patient.id!,
         )
     })
 
@@ -90,7 +90,7 @@ describe('Healthcare Element Filters Test', function () {
                 {
                     entity: mapHealthcareElementToHealthElementDto(e),
                     type: 'HealthElement',
-                }!
+                }!,
             )
             expect(Object.keys(accessInfo.permissionsByDataOwnerId)).to.contain(hcp1User.healthcarePartyId!)
         }

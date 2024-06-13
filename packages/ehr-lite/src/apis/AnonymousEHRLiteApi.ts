@@ -15,7 +15,7 @@ export class AnonymousEHRLiteApi extends CommonAnonymousApi<EHRLiteApi> {
         private readonly cryptoPrimitives: CryptoPrimitives,
         private readonly cryptoStrategies: CryptoStrategies<DataOwnerWithType>,
         authProcessInfo: { authProcessBySmsId: string; authProcessByEmailId?: string } | { authProcessBySmsId?: string; authProcessByEmailId: string },
-        private readonly _messageCharactersLimit: number | undefined
+        private readonly _messageCharactersLimit: number | undefined,
     ) {
         super(msgGwUrl, msgGwSpecId, storage, keyStorage, undefined, undefined)
 
@@ -32,7 +32,7 @@ export class AnonymousEHRLiteApi extends CommonAnonymousApi<EHRLiteApi> {
             this.cryptoStrategies,
             this._messageCharactersLimit,
             msgGwSpecId,
-            msgGwUrl
+            msgGwUrl,
         )
     }
 

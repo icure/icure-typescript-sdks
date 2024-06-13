@@ -80,7 +80,7 @@ export class MedTechApi extends CommonApi {
         keyStorage?: KeyStorageFacade,
         messageFactory?: MedTechMessageFactory,
         errorHandler?: ErrorHandler,
-        sanitizer?: Sanitizer
+        sanitizer?: Sanitizer,
     ) {
         super(api, username, password, msgGtwUrl, msgGtwSpecId, storage, keyStorage)
 
@@ -105,7 +105,7 @@ export class MedTechApi extends CommonApi {
                       this.cryptoStrategies,
                       this._baseApi.authApi.authenticationProvider,
                       msgGtwSpecId,
-                      msgGtwUrl
+                      msgGtwUrl,
                   )
                 : undefined
         this._dataSampleApi = dataSampleApi(this, basePath)
@@ -300,7 +300,7 @@ export namespace MedTechApi {
                                 throw new Error('Unsupported data owner type')
                             }
                         }
-                    }
+                    },
                 ),
                 props.crypto,
                 fetch,
@@ -309,7 +309,7 @@ export namespace MedTechApi {
                     keyStorage: props.keyStorage,
                     createMaintenanceTasksOnNewKey: true,
                     disableParentKeysInitialisation: true,
-                }
+                },
             ).then(
                 (api) =>
                     new MedTechApi(
@@ -327,8 +327,8 @@ export namespace MedTechApi {
                         props.keyStorage,
                         props.messageFactory,
                         props.errorHandler,
-                        props.sanitizer
-                    )
+                        props.sanitizer,
+                    ),
             )
         }
     }

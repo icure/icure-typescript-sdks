@@ -21,7 +21,7 @@ export function testMaintenanceTaskLikeApi<
     DSPatient,
     DSDataOwner extends DataOwnerWithType,
     DSService,
-    DSMaintenanceTask
+    DSMaintenanceTask,
 >(name: string, ctx: BaseApiTestContext<DSAnonymousApiBuilder, DSAnonymousApi, DSApi, DSCryptoStrategies, DSUser, any> & WithMaintenanceTaskApi<DSApi, DSMaintenanceTask>) {
     describe(`${name} (MaintenanceTask-like API)`, function () {
         let env: TestVars
@@ -56,27 +56,27 @@ export function testMaintenanceTaskLikeApi<
                 ctx.toDSMt(
                     new MaintenanceTask({
                         taskType: NotificationTypeEnum.KeyPairUpdate,
-                    })
+                    }),
                 ),
-                hcp2User.healthcarePartyId
+                hcp2User.healthcarePartyId,
             ))!
             expect(idFilterNotification1).toBeTruthy()
             idFilterNotification2 = (await ctx.mtApi(hcp1Api).createOrModify(
                 ctx.toDSMt(
                     new MaintenanceTask({
                         taskType: NotificationTypeEnum.NewUserOwnDataAccess,
-                    })
+                    }),
                 ),
-                hcp2User.healthcarePartyId
+                hcp2User.healthcarePartyId,
             ))!
             expect(idFilterNotification2).toBeTruthy()
             idFilterNotification3 = (await ctx.mtApi(hcp1Api).createOrModify(
                 ctx.toDSMt(
                     new MaintenanceTask({
                         taskType: NotificationTypeEnum.Other,
-                    })
+                    }),
                 ),
-                hcp2User.healthcarePartyId
+                hcp2User.healthcarePartyId,
             ))!
             expect(idFilterNotification3).toBeTruthy()
             console.log('All prerequisites are started')
@@ -294,9 +294,9 @@ export function testMaintenanceTaskLikeApi<
                 ctx.toDSMt(
                     new MaintenanceTask({
                         taskType: NotificationTypeEnum.NewUserOwnDataAccess,
-                    })
+                    }),
                 ),
-                hcp1User?.healthcarePartyId!
+                hcp1User?.healthcarePartyId!,
             )
             expect(createdNotification).toBeTruthy()
 
@@ -346,9 +346,9 @@ export function testMaintenanceTaskLikeApi<
                             new MaintenanceTask({
                                 taskType: NotificationTypeEnum.KeyPairUpdate,
                                 status: 'pending',
-                            })
+                            }),
                         ),
-                        hcp1User?.healthcarePartyId!
+                        hcp1User?.healthcarePartyId!,
                     )
                     assert(!!createdMaintenanceTask)
                     return createdMaintenanceTask
@@ -357,7 +357,7 @@ export function testMaintenanceTaskLikeApi<
                     statuses.push(status)
                 },
                 eventReceivedPromiseReject,
-                eventReceivedPromise
+                eventReceivedPromise,
             )
 
             events?.forEach((event) => console.log(`Event : ${event}`))
@@ -377,7 +377,7 @@ export function testMaintenanceTaskLikeApi<
                     connectionRetryIntervalMs: 10_000,
                     connectionMaxRetry: 5,
                 },
-                ['CREATE']
+                ['CREATE'],
             )
         }, 60_000)
     })

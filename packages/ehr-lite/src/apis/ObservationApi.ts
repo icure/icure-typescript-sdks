@@ -43,5 +43,5 @@ export const observationApi = (api: CommonApi, basePath: string): ObservationApi
         api.baseApi.dataOwnerApi,
         api.baseApi.authApi,
         api,
-        basePath
+        basePath,
     )

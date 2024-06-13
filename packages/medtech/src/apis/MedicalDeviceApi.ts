@@ -106,6 +106,6 @@ export const medicalDeviceApi = (api: CommonApi, basePath: string): MedicalDevic
         api.errorHandler,
         api.baseApi.deviceApi,
         api.baseApi.authApi,
-        basePath
+        basePath,
     )
 }

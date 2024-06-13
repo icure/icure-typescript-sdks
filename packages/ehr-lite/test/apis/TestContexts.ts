@@ -162,7 +162,7 @@ export function PatientApiAware<TBase extends Constructor<any>>(Base: TBase): TB
                     firstName: 'Johnjoe',
                     lastName: 'Doenatello',
                     notes: [annotation1(), annotation2()],
-                })
+                }),
             )
         }
 
@@ -210,7 +210,7 @@ export function ConditionApiAware<TBase extends Constructor<any>>(Base: TBase): 
                 new Condition({
                     notes: [annotation1()],
                 }),
-                patient.id
+                patient.id,
             )
         }
 
@@ -264,7 +264,7 @@ export function ObservationApiAware<TBase extends Constructor<any>>(Base: TBase)
                 new Observation({
                     tags: [new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })],
                     localContent: recordOf({ en: new LocalComponent({ stringValue: 'Hello world' }) }),
-                })
+                }),
             )
         }
 
@@ -429,7 +429,7 @@ export function MessageApiAware<TBase extends Constructor<any>>(Base: TBase): TB
 
         toBinaryDto(
             dsBinary: Binary,
-            utiProvider: (mimeType: string, extension: string) => string
+            utiProvider: (mimeType: string, extension: string) => string,
         ): {
             data: ArrayBuffer
             filename: string
@@ -444,7 +444,7 @@ export function MessageApiAware<TBase extends Constructor<any>>(Base: TBase): TB
                 filename: string
                 uti: string
             },
-            mimeTypeProvider: (uti: string) => string
+            mimeTypeProvider: (uti: string) => string,
         ): Binary {
             return mapDocumentAttachmentToBinary(binaryDto, mimeTypeProvider)
         }

@@ -44,7 +44,7 @@ export const userApi = (api: CommonApi, messageFactory: EHRLiteMessageFactory, b
         api,
         messageFactory,
         basePath,
-        api.messageGatewayApi
+        api.messageGatewayApi,
     )
 
 //TODO: Instantiate JWTAuthService and expose JWT method to get token

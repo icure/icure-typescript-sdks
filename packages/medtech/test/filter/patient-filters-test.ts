@@ -40,7 +40,7 @@ describe('Patient Filters Test', function () {
                 lastName: 'Dent',
                 gender: 'male',
                 dateOfBirth: parseInt(`${now.getFullYear() - 42}0101`),
-            })
+            }),
         )
 
         await api.patientApi.createOrModifyPatient(
@@ -49,7 +49,7 @@ describe('Patient Filters Test', function () {
                 lastName: 'Astra',
                 gender: 'female',
                 dateOfBirth: parseInt(`${now.getFullYear() - 42}0101`),
-            })
+            }),
         )
 
         await api.patientApi.createOrModifyPatient(
@@ -58,7 +58,7 @@ describe('Patient Filters Test', function () {
                 lastName: 'Beeblebrox',
                 gender: 'indeterminate',
                 dateOfBirth: parseInt(`${now.getFullYear() - 50}0101`),
-            })
+            }),
         )
     })
 

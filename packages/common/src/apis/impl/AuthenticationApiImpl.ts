@@ -28,7 +28,7 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
         protected readonly msgGtwSpecId: string,
         protected readonly msgGtwUrl: string,
         private readonly authProvider: AuthenticationProvider | undefined,
-        private readonly fetchImpl: (input: RequestInfo, init?: RequestInit) => Promise<Response> = typeof window !== 'undefined' ? window.fetch : typeof self !== 'undefined' ? self.fetch : fetch
+        private readonly fetchImpl: (input: RequestInfo, init?: RequestInit) => Promise<Response> = typeof window !== 'undefined' ? window.fetch : typeof self !== 'undefined' ? self.fetch : fetch,
     ) {}
 
     async completeAuthentication(process: AuthenticationProcess, validationCode: string, tokenDurationInSeconds?: number): Promise<AuthenticationResult<DSApi>> {
@@ -71,7 +71,7 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
 
         if ((!!email && !this.authProcessByEmailId) || (!!phoneNumber && !this.authProcessBySmsId)) {
             throw this.errorHandler.createErrorWithMessage(
-                `In order to start a user authentication with an email, you need to instantiate the API with a authProcessByEmailId. If you want to start the authentication with a phone number, then you need to instantiate the API with a authProcessBySmsId`
+                `In order to start a user authentication with an email, you need to instantiate the API with a authProcessByEmailId. If you want to start the authentication with a phone number, then you need to instantiate the API with a authProcessBySmsId`,
             )
         }
 
@@ -88,7 +88,7 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
                 email: email,
                 mobilePhone: phoneNumber,
             },
-            validationCodeLength
+            validationCodeLength,
         )
 
         if (!!requestId) {
@@ -129,8 +129,8 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
                         },
                         {
                             additionalDelegates: { [delegate]: 'WRITE' },
-                        }
-                    )
+                        },
+                    ),
                 )
                 //TODO Return which delegates were warned to share back info & add retry mechanism
                 if (!accessNotification)
@@ -205,7 +205,7 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
     private async _generateAndAssignAuthenticationToken(
         login: string,
         validationCode: string,
-        tokenDurationInSeconds: number = 30 * 24 * 60 * 60
+        tokenDurationInSeconds: number = 30 * 24 * 60 * 60,
     ): Promise<{
         user: User
         password: string

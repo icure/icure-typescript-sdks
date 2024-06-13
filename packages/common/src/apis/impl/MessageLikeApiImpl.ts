@@ -43,7 +43,7 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
         private readonly documentApi: IccDocumentXApi,
         private readonly dataOwnerApi: IccDataOwnerXApi,
         private readonly errorHandler: ErrorHandler,
-        private readonly characterLimit: number
+        private readonly characterLimit: number,
     ) {}
 
     getMessage(messageCreationResult: MessageCreationResult<DSMessage>): DSMessage | null {
@@ -77,7 +77,7 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
         const delegates: { [p: string]: SecureDelegation.AccessLevelEnum } = Object.fromEntries(
             Object.entries(topicDto?.activeParticipants ?? {})
                 ?.filter(([participantId]) => currentUser.healthcarePartyId !== participantId)
-                ?.map(([participantId]) => [participantId, AccessLevelEnum.READ])
+                ?.map(([participantId]) => [participantId, AccessLevelEnum.READ]),
         )
 
         const binaries = attachments?.map((attachment) => this.documentMapper.toDto(attachment))
@@ -107,7 +107,7 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
                 attachments: documentAttachments,
                 delegates: delegates,
             },
-            currentUser
+            currentUser,
         )
     }
 
@@ -139,7 +139,7 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
                     filter: FilterMapper.toAbstractFilterDto<MessageDto>(filter, 'Message'),
                 }),
                 nextMessageId,
-                limit
+                limit,
             )
             .catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
@@ -189,7 +189,7 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
                     uti: document.mainUti!,
                     filename: document.name!,
                 })
-            })
+            }),
         )
     }
 
@@ -214,9 +214,9 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
                         time: +new Date(),
                         status: true,
                         userId: (await this.userApi.getCurrentUser()).id!,
-                    })
+                    }),
                 )
-            ).map(async (message) => this.messageMapper.toDomain(message))
+            ).map(async (message) => this.messageMapper.toDomain(message)),
         )
     }
 
@@ -377,12 +377,12 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
                                 read: false,
                                 time: null,
                             }),
-                        ])
+                        ]),
                     ),
                 }),
                 {
                     additionalDelegates: delegates,
-                }
+                },
             )
 
             return {
@@ -459,7 +459,7 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
                         new MessageAttachmentDto({
                             type: value.attachment.documentLocation.toLowerCase(),
                             ids: [value.document.id!],
-                        })
+                        }),
                 ),
             },
             createdAttachments: attachmentCreationProgresses,
@@ -489,7 +489,7 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
         attachments: AttachmentCreationProgress[],
         delegates: {
             [p: string]: SecureDelegation.AccessLevelEnum
-        }
+        },
     ): Promise<AttachmentCreationProgress[]> {
         const documentInitializationResult = await this.initialiseDocuments(user, message, attachments, delegates)
         const documentCreationResults = await this.createDocuments(documentInitializationResult)
@@ -515,7 +515,7 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
         attachments: AttachmentCreationProgress[],
         delegates: {
             [p: string]: SecureDelegation.AccessLevelEnum
-        }
+        },
     ): Promise<AttachmentCreationProgress[]> {
         const attachmentToInitialize = attachments.reduce((acc, progress) => {
             if (progress.step === AttachmentCreationStep.DOCUMENT_INITIALISATION) {
@@ -535,9 +535,9 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
                     }),
                     {
                         additionalDelegates: delegates,
-                    }
+                    },
                 )
-            }) ?? []
+            }) ?? [],
         )
 
         const initialisedDocumentResults = documentInitializationResult.map((result, index) => ({

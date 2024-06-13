@@ -120,6 +120,6 @@ export const notificationApi = (api: CommonApi, basePath: string): NotificationA
         api.baseApi.dataOwnerApi,
         api.baseApi.authApi,
         api,
-        basePath
+        basePath,
     )
 }

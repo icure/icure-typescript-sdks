@@ -78,12 +78,12 @@ export class DeviceLikeApiImpl<DSDevice> implements DeviceLikeApi<DSDevice> {
                         limit,
                         new FilterChainDevice({
                             filter: FilterMapper.toAbstractFilterDto<Device>(filter, 'Device'),
-                        })
+                        }),
                     )
                     .catch((e) => {
                         throw this.errorHandler.createErrorFromAny(e)
                     }),
-                this.mapper.toDomain
+                this.mapper.toDomain,
             )
         }
     }
@@ -92,7 +92,7 @@ export class DeviceLikeApiImpl<DSDevice> implements DeviceLikeApi<DSDevice> {
         return this.mapper.toDomain(
             await this.deviceApi.getDevice(id).catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
-            })
+            }),
         )
     }
 

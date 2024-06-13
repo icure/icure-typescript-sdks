@@ -10,7 +10,7 @@ import { describe, it, beforeAll } from '@jest/globals'
 setLocalStorage(fetch)
 
 export function testDeviceLikeApi<DSAnonymousApiBuilder extends AnonymousApiBuilder<DSCryptoStrategies, DSAnonymousApi>, DSAnonymousApi extends CommonAnonymousApi<DSApi>, DSApi extends CommonApi, DSCryptoStrategies extends CryptoStrategies<any>, DSUser, DSDevice>(
-    ctx: BaseApiTestContext<DSAnonymousApiBuilder, DSAnonymousApi, DSApi, DSCryptoStrategies, DSUser, any> & WithDeviceApi<DSApi, DSDevice>
+    ctx: BaseApiTestContext<DSAnonymousApiBuilder, DSAnonymousApi, DSApi, DSCryptoStrategies, DSUser, any> & WithDeviceApi<DSApi, DSDevice>,
 ) {
     describe('Device-like API', () => {
         let env: TestVars
@@ -30,8 +30,8 @@ export function testDeviceLikeApi<DSAnonymousApiBuilder extends AnonymousApiBuil
                         name: 'What-If Machine',
                         brand: 'Farnsworth',
                         model: '2ACV16',
-                    })
-                )
+                    }),
+                ),
             )
             const createdMedicalDeviceDto = ctx.toDeviceDto(createdMedicalDevice)
             expect(createdMedicalDeviceDto.id).toBeTruthy()
@@ -54,8 +54,8 @@ export function testDeviceLikeApi<DSAnonymousApiBuilder extends AnonymousApiBuil
                         name: 'What-If Machine',
                         brand: 'Farnsworth',
                         model: '2ACV16',
-                    })
-                )
+                    }),
+                ),
             )
             const createdMedicalDeviceDto = ctx.toDeviceDto(createdMedicalDevice)
             const newSerialNumber = forceUuid()
@@ -66,8 +66,8 @@ export function testDeviceLikeApi<DSAnonymousApiBuilder extends AnonymousApiBuil
                         serialNumber: newSerialNumber,
                         modified: undefined,
                         model: '2ACV16',
-                    })
-                )
+                    }),
+                ),
             )
             const updatedMedicalDeviceDto = ctx.toDeviceDto(updatedMedicalDevice)
             expect(updatedMedicalDeviceDto.id).toBeTruthy()
@@ -117,15 +117,15 @@ export function testDeviceLikeApi<DSAnonymousApiBuilder extends AnonymousApiBuil
                                 name: 'What-If Machine',
                                 brand: 'Farnsworth',
                                 model: '2ACV16',
-                            })
-                        )
+                            }),
+                        ),
                     )
                 },
                 (status) => {
                     statuses.push(status)
                 },
                 eventReceivedPromiseReject,
-                eventReceivedPromise
+                eventReceivedPromise,
             )
 
             events?.forEach((event) => console.log(`Event : ${event}`))
@@ -145,7 +145,7 @@ export function testDeviceLikeApi<DSAnonymousApiBuilder extends AnonymousApiBuil
                     connectionRetryIntervalMs: 10_000,
                     connectionMaxRetry: 5,
                 },
-                ['CREATE']
+                ['CREATE'],
             )
         }, 60_000)
     })

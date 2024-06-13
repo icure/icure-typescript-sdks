@@ -32,7 +32,7 @@ export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements Us
         private readonly api: CommonApi,
         private readonly messageFactory: MessageFactory<DSUser, DSHealthcareParty, DSPatient>,
         private readonly basePath: string,
-        private readonly messageGatewayApi?: MessageGatewayApi
+        private readonly messageGatewayApi?: MessageGatewayApi,
     ) {}
 
     checkTokenValidity(id: string, token: string): Promise<boolean> {
@@ -88,7 +88,7 @@ export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements Us
                 patientId: patientDto.id,
                 email: favouredEmail?.telecomNumber,
                 mobilePhone: favouredMobile?.telecomNumber,
-            })
+            }),
         )
         if (!createdUser || !createdUser.id || !createdUser.login) throw this.errorHandler.createErrorWithMessage('Something went wrong during User creation')
 
@@ -162,12 +162,12 @@ export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements Us
                         limit,
                         new FilterChainUser({
                             filter: FilterMapper.toAbstractFilterDto<UserDto>(filter, 'User'),
-                        })
+                        }),
                     )
                     .catch((e) => {
                         throw this.errorHandler.createErrorFromAny(e)
                     }),
-                this.userMapper.toDomain
+                this.userMapper.toDomain,
             )!
         }
     }
@@ -176,7 +176,7 @@ export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements Us
         return this.userMapper.toDomain(
             await this.userApi.getUser(id).catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
-            })
+            }),
         )!
     }
 
@@ -184,7 +184,7 @@ export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements Us
         return this.userMapper.toDomain(
             await this.userApi.getUserByEmail(this.sanitizer.validateEmail(email)).catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
-            })
+            }),
         )!
     }
 
@@ -192,7 +192,7 @@ export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements Us
         return this.userMapper.toDomain(
             await this.userApi.getCurrentUser().catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
-            })
+            }),
         )!
     }
 
@@ -299,7 +299,7 @@ export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements Us
         return this.userMapper.toDomain(
             await this.userApi.getUserByPhoneNumber(this.sanitizer.validateMobilePhone(phoneNumber)).catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
-            })
+            }),
         )!
     }
 }

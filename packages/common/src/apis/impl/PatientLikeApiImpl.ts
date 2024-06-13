@@ -19,7 +19,7 @@ export class PatientLikeApiImpl<DSPatient> implements PatientLikeApi<DSPatient> 
         private readonly userApi: IccUserXApi,
         private readonly dataOwnerApi: IccDataOwnerXApi,
         private readonly authApi: IccAuthApi,
-        private readonly basePath: string
+        private readonly basePath: string,
     ) {}
 
     async createOrModify(patient: DSPatient): Promise<DSPatient> {
@@ -55,12 +55,12 @@ export class PatientLikeApiImpl<DSPatient> implements PatientLikeApi<DSPatient> 
                         undefined,
                         new FilterChainPatient({
                             filter: FilterMapper.toAbstractFilterDto<PatientDto>(filter, 'Patient'),
-                        })
+                        }),
                     )
                     .catch((e) => {
                         throw this.errorHandler.createErrorFromAny(e)
                     }),
-                this.mapper.toDomain
+                this.mapper.toDomain,
             )!
         }
     }
@@ -125,7 +125,7 @@ export class PatientLikeApiImpl<DSPatient> implements PatientLikeApi<DSPatient> 
             FilterMapper.toAbstractFilterDto(filter, 'Patient'),
             (event) => eventFired(this.mapper.toDomain(event)),
             options ?? {},
-            async (encrypted) => (await this.patientApi.decrypt(currentUser, [encrypted]))[0]
+            async (encrypted) => (await this.patientApi.decrypt(currentUser, [encrypted]))[0],
         ).then((ws) => new ConnectionImpl(ws))
     }
 
@@ -153,7 +153,7 @@ export class PatientLikeApiImpl<DSPatient> implements PatientLikeApi<DSPatient> 
 
     private async _getPatient(
         patientId: string,
-        requireDecrypted: boolean
+        requireDecrypted: boolean,
     ): Promise<{
         patient: DSPatient
         decrypted: boolean

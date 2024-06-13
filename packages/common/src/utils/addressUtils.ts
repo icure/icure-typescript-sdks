@@ -9,7 +9,7 @@ export function findTelecomOfAddresses(addresses: Array<Address>, telecomType: T
         addressType,
         (address) => address.addressType,
         (address) => address.telecoms,
-        (telecom) => telecom.telecomType
+        (telecom) => telecom.telecomType,
     )
 }
 
@@ -19,7 +19,7 @@ export function findTelecomOfAddressesLike<DSAddress, DSTelecom>(
     addressType: AddressTypeEnum | undefined,
     addressTypeOf: (address: DSAddress) => AddressTypeEnum | undefined,
     telecoms: (address: DSAddress) => Array<DSTelecom> | undefined,
-    telecomTypeOf: (telecom: DSTelecom) => TelecomTypeEnum | undefined
+    telecomTypeOf: (telecom: DSTelecom) => TelecomTypeEnum | undefined,
 ): DSTelecom | undefined {
     for (const address of addresses) {
         if (!addressType || addressTypeOf(address) === addressType) {

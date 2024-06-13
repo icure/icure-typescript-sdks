@@ -33,5 +33,5 @@ export const conditionApi = (api: CommonApi, basePath: string): ConditionApi =>
         api.baseApi.cryptoApi,
         api.baseApi.authApi,
         basePath,
-        api
+        api,
     )

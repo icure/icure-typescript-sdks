@@ -16,7 +16,7 @@ export class AnonymousMedTechApi extends CommonAnonymousApi<MedTechApi> {
         keyStorage: KeyStorageFacade,
         private readonly cryptoPrimitives: CryptoPrimitives,
         private readonly cryptoStrategies: CryptoStrategies<DataOwnerWithType>,
-        authProcessInfo: { authProcessBySmsId: string; authProcessByEmailId?: string } | { authProcessBySmsId?: string; authProcessByEmailId: string }
+        authProcessInfo: { authProcessBySmsId: string; authProcessByEmailId?: string } | { authProcessBySmsId?: string; authProcessByEmailId: string },
     ) {
         super(msgGwUrl, msgGwSpecId, storage, keyStorage)
         this._msgGwUrl = msgGwUrl
@@ -35,7 +35,7 @@ export class AnonymousMedTechApi extends CommonAnonymousApi<MedTechApi> {
             keyStorage,
             this.cryptoStrategies,
             this._msgGwSpecId,
-            this._msgGwUrl
+            this._msgGwUrl,
         )
     }
 

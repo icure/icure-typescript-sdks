@@ -20,7 +20,7 @@ export class AuthSecretProviderBridge implements BaseAuthSecretProvider {
             sms: string | undefined
         },
         username: string,
-        sanitizer: Sanitizer
+        sanitizer: Sanitizer,
     ) {
         if (!!msgGw) {
             if (!!loginProcesses.email && !!sanitizer.tryValidateEmail(username)) {
@@ -33,7 +33,7 @@ export class AuthSecretProviderBridge implements BaseAuthSecretProvider {
                             email: username,
                             mobilePhone: undefined,
                         }),
-                        params.validationCodeLength
+                        params.validationCodeLength,
                     )
                     return { tokenRequestType: ShortLivedTokenRequestType.EMAIL, tokenRequestId }
                 }
@@ -47,7 +47,7 @@ export class AuthSecretProviderBridge implements BaseAuthSecretProvider {
                             email: undefined,
                             mobilePhone: username,
                         }),
-                        params.validationCodeLength
+                        params.validationCodeLength,
                     )
                     return { tokenRequestType: ShortLivedTokenRequestType.SMS, tokenRequestId }
                 }
@@ -105,7 +105,7 @@ function getProcessBody(
     params: {
         recaptcha: string
         recaptchaType: RecaptchaType
-    } & ({ email: string; mobilePhone: undefined } | { email: undefined; mobilePhone: string })
+    } & ({ email: string; mobilePhone: undefined } | { email: undefined; mobilePhone: string }),
 ): AuthenticationProcessBody {
     return {
         firstName: '',

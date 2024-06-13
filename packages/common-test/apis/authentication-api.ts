@@ -22,7 +22,7 @@ export function testAuthenticationApi<
     DSPatient,
     DSDataOwner extends DataOwnerWithType,
     DSService,
-    DSMaintenanceTask
+    DSMaintenanceTask,
 >(
     name: string,
     ctx: BaseApiTestContext<DSAnonymousApiBuilder, DSAnonymousApi, DSApi, DSCryptoStrategies, DSUser, any> &
@@ -31,7 +31,7 @@ export function testAuthenticationApi<
         WithHcpApi<DSApi, DSHcp> &
         WithDataOwnerApi<DSApi, DSDataOwner, DSUser> &
         WithServiceApi<DSApi, DSService, DSPatient, any> &
-        WithMaintenanceTaskApi<DSApi, DSMaintenanceTask>
+        WithMaintenanceTaskApi<DSApi, DSMaintenanceTask>,
 ) {
     let env: TestVars
     let hcpId: string
@@ -64,8 +64,8 @@ export function testAuthenticationApi<
                         .withAuthProcessByEmailId(env!.hcpAuthProcessId)
                         .withAuthProcessBySmsId(env!.hcpAuthProcessId)
                         .withCryptoStrategies(ctx.newSimpleCryptoStrategies())
-                        .build()
-                )
+                        .build(),
+                ),
             ).rejects.toBeInstanceOf(Error)
 
             const anonymousMedTechApi = await ctx
@@ -114,8 +114,8 @@ export function testAuthenticationApi<
                         .withMsgGwUrl(env!.msgGtwUrl)
                         .withMsgGwSpecId(env!.specId)
                         .withCrypto(webcrypto as any)
-                        .build()
-                )
+                        .build(),
+                ),
             ).rejects.toBeInstanceOf(Error)
         })
 
@@ -138,7 +138,7 @@ export function testAuthenticationApi<
                     recaptcha: env!.recaptcha,
                     firstName: 'Tom',
                     lastName: 'Gideon',
-                })
+                }),
             ).rejects.toBeInstanceOf(Error)
         })
 
@@ -163,7 +163,7 @@ export function testAuthenticationApi<
                     phoneNumber: '',
                     firstName: 'Tom',
                     lastName: 'Gideon',
-                })
+                }),
             ).rejects.toBeInstanceOf(Error)
         })
 
@@ -186,7 +186,7 @@ export function testAuthenticationApi<
                     email: 'a-fake-email',
                     firstName: 'Tom',
                     lastName: 'Gideon',
-                })
+                }),
             ).rejects.toBeInstanceOf(Error)
         })
 
@@ -209,7 +209,7 @@ export function testAuthenticationApi<
                     phoneNumber: 'a-fake-phone-number',
                     firstName: 'Tom',
                     lastName: 'Gideon',
-                })
+                }),
             ).rejects.toBeInstanceOf(Error)
         })
 

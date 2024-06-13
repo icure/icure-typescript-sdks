@@ -44,7 +44,7 @@ export class HealthcarePartyFilter extends SortableFilterBuilder<HealthcareParty
                 ids: byIds,
                 $type: 'HealthcarePartyByIdsFilter',
             }),
-            'ids'
+            'ids',
         )
         return this
     }
@@ -60,7 +60,7 @@ export class HealthcarePartyFilter extends SortableFilterBuilder<HealthcareParty
                 codeType,
                 codeCode,
                 $type: 'HealthcarePartyByLabelCodeFilter',
-            })
+            }),
         )
         return this
     }

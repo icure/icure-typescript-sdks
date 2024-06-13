@@ -32,7 +32,7 @@ export interface TopicLikeApi<DSTopic, DSHcp, DSPatient, DSService, DSHealthElem
         healthElements?: Array<Reference<DSHealthElement>>,
         services?: Array<Reference<DSService>>,
         tags?: Array<CodingReference>,
-        codes?: Array<CodingReference>
+        codes?: Array<CodingReference>,
     ): Promise<DSTopic>
 
     /**

@@ -26,7 +26,7 @@ export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements Hea
         private readonly cryptoApi: IccCryptoXApi,
         private readonly authApi: IccAuthApi,
         private readonly basePath: string,
-        private readonly api: CommonApi
+        private readonly api: CommonApi,
     ) {}
 
     async createOrModify(healthElement: DSHealthElement, patientId?: string): Promise<DSHealthElement> {
@@ -104,12 +104,12 @@ export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements Hea
                     limit,
                     new FilterChainHealthElement({
                         filter: FilterMapper.toAbstractFilterDto<HealthElement>(filter, 'HealthElement'),
-                    })
+                    }),
                 )
                 .catch((e) => {
                     throw this.errorHandler.createErrorFromAny(e)
                 }),
-            this.healthElementMapper.toDomain
+            this.healthElementMapper.toDomain,
         )!
     }
 
@@ -120,7 +120,7 @@ export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements Hea
         return this.healthElementMapper.toDomain(
             await this.heApi.getHealthElementWithUser(currentUser, id).catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
-            })
+            }),
         )
     }
 
@@ -172,7 +172,7 @@ export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements Hea
             FilterMapper.toAbstractFilterDto(filter, 'HealthElement'),
             (event) => eventFired(this.healthElementMapper.toDomain(event)),
             options ?? {},
-            async (encrypted) => (await this.heApi.decryptWithUser(currentUser, [encrypted]))[0]
+            async (encrypted) => (await this.heApi.decryptWithUser(currentUser, [encrypted]))[0],
         ).then((ws) => new ConnectionImpl(ws))
     }
 }

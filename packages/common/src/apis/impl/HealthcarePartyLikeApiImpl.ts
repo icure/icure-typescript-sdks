@@ -53,12 +53,12 @@ export class HealthcarePartyLikeApiImpl<DSHealthcareParty> implements Healthcare
                         limit,
                         new FilterChainHealthcareParty({
                             filter: FilterMapper.toAbstractFilterDto<HealthcareParty>(filter, 'HealthcareParty'),
-                        })
+                        }),
                     )
                     .catch((e) => {
                         throw this.errorHandler.createErrorFromAny(e)
                     }),
-                this.mapper.toDomain
+                this.mapper.toDomain,
             )!
         }
     }
@@ -67,7 +67,7 @@ export class HealthcarePartyLikeApiImpl<DSHealthcareParty> implements Healthcare
         return this.mapper.toDomain(
             await this.healthcarePartyApi.getHealthcareParty(id, false).catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
-            })
+            }),
         )
     }
 
@@ -83,7 +83,7 @@ export class HealthcarePartyLikeApiImpl<DSHealthcareParty> implements Healthcare
 
     async subscribeToEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<HealthcareParty>, eventFired: (hcp: DSHealthcareParty) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
         return subscribeToEntityEvents(iccRestApiPath(this.basePath), this.authApi, 'HealthcareParty', eventTypes, FilterMapper.toAbstractFilterDto(filter, 'HealthcareParty'), (event: HealthcareParty) => eventFired(this.mapper.toDomain(event)), options ?? {}).then(
-            (ws) => new ConnectionImpl(ws)
+            (ws) => new ConnectionImpl(ws),
         )
     }
 }

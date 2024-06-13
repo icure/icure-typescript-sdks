@@ -37,7 +37,7 @@ describe('Coding Filters Test', function () {
                 version: uuid().substring(0, 6),
                 regions: ['be'],
                 description: recordOf({ fr: 'Pararibulitis' }),
-            })
+            }),
         )
 
         code2 = await hcp1Api.codingApi.createOrModifyCoding(
@@ -47,7 +47,7 @@ describe('Coding Filters Test', function () {
                 version: uuid().substring(0, 6),
                 regions: ['ir', 'gb'],
                 description: recordOf({ en: 'That is bad' }),
-            })
+            }),
         )
 
         code3 = await hcp1Api.codingApi.createOrModifyCoding(
@@ -57,7 +57,7 @@ describe('Coding Filters Test', function () {
                 version: uuid().substring(0, 6),
                 regions: ['ir', 'gb'],
                 description: recordOf({ en: 'Ouch' }),
-            })
+            }),
         )
     })
 

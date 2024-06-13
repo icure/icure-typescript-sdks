@@ -98,7 +98,7 @@ export namespace FilterMapper {
     export function toAbstractFilterDto<MessageDto>(filter: Filter<MessageDto>, input: 'Message'): AbstractFilterMessage
     export function toAbstractFilterDto<T>(
         filter: Filter<T>,
-        input: 'Service' | 'Code' | 'Device' | 'HealthcareParty' | 'HealthElement' | 'Patient' | 'User' | 'MaintenanceTask' | 'Topic' | 'Message'
+        input: 'Service' | 'Code' | 'Device' | 'HealthcareParty' | 'HealthElement' | 'Patient' | 'User' | 'MaintenanceTask' | 'Topic' | 'Message',
     ): AbstractFilter<ServiceDto | CodeDto | DeviceDto | HealthcarePartyDto | HealthElementDto | PatientDto | UserDto | MaintenanceTaskDto | TopicDto | MessageDto> {
         const res =
             input === 'Service'

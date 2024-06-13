@@ -45,7 +45,7 @@ describe('HealthcareProfessional Filters Test', function () {
                 name: 'HCP_01',
                 labels: [new CodingReference({ type: 'hcp-type', code: `physician-${id}` })],
                 codes: [new CodingReference({ type: 'practitioner-specialty', code: `gastroenterologist-${id}` })],
-            })
+            }),
         )
 
         hcp2 = await masterApi.healthcareProfessionalApi.createOrModifyHealthcareProfessional(
@@ -53,7 +53,7 @@ describe('HealthcareProfessional Filters Test', function () {
                 name: 'HCP_02',
                 labels: [new CodingReference({ type: 'hcp-type', code: `physician-${id}` })],
                 codes: [new CodingReference({ type: 'practitioner-specialty', code: `cardiologist-${id}` })],
-            })
+            }),
         )
 
         hcp3 = await masterApi.healthcareProfessionalApi.createOrModifyHealthcareProfessional(
@@ -62,7 +62,7 @@ describe('HealthcareProfessional Filters Test', function () {
                 lastName: 'Keats',
                 labels: [new CodingReference({ type: 'hcp-type', code: `physician-${id}` })],
                 codes: [new CodingReference({ type: 'practitioner-specialty', code: `cardiologist-${id}` })],
-            })
+            }),
         )
     })
 

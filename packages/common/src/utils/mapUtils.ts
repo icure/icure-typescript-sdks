@@ -11,7 +11,7 @@ export function toMap<V>(entries: [key: string, value: V][]): { [key: string]: V
 
 export function mapReduce<I, O>(
     map: { [key: string]: I } | undefined,
-    mapper: (obj: I) => O | undefined
+    mapper: (obj: I) => O | undefined,
 ):
     | {
           [key: string]: O
@@ -53,7 +53,7 @@ export function map<I, O>(arr: I[] | undefined, mapper: (obj: I) => O | undefine
 
 export function toMapTransform<I, O>(
     map: { [key: string]: I } | undefined,
-    mapper: (obj: I) => O | undefined
+    mapper: (obj: I) => O | undefined,
 ):
     | {
           [key: string]: O

@@ -20,7 +20,7 @@ export function testServiceLikeApi<
     DSPatient,
     DSService,
     DSDocument,
-    DSHelement
+    DSHelement,
 >(name: string, ctx: BaseApiTestContext<DSAnonymousApiBuilder, DSAnonymousApi, DSApi, DSCryptoStrategies, DSUser, any> & WithPatientApi<DSApi, DSPatient> & WithServiceApi<DSApi, DSService, DSPatient, DSDocument> & WithHelementApi<DSApi, DSHelement, DSPatient>) {
     let env: TestVars
 
@@ -105,7 +105,7 @@ export function testServiceLikeApi<
             expect(deletedServicesIds).toHaveLength(2)
             expectArrayContainsExactlyInAnyOrder(
                 deletedServicesIds,
-                createdServicesDto.map((ds) => ds.id!)
+                createdServicesDto.map((ds) => ds.id!),
             )
         })
 
@@ -124,7 +124,7 @@ export function testServiceLikeApi<
             expect(deletedServicesIds).toHaveLength(2)
             expectArrayContainsExactlyInAnyOrder(
                 deletedServicesIds,
-                createdServicesDto.map((ds) => ds.id!)
+                createdServicesDto.map((ds) => ds.id!),
             )
         })
 
@@ -141,7 +141,7 @@ export function testServiceLikeApi<
                     tags: [{ type: 'IC-TEST', code: 'TEST' }],
                     content: { en: { stringValue: 'Hello world' } },
                     healthElementsIds: [healthElementDto!.id!],
-                })
+                }),
             )
 
             // When creating a data sample, linked to this healthcare element
@@ -171,8 +171,8 @@ export function testServiceLikeApi<
                     new Service({
                         ...createdServiceDto,
                         healthElementsIds: [healthElementDto.id!],
-                    })
-                )
+                    }),
+                ),
             )
 
             // Then
@@ -195,7 +195,7 @@ export function testServiceLikeApi<
                     tags: [{ type: 'IC-TEST', code: 'TEST' }],
                     content: { en: { stringValue: 'Hello world' } },
                     healthElementsIds: [nonExistingHeId],
-                })
+                }),
             )
 
             const creationPromiseResult = await ctx
@@ -217,8 +217,8 @@ export function testServiceLikeApi<
                     new Service({
                         tags: [{ type: 'FILTER-IC-TEST', code: 'TEST' }],
                         content: { en: { stringValue: 'Hello world' } },
-                    })
-                )
+                    }),
+                ),
             )
             const createdServiceDto = ctx.toServiceDto(createdService)
 
@@ -243,8 +243,8 @@ export function testServiceLikeApi<
                         tags: [{ type: 'FILTER-HE-IC-TEST', code: 'TEST' }],
                         content: { en: { stringValue: 'Hello world' } },
                         healthElementsIds: [healthElement.id!],
-                    })
-                )
+                    }),
+                ),
             )
             const createdServiceDto = ctx.toServiceDto(createdService)
 
@@ -337,7 +337,7 @@ export function testServiceLikeApi<
             expect(retrievedServices).toHaveLength(createdServiceMany.length + 1)
             expectArrayContainsExactlyInAnyOrder(
                 retrievedServices.map((x) => ctx.toServiceDto(x).id),
-                [createdServiceSingle, ...createdServiceMany].map((x) => ctx.toServiceDto(x).id)
+                [createdServiceSingle, ...createdServiceMany].map((x) => ctx.toServiceDto(x).id),
             )
         })
 
@@ -377,8 +377,8 @@ export function testServiceLikeApi<
                             content: { en: { stringValue: `Some sample at ${valueDate}` } },
                             tags: [codeRef],
                             valueDate,
-                        })
-                    )
+                        }),
+                    ),
                 )
             const createdServices: Service[] = []
             for (let i = 0; i < 50; i++) {
@@ -388,7 +388,7 @@ export function testServiceLikeApi<
             const filteredServices = await ctx.serviceApi(h1api).filterBy(filter)
             expectArrayContainsExactlyInAnyOrder(
                 filteredServices.rows.map((x) => ctx.toServiceDto(x).id),
-                createdServices.map((x) => x.id)
+                createdServices.map((x) => x.id),
             )
             const sortedIds = [...filteredServices.rows].sort((a, b) => ctx.toServiceDto(b).valueDate! - ctx.toServiceDto(a).valueDate!).map((x) => ctx.toServiceDto(x).id)
             expect(filteredServices.rows.map((x) => ctx.toServiceDto(x).id)).toEqual(sortedIds)
@@ -408,8 +408,8 @@ export function testServiceLikeApi<
                             en: { stringValue: valueEn },
                             fr: { stringValue: valueFr },
                         },
-                    })
-                )
+                    }),
+                ),
             )
             const serviceDto = ctx.toServiceDto(service)
             const documentNameEn = 'something.png'
@@ -493,7 +493,7 @@ export function testServiceLikeApi<
                             stringValue: 'Modified service',
                         },
                     },
-                })
+                }),
             )
             expect(ctx.toServiceDto(modifiedService).content!['en'].stringValue).toEqual('Modified service')
             await ctx.checkServiceAccessibleAndDecrypted(h2api, modifiedService, true)
@@ -586,7 +586,7 @@ export function testServiceLikeApi<
                 ctx.toDSService({
                     ...servicesDto[0],
                     content: { en: { stringValue: 'Updated content' } },
-                })
+                }),
             )
             const updatedServiceDto = ctx.toServiceDto(updatedService)
             expect(updatedServiceDto.id).toEqual(servicesDto[0].id)
@@ -629,7 +629,7 @@ export function testServiceLikeApi<
                     statuses.push(status)
                 },
                 eventReceivedPromiseReject,
-                eventReceivedPromise
+                eventReceivedPromise,
             )
 
             events?.forEach((event) => console.log(`Event : ${event}`))
@@ -675,7 +675,7 @@ export function testServiceLikeApi<
                 ['CREATE'],
                 async () => {
                     await createService()
-                }
+                },
             )
         }, 60_000)
 
@@ -694,7 +694,7 @@ export function testServiceLikeApi<
                 ['CREATE'],
                 async () => {
                     await createService()
-                }
+                },
             )
         }, 60_000)
 

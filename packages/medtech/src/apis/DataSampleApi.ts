@@ -217,6 +217,6 @@ export const dataSampleApi = (api: CommonApi, basePath: string): DataSampleApi =
         api.baseApi.dataOwnerApi,
         api.baseApi.authApi,
         api,
-        basePath
+        basePath,
     )
 }

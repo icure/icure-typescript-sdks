@@ -40,7 +40,7 @@ export abstract class BaseApiTestContext<
     DSApi extends CommonApi,
     DSCryptoStrategies extends CryptoStrategies<any>,
     DSUser,
-    DSMessageFactory extends MessageFactory<any, any, any>
+    DSMessageFactory extends MessageFactory<any, any, any>,
 > {
     static readonly registerThrottlingLimit = 10000
     private registerAverageWait = 10000
@@ -94,7 +94,7 @@ export abstract class BaseApiTestContext<
         inviterId: string,
         recaptchaType: RecaptchaType = 'recaptcha',
         storage?: StorageFacade<string>,
-        keyStorage?: KeyStorageFacade
+        keyStorage?: KeyStorageFacade,
     ): Promise<{ api: DSApi; user: User; token: string; registrationProcessId: string }> {
         if (new Date().getTime() - this.lastRegisterCall < BaseApiTestContext.registerThrottlingLimit) {
             const throttlingWait = this.returnWithinBoundaries((BaseApiTestContext.registerThrottlingLimit - this.registerAverageWait) * 5 - this.registerAverageWait, BaseApiTestContext.registerThrottlingLimit, 0)

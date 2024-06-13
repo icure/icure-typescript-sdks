@@ -26,6 +26,6 @@ export const dataOwnerApi = (api: CommonApi) => {
         api.errorHandler,
         api.baseApi.dataOwnerApi,
         api.baseApi.patientApi,
-        api.baseApi.icureMaintenanceTaskApi
+        api.baseApi.icureMaintenanceTaskApi,
     )
 }

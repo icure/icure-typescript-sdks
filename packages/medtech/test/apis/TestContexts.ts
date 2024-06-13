@@ -119,7 +119,7 @@ export function PatientApiAware<TBase extends Constructor<any>>(Base: TBase): TB
                             }),
                         }),
                     ],
-                })
+                }),
             )
         }
 
@@ -180,7 +180,7 @@ export function DataSampleApiAware<TBase extends Constructor<any>>(Base: TBase):
                 new DataSample({
                     labels: [new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })],
                     content: recordOf({ en: new Content({ stringValue: 'Hello world' }) }),
-                })
+                }),
             )
         }
 
@@ -291,7 +291,7 @@ export function HelementApiAware<TBase extends Constructor<any>>(Base: TBase): T
                 new HealthcareElement({
                     note: 'Hero Syndrome',
                 }),
-                patient!.id!
+                patient!.id!,
             )
         }
 

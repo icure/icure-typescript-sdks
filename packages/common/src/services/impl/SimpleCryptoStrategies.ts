@@ -37,7 +37,7 @@ export class SimpleCryptoStrategies<DSDataOwnerWithType extends DataOwnerWithTyp
     recoverAndVerifyKeys(
         self: DSDataOwnerWithType,
         missingKeys: string[],
-        unverifiedKeys: string[]
+        unverifiedKeys: string[],
     ): Promise<{
         recoveredKeyPairs: KeyPair[]
         verifiedKeys: { [p: string]: CryptoStrategies.KeyVerificationBehaviour }
@@ -51,7 +51,7 @@ export class SimpleCryptoStrategies<DSDataOwnerWithType extends DataOwnerWithTyp
         const verifiedKeys = Object.fromEntries(
             unverifiedKeys
                 .filter((unverifiedKey) => !recoveredPublicKeysSet.includes(unverifiedKey))
-                .map((unverifiedKey) => [unverifiedKey, !!availableKeysByPublic[unverifiedKey] ? CryptoStrategies.KeyVerificationBehaviour.MARK_VERIFIED : CryptoStrategies.KeyVerificationBehaviour.TEMPORARILY_UNVERIFIED] as [string, CryptoStrategies.KeyVerificationBehaviour])
+                .map((unverifiedKey) => [unverifiedKey, !!availableKeysByPublic[unverifiedKey] ? CryptoStrategies.KeyVerificationBehaviour.MARK_VERIFIED : CryptoStrategies.KeyVerificationBehaviour.TEMPORARILY_UNVERIFIED] as [string, CryptoStrategies.KeyVerificationBehaviour]),
         )
         return Promise.resolve({ recoveredKeyPairs, verifiedKeys })
     }

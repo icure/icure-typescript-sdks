@@ -82,6 +82,6 @@ export const healthcareProfessionalApi = (api: CommonApi, basePath: string): Hea
         api.errorHandler,
         api.baseApi.healthcarePartyApi,
         api.baseApi.authApi,
-        basePath
+        basePath,
     )
 }

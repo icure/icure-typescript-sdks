@@ -168,6 +168,6 @@ export const healthcareElementApi = (api: CommonApi, basePath: string): Healthca
         api.baseApi.cryptoApi,
         api.baseApi.authApi,
         basePath,
-        api
+        api,
     )
 }

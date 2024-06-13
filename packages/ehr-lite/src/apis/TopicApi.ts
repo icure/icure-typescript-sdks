@@ -106,5 +106,5 @@ export const topicApi = (api: CommonApi, cryptoStrategies: CryptoStrategies<Data
         api.baseApi.userApi,
         api.baseApi.patientApi,
         api.baseApi.dataOwnerApi,
-        cryptoStrategies
+        cryptoStrategies,
     )

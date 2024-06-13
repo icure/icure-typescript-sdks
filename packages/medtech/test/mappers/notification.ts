@@ -104,7 +104,7 @@ describe('Notification mapper test', () => {
             .then(() => mapMaintenanceTaskToNotification(newTask))
             .then(
                 () => assert(false),
-                (e) => assert(e.message.includes('THIS DOES NOT BELONG TO THE ENUM'))
+                (e) => assert(e.message.includes('THIS DOES NOT BELONG TO THE ENUM')),
             )
     })
 })

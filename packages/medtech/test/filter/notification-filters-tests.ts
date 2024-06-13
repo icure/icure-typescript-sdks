@@ -39,7 +39,7 @@ describe('Notification Filters Tests', function () {
                 created: startingDate.getTime() - 10000,
                 type: NotificationTypeEnum.KeyPairUpdate,
             }),
-            hcp1User.healthcarePartyId!
+            hcp1User.healthcarePartyId!,
         ))!
 
         notification2 = (await hcp1Api.notificationApi.createOrModifyNotification(
@@ -48,7 +48,7 @@ describe('Notification Filters Tests', function () {
                 created: startingDate.getTime() - 10000,
                 type: NotificationTypeEnum.NewUserOwnDataAccess,
             }),
-            hcp1User.healthcarePartyId!
+            hcp1User.healthcarePartyId!,
         ))!
 
         notification3 = (await hcp1Api.notificationApi.createOrModifyNotification(
@@ -57,7 +57,7 @@ describe('Notification Filters Tests', function () {
                 created: startingDate.getTime() + 10000,
                 type: NotificationTypeEnum.NewUserOwnDataAccess,
             }),
-            hcp1User.healthcarePartyId!
+            hcp1User.healthcarePartyId!,
         ))!
     })
 

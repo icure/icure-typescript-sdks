@@ -21,7 +21,7 @@ export function testTopicLikeApi<
     DSService,
     DSHealthElement,
     DSDocument,
-    DSDataOwner extends DataOwnerWithType
+    DSDataOwner extends DataOwnerWithType,
 >(
     name: string,
     ctx: BaseApiTestContext<DSAnonymousApiBuilder, DSAnonymousApi, DSApi, DSCryptoStrategies, DSUser, any> &
@@ -30,7 +30,7 @@ export function testTopicLikeApi<
         WithPatientApi<DSApi, DSPatient> &
         WithDataOwnerApi<DSApi, DSDataOwner, DSUser> &
         WithServiceApi<DSApi, DSService, DSPatient, DSDocument> &
-        WithHelementApi<DSApi, DSHealthElement, DSPatient>
+        WithHelementApi<DSApi, DSHealthElement, DSPatient>,
 ) {
     describe(`${name} (Topic-like API)`, () => {
         let env: TestVars
@@ -55,7 +55,7 @@ export function testTopicLikeApi<
                         role: TopicRole.PARTICIPANT,
                     },
                 ],
-                'Topic description'
+                'Topic description',
             )
             expect(topic).toBeTruthy()
 
@@ -83,7 +83,7 @@ export function testTopicLikeApi<
                         role: TopicRole.OWNER,
                     },
                 ],
-                'Topic description'
+                'Topic description',
             )
             expect(topic).toBeTruthy()
 
@@ -135,7 +135,7 @@ export function testTopicLikeApi<
                 'Topic description',
                 patient,
                 heIds,
-                serviceIds
+                serviceIds,
             )
             expect(topic).toBeTruthy()
 
@@ -179,7 +179,7 @@ export function testTopicLikeApi<
                         role: TopicRole.PARTICIPANT,
                     },
                 ],
-                'Topic description'
+                'Topic description',
             )
             expect(topic).toBeTruthy()
 
@@ -211,7 +211,7 @@ export function testTopicLikeApi<
                         role: TopicRole.PARTICIPANT,
                     },
                 ],
-                'Topic description'
+                'Topic description',
             )
             expect(topic).toBeTruthy()
 
@@ -244,7 +244,7 @@ export function testTopicLikeApi<
                         role: TopicRole.PARTICIPANT,
                     },
                 ],
-                'Topic description'
+                'Topic description',
             )
             expect(topic).toBeTruthy()
 
@@ -278,7 +278,7 @@ export function testTopicLikeApi<
                         role: TopicRole.PARTICIPANT,
                     },
                 ],
-                'Topic description'
+                'Topic description',
             )
             expect(topic).toBeTruthy()
 
@@ -319,8 +319,8 @@ export function testTopicLikeApi<
                             role: TopicRole.PARTICIPANT,
                         },
                     ],
-                    'Topic description'
-                )
+                    'Topic description',
+                ),
             ).rejects.toThrow()
         })
 
@@ -335,14 +335,14 @@ export function testTopicLikeApi<
                         role: TopicRole.OWNER,
                     },
                 ],
-                'Topic description'
+                'Topic description',
             )
 
             await expect(
                 ctx.topicApi(masterApi).addParticipant(topic, {
                     ref: patientUser.patientId!,
                     role: TopicRole.PARTICIPANT,
-                })
+                }),
             ).rejects.toThrow()
         })
 
@@ -385,14 +385,14 @@ export function testTopicLikeApi<
                                 role: TopicRole.PARTICIPANT,
                             },
                         ],
-                        'Topic description'
+                        'Topic description',
                     )
                 },
                 (status) => {
                     statuses.push(status)
                 },
                 eventReceivedPromiseReject,
-                eventReceivedPromise
+                eventReceivedPromise,
             )
 
             events?.forEach((event) => console.log(`Event : ${event}`))
@@ -412,7 +412,7 @@ export function testTopicLikeApi<
                     connectionRetryIntervalMs: 10_000,
                     connectionMaxRetry: 5,
                 },
-                ['CREATE']
+                ['CREATE'],
             )
         }, 60_000)
     })

@@ -12,7 +12,7 @@ setLocalStorage(fetch)
 
 export function testHelementLikeApi<DSAnonymousApiBuilder extends AnonymousApiBuilder<DSCryptoStrategies, DSAnonymousApi>, DSAnonymousApi extends CommonAnonymousApi<DSApi>, DSApi extends CommonApi, DSCryptoStrategies extends CryptoStrategies<any>, DSUser, DSPatient, DSHelement>(
     name: string,
-    ctx: BaseApiTestContext<DSAnonymousApiBuilder, DSAnonymousApi, DSApi, DSCryptoStrategies, DSUser, any> & WithPatientApi<DSApi, DSPatient> & WithHelementApi<DSApi, DSHelement, DSPatient>
+    ctx: BaseApiTestContext<DSAnonymousApiBuilder, DSAnonymousApi, DSApi, DSCryptoStrategies, DSUser, any> & WithPatientApi<DSApi, DSPatient> & WithHelementApi<DSApi, DSHelement, DSPatient>,
 ) {
     let env: TestVars
     let hcp1Api: DSApi
@@ -153,7 +153,7 @@ export function testHelementLikeApi<DSAnonymousApiBuilder extends AnonymousApiBu
             expect(matchResult.length).toEqual(filterResult.rows.length)
             expectArrayContainsExactlyInAnyOrder(
                 matchResult,
-                filterResult.rows.map((x) => ctx.toHelementDto(x).id)
+                filterResult.rows.map((x) => ctx.toHelementDto(x).id),
             )
         })
 
@@ -175,9 +175,9 @@ export function testHelementLikeApi<DSAnonymousApiBuilder extends AnonymousApiBu
                     new HealthElement({
                         description: 'DUMMY_DESCRIPTION',
                         healthElementId: elementId,
-                    })
+                    }),
                 ),
-                ctx.toPatientDto(patient).id
+                ctx.toPatientDto(patient).id,
             )
             const heDto = ctx.toHelementDto(newHE)
             expect(heDto.healthElementId).toEqual(elementId)
@@ -228,8 +228,8 @@ export function testHelementLikeApi<DSAnonymousApiBuilder extends AnonymousApiBu
                                 firstName: 'John',
                                 lastName: 'Snow',
                                 note: 'Winter is coming',
-                            })
-                        )
+                            }),
+                        ),
                     )
 
                     await ctx.helementApi(api).createOrModify(
@@ -237,18 +237,18 @@ export function testHelementLikeApi<DSAnonymousApiBuilder extends AnonymousApiBu
                             new HealthElement({
                                 note: 'Hero Syndrome',
                                 tags: [new CodeStub({ code: testCode, type: testType })],
-                            })
+                            }),
                         ),
                         (
                             await ctx.toPatientDto(patient)
-                        ).id
+                        ).id,
                     )
                 },
                 (status) => {
                     statuses.push(status)
                 },
                 eventReceivedPromiseReject,
-                eventReceivedPromise
+                eventReceivedPromise,
             )
 
             events?.forEach((event) => console.log(`Event : ${event}`))
@@ -268,7 +268,7 @@ export function testHelementLikeApi<DSAnonymousApiBuilder extends AnonymousApiBu
                     connectionRetryIntervalMs: 10_000,
                     connectionMaxRetry: 5,
                 },
-                ['CREATE']
+                ['CREATE'],
             )
         }, 60_000)
     })

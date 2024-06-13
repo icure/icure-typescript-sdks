@@ -22,7 +22,7 @@ export function testMessageLikeApi<
     DSHealthElement,
     DSMessage,
     DSBinary,
-    DSDataOwner extends DataOwnerWithType
+    DSDataOwner extends DataOwnerWithType,
 >(
     name: string,
     ctx: BaseApiTestContext<DSAnonymousApiBuilder, DSAnonymousApi, DSApi, DSCryptoStrategies, DSUser, any> &
@@ -30,7 +30,7 @@ export function testMessageLikeApi<
         WithMessageApi<DSApi, DSMessage, DSTopic, DSBinary> &
         WithHcpApi<DSApi, DSHcp> &
         WithPatientApi<DSApi, DSPatient> &
-        WithDataOwnerApi<DSApi, DSDataOwner, DSUser>
+        WithDataOwnerApi<DSApi, DSDataOwner, DSUser>,
 ) {
     const encoder = new TextEncoder()
 
@@ -68,7 +68,7 @@ export function testMessageLikeApi<
                         role: TopicRole.PARTICIPANT,
                     },
                 ],
-                'Topic description'
+                'Topic description',
             )
             expect(topic).toBeTruthy()
             return topic
@@ -344,7 +344,7 @@ export function testMessageLikeApi<
                     statuses.push(status)
                 },
                 eventReceivedPromiseReject,
-                eventReceivedPromise
+                eventReceivedPromise,
             )
 
             events?.forEach((event) => console.log(`Event : ${event}`))
@@ -364,7 +364,7 @@ export function testMessageLikeApi<
                     connectionRetryIntervalMs: 10_000,
                     connectionMaxRetry: 5,
                 },
-                ['CREATE']
+                ['CREATE'],
             )
         }, 60_000)
 
