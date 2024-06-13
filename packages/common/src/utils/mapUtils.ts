@@ -1,4 +1,4 @@
-export function mapOf<V>(mapObj: Partial<{ [key in string]: V }>): Record<string, V> {
+export function recordOf<V>(mapObj: Partial<{ [key in string]: V }>): Record<string, V> {
     return Object.fromEntries(Object.entries(mapObj) as [string, V][])
 }
 

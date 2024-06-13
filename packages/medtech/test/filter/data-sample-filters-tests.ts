@@ -8,7 +8,7 @@ import { HealthcareElement } from '../../src/models/HealthcareElement.model'
 import { Content } from '../../src/models/Content.model'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import { v4 as uuid } from 'uuid'
-import { CodingReference, mapOf, User } from '@icure/typescript-common'
+import { CodingReference, recordOf, User } from '@icure/typescript-common'
 import { mapPatientToPatientDto } from '../../src/mappers/Patient.mapper'
 import { FilterComposition, NoOpFilter } from '@icure/typescript-common'
 import { getEnvironmentInitializer, hcp1Username, setLocalStorage } from '../../../common-test/test-utils'
@@ -55,7 +55,7 @@ describe('Data Sample Filters Tests', function () {
                         version: '20020131',
                     }),
                 ]),
-                content: mapOf({ en: new Content({ stringValue: 'Hello world' }) }),
+                content: recordOf({ en: new Content({ stringValue: 'Hello world' }) }),
             }),
         )
 
@@ -86,7 +86,7 @@ describe('Data Sample Filters Tests', function () {
                         version: '20020131',
                     }),
                 ]),
-                content: mapOf({ en: new Content({ stringValue: 'Hello world' }) }),
+                content: recordOf({ en: new Content({ stringValue: 'Hello world' }) }),
             }),
         )
 
@@ -101,7 +101,7 @@ describe('Data Sample Filters Tests', function () {
                         version: '20020131',
                     }),
                 ]),
-                content: mapOf({ en: new Content({ stringValue: 'Hello world' }) }),
+                content: recordOf({ en: new Content({ stringValue: 'Hello world' }) }),
             }),
         )
     })

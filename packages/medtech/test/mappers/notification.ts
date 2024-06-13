@@ -3,7 +3,7 @@ import { v4 as uuid } from 'uuid'
 import { MaintenanceTask } from '@icure/api/icc-api/model/MaintenanceTask'
 import { assert } from 'chai'
 import { Identifier } from '@icure/api'
-import { Property, Delegation, Notification, SystemMetaDataEncrypted, mapMaintenanceTaskToNotification, NotificationTypeEnum, mapOf, mapNotificationToMaintenanceTask } from '@icure/typescript-common'
+import { Property, Delegation, Notification, SystemMetaDataEncrypted, mapMaintenanceTaskToNotification, NotificationTypeEnum, recordOf, mapNotificationToMaintenanceTask } from '@icure/typescript-common'
 
 function identifierEquality(identifier1: Identifier, identifier2: Identifier) {
     return identifier1.id === identifier2.id
@@ -71,8 +71,8 @@ describe('Notification mapper test', () => {
             properties: (commonOptions.properties),
             type: NotificationTypeEnum.KeyPairUpdate,
             systemMetaData: new SystemMetaDataEncrypted({
-                delegations: mapOf({ TEST_ID: ([new Delegation({ owner: uuid(), delegatedTo: uuid() })]) }),
-                encryptionKeys: mapOf({ TEST_KEY: ([new Delegation({ owner: uuid(), delegatedTo: uuid() })]) }),
+                delegations: recordOf({ TEST_ID: ([new Delegation({ owner: uuid(), delegatedTo: uuid() })]) }),
+                encryptionKeys: recordOf({ TEST_KEY: ([new Delegation({ owner: uuid(), delegatedTo: uuid() })]) }),
             }),
         })
         assert(newNotification)

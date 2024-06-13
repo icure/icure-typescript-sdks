@@ -3,19 +3,19 @@ import 'mocha'
 import { SystemMetaDataOwnerEncrypted } from '../..'
 import { assert } from 'chai'
 import { newDelegation } from './delegationTest'
-import { mapOf } from '@icure/typescript-common'
+import { recordOf } from '@icure/typescript-common'
 
 export function newSystemMetaDataOwnerEncrypted(): SystemMetaDataOwnerEncrypted {
     return new SystemMetaDataOwnerEncrypted({
         publicKey: 'publicKey',
-        hcPartyKeys: mapOf({ key: ['hcPartyKeys'] }),
-        privateKeyShamirPartitions: mapOf({ key: 'privateKeyShamirPartitions' }),
-        aesExchangeKeys: mapOf({ key: mapOf({ key: mapOf({ key: 'aesExchangeKeys' }) }) }),
-        transferKeys: mapOf({ key: mapOf({ key: 'aesExchangeKeys' }) }),
+        hcPartyKeys: recordOf({ key: ['hcPartyKeys'] }),
+        privateKeyShamirPartitions: recordOf({ key: 'privateKeyShamirPartitions' }),
+        aesExchangeKeys: recordOf({ key: recordOf({ key: recordOf({ key: 'aesExchangeKeys' }) }) }),
+        transferKeys: recordOf({ key: recordOf({ key: 'aesExchangeKeys' }) }),
         secretForeignKeys: ['secretForeignKeys'],
-        cryptedForeignKeys: mapOf({ key: ([newDelegation()]) }),
-        delegations: mapOf({ key: ([newDelegation()]) }),
-        encryptionKeys: mapOf({ key: ([newDelegation()]) }),
+        cryptedForeignKeys: recordOf({ key: ([newDelegation()]) }),
+        delegations: recordOf({ key: ([newDelegation()]) }),
+        encryptionKeys: recordOf({ key: ([newDelegation()]) }),
     })
 }
 

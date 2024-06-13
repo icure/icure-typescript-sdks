@@ -4,7 +4,7 @@ import { AuthenticationApi } from '../../src/apis/AuthenticationApi'
 import {
     CodingReference,
     KeyPair,
-    mapOf,
+    recordOf,
     mapUserDtoToUser,
     mapUserToUserDto,
     User,
@@ -113,7 +113,7 @@ export function PatientApiAware<TBase extends Constructor<any>>(Base: TBase): TB
                     lastName: 'Snow',
                     notes: [
                         new Annotation({
-                            markdown: mapOf({
+                            markdown: recordOf({
                                 en: 'Winter is coming',
                                 da: 'Vinteren kommer',
                             }),
@@ -171,7 +171,7 @@ export function DataSampleApiAware<TBase extends Constructor<any>>(Base: TBase):
         }
 
         checkDefaultServiceDecrypted(service: DataSample): void {
-            expect(service.content).toEqual(mapOf({ en: new Content({ stringValue: 'Hello world' }) }))
+            expect(service.content).toEqual(recordOf({ en: new Content({ stringValue: 'Hello world' }) }))
         }
 
         createServiceForPatient(api: MedTechApi, patient: Patient): Promise<DataSample> {
@@ -179,7 +179,7 @@ export function DataSampleApiAware<TBase extends Constructor<any>>(Base: TBase):
                 patient.id!,
                 new DataSample({
                     labels: ([new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })]),
-                    content: mapOf({ en: new Content({ stringValue: 'Hello world' }) }),
+                    content: recordOf({ en: new Content({ stringValue: 'Hello world' }) }),
                 }),
             )
         }
@@ -188,11 +188,11 @@ export function DataSampleApiAware<TBase extends Constructor<any>>(Base: TBase):
             return api.dataSampleApi.createOrModifyManyFor(patient.id!, [
                 new DataSample({
                     labels: ([new CodingReference({ id: 'testid2', type: 'IC-TEST', code: 'TEST' })]),
-                    content: mapOf({ en: new Content({ stringValue: 'Hello world' }) }),
+                    content: recordOf({ en: new Content({ stringValue: 'Hello world' }) }),
                 }),
                 new DataSample({
                     labels: ([new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })]),
-                    content: mapOf({ en: new Content({ stringValue: 'Good night world' }) }),
+                    content: recordOf({ en: new Content({ stringValue: 'Good night world' }) }),
                 }),
             ])
         }

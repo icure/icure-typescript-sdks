@@ -15,7 +15,7 @@ export * from './src/filter'
 
 export { CryptoStrategies, CryptoStrategiesBridge, SimpleCryptoStrategies, NativeCryptoPrimitivesBridge } from '@icure/typescript-common'
 
-export { mapOf } from '@icure/typescript-common'
+export { recordOf } from '@icure/typescript-common'
 
 export * from '@icure/api/icc-x-api/utils/binary-utils'
 export * from '@icure/api/icc-x-api/utils/formatting-util'

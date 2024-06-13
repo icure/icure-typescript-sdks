@@ -1456,9 +1456,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@icure/api@npm:^8.0.29":
-  version: 8.0.29
-  resolution: "@icure/api@npm:8.0.29"
+"@icure/api@npm:^8.0.36":
+  version: 8.0.36
+  resolution: "@icure/api@npm:8.0.36"
   dependencies:
     browser-or-node: ^3.0.0
     date-fns: ^2.23.0
@@ -1468,7 +1468,7 @@ __metadata:
     text-encoding: ^0.7.0
     uuid: ^8.3.2
     uuid-encoder: ^1.1.0
-  checksum: 01ba4825a110e4d5c64576ef4c4d5d7fb7e2d370ef68af8734b3492dd4019f4a48c179673826efc15b00f05c6bb941e4f104e9c3069b839743edaaf8b6dd10ab
+  checksum: 9086635ea3ef08f2b84a6bbd87e5799920f81424833be5047d55c334f149a416a50206b0df28d631f8d85490a86c2b50a0d7a5608c1a4221649576f1c3f02e98
   languageName: node
   linkType: hard
 
@@ -1557,7 +1557,7 @@ __metadata:
     "@babel/plugin-proposal-decorators": ^7.22.5
     "@babel/preset-env": ^7.22.5
     "@babel/preset-typescript": ^7.22.5
-    "@icure/api": ^8.0.29
+    "@icure/api": ^8.0.36
     "@types/jest": ^29.5.2
     "@types/uuid": ^9.0.1
     babel-jest: ^29.5.0

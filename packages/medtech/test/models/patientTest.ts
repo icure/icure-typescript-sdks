@@ -9,7 +9,7 @@ import { newPatientHealthCareParty } from './patientHealthCarePartyTest'
 import { newPartnership } from './partnershipTest'
 import { newSystemMetaDataOwnerEncrypted } from './systemMetaDataOwnerEncryptedTest'
 import { newProperty } from './propertyTest'
-import { mapOf } from '@icure/typescript-common'
+import { recordOf } from '@icure/typescript-common'
 
 export function newPatient(): Patient {
     return new Patient({
@@ -60,7 +60,7 @@ export function newPatient(): Patient {
         partnerships: [newPartnership()],
         patientHealthCareParties: [newPatientHealthCareParty()],
         patientProfessions: [newCodingReference()],
-        parameters: mapOf({ key: ['parameters'] }),
+        parameters: recordOf({ key: ['parameters'] }),
         properties: ([newProperty()]),
         systemMetaData: newSystemMetaDataOwnerEncrypted(),
     })

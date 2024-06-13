@@ -4,7 +4,7 @@ import { getEnvironmentInitializer, hcp1Username, setLocalStorage } from '../../
 import { expect } from 'chai'
 import { v4 as uuid } from 'uuid'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
-import { Coding, mapOf, User } from '@icure/typescript-common'
+import { Coding, recordOf, User } from '@icure/typescript-common'
 import { FilterComposition, NoOpFilter } from '@icure/typescript-common'
 import { describe, it, before } from 'mocha'
 import { TestUtils } from '../test-utils'
@@ -36,7 +36,7 @@ describe('Coding Filters Test', function () {
                 code: 'PARARIBULITIS',
                 version: uuid().substring(0, 6),
                 regions: (['be']),
-                description: mapOf({ fr: 'Pararibulitis' }),
+                description: recordOf({ fr: 'Pararibulitis' }),
             }),
         )
 
@@ -46,7 +46,7 @@ describe('Coding Filters Test', function () {
                 code: 'UNIVERSE THERMAL DEATH',
                 version: uuid().substring(0, 6),
                 regions: (['ir', 'gb']),
-                description: mapOf({ en: 'That is bad' }),
+                description: recordOf({ en: 'That is bad' }),
             }),
         )
 
@@ -56,7 +56,7 @@ describe('Coding Filters Test', function () {
                 code: 'HEADACHE',
                 version: uuid().substring(0, 6),
                 regions: (['ir', 'gb']),
-                description: mapOf({ en: 'Ouch' }),
+                description: recordOf({ en: 'Ouch' }),
             }),
         )
     })

@@ -29,7 +29,7 @@ import {
     extractDomainTypeTag,
     KeyPair,
     mapDocumentToDocumentDto,
-    mapOf,
+    recordOf,
     mapUserDtoToUser,
     mapUserToUserDto,
     User,
@@ -100,7 +100,7 @@ type Constructor<T> = new (...args: any[]) => T
 
 function annotation1(): Annotation {
     return new Annotation({
-        markdown: mapOf({
+        markdown: recordOf({
             en: 'This should be encrypted',
             fr: 'Ceci devrait être crypté',
         }),
@@ -108,7 +108,7 @@ function annotation1(): Annotation {
 }
 function annotation2(): Annotation {
     return new Annotation({
-        markdown: mapOf({
+        markdown: recordOf({
             en: 'This should be encrypted',
             fr: 'Ceci devrait être crypté',
         }),
@@ -238,7 +238,7 @@ export function ConditionApiAware<TBase extends Constructor<any>>(Base: TBase): 
 export function ObservationApiAware<TBase extends Constructor<any>>(Base: TBase): TBase & Constructor<WithServiceApi<EHRLiteApi, Observation, Patient, Document>> {
     return class ObservationApiAwareImpl extends Base implements WithServiceApi<EHRLiteApi, Observation, Patient, Document> {
         checkDefaultServiceDecrypted(service: Observation): void {
-            expect(service.localContent).toEqual(mapOf({ en: new LocalComponent({ stringValue: 'Hello world' }) }))
+            expect(service.localContent).toEqual(recordOf({ en: new LocalComponent({ stringValue: 'Hello world' }) }))
         }
 
         async checkServiceAccessibleAndDecrypted(api: EHRLiteApi, service: Observation, checkDeepEquals: boolean): Promise<void> {
@@ -263,7 +263,7 @@ export function ObservationApiAware<TBase extends Constructor<any>>(Base: TBase)
                 patient.id!,
                 new Observation({
                     tags: ([new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })]),
-                    localContent: mapOf({ en: new LocalComponent({ stringValue: 'Hello world' }) }),
+                    localContent: recordOf({ en: new LocalComponent({ stringValue: 'Hello world' }) }),
                 }),
             )
         }
@@ -272,11 +272,11 @@ export function ObservationApiAware<TBase extends Constructor<any>>(Base: TBase)
             return api.observationApi.createOrModifyManyFor(patient.id!, [
                 new Observation({
                     tags: ([new CodingReference({ id: 'testid2', type: 'IC-TEST', code: 'TEST' })]),
-                    localContent: mapOf({ en: new LocalComponent({ stringValue: 'Hello world' }) }),
+                    localContent: recordOf({ en: new LocalComponent({ stringValue: 'Hello world' }) }),
                 }),
                 new Observation({
                     tags: ([new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })]),
-                    localContent: mapOf({ en: new LocalComponent({ stringValue: 'Good night world' }) }),
+                    localContent: recordOf({ en: new LocalComponent({ stringValue: 'Good night world' }) }),
                 }),
             ])
         }
