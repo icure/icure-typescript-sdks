@@ -1,6 +1,6 @@
 {
     "name": "@icure/ehr-lite-sdk",
-    "version": "3.2.1",
+    "version": "3.3.0",
     "description": "SDK for EHR Lite",
     "devDependencies": {
         "@babel/core": "^7.22.5",
@@ -15,7 +15,7 @@
     "main": "dist/index.js",
     "typings": "dist/index.d.ts",
     "dependencies": {
-        "@icure/typescript-common": "3.2.1",
+        "@icure/typescript-common": "3.3.0",
         "reflect-metadata": "^0.2.2",
         "uuid": "^9.0.1"
     },
