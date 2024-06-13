@@ -5,7 +5,7 @@ import { SeverityEnum } from './enums/Severity.enum'
 import { VerificationStatusEnum } from './enums/VerificationStatus.enum'
 
 @mapTo(HealthElementDto)
-export class Condition {
+export class Condition implements ICondition {
     id: string
     identifiers: Identifier[]
     rev?: string
@@ -18,9 +18,9 @@ export class Condition {
     verificationStatus?: VerificationStatusEnum
     category?: CategoryEnum
     severity?: SeverityEnum
-    bodySite?: Set<CodingReference>
-    tags: Set<CodingReference>
-    codes: Set<CodingReference>
+    bodySite?: Array<CodingReference>
+    tags: Array<CodingReference>
+    codes: Array<CodingReference>
     endOfLife?: number
     deletionDate?: number
     healthcareElementId?: string
@@ -31,7 +31,7 @@ export class Condition {
     notes: Annotation[]
     systemMetaData?: SystemMetaDataEncrypted
 
-    constructor(condition: ICondition) {
+    constructor(condition: Partial<ICondition>) {
         this.id = forceUuid(condition.id)
         this.identifiers = condition.identifiers ?? []
         this.rev = condition.rev
@@ -45,8 +45,8 @@ export class Condition {
         this.category = condition.category
         this.severity = condition.severity
         this.bodySite = condition.bodySite
-        this.tags = condition.tags ?? new Set()
-        this.codes = condition.codes ?? new Set()
+        this.tags = condition.tags ?? []
+        this.codes = condition.codes ?? []
         this.endOfLife = condition.endOfLife
         this.deletionDate = condition.deletionDate
         this.healthcareElementId = condition.healthcareElementId
@@ -58,8 +58,8 @@ export class Condition {
         this.systemMetaData = condition.systemMetaData
     }
 
-    static toJSON(instance: Condition): any {
-        const pojo: any = {}
+    static toJSON(instance: Condition): ICondition {
+        const pojo: ICondition = {} as ICondition
         pojo['id'] = instance.id
         pojo['identifiers'] = instance.identifiers.map((item) => Identifier.toJSON(item))
         if (instance.rev !== undefined) pojo['rev'] = instance.rev
@@ -72,9 +72,9 @@ export class Condition {
         if (instance.verificationStatus !== undefined) pojo['verificationStatus'] = instance.verificationStatus
         if (instance.category !== undefined) pojo['category'] = instance.category
         if (instance.severity !== undefined) pojo['severity'] = instance.severity
-        if (instance.bodySite !== undefined) pojo['bodySite'] = Array.from([...(instance.bodySite ?? [])]?.map((item) => CodingReference.toJSON(item)) ?? [])
-        pojo['tags'] = Array.from([...instance.tags].map((item) => CodingReference.toJSON(item)))
-        pojo['codes'] = Array.from([...instance.codes].map((item) => CodingReference.toJSON(item)))
+        if (instance.bodySite !== undefined) pojo['bodySite'] = instance.bodySite?.map((item) => CodingReference.toJSON(item))
+        pojo['tags'] = instance.tags.map((item) => CodingReference.toJSON(item))
+        pojo['codes'] = instance.codes.map((item) => CodingReference.toJSON(item))
         if (instance.endOfLife !== undefined) pojo['endOfLife'] = instance.endOfLife
         if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
         if (instance.healthcareElementId !== undefined) pojo['healthcareElementId'] = instance.healthcareElementId
@@ -87,69 +87,69 @@ export class Condition {
         return pojo
     }
 
-    static fromJSON(pojo: any): Condition {
+    static fromJSON(pojo: ICondition): Condition {
         const obj = {} as ICondition
         obj['id'] = pojo['id']
         obj['identifiers'] = pojo['identifiers'].map((item: any) => Identifier.fromJSON(item))
         if (pojo['rev'] !== undefined) {
-            obj['rev'] = pojo['rev']
+            obj['rev'] = pojo['rev']!
         }
         if (pojo['created'] !== undefined) {
-            obj['created'] = pojo['created']
+            obj['created'] = pojo['created']!
         }
         if (pojo['modified'] !== undefined) {
-            obj['modified'] = pojo['modified']
+            obj['modified'] = pojo['modified']!
         }
         if (pojo['author'] !== undefined) {
-            obj['author'] = pojo['author']
+            obj['author'] = pojo['author']!
         }
         if (pojo['responsible'] !== undefined) {
-            obj['responsible'] = pojo['responsible']
+            obj['responsible'] = pojo['responsible']!
         }
         if (pojo['medicalLocationId'] !== undefined) {
-            obj['medicalLocationId'] = pojo['medicalLocationId']
+            obj['medicalLocationId'] = pojo['medicalLocationId']!
         }
         if (pojo['clinicalStatus'] !== undefined) {
-            obj['clinicalStatus'] = pojo['clinicalStatus']
+            obj['clinicalStatus'] = pojo['clinicalStatus']!
         }
         if (pojo['verificationStatus'] !== undefined) {
-            obj['verificationStatus'] = pojo['verificationStatus']
+            obj['verificationStatus'] = pojo['verificationStatus']!
         }
         if (pojo['category'] !== undefined) {
-            obj['category'] = pojo['category']
+            obj['category'] = pojo['category']!
         }
         if (pojo['severity'] !== undefined) {
-            obj['severity'] = pojo['severity']
+            obj['severity'] = pojo['severity']!
         }
         if (pojo['bodySite'] !== undefined) {
-            obj['bodySite'] = new Set(pojo['bodySite']?.map((item: any) => CodingReference.fromJSON(item)) ?? [])
+            obj['bodySite'] = pojo['bodySite']!?.map((item: any) => CodingReference.fromJSON(item))
         }
-        obj['tags'] = new Set(pojo['tags'].map((item: any) => CodingReference.fromJSON(item)))
-        obj['codes'] = new Set(pojo['codes'].map((item: any) => CodingReference.fromJSON(item)))
+        obj['tags'] = pojo['tags'].map((item: any) => CodingReference.fromJSON(item))
+        obj['codes'] = pojo['codes'].map((item: any) => CodingReference.fromJSON(item))
         if (pojo['endOfLife'] !== undefined) {
-            obj['endOfLife'] = pojo['endOfLife']
+            obj['endOfLife'] = pojo['endOfLife']!
         }
         if (pojo['deletionDate'] !== undefined) {
-            obj['deletionDate'] = pojo['deletionDate']
+            obj['deletionDate'] = pojo['deletionDate']!
         }
         if (pojo['healthcareElementId'] !== undefined) {
-            obj['healthcareElementId'] = pojo['healthcareElementId']
+            obj['healthcareElementId'] = pojo['healthcareElementId']!
         }
         if (pojo['recordedDate'] !== undefined) {
-            obj['recordedDate'] = pojo['recordedDate']
+            obj['recordedDate'] = pojo['recordedDate']!
         }
         if (pojo['openingDate'] !== undefined) {
-            obj['openingDate'] = pojo['openingDate']
+            obj['openingDate'] = pojo['openingDate']!
         }
         if (pojo['closingDate'] !== undefined) {
-            obj['closingDate'] = pojo['closingDate']
+            obj['closingDate'] = pojo['closingDate']!
         }
         if (pojo['description'] !== undefined) {
-            obj['description'] = pojo['description']
+            obj['description'] = pojo['description']!
         }
         obj['notes'] = pojo['notes'].map((item: any) => Annotation.fromJSON(item))
         if (pojo['systemMetaData'] !== undefined) {
-            obj['systemMetaData'] = !!pojo['systemMetaData'] ? SystemMetaDataEncrypted.fromJSON(pojo['systemMetaData']) : undefined
+            obj['systemMetaData'] = !!pojo['systemMetaData']! ? SystemMetaDataEncrypted.fromJSON(pojo['systemMetaData']!) : undefined
         }
         return new Condition(obj)
     }
@@ -157,7 +157,7 @@ export class Condition {
 
 interface ICondition {
     id?: string
-    identifiers?: Identifier[]
+    identifiers: Identifier[]
     rev?: string
     created?: number
     modified?: number
@@ -168,9 +168,9 @@ interface ICondition {
     verificationStatus?: VerificationStatusEnum
     category?: CategoryEnum
     severity?: SeverityEnum
-    bodySite?: Set<CodingReference>
-    tags?: Set<CodingReference>
-    codes?: Set<CodingReference>
+    bodySite?: Array<CodingReference>
+    tags: Array<CodingReference>
+    codes: Array<CodingReference>
     endOfLife?: number
     deletionDate?: number
     healthcareElementId?: string
@@ -178,6 +178,6 @@ interface ICondition {
     openingDate?: number
     closingDate?: number
     description?: string
-    notes?: Annotation[]
+    notes: Annotation[]
     systemMetaData?: SystemMetaDataEncrypted
 }

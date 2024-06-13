@@ -29,10 +29,10 @@ export interface TopicLikeApi<DSTopic, DSHcp, DSPatient, DSService, DSHealthElem
         participants: { participant: Reference<DSHcp>; role: TopicRole }[],
         description?: string,
         patient?: Reference<DSPatient>,
-        healthElements?: Set<Reference<DSHealthElement>>,
-        services?: Set<Reference<DSService>>,
-        tags?: Set<CodingReference>,
-        codes?: Set<CodingReference>,
+        healthElements?: Array<Reference<DSHealthElement>>,
+        services?: Array<Reference<DSService>>,
+        tags?: Array<CodingReference>,
+        codes?: Array<CodingReference>,
     ): Promise<DSTopic>
 
     /**

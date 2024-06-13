@@ -8,7 +8,7 @@ import { HealthcareElement } from '../../src/models/HealthcareElement.model'
 import { Content } from '../../src/models/Content.model'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import { v4 as uuid } from 'uuid'
-import { CodingReference, mapOf, User } from '@icure/typescript-common'
+import { CodingReference, recordOf, User } from '@icure/typescript-common'
 import { mapPatientToPatientDto } from '../../src/mappers/Patient.mapper'
 import { FilterComposition, NoOpFilter } from '@icure/typescript-common'
 import { getEnvironmentInitializer, hcp1Username, setLocalStorage } from '../../../common-test/test-utils'
@@ -47,29 +47,29 @@ describe('Data Sample Filters Tests', function () {
         ds1 = await hcp1Api.dataSampleApi.createOrModifyDataSampleFor(
             patient.id!,
             new DataSample({
-                codes: new Set([
+                codes: [
                     new CodingReference({
                         id: 'SNOMEDCT|617|20020131',
                         type: 'SNOMEDCT',
                         code: '617',
                         version: '20020131',
                     }),
-                ]),
-                content: mapOf({ en: new Content({ stringValue: 'Hello world' }) }),
+                ],
+                content: recordOf({ en: new Content({ stringValue: 'Hello world' }) }),
             }),
         )
 
         he1 = await hcp1Api.healthcareElementApi.createOrModifyHealthcareElement(
             new HealthcareElement({
                 description: 'The patient has been diagnosed Pararibulitis',
-                codes: new Set([
+                codes: [
                     new CodingReference({
                         id: 'SNOMEDCT|617|20020131',
                         type: 'SNOMEDCT',
                         code: '617',
                         version: '20020131',
                     }),
-                ]),
+                ],
             }),
             patient.id!,
         )
@@ -77,31 +77,31 @@ describe('Data Sample Filters Tests', function () {
         ds2 = await hcp1Api.dataSampleApi.createOrModifyDataSampleFor(
             patient.id!,
             new DataSample({
-                healthcareElementIds: new Set([he1.id!]),
-                codes: new Set([
+                healthcareElementIds: [he1.id!],
+                codes: [
                     new CodingReference({
                         id: 'SNOMEDCT|617|20020131',
                         type: 'SNOMEDCT',
                         code: '617',
                         version: '20020131',
                     }),
-                ]),
-                content: mapOf({ en: new Content({ stringValue: 'Hello world' }) }),
+                ],
+                content: recordOf({ en: new Content({ stringValue: 'Hello world' }) }),
             }),
         )
 
         ds3 = await hcp1Api.dataSampleApi.createOrModifyDataSampleFor(
             patient.id!,
             new DataSample({
-                labels: new Set([
+                labels: [
                     new CodingReference({
                         id: 'SNOMEDCT|617|20020131',
                         type: 'SNOMEDCT',
                         code: '617',
                         version: '20020131',
                     }),
-                ]),
-                content: mapOf({ en: new Content({ stringValue: 'Hello world' }) }),
+                ],
+                content: recordOf({ en: new Content({ stringValue: 'Hello world' }) }),
             }),
         )
     })
@@ -140,8 +140,8 @@ describe('Data Sample Filters Tests', function () {
 
         expect(samples.rows.length).to.be.greaterThan(0)
         samples.rows.forEach((sample) => {
-            expect(Array.from(sample.labels).map((it) => it.code)).to.contain('617')
-            expect(Array.from(sample.labels).map((it) => it.type)).to.contain('SNOMEDCT')
+            expect(sample.labels.map((it) => it.code)).to.contain('617')
+            expect(sample.labels.map((it) => it.type)).to.contain('SNOMEDCT')
         })
     })
 
@@ -150,8 +150,8 @@ describe('Data Sample Filters Tests', function () {
 
         expect(samples.rows.length).to.be.greaterThan(0)
         samples.rows.forEach((sample) => {
-            expect(Array.from(sample.codes).map((it) => it.code)).to.contain('617')
-            expect(Array.from(sample.codes).map((it) => it.type)).to.contain('SNOMEDCT')
+            expect(sample.codes.map((it) => it.code)).to.contain('617')
+            expect(sample.codes.map((it) => it.type)).to.contain('SNOMEDCT')
         })
     })
 
@@ -167,7 +167,7 @@ describe('Data Sample Filters Tests', function () {
         expect(samples.rows.length).to.be.greaterThan(0)
         samples.rows.forEach((sample) => {
             expect(sample).to.satisfy((s: DataSample) => {
-                return s.id === ds1.id! || Array.from(s.healthcareElementIds ?? []).includes(he1.id!)
+                return s.id === ds1.id! || (s.healthcareElementIds ?? []).includes(he1.id!)
             })
         })
     })

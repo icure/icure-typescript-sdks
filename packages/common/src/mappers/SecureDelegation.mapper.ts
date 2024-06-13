@@ -42,20 +42,20 @@ function toSecureDelegationDelegate(dto: SecureDelegationDto): string | undefine
     return dto.delegate
 }
 
-function toSecureDelegationSecretIds(dto: SecureDelegationDto): Set<string> {
-    return new Set(dto.secretIds)
+function toSecureDelegationSecretIds(dto: SecureDelegationDto): Array<string> {
+    return dto.secretIds ?? []
 }
 
-function toSecureDelegationEncryptionKeys(dto: SecureDelegationDto): Set<string> {
-    return new Set(dto.encryptionKeys)
+function toSecureDelegationEncryptionKeys(dto: SecureDelegationDto): Array<string> {
+    return dto.encryptionKeys ?? []
 }
 
-function toSecureDelegationOwningEntityIds(dto: SecureDelegationDto): Set<string> {
-    return new Set(dto.owningEntityIds)
+function toSecureDelegationOwningEntityIds(dto: SecureDelegationDto): Array<string> {
+    return dto.owningEntityIds ?? []
 }
 
-function toSecureDelegationParentDelegations(dto: SecureDelegationDto): Set<string> {
-    return new Set(dto.parentDelegations)
+function toSecureDelegationParentDelegations(dto: SecureDelegationDto): Array<string> {
+    return dto.parentDelegations ?? []
 }
 
 function toSecureDelegationExchangeDataId(dto: SecureDelegationDto): string | undefined {

@@ -15,7 +15,7 @@ import { SystemMetaDataEncrypted } from './SystemMetaDataEncrypted.model'
 
 @mapTo(DocumentDto)
 export class Document {
-    constructor(json: IDocument) {
+    constructor(json: Partial<IDocument>) {
         this.id = json.id!
         this.rev = json.rev
         this.created = json.created
@@ -32,7 +32,7 @@ export class Document {
         this.attachmentId = json.attachmentId
         this.name = json.name
         this.version = json.version
-        this.otherUtis = json.otherUtis ?? new Set()
+        this.otherUtis = json.otherUtis ?? []
         this.systemMetaData = json.systemMetaData
     }
 
@@ -69,7 +69,7 @@ export class Document {
     /**
      * Extra Uniform Type Identifiers
      */
-    'otherUtis': Set<string>
+    'otherUtis': Array<string>
     /**
      * A unique external id (from another external source).
      */
@@ -89,8 +89,8 @@ export class Document {
 
     systemMetaData?: SystemMetaDataEncrypted
 
-    static toJSON(instance: Document): any {
-        const pojo: any = {}
+    static toJSON(instance: Document): IDocument {
+        const pojo: IDocument = {} as IDocument
         pojo['id'] = instance.id
         if (instance.rev !== undefined) pojo['rev'] = instance.rev
         if (instance.created !== undefined) pojo['created'] = instance.created
@@ -103,73 +103,73 @@ export class Document {
         if (instance.mainUti !== undefined) pojo['mainUti'] = instance.mainUti
         if (instance.name !== undefined) pojo['name'] = instance.name
         if (instance.version !== undefined) pojo['version'] = instance.version
-        pojo['otherUtis'] = Array.from([...instance.otherUtis].map((item) => item))
+        pojo['otherUtis'] = instance.otherUtis.map((item) => item)
         if (instance.externalUuid !== undefined) pojo['externalUuid'] = instance.externalUuid
         if (instance.size !== undefined) pojo['size'] = instance.size
         if (instance.hash !== undefined) pojo['hash'] = instance.hash
         if (instance.attachmentId !== undefined) pojo['attachmentId'] = instance.attachmentId
-        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataEncrypted.toJSON(instance.systemMetaData) : undefined
+        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = SystemMetaDataEncrypted.toJSON(instance.systemMetaData)
         return pojo
     }
 
-    static fromJSON(pojo: any): Document {
+    static fromJSON(pojo: IDocument): Document {
         const obj = {} as IDocument
         obj['id'] = pojo['id']
         if (pojo['rev'] !== undefined) {
-            obj['rev'] = pojo['rev']
+            obj['rev'] = pojo['rev']!
         }
         if (pojo['created'] !== undefined) {
-            obj['created'] = pojo['created']
+            obj['created'] = pojo['created']!
         }
         if (pojo['modified'] !== undefined) {
-            obj['modified'] = pojo['modified']
+            obj['modified'] = pojo['modified']!
         }
         if (pojo['author'] !== undefined) {
-            obj['author'] = pojo['author']
+            obj['author'] = pojo['author']!
         }
         if (pojo['responsible'] !== undefined) {
-            obj['responsible'] = pojo['responsible']
+            obj['responsible'] = pojo['responsible']!
         }
         if (pojo['medicalLocationId'] !== undefined) {
-            obj['medicalLocationId'] = pojo['medicalLocationId']
+            obj['medicalLocationId'] = pojo['medicalLocationId']!
         }
         if (pojo['deletionDate'] !== undefined) {
-            obj['deletionDate'] = pojo['deletionDate']
+            obj['deletionDate'] = pojo['deletionDate']!
         }
         if (pojo['objectStoreReference'] !== undefined) {
-            obj['objectStoreReference'] = pojo['objectStoreReference']
+            obj['objectStoreReference'] = pojo['objectStoreReference']!
         }
         if (pojo['mainUti'] !== undefined) {
-            obj['mainUti'] = pojo['mainUti']
+            obj['mainUti'] = pojo['mainUti']!
         }
         if (pojo['name'] !== undefined) {
-            obj['name'] = pojo['name']
+            obj['name'] = pojo['name']!
         }
         if (pojo['version'] !== undefined) {
-            obj['version'] = pojo['version']
+            obj['version'] = pojo['version']!
         }
-        obj['otherUtis'] = new Set(pojo['otherUtis'].map((item: any) => item))
+        obj['otherUtis'] = pojo['otherUtis'].map((item: any) => item)
         if (pojo['externalUuid'] !== undefined) {
-            obj['externalUuid'] = pojo['externalUuid']
+            obj['externalUuid'] = pojo['externalUuid']!
         }
         if (pojo['size'] !== undefined) {
-            obj['size'] = pojo['size']
+            obj['size'] = pojo['size']!
         }
         if (pojo['hash'] !== undefined) {
-            obj['hash'] = pojo['hash']
+            obj['hash'] = pojo['hash']!
         }
         if (pojo['attachmentId'] !== undefined) {
-            obj['attachmentId'] = pojo['attachmentId']
+            obj['attachmentId'] = pojo['attachmentId']!
         }
         if (pojo['systemMetaData'] !== undefined) {
-            obj['systemMetaData'] = !!pojo['systemMetaData'] ? SystemMetaDataEncrypted.fromJSON(pojo['systemMetaData']) : undefined
+            obj['systemMetaData'] = SystemMetaDataEncrypted.fromJSON(pojo['systemMetaData']!)
         }
         return new Document(obj)
     }
 }
 
 interface IDocument {
-    id?: string
+    id: string
     rev?: string
     created?: number
     modified?: number
@@ -181,10 +181,10 @@ interface IDocument {
     mainUti?: string
     name?: string
     version?: string
-    otherUtis?: Set<string>
+    otherUtis: Array<string>
     externalUuid?: string
     size?: number
     hash?: string
     attachmentId?: string
-    systemMetaData?: SystemMetaDataEncrypted
+    systemMetaData: SystemMetaDataEncrypted
 }

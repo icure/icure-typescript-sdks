@@ -10,11 +10,11 @@ export function toJSONGenerator(classDeclaration: ClassDeclaration, bundle: Clas
         name: 'toJSON',
         isStatic: true,
         isAbstract: false,
-        returnType: 'any',
+        returnType: `I${classDeclaration.getName()}`,
         parameters: [{ name: 'instance', type: classDeclaration.getName() }],
         statements: (writer) => {
             // write the method body
-            writer.writeLine('const pojo: any = {}')
+            writer.writeLine(`const pojo: I${classDeclaration.getName()} = {} as I${classDeclaration.getName()}`)
 
             bundle.computeSerializer('pojo', 'instance').forEach((line) => writer.writeLine(line))
 

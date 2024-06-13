@@ -1,7 +1,9 @@
 import { ClassComponent } from './ClassComponent'
-import { ImportDeclaration } from 'ts-morph'
 
 export class ArrayComponent extends ClassComponent {
+    public notNullable(): ClassComponent {
+        return new ArrayComponent(false, this.children)
+    }
     computeSerializer(value: string): string {
         return this.nullable ? `${value}?.map(item => ${this.children![0].computeSerializer('item')})` : `${value}.map(item => ${this.children![0].computeSerializer('item')})`
     }

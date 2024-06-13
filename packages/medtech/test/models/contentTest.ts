@@ -6,7 +6,7 @@ import { newMeasure } from './measureTest'
 import { newTimeSeries } from './timeSeriesTest'
 import { newDataSample } from './dataSampleTest'
 import { DataSample } from '../..'
-import { mapOf } from '@icure/typescript-common'
+import { recordOf } from '@icure/typescript-common'
 import { v4 } from 'uuid'
 
 export function partialContent(): Content {
@@ -23,7 +23,7 @@ export function newContent(): Content {
         documentId: v4(),
         measureValue: newMeasure(),
         timeSeries: newTimeSeries(),
-        compoundValue: [new DataSample({ ...newDataSample(false), content: mapOf({ en: new Content({ stringValue: 'stringValue' }) }) })],
+        compoundValue: [new DataSample({ ...newDataSample(false), content: recordOf({ en: new Content({ stringValue: 'stringValue' }) }) })],
         ratio: [newMeasure(), newMeasure()],
         range: [newMeasure(), newMeasure()],
     })

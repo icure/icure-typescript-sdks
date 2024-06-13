@@ -1,5 +1,5 @@
 export class AuthenticationProcess {
-    constructor(json: IAuthenticationProcess) {
+    constructor(json: Partial<IAuthenticationProcess>) {
         Object.assign(this as AuthenticationProcess, json)
     }
 
@@ -16,15 +16,15 @@ export class AuthenticationProcess {
      */
     'bypassTokenCheck': boolean
 
-    static toJSON(instance: AuthenticationProcess): any {
-        const pojo: any = {}
+    static toJSON(instance: AuthenticationProcess): IAuthenticationProcess {
+        const pojo: IAuthenticationProcess = {} as IAuthenticationProcess
         pojo['requestId'] = instance.requestId
         pojo['login'] = instance.login
         pojo['bypassTokenCheck'] = instance.bypassTokenCheck
         return pojo
     }
 
-    static fromJSON(pojo: any): AuthenticationProcess {
+    static fromJSON(pojo: IAuthenticationProcess): AuthenticationProcess {
         const obj = {} as IAuthenticationProcess
         obj['requestId'] = pojo['requestId']
         obj['login'] = pojo['login']
@@ -34,7 +34,7 @@ export class AuthenticationProcess {
 }
 
 interface IAuthenticationProcess {
-    requestId?: string
-    bypassTokenCheck?: boolean
-    login?: string
+    requestId: string
+    bypassTokenCheck: boolean
+    login: string
 }

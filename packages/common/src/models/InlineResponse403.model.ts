@@ -11,7 +11,7 @@
  */
 
 export class InlineResponse403 {
-    constructor(json: IInlineResponse403) {
+    constructor(json: Partial<IInlineResponse403>) {
         Object.assign(this as InlineResponse403, json)
     }
 
@@ -24,8 +24,8 @@ export class InlineResponse403 {
     'direct'?: boolean
     'readOnly'?: boolean
 
-    static toJSON(instance: InlineResponse403): any {
-        const pojo: any = {}
+    static toJSON(instance: InlineResponse403): IInlineResponse403 {
+        const pojo: IInlineResponse403 = {} as IInlineResponse403
         if (instance._short !== undefined) pojo['_short'] = instance._short
         if (instance._char !== undefined) pojo['_char'] = instance._char
         if (instance._int !== undefined) pojo['_int'] = instance._int
@@ -37,31 +37,31 @@ export class InlineResponse403 {
         return pojo
     }
 
-    static fromJSON(pojo: any): InlineResponse403 {
+    static fromJSON(pojo: IInlineResponse403): InlineResponse403 {
         const obj = {} as IInlineResponse403
         if (pojo['_short'] !== undefined) {
-            obj['_short'] = pojo['_short']
+            obj['_short'] = pojo['_short']!
         }
         if (pojo['_char'] !== undefined) {
-            obj['_char'] = pojo['_char']
+            obj['_char'] = pojo['_char']!
         }
         if (pojo['_int'] !== undefined) {
-            obj['_int'] = pojo['_int']
+            obj['_int'] = pojo['_int']!
         }
         if (pojo['_long'] !== undefined) {
-            obj['_long'] = pojo['_long']
+            obj['_long'] = pojo['_long']!
         }
         if (pojo['_float'] !== undefined) {
-            obj['_float'] = pojo['_float']
+            obj['_float'] = pojo['_float']!
         }
         if (pojo['_double'] !== undefined) {
-            obj['_double'] = pojo['_double']
+            obj['_double'] = pojo['_double']!
         }
         if (pojo['direct'] !== undefined) {
-            obj['direct'] = pojo['direct']
+            obj['direct'] = pojo['direct']!
         }
         if (pojo['readOnly'] !== undefined) {
-            obj['readOnly'] = pojo['readOnly']
+            obj['readOnly'] = pojo['readOnly']!
         }
         return new InlineResponse403(obj)
     }

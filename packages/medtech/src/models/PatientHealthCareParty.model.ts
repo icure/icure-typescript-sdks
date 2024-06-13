@@ -17,32 +17,32 @@ import { mapTo, PatientHealthCarePartyDto } from '@icure/typescript-common'
  */
 @mapTo(PatientHealthCarePartyDto)
 export class PatientHealthCareParty {
-    constructor(json: IPatientHealthCareParty) {
+    constructor(json: Partial<IPatientHealthCareParty>) {
         Object.assign(this as PatientHealthCareParty, json as IPatientHealthCareParty)
     }
 
     'type': PatientHealthCarePartyTypeEnum
     'healthcarePartyId'?: string
 
-    static toJSON(instance: PatientHealthCareParty): any {
-        const pojo: any = {}
+    static toJSON(instance: PatientHealthCareParty): IPatientHealthCareParty {
+        const pojo: IPatientHealthCareParty = {} as IPatientHealthCareParty
         pojo['type'] = instance.type
         if (instance.healthcarePartyId !== undefined) pojo['healthcarePartyId'] = instance.healthcarePartyId
         return pojo
     }
 
-    static fromJSON(pojo: any): PatientHealthCareParty {
+    static fromJSON(pojo: IPatientHealthCareParty): PatientHealthCareParty {
         const obj = {} as IPatientHealthCareParty
         obj['type'] = pojo['type']
         if (pojo['healthcarePartyId'] !== undefined) {
-            obj['healthcarePartyId'] = pojo['healthcarePartyId']
+            obj['healthcarePartyId'] = pojo['healthcarePartyId']!
         }
         return new PatientHealthCareParty(obj)
     }
 }
 
 interface IPatientHealthCareParty {
-    type?: PatientHealthCarePartyTypeEnum
+    type: PatientHealthCarePartyTypeEnum
     healthcarePartyId?: string
 }
 

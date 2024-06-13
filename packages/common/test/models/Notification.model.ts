@@ -10,12 +10,12 @@ export function generateNotification(): Notification {
     const status = ['pending', 'ongoing', 'cancelled', 'completed'][Math.floor(Math.random() * 4)] as NotificationStatusEnum
     const created = Date.now()
     const modified = Date.now()
-    const endOfLife = null
-    const deletionDate = null
+    const endOfLife = undefined
+    const deletionDate = undefined
     const author = 'testAuthor'
     const responsible = 'testResponsible'
     const identifiers = [generateIdentifier(), generateIdentifier()]
-    const properties = new Set([generateProperty(), generateProperty(), generateProperty()])
+    const properties = [generateProperty(), generateProperty(), generateProperty()]
     const type = ['KEY_PAIR_UPDATE', 'NEW_USER_OWN_DATA_ACCESS', 'OTHER'][Math.floor(Math.random() * 3)] as NotificationTypeEnum
     const systemMetaData = generateSystemMetaDataEncrypted()
 

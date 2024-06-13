@@ -7,29 +7,29 @@ export class PropertyType {
     identifier: string
     type?: TypeEnum
 
-    constructor(propertyType: IPropertyType) {
+    constructor(propertyType: Partial<IPropertyType>) {
         this.identifier = propertyType.identifier!
         this.type = propertyType.type
     }
 
-    static toJSON(instance: PropertyType): any {
-        const pojo: any = {}
+    static toJSON(instance: PropertyType): IPropertyType {
+        const pojo: IPropertyType = {} as IPropertyType
         pojo['identifier'] = instance.identifier
         if (instance.type !== undefined) pojo['type'] = instance.type
         return pojo
     }
 
-    static fromJSON(pojo: any): PropertyType {
+    static fromJSON(pojo: IPropertyType): PropertyType {
         const obj = {} as IPropertyType
         obj['identifier'] = pojo['identifier']
         if (pojo['type'] !== undefined) {
-            obj['type'] = pojo['type']
+            obj['type'] = pojo['type']!
         }
         return new PropertyType(obj)
     }
 }
 
 interface IPropertyType {
-    identifier?: string
+    identifier: string
     type?: TypeEnum
 }

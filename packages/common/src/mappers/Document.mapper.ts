@@ -200,8 +200,8 @@ function toDocumentVersion(dto: DocumentDto): string | undefined {
     return dto.version
 }
 
-function toDocumentOtherUtis(dto: DocumentDto): Set<string> {
-    return new Set(dto.otherUtis)
+function toDocumentOtherUtis(dto: DocumentDto): Array<string> {
+    return dto.otherUtis ?? []
 }
 
 function toDocumentExternalUuid(dto: DocumentDto): string | undefined {

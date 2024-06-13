@@ -7,11 +7,11 @@ export function generateSecurityMetadata(): SecurityMetadata {
     const secureDelegation2: SecureDelegation = generateSecureDelegation()
 
     const securityMetadata = {
-        secureDelegations: new Map([
+        secureDelegations: Object.fromEntries([
             ['publicKeyHash1', secureDelegation1],
             ['publicKeyHash2', secureDelegation2],
         ]),
-        keysEquivalences: new Map([
+        keysEquivalences: Object.fromEntries([
             ['publicKeyHash1', 'equivalence1'],
             ['publicKeyHash2', 'equivalence2'],
         ]),

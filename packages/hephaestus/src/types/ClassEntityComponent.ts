@@ -1,6 +1,9 @@
 import { ClassComponent } from './ClassComponent'
 
 export class ClassEntityComponent extends ClassComponent {
+    public notNullable(): ClassComponent {
+        return new ClassEntityComponent(this.name, false)
+    }
     readonly name: string
 
     constructor(name: string, nullable: boolean) {

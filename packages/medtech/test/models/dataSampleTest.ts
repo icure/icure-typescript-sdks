@@ -7,7 +7,7 @@ import { newIdentifier } from './identifierTest'
 import { newCodingReference } from './codingReferenceTest'
 import { newSystemMetaDataOwner } from './systemMetaDataOwnerTest'
 import { newSystemMetaDataEncrypted } from './systemMetaDataEncryptedTest'
-import { mapOf } from '@icure/typescript-common'
+import { recordOf } from '@icure/typescript-common'
 import { v4 } from 'uuid'
 
 export function newDataSample(makeContent = false): DataSample {
@@ -16,10 +16,10 @@ export function newDataSample(makeContent = false): DataSample {
         transactionId: 'transactionId',
         identifiers: [newIdentifier()],
         batchId: 'batchId',
-        healthcareElementIds: new Set('healthcareElementIds'),
-        canvasesIds: new Set('canvasesIds'),
+        healthcareElementIds: ['healthcareElementIds'],
+        canvasesIds: 'canvasesIds',
         index: 123,
-        content: makeContent ? mapOf({ en: newContent() }) : undefined,
+        content: makeContent ? recordOf({ en: newContent() }) : undefined,
         valueDate: 456,
         openingDate: 789,
         closingDate: 101112,
@@ -29,9 +29,9 @@ export function newDataSample(makeContent = false): DataSample {
         author: 'author',
         responsible: 'responsible',
         comment: 'comment',
-        qualifiedLinks: mapOf({ from: mapOf({ to: 'to' }) }),
-        codes: new Set([newCodingReference()]),
-        labels: new Set([newCodingReference()]),
+        qualifiedLinks: recordOf({ from: recordOf({ to: 'to' }) }),
+        codes: [newCodingReference()],
+        labels: [newCodingReference()],
         systemMetaData: newSystemMetaDataEncrypted(),
     })
 }

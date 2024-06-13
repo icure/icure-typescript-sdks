@@ -50,14 +50,14 @@ export class Notification {
     /**
      * Additional properties for the notification.
      */
-    'properties': Set<Property>
+    'properties': Array<Property>
     /**
      * The type of the notification.
      */
     'type'?: NotificationTypeEnum
     'systemMetaData'?: SystemMetaDataEncrypted
 
-    constructor(notification: INotification) {
+    constructor(notification: Partial<INotification>) {
         this.id = forceUuid(notification.id)
         this.rev = notification.rev
         this.status = notification.status
@@ -68,13 +68,13 @@ export class Notification {
         this.modified = notification.modified
         this.author = notification.author
         this.responsible = notification.responsible
-        this.properties = notification.properties ?? new Set()
+        this.properties = notification.properties ?? []
         this.type = notification.type
         this.systemMetaData = notification.systemMetaData
     }
 
-    static toJSON(instance: Notification): any {
-        const pojo: any = {}
+    static toJSON(instance: Notification): INotification {
+        const pojo: INotification = {} as INotification
         pojo['id'] = instance.id
         if (instance.rev !== undefined) pojo['rev'] = instance.rev
         if (instance.status !== undefined) pojo['status'] = instance.status
@@ -85,63 +85,63 @@ export class Notification {
         if (instance.modified !== undefined) pojo['modified'] = instance.modified
         if (instance.author !== undefined) pojo['author'] = instance.author
         if (instance.responsible !== undefined) pojo['responsible'] = instance.responsible
-        pojo['properties'] = Array.from([...instance.properties].map((item) => Property.toJSON(item)))
+        pojo['properties'] = instance.properties.map((item) => Property.toJSON(item))
         if (instance.type !== undefined) pojo['type'] = instance.type
-        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataEncrypted.toJSON(instance.systemMetaData) : undefined
+        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = SystemMetaDataEncrypted.toJSON(instance.systemMetaData)
         return pojo
     }
 
-    static fromJSON(pojo: any): Notification {
+    static fromJSON(pojo: INotification): Notification {
         const obj = {} as INotification
         obj['id'] = pojo['id']
         if (pojo['rev'] !== undefined) {
-            obj['rev'] = pojo['rev']
+            obj['rev'] = pojo['rev']!
         }
         if (pojo['status'] !== undefined) {
-            obj['status'] = pojo['status']
+            obj['status'] = pojo['status']!
         }
         if (pojo['created'] !== undefined) {
-            obj['created'] = pojo['created']
+            obj['created'] = pojo['created']!
         }
         if (pojo['endOfLife'] !== undefined) {
-            obj['endOfLife'] = pojo['endOfLife']
+            obj['endOfLife'] = pojo['endOfLife']!
         }
         if (pojo['deletionDate'] !== undefined) {
-            obj['deletionDate'] = pojo['deletionDate']
+            obj['deletionDate'] = pojo['deletionDate']!
         }
         obj['identifiers'] = pojo['identifiers'].map((item: any) => Identifier.fromJSON(item))
         if (pojo['modified'] !== undefined) {
-            obj['modified'] = pojo['modified']
+            obj['modified'] = pojo['modified']!
         }
         if (pojo['author'] !== undefined) {
-            obj['author'] = pojo['author']
+            obj['author'] = pojo['author']!
         }
         if (pojo['responsible'] !== undefined) {
-            obj['responsible'] = pojo['responsible']
+            obj['responsible'] = pojo['responsible']!
         }
-        obj['properties'] = new Set(pojo['properties'].map((item: any) => Property.fromJSON(item)))
+        obj['properties'] = pojo['properties'].map((item: any) => Property.fromJSON(item))
         if (pojo['type'] !== undefined) {
-            obj['type'] = pojo['type']
+            obj['type'] = pojo['type']!
         }
         if (pojo['systemMetaData'] !== undefined) {
-            obj['systemMetaData'] = !!pojo['systemMetaData'] ? SystemMetaDataEncrypted.fromJSON(pojo['systemMetaData']) : undefined
+            obj['systemMetaData'] = SystemMetaDataEncrypted.fromJSON(pojo['systemMetaData']!)
         }
         return new Notification(obj)
     }
 }
 
 export interface INotification {
-    id?: string
+    id: string
     rev?: string
     status?: NotificationStatusEnum
-    identifiers?: Array<Identifier>
+    identifiers: Array<Identifier>
     created?: number
     modified?: number
     endOfLife?: number
     deletionDate?: number
     author?: string
     responsible?: string
-    properties?: Set<Property>
+    properties: Array<Property>
     type?: NotificationTypeEnum
     systemMetaData?: SystemMetaDataEncrypted
 }

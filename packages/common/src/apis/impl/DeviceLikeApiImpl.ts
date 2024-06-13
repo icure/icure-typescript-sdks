@@ -13,13 +13,7 @@ import { CommonFilter } from '../../filters/filters'
 import { iccRestApiPath } from '@icure/api/icc-api/api/IccRestApiPath'
 
 export class DeviceLikeApiImpl<DSDevice> implements DeviceLikeApi<DSDevice> {
-    constructor(
-        private readonly mapper: Mapper<DSDevice, Device>,
-        private readonly errorHandler: ErrorHandler,
-        private readonly deviceApi: IccDeviceApi,
-        private readonly authApi: IccAuthApi,
-        private readonly basePath: string,
-    ) {}
+    constructor(private readonly mapper: Mapper<DSDevice, Device>, private readonly errorHandler: ErrorHandler, private readonly deviceApi: IccDeviceApi, private readonly authApi: IccAuthApi, private readonly basePath: string) {}
 
     async createOrModify(device: DSDevice): Promise<DSDevice> {
         const createdDevice = firstOrNull(await this.createOrModifyMany([device]))

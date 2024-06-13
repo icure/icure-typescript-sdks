@@ -31,7 +31,7 @@ function toCodeVersion(domain: Coding): string | undefined {
 }
 
 function toCodeLabel(domain: Coding): { [key: string]: string } | undefined {
-    return !!domain.description ? Object.fromEntries(domain.description.entries()) : undefined
+    return !!domain.description ? Object.fromEntries(Object.entries(domain.description)) : undefined
 }
 
 function toCodeAuthor(domain: Coding): string | undefined {
@@ -63,7 +63,7 @@ function toCodeFlags(domain: Coding): Code.FlagsEnum[] | undefined {
 }
 
 function toCodeSearchTerms(domain: Coding): { [key: string]: string[] } | undefined {
-    return Object.fromEntries([...domain.searchTerms.entries()].map(([k, v]) => [k, Array.from(v)]))
+    return Object.fromEntries(Object.entries(domain.searchTerms).map(([k, v]) => [k, v]))
 }
 
 function toCodeData(domain: Coding): string | undefined {
@@ -98,20 +98,20 @@ function toCodingVersion(dto: Code): string | undefined {
     return dto.version
 }
 
-function toCodingRegions(dto: Code): Set<string> {
-    return new Set(dto.regions ?? [])
+function toCodingRegions(dto: Code): Array<string> {
+    return dto.regions ?? []
 }
 
-function toCodingDescription(dto: Code): Map<string, string> | undefined {
-    return !!dto.label ? new Map(Object.entries(dto.label)) : undefined
+function toCodingDescription(dto: Code): Record<string, string> | undefined {
+    return !!dto.label ? { ...dto.label } : undefined
 }
 
-function toCodingQualifiedLinks(dto: Code): Map<string, string[]> {
-    return !!dto.qualifiedLinks ? convertObjectToMapOfArrayOfGeneric(dto.qualifiedLinks, (t) => t) : new Map()
+function toCodingQualifiedLinks(dto: Code): Record<string, string[]> {
+    return !!dto.qualifiedLinks ? convertObjectToMapOfArrayOfGeneric(dto.qualifiedLinks, (t) => t) : {}
 }
 
-function toCodingSearchTerms(dto: Code): Map<string, Set<string>> {
-    return !!dto.searchTerms ? new Map([...Object.entries(dto.searchTerms)].map(([k, v]) => [k, new Set(...v)])) : (new Map() as Map<string, Set<string>>)
+function toCodingSearchTerms(dto: Code): Record<string, Array<string>> {
+    return !!dto.searchTerms ? { ...dto.searchTerms } : ({} as Record<string, Array<string>>)
 }
 
 export function mapCodeToCoding(dto: Code): Coding {

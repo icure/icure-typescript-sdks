@@ -76,7 +76,8 @@ export class HealthElementLikeApiImpl<DSHealthElement, DSPatient> implements Hea
     }
 
     async delete(id: string): Promise<string> {
-        const deletedHeRev = (await this.heApi.deleteHealthElement(id).catch((e) => {
+        const deletedHeRev = (
+            await this.heApi.deleteHealthElement(id).catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
             })
         )?.rev

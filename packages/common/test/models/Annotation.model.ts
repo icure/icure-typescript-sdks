@@ -6,14 +6,14 @@ import { v4 } from 'uuid'
 export function generateAnnotation(): Annotation {
     const annotation = {
         id: v4(),
-        tags: new Set([generateCodingReference(), generateCodingReference()]),
+        tags: [generateCodingReference(), generateCodingReference()],
         author: 'sampleAuthor',
         created: 1234567890,
         modified: 1234567890,
-        markdown: new Map<ISO639_1, string>([
+        markdown: Object.fromEntries([
             ['en', 'English Markdown'],
             ['fr', 'French Markdown'],
-        ]),
+        ]) as Record<ISO639_1, string>,
         target: 'sampleTarget',
         confidential: true,
         encryptedSelf: 'sampleEncryptedSelf',

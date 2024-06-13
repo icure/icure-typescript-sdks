@@ -2,7 +2,7 @@ import 'mocha'
 
 import { Coding } from '../..'
 import { assert } from 'chai'
-import { mapOf } from '@icure/typescript-common'
+import { recordOf } from '@icure/typescript-common'
 
 export function newCoding(): Coding {
     return new Coding({
@@ -11,10 +11,10 @@ export function newCoding(): Coding {
         type: 'type',
         code: 'code',
         version: 'version',
-        searchTerms: mapOf({
-            en: new Set('test'),
+        searchTerms: recordOf({
+            en: ['test'],
         }),
-        qualifiedLinks: mapOf({
+        qualifiedLinks: recordOf({
             from: ['to'],
         }),
     })

@@ -79,10 +79,7 @@ interface BasePatientFilterBuilder<F> {
 class PatientFilterWithDataOwner extends SortableFilterBuilder<Patient, PatientFilterSortStepDecorator> implements BasePatientFilterBuilder<PatientFilterWithDataOwner>, FilterBuilder<Patient> {
     _dataOwnerId: Promise<string>
 
-    constructor(
-        private api: CommonApi,
-        dataOwnerId?: string,
-    ) {
+    constructor(private api: CommonApi, dataOwnerId?: string) {
         super()
         this._dataOwnerId = !!dataOwnerId ? Promise.resolve(dataOwnerId) : api.baseApi.userApi.getCurrentUser().then((u) => api.baseApi.dataOwnerApi.getDataOwnerIdOf(u))
     }

@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 
-import { Annotation, CodingReference, Identifier, PatientDto, Property, SystemMetaDataOwnerEncrypted, b64_2ab, mapTo, ua2b64 } from '@icure/typescript-common'
+import { Annotation, CodingReference, Identifier, PatientDto, Property, SystemMetaDataOwnerEncrypted, b64_2ab, base64string, mapTo } from '@icure/typescript-common'
 import { Address } from './Address.model'
 import { HealthcareProfessionalGenderEnum } from './HealthcareProfessional.model'
 import { Partnership } from './Partnership.model'
@@ -26,8 +26,8 @@ export class Patient {
     'modified'?: number
     'author'?: string
     'responsible'?: string
-    'labels': Set<CodingReference>
-    'codes': Set<CodingReference>
+    'labels': Array<CodingReference>
+    'codes': Array<CodingReference>
     'endOfLife'?: number
     'deletionDate'?: number
     'firstName'?: string
@@ -40,7 +40,7 @@ export class Patient {
     'gender'?: PatientGenderEnum
     'birthSex'?: PatientBirthSexEnum
     'mergeToPatientId'?: string
-    'mergedIds': Set<string>
+    'mergedIds': Array<string>
     'alias'?: string
     'active': boolean
     deactivationDate?: number
@@ -63,47 +63,47 @@ export class Patient {
     'nationality'?: string
     'race'?: string
     'ethnicity'?: string
-    'picture'?: ArrayBuffer
+    'picture'?: base64string
     'externalId'?: string
     'partnerships': Partnership[]
     'patientHealthCareParties': PatientHealthCareParty[]
     'patientProfessions': CodingReference[]
-    'parameters': Map<string, string[]>
-    'properties': Set<Property>
+    'parameters': Record<string, string[]>
+    'properties': Array<Property>
     'systemMetaData'?: SystemMetaDataOwnerEncrypted
 
-    constructor(json: IPatient) {
+    constructor(json: Partial<IPatient>) {
         const { identifiers, labels, codes, names, addresses, gender, birthSex, mergedIds, deactivationReason, personalStatus, picture, partnerships, patientHealthCareParties, patientProfessions, properties, systemMetaData, notes, ...simpleProperties } = json
 
         Object.assign(this as Patient, simpleProperties as IPatient)
 
         this.identifiers = identifiers ? [...identifiers]?.map((p) => new Identifier(p)) : []
 
-        this.labels = labels ? new Set([...labels].map((it) => new CodingReference(it))) : new Set()
-        this.codes = codes ? new Set([...codes].map((it) => new CodingReference(it))) : new Set()
+        this.labels = labels ? [...labels].map((it) => new CodingReference(it)) : []
+        this.codes = codes ? [...codes].map((it) => new CodingReference(it)) : []
         this.notes = notes ? [...notes]?.map((it) => new Annotation(it)) : []
 
         this.names = names?.map((n) => new PersonName(n)) ?? []
         this.addresses = addresses?.map((a) => new Address(a)) ?? []
         this.gender = gender as HealthcareProfessionalGenderEnum
         this.birthSex = birthSex as HealthcareProfessionalGenderEnum
-        this.mergedIds = mergedIds ? new Set([...mergedIds]) : new Set()
+        this.mergedIds = mergedIds ? [...mergedIds] : []
         this.deactivationReason = deactivationReason as PatientDeactivationReasonEnum
         this.personalStatus = personalStatus as PatientPersonalStatusEnum
 
-        this.picture = !picture ? undefined : (picture as unknown) instanceof ArrayBuffer ? picture : typeof (picture as unknown) === 'string' ? b64_2ab(picture as unknown as string) : undefined
+        this.picture = picture
 
         this.partnerships = partnerships ? [...partnerships]?.map((p) => new Partnership(p)) : []
         this.patientHealthCareParties = patientHealthCareParties ? [...patientHealthCareParties]?.map((p) => new PatientHealthCareParty(p)) : []
         this.patientProfessions = patientProfessions ? [...patientProfessions]?.map((p) => new CodingReference(p)) : []
 
-        this.properties = properties ? new Set([...properties]?.map((p) => new Property(p))) : new Set()
+        this.properties = properties ? [...properties]?.map((p) => new Property(p)) : []
 
         this.systemMetaData = systemMetaData && new SystemMetaDataOwnerEncrypted(systemMetaData)
     }
 
-    static toJSON(instance: Patient): any {
-        const pojo: any = {}
+    static toJSON(instance: Patient): IPatient {
+        const pojo: IPatient = {} as IPatient
         pojo['id'] = instance.id
         if (instance.rev !== undefined) pojo['rev'] = instance.rev
         pojo['identifiers'] = instance.identifiers.map((item) => Identifier.toJSON(item))
@@ -111,8 +111,8 @@ export class Patient {
         if (instance.modified !== undefined) pojo['modified'] = instance.modified
         if (instance.author !== undefined) pojo['author'] = instance.author
         if (instance.responsible !== undefined) pojo['responsible'] = instance.responsible
-        pojo['labels'] = Array.from([...instance.labels].map((item) => CodingReference.toJSON(item)))
-        pojo['codes'] = Array.from([...instance.codes].map((item) => CodingReference.toJSON(item)))
+        pojo['labels'] = instance.labels.map((item) => CodingReference.toJSON(item))
+        pojo['codes'] = instance.codes.map((item) => CodingReference.toJSON(item))
         if (instance.endOfLife !== undefined) pojo['endOfLife'] = instance.endOfLife
         if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
         if (instance.firstName !== undefined) pojo['firstName'] = instance.firstName
@@ -125,7 +125,7 @@ export class Patient {
         if (instance.gender !== undefined) pojo['gender'] = instance.gender
         if (instance.birthSex !== undefined) pojo['birthSex'] = instance.birthSex
         if (instance.mergeToPatientId !== undefined) pojo['mergeToPatientId'] = instance.mergeToPatientId
-        pojo['mergedIds'] = Array.from([...instance.mergedIds].map((item) => item))
+        pojo['mergedIds'] = instance.mergedIds.map((item) => item)
         if (instance.alias !== undefined) pojo['alias'] = instance.alias
         pojo['active'] = instance.active
         if (instance.deactivationDate !== undefined) pojo['deactivationDate'] = instance.deactivationDate
@@ -148,142 +148,142 @@ export class Patient {
         if (instance.nationality !== undefined) pojo['nationality'] = instance.nationality
         if (instance.race !== undefined) pojo['race'] = instance.race
         if (instance.ethnicity !== undefined) pojo['ethnicity'] = instance.ethnicity
-        if (instance.picture !== undefined) pojo['picture'] = !!instance.picture ? ua2b64(instance.picture) : undefined
+        if (instance.picture !== undefined) pojo['picture'] = instance.picture
         if (instance.externalId !== undefined) pojo['externalId'] = instance.externalId
         pojo['partnerships'] = instance.partnerships.map((item) => Partnership.toJSON(item))
         pojo['patientHealthCareParties'] = instance.patientHealthCareParties.map((item) => PatientHealthCareParty.toJSON(item))
         pojo['patientProfessions'] = instance.patientProfessions.map((item) => CodingReference.toJSON(item))
-        pojo['parameters'] = Object.fromEntries([...instance.parameters.entries()].map(([k, v]) => [k, v.map((item) => item)]))
-        pojo['properties'] = Array.from([...instance.properties].map((item) => Property.toJSON(item)))
-        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataOwnerEncrypted.toJSON(instance.systemMetaData) : undefined
+        pojo['parameters'] = { ...instance.parameters }
+        pojo['properties'] = instance.properties.map((item) => Property.toJSON(item))
+        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = SystemMetaDataOwnerEncrypted.toJSON(instance.systemMetaData)
         return pojo
     }
 
-    static fromJSON(pojo: any): Patient {
+    static fromJSON(pojo: IPatient): Patient {
         const obj = {} as IPatient
         obj['id'] = pojo['id']
         if (pojo['rev'] !== undefined) {
-            obj['rev'] = pojo['rev']
+            obj['rev'] = pojo['rev']!
         }
         obj['identifiers'] = pojo['identifiers'].map((item: any) => Identifier.fromJSON(item))
         if (pojo['created'] !== undefined) {
-            obj['created'] = pojo['created']
+            obj['created'] = pojo['created']!
         }
         if (pojo['modified'] !== undefined) {
-            obj['modified'] = pojo['modified']
+            obj['modified'] = pojo['modified']!
         }
         if (pojo['author'] !== undefined) {
-            obj['author'] = pojo['author']
+            obj['author'] = pojo['author']!
         }
         if (pojo['responsible'] !== undefined) {
-            obj['responsible'] = pojo['responsible']
+            obj['responsible'] = pojo['responsible']!
         }
-        obj['labels'] = new Set(pojo['labels'].map((item: any) => CodingReference.fromJSON(item)))
-        obj['codes'] = new Set(pojo['codes'].map((item: any) => CodingReference.fromJSON(item)))
+        obj['labels'] = pojo['labels'].map((item: any) => CodingReference.fromJSON(item))
+        obj['codes'] = pojo['codes'].map((item: any) => CodingReference.fromJSON(item))
         if (pojo['endOfLife'] !== undefined) {
-            obj['endOfLife'] = pojo['endOfLife']
+            obj['endOfLife'] = pojo['endOfLife']!
         }
         if (pojo['deletionDate'] !== undefined) {
-            obj['deletionDate'] = pojo['deletionDate']
+            obj['deletionDate'] = pojo['deletionDate']!
         }
         if (pojo['firstName'] !== undefined) {
-            obj['firstName'] = pojo['firstName']
+            obj['firstName'] = pojo['firstName']!
         }
         if (pojo['lastName'] !== undefined) {
-            obj['lastName'] = pojo['lastName']
+            obj['lastName'] = pojo['lastName']!
         }
         obj['names'] = pojo['names'].map((item: any) => PersonName.fromJSON(item))
         if (pojo['companyName'] !== undefined) {
-            obj['companyName'] = pojo['companyName']
+            obj['companyName'] = pojo['companyName']!
         }
         obj['languages'] = pojo['languages'].map((item: any) => item)
         obj['addresses'] = pojo['addresses'].map((item: any) => Address.fromJSON(item))
         if (pojo['civility'] !== undefined) {
-            obj['civility'] = pojo['civility']
+            obj['civility'] = pojo['civility']!
         }
         if (pojo['gender'] !== undefined) {
-            obj['gender'] = pojo['gender']
+            obj['gender'] = pojo['gender']!
         }
         if (pojo['birthSex'] !== undefined) {
-            obj['birthSex'] = pojo['birthSex']
+            obj['birthSex'] = pojo['birthSex']!
         }
         if (pojo['mergeToPatientId'] !== undefined) {
-            obj['mergeToPatientId'] = pojo['mergeToPatientId']
+            obj['mergeToPatientId'] = pojo['mergeToPatientId']!
         }
-        obj['mergedIds'] = new Set(pojo['mergedIds'].map((item: any) => item))
+        obj['mergedIds'] = pojo['mergedIds'].map((item: any) => item)
         if (pojo['alias'] !== undefined) {
-            obj['alias'] = pojo['alias']
+            obj['alias'] = pojo['alias']!
         }
         obj['active'] = pojo['active']
         if (pojo['deactivationDate'] !== undefined) {
-            obj['deactivationDate'] = pojo['deactivationDate']
+            obj['deactivationDate'] = pojo['deactivationDate']!
         }
         obj['deactivationReason'] = pojo['deactivationReason']
         if (pojo['ssin'] !== undefined) {
-            obj['ssin'] = pojo['ssin']
+            obj['ssin'] = pojo['ssin']!
         }
         if (pojo['maidenName'] !== undefined) {
-            obj['maidenName'] = pojo['maidenName']
+            obj['maidenName'] = pojo['maidenName']!
         }
         if (pojo['spouseName'] !== undefined) {
-            obj['spouseName'] = pojo['spouseName']
+            obj['spouseName'] = pojo['spouseName']!
         }
         if (pojo['partnerName'] !== undefined) {
-            obj['partnerName'] = pojo['partnerName']
+            obj['partnerName'] = pojo['partnerName']!
         }
         if (pojo['personalStatus'] !== undefined) {
-            obj['personalStatus'] = pojo['personalStatus']
+            obj['personalStatus'] = pojo['personalStatus']!
         }
         if (pojo['dateOfBirth'] !== undefined) {
-            obj['dateOfBirth'] = pojo['dateOfBirth']
+            obj['dateOfBirth'] = pojo['dateOfBirth']!
         }
         if (pojo['dateOfDeath'] !== undefined) {
-            obj['dateOfDeath'] = pojo['dateOfDeath']
+            obj['dateOfDeath'] = pojo['dateOfDeath']!
         }
         if (pojo['placeOfBirth'] !== undefined) {
-            obj['placeOfBirth'] = pojo['placeOfBirth']
+            obj['placeOfBirth'] = pojo['placeOfBirth']!
         }
         if (pojo['placeOfDeath'] !== undefined) {
-            obj['placeOfDeath'] = pojo['placeOfDeath']
+            obj['placeOfDeath'] = pojo['placeOfDeath']!
         }
         if (pojo['deceased'] !== undefined) {
-            obj['deceased'] = pojo['deceased']
+            obj['deceased'] = pojo['deceased']!
         }
         if (pojo['education'] !== undefined) {
-            obj['education'] = pojo['education']
+            obj['education'] = pojo['education']!
         }
         if (pojo['profession'] !== undefined) {
-            obj['profession'] = pojo['profession']
+            obj['profession'] = pojo['profession']!
         }
         if (pojo['note'] !== undefined) {
-            obj['note'] = pojo['note']
+            obj['note'] = pojo['note']!
         }
         obj['notes'] = pojo['notes'].map((item: any) => Annotation.fromJSON(item))
         if (pojo['administrativeNote'] !== undefined) {
-            obj['administrativeNote'] = pojo['administrativeNote']
+            obj['administrativeNote'] = pojo['administrativeNote']!
         }
         if (pojo['nationality'] !== undefined) {
-            obj['nationality'] = pojo['nationality']
+            obj['nationality'] = pojo['nationality']!
         }
         if (pojo['race'] !== undefined) {
-            obj['race'] = pojo['race']
+            obj['race'] = pojo['race']!
         }
         if (pojo['ethnicity'] !== undefined) {
-            obj['ethnicity'] = pojo['ethnicity']
+            obj['ethnicity'] = pojo['ethnicity']!
         }
         if (pojo['picture'] !== undefined) {
-            obj['picture'] = !!pojo['picture'] ? b64_2ab(pojo['picture']) : undefined
+            obj['picture'] = pojo['picture']!
         }
         if (pojo['externalId'] !== undefined) {
-            obj['externalId'] = pojo['externalId']
+            obj['externalId'] = pojo['externalId']!
         }
         obj['partnerships'] = pojo['partnerships'].map((item: any) => Partnership.fromJSON(item))
         obj['patientHealthCareParties'] = pojo['patientHealthCareParties'].map((item: any) => PatientHealthCareParty.fromJSON(item))
         obj['patientProfessions'] = pojo['patientProfessions'].map((item: any) => CodingReference.fromJSON(item))
-        obj['parameters'] = new Map(Object.entries(pojo['parameters']).map(([k, v]: [any, any]) => [k, v.map((item: any) => item)]))
-        obj['properties'] = new Set(pojo['properties'].map((item: any) => Property.fromJSON(item)))
+        obj['parameters'] = { ...pojo['parameters'] }
+        obj['properties'] = pojo['properties'].map((item: any) => Property.fromJSON(item))
         if (pojo['systemMetaData'] !== undefined) {
-            obj['systemMetaData'] = !!pojo['systemMetaData'] ? SystemMetaDataOwnerEncrypted.fromJSON(pojo['systemMetaData']) : undefined
+            obj['systemMetaData'] = SystemMetaDataOwnerEncrypted.fromJSON(pojo['systemMetaData']!)
         }
         return new Patient(obj)
     }
@@ -292,26 +292,26 @@ export class Patient {
 interface IPatient {
     id?: string
     rev?: string
-    identifiers?: Array<Identifier>
+    identifiers: Array<Identifier>
     created?: number
     modified?: number
     author?: string
     responsible?: string
-    labels?: Set<CodingReference>
-    codes?: Set<CodingReference>
+    labels: Array<CodingReference>
+    codes: Array<CodingReference>
     endOfLife?: number
     deletionDate?: number
     firstName?: string
     lastName?: string
-    names?: Array<PersonName>
+    names: Array<PersonName>
     companyName?: string
-    languages?: Array<string>
-    addresses?: Array<Address>
+    languages: Array<string>
+    addresses: Array<Address>
     civility?: string
     gender?: PatientGenderEnum
     birthSex?: PatientBirthSexEnum
     mergeToPatientId?: string
-    mergedIds?: Set<string>
+    mergedIds: Array<string>
     alias?: string
     active?: boolean
     deactivationDate?: number
@@ -329,18 +329,18 @@ interface IPatient {
     education?: string
     profession?: string
     note?: string
-    notes?: Annotation[]
+    notes: Annotation[]
     administrativeNote?: string
     nationality?: string
     race?: string
     ethnicity?: string
-    picture?: ArrayBuffer
+    picture?: base64string
     externalId?: string
-    partnerships?: Array<Partnership>
-    patientHealthCareParties?: Array<PatientHealthCareParty>
-    patientProfessions?: Array<CodingReference>
-    parameters?: Map<string, string[]>
-    properties?: Set<Property>
+    partnerships: Array<Partnership>
+    patientHealthCareParties: Array<PatientHealthCareParty>
+    patientProfessions: Array<CodingReference>
+    parameters?: Record<string, string[]>
+    properties: Array<Property>
     systemMetaData?: SystemMetaDataOwnerEncrypted
 }
 

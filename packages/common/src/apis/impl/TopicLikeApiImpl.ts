@@ -93,10 +93,10 @@ export class TopicLikeApiImpl<DSTopic, DSHcp, DSPatient, DSService, DSHealthElem
         participants: { participant: Reference<DSHcp>; role: TopicRole }[],
         description?: string,
         patient?: Reference<DSPatient>,
-        healthElements?: Set<Reference<DSHealthElement>>,
-        services?: Set<Reference<DSService>>,
-        tags?: Set<CodingReference>,
-        codes?: Set<CodingReference>,
+        healthElements?: Array<Reference<DSHealthElement>>,
+        services?: Array<Reference<DSService>>,
+        tags?: Array<CodingReference>,
+        codes?: Array<CodingReference>,
     ): Promise<DSTopic> {
         const currentUser = await this.userApi.getCurrentUser()
         const dataOwnerId = this.dataOwnerApi.getDataOwnerIdOf(currentUser)
@@ -225,7 +225,7 @@ export class TopicLikeApiImpl<DSTopic, DSHcp, DSPatient, DSService, DSHealthElem
         return await this.topicApi.subscribeToTopicEvents(eventTypes, FilterMapper.toAbstractFilterDto(filter, 'Topic'), async (topic) => await eventFired(this.topicMapper.toDomain(topic)), options)
     }
 
-    private getRefIds(references: Set<Reference<any>> | Reference<any>[], mapToAndGetId: (value: any) => string): string[] {
+    private getRefIds(references: Array<Reference<any>> | Reference<any>[], mapToAndGetId: (value: any) => string): string[] {
         return [...(references ?? [])].map((reference) => (typeof reference === 'string' ? reference : mapToAndGetId(reference)))
     }
 }

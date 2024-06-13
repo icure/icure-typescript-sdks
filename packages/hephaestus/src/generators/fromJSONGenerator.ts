@@ -10,7 +10,7 @@ export function fromJSONGenerator(classDeclaration: ClassDeclaration, bundle: Cl
         name: 'fromJSON',
         isStatic: true,
         isAbstract: false,
-        parameters: [{ name: 'pojo', type: 'any' }],
+        parameters: [{ name: 'pojo', type: `I${classDeclaration.getName()}` }],
         returnType: classDeclaration.getName(),
         statements: (writer) => {
             // write the method body

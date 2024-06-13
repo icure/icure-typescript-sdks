@@ -38,8 +38,8 @@ function toHumanNameFamily(dto: PersonNameDto): string | undefined {
     return dto.lastName
 }
 
-function toHumanNameGiven(dto: PersonNameDto): string[] | undefined {
-    return dto.firstNames
+function toHumanNameGiven(dto: PersonNameDto): string[] {
+    return dto.firstNames ?? []
 }
 
 function toHumanNameStart(dto: PersonNameDto): number | undefined {
@@ -50,12 +50,12 @@ function toHumanNameEnd(dto: PersonNameDto): number | undefined {
     return dto.end
 }
 
-function toHumanNamePrefix(dto: PersonNameDto): string[] | undefined {
-    return dto.prefix
+function toHumanNamePrefix(dto: PersonNameDto): string[] {
+    return dto.prefix ?? []
 }
 
-function toHumanNameSuffix(dto: PersonNameDto): string[] | undefined {
-    return dto.suffix
+function toHumanNameSuffix(dto: PersonNameDto): string[] {
+    return dto.suffix ?? []
 }
 
 function toHumanNameText(dto: PersonNameDto): string | undefined {

@@ -18,7 +18,7 @@ import { mapTo } from '../utils/decorators'
  */
 @mapTo(TimeSeriesDto)
 export class TimeSeries {
-    constructor(json: ITimeSeries) {
+    constructor(json: Partial<ITimeSeries>) {
         Object.assign(this as TimeSeries, json)
     }
 
@@ -30,8 +30,8 @@ export class TimeSeries {
     'median': Array<number>
     'variance': Array<number>
 
-    static toJSON(instance: TimeSeries): any {
-        const pojo: any = {}
+    static toJSON(instance: TimeSeries): ITimeSeries {
+        const pojo: ITimeSeries = {} as ITimeSeries
         pojo['fields'] = instance.fields.map((item) => item)
         pojo['samples'] = instance.samples.map((item) => item.map((item) => item))
         pojo['min'] = instance.min.map((item) => item)
@@ -42,7 +42,7 @@ export class TimeSeries {
         return pojo
     }
 
-    static fromJSON(pojo: any): TimeSeries {
+    static fromJSON(pojo: ITimeSeries): TimeSeries {
         const obj = {} as ITimeSeries
         obj['fields'] = pojo['fields'].map((item: any) => item)
         obj['samples'] = pojo['samples'].map((item: any) => item.map((item: any) => item))
@@ -56,11 +56,11 @@ export class TimeSeries {
 }
 
 interface ITimeSeries {
-    fields?: Array<string>
-    samples?: Array<Array<number>>
-    min?: Array<number>
-    max?: Array<number>
-    mean?: Array<number>
-    median?: Array<number>
-    variance?: Array<number>
+    fields: Array<string>
+    samples: Array<Array<number>>
+    min: Array<number>
+    max: Array<number>
+    mean: Array<number>
+    median: Array<number>
+    variance: Array<number>
 }

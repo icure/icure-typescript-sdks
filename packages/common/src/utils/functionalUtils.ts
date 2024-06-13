@@ -1,10 +1,10 @@
-export function distinctBy<T, K>(elements: Array<T>, selector: (obj: T) => K): Set<K> {
+export function distinctBy<T, K>(elements: Array<T>, selector: (obj: T) => K): Array<K> {
     let set = new Set<K>()
     elements.forEach((elem) => {
         let newElem = selector(elem)
         set.add(newElem)
     })
-    return set
+    return Array.from(set)
 }
 
 export function any<T>(elements: Array<T>, check: (obj: T) => boolean): boolean {

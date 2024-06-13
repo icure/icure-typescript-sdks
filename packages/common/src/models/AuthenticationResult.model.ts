@@ -4,7 +4,7 @@ import { CommonApi } from '../apis/CommonApi'
 
 @ignoreSerialization
 export class AuthenticationResult<DSApi extends CommonApi> {
-    constructor(json: IAuthenticationResult<DSApi>) {
+    constructor(json: Partial<IAuthenticationResult<DSApi>>) {
         Object.assign(this as AuthenticationResult<DSApi>, json)
     }
 
@@ -21,9 +21,9 @@ export class AuthenticationResult<DSApi extends CommonApi> {
 }
 
 interface IAuthenticationResult<DSApi> {
-    api?: DSApi
-    keyPairs?: { privateKey: string; publicKey: string }[]
-    token?: string
-    groupId?: string
-    userId?: string
+    api: DSApi
+    keyPairs: { privateKey: string; publicKey: string }[]
+    token: string
+    groupId: string
+    userId: string
 }

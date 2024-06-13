@@ -3,7 +3,7 @@ import { v4 as uuid } from 'uuid'
 import { MaintenanceTask } from '@icure/api/icc-api/model/MaintenanceTask'
 import { assert } from 'chai'
 import { Identifier } from '@icure/api'
-import { Property, Delegation, Notification, SystemMetaDataEncrypted, mapMaintenanceTaskToNotification, NotificationTypeEnum, mapOf, mapNotificationToMaintenanceTask } from '@icure/typescript-common'
+import { Property, Delegation, Notification, SystemMetaDataEncrypted, mapMaintenanceTaskToNotification, NotificationTypeEnum, recordOf, mapNotificationToMaintenanceTask } from '@icure/typescript-common'
 
 function identifierEquality(identifier1: Identifier, identifier2: Identifier) {
     return identifier1.id === identifier2.id
@@ -28,7 +28,7 @@ function arrayEquality(arr1: any[], arr2: any[], equals: (arg0: any, arg1: any) 
 function metadataEquality(obj1: any, obj2: any) {
     let areEquals = !!obj1 && !!obj2
     Object.keys(obj1).forEach((key) => {
-        areEquals = areEquals && key in obj2 && arrayEquality(Array.from(obj1[key]), Array.from(obj1[key]), delegationEquality)
+        areEquals = areEquals && key in obj2 && arrayEquality(obj1[key], obj1[key], delegationEquality)
     })
     return areEquals
 }
@@ -44,7 +44,7 @@ function assertNotificationIsEquivalentToMaintenanceTask(notification: Notificat
     assert(notification.endOfLife === maintenanceTask.endOfLife)
     assert(notification.author === maintenanceTask.author)
     assert(notification.responsible === maintenanceTask.responsible)
-    assert(arrayEquality(!!notification.properties ? Array.from(notification.properties) : [], !!maintenanceTask.properties ? maintenanceTask.properties : [], propertyEquality))
+    assert(arrayEquality(!!notification.properties ? notification.properties : [], !!maintenanceTask.properties ? maintenanceTask.properties : [], propertyEquality))
     assert(notification.type === maintenanceTask.taskType)
     assert(metadataEquality(notification.systemMetaData?.delegations, maintenanceTask.delegations))
     assert(metadataEquality(notification.systemMetaData?.encryptionKeys, maintenanceTask.encryptionKeys))
@@ -68,11 +68,11 @@ describe('Notification mapper test', () => {
     it('Notification to MaintenanceTask - Success', () => {
         const newNotification = new Notification({
             ...commonOptions,
-            properties: new Set(commonOptions.properties),
+            properties: commonOptions.properties,
             type: NotificationTypeEnum.KeyPairUpdate,
             systemMetaData: new SystemMetaDataEncrypted({
-                delegations: mapOf({ TEST_ID: new Set([new Delegation({ owner: uuid(), delegatedTo: uuid() })]) }),
-                encryptionKeys: mapOf({ TEST_KEY: new Set([new Delegation({ owner: uuid(), delegatedTo: uuid() })]) }),
+                delegations: recordOf({ TEST_ID: [new Delegation({ owner: uuid(), delegatedTo: uuid() })] }),
+                encryptionKeys: recordOf({ TEST_KEY: [new Delegation({ owner: uuid(), delegatedTo: uuid() })] }),
             }),
         })
         assert(newNotification)

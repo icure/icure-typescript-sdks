@@ -14,7 +14,7 @@ import { mapTo } from '../utils/decorators'
 
 @mapTo(DelegationDto)
 export class Delegation {
-    constructor(json: IDelegation) {
+    constructor(json: Partial<IDelegation>) {
         Object.assign(this as Delegation, json)
     }
 
@@ -22,24 +22,24 @@ export class Delegation {
     'delegatedTo'?: string
     'key'?: string
 
-    static toJSON(instance: Delegation): any {
-        const pojo: any = {}
+    static toJSON(instance: Delegation): IDelegation {
+        const pojo: IDelegation = {} as IDelegation
         if (instance.owner !== undefined) pojo['owner'] = instance.owner
         if (instance.delegatedTo !== undefined) pojo['delegatedTo'] = instance.delegatedTo
         if (instance.key !== undefined) pojo['key'] = instance.key
         return pojo
     }
 
-    static fromJSON(pojo: any): Delegation {
+    static fromJSON(pojo: IDelegation): Delegation {
         const obj = {} as IDelegation
         if (pojo['owner'] !== undefined) {
-            obj['owner'] = pojo['owner']
+            obj['owner'] = pojo['owner']!
         }
         if (pojo['delegatedTo'] !== undefined) {
-            obj['delegatedTo'] = pojo['delegatedTo']
+            obj['delegatedTo'] = pojo['delegatedTo']!
         }
         if (pojo['key'] !== undefined) {
-            obj['key'] = pojo['key']
+            obj['key'] = pojo['key']!
         }
         return new Delegation(obj)
     }

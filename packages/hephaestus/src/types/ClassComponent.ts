@@ -7,6 +7,7 @@ export abstract class ClassComponent {
         this.nullable = nullable
         this.children = children
     }
+    public abstract notNullable(): ClassComponent
     public abstract computeSerializer(value: string): string
     public abstract computeDeserializer(value: string): string
     public imports(sourceFile: SourceFile): ImportDeclaration[] {

@@ -12,7 +12,7 @@ export class TypedValueObject {
     dateValue?: number
     encryptedSelf?: string
 
-    constructor(typedValueObject?: ITypedValueObject | any) {
+    constructor(typedValueObject?: Partial<ITypedValueObject>) {
         this.type = typedValueObject?.type
         this.booleanValue = typedValueObject?.booleanValue
         this.integerValue = typedValueObject?.integerValue
@@ -22,8 +22,8 @@ export class TypedValueObject {
         this.encryptedSelf = typedValueObject?.encryptedSelf
     }
 
-    static toJSON(instance: TypedValueObject): any {
-        const pojo: any = {}
+    static toJSON(instance: TypedValueObject): ITypedValueObject {
+        const pojo: ITypedValueObject = {} as ITypedValueObject
         if (instance.type !== undefined) pojo['type'] = instance.type
         if (instance.booleanValue !== undefined) pojo['booleanValue'] = instance.booleanValue
         if (instance.integerValue !== undefined) pojo['integerValue'] = instance.integerValue
@@ -34,28 +34,28 @@ export class TypedValueObject {
         return pojo
     }
 
-    static fromJSON(pojo: any): TypedValueObject {
+    static fromJSON(pojo: ITypedValueObject): TypedValueObject {
         const obj = {} as ITypedValueObject
         if (pojo['type'] !== undefined) {
-            obj['type'] = pojo['type']
+            obj['type'] = pojo['type']!
         }
         if (pojo['booleanValue'] !== undefined) {
-            obj['booleanValue'] = pojo['booleanValue']
+            obj['booleanValue'] = pojo['booleanValue']!
         }
         if (pojo['integerValue'] !== undefined) {
-            obj['integerValue'] = pojo['integerValue']
+            obj['integerValue'] = pojo['integerValue']!
         }
         if (pojo['doubleValue'] !== undefined) {
-            obj['doubleValue'] = pojo['doubleValue']
+            obj['doubleValue'] = pojo['doubleValue']!
         }
         if (pojo['stringValue'] !== undefined) {
-            obj['stringValue'] = pojo['stringValue']
+            obj['stringValue'] = pojo['stringValue']!
         }
         if (pojo['dateValue'] !== undefined) {
-            obj['dateValue'] = pojo['dateValue']
+            obj['dateValue'] = pojo['dateValue']!
         }
         if (pojo['encryptedSelf'] !== undefined) {
-            obj['encryptedSelf'] = pojo['encryptedSelf']
+            obj['encryptedSelf'] = pojo['encryptedSelf']!
         }
         return new TypedValueObject(obj)
     }

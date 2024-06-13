@@ -194,12 +194,12 @@ function toHealthcareElementMedicalLocationId(dto: HealthElementDto): string | u
     return dto.medicalLocationId
 }
 
-function toHealthcareElementLabels(dto: HealthElementDto): Set<CodingReference> {
-    return new Set(dto.tags?.map(mapCodeStubToCodingReference) ?? [])
+function toHealthcareElementLabels(dto: HealthElementDto): Array<CodingReference> {
+    return dto.tags?.map(mapCodeStubToCodingReference) ?? []
 }
 
-function toHealthcareElementCodes(dto: HealthElementDto): Set<CodingReference> {
-    return new Set(dto.codes?.map(mapCodeStubToCodingReference) ?? [])
+function toHealthcareElementCodes(dto: HealthElementDto): Array<CodingReference> {
+    return dto.codes?.map(mapCodeStubToCodingReference) ?? []
 }
 
 function toHealthcareElementEndOfLife(dto: HealthElementDto): number | undefined {

@@ -97,8 +97,8 @@ function toServiceDtoIndex(domain: Observation): number | undefined {
 
 function toServiceDtoContent(domain: Observation): { [key: string]: ContentDto } | undefined {
     const nonLocalizedContent = !!domain.component ? mapComponentToContentDto(domain.component) : undefined
-    const localizedContentEntries: [ISO639_1, ContentDto][] = [...(domain.localContent?.entries() ?? [])]?.map(([key, value]) => {
-        return [key, mapLocalComponentToContentDto(value)]
+    const localizedContentEntries: [ISO639_1, ContentDto][] = Object.entries(domain.localContent ?? {})?.map(([key, value]) => {
+        return [key as ISO639_1, mapLocalComponentToContentDto(value)]
     })
 
     if (!nonLocalizedContent && localizedContentEntries.length === 0) {
@@ -250,24 +250,24 @@ function toObservationPerformer(dto: ServiceDto): string | undefined {
     return dto.responsible
 }
 
-function toObservationLocalContent(dto: ServiceDto): Map<ISO639_1, LocalComponent> | undefined {
+function toObservationLocalContent(dto: ServiceDto): Record<ISO639_1, LocalComponent> | undefined {
     const localizedContent = Object.entries(dto.content ?? {})?.filter(([key]) => key !== 'xx')
-    return new Map(
+    return Object.fromEntries(
         localizedContent.map(([key, value]) => {
-            return [key, mapContentDtoToLocalComponent(value)] as [ISO639_1, LocalComponent]
+            return [key as ISO639_1, mapContentDtoToLocalComponent(value)]
         }),
-    )
+    ) as Record<ISO639_1, LocalComponent>
 }
 
-function toObservationQualifiedLinks(dto: ServiceDto): Map<string, Map<string, string>> | undefined {
+function toObservationQualifiedLinks(dto: ServiceDto): Record<string, Record<string, string>> | undefined {
     return !!dto.qualifiedLinks ? convertObjectToNestedMap(dto.qualifiedLinks) : undefined
 }
 
-function toObservationCodes(dto: ServiceDto): Set<CodingReference> | undefined {
-    return !!dto.codes ? new Set(dto.codes.map(mapCodeStubToCodingReference)) : undefined
+function toObservationCodes(dto: ServiceDto): Array<CodingReference> | undefined {
+    return !!dto.codes ? dto.codes.map(mapCodeStubToCodingReference) : undefined
 }
 
-function toObservationTags(dto: ServiceDto): Set<CodingReference> | undefined {
+function toObservationTags(dto: ServiceDto): Array<CodingReference> | undefined {
     return filteringOutInternalTags('observation', dto.tags)
 }
 

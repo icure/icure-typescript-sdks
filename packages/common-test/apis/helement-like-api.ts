@@ -239,7 +239,9 @@ export function testHelementLikeApi<DSAnonymousApiBuilder extends AnonymousApiBu
                                 tags: [new CodeStub({ code: testCode, type: testType })],
                             }),
                         ),
-                        (await ctx.toPatientDto(patient)).id,
+                        (
+                            await ctx.toPatientDto(patient)
+                        ).id,
                     )
                 },
                 (status) => {

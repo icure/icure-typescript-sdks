@@ -11,19 +11,19 @@
  */
 
 export class Filter {
-    constructor(json: IFilter) {
+    constructor(json: Partial<IFilter>) {
         Object.assign(this as Filter, json)
     }
 
     'description': string
 
-    static toJSON(instance: Filter): any {
-        const pojo: any = {}
+    static toJSON(instance: Filter): IFilter {
+        const pojo: IFilter = {} as IFilter
         pojo['description'] = instance.description
         return pojo
     }
 
-    static fromJSON(pojo: any): Filter {
+    static fromJSON(pojo: IFilter): Filter {
         const obj = {} as IFilter
         obj['description'] = pojo['description']
         return new Filter(obj)

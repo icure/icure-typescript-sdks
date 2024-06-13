@@ -4,28 +4,28 @@ import { generateRandomStringArray, generateRandomStringMap } from './utils'
 export function generateSystemMetaDataOwner(domainTagType?: CodingReference): SystemMetaDataOwner {
     const publicKey: string = Math.random().toString(36).substring(2, 15)
 
-    const hcPartyKeys: Map<string, string[]> = new Map()
+    const hcPartyKeys: Record<string, string[]> = {}
     for (let i = 0; i < 5; i++) {
-        hcPartyKeys.set(Math.random().toString(36).substring(2, 15), generateRandomStringArray())
+        hcPartyKeys[Math.random().toString(36).substring(2, 15)] = generateRandomStringArray()
     }
 
-    const privateKeyShamirPartitions: Map<string, string> = new Map()
+    const privateKeyShamirPartitions: Record<string, string> = {}
     for (let i = 0; i < 5; i++) {
-        privateKeyShamirPartitions.set(Math.random().toString(36).substring(2, 15), Math.random().toString(36).substring(2, 15))
+        privateKeyShamirPartitions[Math.random().toString(36).substring(2, 15)] = Math.random().toString(36).substring(2, 15)
     }
 
-    const aesExchangeKeys: Map<string, Map<string, Map<string, string>>> = new Map()
+    const aesExchangeKeys: Record<string, Record<string, Record<string, string>>> = {}
     for (let i = 0; i < 5; i++) {
-        const innerMap: Map<string, Map<string, string>> = new Map()
+        const innerMap: Record<string, Record<string, string>> = {}
         for (let j = 0; j < 5; j++) {
-            innerMap.set(Math.random().toString(36).substring(2, 15), generateRandomStringMap())
+            innerMap[Math.random().toString(36).substring(2, 15)] = generateRandomStringMap()
         }
-        aesExchangeKeys.set(Math.random().toString(36).substring(2, 15), innerMap)
+        aesExchangeKeys[Math.random().toString(36).substring(2, 15)] = innerMap
     }
 
-    const transferKeys: Map<string, Map<string, string>> = new Map()
+    const transferKeys: Record<string, Record<string, string>> = {}
     for (let i = 0; i < 5; i++) {
-        transferKeys.set(Math.random().toString(36).substring(2, 15), generateRandomStringMap())
+        transferKeys[Math.random().toString(36).substring(2, 15)] = generateRandomStringMap()
     }
 
     return new SystemMetaDataOwner({
@@ -34,6 +34,6 @@ export function generateSystemMetaDataOwner(domainTagType?: CodingReference): Sy
         privateKeyShamirPartitions,
         aesExchangeKeys,
         transferKeys,
-        tags: new Set(domainTagType ? [domainTagType] : []),
+        tags: domainTagType ? [domainTagType] : [],
     })
 }

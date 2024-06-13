@@ -2,15 +2,15 @@ import 'mocha'
 
 import { SystemMetaDataOwner } from '../..'
 import { assert } from 'chai'
-import { mapOf } from '@icure/typescript-common'
+import { recordOf } from '@icure/typescript-common'
 
 export function newSystemMetaDataOwner(): SystemMetaDataOwner {
     return new SystemMetaDataOwner({
         publicKey: 'publicKey',
-        hcPartyKeys: mapOf({ key: ['hcPartyKeys'] }),
-        privateKeyShamirPartitions: mapOf({ key: 'privateKeyShamirPartitions' }),
-        aesExchangeKeys: mapOf({ key: mapOf({ key: mapOf({ key: 'aesExchangeKeys' }) }) }),
-        transferKeys: mapOf({ key: mapOf({ key: 'transferKeys' }) }),
+        hcPartyKeys: recordOf({ key: ['hcPartyKeys'] }),
+        privateKeyShamirPartitions: recordOf({ key: 'privateKeyShamirPartitions' }),
+        aesExchangeKeys: recordOf({ key: recordOf({ key: recordOf({ key: 'aesExchangeKeys' }) }) }),
+        transferKeys: recordOf({ key: recordOf({ key: 'transferKeys' }) }),
     })
 }
 

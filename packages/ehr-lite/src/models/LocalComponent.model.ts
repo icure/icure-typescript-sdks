@@ -1,29 +1,29 @@
 import { ContentDto, mapTo } from '@icure/typescript-common'
 
 @mapTo(ContentDto)
-export class LocalComponent {
+export class LocalComponent implements ILocalComponent {
     stringValue?: string
     documentId?: string
 
-    constructor(localComponent?: ILocalComponent | any) {
+    constructor(localComponent: Partial<ILocalComponent>) {
         this.stringValue = localComponent?.stringValue
         this.documentId = localComponent?.documentId
     }
 
-    static toJSON(instance: LocalComponent): any {
-        const pojo: any = {}
+    static toJSON(instance: LocalComponent): ILocalComponent {
+        const pojo: ILocalComponent = {} as ILocalComponent
         if (instance.stringValue !== undefined) pojo['stringValue'] = instance.stringValue
         if (instance.documentId !== undefined) pojo['documentId'] = instance.documentId
         return pojo
     }
 
-    static fromJSON(pojo: any): LocalComponent {
+    static fromJSON(pojo: ILocalComponent): LocalComponent {
         const obj = {} as ILocalComponent
         if (pojo['stringValue'] !== undefined) {
-            obj['stringValue'] = pojo['stringValue']
+            obj['stringValue'] = pojo['stringValue']!
         }
         if (pojo['documentId'] !== undefined) {
-            obj['documentId'] = pojo['documentId']
+            obj['documentId'] = pojo['documentId']!
         }
         return new LocalComponent(obj)
     }

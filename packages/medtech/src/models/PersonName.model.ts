@@ -17,7 +17,7 @@ import { mapTo, PersonNameDto } from '@icure/typescript-common'
  */
 @mapTo(PersonNameDto)
 export class PersonName {
-    constructor(json: IPersonName) {
+    constructor(json: Partial<IPersonName>) {
         Object.assign(this as PersonName, json as IPersonName)
     }
 
@@ -30,8 +30,8 @@ export class PersonName {
     'text'?: string
     'use'?: PersonNameUseEnum
 
-    static toJSON(instance: PersonName): any {
-        const pojo: any = {}
+    static toJSON(instance: PersonName): IPersonName {
+        const pojo: IPersonName = {} as IPersonName
         if (instance.lastName !== undefined) pojo['lastName'] = instance.lastName
         pojo['firstNames'] = instance.firstNames.map((item) => item)
         if (instance.start !== undefined) pojo['start'] = instance.start
@@ -43,25 +43,25 @@ export class PersonName {
         return pojo
     }
 
-    static fromJSON(pojo: any): PersonName {
+    static fromJSON(pojo: IPersonName): PersonName {
         const obj = {} as IPersonName
         if (pojo['lastName'] !== undefined) {
-            obj['lastName'] = pojo['lastName']
+            obj['lastName'] = pojo['lastName']!
         }
         obj['firstNames'] = pojo['firstNames'].map((item: any) => item)
         if (pojo['start'] !== undefined) {
-            obj['start'] = pojo['start']
+            obj['start'] = pojo['start']!
         }
         if (pojo['end'] !== undefined) {
-            obj['end'] = pojo['end']
+            obj['end'] = pojo['end']!
         }
         obj['prefix'] = pojo['prefix'].map((item: any) => item)
         obj['suffix'] = pojo['suffix'].map((item: any) => item)
         if (pojo['text'] !== undefined) {
-            obj['text'] = pojo['text']
+            obj['text'] = pojo['text']!
         }
         if (pojo['use'] !== undefined) {
-            obj['use'] = pojo['use']
+            obj['use'] = pojo['use']!
         }
         return new PersonName(obj)
     }
@@ -69,11 +69,11 @@ export class PersonName {
 
 interface IPersonName {
     lastName?: string
-    firstNames?: Array<string>
+    firstNames: Array<string>
     start?: number
     end?: number
-    prefix?: Array<string>
-    suffix?: Array<string>
+    prefix: Array<string>
+    suffix: Array<string>
     text?: string
     use?: PersonNameUseEnum
 }

@@ -4,11 +4,11 @@ import { getEnvironmentInitializer, hcp1Username, setLocalStorage } from '../../
 import { expect } from 'chai'
 import { v4 as uuid } from 'uuid'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
-import { Coding, mapOf, User } from '@icure/typescript-common'
+import { Coding, recordOf, User } from '@icure/typescript-common'
 import { FilterComposition, NoOpFilter } from '@icure/typescript-common'
 import { describe, it, before } from 'mocha'
 import { TestUtils } from '../test-utils'
-import {CodingFilter} from "@icure/ehr-lite-sdk";
+import { CodingFilter } from '@icure/ehr-lite-sdk'
 
 setLocalStorage(fetch)
 
@@ -35,8 +35,8 @@ describe('Coding Filters Test', function () {
                 type: 'ICURE',
                 code: 'PARARIBULITIS',
                 version: uuid().substring(0, 6),
-                regions: new Set(['be']),
-                description: mapOf({ fr: 'Pararibulitis' }),
+                regions: ['be'],
+                description: recordOf({ fr: 'Pararibulitis' }),
             }),
         )
 
@@ -45,8 +45,8 @@ describe('Coding Filters Test', function () {
                 type: 'ICURE',
                 code: 'UNIVERSE THERMAL DEATH',
                 version: uuid().substring(0, 6),
-                regions: new Set(['ir', 'gb']),
-                description: mapOf({ en: 'That is bad' }),
+                regions: ['ir', 'gb'],
+                description: recordOf({ en: 'That is bad' }),
             }),
         )
 
@@ -55,8 +55,8 @@ describe('Coding Filters Test', function () {
                 type: 'SNOMED',
                 code: 'HEADACHE',
                 version: uuid().substring(0, 6),
-                regions: new Set(['ir', 'gb']),
-                description: mapOf({ en: 'Ouch' }),
+                regions: ['ir', 'gb'],
+                description: recordOf({ en: 'Ouch' }),
             }),
         )
     })
@@ -95,7 +95,7 @@ describe('Coding Filters Test', function () {
         expect(codes.rows.length).to.be.greaterThan(0)
         codes.rows.forEach((code) => {
             expect(code).to.satisfy((c: Coding) => {
-                return c.id === code1.id! || (Array.from(c.regions).includes('gb') && Object.keys(Object.fromEntries((c.description ?? new Map()).entries())).includes('en') && c.type === 'SNOMED')
+                return c.id === code1.id! || (c.regions.includes('gb') && Object.keys(Object.fromEntries((c.description ?? new Map()).entries())).includes('en') && c.type === 'SNOMED')
             })
         })
     }).timeout(60000)
@@ -106,7 +106,7 @@ describe('Coding Filters Test', function () {
         codes.rows.forEach((code) => {
             expect(code.id).to.be.oneOf([code1.id!, code2.id!, code3.id!])
             expect(code).to.satisfy((c: Coding) => {
-                return Array.from(c.regions).includes('gb') && Object.keys(Object.fromEntries((c.description ?? new Map()).entries())).includes('en') && c.type === 'SNOMED'
+                return c.regions.includes('gb') && Object.keys(Object.fromEntries((c.description ?? new Map()).entries())).includes('en') && c.type === 'SNOMED'
             })
         })
     })
@@ -121,7 +121,7 @@ describe('Coding Filters Test', function () {
         codes.rows.forEach((code) => {
             expect(code.id).to.be.oneOf([code1.id!, code2.id!, code3.id!])
             expect(code).to.satisfy((c: Coding) => {
-                return Array.from(c.regions).includes('gb') && Object.keys(Object.fromEntries((c.description ?? new Map()).entries())).includes('en') && c.type === 'SNOMED'
+                return c.regions.includes('gb') && Object.keys(Object.fromEntries((c.description ?? new Map()).entries())).includes('en') && c.type === 'SNOMED'
             })
         })
     })

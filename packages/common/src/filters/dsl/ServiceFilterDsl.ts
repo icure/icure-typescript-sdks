@@ -48,10 +48,7 @@ interface BaseServiceFilterBuilder<F, DSPatient> {
 }
 
 export class ServiceFilter<DSPatient> implements DataOwnerFilterBuilder<Service, ServiceFilterWithDataOwner<DSPatient>> {
-    constructor(
-        private api: CommonApi,
-        private patientMapper: Mapper<DSPatient, Patient>,
-    ) {}
+    constructor(private api: CommonApi, private patientMapper: Mapper<DSPatient, Patient>) {}
 
     forDataOwner(dataOwnerId: string): ServiceFilterWithDataOwner<DSPatient> {
         return new ServiceFilterWithDataOwner(this.api, this.patientMapper, dataOwnerId)
@@ -65,11 +62,7 @@ export class ServiceFilter<DSPatient> implements DataOwnerFilterBuilder<Service,
 export class ServiceFilterWithDataOwner<DSPatient> extends SortableFilterBuilder<Service, ServiceFilterSortStepDecorator<DSPatient>> implements BaseServiceFilterBuilder<ServiceFilterWithDataOwner<DSPatient>, DSPatient>, FilterBuilder<Service> {
     _dataOwnerId: Promise<string>
 
-    constructor(
-        private api: CommonApi,
-        private patientMapper: Mapper<DSPatient, Patient>,
-        dataOwnerId?: string,
-    ) {
+    constructor(private api: CommonApi, private patientMapper: Mapper<DSPatient, Patient>, dataOwnerId?: string) {
         super()
         this._dataOwnerId = !!dataOwnerId ? Promise.resolve(dataOwnerId) : api.baseApi.userApi.getCurrentUser().then((u) => api.baseApi.dataOwnerApi.getDataOwnerIdOf(u))
     }

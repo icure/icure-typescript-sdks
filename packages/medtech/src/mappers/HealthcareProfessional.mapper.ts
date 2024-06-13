@@ -29,6 +29,7 @@ import {
 } from '@icure/typescript-common'
 import { mapPersonNameDtoToPersonName, mapPersonNameToPersonNameDto } from './PersonName.mapper'
 import { mapAddressDtoToAddress, mapAddressToAddressDto } from './Address.mapper'
+import { b64_2ab, ua2b64 } from '@icure/api'
 
 function toHealthcarePartyDtoId(domain: HealthcareProfessional): string | undefined {
     return forceUuid(domain.id)
@@ -155,7 +156,7 @@ function toHealthcarePartyDtoLanguages(domain: HealthcareProfessional): string[]
 }
 
 function toHealthcarePartyDtoPicture(domain: HealthcareProfessional): ArrayBuffer | undefined {
-    return domain.picture
+    return domain.picture ? b64_2ab(domain.picture) : undefined
 }
 
 function toHealthcarePartyDtoStatuses(domain: HealthcareProfessional): HealthcarePartyDto.StatusesEnum[] | undefined {
@@ -274,12 +275,12 @@ function toHealthcareProfessionalModified(dto: HealthcarePartyDto): number | und
     return dto.modified
 }
 
-function toHealthcareProfessionalLabels(dto: HealthcarePartyDto): Set<CodingReference> {
-    return dto.tags ? new Set(dto.tags.map(mapCodeStubToCodingReference)) : new Set()
+function toHealthcareProfessionalLabels(dto: HealthcarePartyDto): Array<CodingReference> {
+    return dto.tags ? dto.tags.map(mapCodeStubToCodingReference) : []
 }
 
-function toHealthcareProfessionalCodes(dto: HealthcarePartyDto): Set<CodingReference> {
-    return dto.codes ? new Set(dto.codes.map(mapCodeStubToCodingReference)) : new Set()
+function toHealthcareProfessionalCodes(dto: HealthcarePartyDto): Array<CodingReference> {
+    return dto.codes ? dto.codes.map(mapCodeStubToCodingReference) : []
 }
 
 function toHealthcareProfessionalDeletionDate(dto: HealthcarePartyDto): number | undefined {
@@ -326,20 +327,20 @@ function toHealthcareProfessionalLanguages(dto: HealthcarePartyDto): string[] {
     return dto.languages ?? []
 }
 
-function toHealthcareProfessionalPicture(dto: HealthcarePartyDto): ArrayBuffer | undefined {
-    return dto.picture
+function toHealthcareProfessionalPicture(dto: HealthcarePartyDto): string | undefined {
+    return dto.picture ? ua2b64(dto.picture) : undefined
 }
 
-function toHealthcareProfessionalSpecialityCodes(dto: HealthcarePartyDto): Set<CodingReference> | undefined {
-    return dto.specialityCodes ? new Set(dto.specialityCodes.map(mapCodeStubToCodingReference)) : undefined
+function toHealthcareProfessionalSpecialityCodes(dto: HealthcarePartyDto): Array<CodingReference> | undefined {
+    return dto.specialityCodes ? dto.specialityCodes.map(mapCodeStubToCodingReference) : undefined
 }
 
 function toHealthcareProfessionalNotes(dto: HealthcarePartyDto): string | undefined {
     return dto.notes
 }
 
-function toHealthcareProfessionalProperties(dto: HealthcarePartyDto): Set<Property> {
-    return dto.properties ? new Set([...dto.properties].map(mapPropertyStubToProperty)) : new Set()
+function toHealthcareProfessionalProperties(dto: HealthcarePartyDto): Array<Property> {
+    return dto.properties ? [...dto.properties].map(mapPropertyStubToProperty) : []
 }
 
 function toHealthcareProfessionalSystemMetaData(dto: HealthcarePartyDto): SystemMetaDataOwner | undefined {

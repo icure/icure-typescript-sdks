@@ -4,7 +4,7 @@ import { User } from '../..'
 import { assert } from 'chai'
 import { newProperty } from './propertyTest'
 import { newAuthenticationToken } from './authenticationTokenTest'
-import { mapOf } from '@icure/typescript-common'
+import { recordOf } from '@icure/typescript-common'
 import { v4 } from 'uuid'
 
 export function newUser(): User {
@@ -14,8 +14,8 @@ export function newUser(): User {
         deletionDate: 123,
         created: 456,
         name: 'name',
-        properties: new Set([newProperty()]),
-        roles: new Set(['roles']),
+        properties: [newProperty()],
+        roles: ['roles'],
         login: 'login',
         passwordHash: 'passwordHash',
         secret: 'secret',
@@ -24,10 +24,10 @@ export function newUser(): User {
         healthcarePartyId: 'healthcarePartyId',
         patientId: 'patientId',
         deviceId: 'deviceId',
-        sharingDataWith: mapOf({ all: new Set(['sharingDataWith']) }),
+        sharingDataWith: recordOf({ all: ['sharingDataWith'] }),
         email: 'email',
         mobilePhone: 'mobilePhone',
-        authenticationTokens: mapOf({ key: newAuthenticationToken() }),
+        authenticationTokens: recordOf({ key: newAuthenticationToken() }),
     })
 }
 

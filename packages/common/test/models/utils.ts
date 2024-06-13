@@ -5,10 +5,10 @@ export function generateRandomStringArray(): string[] {
     return Array.from({ length: 5 }, () => Math.random().toString(36).substring(2, 15))
 }
 
-export function generateRandomStringMap(): Map<string, string> {
-    const map: Map<string, string> = new Map()
+export function generateRandomStringMap(): Record<string, string> {
+    const map: Record<string, string> = {}
     for (let i = 0; i < 5; i++) {
-        map.set(Math.random().toString(36).substring(2, 15), Math.random().toString(36).substring(2, 15))
+        map[Math.random().toString(36).substring(2, 15)] = Math.random().toString(36).substring(2, 15)
     }
     return map
 }
@@ -45,14 +45,14 @@ export function generateRandomEncryptedSelf(): string {
     return generateRandomString()
 }
 
-export function generateDelegationSet(): Set<Delegation> {
-    return new Set(Array.from({ length: 5 }, () => generateDelegation()))
+export function generateDelegationSet(): Array<Delegation> {
+    return Array.from({ length: 5 }, () => generateDelegation())
 }
 
-export function generateDelegationMap(): Map<string, Set<Delegation>> {
-    const map: Map<string, Set<Delegation>> = new Map()
+export function generateDelegationMap(): Record<string, Array<Delegation>> {
+    const map: Record<string, Array<Delegation>> = {}
     for (let i = 0; i < 5; i++) {
-        map.set(Math.random().toString(36).substring(2, 15), generateDelegationSet())
+        map[Math.random().toString(36).substring(2, 15)] = generateDelegationSet()
     }
     return map
 }

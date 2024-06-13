@@ -4,9 +4,9 @@ import { SecureDelegation } from './SecureDelegation.model'
 
 @mapTo(SecurityMetadataDto)
 export class SecurityMetadata {
-    constructor(securityMetadata?: ISecurityMetadata | any) {
-        this.secureDelegations = securityMetadata?.secureDelegations
-        this.keysEquivalences = securityMetadata?.keysEquivalences
+    constructor(securityMetadata?: Partial<ISecurityMetadata>) {
+        this.secureDelegations = securityMetadata?.secureDelegations ?? {}
+        this.keysEquivalences = securityMetadata?.keysEquivalences ?? {}
     }
 
     /**
@@ -14,31 +14,31 @@ export class SecurityMetadata {
      *
      * Key: hash of the public key
      */
-    secureDelegations: Map<string, SecureDelegation>
+    secureDelegations: Record<string, SecureDelegation>
 
     /**
      * Keys equivalences
      *
      * Key: hash of the public key
      */
-    keysEquivalences: Map<string, string>
+    keysEquivalences: Record<string, string>
 
-    static toJSON(instance: SecurityMetadata): any {
-        const pojo: any = {}
-        pojo['secureDelegations'] = Object.fromEntries([...instance.secureDelegations.entries()].map(([k, v]) => [k, SecureDelegation.toJSON(v)]))
-        pojo['keysEquivalences'] = Object.fromEntries([...instance.keysEquivalences.entries()].map(([k, v]) => [k, v]))
+    static toJSON(instance: SecurityMetadata): ISecurityMetadata {
+        const pojo: ISecurityMetadata = {} as ISecurityMetadata
+        pojo['secureDelegations'] = { ...instance.secureDelegations }
+        pojo['keysEquivalences'] = { ...instance.keysEquivalences }
         return pojo
     }
 
-    static fromJSON(pojo: any): SecurityMetadata {
+    static fromJSON(pojo: ISecurityMetadata): SecurityMetadata {
         const obj = {} as ISecurityMetadata
-        obj['secureDelegations'] = new Map(Object.entries(pojo['secureDelegations']).map(([k, v]: [any, any]) => [k, SecureDelegation.fromJSON(v)]))
-        obj['keysEquivalences'] = new Map(Object.entries(pojo['keysEquivalences']).map(([k, v]: [any, any]) => [k, v]))
+        obj['secureDelegations'] = { ...pojo['secureDelegations'] }
+        obj['keysEquivalences'] = { ...pojo['keysEquivalences'] }
         return new SecurityMetadata(obj)
     }
 }
 
 interface ISecurityMetadata {
-    secureDelegations: Map<string, SecureDelegation>
-    keysEquivalences: Map<string, string>
+    secureDelegations: Record<string, SecureDelegation>
+    keysEquivalences: Record<string, string>
 }

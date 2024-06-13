@@ -23,6 +23,7 @@ import {
     IdentifierDto,
     PropertyStub,
 } from '@icure/typescript-common'
+import { b64_2ab, ua2b64 } from '@icure/api'
 
 function toDeviceDtoId(domain: MedicalDevice): string {
     return forceUuid(domain.id)
@@ -101,7 +102,7 @@ function toDeviceDtoParentId(domain: MedicalDevice): string | undefined {
 }
 
 function toDeviceDtoPicture(domain: MedicalDevice): ArrayBuffer | undefined {
-    return domain.picture
+    return domain.picture ? b64_2ab(domain.picture) : undefined
 }
 
 function toDeviceDtoProperties(domain: MedicalDevice): PropertyStub[] | undefined {
@@ -168,12 +169,12 @@ function toMedicalDeviceResponsible(dto: DeviceDto): string | undefined {
     return dto.responsible
 }
 
-function toMedicalDeviceLabels(dto: DeviceDto): Set<CodingReference> {
-    return dto.tags ? new Set([...dto.tags].map(mapCodeStubToCodingReference)) : new Set()
+function toMedicalDeviceLabels(dto: DeviceDto): Array<CodingReference> {
+    return dto.tags ? [...dto.tags].map(mapCodeStubToCodingReference) : []
 }
 
-function toMedicalDeviceCodes(dto: DeviceDto): Set<CodingReference> {
-    return dto.codes ? new Set([...dto.codes].map(mapCodeStubToCodingReference)) : new Set()
+function toMedicalDeviceCodes(dto: DeviceDto): Array<CodingReference> {
+    return dto.codes ? [...dto.codes].map(mapCodeStubToCodingReference) : []
 }
 
 function toMedicalDeviceEndOfLife(dto: DeviceDto): number | undefined {
@@ -208,12 +209,12 @@ function toMedicalDeviceParentId(dto: DeviceDto): string | undefined {
     return dto.parentId
 }
 
-function toMedicalDevicePicture(dto: DeviceDto): ArrayBuffer | undefined {
-    return dto.picture
+function toMedicalDevicePicture(dto: DeviceDto): string | undefined {
+    return dto.picture ? ua2b64(dto.picture) : undefined
 }
 
-function toMedicalDeviceProperties(dto: DeviceDto): Set<Property> {
-    return dto.properties ? new Set([...dto.properties].map(mapPropertyStubToProperty)) : new Set()
+function toMedicalDeviceProperties(dto: DeviceDto): Array<Property> {
+    return dto.properties ? [...dto.properties].map(mapPropertyStubToProperty) : []
 }
 
 function toMedicalDeviceSystemMetaData(dto: DeviceDto): SystemMetaDataOwner | undefined {

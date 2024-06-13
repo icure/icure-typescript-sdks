@@ -8,10 +8,7 @@ import { Identifier } from '../../models/Identifier.model'
 import { mapIdentifierToIdentifierDto } from '../../mappers/Identifier.mapper'
 
 export class HealthElementFilter<DSPatient> implements DataOwnerFilterBuilder<HealthElement, HealthElementFilterWithDataOwner<DSPatient>> {
-    constructor(
-        private api: CommonApi,
-        private patientMapper: Mapper<DSPatient, Patient>,
-    ) {}
+    constructor(private api: CommonApi, private patientMapper: Mapper<DSPatient, Patient>) {}
 
     forDataOwner(dataOwnerId: string): HealthElementFilterWithDataOwner<DSPatient> {
         return new HealthElementFilterWithDataOwner(this.api, this.patientMapper, dataOwnerId)
@@ -55,11 +52,7 @@ interface BaseHealthElementFilterBuilder<F, DSPatient> {
 export class HealthElementFilterWithDataOwner<DSPatient> extends SortableFilterBuilder<HealthElement, DeviceFilterSortStepDecorator<DSPatient>> implements BaseHealthElementFilterBuilder<HealthElementFilterWithDataOwner<DSPatient>, DSPatient>, FilterBuilder<HealthElement> {
     _dataOwnerId: Promise<string>
 
-    constructor(
-        private api: CommonApi,
-        private patientMapper: Mapper<DSPatient, Patient>,
-        dataOwnerId?: string,
-    ) {
+    constructor(private api: CommonApi, private patientMapper: Mapper<DSPatient, Patient>, dataOwnerId?: string) {
         super()
         this._dataOwnerId = !!dataOwnerId ? Promise.resolve(dataOwnerId) : api.baseApi.userApi.getCurrentUser().then((u) => api.baseApi.dataOwnerApi.getDataOwnerIdOf(u))
     }
