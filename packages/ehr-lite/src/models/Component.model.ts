@@ -72,7 +72,7 @@ export class Component implements IComponent {
     }
 }
 
-interface IComponent {
+export interface IComponent {
     numberValue?: number
     booleanValue?: boolean
     instantValue?: number

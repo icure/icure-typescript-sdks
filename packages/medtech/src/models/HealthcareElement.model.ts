@@ -162,7 +162,7 @@ export class HealthcareElement {
     }
 }
 
-interface IHealthcareElement {
+export interface IHealthcareElement {
     id?: string
     identifiers: Array<Identifier>
     rev?: string

@@ -55,7 +55,7 @@ export class TimeSeries {
     }
 }
 
-interface ITimeSeries {
+export interface ITimeSeries {
     fields: Array<string>
     samples: Array<Array<number>>
     min: Array<number>

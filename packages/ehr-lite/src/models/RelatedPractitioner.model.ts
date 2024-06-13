@@ -36,7 +36,7 @@ export class RelatedPractitioner implements IRelatedPractitioner {
     }
 }
 
-interface IRelatedPractitioner {
+export interface IRelatedPractitioner {
     type?: PractitionerTypeEnum
     healthcarePartyId?: string
     encryptedSelf?: string

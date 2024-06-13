@@ -82,7 +82,7 @@ export class HumanName implements IHumanName {
     }
 }
 
-interface IHumanName {
+export interface IHumanName {
     family?: string
     given: string[]
     start?: number

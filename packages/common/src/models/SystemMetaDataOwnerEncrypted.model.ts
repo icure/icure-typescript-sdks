@@ -76,7 +76,7 @@ export class SystemMetaDataOwnerEncrypted {
     }
 }
 
-interface ISystemMetaDataOwnerEncrypted {
+export interface ISystemMetaDataOwnerEncrypted {
     publicKey?: string
     hcPartyKeys: Record<string, string[]>
     privateKeyShamirPartitions: Record<string, string>

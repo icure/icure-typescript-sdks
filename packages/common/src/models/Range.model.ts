@@ -30,7 +30,7 @@ export class Range {
     }
 }
 
-interface IRange {
+export interface IRange {
     low?: number
     high?: number
 }

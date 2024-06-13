@@ -214,7 +214,7 @@ export class User {
 
 export type SharedDataType = 'all' | 'administrativeData' | 'generalInformation' | 'financialInformation' | 'medicalInformation' | 'sensitiveInformation' | 'confidentialInformation'
 
-interface IUser {
+export interface IUser {
     id: string
     rev?: string
     deletionDate?: number

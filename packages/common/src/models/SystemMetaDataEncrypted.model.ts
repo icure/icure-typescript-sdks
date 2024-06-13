@@ -50,7 +50,7 @@ export class SystemMetaDataEncrypted {
     }
 }
 
-interface ISystemMetaDataEncrypted {
+export interface ISystemMetaDataEncrypted {
     secretForeignKeys: string[]
     cryptedForeignKeys: Record<string, Array<Delegation>>
     delegations: Record<string, Array<Delegation>>

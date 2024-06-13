@@ -46,7 +46,7 @@ export class SystemMetaDataOwner {
     }
 }
 
-interface ISystemMetaDataOwner {
+export interface ISystemMetaDataOwner {
     publicKey?: string
     hcPartyKeys: Record<string, string[]>
     privateKeyShamirPartitions: Record<string, string>

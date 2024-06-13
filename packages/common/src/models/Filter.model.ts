@@ -30,6 +30,6 @@ export class Filter {
     }
 }
 
-interface IFilter {
+export interface IFilter {
     description?: string
 }

@@ -289,7 +289,7 @@ export class Patient {
     }
 }
 
-interface IPatient {
+export interface IPatient {
     id?: string
     rev?: string
     identifiers: Array<Identifier>

@@ -29,7 +29,7 @@ export class LocalComponent implements ILocalComponent {
     }
 }
 
-interface ILocalComponent {
+export interface ILocalComponent {
     stringValue?: string
     documentId?: string
 }

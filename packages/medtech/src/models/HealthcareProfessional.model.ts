@@ -209,7 +209,7 @@ export class HealthcareProfessional {
     }
 }
 
-interface IHealthcareProfessional {
+export interface IHealthcareProfessional {
     id?: string
     rev?: string
     created?: number

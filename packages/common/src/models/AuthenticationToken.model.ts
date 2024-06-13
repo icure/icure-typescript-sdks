@@ -48,7 +48,7 @@ export class AuthenticationToken {
     }
 }
 
-interface IAuthenticationToken {
+export interface IAuthenticationToken {
     token: string
     creationTime: number
     validity: number

@@ -62,7 +62,7 @@ export class Annotation {
     }
 }
 
-interface IAnnotation {
+export interface IAnnotation {
     id: string
     tags: Array<CodingReference>
     author?: string

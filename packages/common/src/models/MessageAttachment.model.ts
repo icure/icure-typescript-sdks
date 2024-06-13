@@ -29,7 +29,7 @@ export class MessageAttachment {
     }
 }
 
-interface IMessageAttachment {
+export interface IMessageAttachment {
     type?: 'annex' | 'body'
     ids?: string[]
 }

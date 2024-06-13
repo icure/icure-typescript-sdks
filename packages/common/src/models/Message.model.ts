@@ -135,7 +135,7 @@ export class Message {
     }
 }
 
-interface IMessage {
+export interface IMessage {
     id: string
     rev?: string
     created?: number

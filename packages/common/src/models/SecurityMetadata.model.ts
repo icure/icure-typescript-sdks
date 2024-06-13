@@ -38,7 +38,7 @@ export class SecurityMetadata {
     }
 }
 
-interface ISecurityMetadata {
+export interface ISecurityMetadata {
     secureDelegations: Record<string, SecureDelegation>
     keysEquivalences: Record<string, string>
 }

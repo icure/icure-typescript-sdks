@@ -48,7 +48,7 @@ export class Partnership {
     }
 }
 
-interface IPartnership {
+export interface IPartnership {
     type?: PartnershipTypeEnum
     status?: PartnershipStatusEnum
     partnerId?: string

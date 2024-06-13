@@ -67,7 +67,7 @@ export class PersonName {
     }
 }
 
-interface IPersonName {
+export interface IPersonName {
     lastName?: string
     firstNames: Array<string>
     start?: number

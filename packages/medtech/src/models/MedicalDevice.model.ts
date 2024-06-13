@@ -199,7 +199,7 @@ export class MedicalDevice {
     }
 }
 
-interface IMedicalDevice {
+export interface IMedicalDevice {
     id?: string
     rev?: string
     deletionDate?: number

@@ -61,7 +61,7 @@ export class TypedValueObject {
     }
 }
 
-interface ITypedValueObject {
+export interface ITypedValueObject {
     type?: TypeEnum
     booleanValue?: boolean
     integerValue?: number

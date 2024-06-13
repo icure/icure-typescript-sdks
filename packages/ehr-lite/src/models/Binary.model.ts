@@ -28,7 +28,7 @@ export class Binary implements IBinary {
     }
 }
 
-interface IBinary {
+export interface IBinary {
     contentType: string
     data: base64string
     filename: string

@@ -168,7 +168,7 @@ export class Document {
     }
 }
 
-interface IDocument {
+export interface IDocument {
     id: string
     rev?: string
     created?: number

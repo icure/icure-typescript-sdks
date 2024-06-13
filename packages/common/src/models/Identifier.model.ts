@@ -75,7 +75,7 @@ export class Identifier {
     }
 }
 
-interface IIdentifier {
+export interface IIdentifier {
     id?: string
     assigner?: string
     start?: string

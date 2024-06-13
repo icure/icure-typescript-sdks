@@ -48,7 +48,7 @@ export class Property {
     }
 }
 
-interface IProperty {
+export interface IProperty {
     id: string
     type?: PropertyType
     typedValue?: TypedValueObject

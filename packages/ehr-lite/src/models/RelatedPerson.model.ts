@@ -37,7 +37,7 @@ export class RelatedPerson implements IRelatedPerson {
     }
 }
 
-interface IRelatedPerson {
+export interface IRelatedPerson {
     type?: RelatedPersonTypeEnum
     status?: RelatedPersonStatusEnum
     personId?: string

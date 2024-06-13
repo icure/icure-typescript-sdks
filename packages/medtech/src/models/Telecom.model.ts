@@ -44,7 +44,7 @@ export class Telecom {
     }
 }
 
-interface ITelecom {
+export interface ITelecom {
     telecomType?: TelecomTelecomTypeEnum
     telecomNumber?: string
     telecomDescription?: string

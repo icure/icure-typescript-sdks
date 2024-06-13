@@ -21,7 +21,7 @@ export class KeyPair implements IKeyPair {
     }
 }
 
-interface IKeyPair {
+export interface IKeyPair {
     privateKey: string
     publicKey: string
 }

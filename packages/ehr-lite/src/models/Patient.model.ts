@@ -291,7 +291,7 @@ export class Patient implements IPatient {
     }
 }
 
-interface IPatient {
+export interface IPatient {
     id: string
     rev?: string
     identifiers: Identifier[]
