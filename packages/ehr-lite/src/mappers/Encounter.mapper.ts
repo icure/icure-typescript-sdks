@@ -1,13 +1,11 @@
 import { Encounter } from '../models/Encounter.model'
 import {
-    addUniqueObjectsToArray,
     Annotation,
     AnnotationDto,
     CodeStub,
     CodingReference,
     ContactDto,
     Delegation,
-    domainTypeTag,
     filteringOutInternalTags,
     forceUuid,
     Identifier,
@@ -15,7 +13,6 @@ import {
     mapAnnotationDtoToAnnotation,
     mapAnnotationToAnnotationDto,
     mapCodeStubToCodingReference,
-    mapCodingReferenceToCodeStub,
     mapIdentifierDtoToIdentifier,
     mapIdentifierToIdentifierDto,
     mergeTagsWithInternalTags,

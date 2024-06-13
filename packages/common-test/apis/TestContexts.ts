@@ -23,11 +23,14 @@ import {
     SimpleCryptoStrategies,
     TopicLikeApi,
     UserLikeApi,
+    ContactLikeApi,
+    ContactFilter,
 } from '@icure/typescript-common'
 import { testStorageWithKeys } from '../test-storage'
 import { webcrypto } from 'crypto'
 import { getTempEmail, TestUtils } from '../test-utils'
 import { assert } from 'chai'
+import { DataOwnerWithType as DataOwnerWithTypeDto, HealthcareParty, HealthElement, KeyStorageFacade, MaintenanceTask, Patient, Service, sleep, StorageFacade, User, Document, Device, retry, Topic, Message, IccDocumentXApi, ShaVersion, Contact } from '@icure/api'
 import { DataOwnerWithType as DataOwnerWithTypeDto, Device, Document, HealthcareParty, HealthElement, KeyStorageFacade, MaintenanceTask, Message, Patient, retry, Service, ShaVersion, sleep, StorageFacade, Topic, User } from '@icure/api'
 import { TestVars, UserDetails } from '@icure/test-setup/types'
 import { DefaultStorageEntryKeysFactory } from '@icure/api/icc-x-api/storage/DefaultStorageEntryKeysFactory'
@@ -286,6 +289,22 @@ export interface WithHelementApi<DSApi, DSHealthElement, DSPatient> {
     checkDefaultHelementDecrypted(helement: DSHealthElement): void
 
     newHelementFilter(api: DSApi): HealthElementFilter<DSPatient>
+}
+
+export interface WithContactApi<DSApi, DSContact, DSPatient> {
+    contactApi(api: DSApi): ContactLikeApi<DSContact>
+    createContactForPatient(api: DSApi, patient: DSPatient): Promise<DSContact>
+    toContactDto(dsContact: DSContact): Contact
+    toDSContact(helementDto: Contact): DSContact
+    // Check the api can retrieve the helement from the server and decrypt it
+    checkContactAccessibleAndDecrypted(api: DSApi, helement: DSContact, checkDeepEquals: boolean): Promise<void>
+    // Check the api can retrieve the helement from the server but can't decrypt it
+    // checkContactAccessibleButEncrypted(api: DSApi, helement: DSContact): Promise<void>
+    // Check the api can't retrieve the helement from the server
+    checkContactInaccessible(api: DSApi, helement: DSContact): Promise<void>
+    // Check already retrieved helement is decrypted
+    checkDefaultContactDecrypted(helement: DSContact): void
+    newContactFilter(api: DSApi): ContactFilter<DSPatient>
 }
 
 export interface WithDeviceApi<DSApi, DSDevice> {

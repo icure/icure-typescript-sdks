@@ -1,18 +1,18 @@
 import 'isomorphic-fetch'
 import { getEnvironmentInitializer, hcp1Username, hcp2Username, setLocalStorage } from '../test-utils'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
-import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, forceUuid } from '@icure/typescript-common'
-import { BaseApiTestContext, WithHelementApi, WithPatientApi } from './TestContexts'
+import { AnnotationDto, AnonymousApiBuilder, CommonAnonymousApi, CommonApi, ContactDto, CryptoStrategies } from '@icure/typescript-common'
+import { BaseApiTestContext, WithContactApi, WithPatientApi } from './TestContexts'
 import { expectArrayContainsExactlyInAnyOrder } from '../assertions'
-import { CodeStub, HealthElement, Patient, User } from '@icure/api'
+import { CodeStub, Contact, Patient, User } from '@icure/api'
 import { doXOnYAndSubscribe } from '../websocket-utils'
 import { describe, it, beforeAll } from '@jest/globals'
 
 setLocalStorage(fetch)
 
-export function testHelementLikeApi<DSAnonymousApiBuilder extends AnonymousApiBuilder<DSCryptoStrategies, DSAnonymousApi>, DSAnonymousApi extends CommonAnonymousApi<DSApi>, DSApi extends CommonApi, DSCryptoStrategies extends CryptoStrategies<any>, DSUser, DSPatient, DSHelement>(
+export function testContactLikeApi<DSAnonymousApiBuilder extends AnonymousApiBuilder<DSCryptoStrategies, DSAnonymousApi>, DSAnonymousApi extends CommonAnonymousApi<DSApi>, DSApi extends CommonApi, DSCryptoStrategies extends CryptoStrategies<any>, DSUser, DSPatient, DSContact>(
     name: string,
-    ctx: BaseApiTestContext<DSAnonymousApiBuilder, DSAnonymousApi, DSApi, DSCryptoStrategies, DSUser, any> & WithPatientApi<DSApi, DSPatient> & WithHelementApi<DSApi, DSHelement, DSPatient>,
+    ctx: BaseApiTestContext<DSAnonymousApiBuilder, DSAnonymousApi, DSApi, DSCryptoStrategies, DSUser, any> & WithPatientApi<DSApi, DSPatient> & WithContactApi<DSApi, DSContact, DSPatient>,
 ) {
     let env: TestVars
     let hcp1Api: DSApi
@@ -22,7 +22,7 @@ export function testHelementLikeApi<DSAnonymousApiBuilder extends AnonymousApiBu
     let patApi: DSApi
     let patUser: User
 
-    describe(`${name} (Healthcare Element like API)`, () => {
+    describe(`${name} (Contact like API)`, () => {
         beforeAll(async function () {
             const initializer = await getEnvironmentInitializer()
             env = await initializer.execute(getEnvVariables())
@@ -40,171 +40,137 @@ export function testHelementLikeApi<DSAnonymousApiBuilder extends AnonymousApiBu
             hcp2User = hcp2ApiAndUser.user
         }, 600000)
 
-        it('Patient sharing healthcare element with HCP', async () => {
+        it('Patient sharing Contact with HCP', async () => {
             const currentPatient = await ctx.patientApi(patApi).get(patUser.patientId!)
-            const createdHealthcareElement = await ctx.createHelementForPatient(patApi, currentPatient)
+            const createdContact = await ctx.createContactForPatient(patApi, currentPatient)
             // Initially hcp2 can't get HE
-            await ctx.checkHelementInaccessible(hcp2Api, createdHealthcareElement)
+            await ctx.checkContactInaccessible(hcp2Api, createdContact)
             // Patient shares HE and gets it updated and decrypted
-            const sharedHealthcareElement = await ctx.helementApi(patApi).giveAccessTo(createdHealthcareElement, hcp2User.healthcarePartyId!)
-            ctx.checkDefaultHelementDecrypted(sharedHealthcareElement)
+            const sharedContact = await ctx.contactApi(patApi).giveAccessTo(createdContact, hcp2User.healthcarePartyId!)
+            ctx.checkDefaultContactDecrypted(sharedContact)
             // HCP2 can now get HE and decrypt it
-            await ctx.checkHelementAccessibleAndDecrypted(hcp2Api, sharedHealthcareElement, true)
+            await ctx.checkContactAccessibleAndDecrypted(hcp2Api, sharedContact, true)
         })
 
-        it('HCP sharing healthcare element with patient', async () => {
+        it('HCP sharing Contact with patient', async () => {
             const currentPatient = await ctx.patientApi(patApi).get(patUser!.patientId!)
-            const createdHealthcareElement = await ctx.createHelementForPatient(hcp1Api, currentPatient)
+            const createdContact = await ctx.createContactForPatient(hcp1Api, currentPatient)
             // Initially patient can't get HE
-            await ctx.checkHelementInaccessible(patApi, createdHealthcareElement)
+            await ctx.checkContactInaccessible(patApi, createdContact)
             // HCP shares HE and gets it updated and decrypted
-            const sharedHealthcareElement = await ctx.helementApi(hcp1Api).giveAccessTo(createdHealthcareElement, patUser.patientId!)
-            ctx.checkDefaultHelementDecrypted(sharedHealthcareElement)
+            const sharedContact = await ctx.contactApi(hcp1Api).giveAccessTo(createdContact, patUser.patientId!)
+            ctx.checkDefaultContactDecrypted(sharedContact)
             // Patient can now get HE and decrypt it (after refreshing the api to get the new keys for Access Control)
             await patApi.baseApi.cryptoApi.forceReload()
-            await ctx.checkHelementAccessibleAndDecrypted(patApi, sharedHealthcareElement, true)
+            await ctx.checkContactAccessibleAndDecrypted(patApi, sharedContact, true)
         })
 
-        it('HCP sharing healthcare element with another HCP', async () => {
+        it('HCP sharing Contact with another HCP', async () => {
             const patient = await ctx.createPatient(hcp1Api!)
-            const createdHealthcareElement = await ctx.createHelementForPatient(hcp1Api, patient)
+            const createdContact = await ctx.createContactForPatient(hcp1Api, patient)
             // Initially hcp2 can't get HE
-            await ctx.checkHelementInaccessible(hcp2Api, createdHealthcareElement)
+            await ctx.checkContactInaccessible(hcp2Api, createdContact)
             // HCP1 shares HE and gets it updated and decrypted
-            const sharedHealthcareElement = await ctx.helementApi(hcp1Api).giveAccessTo(createdHealthcareElement, hcp2User.healthcarePartyId!)
-            ctx.checkDefaultHelementDecrypted(sharedHealthcareElement)
+            const sharedContact = await ctx.contactApi(hcp1Api).giveAccessTo(createdContact, hcp2User.healthcarePartyId!)
+            ctx.checkDefaultContactDecrypted(sharedContact)
             // HCP2 can now get HE and decrypt it
-            await ctx.checkHelementAccessibleAndDecrypted(hcp2Api, sharedHealthcareElement, true)
+            await ctx.checkContactAccessibleAndDecrypted(hcp2Api, sharedContact, true)
         })
-        it('Optimization - No delegation sharing if delegated already has access to HE', async () => {
+        it('Optimization - No delegation sharing if delegated already has access to Contact', async () => {
             const patient = await ctx.patientApi(patApi).get(patUser!.patientId!)
-            const createdHealthcareElement = await ctx.createHelementForPatient(patApi!, patient)
+            const createdContact = await ctx.createContactForPatient(patApi!, patient)
 
             // When
-            const sharedHealthcareElement = await ctx.helementApi(patApi).giveAccessTo(createdHealthcareElement, hcp1User.healthcarePartyId!)
-            const sharedHealthcareElement2 = await ctx.helementApi(patApi).giveAccessTo(sharedHealthcareElement, hcp1User.healthcarePartyId!)
+            const sharedContact = await ctx.contactApi(patApi).giveAccessTo(createdContact, hcp1User.healthcarePartyId!)
+            const sharedContact2 = await ctx.contactApi(patApi).giveAccessTo(sharedContact, hcp1User.healthcarePartyId!)
 
             // Then
-            expect(sharedHealthcareElement).not.toEqual(createdHealthcareElement)
-            expect(sharedHealthcareElement).toEqual(sharedHealthcareElement2)
+            expect(sharedContact).not.toEqual(createdContact)
+            expect(sharedContact).toEqual(sharedContact2)
         })
 
-        it('Users without access to the Healthcare element can not share it', async () => {
+        it('Users without access to the Contact can not share it', async () => {
             const patient = await ctx.createPatient(hcp1Api)
-            const createdHealthcareElement = await ctx.createHelementForPatient(hcp1Api, patient)
+            const createdContact = await ctx.createContactForPatient(hcp1Api, patient)
 
-            await expect(ctx.helementApi(hcp2Api).giveAccessTo(createdHealthcareElement, patUser.patientId!)).rejects.toBeInstanceOf(Error)
+            await expect(ctx.contactApi(hcp2Api).giveAccessTo(createdContact, patUser.patientId!)).rejects.toBeInstanceOf(Error)
         })
 
-        it('Data Owner can filter all the Healthcare Elements for a Patient - Success', async () => {
+        it('Data Owner can match all the Contacts for a Patient - Success', async () => {
             const newPatient = await ctx.createPatient(hcp1Api!)
-            const newHealthElement = await ctx.createHelementForPatient(hcp1Api!, newPatient)
-            const newHealthElement2 = await ctx.createHelementForPatient(hcp1Api!, newPatient)
-            const filteredElements = await ctx.helementApi(hcp1Api).getAllForPatient(newPatient)
-            expect(filteredElements).toBeTruthy()
-            expect(filteredElements).toHaveLength(2)
-            expectArrayContainsExactlyInAnyOrder(filteredElements, [newHealthElement, newHealthElement2])
+            const newContact = await ctx.createContactForPatient(hcp1Api!, newPatient)
+            const newContact2 = await ctx.createContactForPatient(hcp1Api!, newPatient)
+            const matchedContactIds = await ctx.contactApi(hcp1Api).matchBy(await ctx.newContactFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).byPatientLabelCodeDateFilter([newPatient]).build())
+
+            expect(matchedContactIds).toBeTruthy()
+            expect(matchedContactIds).toHaveLength(2)
+            expectArrayContainsExactlyInAnyOrder(
+                matchedContactIds,
+                [newContact, newContact2].map((x) => ctx.toContactDto(x).id!),
+            )
         })
 
-        it('Healthcare element content is equal when obtain by its id or through filter', async () => {
+        it('Contact content is equal when obtain by its id or through filter', async () => {
             const newPatient = await ctx.createPatient(hcp1Api)
-            const createdHelement = await ctx.createHelementForPatient(hcp1Api, newPatient)
+            const createdContact = await ctx.createContactForPatient(hcp1Api, newPatient)
 
-            const filter = await ctx
-                .newHelementFilter(hcp1Api)
-                .forDataOwner(hcp1User.healthcarePartyId!)
-                .forPatients([newPatient])
-                .byIds([ctx.toHelementDto(createdHelement).id!])
-                .build()
+            const filter = await ctx.newContactFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).build()
 
-            const retrievedHelement = await ctx.helementApi(hcp1Api).get(ctx.toHelementDto(createdHelement).id!)
-            const filteredHelements = await ctx.helementApi(hcp1Api).filterBy(filter)
+            const retrievedContact = await ctx.contactApi(hcp1Api).get(ctx.toContactDto(createdContact).id!)
+            const filteredContacts = await ctx.contactApi(hcp1Api).filterBy(filter)
 
-            expect(filteredHelements).toBeTruthy()
-            expect(filteredHelements.rows).toHaveLength(1)
-            expect(retrievedHelement).toEqual(createdHelement)
-            expect(filteredHelements.rows[0]).toEqual(retrievedHelement)
+            expect(filteredContacts).toBeTruthy()
+            expect(filteredContacts.rows).toHaveLength(1)
+            expect(retrievedContact).toEqual(createdContact)
+            expect(filteredContacts.rows[0]).toEqual(retrievedContact)
         })
 
-        it('getsForPatient returns no Healthcare Elements for a Patient with no Healthcare Elements', async () => {
-            const newPatient = await ctx.createPatient(hcp1Api!)
-            const filteredElements = await ctx.helementApi(hcp1Api).getAllForPatient(newPatient)
-            expect(filteredElements).toHaveLength(0)
-        })
-
-        it('Data Owner can filter all his Health Elements', async () => {
+        it('Data Owner can filter all his Contacts', async () => {
             const currentPatient = await ctx.patientApi(patApi).get(patUser.patientId!)
 
-            const createdHe = await ctx.createHelementForPatient(hcp2Api, currentPatient)
-            const createdHeId = ctx.toHelementDto(createdHe).id
+            const createdContact = await ctx.createContactForPatient(hcp2Api, currentPatient)
+            const createdContactId = ctx.toContactDto(createdContact).id
 
-            const filter = await ctx.newHelementFilter(hcp2Api).forDataOwner(hcp2User.healthcarePartyId!).build()
+            const filter = await ctx.newContactFilter(hcp2Api).forDataOwner(hcp2User.healthcarePartyId!).build()
 
-            const filterResult = await ctx.helementApi(hcp2Api).filterBy(filter)
+            const filterResult = await ctx.contactApi(hcp2Api).filterBy(filter)
             expect(filterResult.rows.length).toBeGreaterThan(0)
-            expect(filterResult.rows.find((x) => ctx.toHelementDto(x).id == createdHeId)).toEqual(createdHe)
+            expect(filterResult.rows.find((x) => ctx.toContactDto(x).id == createdContactId)).toEqual(createdContact)
         })
 
-        it('Data Owner can match all his Health Elements', async () => {
-            const filter = await ctx.newHelementFilter(hcp2Api).forDataOwner(hcp2User.healthcarePartyId!).build()
+        it('Data Owner can match all his Contacts', async () => {
+            const filter = await ctx.newContactFilter(hcp2Api).forDataOwner(hcp2User.healthcarePartyId!).build()
 
-            const filterResult = await ctx.helementApi(hcp2Api).filterBy(filter)
-            const matchResult = await ctx.helementApi(hcp2Api).matchBy(filter)
+            const filterResult = await ctx.contactApi(hcp2Api).filterBy(filter)
+            const matchResult = await ctx.contactApi(hcp2Api).matchBy(filter)
             expect(matchResult.length).toEqual(filterResult.rows.length)
             expectArrayContainsExactlyInAnyOrder(
                 matchResult,
-                filterResult.rows.map((x) => ctx.toHelementDto(x).id),
+                filterResult.rows.map((x) => ctx.toContactDto(x).id),
             )
         })
 
-        it('if no Healthcare Element healthcareElementId is specified, then it should be set to the Healthcare Element id', async () => {
+        it('Give access to using an older version of contact should not lose information', async () => {
             const patient = await ctx.createPatient(hcp1Api)
-            const newHE = await ctx.helementApi(hcp1Api).createOrModify(ctx.toDSHelement(new HealthElement({ description: 'DUMMY_DESCRIPTION' })), ctx.toPatientDto(patient).id)
-            expect(newHE).toBeTruthy()
-            const heDto = ctx.toHelementDto(newHE)
-            expect(heDto.id).toBeTruthy()
-            expect(forceUuid(heDto.id)).toEqual(heDto.id)
-            expect(heDto.healthElementId).toEqual(heDto.id)
-        })
-
-        it('if a Healthcare Element healthcareElementId is specified, then it should be different from the Healthcare Element id', async () => {
-            const elementId = forceUuid()
-            const patient = await ctx.createPatient(hcp1Api)
-            const newHE = await ctx.helementApi(hcp1Api).createOrModify(
-                ctx.toDSHelement(
-                    new HealthElement({
-                        description: 'DUMMY_DESCRIPTION',
-                        healthElementId: elementId,
-                    }),
-                ),
-                ctx.toPatientDto(patient).id,
-            )
-            const heDto = ctx.toHelementDto(newHE)
-            expect(heDto.healthElementId).toEqual(elementId)
-            expect(heDto.id).not.toEqual(elementId)
-        })
-
-        it('Give access to using an older version of helement should not lose information', async () => {
-            const patient = await ctx.createPatient(hcp1Api)
-            const healthcareElement = await ctx.createHelementForPatient(hcp1Api, patient)
-            await ctx.helementApi(hcp1Api).giveAccessTo(healthcareElement, patUser.patientId!)
-            const shared2 = await ctx.helementApi(hcp1Api).giveAccessTo(healthcareElement, hcp2User.healthcarePartyId!)
-            await ctx.checkHelementAccessibleAndDecrypted(hcp1Api, shared2, true)
-            await ctx.checkHelementAccessibleAndDecrypted(hcp2Api, shared2, true)
+            const contact = await ctx.createContactForPatient(hcp1Api, patient)
+            await ctx.contactApi(hcp1Api).giveAccessTo(contact, patUser.patientId!)
+            const shared2 = await ctx.contactApi(hcp1Api).giveAccessTo(contact, hcp2User.healthcarePartyId!)
+            await ctx.checkContactAccessibleAndDecrypted(hcp1Api, shared2, true)
+            await ctx.checkContactAccessibleAndDecrypted(hcp2Api, shared2, true)
             // Still accessible to patient even though the last time we shared we didn't pass the helement with delegation to patient.
-            await ctx.checkHelementAccessibleAndDecrypted(patApi, shared2, true)
+            await ctx.checkContactAccessibleAndDecrypted(patApi, shared2, true)
         })
 
         const testType = 'IC-TEST'
         const testCode = 'TEST'
 
-        const subscribeAndCreateHealthElement = async (options: {}, eventTypes: ('CREATE' | 'UPDATE')[]) => {
+        const subscribeAndCreateContact = async (options: {}, eventTypes: ('CREATE' | 'UPDATE')[]) => {
             const { api, user } = await ctx.apiForEnvUser(env, hcp1Username)
             // TODO fix event listener type
-            const connectionPromise = async (options: {}, dataOwnerId: string, eventListener: (healthcareElement: HealthElement) => Promise<void>) =>
-                ctx.helementApi(api).subscribeToEvents(eventTypes, await ctx.newHelementFilter(api).forSelf().byLabelCodeFilter(testType, testCode).build(), eventListener as unknown as any, options)
+            const connectionPromise = async (options: {}, dataOwnerId: string, eventListener: (contact: ContactDto) => Promise<void>) =>
+                ctx.contactApi(api).subscribeToEvents(eventTypes, await ctx.newContactFilter(api).forSelf().byLabelCodeDateFilter(testType, testCode).build(), eventListener as unknown as any, options)
 
-            const events: HealthElement[] = []
+            const events: ContactDto[] = []
             const statuses: string[] = []
 
             let eventReceivedPromiseResolve!: (value: void | PromiseLike<void>) => void
@@ -217,8 +183,8 @@ export function testHelementLikeApi<DSAnonymousApiBuilder extends AnonymousApiBu
             await doXOnYAndSubscribe(
                 api!!,
                 options,
-                connectionPromise({}, user.healthcarePartyId!, async (healthcareElement) => {
-                    events.push(healthcareElement)
+                connectionPromise({}, user.healthcarePartyId!, async (contact) => {
+                    events.push(contact)
                     eventReceivedPromiseResolve()
                 }),
                 async () => {
@@ -232,14 +198,18 @@ export function testHelementLikeApi<DSAnonymousApiBuilder extends AnonymousApiBu
                         ),
                     )
 
-                    await ctx.helementApi(api).createOrModify(
-                        ctx.toDSHelement(
-                            new HealthElement({
-                                note: 'Hero Syndrome',
+                    await ctx.contactApi(api).createOrModifyFor(
+                        (await ctx.toPatientDto(patient)).id,
+                        ctx.toDSContact(
+                            new Contact({
+                                note: [
+                                    new AnnotationDto({
+                                        markdown: { en: 'Hero Syndrome' },
+                                    }),
+                                ],
                                 tags: [new CodeStub({ code: testCode, type: testType })],
                             }),
                         ),
-                        (await ctx.toPatientDto(patient)).id,
                     )
                 },
                 (status) => {
@@ -256,12 +226,12 @@ export function testHelementLikeApi<DSAnonymousApiBuilder extends AnonymousApiBu
             expect(statuses.length).toEqual(2)
         }
 
-        it('Can subscribe HealthElementLike CREATE without options', async () => {
-            await subscribeAndCreateHealthElement({}, ['CREATE'])
+        it('Can subscribe ContactLike CREATE without options', async () => {
+            await subscribeAndCreateContact({}, ['CREATE'])
         }, 60_000)
 
-        it('Can subscribe HealthElementLike CREATE with options', async () => {
-            await subscribeAndCreateHealthElement(
+        it('Can subscribe ContactLike CREATE with options', async () => {
+            await subscribeAndCreateContact(
                 {
                     connectionRetryIntervalMs: 10_000,
                     connectionMaxRetry: 5,

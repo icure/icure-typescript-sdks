@@ -1,12 +1,12 @@
 import { CommonApi, ContactFilter, ContactFilterWithDataOwner, domainTypeTag, PatientDto } from '@icure/typescript-common'
-import { Patient } from '../models/Patient.model'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
 import { ENCOUNTER_FHIR_TYPE } from '../mappers/Encounter.mapper'
+import { Patient } from '../models/Patient.model'
 
 export class EncounterFilter extends ContactFilter<Patient> {
     private readonly contactDomainTag = domainTypeTag(ENCOUNTER_FHIR_TYPE)
 
-    constructor(api: CommonApi) {
+    constructor(commonApi: CommonApi) {
         const patientMapper = {
             toDto(domain: Patient): PatientDto {
                 return mapPatientToPatientDto(domain)
@@ -16,7 +16,7 @@ export class EncounterFilter extends ContactFilter<Patient> {
             },
         }
 
-        super(api, patientMapper)
+        super(commonApi, patientMapper)
     }
 
     forDataOwner(dataOwnerId: string): ContactFilterWithDataOwner<Patient> {

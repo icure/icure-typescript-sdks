@@ -1,16 +1,18 @@
 import { EntityWithDelegationTypeName, HealthElement, IntersectionFilter, Patient } from '@icure/api'
+import { EntityWithDelegationTypeName, HealthElement, IntersectionFilter } from '@icure/api'
 import { Filter } from '../Filter'
 import { DataOwnerFilterBuilder, FilterBuilder, NoOpFilter, SortableFilterBuilder } from './filterDsl'
 import { CommonApi } from '../../apis/CommonApi'
-import { HealthElementByHealthcarePartyFilter, HealthElementByHealthcarePartyTagCodeFilter } from '../healthelement'
+import { HealthElementByHealthcarePartyFilter } from '../healthelement'
 import { Mapper } from '../../apis/Mapper'
 import { Identifier } from '../../models/Identifier.model'
 import { mapIdentifierToIdentifierDto } from '../../mappers/Identifier.mapper'
+import { PatientDto } from '../../index'
 
 export class HealthElementFilter<DSPatient> implements DataOwnerFilterBuilder<HealthElement, HealthElementFilterWithDataOwner<DSPatient>> {
     constructor(
         private api: CommonApi,
-        private patientMapper: Mapper<DSPatient, Patient>,
+        private patientMapper: Mapper<DSPatient, PatientDto>,
     ) {}
 
     forDataOwner(dataOwnerId: string): HealthElementFilterWithDataOwner<DSPatient> {
@@ -57,7 +59,7 @@ export class HealthElementFilterWithDataOwner<DSPatient> extends SortableFilterB
 
     constructor(
         private api: CommonApi,
-        private patientMapper: Mapper<DSPatient, Patient>,
+        private patientMapper: Mapper<DSPatient, PatientDto>,
         dataOwnerId?: string,
     ) {
         super()

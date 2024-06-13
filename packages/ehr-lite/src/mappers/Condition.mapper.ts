@@ -36,7 +36,7 @@ import { VerificationStatusEnum } from '../models/enums/VerificationStatus.enum'
 import { CategoryEnum } from '../models/enums/Category.enum'
 import { SeverityEnum } from '../models/enums/Severity.enum'
 
-const CONDITION_FHIR_TYPE = 'Condition'
+export const CONDITION_FHIR_TYPE = 'Condition'
 
 const BODY_SITE_CONTEXT = 'bodySite'
 const CLINICAL_STATUS_CONTEXT = 'clinicalStatus'

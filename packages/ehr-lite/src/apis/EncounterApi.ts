@@ -1,6 +1,5 @@
-import { CommonApi, ContactDto, ContactLikeApiImpl } from '@icure/typescript-common'
+import { CommonApi, ContactDto, ContactLikeApiImpl, ContactLikeApi } from '@icure/typescript-common'
 import { Encounter } from '../models/Encounter.model'
-import { ContactLikeApi } from '@icure/typescript-common'
 import { mapContactDtoToEncounter, mapEncounterToContactDto } from '../mappers/Encounter.mapper'
 
 export interface EncounterApi extends ContactLikeApi<Encounter> {}

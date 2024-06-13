@@ -65,8 +65,8 @@ export class Immunization {
         this.created = immunization.created
         this.modified = immunization.modified
         this.endOfLife = immunization.endOfLife
-        this.codes = immunization.codes
-        this.tags = immunization.tags
+        this.codes = immunization.codes ?? []
+        this.tags = immunization.tags ?? []
         this.language = immunization.language
         this.systemMetaData = immunization.systemMetaData
         this.notes = immunization.notes
@@ -174,8 +174,8 @@ interface IImmunization {
     created?: number
     modified?: number
     endOfLife?: number
-    codes: CodingReference[]
-    tags: CodingReference[]
+    codes?: CodingReference[]
+    tags?: CodingReference[]
     language?: ISO639_1
     systemMetaData?: SystemMetaDataEncrypted
     notes?: Annotation[]

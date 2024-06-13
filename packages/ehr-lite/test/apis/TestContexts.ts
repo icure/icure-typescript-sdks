@@ -1,4 +1,4 @@
-import { BaseApiTestContext, WithAuthenticationApi, WithDataOwnerApi, WithHcpApi, WithHelementApi, WithMaintenanceTaskApi, WithMessageApi, WithPatientApi, WithServiceApi, WithTopicApi } from '../../../common-test/apis/TestContexts'
+import { BaseApiTestContext, WithAuthenticationApi, WithContactApi, WithDataOwnerApi, WithHcpApi, WithHelementApi, WithMaintenanceTaskApi, WithMessageApi, WithPatientApi, WithServiceApi, WithTopicApi } from '../../../common-test/apis/TestContexts'
 import {
     Annotation,
     AnonymousEHRLiteApi,
@@ -28,6 +28,20 @@ import {
     Practitioner,
     PractitionerApi,
     UserApi,
+    forceUuid,
+    EncounterFilter,
+    ContactFilter,
+    UserApi,
+    Patient,
+    PatientApi,
+    Annotation,
+    NotificationApi,
+    DataOwnerApi,
+    TopicApi,
+    Binary,
+    Encounter,
+    Immunization,
+    Quantity,
 } from '../../src'
 import { EHRLiteCryptoStrategies, SimpleEHRLiteCryptoStrategies } from '../../src/services/EHRLiteCryptoStrategies'
 import {
@@ -48,8 +62,10 @@ import {
     recordOf,
     Topic,
     User,
+    ContactLikeApi,
 } from '@icure/typescript-common'
 import { EHRLiteMessageFactory } from '../../src/services/EHRLiteMessageFactory'
+import { HealthcareParty, Patient as PatientDto, Service, User as UserDto, DataOwnerWithType as DataOwnerWithTypeDto, Document as DocumentDto, HealthElement, CodeStub, MaintenanceTask, Topic as TopicDto, Message as MessageDto, Contact } from '@icure/api'
 import { CodeStub, DataOwnerWithType as DataOwnerWithTypeDto, Document as DocumentDto, HealthcareParty, HealthElement, MaintenanceTask, Message as MessageDto, Patient as PatientDto, Service, Topic as TopicDto, User as UserDto } from '@icure/api'
 import { TestMessageFactory } from '../test-utils'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../../src/mappers/Patient.mapper'
@@ -59,9 +75,8 @@ import { mapHealthcarePartyDtoToPractitioner, mapPractitionerToHealthcarePartyDt
 import { mapHealthcarePartyDtoToOrganisation, mapOrganisationToHealthcarePartyDto } from '../../src/mappers/Organisation.mapper'
 import dataOwnerMapper from '../../src/mappers/DataOwner.mapper'
 import { TestVars } from '@icure/test-setup/types'
-import { TopicApi } from '../../src/apis/TopicApi'
-import { Binary } from '../../src/models/Binary.model'
 import { mapBinaryToDocumentAttachment, mapDocumentAttachmentToBinary } from '../../src/mappers/Binary.mapper'
+import { mapContactDtoToEncounter, mapEncounterToContactDto } from '../../src/mappers/Encounter.mapper'
 
 export class EhrLiteBaseTestContext extends BaseApiTestContext<AnonymousEHRLiteApi.Builder, AnonymousEHRLiteApi, EHRLiteApi, EHRLiteCryptoStrategies, User, EHRLiteMessageFactory> {
     newAnonymousApiBuilder(): AnonymousEHRLiteApi.Builder {
@@ -187,7 +202,7 @@ export function PatientApiAware<TBase extends Constructor<any>>(Base: TBase): TB
 }
 
 export function ConditionApiAware<TBase extends Constructor<any>>(Base: TBase): TBase & Constructor<WithHelementApi<EHRLiteApi, Condition, Patient>> {
-    return class ConditionApiA4wareImpl extends Base implements WithHelementApi<EHRLiteApi, Condition, Patient> {
+    return class ConditionApiAwareImpl extends Base implements WithHelementApi<EHRLiteApi, Condition, Patient> {
         checkDefaultHelementDecrypted(helement: Condition): void {
             expect(helement.notes).toBeTruthy()
             expect(helement.notes).toHaveLength(1)
@@ -237,6 +252,78 @@ export function ConditionApiAware<TBase extends Constructor<any>>(Base: TBase): 
 
         toHelementDto(dsHelement: Condition): HealthElement {
             return mapConditionToHealthElementDto(dsHelement)
+        }
+    }
+}
+
+export function EncounterApiAware<TBase extends Constructor<any>>(Base: TBase): TBase & Constructor<WithContactApi<EHRLiteApi, Encounter, Patient>> {
+    return class EncounterApiAwareImpl extends Base implements WithContactApi<EHRLiteApi, Encounter, Patient> {
+        contactApi(api: EHRLiteApi): ContactLikeApi<Encounter> {
+            return api.encounterApi
+        }
+        async createContactForPatient(api: EHRLiteApi, patient: Patient): Promise<Encounter> {
+            const encounterId = forceUuid()
+            const currentUser = await api.userApi.getLogged()
+            const dataOwnerId = api.dataOwnerApi.getDataOwnerIdOf(currentUser)
+            return api.encounterApi.createOrModifyFor(
+                patient.id!,
+                new Encounter({
+                    id: encounterId,
+                    tags: [new CodingReference({ id: 'IC-TEST|TEST|1', type: 'IC-TEST', code: 'TEST', version: '1' })],
+                    startTime: 202406111500,
+                    endTime: 202406111600,
+                    performer: dataOwnerId,
+                    immunizations: [
+                        new Immunization({
+                            id: forceUuid(),
+                            encounterId: encounterId,
+                            vaccineCode: new CodingReference({ id: 'ICD-11|A01|1', type: 'ICD-11', code: 'A01', version: '1' }),
+                            doseQuantity: new Quantity({
+                                value: 15,
+                                code: new CodingReference({ id: 'UCUM|mg|1', type: 'UCUM', code: 'mg', version: '1' }),
+                                unit: 'mg',
+                            }),
+                            site: new CodingReference({ id: 'SNOMED|123456|1', type: 'SNOMED', code: '123456', version: '1' }),
+                            administeredAt: 202406111506,
+                            language: 'en',
+                            notes: [new Annotation({ markdown: mapOf({ en: 'This should be encrypted' }) })],
+                        }),
+                    ],
+                }),
+            )
+        }
+        async checkContactAccessibleAndDecrypted(api: EHRLiteApi, contact: Encounter, checkDeepEquals: boolean): Promise<void> {
+            const retrieved = await api.encounterApi.get(contact.id)
+            expect(retrieved.notes).toBeTruthy()
+            expect(retrieved.notes!.length).toBeGreaterThan(0)
+            retrieved.notes!.forEach((note) => {
+                expect(note.markdown).toBeTruthy()
+                expect(note.markdown.size).toBeGreaterThan(0)
+            })
+            if (checkDeepEquals) {
+                expect(retrieved).toEqual(contact)
+            }
+        }
+        async checkContactInaccessible(api: EHRLiteApi, contact: Encounter): Promise<void> {
+            await expect(api.conditionApi.get(contact.id)).rejects.toBeInstanceOf(Error)
+        }
+        checkDefaultContactDecrypted(contact: Encounter): void {
+            expect(contact.notes).toBeTruthy()
+            expect(contact.notes).toHaveLength(1)
+            expect(contact.notes![0].markdown).toEqual(annotation1().markdown)
+            expect(contact.immunizations).toBeTruthy()
+            expect(contact.immunizations).toHaveLength(1)
+            expect(contact.immunizations![0].notes).toBeTruthy()
+        }
+        newContactFilter(api: EHRLiteApi): ContactFilter<Patient> {
+            return new EncounterFilter(api)
+        }
+        toContactDto(dsContact: Encounter): Contact {
+            return mapEncounterToContactDto(dsContact)
+        }
+
+        toDSContact(contactDto: Contact): Encounter {
+            return mapContactDtoToEncounter(contactDto)
         }
     }
 }

@@ -1,22 +1,23 @@
-import { EntityWithDelegationTypeName, Contact, IntersectionFilter, Patient } from '@icure/api'
+import { EntityWithDelegationTypeName, Contact, IntersectionFilter } from '@icure/api'
 import { Filter } from '../Filter'
 import { DataOwnerFilterBuilder, FilterBuilder, NoOpFilter, SortableFilterBuilder } from './filterDsl'
 import { CommonApi } from '../../apis/CommonApi'
 import { Mapper } from '../../apis/Mapper'
 import { ContactByHcPartyFilter } from '../contact'
+import { PatientDto } from '../../index'
 
 export class ContactFilter<DSPatient> implements DataOwnerFilterBuilder<Contact, ContactFilterWithDataOwner<DSPatient>> {
     constructor(
-        private api: CommonApi,
-        private patientMapper: Mapper<DSPatient, Patient>,
+        private diocane: CommonApi,
+        private patientMapper: Mapper<DSPatient, PatientDto>,
     ) {}
 
     forDataOwner(dataOwnerId: string): ContactFilterWithDataOwner<DSPatient> {
-        return new ContactFilterWithDataOwner(this.api, this.patientMapper, dataOwnerId)
+        return new ContactFilterWithDataOwner(this.diocane, this.patientMapper, dataOwnerId)
     }
 
     forSelf(): ContactFilterWithDataOwner<DSPatient> {
-        return new ContactFilterWithDataOwner(this.api, this.patientMapper)
+        return new ContactFilterWithDataOwner(this.diocane, this.patientMapper)
     }
 }
 
@@ -58,7 +59,7 @@ export class ContactFilterWithDataOwner<DSPatient> extends SortableFilterBuilder
 
     constructor(
         private api: CommonApi,
-        private patientMapper: Mapper<DSPatient, Patient>,
+        private patientMapper: Mapper<DSPatient, PatientDto>,
         dataOwnerId?: string,
     ) {
         super()

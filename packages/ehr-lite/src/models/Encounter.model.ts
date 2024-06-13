@@ -16,7 +16,7 @@ import { Observation } from './Observation.model'
  * @param endTime The end time of the encounter (Unix timestamp).
  * @param reasonCode The reason the encounter takes place.
  * @param diagnosis The list of underlying condition id associated with the encounter.
- * @param serviceProvider The provider or organization who is responsible for the encounter.
+ * @param serviceProvider The provider or organization who is responsible for the enconter.
  * @param notes The list of notes associated with the encounter.
  * @param systemMetaData System metadata
  */
