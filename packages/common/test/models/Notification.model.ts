@@ -15,7 +15,7 @@ export function generateNotification(): Notification {
     const author = 'testAuthor'
     const responsible = 'testResponsible'
     const identifiers = [generateIdentifier(), generateIdentifier()]
-    const properties = ([generateProperty(), generateProperty(), generateProperty()])
+    const properties = [generateProperty(), generateProperty(), generateProperty()]
     const type = ['KEY_PAIR_UPDATE', 'NEW_USER_OWN_DATA_ACCESS', 'OTHER'][Math.floor(Math.random() * 3)] as NotificationTypeEnum
     const systemMetaData = generateSystemMetaDataEncrypted()
 

@@ -18,17 +18,17 @@ export class AuthenticationProcess {
 
     static toJSON(instance: AuthenticationProcess): IAuthenticationProcess {
         const pojo: IAuthenticationProcess = {} as IAuthenticationProcess
-        pojo["requestId"] = instance.requestId
-        pojo["login"] = instance.login
-        pojo["bypassTokenCheck"] = instance.bypassTokenCheck
+        pojo['requestId'] = instance.requestId
+        pojo['login'] = instance.login
+        pojo['bypassTokenCheck'] = instance.bypassTokenCheck
         return pojo
     }
 
     static fromJSON(pojo: IAuthenticationProcess): AuthenticationProcess {
         const obj = {} as IAuthenticationProcess
-        obj['requestId'] = pojo["requestId"]
-        obj['login'] = pojo["login"]
-        obj['bypassTokenCheck'] = pojo["bypassTokenCheck"]
+        obj['requestId'] = pojo['requestId']
+        obj['login'] = pojo['login']
+        obj['bypassTokenCheck'] = pojo['bypassTokenCheck']
         return new AuthenticationProcess(obj)
     }
 }

@@ -19,7 +19,7 @@ export function testPatientLikeApi<
     DSPatient,
     DSDataOwner extends DataOwnerWithType,
     DSHelement,
-    DSMaintenanceTask,
+    DSMaintenanceTask
 >(name: string, ctx: BaseApiTestContext<DSAnonymousApiBuilder, DSAnonymousApi, DSApi, DSCryptoStrategies, DSUser, any> & WithPatientApi<DSApi, DSPatient> & WithHelementApi<DSApi, DSHelement, DSPatient>) {
     let env: TestVars
     let hcp1Api: DSApi
@@ -47,8 +47,8 @@ export function testPatientLikeApi<
                                 markdown: { it: "L'inverno sta arrivando" },
                             },
                         ],
-                    }),
-                ),
+                    })
+                )
             )
             const patientDto = ctx.toPatientDto(patient)
 
@@ -192,7 +192,7 @@ export function testPatientLikeApi<
                     statuses.push(status)
                 },
                 eventReceivedPromiseReject,
-                eventReceivedPromise,
+                eventReceivedPromise
             )
 
             events?.forEach((event) => console.log(`Event : ${event}`))
@@ -212,7 +212,7 @@ export function testPatientLikeApi<
                     connectionRetryIntervalMs: 10_000,
                     connectionMaxRetry: 5,
                 },
-                ['CREATE'],
+                ['CREATE']
             )
         }, 60_000)
     })

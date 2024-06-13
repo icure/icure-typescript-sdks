@@ -40,7 +40,7 @@ export class AuthenticationApi extends AuthenticationApiImpl<MedTechApi> {
         msgGtwSpecId: string,
         msgGtwUrl: string,
         authProvider?: AuthenticationProvider,
-        fetchImpl: (input: RequestInfo, init?: RequestInit) => Promise<Response> = typeof window !== 'undefined' ? window.fetch : typeof self !== 'undefined' ? self.fetch : fetch,
+        fetchImpl: (input: RequestInfo, init?: RequestInit) => Promise<Response> = typeof window !== 'undefined' ? window.fetch : typeof self !== 'undefined' ? self.fetch : fetch
     ) {
         super(messageGatewayApi, errorHandler, sanitizer, iCureBasePath, authProcessByEmailId, authProcessBySmsId, storage, msgGtwSpecId, msgGtwUrl, authProvider, fetchImpl)
     }
@@ -100,5 +100,5 @@ export const authenticationApi = (
     authProvider: AuthenticationProvider,
     msgGtwSpecId: string,
     msgGtwUrl: string,
-    fetchImpl?: (input: RequestInfo, init?: RequestInit) => Promise<Response>,
+    fetchImpl?: (input: RequestInfo, init?: RequestInit) => Promise<Response>
 ) => new AuthenticationApi(messageGatewayApi, iCureBasePath, authProcessByEmailId, authProcessBySmsId, errorHandler, sanitizer, crypto, storage, keyStorage, cryptoStrategies, msgGtwSpecId, msgGtwUrl, authProvider, fetchImpl)

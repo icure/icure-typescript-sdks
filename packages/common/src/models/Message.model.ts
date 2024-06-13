@@ -60,76 +60,76 @@ export class Message {
 
     static toJSON(instance: Message): IMessage {
         const pojo: IMessage = {} as IMessage
-        pojo["id"] = instance.id
-        if (instance.rev !== undefined) pojo["rev"] = instance.rev
-        if (instance.created !== undefined) pojo["created"] = instance.created
-        if (instance.modified !== undefined) pojo["modified"] = instance.modified
-        if (instance.sent !== undefined) pojo["sent"] = instance.sent
-        if (instance.readStatus !== undefined) pojo["readStatus"] = {...instance.readStatus}
-        if (instance.attachments !== undefined) pojo["attachments"] = instance.attachments.map(item => MessageAttachment.toJSON(item))
-        if (instance.author !== undefined) pojo["author"] = instance.author
-        if (instance.responsible !== undefined) pojo["responsible"] = instance.responsible
-        pojo["tags"] = instance.tags.map(item => CodingReference.toJSON(item))
-        pojo["codes"] = instance.codes.map(item => CodingReference.toJSON(item))
-        if (instance.endOfLife !== undefined) pojo["endOfLife"] = instance.endOfLife
-        if (instance.deletionDate !== undefined) pojo["deletionDate"] = instance.deletionDate
-        if (instance.sender !== undefined) pojo["sender"] = instance.sender
-        if (instance.metas !== undefined) pojo["metas"] = {...instance.metas}
-        if (instance.content !== undefined) pojo["content"] = instance.content
-        if (instance.topicId !== undefined) pojo["topicId"] = instance.topicId
-        if (instance.systemMetadata !== undefined) pojo["systemMetadata"] = SystemMetaDataEncrypted.toJSON(instance.systemMetadata)
+        pojo['id'] = instance.id
+        if (instance.rev !== undefined) pojo['rev'] = instance.rev
+        if (instance.created !== undefined) pojo['created'] = instance.created
+        if (instance.modified !== undefined) pojo['modified'] = instance.modified
+        if (instance.sent !== undefined) pojo['sent'] = instance.sent
+        if (instance.readStatus !== undefined) pojo['readStatus'] = { ...instance.readStatus }
+        if (instance.attachments !== undefined) pojo['attachments'] = instance.attachments.map((item) => MessageAttachment.toJSON(item))
+        if (instance.author !== undefined) pojo['author'] = instance.author
+        if (instance.responsible !== undefined) pojo['responsible'] = instance.responsible
+        pojo['tags'] = instance.tags.map((item) => CodingReference.toJSON(item))
+        pojo['codes'] = instance.codes.map((item) => CodingReference.toJSON(item))
+        if (instance.endOfLife !== undefined) pojo['endOfLife'] = instance.endOfLife
+        if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
+        if (instance.sender !== undefined) pojo['sender'] = instance.sender
+        if (instance.metas !== undefined) pojo['metas'] = { ...instance.metas }
+        if (instance.content !== undefined) pojo['content'] = instance.content
+        if (instance.topicId !== undefined) pojo['topicId'] = instance.topicId
+        if (instance.systemMetadata !== undefined) pojo['systemMetadata'] = SystemMetaDataEncrypted.toJSON(instance.systemMetadata)
         return pojo
     }
 
     static fromJSON(pojo: IMessage): Message {
         const obj = {} as IMessage
-        obj['id'] = pojo["id"]
-        if (pojo["rev"] !== undefined) {
-            obj['rev'] = pojo["rev"]!
+        obj['id'] = pojo['id']
+        if (pojo['rev'] !== undefined) {
+            obj['rev'] = pojo['rev']!
         }
-        if (pojo["created"] !== undefined) {
-            obj['created'] = pojo["created"]!
+        if (pojo['created'] !== undefined) {
+            obj['created'] = pojo['created']!
         }
-        if (pojo["modified"] !== undefined) {
-            obj['modified'] = pojo["modified"]!
+        if (pojo['modified'] !== undefined) {
+            obj['modified'] = pojo['modified']!
         }
-        if (pojo["sent"] !== undefined) {
-            obj['sent'] = pojo["sent"]!
+        if (pojo['sent'] !== undefined) {
+            obj['sent'] = pojo['sent']!
         }
-        if (pojo["readStatus"] !== undefined) {
-            obj['readStatus'] = {...pojo["readStatus"]!}
+        if (pojo['readStatus'] !== undefined) {
+            obj['readStatus'] = { ...pojo['readStatus']! }
         }
-        if (pojo["attachments"] !== undefined) {
-            obj['attachments'] = pojo["attachments"]!.map((item: any) => MessageAttachment.fromJSON(item))
+        if (pojo['attachments'] !== undefined) {
+            obj['attachments'] = pojo['attachments']!.map((item: any) => MessageAttachment.fromJSON(item))
         }
-        if (pojo["author"] !== undefined) {
-            obj['author'] = pojo["author"]!
+        if (pojo['author'] !== undefined) {
+            obj['author'] = pojo['author']!
         }
-        if (pojo["responsible"] !== undefined) {
-            obj['responsible'] = pojo["responsible"]!
+        if (pojo['responsible'] !== undefined) {
+            obj['responsible'] = pojo['responsible']!
         }
-        obj['tags'] = pojo["tags"].map((item: any) => CodingReference.fromJSON(item))
-        obj['codes'] = pojo["codes"].map((item: any) => CodingReference.fromJSON(item))
-        if (pojo["endOfLife"] !== undefined) {
-            obj['endOfLife'] = pojo["endOfLife"]!
+        obj['tags'] = pojo['tags'].map((item: any) => CodingReference.fromJSON(item))
+        obj['codes'] = pojo['codes'].map((item: any) => CodingReference.fromJSON(item))
+        if (pojo['endOfLife'] !== undefined) {
+            obj['endOfLife'] = pojo['endOfLife']!
         }
-        if (pojo["deletionDate"] !== undefined) {
-            obj['deletionDate'] = pojo["deletionDate"]!
+        if (pojo['deletionDate'] !== undefined) {
+            obj['deletionDate'] = pojo['deletionDate']!
         }
-        if (pojo["sender"] !== undefined) {
-            obj['sender'] = pojo["sender"]!
+        if (pojo['sender'] !== undefined) {
+            obj['sender'] = pojo['sender']!
         }
-        if (pojo["metas"] !== undefined) {
-            obj['metas'] = {...pojo["metas"]!}
+        if (pojo['metas'] !== undefined) {
+            obj['metas'] = { ...pojo['metas']! }
         }
-        if (pojo["content"] !== undefined) {
-            obj['content'] = pojo["content"]!
+        if (pojo['content'] !== undefined) {
+            obj['content'] = pojo['content']!
         }
-        if (pojo["topicId"] !== undefined) {
-            obj['topicId'] = pojo["topicId"]!
+        if (pojo['topicId'] !== undefined) {
+            obj['topicId'] = pojo['topicId']!
         }
-        if (pojo["systemMetadata"] !== undefined) {
-            obj['systemMetadata'] = SystemMetaDataEncrypted.fromJSON(pojo["systemMetadata"]!)
+        if (pojo['systemMetadata'] !== undefined) {
+            obj['systemMetadata'] = SystemMetaDataEncrypted.fromJSON(pojo['systemMetadata']!)
         }
         return new Message(obj)
     }

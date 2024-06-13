@@ -5,6 +5,6 @@ export interface EHRLiteCryptoStrategies extends CryptoStrategies<DataOwnerWithT
 
 export class SimpleEHRLiteCryptoStrategies extends SimpleCryptoStrategies<DataOwnerWithType> {
     constructor(availableKeys?: KeyPair[], anonymousDataOwnerTypes?: Array<DataOwnerTypeEnum>) {
-        super(availableKeys ?? [], anonymousDataOwnerTypes ?? ([DataOwnerTypeEnum.PATIENT]))
+        super(availableKeys ?? [], anonymousDataOwnerTypes ?? [DataOwnerTypeEnum.PATIENT])
     }
 }

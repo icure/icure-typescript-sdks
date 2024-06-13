@@ -21,10 +21,7 @@ export class SimpleCryptoStrategies<DSDataOwnerWithType extends DataOwnerWithTyp
      * considered as verified.
      * @param anonymousDataOwnerTypes data owner types which require anonymous delegations
      */
-    constructor(
-        private readonly availableKeys: KeyPair[],
-        private readonly anonymousDataOwnerTypes: Array<DSDataOwnerWithType['type']>,
-    ) {}
+    constructor(private readonly availableKeys: KeyPair[], private readonly anonymousDataOwnerTypes: Array<DSDataOwnerWithType['type']>) {}
 
     /**
      * If a new key pair was initialised during api initialisation this will return the generated keypair.
@@ -40,7 +37,7 @@ export class SimpleCryptoStrategies<DSDataOwnerWithType extends DataOwnerWithTyp
     recoverAndVerifyKeys(
         self: DSDataOwnerWithType,
         missingKeys: string[],
-        unverifiedKeys: string[],
+        unverifiedKeys: string[]
     ): Promise<{
         recoveredKeyPairs: KeyPair[]
         verifiedKeys: { [p: string]: CryptoStrategies.KeyVerificationBehaviour }
@@ -50,11 +47,11 @@ export class SimpleCryptoStrategies<DSDataOwnerWithType extends DataOwnerWithTyp
             const availableKey = availableKeysByPublic[missingKey]
             return availableKey ? [availableKey] : []
         })
-        const recoveredPublicKeysSet = (recoveredKeyPairs.map((keyPair) => keyPair.publicKey))
+        const recoveredPublicKeysSet = recoveredKeyPairs.map((keyPair) => keyPair.publicKey)
         const verifiedKeys = Object.fromEntries(
             unverifiedKeys
                 .filter((unverifiedKey) => !recoveredPublicKeysSet.includes(unverifiedKey))
-                .map((unverifiedKey) => [unverifiedKey, !!availableKeysByPublic[unverifiedKey] ? CryptoStrategies.KeyVerificationBehaviour.MARK_VERIFIED : CryptoStrategies.KeyVerificationBehaviour.TEMPORARILY_UNVERIFIED] as [string, CryptoStrategies.KeyVerificationBehaviour]),
+                .map((unverifiedKey) => [unverifiedKey, !!availableKeysByPublic[unverifiedKey] ? CryptoStrategies.KeyVerificationBehaviour.MARK_VERIFIED : CryptoStrategies.KeyVerificationBehaviour.TEMPORARILY_UNVERIFIED] as [string, CryptoStrategies.KeyVerificationBehaviour])
         )
         return Promise.resolve({ recoveredKeyPairs, verifiedKeys })
     }

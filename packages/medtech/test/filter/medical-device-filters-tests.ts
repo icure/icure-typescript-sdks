@@ -32,19 +32,19 @@ describe('Medical Device Filters Test', function () {
         md1 = await hcp1Api.medicalDeviceApi.createOrModifyMedicalDevice(
             new MedicalDevice({
                 name: 'Giskard',
-            }),
+            })
         )
 
         md2 = await hcp1Api.medicalDeviceApi.createOrModifyMedicalDevice(
             new MedicalDevice({
                 name: 'Daneel',
-            }),
+            })
         )
 
         md3 = await hcp1Api.medicalDeviceApi.createOrModifyMedicalDevice(
             new MedicalDevice({
                 name: 'Marvin',
-            }),
+            })
         )
     })
 

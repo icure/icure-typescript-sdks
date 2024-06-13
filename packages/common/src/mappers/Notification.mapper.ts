@@ -142,7 +142,7 @@ function toNotificationResponsible(dto: MaintenanceTask): string | undefined {
 }
 
 function toNotificationProperties(dto: MaintenanceTask): Array<Property> {
-    return !!dto.properties ? (dto.properties.map(mapPropertyStubToProperty)) : []
+    return !!dto.properties ? dto.properties.map(mapPropertyStubToProperty) : []
 }
 
 // If dto.taskType is not part of NotificationTypeEnum throws an error, else returns dto.taskType

@@ -202,7 +202,7 @@ function toDataSampleIndex(dto: ServiceDto): number | undefined {
 }
 
 function toDataSampleContent(dto: ServiceDto): Record<ISO639_1, Content> {
-    return dto.content ? Object.fromEntries([...Object.entries(dto.content)].map(([key, value]) => [key, mapContentDtoToContent(value)])) as Record<ISO639_1, Content> : {} as Record<ISO639_1, Content>
+    return dto.content ? (Object.fromEntries([...Object.entries(dto.content)].map(([key, value]) => [key, mapContentDtoToContent(value)])) as Record<ISO639_1, Content>) : ({} as Record<ISO639_1, Content>)
 }
 
 function toDataSampleValueDate(dto: ServiceDto): number | undefined {

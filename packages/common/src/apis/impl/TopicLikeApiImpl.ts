@@ -31,7 +31,7 @@ export class TopicLikeApiImpl<DSTopic, DSHcp, DSPatient, DSService, DSHealthElem
         private readonly userApi: IccUserXApi,
         private readonly patientApi: IccPatientXApi,
         private readonly dataOwnerApi: IccDataOwnerXApi,
-        private readonly cryptoStrategies: CryptoStrategies<DSDataOwnerWithType>,
+        private readonly cryptoStrategies: CryptoStrategies<DSDataOwnerWithType>
     ) {}
 
     async addParticipant(topic: DSTopic, participant: { ref: Reference<DSHcp>; role: TopicRole }): Promise<DSTopic> {
@@ -49,11 +49,11 @@ export class TopicLikeApiImpl<DSTopic, DSHcp, DSPatient, DSService, DSHealthElem
                         dataOwnerId: hcpId,
                         topicRole: participant.role,
                     },
-                    this.topicMapper.toDto(topic),
+                    this.topicMapper.toDto(topic)
                 )
                 .catch((e) => {
                     throw this.errorHandler.createErrorFromAny(e)
-                }),
+                })
         )
     }
 
@@ -65,11 +65,11 @@ export class TopicLikeApiImpl<DSTopic, DSHcp, DSPatient, DSService, DSHealthElem
                     new TopicDto({
                         ...previousTopic,
                         linkedServices: [...(previousTopic.linkedServices ?? []), ...this.getRefIds(services, (service) => this.serviceMapper.toDto(service).id!)],
-                    }),
+                    })
                 )
                 .catch((e) => {
                     throw this.errorHandler.createErrorFromAny(e)
-                }),
+                })
         )
     }
 
@@ -81,11 +81,11 @@ export class TopicLikeApiImpl<DSTopic, DSHcp, DSPatient, DSService, DSHealthElem
                     new TopicDto({
                         ...previousTopic,
                         linkedHealthElements: [...(previousTopic.linkedHealthElements ?? []), ...this.getRefIds(healthElements, (he) => this.healthElementMapper.toDto(he).id!)],
-                    }),
+                    })
                 )
                 .catch((e) => {
                     throw this.errorHandler.createErrorFromAny(e)
-                }),
+                })
         )
     }
 
@@ -96,7 +96,7 @@ export class TopicLikeApiImpl<DSTopic, DSHcp, DSPatient, DSService, DSHealthElem
         healthElements?: Array<Reference<DSHealthElement>>,
         services?: Array<Reference<DSService>>,
         tags?: Array<CodingReference>,
-        codes?: Array<CodingReference>,
+        codes?: Array<CodingReference>
     ): Promise<DSTopic> {
         const currentUser = await this.userApi.getCurrentUser()
         const dataOwnerId = this.dataOwnerApi.getDataOwnerIdOf(currentUser)
@@ -140,13 +140,13 @@ export class TopicLikeApiImpl<DSTopic, DSHcp, DSPatient, DSService, DSHealthElem
             }),
             {
                 additionalDelegates: Object.fromEntries(activeParticipants.map((curr) => [curr.hcpId, AccessLevelEnum.WRITE])),
-            },
+            }
         )
 
         return this.topicMapper.toDomain(
             await this.topicApi.createTopic(newTopicInstance).catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
-            }),
+            })
         )
     }
 
@@ -162,12 +162,12 @@ export class TopicLikeApiImpl<DSTopic, DSHcp, DSPatient, DSService, DSHealthElem
                         filter: FilterMapper.toAbstractFilterDto<TopicDto>(filter, 'Topic'),
                     }),
                     nextTopicId,
-                    limit,
+                    limit
                 )
                 .catch((e) => {
                     throw this.errorHandler.createErrorFromAny(e)
                 }),
-            this.topicMapper.toDomain,
+            this.topicMapper.toDomain
         )!
     }
 
@@ -203,8 +203,8 @@ export class TopicLikeApiImpl<DSTopic, DSHcp, DSPatient, DSService, DSHealthElem
                 new TopicDto({
                     ...previousTopic,
                     linkedServices: (previousTopic.linkedServices ?? []).filter((serviceId) => !servicesIds.includes(serviceId)),
-                }),
-            ),
+                })
+            )
         )
     }
 
@@ -216,8 +216,8 @@ export class TopicLikeApiImpl<DSTopic, DSHcp, DSPatient, DSService, DSHealthElem
                 new TopicDto({
                     ...previousTopic,
                     linkedHealthElements: (previousTopic.linkedHealthElements ?? []).filter((healthElementId) => !healthElementsIds.includes(healthElementId)),
-                }),
-            ),
+                })
+            )
         )
     }
 

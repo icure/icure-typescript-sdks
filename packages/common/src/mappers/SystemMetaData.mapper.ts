@@ -30,11 +30,11 @@ import { ICURE_INTERNAL_FHIR_TAG_TYPE } from '../utils/domain'
 import { mapSecurityMetadataDtoToSecurityMetadata, mapSecurityMetadataToSecurityMetadataDto } from './SecurityMetadata.mapper'
 
 function toMapOfSetOfDelegations(delegations: { [p: string]: DelegationDto[] }): Record<string, Array<DelegationDto>> {
-    return Object.fromEntries(Object.entries(delegations).map(([k, v]) => [k, (v.map(mapDelegationDtoToDelegation))]))
+    return Object.fromEntries(Object.entries(delegations).map(([k, v]) => [k, v.map(mapDelegationDtoToDelegation)]))
 }
 
 function extractInternalTags(dto: HealthElement | Service | MaintenanceTask | HealthcareParty | Patient | Device): Array<CodingReference> | undefined {
-    return !!dto.tags ? (dto.tags.filter((t) => t.type === ICURE_INTERNAL_FHIR_TAG_TYPE).map(mapCodeStubToCodingReference)) : undefined
+    return !!dto.tags ? dto.tags.filter((t) => t.type === ICURE_INTERNAL_FHIR_TAG_TYPE).map(mapCodeStubToCodingReference) : undefined
 }
 
 export function toSystemMetaDataEncrypted(dto: HealthElement | Service | MaintenanceTask | DocumentDto | MessageDto | TopicDto): SystemMetaDataEncrypted | undefined {
@@ -85,7 +85,7 @@ export function toHcPartyKeys(systemMetaData: SystemMetaDataOwnerEncrypted | Sys
       }
     | undefined {
     const hcPartyKeys = extractHcPartyKeys(systemMetaData)
-    return !!hcPartyKeys ? {...hcPartyKeys} : undefined
+    return !!hcPartyKeys ? { ...hcPartyKeys } : undefined
 }
 
 export function toAesExchangeKeys(systemMetaData: SystemMetaDataOwnerEncrypted | SystemMetaDataOwner):

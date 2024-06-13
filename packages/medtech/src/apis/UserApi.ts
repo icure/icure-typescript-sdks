@@ -172,6 +172,6 @@ export const userApi = (api: CommonApi, messageFactory: MessageFactory<User, Hea
         api,
         messageFactory,
         basePath,
-        api.messageGatewayApi,
+        api.messageGatewayApi
     )
 }

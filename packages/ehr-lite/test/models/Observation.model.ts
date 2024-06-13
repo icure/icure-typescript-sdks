@@ -28,8 +28,8 @@ export function generateObservation(): Observation {
         performer: 'samplePerformer',
         localContent: Object.fromEntries([['en', generateLocalComponent()]]) as Record<string, LocalComponent>,
         qualifiedLinks: Object.fromEntries([['linkType', Object.fromEntries([['linkId', 'linkValue']])]]),
-        codes: ([generateCodingReference()]),
-        tags: ([generateCodingReference()]),
+        codes: [generateCodingReference()],
+        tags: [generateCodingReference()],
         systemMetaData: generateSystemMetaDataEncrypted(mapCodeStubToCodingReference(domainTypeTag('observation'))),
         notes: [generateAnnotation()],
     } satisfies Observation

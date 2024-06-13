@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import { ContentDto, Measure, TimeSeries, base64string, mapTo } from '@icure/typescript-common';
-import { DataSample } from './DataSample.model';
+import { ContentDto, Measure, TimeSeries, base64string, mapTo } from '@icure/typescript-common'
+import { DataSample } from './DataSample.model'
 
 /**
  * Information contained in the data sample (Measure, number, ...). Content is localized, using ISO language code as key
@@ -44,58 +44,58 @@ export class Content {
 
     static toJSON(instance: Content): IContent {
         const pojo: IContent = {} as IContent
-        if (instance.stringValue !== undefined) pojo["stringValue"] = instance.stringValue
-        if (instance.numberValue !== undefined) pojo["numberValue"] = instance.numberValue
-        if (instance.booleanValue !== undefined) pojo["booleanValue"] = instance.booleanValue
-        if (instance.instantValue !== undefined) pojo["instantValue"] = instance.instantValue
-        if (instance.fuzzyDateValue !== undefined) pojo["fuzzyDateValue"] = instance.fuzzyDateValue
-        if (instance.binaryValue !== undefined) pojo["binaryValue"] = instance.binaryValue
-        if (instance.documentId !== undefined) pojo["documentId"] = instance.documentId
-        if (instance.measureValue !== undefined) pojo["measureValue"] = Measure.toJSON(instance.measureValue)
-        if (instance.timeSeries !== undefined) pojo["timeSeries"] = TimeSeries.toJSON(instance.timeSeries)
-        if (instance.compoundValue !== undefined) pojo["compoundValue"] = instance.compoundValue.map(item => DataSample.toJSON(item))
-        if (instance.ratio !== undefined) pojo["ratio"] = instance.ratio.map(item => Measure.toJSON(item))
-        if (instance.range !== undefined) pojo["range"] = instance.range.map(item => Measure.toJSON(item))
+        if (instance.stringValue !== undefined) pojo['stringValue'] = instance.stringValue
+        if (instance.numberValue !== undefined) pojo['numberValue'] = instance.numberValue
+        if (instance.booleanValue !== undefined) pojo['booleanValue'] = instance.booleanValue
+        if (instance.instantValue !== undefined) pojo['instantValue'] = instance.instantValue
+        if (instance.fuzzyDateValue !== undefined) pojo['fuzzyDateValue'] = instance.fuzzyDateValue
+        if (instance.binaryValue !== undefined) pojo['binaryValue'] = instance.binaryValue
+        if (instance.documentId !== undefined) pojo['documentId'] = instance.documentId
+        if (instance.measureValue !== undefined) pojo['measureValue'] = Measure.toJSON(instance.measureValue)
+        if (instance.timeSeries !== undefined) pojo['timeSeries'] = TimeSeries.toJSON(instance.timeSeries)
+        if (instance.compoundValue !== undefined) pojo['compoundValue'] = instance.compoundValue.map((item) => DataSample.toJSON(item))
+        if (instance.ratio !== undefined) pojo['ratio'] = instance.ratio.map((item) => Measure.toJSON(item))
+        if (instance.range !== undefined) pojo['range'] = instance.range.map((item) => Measure.toJSON(item))
         return pojo
     }
 
     static fromJSON(pojo: IContent): Content {
         const obj = {} as IContent
-        if (pojo["stringValue"] !== undefined) {
-            obj['stringValue'] = pojo["stringValue"]!
+        if (pojo['stringValue'] !== undefined) {
+            obj['stringValue'] = pojo['stringValue']!
         }
-        if (pojo["numberValue"] !== undefined) {
-            obj['numberValue'] = pojo["numberValue"]!
+        if (pojo['numberValue'] !== undefined) {
+            obj['numberValue'] = pojo['numberValue']!
         }
-        if (pojo["booleanValue"] !== undefined) {
-            obj['booleanValue'] = pojo["booleanValue"]!
+        if (pojo['booleanValue'] !== undefined) {
+            obj['booleanValue'] = pojo['booleanValue']!
         }
-        if (pojo["instantValue"] !== undefined) {
-            obj['instantValue'] = pojo["instantValue"]!
+        if (pojo['instantValue'] !== undefined) {
+            obj['instantValue'] = pojo['instantValue']!
         }
-        if (pojo["fuzzyDateValue"] !== undefined) {
-            obj['fuzzyDateValue'] = pojo["fuzzyDateValue"]!
+        if (pojo['fuzzyDateValue'] !== undefined) {
+            obj['fuzzyDateValue'] = pojo['fuzzyDateValue']!
         }
-        if (pojo["binaryValue"] !== undefined) {
-            obj['binaryValue'] = pojo["binaryValue"]!
+        if (pojo['binaryValue'] !== undefined) {
+            obj['binaryValue'] = pojo['binaryValue']!
         }
-        if (pojo["documentId"] !== undefined) {
-            obj['documentId'] = pojo["documentId"]!
+        if (pojo['documentId'] !== undefined) {
+            obj['documentId'] = pojo['documentId']!
         }
-        if (pojo["measureValue"] !== undefined) {
-            obj['measureValue'] = Measure.fromJSON(pojo["measureValue"]!)
+        if (pojo['measureValue'] !== undefined) {
+            obj['measureValue'] = Measure.fromJSON(pojo['measureValue']!)
         }
-        if (pojo["timeSeries"] !== undefined) {
-            obj['timeSeries'] = TimeSeries.fromJSON(pojo["timeSeries"]!)
+        if (pojo['timeSeries'] !== undefined) {
+            obj['timeSeries'] = TimeSeries.fromJSON(pojo['timeSeries']!)
         }
-        if (pojo["compoundValue"] !== undefined) {
-            obj['compoundValue'] = pojo["compoundValue"]!.map((item: any) => DataSample.fromJSON(item))
+        if (pojo['compoundValue'] !== undefined) {
+            obj['compoundValue'] = pojo['compoundValue']!.map((item: any) => DataSample.fromJSON(item))
         }
-        if (pojo["ratio"] !== undefined) {
-            obj['ratio'] = pojo["ratio"]!.map((item: any) => Measure.fromJSON(item))
+        if (pojo['ratio'] !== undefined) {
+            obj['ratio'] = pojo['ratio']!.map((item: any) => Measure.fromJSON(item))
         }
-        if (pojo["range"] !== undefined) {
-            obj['range'] = pojo["range"]!.map((item: any) => Measure.fromJSON(item))
+        if (pojo['range'] !== undefined) {
+            obj['range'] = pojo['range']!.map((item: any) => Measure.fromJSON(item))
         }
         return new Content(obj)
     }

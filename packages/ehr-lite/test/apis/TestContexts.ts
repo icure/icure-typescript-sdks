@@ -162,7 +162,7 @@ export function PatientApiAware<TBase extends Constructor<any>>(Base: TBase): TB
                     firstName: 'Johnjoe',
                     lastName: 'Doenatello',
                     notes: [annotation1(), annotation2()],
-                }),
+                })
             )
         }
 
@@ -210,7 +210,7 @@ export function ConditionApiAware<TBase extends Constructor<any>>(Base: TBase): 
                 new Condition({
                     notes: [annotation1()],
                 }),
-                patient.id,
+                patient.id
             )
         }
 
@@ -244,7 +244,7 @@ export function ObservationApiAware<TBase extends Constructor<any>>(Base: TBase)
         async checkServiceAccessibleAndDecrypted(api: EHRLiteApi, service: Observation, checkDeepEquals: boolean): Promise<void> {
             const retrieved = await api.observationApi.get(service.id!)
             expect(retrieved).toBeTruthy()
-            expect((Object.keys(retrieved.localContent)).length).toBeGreaterThan(0)
+            expect(Object.keys(retrieved.localContent).length).toBeGreaterThan(0)
             if (checkDeepEquals) expect(retrieved).toEqual(service)
         }
 
@@ -262,20 +262,20 @@ export function ObservationApiAware<TBase extends Constructor<any>>(Base: TBase)
             return api.observationApi.createOrModifyFor(
                 patient.id!,
                 new Observation({
-                    tags: ([new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })]),
+                    tags: [new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })],
                     localContent: recordOf({ en: new LocalComponent({ stringValue: 'Hello world' }) }),
-                }),
+                })
             )
         }
 
         createServicesForPatient(api: EHRLiteApi, patient: Patient): Promise<Observation[]> {
             return api.observationApi.createOrModifyManyFor(patient.id!, [
                 new Observation({
-                    tags: ([new CodingReference({ id: 'testid2', type: 'IC-TEST', code: 'TEST' })]),
+                    tags: [new CodingReference({ id: 'testid2', type: 'IC-TEST', code: 'TEST' })],
                     localContent: recordOf({ en: new LocalComponent({ stringValue: 'Hello world' }) }),
                 }),
                 new Observation({
-                    tags: ([new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })]),
+                    tags: [new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })],
                     localContent: recordOf({ en: new LocalComponent({ stringValue: 'Good night world' }) }),
                 }),
             ])
@@ -429,7 +429,7 @@ export function MessageApiAware<TBase extends Constructor<any>>(Base: TBase): TB
 
         toBinaryDto(
             dsBinary: Binary,
-            utiProvider: (mimeType: string, extension: string) => string,
+            utiProvider: (mimeType: string, extension: string) => string
         ): {
             data: ArrayBuffer
             filename: string
@@ -444,7 +444,7 @@ export function MessageApiAware<TBase extends Constructor<any>>(Base: TBase): TB
                 filename: string
                 uti: string
             },
-            mimeTypeProvider: (uti: string) => string,
+            mimeTypeProvider: (uti: string) => string
         ): Binary {
             return mapDocumentAttachmentToBinary(binaryDto, mimeTypeProvider)
         }

@@ -91,78 +91,78 @@ export class Document {
 
     static toJSON(instance: Document): IDocument {
         const pojo: IDocument = {} as IDocument
-        pojo["id"] = instance.id
-        if (instance.rev !== undefined) pojo["rev"] = instance.rev
-        if (instance.created !== undefined) pojo["created"] = instance.created
-        if (instance.modified !== undefined) pojo["modified"] = instance.modified
-        if (instance.author !== undefined) pojo["author"] = instance.author
-        if (instance.responsible !== undefined) pojo["responsible"] = instance.responsible
-        if (instance.medicalLocationId !== undefined) pojo["medicalLocationId"] = instance.medicalLocationId
-        if (instance.deletionDate !== undefined) pojo["deletionDate"] = instance.deletionDate
-        if (instance.objectStoreReference !== undefined) pojo["objectStoreReference"] = instance.objectStoreReference
-        if (instance.mainUti !== undefined) pojo["mainUti"] = instance.mainUti
-        if (instance.name !== undefined) pojo["name"] = instance.name
-        if (instance.version !== undefined) pojo["version"] = instance.version
-        pojo["otherUtis"] = instance.otherUtis.map(item => item)
-        if (instance.externalUuid !== undefined) pojo["externalUuid"] = instance.externalUuid
-        if (instance.size !== undefined) pojo["size"] = instance.size
-        if (instance.hash !== undefined) pojo["hash"] = instance.hash
-        if (instance.attachmentId !== undefined) pojo["attachmentId"] = instance.attachmentId
-        if (instance.systemMetaData !== undefined) pojo["systemMetaData"] = SystemMetaDataEncrypted.toJSON(instance.systemMetaData)
+        pojo['id'] = instance.id
+        if (instance.rev !== undefined) pojo['rev'] = instance.rev
+        if (instance.created !== undefined) pojo['created'] = instance.created
+        if (instance.modified !== undefined) pojo['modified'] = instance.modified
+        if (instance.author !== undefined) pojo['author'] = instance.author
+        if (instance.responsible !== undefined) pojo['responsible'] = instance.responsible
+        if (instance.medicalLocationId !== undefined) pojo['medicalLocationId'] = instance.medicalLocationId
+        if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
+        if (instance.objectStoreReference !== undefined) pojo['objectStoreReference'] = instance.objectStoreReference
+        if (instance.mainUti !== undefined) pojo['mainUti'] = instance.mainUti
+        if (instance.name !== undefined) pojo['name'] = instance.name
+        if (instance.version !== undefined) pojo['version'] = instance.version
+        pojo['otherUtis'] = instance.otherUtis.map((item) => item)
+        if (instance.externalUuid !== undefined) pojo['externalUuid'] = instance.externalUuid
+        if (instance.size !== undefined) pojo['size'] = instance.size
+        if (instance.hash !== undefined) pojo['hash'] = instance.hash
+        if (instance.attachmentId !== undefined) pojo['attachmentId'] = instance.attachmentId
+        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = SystemMetaDataEncrypted.toJSON(instance.systemMetaData)
         return pojo
     }
 
     static fromJSON(pojo: IDocument): Document {
         const obj = {} as IDocument
-        obj['id'] = pojo["id"]
-        if (pojo["rev"] !== undefined) {
-            obj['rev'] = pojo["rev"]!
+        obj['id'] = pojo['id']
+        if (pojo['rev'] !== undefined) {
+            obj['rev'] = pojo['rev']!
         }
-        if (pojo["created"] !== undefined) {
-            obj['created'] = pojo["created"]!
+        if (pojo['created'] !== undefined) {
+            obj['created'] = pojo['created']!
         }
-        if (pojo["modified"] !== undefined) {
-            obj['modified'] = pojo["modified"]!
+        if (pojo['modified'] !== undefined) {
+            obj['modified'] = pojo['modified']!
         }
-        if (pojo["author"] !== undefined) {
-            obj['author'] = pojo["author"]!
+        if (pojo['author'] !== undefined) {
+            obj['author'] = pojo['author']!
         }
-        if (pojo["responsible"] !== undefined) {
-            obj['responsible'] = pojo["responsible"]!
+        if (pojo['responsible'] !== undefined) {
+            obj['responsible'] = pojo['responsible']!
         }
-        if (pojo["medicalLocationId"] !== undefined) {
-            obj['medicalLocationId'] = pojo["medicalLocationId"]!
+        if (pojo['medicalLocationId'] !== undefined) {
+            obj['medicalLocationId'] = pojo['medicalLocationId']!
         }
-        if (pojo["deletionDate"] !== undefined) {
-            obj['deletionDate'] = pojo["deletionDate"]!
+        if (pojo['deletionDate'] !== undefined) {
+            obj['deletionDate'] = pojo['deletionDate']!
         }
-        if (pojo["objectStoreReference"] !== undefined) {
-            obj['objectStoreReference'] = pojo["objectStoreReference"]!
+        if (pojo['objectStoreReference'] !== undefined) {
+            obj['objectStoreReference'] = pojo['objectStoreReference']!
         }
-        if (pojo["mainUti"] !== undefined) {
-            obj['mainUti'] = pojo["mainUti"]!
+        if (pojo['mainUti'] !== undefined) {
+            obj['mainUti'] = pojo['mainUti']!
         }
-        if (pojo["name"] !== undefined) {
-            obj['name'] = pojo["name"]!
+        if (pojo['name'] !== undefined) {
+            obj['name'] = pojo['name']!
         }
-        if (pojo["version"] !== undefined) {
-            obj['version'] = pojo["version"]!
+        if (pojo['version'] !== undefined) {
+            obj['version'] = pojo['version']!
         }
-        obj['otherUtis'] = pojo["otherUtis"].map((item: any) => item)
-        if (pojo["externalUuid"] !== undefined) {
-            obj['externalUuid'] = pojo["externalUuid"]!
+        obj['otherUtis'] = pojo['otherUtis'].map((item: any) => item)
+        if (pojo['externalUuid'] !== undefined) {
+            obj['externalUuid'] = pojo['externalUuid']!
         }
-        if (pojo["size"] !== undefined) {
-            obj['size'] = pojo["size"]!
+        if (pojo['size'] !== undefined) {
+            obj['size'] = pojo['size']!
         }
-        if (pojo["hash"] !== undefined) {
-            obj['hash'] = pojo["hash"]!
+        if (pojo['hash'] !== undefined) {
+            obj['hash'] = pojo['hash']!
         }
-        if (pojo["attachmentId"] !== undefined) {
-            obj['attachmentId'] = pojo["attachmentId"]!
+        if (pojo['attachmentId'] !== undefined) {
+            obj['attachmentId'] = pojo['attachmentId']!
         }
-        if (pojo["systemMetaData"] !== undefined) {
-            obj['systemMetaData'] = SystemMetaDataEncrypted.fromJSON(pojo["systemMetaData"]!)
+        if (pojo['systemMetaData'] !== undefined) {
+            obj['systemMetaData'] = SystemMetaDataEncrypted.fromJSON(pojo['systemMetaData']!)
         }
         return new Document(obj)
     }

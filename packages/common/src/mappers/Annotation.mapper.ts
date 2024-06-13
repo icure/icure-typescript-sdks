@@ -233,7 +233,7 @@ function toAnnotationId(dto: AnnotationDto): string {
 }
 
 function toAnnotationTags(dto: AnnotationDto): Array<CodingReference> {
-    return (dto.tags?.map((t) => mapCodeStubToCodingReference(t))) ?? []
+    return dto.tags?.map((t) => mapCodeStubToCodingReference(t)) ?? []
 }
 
 function toAnnotationAuthor(dto: AnnotationDto): string | undefined {

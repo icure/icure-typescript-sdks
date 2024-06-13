@@ -38,5 +38,5 @@ export const messageApi = (api: CommonApi, characterLimit: number): MessageApi =
         api.baseApi.documentApi,
         api.baseApi.dataOwnerApi,
         api.errorHandler,
-        characterLimit,
+        characterLimit
     )

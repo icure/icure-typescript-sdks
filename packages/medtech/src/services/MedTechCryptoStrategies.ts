@@ -5,6 +5,6 @@ export interface MedTechCryptoStrategies extends CryptoStrategies<DataOwnerWithT
 
 export class SimpleMedTechCryptoStrategies extends SimpleCryptoStrategies<DataOwnerWithType> {
     constructor(availableKeys?: KeyPair[], anonymousDataOwnerTypes?: Array<DataOwnerTypeEnum>) {
-        super(availableKeys ?? [], anonymousDataOwnerTypes ?? ([DataOwnerTypeEnum.Patient]))
+        super(availableKeys ?? [], anonymousDataOwnerTypes ?? [DataOwnerTypeEnum.Patient])
     }
 }

@@ -25,15 +25,15 @@ export class SecurityMetadata {
 
     static toJSON(instance: SecurityMetadata): ISecurityMetadata {
         const pojo: ISecurityMetadata = {} as ISecurityMetadata
-        pojo["secureDelegations"] = {...instance.secureDelegations}
-        pojo["keysEquivalences"] = {...instance.keysEquivalences}
+        pojo['secureDelegations'] = { ...instance.secureDelegations }
+        pojo['keysEquivalences'] = { ...instance.keysEquivalences }
         return pojo
     }
 
     static fromJSON(pojo: ISecurityMetadata): SecurityMetadata {
         const obj = {} as ISecurityMetadata
-        obj['secureDelegations'] = {...pojo["secureDelegations"]}
-        obj['keysEquivalences'] = {...pojo["keysEquivalences"]}
+        obj['secureDelegations'] = { ...pojo['secureDelegations'] }
+        obj['keysEquivalences'] = { ...pojo['keysEquivalences'] }
         return new SecurityMetadata(obj)
     }
 }

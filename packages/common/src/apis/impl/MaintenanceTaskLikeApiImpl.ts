@@ -22,7 +22,7 @@ export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements Maintenanc
         private readonly dataOwnerApi: IccDataOwnerXApi,
         private readonly authApi: IccAuthApi,
         private readonly api: CommonApi,
-        private readonly basePath: string,
+        private readonly basePath: string
     ) {}
 
     async createOrModify(maintenanceTask: DSMaintenanceTask, delegate?: string): Promise<DSMaintenanceTask | undefined> {
@@ -58,7 +58,7 @@ export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements Maintenanc
                         limit,
                         new FilterChainMaintenanceTask({
                             filter: FilterMapper.toAbstractFilterDto(filter, 'MaintenanceTask'),
-                        }),
+                        })
                     )
                     .then((paginatedList) => {
                         return toPaginatedList(paginatedList, this.mapper.toDomain)
@@ -116,7 +116,7 @@ export class MaintenanceTaskLikeApiImpl<DSMaintenanceTask> implements Maintenanc
             FilterMapper.toAbstractFilterDto(filter, 'MaintenanceTask'),
             (event) => eventFired(this.mapper.toDomain(event)),
             options ?? {},
-            async (encrypted) => (await this.maintenanceTaskApi.decrypt(currentUser, [encrypted]))[0],
+            async (encrypted) => (await this.maintenanceTaskApi.decrypt(currentUser, [encrypted]))[0]
         ).then((ws) => new ConnectionImpl(ws))
     }
 

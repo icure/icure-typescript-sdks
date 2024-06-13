@@ -78,6 +78,6 @@ export const codingApi = (api: CommonApi): CodingApi => {
             },
         },
         api.errorHandler,
-        api.baseApi.codeApi,
+        api.baseApi.codeApi
     )
 }

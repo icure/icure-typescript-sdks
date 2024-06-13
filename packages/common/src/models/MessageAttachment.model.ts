@@ -12,18 +12,18 @@ export class MessageAttachment {
 
     static toJSON(instance: MessageAttachment): IMessageAttachment {
         const pojo: IMessageAttachment = {} as IMessageAttachment
-        if (instance.type !== undefined) pojo["type"] = instance.type
-        if (instance.ids !== undefined) pojo["ids"] = instance.ids.map(item => item)
+        if (instance.type !== undefined) pojo['type'] = instance.type
+        if (instance.ids !== undefined) pojo['ids'] = instance.ids.map((item) => item)
         return pojo
     }
 
     static fromJSON(pojo: IMessageAttachment): MessageAttachment {
         const obj = {} as IMessageAttachment
-        if (pojo["type"] !== undefined) {
-            obj['type'] = pojo["type"]!
+        if (pojo['type'] !== undefined) {
+            obj['type'] = pojo['type']!
         }
-        if (pojo["ids"] !== undefined) {
-            obj['ids'] = pojo["ids"]!.map((item: any) => item)
+        if (pojo['ids'] !== undefined) {
+            obj['ids'] = pojo['ids']!.map((item: any) => item)
         }
         return new MessageAttachment(obj)
     }

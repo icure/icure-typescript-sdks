@@ -6,7 +6,7 @@ import { v4 } from 'uuid'
 export function generateAnnotation(): Annotation {
     const annotation = {
         id: v4(),
-        tags: ([generateCodingReference(), generateCodingReference()]),
+        tags: [generateCodingReference(), generateCodingReference()],
         author: 'sampleAuthor',
         created: 1234567890,
         modified: 1234567890,

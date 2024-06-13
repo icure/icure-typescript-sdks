@@ -28,7 +28,7 @@ function arrayEquality(arr1: any[], arr2: any[], equals: (arg0: any, arg1: any) 
 function metadataEquality(obj1: any, obj2: any) {
     let areEquals = !!obj1 && !!obj2
     Object.keys(obj1).forEach((key) => {
-        areEquals = areEquals && key in obj2 && arrayEquality((obj1[key]), (obj1[key]), delegationEquality)
+        areEquals = areEquals && key in obj2 && arrayEquality(obj1[key], obj1[key], delegationEquality)
     })
     return areEquals
 }
@@ -44,7 +44,7 @@ function assertNotificationIsEquivalentToMaintenanceTask(notification: Notificat
     assert(notification.endOfLife === maintenanceTask.endOfLife)
     assert(notification.author === maintenanceTask.author)
     assert(notification.responsible === maintenanceTask.responsible)
-    assert(arrayEquality(!!notification.properties ? (notification.properties) : [], !!maintenanceTask.properties ? maintenanceTask.properties : [], propertyEquality))
+    assert(arrayEquality(!!notification.properties ? notification.properties : [], !!maintenanceTask.properties ? maintenanceTask.properties : [], propertyEquality))
     assert(notification.type === maintenanceTask.taskType)
     assert(metadataEquality(notification.systemMetaData?.delegations, maintenanceTask.delegations))
     assert(metadataEquality(notification.systemMetaData?.encryptionKeys, maintenanceTask.encryptionKeys))
@@ -68,11 +68,11 @@ describe('Notification mapper test', () => {
     it('Notification to MaintenanceTask - Success', () => {
         const newNotification = new Notification({
             ...commonOptions,
-            properties: (commonOptions.properties),
+            properties: commonOptions.properties,
             type: NotificationTypeEnum.KeyPairUpdate,
             systemMetaData: new SystemMetaDataEncrypted({
-                delegations: recordOf({ TEST_ID: ([new Delegation({ owner: uuid(), delegatedTo: uuid() })]) }),
-                encryptionKeys: recordOf({ TEST_KEY: ([new Delegation({ owner: uuid(), delegatedTo: uuid() })]) }),
+                delegations: recordOf({ TEST_ID: [new Delegation({ owner: uuid(), delegatedTo: uuid() })] }),
+                encryptionKeys: recordOf({ TEST_KEY: [new Delegation({ owner: uuid(), delegatedTo: uuid() })] }),
             }),
         })
         assert(newNotification)
@@ -104,7 +104,7 @@ describe('Notification mapper test', () => {
             .then(() => mapMaintenanceTaskToNotification(newTask))
             .then(
                 () => assert(false),
-                (e) => assert(e.message.includes('THIS DOES NOT BELONG TO THE ENUM')),
+                (e) => assert(e.message.includes('THIS DOES NOT BELONG TO THE ENUM'))
             )
     })
 })

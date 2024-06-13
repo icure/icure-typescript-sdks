@@ -19,7 +19,7 @@ export class MessageGatewayApiImpl implements MessageGatewayApi {
         private readonly sanitizer: Sanitizer,
         username?: string,
         password?: string,
-        private readonly fetchImpl: (input: RequestInfo, init?: RequestInit) => Promise<Response> = typeof window !== 'undefined' ? window.fetch : typeof self !== 'undefined' ? self.fetch : fetch,
+        private readonly fetchImpl: (input: RequestInfo, init?: RequestInit) => Promise<Response> = typeof window !== 'undefined' ? window.fetch : typeof self !== 'undefined' ? self.fetch : fetch
     ) {
         this.authHeader = !!username && !!password ? new Header('Authorization', 'Basic ' + b2a(`${username}:${password}`)) : null
         this.headers = [new Header('Content-Type', 'application/json')]

@@ -119,7 +119,7 @@ export function PatientApiAware<TBase extends Constructor<any>>(Base: TBase): TB
                             }),
                         }),
                     ],
-                }),
+                })
             )
         }
 
@@ -178,20 +178,20 @@ export function DataSampleApiAware<TBase extends Constructor<any>>(Base: TBase):
             return api.dataSampleApi.createOrModifyFor(
                 patient.id!,
                 new DataSample({
-                    labels: ([new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })]),
+                    labels: [new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })],
                     content: recordOf({ en: new Content({ stringValue: 'Hello world' }) }),
-                }),
+                })
             )
         }
 
         createServicesForPatient(api: MedTechApi, patient: Patient): Promise<DataSample[]> {
             return api.dataSampleApi.createOrModifyManyFor(patient.id!, [
                 new DataSample({
-                    labels: ([new CodingReference({ id: 'testid2', type: 'IC-TEST', code: 'TEST' })]),
+                    labels: [new CodingReference({ id: 'testid2', type: 'IC-TEST', code: 'TEST' })],
                     content: recordOf({ en: new Content({ stringValue: 'Hello world' }) }),
                 }),
                 new DataSample({
-                    labels: ([new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })]),
+                    labels: [new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })],
                     content: recordOf({ en: new Content({ stringValue: 'Good night world' }) }),
                 }),
             ])
@@ -291,7 +291,7 @@ export function HelementApiAware<TBase extends Constructor<any>>(Base: TBase): T
                 new HealthcareElement({
                     note: 'Hero Syndrome',
                 }),
-                patient!.id!,
+                patient!.id!
             )
         }
 

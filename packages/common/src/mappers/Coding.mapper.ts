@@ -63,7 +63,7 @@ function toCodeFlags(domain: Coding): Code.FlagsEnum[] | undefined {
 }
 
 function toCodeSearchTerms(domain: Coding): { [key: string]: string[] } | undefined {
-    return Object.fromEntries(Object.entries(domain.searchTerms).map(([k, v]) => [k, (v)]))
+    return Object.fromEntries(Object.entries(domain.searchTerms).map(([k, v]) => [k, v]))
 }
 
 function toCodeData(domain: Coding): string | undefined {
@@ -99,11 +99,11 @@ function toCodingVersion(dto: Code): string | undefined {
 }
 
 function toCodingRegions(dto: Code): Array<string> {
-    return (dto.regions ?? [])
+    return dto.regions ?? []
 }
 
 function toCodingDescription(dto: Code): Record<string, string> | undefined {
-    return !!dto.label ? {...dto.label} : undefined
+    return !!dto.label ? { ...dto.label } : undefined
 }
 
 function toCodingQualifiedLinks(dto: Code): Record<string, string[]> {
@@ -111,7 +111,7 @@ function toCodingQualifiedLinks(dto: Code): Record<string, string[]> {
 }
 
 function toCodingSearchTerms(dto: Code): Record<string, Array<string>> {
-    return !!dto.searchTerms ? {...dto.searchTerms} : ({} as Record<string, Array<string>>)
+    return !!dto.searchTerms ? { ...dto.searchTerms } : ({} as Record<string, Array<string>>)
 }
 
 export function mapCodeToCoding(dto: Code): Coding {

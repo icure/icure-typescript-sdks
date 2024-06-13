@@ -18,5 +18,5 @@ export const organisationApi = (api: CommonApi, basePath: string): OrganisationA
         api.errorHandler,
         api.baseApi.healthcarePartyApi,
         api.baseApi.authApi,
-        basePath,
+        basePath
     )

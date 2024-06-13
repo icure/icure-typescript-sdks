@@ -43,26 +43,26 @@ describe('HealthcareProfessional Filters Test', function () {
         hcp1 = await masterApi.healthcareProfessionalApi.createOrModifyHealthcareProfessional(
             new HealthcareProfessional({
                 name: 'HCP_01',
-                labels: ([new CodingReference({ type: 'hcp-type', code: `physician-${id}` })]),
-                codes: ([new CodingReference({ type: 'practitioner-specialty', code: `gastroenterologist-${id}` })]),
-            }),
+                labels: [new CodingReference({ type: 'hcp-type', code: `physician-${id}` })],
+                codes: [new CodingReference({ type: 'practitioner-specialty', code: `gastroenterologist-${id}` })],
+            })
         )
 
         hcp2 = await masterApi.healthcareProfessionalApi.createOrModifyHealthcareProfessional(
             new HealthcareProfessional({
                 name: 'HCP_02',
-                labels: ([new CodingReference({ type: 'hcp-type', code: `physician-${id}` })]),
-                codes: ([new CodingReference({ type: 'practitioner-specialty', code: `cardiologist-${id}` })]),
-            }),
+                labels: [new CodingReference({ type: 'hcp-type', code: `physician-${id}` })],
+                codes: [new CodingReference({ type: 'practitioner-specialty', code: `cardiologist-${id}` })],
+            })
         )
 
         hcp3 = await masterApi.healthcareProfessionalApi.createOrModifyHealthcareProfessional(
             new HealthcareProfessional({
                 firstName: 'John',
                 lastName: 'Keats',
-                labels: ([new CodingReference({ type: 'hcp-type', code: `physician-${id}` })]),
-                codes: ([new CodingReference({ type: 'practitioner-specialty', code: `cardiologist-${id}` })]),
-            }),
+                labels: [new CodingReference({ type: 'hcp-type', code: `physician-${id}` })],
+                codes: [new CodingReference({ type: 'practitioner-specialty', code: `cardiologist-${id}` })],
+            })
         )
     })
 
@@ -72,7 +72,7 @@ describe('HealthcareProfessional Filters Test', function () {
         expect(!!hcps).to.equal(true)
         expect(hcps.rows.length).to.be.greaterThanOrEqual(2)
         hcps.rows.forEach((hcp) => {
-            expect((hcp.codes)[0].code).to.eq(`cardiologist-${id}`)
+            expect(hcp.codes[0].code).to.eq(`cardiologist-${id}`)
         })
     })
 
@@ -102,7 +102,7 @@ describe('HealthcareProfessional Filters Test', function () {
         expect(!!hcps).to.equal(true)
         expect(hcps.rows.length).to.be.greaterThanOrEqual(1)
         hcps.rows.forEach((hcp) => {
-            expect((hcp.labels)[0].code).to.eq(`physician-${id}`)
+            expect(hcp.labels[0].code).to.eq(`physician-${id}`)
         })
     })
 
@@ -112,7 +112,7 @@ describe('HealthcareProfessional Filters Test', function () {
         expect(!!hcps).to.equal(true)
         expect(hcps.rows.length).to.be.greaterThanOrEqual(1)
         hcps.rows.forEach((hcp) => {
-            expect((hcp.codes)[0].code).to.eq(`gastroenterologist-${id}`)
+            expect(hcp.codes[0].code).to.eq(`gastroenterologist-${id}`)
         })
     })
 
@@ -142,7 +142,7 @@ describe('HealthcareProfessional Filters Test', function () {
         expect(hcps.rows.length).to.be.greaterThanOrEqual(2)
         hcps.rows.forEach((hcp) => {
             expect(hcp).to.satisfy((h: HealthcareProfessional) => {
-                return (h.codes)[0].code === `gastroenterologist-${id}` || h.id === hcp2.id
+                return h.codes[0].code === `gastroenterologist-${id}` || h.id === hcp2.id
             })
         })
     })
@@ -153,7 +153,7 @@ describe('HealthcareProfessional Filters Test', function () {
         expect(!!hcps).to.equal(true)
         expect(hcps.rows.length).to.be.equal(1)
         hcps.rows.forEach((hcp) => {
-            expect((hcp.codes)[0].code).to.eq(`cardiologist-${id}`)
+            expect(hcp.codes[0].code).to.eq(`cardiologist-${id}`)
             expect(hcp.id).to.eq(hcp2.id)
         })
     })
@@ -170,7 +170,7 @@ describe('HealthcareProfessional Filters Test', function () {
         expect(hcps.rows.length).to.be.equal(1)
         hcps.rows.forEach((hcp) => {
             expect(hcp.id).to.eq(hcp3.id)
-            expect((hcp.codes)[0].code).to.eq(`cardiologist-${id}`)
+            expect(hcp.codes[0].code).to.eq(`cardiologist-${id}`)
         })
     })
 

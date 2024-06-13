@@ -40,7 +40,7 @@ describe('User Filters Test', function () {
             new User({
                 name: 'Marvin',
                 login: getTempEmail(),
-            }),
+            })
         )
     })
 

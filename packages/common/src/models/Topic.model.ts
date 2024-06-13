@@ -45,70 +45,70 @@ export class Topic {
 
     static toJSON(instance: Topic): ITopic {
         const pojo: ITopic = {} as ITopic
-        pojo["id"] = instance.id
-        if (instance.rev !== undefined) pojo["rev"] = instance.rev
-        if (instance.created !== undefined) pojo["created"] = instance.created
-        if (instance.modified !== undefined) pojo["modified"] = instance.modified
-        if (instance.author !== undefined) pojo["author"] = instance.author
-        if (instance.responsible !== undefined) pojo["responsible"] = instance.responsible
-        if (instance.medicalLocationId !== undefined) pojo["medicalLocationId"] = instance.medicalLocationId
-        if (instance.tags !== undefined) pojo["tags"] = instance.tags.map(item => CodingReference.toJSON(item))
-        if (instance.codes !== undefined) pojo["codes"] = instance.codes.map(item => CodingReference.toJSON(item))
-        if (instance.endOfLife !== undefined) pojo["endOfLife"] = instance.endOfLife
-        if (instance.deletionDate !== undefined) pojo["deletionDate"] = instance.deletionDate
-        if (instance.descr !== undefined) pojo["descr"] = instance.descr
-        if (instance.linkedHealthElements !== undefined) pojo["linkedHealthElements"] = instance.linkedHealthElements.map(item => item)
-        if (instance.linkedServices !== undefined) pojo["linkedServices"] = instance.linkedServices.map(item => item)
-        pojo["activeParticipants"] = {...instance.activeParticipants}
-        if (instance.systemMetadata !== undefined) pojo["systemMetadata"] = SystemMetaDataEncrypted.toJSON(instance.systemMetadata)
+        pojo['id'] = instance.id
+        if (instance.rev !== undefined) pojo['rev'] = instance.rev
+        if (instance.created !== undefined) pojo['created'] = instance.created
+        if (instance.modified !== undefined) pojo['modified'] = instance.modified
+        if (instance.author !== undefined) pojo['author'] = instance.author
+        if (instance.responsible !== undefined) pojo['responsible'] = instance.responsible
+        if (instance.medicalLocationId !== undefined) pojo['medicalLocationId'] = instance.medicalLocationId
+        if (instance.tags !== undefined) pojo['tags'] = instance.tags.map((item) => CodingReference.toJSON(item))
+        if (instance.codes !== undefined) pojo['codes'] = instance.codes.map((item) => CodingReference.toJSON(item))
+        if (instance.endOfLife !== undefined) pojo['endOfLife'] = instance.endOfLife
+        if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
+        if (instance.descr !== undefined) pojo['descr'] = instance.descr
+        if (instance.linkedHealthElements !== undefined) pojo['linkedHealthElements'] = instance.linkedHealthElements.map((item) => item)
+        if (instance.linkedServices !== undefined) pojo['linkedServices'] = instance.linkedServices.map((item) => item)
+        pojo['activeParticipants'] = { ...instance.activeParticipants }
+        if (instance.systemMetadata !== undefined) pojo['systemMetadata'] = SystemMetaDataEncrypted.toJSON(instance.systemMetadata)
         return pojo
     }
 
     static fromJSON(pojo: ITopic): Topic {
         const obj = {} as ITopic
-        obj['id'] = pojo["id"]
-        if (pojo["rev"] !== undefined) {
-            obj['rev'] = pojo["rev"]!
+        obj['id'] = pojo['id']
+        if (pojo['rev'] !== undefined) {
+            obj['rev'] = pojo['rev']!
         }
-        if (pojo["created"] !== undefined) {
-            obj['created'] = pojo["created"]!
+        if (pojo['created'] !== undefined) {
+            obj['created'] = pojo['created']!
         }
-        if (pojo["modified"] !== undefined) {
-            obj['modified'] = pojo["modified"]!
+        if (pojo['modified'] !== undefined) {
+            obj['modified'] = pojo['modified']!
         }
-        if (pojo["author"] !== undefined) {
-            obj['author'] = pojo["author"]!
+        if (pojo['author'] !== undefined) {
+            obj['author'] = pojo['author']!
         }
-        if (pojo["responsible"] !== undefined) {
-            obj['responsible'] = pojo["responsible"]!
+        if (pojo['responsible'] !== undefined) {
+            obj['responsible'] = pojo['responsible']!
         }
-        if (pojo["medicalLocationId"] !== undefined) {
-            obj['medicalLocationId'] = pojo["medicalLocationId"]!
+        if (pojo['medicalLocationId'] !== undefined) {
+            obj['medicalLocationId'] = pojo['medicalLocationId']!
         }
-        if (pojo["tags"] !== undefined) {
-            obj['tags'] = pojo["tags"]!.map((item: any) => CodingReference.fromJSON(item))
+        if (pojo['tags'] !== undefined) {
+            obj['tags'] = pojo['tags']!.map((item: any) => CodingReference.fromJSON(item))
         }
-        if (pojo["codes"] !== undefined) {
-            obj['codes'] = pojo["codes"]!.map((item: any) => CodingReference.fromJSON(item))
+        if (pojo['codes'] !== undefined) {
+            obj['codes'] = pojo['codes']!.map((item: any) => CodingReference.fromJSON(item))
         }
-        if (pojo["endOfLife"] !== undefined) {
-            obj['endOfLife'] = pojo["endOfLife"]!
+        if (pojo['endOfLife'] !== undefined) {
+            obj['endOfLife'] = pojo['endOfLife']!
         }
-        if (pojo["deletionDate"] !== undefined) {
-            obj['deletionDate'] = pojo["deletionDate"]!
+        if (pojo['deletionDate'] !== undefined) {
+            obj['deletionDate'] = pojo['deletionDate']!
         }
-        if (pojo["descr"] !== undefined) {
-            obj['descr'] = pojo["descr"]!
+        if (pojo['descr'] !== undefined) {
+            obj['descr'] = pojo['descr']!
         }
-        if (pojo["linkedHealthElements"] !== undefined) {
-            obj['linkedHealthElements'] = pojo["linkedHealthElements"]!.map((item: any) => item)
+        if (pojo['linkedHealthElements'] !== undefined) {
+            obj['linkedHealthElements'] = pojo['linkedHealthElements']!.map((item: any) => item)
         }
-        if (pojo["linkedServices"] !== undefined) {
-            obj['linkedServices'] = pojo["linkedServices"]!.map((item: any) => item)
+        if (pojo['linkedServices'] !== undefined) {
+            obj['linkedServices'] = pojo['linkedServices']!.map((item: any) => item)
         }
-        obj['activeParticipants'] = {...pojo["activeParticipants"]}
-        if (pojo["systemMetadata"] !== undefined) {
-            obj['systemMetadata'] = SystemMetaDataEncrypted.fromJSON(pojo["systemMetadata"]!)
+        obj['activeParticipants'] = { ...pojo['activeParticipants'] }
+        if (pojo['systemMetadata'] !== undefined) {
+            obj['systemMetadata'] = SystemMetaDataEncrypted.fromJSON(pojo['systemMetadata']!)
         }
         return new Topic(obj)
     }

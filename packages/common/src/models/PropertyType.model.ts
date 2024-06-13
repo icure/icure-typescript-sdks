@@ -14,16 +14,16 @@ export class PropertyType {
 
     static toJSON(instance: PropertyType): IPropertyType {
         const pojo: IPropertyType = {} as IPropertyType
-        pojo["identifier"] = instance.identifier
-        if (instance.type !== undefined) pojo["type"] = instance.type
+        pojo['identifier'] = instance.identifier
+        if (instance.type !== undefined) pojo['type'] = instance.type
         return pojo
     }
 
     static fromJSON(pojo: IPropertyType): PropertyType {
         const obj = {} as IPropertyType
-        obj['identifier'] = pojo["identifier"]
-        if (pojo["type"] !== undefined) {
-            obj['type'] = pojo["type"]!
+        obj['identifier'] = pojo['identifier']
+        if (pojo['type'] !== undefined) {
+            obj['type'] = pojo['type']!
         }
         return new PropertyType(obj)
     }

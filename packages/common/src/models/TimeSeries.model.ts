@@ -32,25 +32,25 @@ export class TimeSeries {
 
     static toJSON(instance: TimeSeries): ITimeSeries {
         const pojo: ITimeSeries = {} as ITimeSeries
-        pojo["fields"] = instance.fields.map(item => item)
-        pojo["samples"] = instance.samples.map(item => item.map(item => item))
-        pojo["min"] = instance.min.map(item => item)
-        pojo["max"] = instance.max.map(item => item)
-        pojo["mean"] = instance.mean.map(item => item)
-        pojo["median"] = instance.median.map(item => item)
-        pojo["variance"] = instance.variance.map(item => item)
+        pojo['fields'] = instance.fields.map((item) => item)
+        pojo['samples'] = instance.samples.map((item) => item.map((item) => item))
+        pojo['min'] = instance.min.map((item) => item)
+        pojo['max'] = instance.max.map((item) => item)
+        pojo['mean'] = instance.mean.map((item) => item)
+        pojo['median'] = instance.median.map((item) => item)
+        pojo['variance'] = instance.variance.map((item) => item)
         return pojo
     }
 
     static fromJSON(pojo: ITimeSeries): TimeSeries {
         const obj = {} as ITimeSeries
-        obj['fields'] = pojo["fields"].map((item: any) => item)
-        obj['samples'] = pojo["samples"].map((item: any) => item.map((item: any) => item))
-        obj['min'] = pojo["min"].map((item: any) => item)
-        obj['max'] = pojo["max"].map((item: any) => item)
-        obj['mean'] = pojo["mean"].map((item: any) => item)
-        obj['median'] = pojo["median"].map((item: any) => item)
-        obj['variance'] = pojo["variance"].map((item: any) => item)
+        obj['fields'] = pojo['fields'].map((item: any) => item)
+        obj['samples'] = pojo['samples'].map((item: any) => item.map((item: any) => item))
+        obj['min'] = pojo['min'].map((item: any) => item)
+        obj['max'] = pojo['max'].map((item: any) => item)
+        obj['mean'] = pojo['mean'].map((item: any) => item)
+        obj['median'] = pojo['median'].map((item: any) => item)
+        obj['variance'] = pojo['variance'].map((item: any) => item)
         return new TimeSeries(obj)
     }
 }

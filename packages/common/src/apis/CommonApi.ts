@@ -22,7 +22,7 @@ export abstract class CommonApi {
         storage?: StorageFacade<string>,
         keyStorage?: KeyStorageFacade,
         errorHandler?: ErrorHandler,
-        sanitizer?: Sanitizer,
+        sanitizer?: Sanitizer
     ) {
         this._errorHandler = errorHandler ?? new ErrorHandlerImpl()
         this._sanitizer = sanitizer ?? new SanitizerImpl(this._errorHandler)

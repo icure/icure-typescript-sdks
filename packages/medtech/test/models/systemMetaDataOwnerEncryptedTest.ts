@@ -13,9 +13,9 @@ export function newSystemMetaDataOwnerEncrypted(): SystemMetaDataOwnerEncrypted 
         aesExchangeKeys: recordOf({ key: recordOf({ key: recordOf({ key: 'aesExchangeKeys' }) }) }),
         transferKeys: recordOf({ key: recordOf({ key: 'aesExchangeKeys' }) }),
         secretForeignKeys: ['secretForeignKeys'],
-        cryptedForeignKeys: recordOf({ key: ([newDelegation()]) }),
-        delegations: recordOf({ key: ([newDelegation()]) }),
-        encryptionKeys: recordOf({ key: ([newDelegation()]) }),
+        cryptedForeignKeys: recordOf({ key: [newDelegation()] }),
+        delegations: recordOf({ key: [newDelegation()] }),
+        encryptionKeys: recordOf({ key: [newDelegation()] }),
     })
 }
 

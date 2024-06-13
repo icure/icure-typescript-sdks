@@ -55,13 +55,10 @@ export const extractSecurityMetaData = (value?: SystemMetaDataEncrypted | System
 }
 
 export function convertMapToObject(map: Record<string, string>): { [key: string]: string } {
-    return Object.entries(map).reduce(
-        (obj, [key, value]) => {
-            obj[key] = value
-            return obj
-        },
-        {} as { [key: string]: string },
-    )
+    return Object.entries(map).reduce((obj, [key, value]) => {
+        obj[key] = value
+        return obj
+    }, {} as { [key: string]: string })
 }
 
 export function convertObjectToMap(obj: { [key: string]: string }): Record<string, string> {
@@ -69,13 +66,10 @@ export function convertObjectToMap(obj: { [key: string]: string }): Record<strin
 }
 
 export function convertNestedMapToObject(map: Record<string, Record<string, string>>): { [key: string]: { [key: string]: string } } {
-    return Object.entries(map).reduce(
-        (outerObj, [outerKey, innerMap]) => {
-            outerObj[outerKey] = convertMapToObject(innerMap)
-            return outerObj
-        },
-        {} as { [key: string]: { [key: string]: string } },
-    )
+    return Object.entries(map).reduce((outerObj, [outerKey, innerMap]) => {
+        outerObj[outerKey] = convertMapToObject(innerMap)
+        return outerObj
+    }, {} as { [key: string]: { [key: string]: string } })
 }
 
 export function convertObjectToNestedMap(obj: { [key: string]: { [key: string]: string } }): Record<string, Record<string, string>> {
@@ -83,13 +77,10 @@ export function convertObjectToNestedMap(obj: { [key: string]: { [key: string]: 
 }
 
 export function convertDeepNestedMapToObject(map: Record<string, Record<string, Record<string, string>>>): { [key: string]: { [key: string]: { [key: string]: string } } } {
-    return Object.entries(map).reduce(
-        (outerObj, [outerKey, innerMap]) => {
-            outerObj[outerKey] = convertNestedMapToObject(innerMap)
-            return outerObj
-        },
-        {} as { [key: string]: { [key: string]: { [key: string]: string } } },
-    )
+    return Object.entries(map).reduce((outerObj, [outerKey, innerMap]) => {
+        outerObj[outerKey] = convertNestedMapToObject(innerMap)
+        return outerObj
+    }, {} as { [key: string]: { [key: string]: { [key: string]: string } } })
 }
 
 export function convertObjectToDeepNestedMap(obj: { [key: string]: { [key: string]: { [key: string]: string } } }): Record<string, Record<string, Record<string, string>>> {
@@ -97,13 +88,10 @@ export function convertObjectToDeepNestedMap(obj: { [key: string]: { [key: strin
 }
 
 export function convertMapOfArrayOfGenericToObject<T, U>(map: Record<string, T[]>, mapping: (t: T[]) => U[]): { [key: string]: U[] } {
-    return Object.entries(map).reduce(
-        (obj, [key, value]) => {
-            obj[key] = mapping(value)
-            return obj
-        },
-        {} as { [key: string]: U[] },
-    )
+    return Object.entries(map).reduce((obj, [key, value]) => {
+        obj[key] = mapping(value)
+        return obj
+    }, {} as { [key: string]: U[] })
 }
 
 export function convertObjectToMapOfArrayOfGeneric<U, T>(obj: { [key: string]: U[] }, mapping: (u: U[]) => T[]): Record<string, T[]> {

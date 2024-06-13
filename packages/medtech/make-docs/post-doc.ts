@@ -27,7 +27,7 @@ function extract(lines: string[], startOfBlock: string, newStartOfBlock: string,
                 return { inBlock: false, content }
             }
         },
-        { inBlock: false, content: '' },
+        { inBlock: false, content: '' }
     )
 }
 
@@ -76,7 +76,7 @@ function scanAndRunRecursively(dir: string) {
                                     .split('\n')
                                     .map(fixLinks)
                                     .join('\n'),
-                                'utf8',
+                                'utf8'
                             )
                         } else {
                             fs.writeFileSync(
@@ -87,7 +87,7 @@ function scanAndRunRecursively(dir: string) {
                                     .split('\n')
                                     .map(fixLinks)
                                     .join('\n'),
-                                'utf8',
+                                'utf8'
                             )
                         }
 

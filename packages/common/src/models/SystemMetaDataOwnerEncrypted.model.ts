@@ -35,43 +35,43 @@ export class SystemMetaDataOwnerEncrypted {
 
     static toJSON(instance: SystemMetaDataOwnerEncrypted): ISystemMetaDataOwnerEncrypted {
         const pojo: ISystemMetaDataOwnerEncrypted = {} as ISystemMetaDataOwnerEncrypted
-        if (instance.publicKey !== undefined) pojo["publicKey"] = instance.publicKey
-        pojo["hcPartyKeys"] = {...instance.hcPartyKeys}
-        pojo["privateKeyShamirPartitions"] = {...instance.privateKeyShamirPartitions}
-        pojo["secretForeignKeys"] = instance.secretForeignKeys.map(item => item)
-        pojo["cryptedForeignKeys"] = {...instance.cryptedForeignKeys}
-        pojo["delegations"] = {...instance.delegations}
-        pojo["encryptionKeys"] = {...instance.encryptionKeys}
-        pojo["aesExchangeKeys"] = {...instance.aesExchangeKeys}
-        pojo["transferKeys"] = {...instance.transferKeys}
-        if (instance.securityMetadata !== undefined) pojo["securityMetadata"] = SecurityMetadata.toJSON(instance.securityMetadata)
-        pojo["publicKeysForOaepWithSha256"] = instance.publicKeysForOaepWithSha256.map(item => item)
-        if (instance.encryptedSelf !== undefined) pojo["encryptedSelf"] = instance.encryptedSelf
-        pojo["tags"] = instance.tags.map(item => CodingReference.toJSON(item))
+        if (instance.publicKey !== undefined) pojo['publicKey'] = instance.publicKey
+        pojo['hcPartyKeys'] = { ...instance.hcPartyKeys }
+        pojo['privateKeyShamirPartitions'] = { ...instance.privateKeyShamirPartitions }
+        pojo['secretForeignKeys'] = instance.secretForeignKeys.map((item) => item)
+        pojo['cryptedForeignKeys'] = { ...instance.cryptedForeignKeys }
+        pojo['delegations'] = { ...instance.delegations }
+        pojo['encryptionKeys'] = { ...instance.encryptionKeys }
+        pojo['aesExchangeKeys'] = { ...instance.aesExchangeKeys }
+        pojo['transferKeys'] = { ...instance.transferKeys }
+        if (instance.securityMetadata !== undefined) pojo['securityMetadata'] = SecurityMetadata.toJSON(instance.securityMetadata)
+        pojo['publicKeysForOaepWithSha256'] = instance.publicKeysForOaepWithSha256.map((item) => item)
+        if (instance.encryptedSelf !== undefined) pojo['encryptedSelf'] = instance.encryptedSelf
+        pojo['tags'] = instance.tags.map((item) => CodingReference.toJSON(item))
         return pojo
     }
 
     static fromJSON(pojo: ISystemMetaDataOwnerEncrypted): SystemMetaDataOwnerEncrypted {
         const obj = {} as ISystemMetaDataOwnerEncrypted
-        if (pojo["publicKey"] !== undefined) {
-            obj['publicKey'] = pojo["publicKey"]!
+        if (pojo['publicKey'] !== undefined) {
+            obj['publicKey'] = pojo['publicKey']!
         }
-        obj['hcPartyKeys'] = {...pojo["hcPartyKeys"]}
-        obj['privateKeyShamirPartitions'] = {...pojo["privateKeyShamirPartitions"]}
-        obj['secretForeignKeys'] = pojo["secretForeignKeys"].map((item: any) => item)
-        obj['cryptedForeignKeys'] = {...pojo["cryptedForeignKeys"]}
-        obj['delegations'] = {...pojo["delegations"]}
-        obj['encryptionKeys'] = {...pojo["encryptionKeys"]}
-        obj['aesExchangeKeys'] = {...pojo["aesExchangeKeys"]}
-        obj['transferKeys'] = {...pojo["transferKeys"]}
-        if (pojo["securityMetadata"] !== undefined) {
-            obj['securityMetadata'] = SecurityMetadata.fromJSON(pojo["securityMetadata"]!)
+        obj['hcPartyKeys'] = { ...pojo['hcPartyKeys'] }
+        obj['privateKeyShamirPartitions'] = { ...pojo['privateKeyShamirPartitions'] }
+        obj['secretForeignKeys'] = pojo['secretForeignKeys'].map((item: any) => item)
+        obj['cryptedForeignKeys'] = { ...pojo['cryptedForeignKeys'] }
+        obj['delegations'] = { ...pojo['delegations'] }
+        obj['encryptionKeys'] = { ...pojo['encryptionKeys'] }
+        obj['aesExchangeKeys'] = { ...pojo['aesExchangeKeys'] }
+        obj['transferKeys'] = { ...pojo['transferKeys'] }
+        if (pojo['securityMetadata'] !== undefined) {
+            obj['securityMetadata'] = SecurityMetadata.fromJSON(pojo['securityMetadata']!)
         }
-        obj['publicKeysForOaepWithSha256'] = pojo["publicKeysForOaepWithSha256"].map((item: any) => item)
-        if (pojo["encryptedSelf"] !== undefined) {
-            obj['encryptedSelf'] = pojo["encryptedSelf"]!
+        obj['publicKeysForOaepWithSha256'] = pojo['publicKeysForOaepWithSha256'].map((item: any) => item)
+        if (pojo['encryptedSelf'] !== undefined) {
+            obj['encryptedSelf'] = pojo['encryptedSelf']!
         }
-        obj['tags'] = pojo["tags"].map((item: any) => CodingReference.fromJSON(item))
+        obj['tags'] = pojo['tags'].map((item: any) => CodingReference.fromJSON(item))
         return new SystemMetaDataOwnerEncrypted(obj)
     }
 }

@@ -18,7 +18,7 @@ export function testHcpLikeApi<
     DSUser,
     DSHcp,
     DSPatient,
-    DSDataOwner extends DataOwnerWithType,
+    DSDataOwner extends DataOwnerWithType
 >(name: string, ctx: BaseApiTestContext<DSAnonymousApiBuilder, DSAnonymousApi, DSApi, DSCryptoStrategies, DSUser, any> & WithPatientApi<DSApi, DSPatient> & WithHcpApi<DSApi, DSHcp> & WithDataOwnerApi<DSApi, DSDataOwner, DSUser>) {
     describe(`${name} (Hcp-like API)`, () => {
         let env: TestVars
@@ -37,15 +37,15 @@ export function testHcpLikeApi<
                     privateKey: CryptoKey
                 },
                 'jwk',
-                'jwk',
+                'jwk'
             )
             const hcp = await ctx.hcpApi(api).createOrModify(
                 ctx.toDSHcp(
                     new HealthcareParty({
                         name: `Med-ts-ic-test-${forceUuid()}`,
                         publicKeysForOaepWithSha256: [jwk2spki(keyPair.publicKey)],
-                    }),
-                ),
+                    })
+                )
             )
             expect(hcp).toBeTruthy()
             const hcpDto = ctx.toHcpDto(hcp)
@@ -61,8 +61,8 @@ export function testHcpLikeApi<
                         passwordHash: userPwd,
                         email: userEmail,
                         healthcarePartyId: hcpDto.id,
-                    }),
-                ),
+                    })
+                )
             )
             expect(user).toBeTruthy()
             const userDto = ctx.toUserDto(user)
@@ -80,8 +80,8 @@ export function testHcpLikeApi<
                 ctx.toDSHcp(
                     new HealthcareParty({
                         name: `Med-ts-ic-test-${forceUuid()}`,
-                    }),
-                ),
+                    })
+                )
             )
             expect(hcp).toBeTruthy()
             const hcpId = ctx.toHcpDto(hcp).id
@@ -94,8 +94,8 @@ export function testHcpLikeApi<
                         passwordHash: userPwd,
                         email: userEmail,
                         healthcarePartyId: hcpId,
-                    }),
-                ),
+                    })
+                )
             )
             const userDto = ctx.toUserDto(user)
             expect(userDto.id).toBeTruthy()
@@ -155,15 +155,15 @@ export function testHcpLikeApi<
                                 firstName: 'Homer',
                                 lastName: 'Simpson',
                                 parentId: user.healthcarePartyId,
-                            }),
-                        ),
+                            })
+                        )
                     )
                 },
                 (status) => {
                     statuses.push(status)
                 },
                 eventReceivedPromiseReject,
-                eventReceivedPromise,
+                eventReceivedPromise
             )
 
             events?.forEach((event) => console.log(`Event : ${event}`))
@@ -183,7 +183,7 @@ export function testHcpLikeApi<
                     connectionRetryIntervalMs: 10_000,
                     connectionMaxRetry: 5,
                 },
-                ['CREATE'],
+                ['CREATE']
             )
         }, 60_000)
     })

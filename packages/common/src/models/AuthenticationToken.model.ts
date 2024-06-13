@@ -33,17 +33,17 @@ export class AuthenticationToken {
 
     static toJSON(instance: AuthenticationToken): IAuthenticationToken {
         const pojo: IAuthenticationToken = {} as IAuthenticationToken
-        pojo["token"] = instance.token
-        pojo["creationTime"] = instance.creationTime
-        pojo["validity"] = instance.validity
+        pojo['token'] = instance.token
+        pojo['creationTime'] = instance.creationTime
+        pojo['validity'] = instance.validity
         return pojo
     }
 
     static fromJSON(pojo: IAuthenticationToken): AuthenticationToken {
         const obj = {} as IAuthenticationToken
-        obj['token'] = pojo["token"]
-        obj['creationTime'] = pojo["creationTime"]
-        obj['validity'] = pojo["validity"]
+        obj['token'] = pojo['token']
+        obj['creationTime'] = pojo['creationTime']
+        obj['validity'] = pojo['validity']
         return new AuthenticationToken(obj)
     }
 }

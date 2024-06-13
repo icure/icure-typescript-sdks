@@ -9,6 +9,6 @@ export function filteredContactsFromAddresses(addresses: Array<Address>, telecom
         addressType,
         (address) => address.addressType,
         (address) => address.telecoms,
-        (telecom) => telecom.telecomType,
+        (telecom) => telecom.telecomType
     )
 }

@@ -13,18 +13,18 @@ export class Range {
 
     static toJSON(instance: Range): IRange {
         const pojo: IRange = {} as IRange
-        if (instance.low !== undefined) pojo["low"] = instance.low
-        if (instance.high !== undefined) pojo["high"] = instance.high
+        if (instance.low !== undefined) pojo['low'] = instance.low
+        if (instance.high !== undefined) pojo['high'] = instance.high
         return pojo
     }
 
     static fromJSON(pojo: IRange): Range {
         const obj = {} as IRange
-        if (pojo["low"] !== undefined) {
-            obj['low'] = pojo["low"]!
+        if (pojo['low'] !== undefined) {
+            obj['low'] = pojo['low']!
         }
-        if (pojo["high"] !== undefined) {
-            obj['high'] = pojo["high"]!
+        if (pojo['high'] !== undefined) {
+            obj['high'] = pojo['high']!
         }
         return new Range(obj)
     }

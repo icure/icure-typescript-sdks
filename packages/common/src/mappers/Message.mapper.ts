@@ -190,11 +190,11 @@ function toMessageResponsible(dto: MessageDto): string | undefined {
 }
 
 function toMessageTags({ tags }: MessageDto): Array<CodingReference> | undefined {
-    return !!tags ? (tags.map((item) => mapCodeStubToCodingReference(item))) : undefined
+    return !!tags ? tags.map((item) => mapCodeStubToCodingReference(item)) : undefined
 }
 
 function toMessageCodes({ codes }: MessageDto): Array<CodingReference> | undefined {
-    return !!codes ? (codes.map((item) => mapCodeStubToCodingReference(item))) : undefined
+    return !!codes ? codes.map((item) => mapCodeStubToCodingReference(item)) : undefined
 }
 
 function toMessageEndOfLife(dto: MessageDto): number | undefined {

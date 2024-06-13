@@ -57,39 +57,39 @@ export class Coding {
 
     static toJSON(instance: Coding): ICoding {
         const pojo: ICoding = {} as ICoding
-        pojo["id"] = instance.id
-        if (instance.rev !== undefined) pojo["rev"] = instance.rev
-        if (instance.type !== undefined) pojo["type"] = instance.type
-        if (instance.code !== undefined) pojo["code"] = instance.code
-        if (instance.version !== undefined) pojo["version"] = instance.version
-        pojo["regions"] = instance.regions.map(item => item)
-        if (instance.description !== undefined) pojo["description"] = {...instance.description}
-        pojo["qualifiedLinks"] = {...instance.qualifiedLinks}
-        pojo["searchTerms"] = {...instance.searchTerms}
+        pojo['id'] = instance.id
+        if (instance.rev !== undefined) pojo['rev'] = instance.rev
+        if (instance.type !== undefined) pojo['type'] = instance.type
+        if (instance.code !== undefined) pojo['code'] = instance.code
+        if (instance.version !== undefined) pojo['version'] = instance.version
+        pojo['regions'] = instance.regions.map((item) => item)
+        if (instance.description !== undefined) pojo['description'] = { ...instance.description }
+        pojo['qualifiedLinks'] = { ...instance.qualifiedLinks }
+        pojo['searchTerms'] = { ...instance.searchTerms }
         return pojo
     }
 
     static fromJSON(pojo: ICoding): Coding {
         const obj = {} as ICoding
-        obj['id'] = pojo["id"]
-        if (pojo["rev"] !== undefined) {
-            obj['rev'] = pojo["rev"]!
+        obj['id'] = pojo['id']
+        if (pojo['rev'] !== undefined) {
+            obj['rev'] = pojo['rev']!
         }
-        if (pojo["type"] !== undefined) {
-            obj['type'] = pojo["type"]!
+        if (pojo['type'] !== undefined) {
+            obj['type'] = pojo['type']!
         }
-        if (pojo["code"] !== undefined) {
-            obj['code'] = pojo["code"]!
+        if (pojo['code'] !== undefined) {
+            obj['code'] = pojo['code']!
         }
-        if (pojo["version"] !== undefined) {
-            obj['version'] = pojo["version"]!
+        if (pojo['version'] !== undefined) {
+            obj['version'] = pojo['version']!
         }
-        obj['regions'] = pojo["regions"].map((item: any) => item)
-        if (pojo["description"] !== undefined) {
-            obj['description'] = {...pojo["description"]!}
+        obj['regions'] = pojo['regions'].map((item: any) => item)
+        if (pojo['description'] !== undefined) {
+            obj['description'] = { ...pojo['description']! }
         }
-        obj['qualifiedLinks'] = {...pojo["qualifiedLinks"]}
-        obj['searchTerms'] = {...pojo["searchTerms"]}
+        obj['qualifiedLinks'] = { ...pojo['qualifiedLinks'] }
+        obj['searchTerms'] = { ...pojo['searchTerms'] }
         return new Coding(obj)
     }
 }

@@ -20,5 +20,5 @@ export const patientApi = (api: CommonApi, basePath: string): PatientApi =>
         api.baseApi.userApi,
         api.baseApi.dataOwnerApi,
         api.baseApi.authApi,
-        basePath,
+        basePath
     )

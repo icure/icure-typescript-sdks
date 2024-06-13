@@ -153,11 +153,11 @@ export function toUserName(dto: UserDto): string | undefined {
 }
 
 export function toUserProperties(dto: UserDto): Array<Property> {
-    return !!dto.properties ? ([...dto.properties].map(mapPropertyStubToProperty)) : []
+    return !!dto.properties ? [...dto.properties].map(mapPropertyStubToProperty) : []
 }
 
 export function toUserRoles(dto: UserDto): Array<string> {
-    return !!dto.systemMetadata?.roles ? (dto.systemMetadata?.roles) : []
+    return !!dto.systemMetadata?.roles ? dto.systemMetadata?.roles : []
 }
 
 export function toUserLogin(dto: UserDto): string | undefined {
@@ -193,7 +193,7 @@ export function toUserDeviceId(dto: UserDto): string | undefined {
 }
 
 export function toUserSharingDataWith(dto: UserDto): Record<SharedDataType, Array<string>> {
-    return Object.fromEntries(Object.entries(dto.autoDelegations ?? {}).map(([k, v]) => [k, (v)])) as Record<SharedDataType, Array<string>>
+    return Object.fromEntries(Object.entries(dto.autoDelegations ?? {}).map(([k, v]) => [k, v])) as Record<SharedDataType, Array<string>>
 }
 
 export function toUserEmail(dto: UserDto): string | undefined {
@@ -205,7 +205,7 @@ export function toUserMobilePhone(dto: UserDto): string | undefined {
 }
 
 export function toUserAuthenticationTokens(dto: UserDto): Record<string, AuthenticationToken> {
-    return (!!dto.authenticationTokens ? {...dto.authenticationTokens} : {}) as Record<string, AuthenticationToken>
+    return (!!dto.authenticationTokens ? { ...dto.authenticationTokens } : {}) as Record<string, AuthenticationToken>
 }
 
 function toUserDtoSystemMetadata(domain: User): SystemMetadata | undefined {

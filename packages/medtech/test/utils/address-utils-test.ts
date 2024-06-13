@@ -21,7 +21,7 @@ describe('Address utils tests', () => {
                             telecomNumber: 'TEST VALUE',
                         }),
                     ],
-                }),
+                })
             )
             telecomTypes.forEach((telecomType) => {
                 allAddresses.push(
@@ -33,7 +33,7 @@ describe('Address utils tests', () => {
                                 telecomNumber: telecomType,
                             }),
                         ],
-                    }),
+                    })
                 )
             })
         })

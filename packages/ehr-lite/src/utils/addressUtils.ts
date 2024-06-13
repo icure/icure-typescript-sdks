@@ -11,6 +11,6 @@ export function filteredContactsFromAddresses(locations: Array<Location>, teleco
         addressType,
         (location) => location.addressType,
         (location) => location.telecoms,
-        (telecom) => telecom.system,
+        (telecom) => telecom.system
     )
 }

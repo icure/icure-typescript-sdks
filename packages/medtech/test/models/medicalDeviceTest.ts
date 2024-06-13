@@ -13,8 +13,8 @@ export function newMedicalDevice(): MedicalDevice {
         rev: 'rev',
         created: 123,
         modified: 456,
-        labels: ([newCodingReference()]),
-        codes: ([newCodingReference()]),
+        labels: [newCodingReference()],
+        codes: [newCodingReference()],
         deletionDate: 789,
         name: 'name',
         author: 'author',
@@ -27,7 +27,7 @@ export function newMedicalDevice(): MedicalDevice {
         serialNumber: 'serialNumber',
         parentId: 'parentId',
         picture: new ArrayBuffer(5),
-        properties: ([newProperty()]),
+        properties: [newProperty()],
         systemMetaData: newSystemMetaDataOwner(),
     })
 }

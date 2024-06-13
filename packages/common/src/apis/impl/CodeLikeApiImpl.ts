@@ -10,11 +10,7 @@ import { CommonFilter } from '../../filters/filters'
 import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
 
 export class CodeLikeApiImpl<DSCode> implements CodeLikeApi<DSCode> {
-    constructor(
-        private readonly mapper: Mapper<DSCode, Code>,
-        private readonly errorHandler: ErrorHandler,
-        private readonly codeApi: IccCodeXApi,
-    ) {}
+    constructor(private readonly mapper: Mapper<DSCode, Code>, private readonly errorHandler: ErrorHandler, private readonly codeApi: IccCodeXApi) {}
 
     private static isCodeId(id?: string): boolean {
         const codeRegex = new RegExp(`[a-zA-Z0-9]{0,80}\\|[a-zA-Z0-9.-]{0,80}\\|[a-zA-Z0-9.]{0,80}`)
@@ -25,7 +21,7 @@ export class CodeLikeApiImpl<DSCode> implements CodeLikeApi<DSCode> {
         const processedCoding = firstOrNull(
             await this.createOrModifyMany([code]).catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
-            }),
+            })
         )
         if (processedCoding !== undefined) {
             return processedCoding
@@ -48,15 +44,15 @@ export class CodeLikeApiImpl<DSCode> implements CodeLikeApi<DSCode> {
             codesToCreate.map((c) =>
                 this.codeApi.createCode(c).catch((e) => {
                     throw this.errorHandler.createErrorFromAny(e)
-                }),
-            ),
+                })
+            )
         )
         const updatedCodes = await Promise.all(
             codesToUpdate.map((c) =>
                 this.codeApi.modifyCode(c).catch((e) => {
                     throw this.errorHandler.createErrorFromAny(e)
-                }),
-            ),
+                })
+            )
         )
         return [...createdCodes, ...updatedCodes].map((c) => this.mapper.toDomain(c))
     }
@@ -80,12 +76,12 @@ export class CodeLikeApiImpl<DSCode> implements CodeLikeApi<DSCode> {
                         undefined,
                         new FilterChainCode({
                             filter: FilterMapper.toAbstractFilterDto<Code>(filter, 'Code'),
-                        }),
+                        })
                     )
                     .catch((e) => {
                         throw this.errorHandler.createErrorFromAny(e)
                     }),
-                this.mapper.toDomain,
+                this.mapper.toDomain
             )!
         }
     }
@@ -94,7 +90,7 @@ export class CodeLikeApiImpl<DSCode> implements CodeLikeApi<DSCode> {
         return this.mapper.toDomain(
             await this.codeApi.getCode(id).catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
-            }),
+            })
         )
     }
 

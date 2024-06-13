@@ -15,8 +15,8 @@ export function newHealthcareProfessional(): HealthcareProfessional {
         rev: 'rev',
         created: 123,
         modified: 456,
-        labels: ([newCodingReference()]),
-        codes: ([newCodingReference()]),
+        labels: [newCodingReference()],
+        codes: [newCodingReference()],
         deletionDate: 789,
         name: 'name',
         lastName: 'lastName',
@@ -29,9 +29,9 @@ export function newHealthcareProfessional(): HealthcareProfessional {
         addresses: [newAddress()],
         languages: ['languages'],
         picture: new ArrayBuffer(5),
-        specialityCodes: ([newCodingReference()]),
+        specialityCodes: [newCodingReference()],
         notes: 'notes',
-        properties: ([newProperty()]),
+        properties: [newProperty()],
         systemMetaData: newSystemMetaDataOwner(),
     })
 }

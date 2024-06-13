@@ -24,14 +24,14 @@ export function testUserLikeApi<
     DSService,
     DSMaintenanceTask,
     DSMessageFactory extends MessageFactory<any, any, any>,
-    DSHelement,
+    DSHelement
 >(
     name: string,
     ctx: BaseApiTestContext<DSAnonymousApiBuilder, DSAnonymousApi, DSApi, DSCryptoStrategies, DSUser, DSMessageFactory> &
         WithPatientApi<DSApi, DSPatient> &
         WithServiceApi<DSApi, DSService, DSPatient, any> &
         WithMaintenanceTaskApi<DSApi, DSMaintenanceTask> &
-        WithHelementApi<DSApi, DSHelement, DSPatient>,
+        WithHelementApi<DSApi, DSHelement, DSPatient>
 ) {
     let env: TestVars
     let hcp1Api: DSApi
@@ -67,8 +67,8 @@ export function testUserLikeApi<
                                 ],
                             },
                         ],
-                    }),
-                ),
+                    })
+                )
             )
             expect(newPatient).toBeTruthy()
             const createdPatient = await ctx.userApi(hcp1Api).createAndInviteFor(newPatient, 5 * 60)

@@ -13,7 +13,7 @@ export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithTyp
     constructor(
         private readonly dsStrategies: CryptoStrategies<DSDataOwnerWithType>,
         private readonly dataOwnerMapper: Mapper<DSDataOwnerWithType, DataOwnerWithTypeDto>,
-        private readonly cryptoActorStubToDomainTypeMapper: (stub: CryptoActorStubWithType) => DSDataOwnerWithType['type'],
+        private readonly cryptoActorStubToDomainTypeMapper: (stub: CryptoActorStubWithType) => DSDataOwnerWithType['type']
     ) {}
 
     async generateNewKeyForDataOwner(self: DataOwnerWithTypeDto, cryptoPrimitives: CryptoPrimitives): Promise<KeyPair<CryptoKey> | boolean> {
@@ -34,7 +34,7 @@ export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithTyp
             unknownKeys: string[]
             unavailableKeys: string[]
         }[],
-        cryptoPrimitives: CryptoPrimitives,
+        cryptoPrimitives: CryptoPrimitives
     ): Promise<{
         [dataOwnerId: string]: {
             recoveredKeys: {
@@ -52,12 +52,12 @@ export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithTyp
         const { dataOwner: dataOwnerWithType, unknownKeys: unverifiedKeys, unavailableKeys: missingKeys } = keysData[keysData.length - 1]
 
         const { recoveredKeyPairs, verifiedKeys } = await this.dsStrategies.recoverAndVerifyKeys(this.dataOwnerMapper.toDomain(dataOwnerWithType), missingKeys, unverifiedKeys)
-        const missingKeysSet = (missingKeys)
-        const unverifiedKeysSet = (unverifiedKeys)
-        if (recoveredKeyPairs.some(({ publicKey }) => !missingKeysSet.includes(publicKey))) {
+        const missingKeysSet = new Set(missingKeys)
+        const unverifiedKeysSet = new Set(unverifiedKeys)
+        if (recoveredKeyPairs.some(({ publicKey }) => !missingKeysSet.has(publicKey))) {
             throw new Error('Recovered keys should only contain keys which were originally missing')
         }
-        if (Object.keys(verifiedKeys).some((publicKey) => !unverifiedKeysSet.includes(publicKey))) {
+        if (Object.keys(verifiedKeys).some((publicKey) => !unverifiedKeysSet.has(publicKey))) {
             throw new Error('Verified keys should only contain keys which were originally unverified')
         }
         if (unverifiedKeys.some((unverifiedKey) => !verifiedKeys[unverifiedKey] && !recoveredKeyPairs.find((recoveredKeyPair) => recoveredKeyPair.publicKey === unverifiedKey))) {
@@ -73,7 +73,7 @@ export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithTyp
                     recoveredKeys: {},
                     keyAuthenticity: {},
                 },
-            ]),
+            ])
         )
         const sha1Keys = hexPublicKeysWithSha1Of(dataOwnerWithType?.dataOwner)
         const sha256Keys = hexPublicKeysWithSha256Of(dataOwnerWithType?.dataOwner)
@@ -93,8 +93,8 @@ export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithTyp
                             }
 
                             throw new Error('Internal error: recovered key should be an existing key')
-                        }),
-                    ),
+                        })
+                    )
                 ),
                 keyAuthenticity: Object.fromEntries(
                     Object.entries(verifiedKeys)
@@ -105,7 +105,7 @@ export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithTyp
                             } else if (b === KeyVerificationBehaviour.MARK_UNVERIFIED) {
                                 return [k.slice(-32), false]
                             } else throw new Error(`Unexpected key verification behaviour ${b}`)
-                        }),
+                        })
                 ),
             },
         })

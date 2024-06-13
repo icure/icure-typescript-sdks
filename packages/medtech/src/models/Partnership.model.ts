@@ -27,22 +27,22 @@ export class Partnership {
 
     static toJSON(instance: Partnership): IPartnership {
         const pojo: IPartnership = {} as IPartnership
-        if (instance.type !== undefined) pojo["type"] = instance.type
-        if (instance.status !== undefined) pojo["status"] = instance.status
-        if (instance.partnerId !== undefined) pojo["partnerId"] = instance.partnerId
+        if (instance.type !== undefined) pojo['type'] = instance.type
+        if (instance.status !== undefined) pojo['status'] = instance.status
+        if (instance.partnerId !== undefined) pojo['partnerId'] = instance.partnerId
         return pojo
     }
 
     static fromJSON(pojo: IPartnership): Partnership {
         const obj = {} as IPartnership
-        if (pojo["type"] !== undefined) {
-            obj['type'] = pojo["type"]!
+        if (pojo['type'] !== undefined) {
+            obj['type'] = pojo['type']!
         }
-        if (pojo["status"] !== undefined) {
-            obj['status'] = pojo["status"]!
+        if (pojo['status'] !== undefined) {
+            obj['status'] = pojo['status']!
         }
-        if (pojo["partnerId"] !== undefined) {
-            obj['partnerId'] = pojo["partnerId"]!
+        if (pojo['partnerId'] !== undefined) {
+            obj['partnerId'] = pojo['partnerId']!
         }
         return new Partnership(obj)
     }

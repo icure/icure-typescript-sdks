@@ -14,7 +14,7 @@ export class DataOwnerLikeApiImpl<DSDataOwnerWithType extends DataOwnerWithType,
         private readonly errorHandler: ErrorHandler,
         private readonly dataOwnerApi: IccDataOwnerXApi,
         private readonly patientApi: IccPatientXApi,
-        private readonly icureMaintenanceApi: IccIcureMaintenanceXApi,
+        private readonly icureMaintenanceApi: IccIcureMaintenanceXApi
     ) {}
 
     async getDataOwner(ownerId: string): Promise<DSDataOwnerWithType> {

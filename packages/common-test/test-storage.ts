@@ -66,7 +66,7 @@ export async function testStorageWithKeys(keyFactory: StorageEntryKeysFactory, d
                     privateKey: pkcs8ToJwk(hex2ua(pair.keyPair.privateKey)),
                     publicKey: spkiToJwk(hex2ua(pair.keyPair.publicKey), pair.shaVersion),
                 },
-                true,
+                true
             )
         }
     }

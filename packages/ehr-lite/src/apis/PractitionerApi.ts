@@ -18,5 +18,5 @@ export const practitionerApi = (api: CommonApi, basePath: string): PractitionerA
         api.errorHandler,
         api.baseApi.healthcarePartyApi,
         api.baseApi.authApi,
-        basePath,
+        basePath
     )

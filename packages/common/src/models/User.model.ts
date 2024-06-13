@@ -121,7 +121,7 @@ export class User {
         this.healthcarePartyId = json.healthcarePartyId
         this.patientId = json.patientId
         this.deviceId = json.deviceId
-        this.sharingDataWith = json.sharingDataWith ?? {} as Record<SharedDataType, Array<string>>
+        this.sharingDataWith = json.sharingDataWith ?? ({} as Record<SharedDataType, Array<string>>)
         this.email = json.email
         this.mobilePhone = json.mobilePhone
         this.authenticationTokens = json.authenticationTokens ?? {}
@@ -129,85 +129,85 @@ export class User {
 
     static toJSON(instance: User): IUser {
         const pojo: IUser = {} as IUser
-        pojo["id"] = instance.id
-        if (instance.rev !== undefined) pojo["rev"] = instance.rev
-        if (instance.deletionDate !== undefined) pojo["deletionDate"] = instance.deletionDate
-        if (instance.created !== undefined) pojo["created"] = instance.created
-        if (instance.name !== undefined) pojo["name"] = instance.name
-        pojo["properties"] = instance.properties.map(item => Property.toJSON(item))
-        pojo["roles"] = instance.roles.map(item => item)
-        if (instance.isAdmin !== undefined) pojo["isAdmin"] = instance.isAdmin
-        if (instance.inheritsRoles !== undefined) pojo["inheritsRoles"] = instance.inheritsRoles
-        if (instance.login !== undefined) pojo["login"] = instance.login
-        if (instance.passwordHash !== undefined) pojo["passwordHash"] = instance.passwordHash
-        if (instance.secret !== undefined) pojo["secret"] = instance.secret
-        if (instance.use2fa !== undefined) pojo["use2fa"] = instance.use2fa
-        if (instance.groupId !== undefined) pojo["groupId"] = instance.groupId
-        if (instance.healthcarePartyId !== undefined) pojo["healthcarePartyId"] = instance.healthcarePartyId
-        if (instance.patientId !== undefined) pojo["patientId"] = instance.patientId
-        if (instance.deviceId !== undefined) pojo["deviceId"] = instance.deviceId
-        pojo["sharingDataWith"] = {...instance.sharingDataWith}
-        if (instance.email !== undefined) pojo["email"] = instance.email
-        if (instance.mobilePhone !== undefined) pojo["mobilePhone"] = instance.mobilePhone
-        pojo["authenticationTokens"] = {...instance.authenticationTokens}
+        pojo['id'] = instance.id
+        if (instance.rev !== undefined) pojo['rev'] = instance.rev
+        if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
+        if (instance.created !== undefined) pojo['created'] = instance.created
+        if (instance.name !== undefined) pojo['name'] = instance.name
+        pojo['properties'] = instance.properties.map((item) => Property.toJSON(item))
+        pojo['roles'] = instance.roles.map((item) => item)
+        if (instance.isAdmin !== undefined) pojo['isAdmin'] = instance.isAdmin
+        if (instance.inheritsRoles !== undefined) pojo['inheritsRoles'] = instance.inheritsRoles
+        if (instance.login !== undefined) pojo['login'] = instance.login
+        if (instance.passwordHash !== undefined) pojo['passwordHash'] = instance.passwordHash
+        if (instance.secret !== undefined) pojo['secret'] = instance.secret
+        if (instance.use2fa !== undefined) pojo['use2fa'] = instance.use2fa
+        if (instance.groupId !== undefined) pojo['groupId'] = instance.groupId
+        if (instance.healthcarePartyId !== undefined) pojo['healthcarePartyId'] = instance.healthcarePartyId
+        if (instance.patientId !== undefined) pojo['patientId'] = instance.patientId
+        if (instance.deviceId !== undefined) pojo['deviceId'] = instance.deviceId
+        pojo['sharingDataWith'] = { ...instance.sharingDataWith }
+        if (instance.email !== undefined) pojo['email'] = instance.email
+        if (instance.mobilePhone !== undefined) pojo['mobilePhone'] = instance.mobilePhone
+        pojo['authenticationTokens'] = { ...instance.authenticationTokens }
         return pojo
     }
 
     static fromJSON(pojo: IUser): User {
         const obj = {} as IUser
-        obj['id'] = pojo["id"]
-        if (pojo["rev"] !== undefined) {
-            obj['rev'] = pojo["rev"]!
+        obj['id'] = pojo['id']
+        if (pojo['rev'] !== undefined) {
+            obj['rev'] = pojo['rev']!
         }
-        if (pojo["deletionDate"] !== undefined) {
-            obj['deletionDate'] = pojo["deletionDate"]!
+        if (pojo['deletionDate'] !== undefined) {
+            obj['deletionDate'] = pojo['deletionDate']!
         }
-        if (pojo["created"] !== undefined) {
-            obj['created'] = pojo["created"]!
+        if (pojo['created'] !== undefined) {
+            obj['created'] = pojo['created']!
         }
-        if (pojo["name"] !== undefined) {
-            obj['name'] = pojo["name"]!
+        if (pojo['name'] !== undefined) {
+            obj['name'] = pojo['name']!
         }
-        obj['properties'] = pojo["properties"].map((item: any) => Property.fromJSON(item))
-        obj['roles'] = pojo["roles"].map((item: any) => item)
-        if (pojo["isAdmin"] !== undefined) {
-            obj['isAdmin'] = pojo["isAdmin"]!
+        obj['properties'] = pojo['properties'].map((item: any) => Property.fromJSON(item))
+        obj['roles'] = pojo['roles'].map((item: any) => item)
+        if (pojo['isAdmin'] !== undefined) {
+            obj['isAdmin'] = pojo['isAdmin']!
         }
-        if (pojo["inheritsRoles"] !== undefined) {
-            obj['inheritsRoles'] = pojo["inheritsRoles"]!
+        if (pojo['inheritsRoles'] !== undefined) {
+            obj['inheritsRoles'] = pojo['inheritsRoles']!
         }
-        if (pojo["login"] !== undefined) {
-            obj['login'] = pojo["login"]!
+        if (pojo['login'] !== undefined) {
+            obj['login'] = pojo['login']!
         }
-        if (pojo["passwordHash"] !== undefined) {
-            obj['passwordHash'] = pojo["passwordHash"]!
+        if (pojo['passwordHash'] !== undefined) {
+            obj['passwordHash'] = pojo['passwordHash']!
         }
-        if (pojo["secret"] !== undefined) {
-            obj['secret'] = pojo["secret"]!
+        if (pojo['secret'] !== undefined) {
+            obj['secret'] = pojo['secret']!
         }
-        if (pojo["use2fa"] !== undefined) {
-            obj['use2fa'] = pojo["use2fa"]!
+        if (pojo['use2fa'] !== undefined) {
+            obj['use2fa'] = pojo['use2fa']!
         }
-        if (pojo["groupId"] !== undefined) {
-            obj['groupId'] = pojo["groupId"]!
+        if (pojo['groupId'] !== undefined) {
+            obj['groupId'] = pojo['groupId']!
         }
-        if (pojo["healthcarePartyId"] !== undefined) {
-            obj['healthcarePartyId'] = pojo["healthcarePartyId"]!
+        if (pojo['healthcarePartyId'] !== undefined) {
+            obj['healthcarePartyId'] = pojo['healthcarePartyId']!
         }
-        if (pojo["patientId"] !== undefined) {
-            obj['patientId'] = pojo["patientId"]!
+        if (pojo['patientId'] !== undefined) {
+            obj['patientId'] = pojo['patientId']!
         }
-        if (pojo["deviceId"] !== undefined) {
-            obj['deviceId'] = pojo["deviceId"]!
+        if (pojo['deviceId'] !== undefined) {
+            obj['deviceId'] = pojo['deviceId']!
         }
-        obj['sharingDataWith'] = {...pojo["sharingDataWith"]}
-        if (pojo["email"] !== undefined) {
-            obj['email'] = pojo["email"]!
+        obj['sharingDataWith'] = { ...pojo['sharingDataWith'] }
+        if (pojo['email'] !== undefined) {
+            obj['email'] = pojo['email']!
         }
-        if (pojo["mobilePhone"] !== undefined) {
-            obj['mobilePhone'] = pojo["mobilePhone"]!
+        if (pojo['mobilePhone'] !== undefined) {
+            obj['mobilePhone'] = pojo['mobilePhone']!
         }
-        obj['authenticationTokens'] = {...pojo["authenticationTokens"]}
+        obj['authenticationTokens'] = { ...pojo['authenticationTokens'] }
         return new User(obj)
     }
 }

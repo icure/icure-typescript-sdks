@@ -24,22 +24,22 @@ export class Delegation {
 
     static toJSON(instance: Delegation): IDelegation {
         const pojo: IDelegation = {} as IDelegation
-        if (instance.owner !== undefined) pojo["owner"] = instance.owner
-        if (instance.delegatedTo !== undefined) pojo["delegatedTo"] = instance.delegatedTo
-        if (instance.key !== undefined) pojo["key"] = instance.key
+        if (instance.owner !== undefined) pojo['owner'] = instance.owner
+        if (instance.delegatedTo !== undefined) pojo['delegatedTo'] = instance.delegatedTo
+        if (instance.key !== undefined) pojo['key'] = instance.key
         return pojo
     }
 
     static fromJSON(pojo: IDelegation): Delegation {
         const obj = {} as IDelegation
-        if (pojo["owner"] !== undefined) {
-            obj['owner'] = pojo["owner"]!
+        if (pojo['owner'] !== undefined) {
+            obj['owner'] = pojo['owner']!
         }
-        if (pojo["delegatedTo"] !== undefined) {
-            obj['delegatedTo'] = pojo["delegatedTo"]!
+        if (pojo['delegatedTo'] !== undefined) {
+            obj['delegatedTo'] = pojo['delegatedTo']!
         }
-        if (pojo["key"] !== undefined) {
-            obj['key'] = pojo["key"]!
+        if (pojo['key'] !== undefined) {
+            obj['key'] = pojo['key']!
         }
         return new Delegation(obj)
     }

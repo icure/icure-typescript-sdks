@@ -58,7 +58,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
         private readonly dataOwnerApi: IccDataOwnerXApi,
         private readonly authApi: IccAuthApi,
         private readonly api: CommonApi,
-        private readonly basePath: string,
+        private readonly basePath: string
     ) {}
 
     clearContactCache() {
@@ -77,7 +77,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
     async createOrModifyManyFor(patientId: string, services: Array<DSService>): Promise<Array<DSService>> {
         return this._createOrModifyManyFor(
             patientId,
-            services.map((service) => this.serviceMapper.toDto(service)),
+            services.map((service) => this.serviceMapper.toDto(service))
         ).then((services) => services.map((service) => this.serviceMapper.toDomain(service)))
     }
 
@@ -183,7 +183,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
                 limit,
                 new FilterChainService({
                     filter: FilterMapper.toAbstractFilterDto(filter, 'Service'),
-                }),
+                })
             )
             .then((paginatedServices) => this.contactApi.decryptServices(hcpId, paginatedServices.rows!).then((decryptedRows) => Object.assign(paginatedServices, { rows: decryptedRows })))
             .catch((e) => {
@@ -309,7 +309,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
                     subContactIds: subContactsForService?.map((subContact) => subContact.id!),
                     healthElementsIds: originalService.healthElementsIds ?? subContactsForService?.filter((subContact) => subContact.healthElementId)?.map((subContact) => subContact.healthElementId!),
                     formIds: !!subContactsForService ? subContactsForService.filter((subContact) => subContact.formId).map((subContact) => subContact.formId!) : originalService.formIds,
-                })!,
+                })!
             )
         }
         return res
@@ -335,7 +335,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
             FilterMapper.toAbstractFilterDto(filter, 'Service'),
             (event) => eventFired(this.serviceMapper.toDomain(event)),
             options ?? {},
-            async (encrypted: ServiceDto) => (await this.contactApi.decryptServices(currentUser.healthcarePartyId!, [encrypted]))[0],
+            async (encrypted: ServiceDto) => (await this.contactApi.decryptServices(currentUser.healthcarePartyId!, [encrypted]))[0]
         ).then((ws) => new ConnectionImpl(ws))
     }
 
@@ -378,7 +378,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
                 }),
                 {
                     additionalDelegates: dataOwnersWithAccessInfo.permissionsByDataOwnerId,
-                },
+                }
             )
 
             const createdDocument = await this.api.baseApi.documentApi.createDocument(documentToCreate).catch((e) => {
@@ -509,7 +509,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
                     healthElementsIds: service.healthElementsIds ?? subContacts?.filter((subContact) => subContact.healthElementId)?.map((subContact) => subContact.healthElementId!),
                     formIds: !!subContacts ? subContacts.filter((subContact) => subContact.formId).map((subContact) => subContact.formId!) : service.formIds,
                 }
-            }),
+            })
         )
     }
 
@@ -530,7 +530,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
             return servicesWithHe.length > 0
                 ? this._checkAndRetrieveProvidedHealthElements(
                       servicesWithHe.flatMap((service) => Array.from(service.healthElementsIds!.values())),
-                      currentUser,
+                      currentUser
                   ).then((heIds) => {
                       return heIds
                           .map((heId) => {
@@ -544,7 +544,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
                                   new SubContact({
                                       healthElementId: healthElement,
                                       services: services,
-                                  }),
+                                  })
                           )
                   })
                 : []
@@ -556,7 +556,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
             return []
         }
 
-        const distinctIds = Array.from((healthElementIds).values())
+        const distinctIds = Array.from(new Set(healthElementIds).values())
         return await this.healthElementApi.getHealthElementsWithUser(currentUser, new ListOfIds({ ids: distinctIds })).then((healthElements) => {
             const foundIds = (healthElements ?? []).map((he) => he.id!)
             if (healthElements.length < distinctIds.length) {
@@ -638,7 +638,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
                     openingDate: Math.min(...servicesToCreate.filter((element) => element.openingDate != null || element.valueDate != null).map((e) => e.openingDate ?? e.valueDate!)),
                     closingDate: Math.max(...servicesToCreate.filter((element) => element.closingDate != null || element.valueDate != null).map((e) => e.closingDate ?? e.valueDate!)),
                 }),
-                { additionalDelegates },
+                { additionalDelegates }
             )
             .catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
@@ -663,7 +663,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
                             tags: domainTypeTag ? [domainTypeTag] : undefined,
                         })
                     }),
-                }),
+                })
             )
             .catch((e) => {
                 throw this.errorHandler.createErrorFromAny(e)
@@ -688,7 +688,7 @@ export class ServiceLikeApiImpl<DSService, DSPatient, DSDocument> implements Ser
                         dataSampleIdsToSearch.length,
                         new FilterChainContact({
                             filter: new ContactByServiceIdsFilter({ ids: dataSampleIdsToSearch }),
-                        }),
+                        })
                     )
                     .catch((e) => {
                         throw this.errorHandler.createErrorFromAny(e)

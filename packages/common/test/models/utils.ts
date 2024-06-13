@@ -52,7 +52,7 @@ export function generateDelegationSet(): Array<Delegation> {
 export function generateDelegationMap(): Record<string, Array<Delegation>> {
     const map: Record<string, Array<Delegation>> = {}
     for (let i = 0; i < 5; i++) {
-        map[Math.random().toString(36).substring(2, 15)] =  generateDelegationSet()
+        map[Math.random().toString(36).substring(2, 15)] = generateDelegationSet()
     }
     return map
 }

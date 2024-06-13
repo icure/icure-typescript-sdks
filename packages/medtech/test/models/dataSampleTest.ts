@@ -16,8 +16,8 @@ export function newDataSample(makeContent = false): DataSample {
         transactionId: 'transactionId',
         identifiers: [newIdentifier()],
         batchId: 'batchId',
-        healthcareElementIds: ('healthcareElementIds'),
-        canvasesIds: ('canvasesIds'),
+        healthcareElementIds: 'healthcareElementIds',
+        canvasesIds: 'canvasesIds',
         index: 123,
         content: makeContent ? recordOf({ en: newContent() }) : undefined,
         valueDate: 456,
@@ -30,8 +30,8 @@ export function newDataSample(makeContent = false): DataSample {
         responsible: 'responsible',
         comment: 'comment',
         qualifiedLinks: recordOf({ from: recordOf({ to: 'to' }) }),
-        codes: ([newCodingReference()]),
-        labels: ([newCodingReference()]),
+        codes: [newCodingReference()],
+        labels: [newCodingReference()],
         systemMetaData: newSystemMetaDataEncrypted(),
     })
 }

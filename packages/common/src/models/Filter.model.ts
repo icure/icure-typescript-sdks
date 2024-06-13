@@ -19,13 +19,13 @@ export class Filter {
 
     static toJSON(instance: Filter): IFilter {
         const pojo: IFilter = {} as IFilter
-        pojo["description"] = instance.description
+        pojo['description'] = instance.description
         return pojo
     }
 
     static fromJSON(pojo: IFilter): Filter {
         const obj = {} as IFilter
-        obj['description'] = pojo["description"]
+        obj['description'] = pojo['description']
         return new Filter(obj)
     }
 }

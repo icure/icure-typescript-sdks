@@ -70,7 +70,7 @@ export class EHRLiteApi extends CommonApi {
         keyStorage?: KeyStorageFacade,
         messageFactory?: EHRLiteMessageFactory,
         errorHandler?: ErrorHandler,
-        sanitizer?: Sanitizer,
+        sanitizer?: Sanitizer
     ) {
         super(_baseApi, _username, _password, _msgGtwUrl, _msgGtwSpecId, storage, keyStorage, errorHandler, sanitizer)
 
@@ -106,7 +106,7 @@ export class EHRLiteApi extends CommonApi {
                       this.messageCharactersLimit,
                       _msgGtwSpecId,
                       _msgGtwUrl,
-                      _baseApi.authApi.authenticationProvider,
+                      _baseApi.authApi.authenticationProvider
                   )
                 : undefined
 
@@ -325,7 +325,7 @@ export namespace EHRLiteApi {
                                 throw new Error('Unsupported data owner type')
                             }
                         }
-                    },
+                    }
                 ),
                 props.crypto,
                 fetch,
@@ -337,7 +337,7 @@ export namespace EHRLiteApi {
                     encryptedFieldsConfig: {
                         message: ['subject'],
                     },
-                },
+                }
             ).then(
                 (api) =>
                     new EHRLiteApi(
@@ -356,8 +356,8 @@ export namespace EHRLiteApi {
                         props.keyStorage,
                         props.messageFactory,
                         props.errorHandler,
-                        props.sanitizer,
-                    ),
+                        props.sanitizer
+                    )
             )
         }
     }

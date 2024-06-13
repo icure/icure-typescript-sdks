@@ -34,11 +34,11 @@ describe('Util', () => {
         // A few invalid API URLs
         expect(() => formatICureApiUrl('https://kraken.icure.cloud/rest')).to.throw(
             'Invalid API URL: Should respect the format ^https?://[a-zA-Z0-9.-]+{2,}(:d+)?$. Consider using only the constants of index.ts, except if you received any other information from the iCure Team',
-            'Only the host url should be included (no path segments)',
+            'Only the host url should be included (no path segments)'
         )
         expect(() => formatICureApiUrl('https://kraken.icure.cloud/rest/v1')).to.throw(
             'Invalid API URL: Should respect the format ^https?://[a-zA-Z0-9.-]+{2,}(:d+)?$. Consider using only the constants of index.ts, except if you received any other information from the iCure Team',
-            'Only the host url should be included (no /rest/vX)',
+            'Only the host url should be included (no /rest/vX)'
         )
     })
 })

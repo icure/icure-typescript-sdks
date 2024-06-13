@@ -111,11 +111,11 @@ function toTopicMedicalLocationId(dto: TopicDto): string | undefined {
 }
 
 function toTopicTags(dto: TopicDto): Array<CodingReference> | undefined {
-    return !!dto.tags ? (dto.tags.map((item) => mapCodeStubToCodingReference(item))) : undefined
+    return !!dto.tags ? dto.tags.map((item) => mapCodeStubToCodingReference(item)) : undefined
 }
 
 function toTopicCodes(dto: TopicDto): Array<CodingReference> | undefined {
-    return !!dto.codes ? (dto.codes.map((item) => mapCodeStubToCodingReference(item))) : undefined
+    return !!dto.codes ? dto.codes.map((item) => mapCodeStubToCodingReference(item)) : undefined
 }
 
 function toTopicEndOfLife(dto: TopicDto): number | undefined {
@@ -139,19 +139,19 @@ function toTopicSystemMetadata(dto: TopicDto): SystemMetaDataEncrypted | undefin
 }
 
 function toTopicDtoLinkedServices(domain: Topic): string[] | undefined {
-    return domain.linkedServices ? (domain.linkedServices) : undefined
+    return domain.linkedServices ? domain.linkedServices : undefined
 }
 
 function toTopicDtoLinkedHealthElements(domain: Topic): string[] | undefined {
-    return domain.linkedHealthElements ? (domain.linkedHealthElements) : undefined
+    return domain.linkedHealthElements ? domain.linkedHealthElements : undefined
 }
 
 function toTopicLinkedHealthElements(dto: TopicDto): Array<string> | undefined {
-    return dto.linkedHealthElements ? (dto.linkedHealthElements) : undefined
+    return dto.linkedHealthElements ? dto.linkedHealthElements : undefined
 }
 
 function toTopicLinkedServices(dto: TopicDto): Array<string> | undefined {
-    return dto.linkedServices ? (dto.linkedServices) : undefined
+    return dto.linkedServices ? dto.linkedServices : undefined
 }
 
 export function mapTopicDtoToTopic(dto: TopicDto): Topic {

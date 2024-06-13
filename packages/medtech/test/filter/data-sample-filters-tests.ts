@@ -41,68 +41,68 @@ describe('Data Sample Filters Tests', function () {
             new Patient({
                 firstName: 'Dirk',
                 lastName: 'Gently',
-            }),
+            })
         )
 
         ds1 = await hcp1Api.dataSampleApi.createOrModifyDataSampleFor(
             patient.id!,
             new DataSample({
-                codes: ([
+                codes: [
                     new CodingReference({
                         id: 'SNOMEDCT|617|20020131',
                         type: 'SNOMEDCT',
                         code: '617',
                         version: '20020131',
                     }),
-                ]),
+                ],
                 content: recordOf({ en: new Content({ stringValue: 'Hello world' }) }),
-            }),
+            })
         )
 
         he1 = await hcp1Api.healthcareElementApi.createOrModifyHealthcareElement(
             new HealthcareElement({
                 description: 'The patient has been diagnosed Pararibulitis',
-                codes: ([
+                codes: [
                     new CodingReference({
                         id: 'SNOMEDCT|617|20020131',
                         type: 'SNOMEDCT',
                         code: '617',
                         version: '20020131',
                     }),
-                ]),
+                ],
             }),
-            patient.id!,
+            patient.id!
         )
 
         ds2 = await hcp1Api.dataSampleApi.createOrModifyDataSampleFor(
             patient.id!,
             new DataSample({
-                healthcareElementIds: ([he1.id!]),
-                codes: ([
+                healthcareElementIds: [he1.id!],
+                codes: [
                     new CodingReference({
                         id: 'SNOMEDCT|617|20020131',
                         type: 'SNOMEDCT',
                         code: '617',
                         version: '20020131',
                     }),
-                ]),
+                ],
                 content: recordOf({ en: new Content({ stringValue: 'Hello world' }) }),
-            }),
+            })
         )
 
         ds3 = await hcp1Api.dataSampleApi.createOrModifyDataSampleFor(
             patient.id!,
             new DataSample({
-                labels: ([
+                labels: [
                     new CodingReference({
                         id: 'SNOMEDCT|617|20020131',
                         type: 'SNOMEDCT',
                         code: '617',
                         version: '20020131',
                     }),
-                ]),
+                ],
                 content: recordOf({ en: new Content({ stringValue: 'Hello world' }) }),
-            }),
+            })
         )
     })
 
@@ -140,8 +140,8 @@ describe('Data Sample Filters Tests', function () {
 
         expect(samples.rows.length).to.be.greaterThan(0)
         samples.rows.forEach((sample) => {
-            expect((sample.labels).map((it) => it.code)).to.contain('617')
-            expect((sample.labels).map((it) => it.type)).to.contain('SNOMEDCT')
+            expect(sample.labels.map((it) => it.code)).to.contain('617')
+            expect(sample.labels.map((it) => it.type)).to.contain('SNOMEDCT')
         })
     })
 
@@ -150,8 +150,8 @@ describe('Data Sample Filters Tests', function () {
 
         expect(samples.rows.length).to.be.greaterThan(0)
         samples.rows.forEach((sample) => {
-            expect((sample.codes).map((it) => it.code)).to.contain('617')
-            expect((sample.codes).map((it) => it.type)).to.contain('SNOMEDCT')
+            expect(sample.codes.map((it) => it.code)).to.contain('617')
+            expect(sample.codes.map((it) => it.type)).to.contain('SNOMEDCT')
         })
     })
 
