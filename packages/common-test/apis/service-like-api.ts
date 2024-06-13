@@ -507,8 +507,8 @@ export function testServiceLikeApi<
             expect(servicesDtos.length).toBeGreaterThan(1)
             expect(servicesDtos[0].contactId).toBeTruthy()
             expect(forceUuid(servicesDtos[0].contactId)).toEqual(servicesDtos[0].contactId)
-            expect((servicesDtos.map((s) => s.contactId)).length).toEqual(1)
-            expect((servicesDtos.map((s) => s.id)).length).toEqual(servicesDtos.length)
+            expect(new Set(servicesDtos.map((s) => s.contactId)).size).toEqual(1)
+            expect(new Set(servicesDtos.map((s) => s.id)).size).toEqual(servicesDtos.length)
         })
 
         it('If multiple services are created in quick succession but over different calls the services should NOT be part of the same contact', async () => {
@@ -537,7 +537,7 @@ export function testServiceLikeApi<
                 expect(sharedServiceDto.content).toEqual(servicesDto.find((s) => s.id === sharedServiceDto.id)!.content)
                 await ctx.checkServiceAccessibleAndDecrypted(h2api, sharedService, true)
             }
-            expect((sharedServices.map((s) => ctx.toServiceDto(s).contactId)).length).toEqual(1)
+            expect(new Set(sharedServices.map((s) => ctx.toServiceDto(s).contactId)).size).toEqual(1)
         })
 
         it('Should allow to share only some services of a batch', async () => {
@@ -553,7 +553,7 @@ export function testServiceLikeApi<
                     ctx.toDSService({ content: { en: { stringValue: 'Service 4' } } }),
                 ])
             const servicesDto = services.map((s) => ctx.toServiceDto(s))
-            expect((servicesDto.map((s) => s.contactId)).length).toEqual(1)
+            expect(new Set(servicesDto.map((s) => s.contactId)).size).toEqual(1)
             for (const service of services) {
                 await ctx.checkServiceInaccessible(h2api, service)
             }
@@ -566,7 +566,7 @@ export function testServiceLikeApi<
                 expect(sharedServiceDto.content).toEqual(servicesDto.find((s) => s.id === sharedServiceDto.id)!.content)
                 await ctx.checkServiceAccessibleAndDecrypted(h2api, sharedService, true)
             }
-            expect((sharedServices.map((s) => ctx.toServiceDto(s).contactId)).length).toEqual(1)
+            expect(new Set(sharedServices.map((s) => ctx.toServiceDto(s).contactId)).size).toEqual(1)
             await ctx.checkServiceInaccessible(h2api, services[1])
             await ctx.checkServiceInaccessible(h2api, services[3])
             expect(ctx.toServiceDto(await ctx.serviceApi(h1api).get(servicesDto[0].id!)).contactId).not.toEqual(servicesDto[0].contactId)
