@@ -1,10 +1,10 @@
 import { Message as MessageDto } from '@icure/api'
 import { mapTo } from '../utils/decorators'
+import { forceUuid } from '../utils/uuidUtils'
 import { CodingReference } from './CodingReference.model'
 import { MessageAttachment } from './MessageAttachment.model'
 import { MessageReadStatus } from './MessageReadStatus.model'
 import { SystemMetaDataEncrypted } from './SystemMetaDataEncrypted.model'
-import { forceUuid } from '../utils/uuidUtils'
 
 @mapTo(MessageDto)
 export class Message {

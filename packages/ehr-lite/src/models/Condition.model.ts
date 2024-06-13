@@ -72,7 +72,7 @@ export class Condition implements ICondition {
         if (instance.verificationStatus !== undefined) pojo['verificationStatus'] = instance.verificationStatus
         if (instance.category !== undefined) pojo['category'] = instance.category
         if (instance.severity !== undefined) pojo['severity'] = instance.severity
-        if (instance.bodySite !== undefined) pojo['bodySite'] = instance.bodySite?.map((item) => CodingReference.toJSON(item))
+        if (instance.bodySite !== undefined) pojo['bodySite'] = instance.bodySite.map((item) => CodingReference.toJSON(item))
         pojo['tags'] = instance.tags.map((item) => CodingReference.toJSON(item))
         pojo['codes'] = instance.codes.map((item) => CodingReference.toJSON(item))
         if (instance.endOfLife !== undefined) pojo['endOfLife'] = instance.endOfLife
@@ -83,7 +83,7 @@ export class Condition implements ICondition {
         if (instance.closingDate !== undefined) pojo['closingDate'] = instance.closingDate
         if (instance.description !== undefined) pojo['description'] = instance.description
         pojo['notes'] = instance.notes.map((item) => Annotation.toJSON(item))
-        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataEncrypted.toJSON(instance.systemMetaData) : undefined
+        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = SystemMetaDataEncrypted.toJSON(instance.systemMetaData)
         return pojo
     }
 
@@ -122,7 +122,7 @@ export class Condition implements ICondition {
             obj['severity'] = pojo['severity']!
         }
         if (pojo['bodySite'] !== undefined) {
-            obj['bodySite'] = pojo['bodySite']!?.map((item: any) => CodingReference.fromJSON(item))
+            obj['bodySite'] = pojo['bodySite']!.map((item: any) => CodingReference.fromJSON(item))
         }
         obj['tags'] = pojo['tags'].map((item: any) => CodingReference.fromJSON(item))
         obj['codes'] = pojo['codes'].map((item: any) => CodingReference.fromJSON(item))
@@ -149,7 +149,7 @@ export class Condition implements ICondition {
         }
         obj['notes'] = pojo['notes'].map((item: any) => Annotation.fromJSON(item))
         if (pojo['systemMetaData'] !== undefined) {
-            obj['systemMetaData'] = !!pojo['systemMetaData']! ? SystemMetaDataEncrypted.fromJSON(pojo['systemMetaData']!) : undefined
+            obj['systemMetaData'] = SystemMetaDataEncrypted.fromJSON(pojo['systemMetaData']!)
         }
         return new Condition(obj)
     }

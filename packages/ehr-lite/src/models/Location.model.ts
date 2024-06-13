@@ -42,7 +42,7 @@ export class Location implements ILocation {
         if (instance.city !== undefined) pojo['city'] = instance.city
         if (instance.state !== undefined) pojo['state'] = instance.state
         if (instance.country !== undefined) pojo['country'] = instance.country
-        if (instance.notes !== undefined) pojo['notes'] = instance.notes?.map((item) => Annotation.toJSON(item))
+        if (instance.notes !== undefined) pojo['notes'] = instance.notes.map((item) => Annotation.toJSON(item))
         pojo['telecoms'] = instance.telecoms.map((item) => ContactPoint.toJSON(item))
         if (instance.encryptedSelf !== undefined) pojo['encryptedSelf'] = instance.encryptedSelf
         return pojo
@@ -78,7 +78,7 @@ export class Location implements ILocation {
             obj['country'] = pojo['country']!
         }
         if (pojo['notes'] !== undefined) {
-            obj['notes'] = pojo['notes']!?.map((item: any) => Annotation.fromJSON(item))
+            obj['notes'] = pojo['notes']!.map((item: any) => Annotation.fromJSON(item))
         }
         obj['telecoms'] = pojo['telecoms'].map((item: any) => ContactPoint.fromJSON(item))
         if (pojo['encryptedSelf'] !== undefined) {

@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 
-import { Annotation, CodingReference, Identifier, PatientDto, Property, SystemMetaDataOwnerEncrypted, b64_2ab, base64string, mapTo } from '@icure/typescript-common'
+import { Annotation, CodingReference, Identifier, PatientDto, Property, SystemMetaDataOwnerEncrypted, base64string, mapTo } from '@icure/typescript-common'
 import { Address } from './Address.model'
 import { HealthcareProfessionalGenderEnum } from './HealthcareProfessional.model'
 import { Partnership } from './Partnership.model'

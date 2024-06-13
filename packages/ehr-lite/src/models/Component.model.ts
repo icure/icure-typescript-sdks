@@ -31,11 +31,11 @@ export class Component implements IComponent {
         if (instance.booleanValue !== undefined) pojo['booleanValue'] = instance.booleanValue
         if (instance.instantValue !== undefined) pojo['instantValue'] = instance.instantValue
         if (instance.fuzzyDateValue !== undefined) pojo['fuzzyDateValue'] = instance.fuzzyDateValue
-        if (instance.measureValue !== undefined) pojo['measureValue'] = !!instance.measureValue ? Measure.toJSON(instance.measureValue) : undefined
-        if (instance.timeSeries !== undefined) pojo['timeSeries'] = !!instance.timeSeries ? TimeSeries.toJSON(instance.timeSeries) : undefined
-        if (instance.compoundValue !== undefined) pojo['compoundValue'] = instance.compoundValue?.map((item) => Observation.toJSON(item))
-        if (instance.ratio !== undefined) pojo['ratio'] = instance.ratio?.map((item) => Measure.toJSON(item))
-        if (instance.range !== undefined) pojo['range'] = instance.range?.map((item) => Measure.toJSON(item))
+        if (instance.measureValue !== undefined) pojo['measureValue'] = Measure.toJSON(instance.measureValue)
+        if (instance.timeSeries !== undefined) pojo['timeSeries'] = TimeSeries.toJSON(instance.timeSeries)
+        if (instance.compoundValue !== undefined) pojo['compoundValue'] = instance.compoundValue.map((item) => Observation.toJSON(item))
+        if (instance.ratio !== undefined) pojo['ratio'] = instance.ratio.map((item) => Measure.toJSON(item))
+        if (instance.range !== undefined) pojo['range'] = instance.range.map((item) => Measure.toJSON(item))
         return pojo
     }
 
@@ -54,19 +54,19 @@ export class Component implements IComponent {
             obj['fuzzyDateValue'] = pojo['fuzzyDateValue']!
         }
         if (pojo['measureValue'] !== undefined) {
-            obj['measureValue'] = !!pojo['measureValue']! ? Measure.fromJSON(pojo['measureValue']!) : undefined
+            obj['measureValue'] = Measure.fromJSON(pojo['measureValue']!)
         }
         if (pojo['timeSeries'] !== undefined) {
-            obj['timeSeries'] = !!pojo['timeSeries']! ? TimeSeries.fromJSON(pojo['timeSeries']!) : undefined
+            obj['timeSeries'] = TimeSeries.fromJSON(pojo['timeSeries']!)
         }
         if (pojo['compoundValue'] !== undefined) {
-            obj['compoundValue'] = pojo['compoundValue']!?.map((item: any) => Observation.fromJSON(item))
+            obj['compoundValue'] = pojo['compoundValue']!.map((item: any) => Observation.fromJSON(item))
         }
         if (pojo['ratio'] !== undefined) {
-            obj['ratio'] = pojo['ratio']!?.map((item: any) => Measure.fromJSON(item))
+            obj['ratio'] = pojo['ratio']!.map((item: any) => Measure.fromJSON(item))
         }
         if (pojo['range'] !== undefined) {
-            obj['range'] = pojo['range']!?.map((item: any) => Measure.fromJSON(item))
+            obj['range'] = pojo['range']!.map((item: any) => Measure.fromJSON(item))
         }
         return new Component(obj)
     }

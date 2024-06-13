@@ -56,9 +56,9 @@ export class Observation implements IObservation {
         if (instance.transactionId !== undefined) pojo['transactionId'] = instance.transactionId
         pojo['identifiers'] = instance.identifiers.map((item) => Identifier.toJSON(item))
         if (instance.batchId !== undefined) pojo['batchId'] = instance.batchId
-        if (instance.healthcareElementIds !== undefined) pojo['healthcareElementIds'] = instance.healthcareElementIds?.map((item) => item)
+        if (instance.healthcareElementIds !== undefined) pojo['healthcareElementIds'] = instance.healthcareElementIds.map((item) => item)
         if (instance.index !== undefined) pojo['index'] = instance.index
-        if (instance.component !== undefined) pojo['component'] = !!instance.component ? Component.toJSON(instance.component) : undefined
+        if (instance.component !== undefined) pojo['component'] = Component.toJSON(instance.component)
         if (instance.valueDate !== undefined) pojo['valueDate'] = instance.valueDate
         if (instance.openingDate !== undefined) pojo['openingDate'] = instance.openingDate
         if (instance.closingDate !== undefined) pojo['closingDate'] = instance.closingDate
@@ -71,7 +71,7 @@ export class Observation implements IObservation {
         pojo['qualifiedLinks'] = { ...instance.qualifiedLinks }
         pojo['codes'] = instance.codes.map((item) => CodingReference.toJSON(item))
         pojo['tags'] = instance.tags.map((item) => CodingReference.toJSON(item))
-        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataEncrypted.toJSON(instance.systemMetaData) : undefined
+        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = SystemMetaDataEncrypted.toJSON(instance.systemMetaData)
         pojo['notes'] = instance.notes.map((item) => Annotation.toJSON(item))
         return pojo
     }
@@ -87,13 +87,13 @@ export class Observation implements IObservation {
             obj['batchId'] = pojo['batchId']!
         }
         if (pojo['healthcareElementIds'] !== undefined) {
-            obj['healthcareElementIds'] = pojo['healthcareElementIds']!?.map((item: any) => item)
+            obj['healthcareElementIds'] = pojo['healthcareElementIds']!.map((item: any) => item)
         }
         if (pojo['index'] !== undefined) {
             obj['index'] = pojo['index']!
         }
         if (pojo['component'] !== undefined) {
-            obj['component'] = !!pojo['component']! ? Component.fromJSON(pojo['component']!) : undefined
+            obj['component'] = Component.fromJSON(pojo['component']!)
         }
         if (pojo['valueDate'] !== undefined) {
             obj['valueDate'] = pojo['valueDate']!
@@ -124,7 +124,7 @@ export class Observation implements IObservation {
         obj['codes'] = pojo['codes'].map((item: any) => CodingReference.fromJSON(item))
         obj['tags'] = pojo['tags'].map((item: any) => CodingReference.fromJSON(item))
         if (pojo['systemMetaData'] !== undefined) {
-            obj['systemMetaData'] = !!pojo['systemMetaData']! ? SystemMetaDataEncrypted.fromJSON(pojo['systemMetaData']!) : undefined
+            obj['systemMetaData'] = SystemMetaDataEncrypted.fromJSON(pojo['systemMetaData']!)
         }
         obj['notes'] = pojo['notes'].map((item: any) => Annotation.fromJSON(item))
         return new Observation(obj)

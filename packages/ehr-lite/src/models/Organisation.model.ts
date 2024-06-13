@@ -59,7 +59,7 @@ export class Organisation implements IOrganisation {
         if (instance.picture !== undefined) pojo['picture'] = instance.picture
         pojo['description'] = { ...instance.description }
         pojo['properties'] = instance.properties.map((item) => Property.toJSON(item))
-        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataOwner.toJSON(instance.systemMetaData) : undefined
+        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = SystemMetaDataOwner.toJSON(instance.systemMetaData)
         return pojo
     }
 
@@ -98,7 +98,7 @@ export class Organisation implements IOrganisation {
         obj['description'] = { ...pojo['description'] }
         obj['properties'] = pojo['properties'].map((item: any) => Property.fromJSON(item))
         if (pojo['systemMetaData'] !== undefined) {
-            obj['systemMetaData'] = !!pojo['systemMetaData']! ? SystemMetaDataOwner.fromJSON(pojo['systemMetaData']!) : undefined
+            obj['systemMetaData'] = SystemMetaDataOwner.fromJSON(pojo['systemMetaData']!)
         }
         return new Organisation(obj)
     }

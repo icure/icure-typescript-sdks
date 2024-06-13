@@ -82,7 +82,7 @@ export class Practitioner implements IPractitioner {
         pojo['specialityCodes'] = instance.specialityCodes.map((item) => CodingReference.toJSON(item))
         pojo['description'] = { ...instance.description }
         pojo['properties'] = instance.properties.map((item) => Property.toJSON(item))
-        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataOwner.toJSON(instance.systemMetaData) : undefined
+        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = SystemMetaDataOwner.toJSON(instance.systemMetaData)
         return pojo
     }
 
@@ -138,7 +138,7 @@ export class Practitioner implements IPractitioner {
         obj['description'] = { ...pojo['description'] }
         obj['properties'] = pojo['properties'].map((item: any) => Property.fromJSON(item))
         if (pojo['systemMetaData'] !== undefined) {
-            obj['systemMetaData'] = !!pojo['systemMetaData']! ? SystemMetaDataOwner.fromJSON(pojo['systemMetaData']!) : undefined
+            obj['systemMetaData'] = SystemMetaDataOwner.fromJSON(pojo['systemMetaData']!)
         }
         return new Practitioner(obj)
     }

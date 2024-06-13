@@ -175,7 +175,7 @@ export class Patient implements IPatient {
         pojo['patientPractitioners'] = instance.patientPractitioners.map((item) => RelatedPractitioner.toJSON(item))
         pojo['patientProfessions'] = instance.patientProfessions.map((item) => CodingReference.toJSON(item))
         pojo['properties'] = instance.properties.map((item) => Property.toJSON(item))
-        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataOwnerEncrypted.toJSON(instance.systemMetaData) : undefined
+        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = SystemMetaDataOwnerEncrypted.toJSON(instance.systemMetaData)
         return pojo
     }
 
@@ -285,7 +285,7 @@ export class Patient implements IPatient {
         obj['patientProfessions'] = pojo['patientProfessions'].map((item: any) => CodingReference.fromJSON(item))
         obj['properties'] = pojo['properties'].map((item: any) => Property.fromJSON(item))
         if (pojo['systemMetaData'] !== undefined) {
-            obj['systemMetaData'] = !!pojo['systemMetaData']! ? SystemMetaDataOwnerEncrypted.fromJSON(pojo['systemMetaData']!) : undefined
+            obj['systemMetaData'] = SystemMetaDataOwnerEncrypted.fromJSON(pojo['systemMetaData']!)
         }
         return new Patient(obj)
     }
