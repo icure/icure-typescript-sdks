@@ -1,6 +1,7 @@
 import { MaintenanceTask } from '@icure/api'
 import { EntityId } from '../types'
 import { mapTo } from '../utils/decorators'
+import { forceUuid } from "../utils/uuidUtils"
 import { Identifier, IIdentifier } from './Identifier.model'
 import { IProperty, Property } from './Property.model'
 import { ISystemMetaDataEncrypted, SystemMetaDataEncrypted } from './SystemMetaDataEncrypted.model'
@@ -75,8 +76,8 @@ export class Notification {
         }
     }
 
-    constructor(json: Partial<INotification> & { id: string }) {
-        this.id = json["id"]!
+    constructor(json: Partial<INotification> ) {
+        this.id = forceUuid(json["id"]!)
         if (json["rev"] !== undefined) {
             this.rev = json["rev"]!
         }
