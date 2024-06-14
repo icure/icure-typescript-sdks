@@ -252,11 +252,11 @@ function toEncounterPerformer({ responsible }: ContactDto): string | undefined {
 }
 
 function toEncounterImmunizations({ services }: ContactDto): Immunization[] | undefined {
-    return services?.filter((service) => service.tags?.some((tag) => tag.code === IMMUNIZATION_FHIR_TYPE))?.map(mapServiceDtoToImmunization)
+    return services?.filter((service) => service.tags?.some((tag) => tag.code?.toUpperCase() === IMMUNIZATION_FHIR_TYPE.toUpperCase()))?.map(mapServiceDtoToImmunization)
 }
 
 function toEncounterObservations({ services }: ContactDto): Observation[] | undefined {
-    return services?.filter((service) => !service.tags?.some((tag) => tag.code === OBSERVATION_FHIR_TYPE))?.map(mapServiceDtoToObservation)
+    return services?.filter((service) => service.tags?.some((tag) => tag.code?.toUpperCase() === OBSERVATION_FHIR_TYPE.toUpperCase()))?.map(mapServiceDtoToObservation)
 }
 
 export function mapContactDtoToEncounter(dto: ContactDto): Encounter {

@@ -1,4 +1,4 @@
-import { Annotation, CodingReference, ContactDto, Identifier, mapTo, SystemMetaDataEncrypted } from '@icure/typescript-common'
+import { Annotation, CodingReference, ContactDto, forceUuid, Identifier, mapTo, SystemMetaDataEncrypted } from '@icure/typescript-common'
 import { Immunization } from './Immunization.model'
 import { Observation } from './Observation.model'
 
@@ -25,13 +25,13 @@ export class Encounter {
     id: string
     rev?: string
     identifiers?: Identifier[]
-    codes: CodingReference[]
-    tags: CodingReference[]
+    codes: CodingReference[] = []
+    tags: CodingReference[] = []
     type?: CodingReference
     startTime?: number
     endTime?: number
     reasonCode?: CodingReference[]
-    diagnosis?: string[]
+    diagnosis: string[] = []
     serviceProvider?: string
     created?: number
     modified?: number
@@ -43,17 +43,17 @@ export class Encounter {
     notes?: Annotation[]
     systemMetaData?: SystemMetaDataEncrypted
 
-    constructor(encounter: IEncounter) {
-        this.id = encounter.id
+    constructor(encounter: Partial<IEncounter>) {
+        this.id = forceUuid(encounter.id)
         this.rev = encounter.rev
         this.identifiers = encounter.identifiers
-        this.codes = encounter.codes ?? []
-        this.tags = encounter.tags ?? []
+        if (encounter.codes !== undefined) this.codes = encounter.codes
+        if (encounter.tags !== undefined) this.tags = encounter.tags
         this.type = encounter.type
         this.startTime = encounter.startTime
         this.endTime = encounter.endTime
         this.reasonCode = encounter.reasonCode
-        this.diagnosis = encounter.diagnosis
+        if (encounter.diagnosis !== undefined) this.diagnosis = encounter.diagnosis
         this.serviceProvider = encounter.serviceProvider
         this.created = encounter.created
         this.modified = encounter.modified
@@ -152,7 +152,7 @@ export class Encounter {
 }
 
 interface IEncounter {
-    id: string
+    id?: string
     rev?: string
     identifiers?: Identifier[]
     codes?: CodingReference[]

@@ -273,10 +273,10 @@ export function EncounterApiAware<TBase extends Constructor<any>>(Base: TBase): 
                     startTime: 202406111500,
                     endTime: 202406111600,
                     performer: dataOwnerId,
+                    notes: [annotation1()],
                     immunizations: [
                         new Immunization({
                             id: forceUuid(),
-                            encounterId: encounterId,
                             vaccineCode: new CodingReference({ id: 'ICD-11|A01|1', type: 'ICD-11', code: 'A01', version: '1' }),
                             doseQuantity: new Quantity({
                                 value: 15,
@@ -286,7 +286,7 @@ export function EncounterApiAware<TBase extends Constructor<any>>(Base: TBase): 
                             site: new CodingReference({ id: 'SNOMED|123456|1', type: 'SNOMED', code: '123456', version: '1' }),
                             administeredAt: 202406111506,
                             language: 'en',
-                            notes: [new Annotation({ markdown: mapOf({ en: 'This should be encrypted' }) })],
+                            notes: [annotation1()],
                         }),
                     ],
                 }),

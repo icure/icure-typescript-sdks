@@ -114,7 +114,11 @@ export function testContactLikeApi<DSAnonymousApiBuilder extends AnonymousApiBui
             const newPatient = await ctx.createPatient(hcp1Api)
             const createdContact = await ctx.createContactForPatient(hcp1Api, newPatient)
 
-            const filter = await ctx.newContactFilter(hcp1Api).forDataOwner(hcp1User.healthcarePartyId!).build()
+            const filter = await ctx
+                .newContactFilter(hcp1Api)
+                .forDataOwner(hcp1User.healthcarePartyId!)
+                .byServiceIds(ctx.toContactDto(createdContact).services?.map((s) => s.id!) ?? [])
+                .build()
 
             const retrievedContact = await ctx.contactApi(hcp1Api).get(ctx.toContactDto(createdContact).id!)
             const filteredContacts = await ctx.contactApi(hcp1Api).filterBy(filter)
@@ -168,7 +172,7 @@ export function testContactLikeApi<DSAnonymousApiBuilder extends AnonymousApiBui
             const { api, user } = await ctx.apiForEnvUser(env, hcp1Username)
             // TODO fix event listener type
             const connectionPromise = async (options: {}, dataOwnerId: string, eventListener: (contact: ContactDto) => Promise<void>) =>
-                ctx.contactApi(api).subscribeToEvents(eventTypes, await ctx.newContactFilter(api).forSelf().byLabelCodeDateFilter(testType, testCode).build(), eventListener as unknown as any, options)
+                ctx.contactApi(api).subscribeToEvents(eventTypes, await ctx.newContactFilter(api).forDataOwner(hcp1User.healthcarePartyId!).byLabelCodeDateFilter(testType, testCode).build(), eventListener as unknown as any, options)
 
             const events: ContactDto[] = []
             const statuses: string[] = []
@@ -198,19 +202,7 @@ export function testContactLikeApi<DSAnonymousApiBuilder extends AnonymousApiBui
                         ),
                     )
 
-                    await ctx.contactApi(api).createOrModifyFor(
-                        (await ctx.toPatientDto(patient)).id,
-                        ctx.toDSContact(
-                            new Contact({
-                                note: [
-                                    new AnnotationDto({
-                                        markdown: { en: 'Hero Syndrome' },
-                                    }),
-                                ],
-                                tags: [new CodeStub({ code: testCode, type: testType })],
-                            }),
-                        ),
-                    )
+                    ctx.createContactForPatient(api, patient)
                 },
                 (status) => {
                     statuses.push(status)

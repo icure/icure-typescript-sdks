@@ -3,7 +3,7 @@ import { Filter } from '../Filter'
 import { DataOwnerFilterBuilder, FilterBuilder, NoOpFilter, SortableFilterBuilder } from './filterDsl'
 import { CommonApi } from '../../apis/CommonApi'
 import { Mapper } from '../../apis/Mapper'
-import { ContactByHcPartyFilter } from '../contact'
+import { ContactByHcPartyFilter, ContactByServiceIdsFilter } from '../contact'
 import { PatientDto } from '../../index'
 
 export class ContactFilter<DSPatient> implements DataOwnerFilterBuilder<Contact, ContactFilterWithDataOwner<DSPatient>> {
@@ -75,7 +75,7 @@ export class ContactFilterWithDataOwner<DSPatient> extends SortableFilterBuilder
     }
 
     byServiceIds(serviceIds: string[]): ContactFilterWithDataOwner<DSPatient> {
-        this._builderAccumulator.addByIdsFilter(Promise.resolve({ ids: serviceIds, $type: 'ContactByServiceIdsFilter' }), '$type')
+        this._builderAccumulator.addSingletonFilter(Promise.resolve({ ids: serviceIds, $type: 'ContactByServiceIdsFilter' }))
         return this
     }
 
@@ -101,10 +101,6 @@ export class ContactFilterWithDataOwner<DSPatient> extends SortableFilterBuilder
     }
 
     byPatientLabelCodeDateFilter(patients: DSPatient[], labelType?: string, labelCode?: string, codeType?: string, codeCode?: string, startServiceValueDate?: number, endServiceValueDate?: number): ContactFilterWithDataOwner<DSPatient> {
-        if (!labelType && !labelCode && !codeType && !codeCode && !startServiceValueDate && !endServiceValueDate) {
-            throw Error('To instantiate the filter, you must specify at least one of these parameters: labelType, labelCode, codeType, codeCode, startServiceValueDate, or endServiceValueDate')
-        }
-
         if (patients.length === 0) {
             throw Error('To instantiate this filter, you must specify at least one patient')
         }

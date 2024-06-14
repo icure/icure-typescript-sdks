@@ -36,14 +36,14 @@ import {
 import { mapAdministrationQuantityDtoToQuantity, mapQuantityToAdministrationQuantityDto } from './Quantity.mapper'
 import { Quantity } from '../models/Quantity.model'
 
+export const IMMUNIZATION_FHIR_TYPE = 'Immunization'
+
 const STATUS_CONTEXT = 'status'
 const STATUS_REASON_CONTEXT = 'statusReason'
 const VACCINE_CODE_CONTEXT = 'vaccineCode'
 const SUB_POTENT_REASON_CONTEXT = 'subPotentReason'
 const SITE_CONTEXT = 'site'
 const CONTEXTS = [STATUS_CONTEXT, STATUS_REASON_CONTEXT, VACCINE_CODE_CONTEXT, SUB_POTENT_REASON_CONTEXT, SITE_CONTEXT].map((context) => `${IMMUNIZATION_FHIR_TYPE}.${context}`)
-
-export const IMMUNIZATION_FHIR_TYPE = 'Immunization'
 
 function toServiceDtoId(domain: Immunization): string | undefined {
     return forceUuid(domain.id)
@@ -379,8 +379,8 @@ function toImmunizationTags({ tags }: ServiceDto): CodingReference[] {
     return [
         ...(filteringOutInternalTags(
             IMMUNIZATION_FHIR_TYPE,
-            tags?.map(mapCodeStubToCodingReference)?.filter((tag) => {
-                return tag.context !== undefined ? !CONTEXTS.includes(tag.context) : true
+            tags?.filter((tag) => {
+                return tag.context != undefined ? !CONTEXTS.includes(tag.context) : true
             }),
         )?.values() ?? []),
     ]
@@ -389,7 +389,7 @@ function toImmunizationTags({ tags }: ServiceDto): CodingReference[] {
 function toImmunizationDoseQuantity({ content }: ServiceDto): Quantity | undefined {
     const contentDto = content ? Object.values(content)[0] : undefined
     const regimen = contentDto?.medicationValue?.regimen
-    return regimen && regimen[0].administratedQuantity ? mapAdministrationQuantityDtoToQuantity(regimen[0].administratedQuantity) : undefined
+    return regimen !== undefined && regimen.length > 0 && regimen[0].administratedQuantity ? mapAdministrationQuantityDtoToQuantity(regimen[0].administratedQuantity) : undefined
 }
 
 export function mapServiceDtoToImmunization(dto: ServiceDto): Immunization {
