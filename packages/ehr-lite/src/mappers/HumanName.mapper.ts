@@ -68,26 +68,26 @@ function toHumanNameUse(dto: PersonNameDto): HumanNameUseEnum | undefined {
 
 export function mapPersonNameDtoToHumanName(dto: PersonNameDto): HumanName {
     return new HumanName({
-    family: toHumanNameFamily(dto),
-    given: toHumanNameGiven(dto),
-    start: toHumanNameStart(dto),
-    end: toHumanNameEnd(dto),
-    prefix: toHumanNamePrefix(dto),
-    suffix: toHumanNameSuffix(dto),
-    text: toHumanNameText(dto),
-    use: toHumanNameUse(dto),
+        family: toHumanNameFamily(dto),
+        given: toHumanNameGiven(dto),
+        start: toHumanNameStart(dto),
+        end: toHumanNameEnd(dto),
+        prefix: toHumanNamePrefix(dto),
+        suffix: toHumanNameSuffix(dto),
+        text: toHumanNameText(dto),
+        use: toHumanNameUse(dto),
     })
 }
 
 export function mapHumanNameToPersonNameDto(domain: HumanName): PersonNameDto {
     return new PersonNameDto({
-    lastName: toPersonNameDtoLastName(domain),
-    firstNames: toPersonNameDtoFirstNames(domain),
-    start: toPersonNameDtoStart(domain),
-    end: toPersonNameDtoEnd(domain),
-    prefix: toPersonNameDtoPrefix(domain),
-    suffix: toPersonNameDtoSuffix(domain),
-    text: toPersonNameDtoText(domain),
-    use: toPersonNameDtoUse(domain),
+        lastName: toPersonNameDtoLastName(domain),
+        firstNames: toPersonNameDtoFirstNames(domain),
+        start: toPersonNameDtoStart(domain),
+        end: toPersonNameDtoEnd(domain),
+        prefix: toPersonNameDtoPrefix(domain),
+        suffix: toPersonNameDtoSuffix(domain),
+        text: toPersonNameDtoText(domain),
+        use: toPersonNameDtoUse(domain),
     })
 }

@@ -8,17 +8,17 @@ export class Range {
 
     toJSON(): IRange {
         return {
-        low: this.low,
-        high: this.high,
+            low: this.low,
+            high: this.high,
         }
     }
 
-    constructor(json: Partial<IRange> ) {
-        if (json["low"] !== undefined) {
-            this.low = json["low"]!
+    constructor(json: Partial<IRange>) {
+        if (json['low'] !== undefined) {
+            this.low = json['low']!
         }
-        if (json["high"] !== undefined) {
-            this.high = json["high"]!
+        if (json['high'] !== undefined) {
+            this.high = json['high']!
         }
     }
 }

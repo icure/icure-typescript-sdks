@@ -1,4 +1,4 @@
-import { CommonApi, CommonFilter, DeviceLikeApi, DeviceLikeApiImpl, PaginatedList, DeviceDto } from '@icure/typescript-common'
+import { CommonApi, CommonFilter, DeviceDto, DeviceLikeApi, DeviceLikeApiImpl, PaginatedList } from '@icure/typescript-common'
 import { MedicalDevice } from '../models/MedicalDevice.model'
 import { mapDeviceDtoToMedicalDevice, mapMedicalDeviceToDeviceDto } from '../mappers/MedicalDevice.mapper'
 
@@ -73,21 +73,27 @@ class MedicalDeviceApiImpl extends DeviceLikeApiImpl<MedicalDevice> implements M
     createOrModifyMedicalDevice(medicalDevice: MedicalDevice): Promise<MedicalDevice> {
         return this.createOrModify(medicalDevice)
     }
+
     createOrModifyMedicalDevices(medicalDevices: Array<MedicalDevice>): Promise<Array<MedicalDevice>> {
         return this.createOrModifyMany(medicalDevices)
     }
+
     deleteMedicalDevice(medicalDeviceId: string): Promise<string> {
         return this.delete(medicalDeviceId)
     }
+
     deleteMedicalDevices(ids: Array<string>): Promise<Array<string>> {
         return this.deleteMany(ids)
     }
+
     filterMedicalDevices(filter: CommonFilter<DeviceDto>, nextDeviceId?: string, limit?: number): Promise<PaginatedList<MedicalDevice>> {
         return this.filterBy(filter, nextDeviceId, limit)
     }
+
     getMedicalDevice(medicalDeviceId: string): Promise<MedicalDevice> {
         return this.get(medicalDeviceId)
     }
+
     matchMedicalDevices(filter: CommonFilter<DeviceDto>): Promise<Array<string>> {
         return this.matchBy(filter)
     }

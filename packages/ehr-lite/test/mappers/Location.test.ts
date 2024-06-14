@@ -1,6 +1,5 @@
 import { generateLocation } from '../models/Location.model'
 import { Location } from '../../src'
-import { Address } from '@icure/api'
 import { mapAddressDtoToLocation, mapLocationToAddressDto } from '../../src/mappers/Location.mapper'
 
 describe('Location', function () {

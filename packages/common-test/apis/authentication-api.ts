@@ -7,7 +7,7 @@ import { AnonymousApiBuilder, AuthSecretDetails, AuthSecretType, CommonAnonymous
 import { assert } from 'chai'
 import { BaseApiTestContext, WithAuthenticationApi, WithDataOwnerApi, WithHcpApi, WithMaintenanceTaskApi, WithPatientApi, WithServiceApi } from './TestContexts'
 import { expectArrayContainsExactlyInAnyOrder } from '../assertions'
-import { describe, it, beforeAll } from '@jest/globals'
+import { beforeAll, describe, it } from '@jest/globals'
 import { User } from '@icure/api'
 
 setLocalStorage(fetch)
@@ -539,7 +539,10 @@ export function testAuthenticationApi<
                         secretProviderCalled = true
                         expect(request[AuthSecretType.LONG_LIVED_TOKEN].accepted).toBe(true)
                         expect(previousAttempts).toHaveLength(0)
-                        return Promise.resolve({ value: signupApiInfo.token, secretType: AuthSecretType.LONG_LIVED_TOKEN })
+                        return Promise.resolve({
+                            value: signupApiInfo.token,
+                            secretType: AuthSecretType.LONG_LIVED_TOKEN,
+                        })
                     },
                 })
                 .withCrypto(webcrypto as any)

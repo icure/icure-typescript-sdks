@@ -28,37 +28,37 @@ export class TimeSeries {
 
     toJSON(): ITimeSeries {
         return {
-        fields: this.fields.map(item => item),
-        samples: this.samples.map(item => item.map(item => item)),
-        min: this.min.map(item => item),
-        max: this.max.map(item => item),
-        mean: this.mean.map(item => item),
-        median: this.median.map(item => item),
-        variance: this.variance.map(item => item),
+            fields: this.fields.map((item) => item),
+            samples: this.samples.map((item) => item.map((item) => item)),
+            min: this.min.map((item) => item),
+            max: this.max.map((item) => item),
+            mean: this.mean.map((item) => item),
+            median: this.median.map((item) => item),
+            variance: this.variance.map((item) => item),
         }
     }
 
-    constructor(json: Partial<ITimeSeries> ) {
-        if (json["fields"] !== undefined) {
-            this.fields = json["fields"]!.map((item: any) => item)
+    constructor(json: Partial<ITimeSeries>) {
+        if (json['fields'] !== undefined) {
+            this.fields = json['fields']!.map((item: any) => item)
         }
-        if (json["samples"] !== undefined) {
-            this.samples = json["samples"]!.map((item: any) => item.map((item: any) => item))
+        if (json['samples'] !== undefined) {
+            this.samples = json['samples']!.map((item: any) => item.map((item: any) => item))
         }
-        if (json["min"] !== undefined) {
-            this.min = json["min"]!.map((item: any) => item)
+        if (json['min'] !== undefined) {
+            this.min = json['min']!.map((item: any) => item)
         }
-        if (json["max"] !== undefined) {
-            this.max = json["max"]!.map((item: any) => item)
+        if (json['max'] !== undefined) {
+            this.max = json['max']!.map((item: any) => item)
         }
-        if (json["mean"] !== undefined) {
-            this.mean = json["mean"]!.map((item: any) => item)
+        if (json['mean'] !== undefined) {
+            this.mean = json['mean']!.map((item: any) => item)
         }
-        if (json["median"] !== undefined) {
-            this.median = json["median"]!.map((item: any) => item)
+        if (json['median'] !== undefined) {
+            this.median = json['median']!.map((item: any) => item)
         }
-        if (json["variance"] !== undefined) {
-            this.variance = json["variance"]!.map((item: any) => item)
+        if (json['variance'] !== undefined) {
+            this.variance = json['variance']!.map((item: any) => item)
         }
     }
 }

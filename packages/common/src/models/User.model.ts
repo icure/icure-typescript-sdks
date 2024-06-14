@@ -105,90 +105,90 @@ export class User {
 
     toJSON(): IUser {
         return {
-        id: this.id,
-        rev: this.rev,
-        deletionDate: this.deletionDate,
-        created: this.created,
-        name: this.name,
-        properties: this.properties.map(item => item.toJSON()),
-        roles: this.roles.map(item => item),
-        isAdmin: this.isAdmin,
-        inheritsRoles: this.inheritsRoles,
-        login: this.login,
-        passwordHash: this.passwordHash,
-        secret: this.secret,
-        use2fa: this.use2fa,
-        groupId: this.groupId,
-        healthcarePartyId: this.healthcarePartyId,
-        patientId: this.patientId,
-        deviceId: this.deviceId,
-        sharingDataWith: {...this.sharingDataWith},
-        email: this.email,
-        mobilePhone: this.mobilePhone,
-        authenticationTokens: Object.fromEntries(Object.entries(this.authenticationTokens).map(([k, v]: [any, AuthenticationToken]) => [k, v.toJSON()])),
+            id: this.id,
+            rev: this.rev,
+            deletionDate: this.deletionDate,
+            created: this.created,
+            name: this.name,
+            properties: this.properties.map((item) => item.toJSON()),
+            roles: this.roles.map((item) => item),
+            isAdmin: this.isAdmin,
+            inheritsRoles: this.inheritsRoles,
+            login: this.login,
+            passwordHash: this.passwordHash,
+            secret: this.secret,
+            use2fa: this.use2fa,
+            groupId: this.groupId,
+            healthcarePartyId: this.healthcarePartyId,
+            patientId: this.patientId,
+            deviceId: this.deviceId,
+            sharingDataWith: { ...this.sharingDataWith },
+            email: this.email,
+            mobilePhone: this.mobilePhone,
+            authenticationTokens: Object.fromEntries(Object.entries(this.authenticationTokens).map(([k, v]: [any, AuthenticationToken]) => [k, v.toJSON()])),
         }
     }
 
-    constructor(json: Partial<IUser> & { id: string,authenticationTokens: Record<string, IAuthenticationToken> }) {
-        this.id = json["id"]!
-        if (json["rev"] !== undefined) {
-            this.rev = json["rev"]!
+    constructor(json: Partial<IUser> & { id: string; authenticationTokens: Record<string, IAuthenticationToken> }) {
+        this.id = json['id']!
+        if (json['rev'] !== undefined) {
+            this.rev = json['rev']!
         }
-        if (json["deletionDate"] !== undefined) {
-            this.deletionDate = json["deletionDate"]!
+        if (json['deletionDate'] !== undefined) {
+            this.deletionDate = json['deletionDate']!
         }
-        if (json["created"] !== undefined) {
-            this.created = json["created"]!
+        if (json['created'] !== undefined) {
+            this.created = json['created']!
         }
-        if (json["name"] !== undefined) {
-            this.name = json["name"]!
+        if (json['name'] !== undefined) {
+            this.name = json['name']!
         }
-        if (json["properties"] !== undefined) {
-            this.properties = json["properties"]!.map((item: any) => new Property(item))
+        if (json['properties'] !== undefined) {
+            this.properties = json['properties']!.map((item: any) => new Property(item))
         }
-        if (json["roles"] !== undefined) {
-            this.roles = json["roles"]!.map((item: any) => item)
+        if (json['roles'] !== undefined) {
+            this.roles = json['roles']!.map((item: any) => item)
         }
-        if (json["isAdmin"] !== undefined) {
-            this.isAdmin = json["isAdmin"]!
+        if (json['isAdmin'] !== undefined) {
+            this.isAdmin = json['isAdmin']!
         }
-        if (json["inheritsRoles"] !== undefined) {
-            this.inheritsRoles = json["inheritsRoles"]!
+        if (json['inheritsRoles'] !== undefined) {
+            this.inheritsRoles = json['inheritsRoles']!
         }
-        if (json["login"] !== undefined) {
-            this.login = json["login"]!
+        if (json['login'] !== undefined) {
+            this.login = json['login']!
         }
-        if (json["passwordHash"] !== undefined) {
-            this.passwordHash = json["passwordHash"]!
+        if (json['passwordHash'] !== undefined) {
+            this.passwordHash = json['passwordHash']!
         }
-        if (json["secret"] !== undefined) {
-            this.secret = json["secret"]!
+        if (json['secret'] !== undefined) {
+            this.secret = json['secret']!
         }
-        if (json["use2fa"] !== undefined) {
-            this.use2fa = json["use2fa"]!
+        if (json['use2fa'] !== undefined) {
+            this.use2fa = json['use2fa']!
         }
-        if (json["groupId"] !== undefined) {
-            this.groupId = json["groupId"]!
+        if (json['groupId'] !== undefined) {
+            this.groupId = json['groupId']!
         }
-        if (json["healthcarePartyId"] !== undefined) {
-            this.healthcarePartyId = json["healthcarePartyId"]!
+        if (json['healthcarePartyId'] !== undefined) {
+            this.healthcarePartyId = json['healthcarePartyId']!
         }
-        if (json["patientId"] !== undefined) {
-            this.patientId = json["patientId"]!
+        if (json['patientId'] !== undefined) {
+            this.patientId = json['patientId']!
         }
-        if (json["deviceId"] !== undefined) {
-            this.deviceId = json["deviceId"]!
+        if (json['deviceId'] !== undefined) {
+            this.deviceId = json['deviceId']!
         }
-        if (json["sharingDataWith"] !== undefined) {
-            this.sharingDataWith = {...json["sharingDataWith"]!}
+        if (json['sharingDataWith'] !== undefined) {
+            this.sharingDataWith = { ...json['sharingDataWith']! }
         }
-        if (json["email"] !== undefined) {
-            this.email = json["email"]!
+        if (json['email'] !== undefined) {
+            this.email = json['email']!
         }
-        if (json["mobilePhone"] !== undefined) {
-            this.mobilePhone = json["mobilePhone"]!
+        if (json['mobilePhone'] !== undefined) {
+            this.mobilePhone = json['mobilePhone']!
         }
-        this.authenticationTokens = Object.fromEntries(Object.entries(json["authenticationTokens"]!).map(([k, v]: [any, IAuthenticationToken]) => [k, new AuthenticationToken(v)]))
+        this.authenticationTokens = Object.fromEntries(Object.entries(json['authenticationTokens']!).map(([k, v]: [any, IAuthenticationToken]) => [k, new AuthenticationToken(v)]))
     }
 }
 

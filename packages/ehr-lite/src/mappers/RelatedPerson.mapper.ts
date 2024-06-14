@@ -37,18 +37,18 @@ function toRelatedPersonPersonId(dto: PartnershipDto): string | undefined {
 
 export function mapPartnershipDtoToRelatedPerson(dto: PartnershipDto): RelatedPerson {
     return new RelatedPerson({
-    type: toRelatedPersonType(dto),
-    status: toRelatedPersonStatus(dto),
-    personId: toRelatedPersonPersonId(dto),
+        type: toRelatedPersonType(dto),
+        status: toRelatedPersonStatus(dto),
+        personId: toRelatedPersonPersonId(dto),
     })
 }
 
 export function mapRelatedPersonToPartnershipDto(domain: RelatedPerson): PartnershipDto {
     return new PartnershipDto({
-    type: toPartnershipDtoType(domain),
-    status: toPartnershipDtoStatus(domain),
-    partnerId: toPartnershipDtoPartnerId(domain),
-    meToOtherRelationshipDescription: toPartnershipDtoMeToOtherRelationshipDescription(domain),
-    otherToMeRelationshipDescription: toPartnershipDtoOtherToMeRelationshipDescription(domain),
+        type: toPartnershipDtoType(domain),
+        status: toPartnershipDtoStatus(domain),
+        partnerId: toPartnershipDtoPartnerId(domain),
+        meToOtherRelationshipDescription: toPartnershipDtoMeToOtherRelationshipDescription(domain),
+        otherToMeRelationshipDescription: toPartnershipDtoOtherToMeRelationshipDescription(domain),
     })
 }

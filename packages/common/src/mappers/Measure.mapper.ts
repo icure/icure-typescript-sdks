@@ -3,7 +3,7 @@ import { mapCodeStubToCodingReference, mapCodingReferenceToCodeStub } from './Co
 import { CodingReference } from '../models/CodingReference.model'
 import { ReferenceRange } from '../models/ReferenceRange.model'
 import { mapReferenceRangeDtoToReferenceRange, mapReferenceRangeToReferenceRangeDto } from './ReferenceRange.mapper'
-import { MeasureDto, CodeStub, ReferenceRangeDto } from '../index'
+import { CodeStub, MeasureDto, ReferenceRangeDto } from '../index'
 
 function toMeasureDtoValue(domain: Measure): number | undefined {
     return domain.value
@@ -91,31 +91,31 @@ function toMeasureReferenceRanges(dto: MeasureDto): ReferenceRange[] | undefined
 
 export function mapMeasureDtoToMeasure(dto: MeasureDto): Measure {
     return new Measure({
-    value: toMeasureValue(dto),
-    ref: toMeasureRef(dto),
-    severity: toMeasureSeverity(dto),
-    severityCode: toMeasureSeverityCode(dto),
-    evolution: toMeasureEvolution(dto),
-    unit: toMeasureUnit(dto),
-    unitCodes: toMeasureUnitCodes(dto),
-    comment: toMeasureComment(dto),
-    comparator: toMeasureComparator(dto),
-    referenceRanges: toMeasureReferenceRanges(dto),
+        value: toMeasureValue(dto),
+        ref: toMeasureRef(dto),
+        severity: toMeasureSeverity(dto),
+        severityCode: toMeasureSeverityCode(dto),
+        evolution: toMeasureEvolution(dto),
+        unit: toMeasureUnit(dto),
+        unitCodes: toMeasureUnitCodes(dto),
+        comment: toMeasureComment(dto),
+        comparator: toMeasureComparator(dto),
+        referenceRanges: toMeasureReferenceRanges(dto),
     })
 }
 
 export function mapMeasureToMeasureDto(domain: Measure): MeasureDto {
     return new MeasureDto({
-    value: toMeasureDtoValue(domain),
-    ref: toMeasureDtoRef(domain),
-    severity: toMeasureDtoSeverity(domain),
-    severityCode: toMeasureDtoSeverityCode(domain),
-    evolution: toMeasureDtoEvolution(domain),
-    unit: toMeasureDtoUnit(domain),
-    sign: toMeasureDtoSign(domain),
-    unitCodes: toMeasureDtoUnitCodes(domain),
-    comment: toMeasureDtoComment(domain),
-    comparator: toMeasureDtoComparator(domain),
-    referenceRanges: toMeasureDtoReferenceRanges(domain),
+        value: toMeasureDtoValue(domain),
+        ref: toMeasureDtoRef(domain),
+        severity: toMeasureDtoSeverity(domain),
+        severityCode: toMeasureDtoSeverityCode(domain),
+        evolution: toMeasureDtoEvolution(domain),
+        unit: toMeasureDtoUnit(domain),
+        sign: toMeasureDtoSign(domain),
+        unitCodes: toMeasureDtoUnitCodes(domain),
+        comment: toMeasureDtoComment(domain),
+        comparator: toMeasureDtoComparator(domain),
+        referenceRanges: toMeasureDtoReferenceRanges(domain),
     })
 }

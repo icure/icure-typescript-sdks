@@ -4,9 +4,11 @@ export class MapComponent extends ClassComponent {
     override get typeName(): string {
         return `Map<${this.keyType.typeName}, ${this.valueType.typeName}>`
     }
+
     override get interfaceName(): string {
         return `Map<${this.keyType.typeName}, ${this.valueType.interfaceName}>`
     }
+
     constructor(nullable: boolean = false, optional: boolean = false, keyType: ClassComponent, valueType: ClassComponent) {
         super(nullable, optional, [keyType, valueType])
     }

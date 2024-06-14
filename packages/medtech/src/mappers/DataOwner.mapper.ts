@@ -1,5 +1,4 @@
-import { Mapper } from '@icure/typescript-common'
-import { DataOwnerWithType, DataOwnerTypeEnumDto, DataOwnerWithTypeDto } from '@icure/typescript-common'
+import { DataOwnerTypeEnumDto, DataOwnerWithType, DataOwnerWithTypeDto, Mapper } from '@icure/typescript-common'
 import { DataOwnerTypeEnum } from '../models/DataOwner.model'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from './Patient.mapper'
 import { mapHealthcarePartyDtoToHealthcareProfessional, mapHealthcareProfessionalToHealthcarePartyDto } from './HealthcareProfessional.mapper'

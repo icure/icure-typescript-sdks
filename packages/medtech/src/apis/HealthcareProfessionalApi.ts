@@ -1,4 +1,4 @@
-import { CommonApi, CommonFilter, HealthcarePartyLikeApi, HealthcarePartyLikeApiImpl, PaginatedList, HealthcarePartyDto } from '@icure/typescript-common'
+import { CommonApi, CommonFilter, HealthcarePartyDto, HealthcarePartyLikeApi, HealthcarePartyLikeApiImpl, PaginatedList } from '@icure/typescript-common'
 import { HealthcareProfessional } from '../models/HealthcareProfessional.model'
 import { mapHealthcarePartyDtoToHealthcareProfessional, mapHealthcareProfessionalToHealthcarePartyDto } from '../mappers/HealthcareProfessional.mapper'
 
@@ -55,15 +55,19 @@ class HealthcareProfessionalApiImpl extends HealthcarePartyLikeApiImpl<Healthcar
     createOrModifyHealthcareProfessional(healthcareProfessional: HealthcareProfessional): Promise<HealthcareProfessional> {
         return this.createOrModify(healthcareProfessional)
     }
+
     deleteHealthcareProfessional(hcpId: string): Promise<string> {
         return this.delete(hcpId)
     }
+
     filterHealthcareProfessionalBy(filter: CommonFilter<HealthcarePartyDto>, nextHcpId?: string, limit?: number): Promise<PaginatedList<HealthcareProfessional>> {
         return this.filterBy(filter, nextHcpId, limit)
     }
+
     getHealthcareProfessional(hcpId: string): Promise<HealthcareProfessional> {
         return this.get(hcpId)
     }
+
     matchHealthcareProfessionalBy(filter: CommonFilter<HealthcarePartyDto>): Promise<Array<string>> {
         return this.matchBy(filter)
     }

@@ -40,19 +40,19 @@ function toRelatedPractitionerEncryptedSelf(dto: PatientHealthCarePartyDto): str
 
 export function mapPatientHealthCarePartyDtoToRelatedPractitioner(dto: PatientHealthCarePartyDto): RelatedPractitioner {
     return new RelatedPractitioner({
-    type: toRelatedPractitionerType(dto),
-    healthcarePartyId: toRelatedPractitionerHealthcarePartyId(dto),
-    encryptedSelf: toRelatedPractitionerEncryptedSelf(dto),
+        type: toRelatedPractitionerType(dto),
+        healthcarePartyId: toRelatedPractitionerHealthcarePartyId(dto),
+        encryptedSelf: toRelatedPractitionerEncryptedSelf(dto),
     })
 }
 
 export function mapRelatedPractitionerToPatientHealthCarePartyDto(domain: RelatedPractitioner): PatientHealthCarePartyDto {
     return new PatientHealthCarePartyDto({
-    type: toPatientHealthCarePartyDtoType(domain),
-    healthcarePartyId: toPatientHealthCarePartyDtoHealthcarePartyId(domain),
-    sendFormats: toPatientHealthCarePartyDtoSendFormats(domain),
-    referralPeriods: toPatientHealthCarePartyDtoReferralPeriods(domain),
-    referral: toPatientHealthCarePartyDtoReferral(domain),
-    encryptedSelf: toPatientHealthCarePartyDtoEncryptedSelf(domain),
+        type: toPatientHealthCarePartyDtoType(domain),
+        healthcarePartyId: toPatientHealthCarePartyDtoHealthcarePartyId(domain),
+        sendFormats: toPatientHealthCarePartyDtoSendFormats(domain),
+        referralPeriods: toPatientHealthCarePartyDtoReferralPeriods(domain),
+        referral: toPatientHealthCarePartyDtoReferral(domain),
+        encryptedSelf: toPatientHealthCarePartyDtoEncryptedSelf(domain),
     })
 }

@@ -18,7 +18,7 @@ export function classComponentFactory(propertyType: Type, property?: PropertyDec
         return new DefaultComponent(nullable)
     }
 
-    if (type.isUnion() && type.isNullable() || type.getText() === 'any') {
+    if ((type.isUnion() && type.isNullable()) || type.getText() === 'any') {
         nullable = true
         type = type.getNonNullableType()
     }

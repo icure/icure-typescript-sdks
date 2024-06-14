@@ -8,17 +8,17 @@ export class MessageAttachment {
 
     toJSON(): IMessageAttachment {
         return {
-        type: this.type,
-        ids: this.ids?.map(item => item),
+            type: this.type,
+            ids: this.ids?.map((item) => item),
         }
     }
 
-    constructor(json: Partial<IMessageAttachment> ) {
-        if (json["type"] !== undefined) {
-            this.type = json["type"]!
+    constructor(json: Partial<IMessageAttachment>) {
+        if (json['type'] !== undefined) {
+            this.type = json['type']!
         }
-        if (json["ids"] !== undefined) {
-            this.ids = json["ids"]!.map((item: any) => item)
+        if (json['ids'] !== undefined) {
+            this.ids = json['ids']!.map((item: any) => item)
         }
     }
 }

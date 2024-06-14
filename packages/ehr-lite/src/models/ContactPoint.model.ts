@@ -10,25 +10,25 @@ export class ContactPoint implements IContactPoint {
 
     toJSON(): IContactPoint {
         return {
-        system: this.system,
-        value: this.value,
-        description: this.description,
-        encryptedSelf: this.encryptedSelf,
+            system: this.system,
+            value: this.value,
+            description: this.description,
+            encryptedSelf: this.encryptedSelf,
         }
     }
 
-    constructor(json: Partial<IContactPoint> ) {
-        if (json["system"] !== undefined) {
-            this.system = json["system"]!
+    constructor(json: Partial<IContactPoint>) {
+        if (json['system'] !== undefined) {
+            this.system = json['system']!
         }
-        if (json["value"] !== undefined) {
-            this.value = json["value"]!
+        if (json['value'] !== undefined) {
+            this.value = json['value']!
         }
-        if (json["description"] !== undefined) {
-            this.description = json["description"]!
+        if (json['description'] !== undefined) {
+            this.description = json['description']!
         }
-        if (json["encryptedSelf"] !== undefined) {
-            this.encryptedSelf = json["encryptedSelf"]!
+        if (json['encryptedSelf'] !== undefined) {
+            this.encryptedSelf = json['encryptedSelf']!
         }
     }
 }

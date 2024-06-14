@@ -1,7 +1,6 @@
-import { Code as CodeDto, HealthcareParty as HealthcarePartyDto } from '@icure/api'
-
 export interface Mapper<DSEntity, DTO> {
     toDomain(dto: DTO): DSEntity
+
     toDto(domain: DSEntity): DTO
 }
 

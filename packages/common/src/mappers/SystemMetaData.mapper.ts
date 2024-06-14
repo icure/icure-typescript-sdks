@@ -1,4 +1,4 @@
-import { Device, HealthcareParty, HealthElement, MaintenanceTask, Patient, Service, SecurityMetadata as SecurityMetadataDto, Document as DocumentDto, Message as MessageDto, Topic as TopicDto } from '@icure/api'
+import { Device, Document as DocumentDto, HealthcareParty, HealthElement, MaintenanceTask, Message as MessageDto, Patient, SecurityMetadata as SecurityMetadataDto, Service, Topic as TopicDto } from '@icure/api'
 import { SystemMetaDataEncrypted } from '../models/SystemMetaDataEncrypted.model'
 import { mapDelegationDtoToDelegation, mapDelegationToDelegationDto } from './Delegation.mapper'
 import { SystemMetaDataOwner } from '../models/SystemMetaDataOwner.model'

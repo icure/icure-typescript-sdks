@@ -22,17 +22,17 @@ export class PatientHealthCareParty {
 
     toJSON(): IPatientHealthCareParty {
         return {
-        type: this.type,
-        healthcarePartyId: this.healthcarePartyId,
+            type: this.type,
+            healthcarePartyId: this.healthcarePartyId,
         }
     }
 
-    constructor(json: Partial<IPatientHealthCareParty> ) {
-        if (json["type"] !== undefined) {
-            this.type = json["type"]!
+    constructor(json: Partial<IPatientHealthCareParty>) {
+        if (json['type'] !== undefined) {
+            this.type = json['type']!
         }
-        if (json["healthcarePartyId"] !== undefined) {
-            this.healthcarePartyId = json["healthcarePartyId"]!
+        if (json['healthcarePartyId'] !== undefined) {
+            this.healthcarePartyId = json['healthcarePartyId']!
         }
     }
 }

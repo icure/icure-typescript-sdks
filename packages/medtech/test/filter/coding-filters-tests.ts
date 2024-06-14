@@ -4,9 +4,8 @@ import { getEnvironmentInitializer, hcp1Username, setLocalStorage } from '../../
 import { expect } from 'chai'
 import { v4 as uuid } from 'uuid'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
-import { Coding, recordOf, User } from '@icure/typescript-common'
-import { FilterComposition, NoOpFilter } from '@icure/typescript-common'
-import { describe, it, before } from 'mocha'
+import { Coding, FilterComposition, NoOpFilter, recordOf, User } from '@icure/typescript-common'
+import { before, describe, it } from 'mocha'
 import { TestUtils } from '../test-utils'
 import { CodingFilter } from '@icure/ehr-lite-sdk'
 

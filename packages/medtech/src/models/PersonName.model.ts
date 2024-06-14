@@ -28,41 +28,41 @@ export class PersonName {
 
     toJSON(): IPersonName {
         return {
-        lastName: this.lastName,
-        firstNames: this.firstNames.map(item => item),
-        start: this.start,
-        end: this.end,
-        prefix: this.prefix.map(item => item),
-        suffix: this.suffix.map(item => item),
-        text: this.text,
-        use: this.use,
+            lastName: this.lastName,
+            firstNames: this.firstNames.map((item) => item),
+            start: this.start,
+            end: this.end,
+            prefix: this.prefix.map((item) => item),
+            suffix: this.suffix.map((item) => item),
+            text: this.text,
+            use: this.use,
         }
     }
 
-    constructor(json: Partial<IPersonName> ) {
-        if (json["lastName"] !== undefined) {
-            this.lastName = json["lastName"]!
+    constructor(json: Partial<IPersonName>) {
+        if (json['lastName'] !== undefined) {
+            this.lastName = json['lastName']!
         }
-        if (json["firstNames"] !== undefined) {
-            this.firstNames = json["firstNames"]!.map((item: any) => item)
+        if (json['firstNames'] !== undefined) {
+            this.firstNames = json['firstNames']!.map((item: any) => item)
         }
-        if (json["start"] !== undefined) {
-            this.start = json["start"]!
+        if (json['start'] !== undefined) {
+            this.start = json['start']!
         }
-        if (json["end"] !== undefined) {
-            this.end = json["end"]!
+        if (json['end'] !== undefined) {
+            this.end = json['end']!
         }
-        if (json["prefix"] !== undefined) {
-            this.prefix = json["prefix"]!.map((item: any) => item)
+        if (json['prefix'] !== undefined) {
+            this.prefix = json['prefix']!.map((item: any) => item)
         }
-        if (json["suffix"] !== undefined) {
-            this.suffix = json["suffix"]!.map((item: any) => item)
+        if (json['suffix'] !== undefined) {
+            this.suffix = json['suffix']!.map((item: any) => item)
         }
-        if (json["text"] !== undefined) {
-            this.text = json["text"]!
+        if (json['text'] !== undefined) {
+            this.text = json['text']!
         }
-        if (json["use"] !== undefined) {
-            this.use = json["use"]!
+        if (json['use'] !== undefined) {
+            this.use = json['use']!
         }
     }
 }

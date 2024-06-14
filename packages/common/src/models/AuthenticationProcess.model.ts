@@ -14,16 +14,22 @@ export class AuthenticationProcess {
 
     toJSON(): IAuthenticationProcess {
         return {
-        requestId: this.requestId,
-        login: this.login,
-        bypassTokenCheck: this.bypassTokenCheck,
+            requestId: this.requestId,
+            login: this.login,
+            bypassTokenCheck: this.bypassTokenCheck,
         }
     }
 
-    constructor(json: Partial<IAuthenticationProcess> & { requestId: string,login: string,bypassTokenCheck: boolean }) {
-        this.requestId = json["requestId"]!
-        this.login = json["login"]!
-        this.bypassTokenCheck = json["bypassTokenCheck"]!
+    constructor(
+        json: Partial<IAuthenticationProcess> & {
+            requestId: string
+            login: string
+            bypassTokenCheck: boolean
+        },
+    ) {
+        this.requestId = json['requestId']!
+        this.login = json['login']!
+        this.bypassTokenCheck = json['bypassTokenCheck']!
     }
 }
 

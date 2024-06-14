@@ -7,16 +7,16 @@ export class Binary implements IBinary {
 
     toJSON(): IBinary {
         return {
-        contentType: this.contentType,
-        data: this.data,
-        filename: this.filename,
+            contentType: this.contentType,
+            data: this.data,
+            filename: this.filename,
         }
     }
 
-    constructor(json: Partial<IBinary> & { contentType: string,data: string,filename: string }) {
-        this.contentType = json["contentType"]!
-        this.data = json["data"]!
-        this.filename = json["filename"]!
+    constructor(json: Partial<IBinary> & { contentType: string; data: string; filename: string }) {
+        this.contentType = json['contentType']!
+        this.data = json['data']!
+        this.filename = json['filename']!
     }
 }
 

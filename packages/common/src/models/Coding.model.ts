@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import { Code } from '@icure/api';
-import { EntityId } from '../types';
-import { mapTo } from '../utils/decorators';
-import { forceUuid } from "../utils/uuidUtils";
+import { Code } from '@icure/api'
+import { EntityId } from '../types'
+import { mapTo } from '../utils/decorators'
+import { forceUuid } from '../utils/uuidUtils'
 
 @mapTo(Code)
 export class Coding {
@@ -47,43 +47,43 @@ export class Coding {
 
     toJSON(): ICoding {
         return {
-        id: this.id,
-        rev: this.rev,
-        type: this.type,
-        code: this.code,
-        version: this.version,
-        regions: this.regions.map(item => item),
-        description: this.description ? {...this.description} : undefined,
-        qualifiedLinks: {...this.qualifiedLinks},
-        searchTerms: {...this.searchTerms},
+            id: this.id,
+            rev: this.rev,
+            type: this.type,
+            code: this.code,
+            version: this.version,
+            regions: this.regions.map((item) => item),
+            description: this.description ? { ...this.description } : undefined,
+            qualifiedLinks: { ...this.qualifiedLinks },
+            searchTerms: { ...this.searchTerms },
         }
     }
 
-    constructor(json: Partial<ICoding> ) {
-        this.id = forceUuid(json["id"]!)
-        if (json["rev"] !== undefined) {
-            this.rev = json["rev"]!
+    constructor(json: Partial<ICoding>) {
+        this.id = forceUuid(json['id']!)
+        if (json['rev'] !== undefined) {
+            this.rev = json['rev']!
         }
-        if (json["type"] !== undefined) {
-            this.type = json["type"]!
+        if (json['type'] !== undefined) {
+            this.type = json['type']!
         }
-        if (json["code"] !== undefined) {
-            this.code = json["code"]!
+        if (json['code'] !== undefined) {
+            this.code = json['code']!
         }
-        if (json["version"] !== undefined) {
-            this.version = json["version"]!
+        if (json['version'] !== undefined) {
+            this.version = json['version']!
         }
-        if (json["regions"] !== undefined) {
-            this.regions = json["regions"]!.map((item: any) => item)
+        if (json['regions'] !== undefined) {
+            this.regions = json['regions']!.map((item: any) => item)
         }
-        if (json["description"] !== undefined) {
-            this.description = {...json["description"]!}
+        if (json['description'] !== undefined) {
+            this.description = { ...json['description']! }
         }
-        if (json["qualifiedLinks"] !== undefined) {
-            this.qualifiedLinks = {...json["qualifiedLinks"]!}
+        if (json['qualifiedLinks'] !== undefined) {
+            this.qualifiedLinks = { ...json['qualifiedLinks']! }
         }
-        if (json["searchTerms"] !== undefined) {
-            this.searchTerms = {...json["searchTerms"]!}
+        if (json['searchTerms'] !== undefined) {
+            this.searchTerms = { ...json['searchTerms']! }
         }
     }
 }

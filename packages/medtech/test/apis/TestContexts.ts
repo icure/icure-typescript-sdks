@@ -2,27 +2,25 @@
 import { MedTechCryptoStrategies, SimpleMedTechCryptoStrategies } from '../../src/services/MedTechCryptoStrategies'
 import { AuthenticationApi } from '../../src/apis/AuthenticationApi'
 import {
+    Annotation,
     CodingReference,
+    Document,
     KeyPair,
-    recordOf,
+    MaintenanceTaskFilter,
+    mapDocumentToDocumentDto,
+    mapMaintenanceTaskToNotification,
+    mapNotificationToMaintenanceTask,
     mapUserDtoToUser,
     mapUserToUserDto,
-    User,
-    Notification,
-    mapNotificationToMaintenanceTask,
-    Document,
-    mapMaintenanceTaskToNotification,
-    ServiceFilter,
-    mapDocumentToDocumentDto,
-    HealthElementFilter,
     MessageFactory,
+    Notification,
     NotificationTypeEnum,
-    MaintenanceTaskFilter,
-    Annotation,
+    recordOf,
+    User,
 } from '@icure/typescript-common'
 import { AnonymousMedTechApi } from '../../src/apis/AnonymousMedTechApi'
 import { MedTechApi } from '../../src/apis/MedTechApi'
-import { HealthcareParty, Patient as PatientDto, Service, User as UserDto, DataOwnerWithType as DataOwnerWithTypeDto, Document as DocumentDto, HealthElement, Device } from '@icure/api'
+import { DataOwnerWithType as DataOwnerWithTypeDto, Device, Document as DocumentDto, HealthcareParty, HealthElement, Patient as PatientDto, Service, User as UserDto } from '@icure/api'
 import { UserApi } from '../../src/apis/UserApi'
 import { Patient } from '../../src/models/Patient.model'
 import { HealthcareProfessional } from '../../src/models/HealthcareProfessional.model'
@@ -92,6 +90,7 @@ export class MedTechBaseTestContext extends BaseApiTestContext<AnonymousMedTechA
 }
 
 type Constructor<T> = new (...args: any[]) => T
+
 export function PatientApiAware<TBase extends Constructor<any>>(Base: TBase): TBase & Constructor<WithPatientApi<MedTechApi, Patient>> {
     return class PatientApiAwareImpl extends Base implements WithPatientApi<MedTechApi, Patient> {
         patientApi(api: MedTechApi): PatientApi {

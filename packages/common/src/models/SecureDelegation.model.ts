@@ -50,32 +50,40 @@ export class SecureDelegation {
 
     toJSON(): ISecureDelegation {
         return {
-        delegator: this.delegator,
-        delegate: this.delegate,
-        secretIds: this.secretIds.map(item => item),
-        encryptionKeys: this.encryptionKeys.map(item => item),
-        owningEntityIds: this.owningEntityIds.map(item => item),
-        parentDelegations: this.parentDelegations.map(item => item),
-        exchangeDataId: this.exchangeDataId,
-        permissions: this.permissions,
+            delegator: this.delegator,
+            delegate: this.delegate,
+            secretIds: this.secretIds.map((item) => item),
+            encryptionKeys: this.encryptionKeys.map((item) => item),
+            owningEntityIds: this.owningEntityIds.map((item) => item),
+            parentDelegations: this.parentDelegations.map((item) => item),
+            exchangeDataId: this.exchangeDataId,
+            permissions: this.permissions,
         }
     }
 
-    constructor(json: Partial<ISecureDelegation> & { secretIds: string[],encryptionKeys: string[],owningEntityIds: string[],parentDelegations: string[],permissions: import("/Users/aduchate/Sources/icure/icure-typescript-sdks/packages/common/src/models/enums/AccessLevel.enum").AccessLevelEnum }) {
-        if (json["delegator"] !== undefined) {
-            this.delegator = json["delegator"]!
+    constructor(
+        json: Partial<ISecureDelegation> & {
+            secretIds: string[]
+            encryptionKeys: string[]
+            owningEntityIds: string[]
+            parentDelegations: string[]
+            permissions: import('/Users/aduchate/Sources/icure/icure-typescript-sdks/packages/common/src/models/enums/AccessLevel.enum').AccessLevelEnum
+        },
+    ) {
+        if (json['delegator'] !== undefined) {
+            this.delegator = json['delegator']!
         }
-        if (json["delegate"] !== undefined) {
-            this.delegate = json["delegate"]!
+        if (json['delegate'] !== undefined) {
+            this.delegate = json['delegate']!
         }
-        this.secretIds = json["secretIds"]!.map((item: any) => item)
-        this.encryptionKeys = json["encryptionKeys"]!.map((item: any) => item)
-        this.owningEntityIds = json["owningEntityIds"]!.map((item: any) => item)
-        this.parentDelegations = json["parentDelegations"]!.map((item: any) => item)
-        if (json["exchangeDataId"] !== undefined) {
-            this.exchangeDataId = json["exchangeDataId"]!
+        this.secretIds = json['secretIds']!.map((item: any) => item)
+        this.encryptionKeys = json['encryptionKeys']!.map((item: any) => item)
+        this.owningEntityIds = json['owningEntityIds']!.map((item: any) => item)
+        this.parentDelegations = json['parentDelegations']!.map((item: any) => item)
+        if (json['exchangeDataId'] !== undefined) {
+            this.exchangeDataId = json['exchangeDataId']!
         }
-        this.permissions = json["permissions"]!
+        this.permissions = json['permissions']!
     }
 }
 

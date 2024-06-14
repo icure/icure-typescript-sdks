@@ -10,21 +10,9 @@
  * Do not edit the class manually.
  */
 
-import {
-    CodingReference,
-    EntityId,
-    HealthcarePartyDto,
-    ICodingReference,
-    IProperty,
-    ISystemMetaDataOwner,
-    Property,
-    SystemMetaDataOwner,
-    base64string,
-    forceUuid,
-    mapTo
-} from '@icure/typescript-common';
-import { Address, IAddress } from './Address.model';
-import { IPersonName, PersonName } from './PersonName.model';
+import { base64string, CodingReference, EntityId, forceUuid, HealthcarePartyDto, ICodingReference, IProperty, ISystemMetaDataOwner, mapTo, Property, SystemMetaDataOwner } from '@icure/typescript-common'
+import { Address, IAddress } from './Address.model'
+import { IPersonName, PersonName } from './PersonName.model'
 
 @mapTo(HealthcarePartyDto)
 export class HealthcareProfessional {
@@ -115,95 +103,95 @@ export class HealthcareProfessional {
 
     toJSON(): IHealthcareProfessional {
         return {
-        id: this.id,
-        rev: this.rev,
-        created: this.created,
-        modified: this.modified,
-        labels: this.labels.map(item => item.toJSON()),
-        codes: this.codes.map(item => item.toJSON()),
-        deletionDate: this.deletionDate,
-        name: this.name,
-        lastName: this.lastName,
-        firstName: this.firstName,
-        names: this.names.map(item => item.toJSON()),
-        gender: this.gender,
-        civility: this.civility,
-        speciality: this.speciality,
-        parentId: this.parentId,
-        addresses: this.addresses.map(item => item.toJSON()),
-        languages: this.languages.map(item => item),
-        picture: this.picture,
-        specialityCodes: this.specialityCodes.map(item => item.toJSON()),
-        notes: this.notes,
-        properties: this.properties.map(item => item.toJSON()),
-        systemMetaData: !!this.systemMetaData ? this.systemMetaData.toJSON() : undefined,
+            id: this.id,
+            rev: this.rev,
+            created: this.created,
+            modified: this.modified,
+            labels: this.labels.map((item) => item.toJSON()),
+            codes: this.codes.map((item) => item.toJSON()),
+            deletionDate: this.deletionDate,
+            name: this.name,
+            lastName: this.lastName,
+            firstName: this.firstName,
+            names: this.names.map((item) => item.toJSON()),
+            gender: this.gender,
+            civility: this.civility,
+            speciality: this.speciality,
+            parentId: this.parentId,
+            addresses: this.addresses.map((item) => item.toJSON()),
+            languages: this.languages.map((item) => item),
+            picture: this.picture,
+            specialityCodes: this.specialityCodes.map((item) => item.toJSON()),
+            notes: this.notes,
+            properties: this.properties.map((item) => item.toJSON()),
+            systemMetaData: !!this.systemMetaData ? this.systemMetaData.toJSON() : undefined,
         }
     }
 
-    constructor(json: Partial<IHealthcareProfessional> ) {
-        this.id = forceUuid(json["id"]!)
-        if (json["rev"] !== undefined) {
-            this.rev = json["rev"]!
+    constructor(json: Partial<IHealthcareProfessional>) {
+        this.id = forceUuid(json['id']!)
+        if (json['rev'] !== undefined) {
+            this.rev = json['rev']!
         }
-        if (json["created"] !== undefined) {
-            this.created = json["created"]!
+        if (json['created'] !== undefined) {
+            this.created = json['created']!
         }
-        if (json["modified"] !== undefined) {
-            this.modified = json["modified"]!
+        if (json['modified'] !== undefined) {
+            this.modified = json['modified']!
         }
-        if (json["labels"] !== undefined) {
-            this.labels = json["labels"]!.map((item: any) => new CodingReference(item))
+        if (json['labels'] !== undefined) {
+            this.labels = json['labels']!.map((item: any) => new CodingReference(item))
         }
-        if (json["codes"] !== undefined) {
-            this.codes = json["codes"]!.map((item: any) => new CodingReference(item))
+        if (json['codes'] !== undefined) {
+            this.codes = json['codes']!.map((item: any) => new CodingReference(item))
         }
-        if (json["deletionDate"] !== undefined) {
-            this.deletionDate = json["deletionDate"]!
+        if (json['deletionDate'] !== undefined) {
+            this.deletionDate = json['deletionDate']!
         }
-        if (json["name"] !== undefined) {
-            this.name = json["name"]!
+        if (json['name'] !== undefined) {
+            this.name = json['name']!
         }
-        if (json["lastName"] !== undefined) {
-            this.lastName = json["lastName"]!
+        if (json['lastName'] !== undefined) {
+            this.lastName = json['lastName']!
         }
-        if (json["firstName"] !== undefined) {
-            this.firstName = json["firstName"]!
+        if (json['firstName'] !== undefined) {
+            this.firstName = json['firstName']!
         }
-        if (json["names"] !== undefined) {
-            this.names = json["names"]!.map((item: any) => new PersonName(item))
+        if (json['names'] !== undefined) {
+            this.names = json['names']!.map((item: any) => new PersonName(item))
         }
-        if (json["gender"] !== undefined) {
-            this.gender = json["gender"]!
+        if (json['gender'] !== undefined) {
+            this.gender = json['gender']!
         }
-        if (json["civility"] !== undefined) {
-            this.civility = json["civility"]!
+        if (json['civility'] !== undefined) {
+            this.civility = json['civility']!
         }
-        if (json["speciality"] !== undefined) {
-            this.speciality = json["speciality"]!
+        if (json['speciality'] !== undefined) {
+            this.speciality = json['speciality']!
         }
-        if (json["parentId"] !== undefined) {
-            this.parentId = json["parentId"]!
+        if (json['parentId'] !== undefined) {
+            this.parentId = json['parentId']!
         }
-        if (json["addresses"] !== undefined) {
-            this.addresses = json["addresses"]!.map((item: any) => new Address(item))
+        if (json['addresses'] !== undefined) {
+            this.addresses = json['addresses']!.map((item: any) => new Address(item))
         }
-        if (json["languages"] !== undefined) {
-            this.languages = json["languages"]!.map((item: any) => item)
+        if (json['languages'] !== undefined) {
+            this.languages = json['languages']!.map((item: any) => item)
         }
-        if (json["picture"] !== undefined) {
-            this.picture = json["picture"]!
+        if (json['picture'] !== undefined) {
+            this.picture = json['picture']!
         }
-        if (json["specialityCodes"] !== undefined) {
-            this.specialityCodes = json["specialityCodes"]!.map((item: any) => new CodingReference(item))
+        if (json['specialityCodes'] !== undefined) {
+            this.specialityCodes = json['specialityCodes']!.map((item: any) => new CodingReference(item))
         }
-        if (json["notes"] !== undefined) {
-            this.notes = json["notes"]!
+        if (json['notes'] !== undefined) {
+            this.notes = json['notes']!
         }
-        if (json["properties"] !== undefined) {
-            this.properties = json["properties"]!.map((item: any) => new Property(item))
+        if (json['properties'] !== undefined) {
+            this.properties = json['properties']!.map((item: any) => new Property(item))
         }
-        if (json["systemMetaData"] !== undefined) {
-            this.systemMetaData = new SystemMetaDataOwner(json["systemMetaData"]!)
+        if (json['systemMetaData'] !== undefined) {
+            this.systemMetaData = new SystemMetaDataOwner(json['systemMetaData']!)
         }
     }
 }

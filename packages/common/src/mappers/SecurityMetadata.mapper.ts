@@ -3,7 +3,11 @@ import { SecureDelegation as SecureDelegationDto, SecurityMetadata as SecurityMe
 import { SecureDelegation } from '../models/SecureDelegation.model'
 import { mapSecureDelegationDtoToSecureDelegation, mapSecureDelegationToSecureDelegationDto } from './SecureDelegation.mapper'
 
-function toSecurityMetadataDtoSecureDelegations(domain: SecurityMetadata): { [hash: string]: SecureDelegationDto } | undefined {
+function toSecurityMetadataDtoSecureDelegations(domain: SecurityMetadata):
+    | {
+          [hash: string]: SecureDelegationDto
+      }
+    | undefined {
     return Object.fromEntries(Object.entries(domain.secureDelegations).map(([k, v]) => [k, mapSecureDelegationToSecureDelegationDto(v)]))
 }
 
@@ -21,14 +25,14 @@ function toSecurityMetadataKeysEquivalences(dto: SecurityMetadataDto): Record<st
 
 export function mapSecurityMetadataDtoToSecurityMetadata(dto: SecurityMetadataDto): SecurityMetadata {
     return new SecurityMetadata({
-    secureDelegations: toSecurityMetadataSecureDelegations(dto),
-    keysEquivalences: toSecurityMetadataKeysEquivalences(dto),
+        secureDelegations: toSecurityMetadataSecureDelegations(dto),
+        keysEquivalences: toSecurityMetadataKeysEquivalences(dto),
     })
 }
 
 export function mapSecurityMetadataToSecurityMetadataDto(domain: SecurityMetadata): SecurityMetadataDto {
     return new SecurityMetadataDto({
-    secureDelegations: toSecurityMetadataDtoSecureDelegations(domain),
-    keysEquivalences: toSecurityMetadataDtoKeysEquivalences(domain),
+        secureDelegations: toSecurityMetadataDtoSecureDelegations(domain),
+        keysEquivalences: toSecurityMetadataDtoKeysEquivalences(domain),
     })
 }

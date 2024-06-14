@@ -1,4 +1,4 @@
-import { CommonApi, domainTypeTag, ServiceFilter, ServiceFilterWithDataOwner, PatientDto } from '@icure/typescript-common'
+import { CommonApi, domainTypeTag, PatientDto, ServiceFilter, ServiceFilterWithDataOwner } from '@icure/typescript-common'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
 import { Patient } from '../models/Patient.model'
 

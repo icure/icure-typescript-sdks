@@ -13,27 +13,27 @@ export class Property {
 
     toJSON(): IProperty {
         return {
-        id: this.id,
-        type: !!this.type ? this.type.toJSON() : undefined,
-        typedValue: !!this.typedValue ? this.typedValue.toJSON() : undefined,
-        deleted: this.deleted,
-        encryptedSelf: this.encryptedSelf,
+            id: this.id,
+            type: !!this.type ? this.type.toJSON() : undefined,
+            typedValue: !!this.typedValue ? this.typedValue.toJSON() : undefined,
+            deleted: this.deleted,
+            encryptedSelf: this.encryptedSelf,
         }
     }
 
     constructor(json: Partial<IProperty> & { id: string }) {
-        this.id = json["id"]!
-        if (json["type"] !== undefined) {
-            this.type = new PropertyType(json["type"]!)
+        this.id = json['id']!
+        if (json['type'] !== undefined) {
+            this.type = new PropertyType(json['type']!)
         }
-        if (json["typedValue"] !== undefined) {
-            this.typedValue = new TypedValueObject(json["typedValue"]!)
+        if (json['typedValue'] !== undefined) {
+            this.typedValue = new TypedValueObject(json['typedValue']!)
         }
-        if (json["deleted"] !== undefined) {
-            this.deleted = json["deleted"]!
+        if (json['deleted'] !== undefined) {
+            this.deleted = json['deleted']!
         }
-        if (json["encryptedSelf"] !== undefined) {
-            this.encryptedSelf = json["encryptedSelf"]!
+        if (json['encryptedSelf'] !== undefined) {
+            this.encryptedSelf = json['encryptedSelf']!
         }
     }
 }

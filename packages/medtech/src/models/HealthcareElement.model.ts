@@ -9,20 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import {
-    Annotation,
-    CodingReference,
-    EntityId,
-    HealthElementDto,
-    IAnnotation,
-    ICodingReference,
-    IIdentifier,
-    ISystemMetaDataEncrypted,
-    Identifier,
-    SystemMetaDataEncrypted,
-    forceUuid,
-    mapTo
-} from '@icure/typescript-common';
+import { Annotation, CodingReference, EntityId, forceUuid, HealthElementDto, IAnnotation, ICodingReference, Identifier, IIdentifier, ISystemMetaDataEncrypted, mapTo, SystemMetaDataEncrypted } from '@icure/typescript-common'
 
 @mapTo(HealthElementDto)
 export class HealthcareElement {
@@ -73,87 +60,87 @@ export class HealthcareElement {
 
     toJSON(): IHealthcareElement {
         return {
-        id: this.id,
-        identifiers: this.identifiers.map(item => item.toJSON()),
-        rev: this.rev,
-        created: this.created,
-        modified: this.modified,
-        author: this.author,
-        responsible: this.responsible,
-        medicalLocationId: this.medicalLocationId,
-        labels: this.labels.map(item => item.toJSON()),
-        codes: this.codes.map(item => item.toJSON()),
-        endOfLife: this.endOfLife,
-        deletionDate: this.deletionDate,
-        healthcareElementId: this.healthcareElementId,
-        valueDate: this.valueDate,
-        openingDate: this.openingDate,
-        closingDate: this.closingDate,
-        description: this.description,
-        note: this.note,
-        notes: this.notes.map(item => item.toJSON()),
-        systemMetaData: !!this.systemMetaData ? this.systemMetaData.toJSON() : undefined,
+            id: this.id,
+            identifiers: this.identifiers.map((item) => item.toJSON()),
+            rev: this.rev,
+            created: this.created,
+            modified: this.modified,
+            author: this.author,
+            responsible: this.responsible,
+            medicalLocationId: this.medicalLocationId,
+            labels: this.labels.map((item) => item.toJSON()),
+            codes: this.codes.map((item) => item.toJSON()),
+            endOfLife: this.endOfLife,
+            deletionDate: this.deletionDate,
+            healthcareElementId: this.healthcareElementId,
+            valueDate: this.valueDate,
+            openingDate: this.openingDate,
+            closingDate: this.closingDate,
+            description: this.description,
+            note: this.note,
+            notes: this.notes.map((item) => item.toJSON()),
+            systemMetaData: !!this.systemMetaData ? this.systemMetaData.toJSON() : undefined,
         }
     }
 
-    constructor(json: Partial<IHealthcareElement> ) {
-        this.id = forceUuid(json["id"]!)
-        if (json["identifiers"] !== undefined) {
-            this.identifiers = json["identifiers"]!.map((item: any) => new Identifier(item))
+    constructor(json: Partial<IHealthcareElement>) {
+        this.id = forceUuid(json['id']!)
+        if (json['identifiers'] !== undefined) {
+            this.identifiers = json['identifiers']!.map((item: any) => new Identifier(item))
         }
-        if (json["rev"] !== undefined) {
-            this.rev = json["rev"]!
+        if (json['rev'] !== undefined) {
+            this.rev = json['rev']!
         }
-        if (json["created"] !== undefined) {
-            this.created = json["created"]!
+        if (json['created'] !== undefined) {
+            this.created = json['created']!
         }
-        if (json["modified"] !== undefined) {
-            this.modified = json["modified"]!
+        if (json['modified'] !== undefined) {
+            this.modified = json['modified']!
         }
-        if (json["author"] !== undefined) {
-            this.author = json["author"]!
+        if (json['author'] !== undefined) {
+            this.author = json['author']!
         }
-        if (json["responsible"] !== undefined) {
-            this.responsible = json["responsible"]!
+        if (json['responsible'] !== undefined) {
+            this.responsible = json['responsible']!
         }
-        if (json["medicalLocationId"] !== undefined) {
-            this.medicalLocationId = json["medicalLocationId"]!
+        if (json['medicalLocationId'] !== undefined) {
+            this.medicalLocationId = json['medicalLocationId']!
         }
-        if (json["labels"] !== undefined) {
-            this.labels = json["labels"]!.map((item: any) => new CodingReference(item))
+        if (json['labels'] !== undefined) {
+            this.labels = json['labels']!.map((item: any) => new CodingReference(item))
         }
-        if (json["codes"] !== undefined) {
-            this.codes = json["codes"]!.map((item: any) => new CodingReference(item))
+        if (json['codes'] !== undefined) {
+            this.codes = json['codes']!.map((item: any) => new CodingReference(item))
         }
-        if (json["endOfLife"] !== undefined) {
-            this.endOfLife = json["endOfLife"]!
+        if (json['endOfLife'] !== undefined) {
+            this.endOfLife = json['endOfLife']!
         }
-        if (json["deletionDate"] !== undefined) {
-            this.deletionDate = json["deletionDate"]!
+        if (json['deletionDate'] !== undefined) {
+            this.deletionDate = json['deletionDate']!
         }
-        if (json["healthcareElementId"] !== undefined) {
-            this.healthcareElementId = json["healthcareElementId"]!
+        if (json['healthcareElementId'] !== undefined) {
+            this.healthcareElementId = json['healthcareElementId']!
         }
-        if (json["valueDate"] !== undefined) {
-            this.valueDate = json["valueDate"]!
+        if (json['valueDate'] !== undefined) {
+            this.valueDate = json['valueDate']!
         }
-        if (json["openingDate"] !== undefined) {
-            this.openingDate = json["openingDate"]!
+        if (json['openingDate'] !== undefined) {
+            this.openingDate = json['openingDate']!
         }
-        if (json["closingDate"] !== undefined) {
-            this.closingDate = json["closingDate"]!
+        if (json['closingDate'] !== undefined) {
+            this.closingDate = json['closingDate']!
         }
-        if (json["description"] !== undefined) {
-            this.description = json["description"]!
+        if (json['description'] !== undefined) {
+            this.description = json['description']!
         }
-        if (json["note"] !== undefined) {
-            this.note = json["note"]!
+        if (json['note'] !== undefined) {
+            this.note = json['note']!
         }
-        if (json["notes"] !== undefined) {
-            this.notes = json["notes"]!.map((item: any) => new Annotation(item))
+        if (json['notes'] !== undefined) {
+            this.notes = json['notes']!.map((item: any) => new Annotation(item))
         }
-        if (json["systemMetaData"] !== undefined) {
-            this.systemMetaData = new SystemMetaDataEncrypted(json["systemMetaData"]!)
+        if (json['systemMetaData'] !== undefined) {
+            this.systemMetaData = new SystemMetaDataEncrypted(json['systemMetaData']!)
         }
     }
 }

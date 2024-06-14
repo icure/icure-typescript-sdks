@@ -29,16 +29,16 @@ export class AuthenticationToken {
 
     toJSON(): IAuthenticationToken {
         return {
-        token: this.token,
-        creationTime: this.creationTime,
-        validity: this.validity,
+            token: this.token,
+            creationTime: this.creationTime,
+            validity: this.validity,
         }
     }
 
-    constructor(json: Partial<IAuthenticationToken> & { token: string,creationTime: number,validity: number }) {
-        this.token = json["token"]!
-        this.creationTime = json["creationTime"]!
-        this.validity = json["validity"]!
+    constructor(json: Partial<IAuthenticationToken> & { token: string; creationTime: number; validity: number }) {
+        this.token = json['token']!
+        this.creationTime = json['creationTime']!
+        this.validity = json['validity']!
     }
 }
 

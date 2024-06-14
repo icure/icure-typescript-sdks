@@ -1,4 +1,4 @@
-import { EntityWithDelegationTypeName, HealthElement, Identifier as IdentifierDto, IntersectionFilter, Patient, Service } from '@icure/api'
+import { EntityWithDelegationTypeName, HealthElement, IntersectionFilter, Patient } from '@icure/api'
 import { Filter } from '../Filter'
 import { DataOwnerFilterBuilder, FilterBuilder, NoOpFilter, SortableFilterBuilder } from './filterDsl'
 import { CommonApi } from '../../apis/CommonApi'
@@ -8,7 +8,10 @@ import { Identifier } from '../../models/Identifier.model'
 import { mapIdentifierToIdentifierDto } from '../../mappers/Identifier.mapper'
 
 export class HealthElementFilter<DSPatient> implements DataOwnerFilterBuilder<HealthElement, HealthElementFilterWithDataOwner<DSPatient>> {
-    constructor(private api: CommonApi, private patientMapper: Mapper<DSPatient, Patient>) {}
+    constructor(
+        private api: CommonApi,
+        private patientMapper: Mapper<DSPatient, Patient>,
+    ) {}
 
     forDataOwner(dataOwnerId: string): HealthElementFilterWithDataOwner<DSPatient> {
         return new HealthElementFilterWithDataOwner(this.api, this.patientMapper, dataOwnerId)
@@ -52,7 +55,11 @@ interface BaseHealthElementFilterBuilder<F, DSPatient> {
 export class HealthElementFilterWithDataOwner<DSPatient> extends SortableFilterBuilder<HealthElement, DeviceFilterSortStepDecorator<DSPatient>> implements BaseHealthElementFilterBuilder<HealthElementFilterWithDataOwner<DSPatient>, DSPatient>, FilterBuilder<HealthElement> {
     _dataOwnerId: Promise<string>
 
-    constructor(private api: CommonApi, private patientMapper: Mapper<DSPatient, Patient>, dataOwnerId?: string) {
+    constructor(
+        private api: CommonApi,
+        private patientMapper: Mapper<DSPatient, Patient>,
+        dataOwnerId?: string,
+    ) {
         super()
         this._dataOwnerId = !!dataOwnerId ? Promise.resolve(dataOwnerId) : api.baseApi.userApi.getCurrentUser().then((u) => api.baseApi.dataOwnerApi.getDataOwnerIdOf(u))
     }
@@ -106,7 +113,17 @@ export class HealthElementFilterWithDataOwner<DSPatient> extends SortableFilterB
     forPatients(patients: DSPatient[]): HealthElementFilterWithDataOwner<DSPatient> {
         const filter = this._dataOwnerId.then((id) => {
             const mappedPatients = patients.map((p) => this.patientMapper.toDto(p))
-            return Promise.all(mappedPatients.map((p) => this.api.baseApi.cryptoApi.xapi.secretIdsOf({ type: EntityWithDelegationTypeName.Patient, entity: p }, undefined)))
+            return Promise.all(
+                mappedPatients.map((p) =>
+                    this.api.baseApi.cryptoApi.xapi.secretIdsOf(
+                        {
+                            type: EntityWithDelegationTypeName.Patient,
+                            entity: p,
+                        },
+                        undefined,
+                    ),
+                ),
+            )
                 .then((sfksForPatients) => sfksForPatients.flat())
                 .then((sfks) => {
                     return {

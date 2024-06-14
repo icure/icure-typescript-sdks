@@ -1,11 +1,8 @@
 // hephaestus-ignore-file
-import {
-    IPaginatedDocumentKeyAndIdPairObject,
-    PaginatedDocumentKeyAndIdPairObject
-} from './PaginatedDocumentKeyAndIdPairObject.model'
+import { IPaginatedDocumentKeyAndIdPairObject, PaginatedDocumentKeyAndIdPairObject } from './PaginatedDocumentKeyAndIdPairObject.model'
 
 export class PaginatedList<T> {
-    rows: T[] = [] = []
+    rows: T[] = ([] = [])
     nextKeyPair?: PaginatedDocumentKeyAndIdPairObject
 
     constructor(json: Partial<IPaginatedList<T>>) {

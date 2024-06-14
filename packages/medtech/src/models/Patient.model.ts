@@ -10,21 +10,7 @@
  * Do not edit the class manually.
  */
 
-import {
-    Annotation,
-    base64string,
-    CodingReference, EntityId, forceUuid,
-    IAnnotation,
-    ICodingReference,
-    Identifier,
-    IIdentifier,
-    IProperty,
-    ISystemMetaDataOwnerEncrypted,
-    mapTo,
-    PatientDto,
-    Property,
-    SystemMetaDataOwnerEncrypted
-} from '@icure/typescript-common'
+import { Annotation, base64string, CodingReference, EntityId, forceUuid, IAnnotation, ICodingReference, Identifier, IIdentifier, IProperty, ISystemMetaDataOwnerEncrypted, mapTo, PatientDto, Property, SystemMetaDataOwnerEncrypted } from '@icure/typescript-common'
 import { Address, IAddress } from './Address.model'
 import { IPartnership, Partnership } from './Partnership.model'
 import { IPatientHealthCareParty, PatientHealthCareParty } from './PatientHealthCareParty.model'
@@ -87,215 +73,215 @@ export class Patient {
 
     toJSON(): IPatient {
         return {
-        id: this.id,
-        rev: this.rev,
-        identifiers: this.identifiers.map(item => item.toJSON()),
-        created: this.created,
-        modified: this.modified,
-        author: this.author,
-        responsible: this.responsible,
-        labels: this.labels.map(item => item.toJSON()),
-        codes: this.codes.map(item => item.toJSON()),
-        endOfLife: this.endOfLife,
-        deletionDate: this.deletionDate,
-        firstName: this.firstName,
-        lastName: this.lastName,
-        names: this.names.map(item => item.toJSON()),
-        companyName: this.companyName,
-        languages: this.languages.map(item => item),
-        addresses: this.addresses.map(item => item.toJSON()),
-        civility: this.civility,
-        gender: this.gender,
-        birthSex: this.birthSex,
-        mergeToPatientId: this.mergeToPatientId,
-        mergedIds: this.mergedIds.map(item => item),
-        alias: this.alias,
-        active: this.active,
-        deactivationDate: this.deactivationDate,
-        deactivationReason: this.deactivationReason,
-        ssin: this.ssin,
-        maidenName: this.maidenName,
-        spouseName: this.spouseName,
-        partnerName: this.partnerName,
-        personalStatus: this.personalStatus,
-        dateOfBirth: this.dateOfBirth,
-        dateOfDeath: this.dateOfDeath,
-        placeOfBirth: this.placeOfBirth,
-        placeOfDeath: this.placeOfDeath,
-        deceased: this.deceased,
-        education: this.education,
-        profession: this.profession,
-        note: this.note,
-        notes: this.notes.map(item => item.toJSON()),
-        administrativeNote: this.administrativeNote,
-        nationality: this.nationality,
-        race: this.race,
-        ethnicity: this.ethnicity,
-        picture: this.picture,
-        externalId: this.externalId,
-        partnerships: this.partnerships.map(item => item.toJSON()),
-        patientHealthCareParties: this.patientHealthCareParties.map(item => item.toJSON()),
-        patientProfessions: this.patientProfessions.map(item => item.toJSON()),
-        parameters: {...this.parameters},
-        properties: this.properties.map(item => item.toJSON()),
-        systemMetaData: !!this.systemMetaData ? this.systemMetaData.toJSON() : undefined,
+            id: this.id,
+            rev: this.rev,
+            identifiers: this.identifiers.map((item) => item.toJSON()),
+            created: this.created,
+            modified: this.modified,
+            author: this.author,
+            responsible: this.responsible,
+            labels: this.labels.map((item) => item.toJSON()),
+            codes: this.codes.map((item) => item.toJSON()),
+            endOfLife: this.endOfLife,
+            deletionDate: this.deletionDate,
+            firstName: this.firstName,
+            lastName: this.lastName,
+            names: this.names.map((item) => item.toJSON()),
+            companyName: this.companyName,
+            languages: this.languages.map((item) => item),
+            addresses: this.addresses.map((item) => item.toJSON()),
+            civility: this.civility,
+            gender: this.gender,
+            birthSex: this.birthSex,
+            mergeToPatientId: this.mergeToPatientId,
+            mergedIds: this.mergedIds.map((item) => item),
+            alias: this.alias,
+            active: this.active,
+            deactivationDate: this.deactivationDate,
+            deactivationReason: this.deactivationReason,
+            ssin: this.ssin,
+            maidenName: this.maidenName,
+            spouseName: this.spouseName,
+            partnerName: this.partnerName,
+            personalStatus: this.personalStatus,
+            dateOfBirth: this.dateOfBirth,
+            dateOfDeath: this.dateOfDeath,
+            placeOfBirth: this.placeOfBirth,
+            placeOfDeath: this.placeOfDeath,
+            deceased: this.deceased,
+            education: this.education,
+            profession: this.profession,
+            note: this.note,
+            notes: this.notes.map((item) => item.toJSON()),
+            administrativeNote: this.administrativeNote,
+            nationality: this.nationality,
+            race: this.race,
+            ethnicity: this.ethnicity,
+            picture: this.picture,
+            externalId: this.externalId,
+            partnerships: this.partnerships.map((item) => item.toJSON()),
+            patientHealthCareParties: this.patientHealthCareParties.map((item) => item.toJSON()),
+            patientProfessions: this.patientProfessions.map((item) => item.toJSON()),
+            parameters: { ...this.parameters },
+            properties: this.properties.map((item) => item.toJSON()),
+            systemMetaData: !!this.systemMetaData ? this.systemMetaData.toJSON() : undefined,
         }
     }
 
-    constructor(json: Partial<IPatient> ) {
-        this.id = forceUuid(json["id"]!)
-        if (json["rev"] !== undefined) {
-            this.rev = json["rev"]!
+    constructor(json: Partial<IPatient>) {
+        this.id = forceUuid(json['id']!)
+        if (json['rev'] !== undefined) {
+            this.rev = json['rev']!
         }
-        if (json["identifiers"] !== undefined) {
-            this.identifiers = json["identifiers"]!.map((item: any) => new Identifier(item))
+        if (json['identifiers'] !== undefined) {
+            this.identifiers = json['identifiers']!.map((item: any) => new Identifier(item))
         }
-        if (json["created"] !== undefined) {
-            this.created = json["created"]!
+        if (json['created'] !== undefined) {
+            this.created = json['created']!
         }
-        if (json["modified"] !== undefined) {
-            this.modified = json["modified"]!
+        if (json['modified'] !== undefined) {
+            this.modified = json['modified']!
         }
-        if (json["author"] !== undefined) {
-            this.author = json["author"]!
+        if (json['author'] !== undefined) {
+            this.author = json['author']!
         }
-        if (json["responsible"] !== undefined) {
-            this.responsible = json["responsible"]!
+        if (json['responsible'] !== undefined) {
+            this.responsible = json['responsible']!
         }
-        if (json["labels"] !== undefined) {
-            this.labels = json["labels"]!.map((item: any) => new CodingReference(item))
+        if (json['labels'] !== undefined) {
+            this.labels = json['labels']!.map((item: any) => new CodingReference(item))
         }
-        if (json["codes"] !== undefined) {
-            this.codes = json["codes"]!.map((item: any) => new CodingReference(item))
+        if (json['codes'] !== undefined) {
+            this.codes = json['codes']!.map((item: any) => new CodingReference(item))
         }
-        if (json["endOfLife"] !== undefined) {
-            this.endOfLife = json["endOfLife"]!
+        if (json['endOfLife'] !== undefined) {
+            this.endOfLife = json['endOfLife']!
         }
-        if (json["deletionDate"] !== undefined) {
-            this.deletionDate = json["deletionDate"]!
+        if (json['deletionDate'] !== undefined) {
+            this.deletionDate = json['deletionDate']!
         }
-        if (json["firstName"] !== undefined) {
-            this.firstName = json["firstName"]!
+        if (json['firstName'] !== undefined) {
+            this.firstName = json['firstName']!
         }
-        if (json["lastName"] !== undefined) {
-            this.lastName = json["lastName"]!
+        if (json['lastName'] !== undefined) {
+            this.lastName = json['lastName']!
         }
-        if (json["names"] !== undefined) {
-            this.names = json["names"]!.map((item: any) => new PersonName(item))
+        if (json['names'] !== undefined) {
+            this.names = json['names']!.map((item: any) => new PersonName(item))
         }
-        if (json["companyName"] !== undefined) {
-            this.companyName = json["companyName"]!
+        if (json['companyName'] !== undefined) {
+            this.companyName = json['companyName']!
         }
-        if (json["languages"] !== undefined) {
-            this.languages = json["languages"]!.map((item: any) => item)
+        if (json['languages'] !== undefined) {
+            this.languages = json['languages']!.map((item: any) => item)
         }
-        if (json["addresses"] !== undefined) {
-            this.addresses = json["addresses"]!.map((item: any) => new Address(item))
+        if (json['addresses'] !== undefined) {
+            this.addresses = json['addresses']!.map((item: any) => new Address(item))
         }
-        if (json["civility"] !== undefined) {
-            this.civility = json["civility"]!
+        if (json['civility'] !== undefined) {
+            this.civility = json['civility']!
         }
-        if (json["gender"] !== undefined) {
-            this.gender = json["gender"]!
+        if (json['gender'] !== undefined) {
+            this.gender = json['gender']!
         }
-        if (json["birthSex"] !== undefined) {
-            this.birthSex = json["birthSex"]!
+        if (json['birthSex'] !== undefined) {
+            this.birthSex = json['birthSex']!
         }
-        if (json["mergeToPatientId"] !== undefined) {
-            this.mergeToPatientId = json["mergeToPatientId"]!
+        if (json['mergeToPatientId'] !== undefined) {
+            this.mergeToPatientId = json['mergeToPatientId']!
         }
-        if (json["mergedIds"] !== undefined) {
-            this.mergedIds = json["mergedIds"]!.map((item: any) => item)
+        if (json['mergedIds'] !== undefined) {
+            this.mergedIds = json['mergedIds']!.map((item: any) => item)
         }
-        if (json["alias"] !== undefined) {
-            this.alias = json["alias"]!
+        if (json['alias'] !== undefined) {
+            this.alias = json['alias']!
         }
-        if (json["active"] !== undefined) {
-            this.active = json["active"]!
+        if (json['active'] !== undefined) {
+            this.active = json['active']!
         }
-        if (json["deactivationDate"] !== undefined) {
-            this.deactivationDate = json["deactivationDate"]!
+        if (json['deactivationDate'] !== undefined) {
+            this.deactivationDate = json['deactivationDate']!
         }
-        if (json["deactivationReason"] !== undefined) {
-            this.deactivationReason = json["deactivationReason"]!
+        if (json['deactivationReason'] !== undefined) {
+            this.deactivationReason = json['deactivationReason']!
         }
-        if (json["ssin"] !== undefined) {
-            this.ssin = json["ssin"]!
+        if (json['ssin'] !== undefined) {
+            this.ssin = json['ssin']!
         }
-        if (json["maidenName"] !== undefined) {
-            this.maidenName = json["maidenName"]!
+        if (json['maidenName'] !== undefined) {
+            this.maidenName = json['maidenName']!
         }
-        if (json["spouseName"] !== undefined) {
-            this.spouseName = json["spouseName"]!
+        if (json['spouseName'] !== undefined) {
+            this.spouseName = json['spouseName']!
         }
-        if (json["partnerName"] !== undefined) {
-            this.partnerName = json["partnerName"]!
+        if (json['partnerName'] !== undefined) {
+            this.partnerName = json['partnerName']!
         }
-        if (json["personalStatus"] !== undefined) {
-            this.personalStatus = json["personalStatus"]!
+        if (json['personalStatus'] !== undefined) {
+            this.personalStatus = json['personalStatus']!
         }
-        if (json["dateOfBirth"] !== undefined) {
-            this.dateOfBirth = json["dateOfBirth"]!
+        if (json['dateOfBirth'] !== undefined) {
+            this.dateOfBirth = json['dateOfBirth']!
         }
-        if (json["dateOfDeath"] !== undefined) {
-            this.dateOfDeath = json["dateOfDeath"]!
+        if (json['dateOfDeath'] !== undefined) {
+            this.dateOfDeath = json['dateOfDeath']!
         }
-        if (json["placeOfBirth"] !== undefined) {
-            this.placeOfBirth = json["placeOfBirth"]!
+        if (json['placeOfBirth'] !== undefined) {
+            this.placeOfBirth = json['placeOfBirth']!
         }
-        if (json["placeOfDeath"] !== undefined) {
-            this.placeOfDeath = json["placeOfDeath"]!
+        if (json['placeOfDeath'] !== undefined) {
+            this.placeOfDeath = json['placeOfDeath']!
         }
-        if (json["deceased"] !== undefined) {
-            this.deceased = json["deceased"]!
+        if (json['deceased'] !== undefined) {
+            this.deceased = json['deceased']!
         }
-        if (json["education"] !== undefined) {
-            this.education = json["education"]!
+        if (json['education'] !== undefined) {
+            this.education = json['education']!
         }
-        if (json["profession"] !== undefined) {
-            this.profession = json["profession"]!
+        if (json['profession'] !== undefined) {
+            this.profession = json['profession']!
         }
-        if (json["note"] !== undefined) {
-            this.note = json["note"]!
+        if (json['note'] !== undefined) {
+            this.note = json['note']!
         }
-        if (json["notes"] !== undefined) {
-            this.notes = json["notes"]!.map((item: any) => new Annotation(item))
+        if (json['notes'] !== undefined) {
+            this.notes = json['notes']!.map((item: any) => new Annotation(item))
         }
-        if (json["administrativeNote"] !== undefined) {
-            this.administrativeNote = json["administrativeNote"]!
+        if (json['administrativeNote'] !== undefined) {
+            this.administrativeNote = json['administrativeNote']!
         }
-        if (json["nationality"] !== undefined) {
-            this.nationality = json["nationality"]!
+        if (json['nationality'] !== undefined) {
+            this.nationality = json['nationality']!
         }
-        if (json["race"] !== undefined) {
-            this.race = json["race"]!
+        if (json['race'] !== undefined) {
+            this.race = json['race']!
         }
-        if (json["ethnicity"] !== undefined) {
-            this.ethnicity = json["ethnicity"]!
+        if (json['ethnicity'] !== undefined) {
+            this.ethnicity = json['ethnicity']!
         }
-        if (json["picture"] !== undefined) {
-            this.picture = json["picture"]!
+        if (json['picture'] !== undefined) {
+            this.picture = json['picture']!
         }
-        if (json["externalId"] !== undefined) {
-            this.externalId = json["externalId"]!
+        if (json['externalId'] !== undefined) {
+            this.externalId = json['externalId']!
         }
-        if (json["partnerships"] !== undefined) {
-            this.partnerships = json["partnerships"]!.map((item: any) => new Partnership(item))
+        if (json['partnerships'] !== undefined) {
+            this.partnerships = json['partnerships']!.map((item: any) => new Partnership(item))
         }
-        if (json["patientHealthCareParties"] !== undefined) {
-            this.patientHealthCareParties = json["patientHealthCareParties"]!.map((item: any) => new PatientHealthCareParty(item))
+        if (json['patientHealthCareParties'] !== undefined) {
+            this.patientHealthCareParties = json['patientHealthCareParties']!.map((item: any) => new PatientHealthCareParty(item))
         }
-        if (json["patientProfessions"] !== undefined) {
-            this.patientProfessions = json["patientProfessions"]!.map((item: any) => new CodingReference(item))
+        if (json['patientProfessions'] !== undefined) {
+            this.patientProfessions = json['patientProfessions']!.map((item: any) => new CodingReference(item))
         }
-        if (json["parameters"] !== undefined) {
-            this.parameters = {...json["parameters"]!}
+        if (json['parameters'] !== undefined) {
+            this.parameters = { ...json['parameters']! }
         }
-        if (json["properties"] !== undefined) {
-            this.properties = json["properties"]!.map((item: any) => new Property(item))
+        if (json['properties'] !== undefined) {
+            this.properties = json['properties']!.map((item: any) => new Property(item))
         }
-        if (json["systemMetaData"] !== undefined) {
-            this.systemMetaData = new SystemMetaDataOwnerEncrypted(json["systemMetaData"]!)
+        if (json['systemMetaData'] !== undefined) {
+            this.systemMetaData = new SystemMetaDataOwnerEncrypted(json['systemMetaData']!)
         }
     }
 }
@@ -355,42 +341,7 @@ export interface IPatient {
     systemMetaData?: ISystemMetaDataOwnerEncrypted
 }
 
-export type PatientGenderEnum =
-    'male'
-    | 'female'
-    | 'indeterminate'
-    | 'changed'
-    | 'changedToMale'
-    | 'changedToFemale'
-    | 'unknown'
-export type PatientBirthSexEnum =
-    'male'
-    | 'female'
-    | 'indeterminate'
-    | 'changed'
-    | 'changedToMale'
-    | 'changedToFemale'
-    | 'unknown'
-export type PatientDeactivationReasonEnum =
-    'deceased'
-    | 'moved'
-    | 'other_doctor'
-    | 'retired'
-    | 'no_contact'
-    | 'unknown'
-    | 'none'
-export type PatientPersonalStatusEnum =
-    'single'
-    | 'in_couple'
-    | 'married'
-    | 'separated'
-    | 'divorced'
-    | 'divorcing'
-    | 'widowed'
-    | 'widower'
-    | 'complicated'
-    | 'unknown'
-    | 'contract'
-    | 'other'
-    | 'annulled'
-    | 'polygamous'
+export type PatientGenderEnum = 'male' | 'female' | 'indeterminate' | 'changed' | 'changedToMale' | 'changedToFemale' | 'unknown'
+export type PatientBirthSexEnum = 'male' | 'female' | 'indeterminate' | 'changed' | 'changedToMale' | 'changedToFemale' | 'unknown'
+export type PatientDeactivationReasonEnum = 'deceased' | 'moved' | 'other_doctor' | 'retired' | 'no_contact' | 'unknown' | 'none'
+export type PatientPersonalStatusEnum = 'single' | 'in_couple' | 'married' | 'separated' | 'divorced' | 'divorcing' | 'widowed' | 'widower' | 'complicated' | 'unknown' | 'contract' | 'other' | 'annulled' | 'polygamous'

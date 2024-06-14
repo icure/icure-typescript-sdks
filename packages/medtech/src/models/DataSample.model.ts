@@ -10,20 +10,8 @@
  * Do not edit the class manually.
  */
 
-import {
-    CodingReference,
-    EntityId,
-    ICodingReference,
-    IIdentifier,
-    ISO639_1,
-    ISystemMetaDataEncrypted,
-    Identifier,
-    ServiceDto,
-    SystemMetaDataEncrypted,
-    forceUuid,
-    mapTo
-} from '@icure/typescript-common';
-import { Content, IContent } from './Content.model';
+import { CodingReference, EntityId, forceUuid, ICodingReference, Identifier, IIdentifier, ISO639_1, ISystemMetaDataEncrypted, mapTo, ServiceDto, SystemMetaDataEncrypted } from '@icure/typescript-common'
+import { Content, IContent } from './Content.model'
 
 /**
  * A Data Sample represents a medical information, provided by a Data Owner concerning one specific [Patient], for a T moment.       Provided by a Data Owner means that the data sample may have been either provided by a [HealthcareProfessional] or a [Patient], either collected by a [MedicalDevice].         Data Samples provided by the patient include subjective information, such as complaints, reason for visit, feelings, etc. or objective information       like bio-metric measures (blood pressure, temperature, heart beat, etc.), or physical exam description, diagnosis, prescription, integration of lab reports from another [HealthcareProfessional], action plan, etc.      Any action performed by the [HealthcareProfessional] (which is relevant for a [HealthcareElement] of a [Patient]) is considered as a [DataSample].       The data samples can be linked to healthcare elements or other structuring elements of the medical record
@@ -114,91 +102,91 @@ export class DataSample {
 
     toJSON(): IDataSample {
         return {
-        id: this.id,
-        transactionId: this.transactionId,
-        identifiers: this.identifiers.map(item => item.toJSON()),
-        batchId: this.batchId,
-        healthcareElementIds: this.healthcareElementIds?.map(item => item),
-        canvasesIds: this.canvasesIds?.map(item => item),
-        index: this.index,
-        content: Object.fromEntries(Object.entries(this.content).map(([k, v]: [any, Content]) => [k, v.toJSON()])),
-        valueDate: this.valueDate,
-        openingDate: this.openingDate,
-        closingDate: this.closingDate,
-        created: this.created,
-        modified: this.modified,
-        endOfLife: this.endOfLife,
-        author: this.author,
-        responsible: this.responsible,
-        comment: this.comment,
-        qualifiedLinks: {...this.qualifiedLinks},
-        codes: this.codes.map(item => item.toJSON()),
-        labels: this.labels.map(item => item.toJSON()),
-        systemMetaData: !!this.systemMetaData ? this.systemMetaData.toJSON() : undefined,
+            id: this.id,
+            transactionId: this.transactionId,
+            identifiers: this.identifiers.map((item) => item.toJSON()),
+            batchId: this.batchId,
+            healthcareElementIds: this.healthcareElementIds?.map((item) => item),
+            canvasesIds: this.canvasesIds?.map((item) => item),
+            index: this.index,
+            content: Object.fromEntries(Object.entries(this.content).map(([k, v]: [any, Content]) => [k, v.toJSON()])),
+            valueDate: this.valueDate,
+            openingDate: this.openingDate,
+            closingDate: this.closingDate,
+            created: this.created,
+            modified: this.modified,
+            endOfLife: this.endOfLife,
+            author: this.author,
+            responsible: this.responsible,
+            comment: this.comment,
+            qualifiedLinks: { ...this.qualifiedLinks },
+            codes: this.codes.map((item) => item.toJSON()),
+            labels: this.labels.map((item) => item.toJSON()),
+            systemMetaData: !!this.systemMetaData ? this.systemMetaData.toJSON() : undefined,
         }
     }
 
-    constructor(json: Partial<IDataSample> ) {
-        this.id = forceUuid(json["id"]!)
-        if (json["transactionId"] !== undefined) {
-            this.transactionId = json["transactionId"]!
+    constructor(json: Partial<IDataSample>) {
+        this.id = forceUuid(json['id']!)
+        if (json['transactionId'] !== undefined) {
+            this.transactionId = json['transactionId']!
         }
-        if (json["identifiers"] !== undefined) {
-            this.identifiers = json["identifiers"]!.map((item: any) => new Identifier(item))
+        if (json['identifiers'] !== undefined) {
+            this.identifiers = json['identifiers']!.map((item: any) => new Identifier(item))
         }
-        if (json["batchId"] !== undefined) {
-            this.batchId = json["batchId"]!
+        if (json['batchId'] !== undefined) {
+            this.batchId = json['batchId']!
         }
-        if (json["healthcareElementIds"] !== undefined) {
-            this.healthcareElementIds = json["healthcareElementIds"]!.map((item: any) => item)
+        if (json['healthcareElementIds'] !== undefined) {
+            this.healthcareElementIds = json['healthcareElementIds']!.map((item: any) => item)
         }
-        if (json["canvasesIds"] !== undefined) {
-            this.canvasesIds = json["canvasesIds"]!.map((item: any) => item)
+        if (json['canvasesIds'] !== undefined) {
+            this.canvasesIds = json['canvasesIds']!.map((item: any) => item)
         }
-        if (json["index"] !== undefined) {
-            this.index = json["index"]!
+        if (json['index'] !== undefined) {
+            this.index = json['index']!
         }
-        if (json["content"] !== undefined) {
-            this.content = Object.fromEntries(Object.entries(json["content"]!).map(([k, v]: [any, IContent]) => [k, new Content(v)]))
+        if (json['content'] !== undefined) {
+            this.content = Object.fromEntries(Object.entries(json['content']!).map(([k, v]: [any, IContent]) => [k, new Content(v)]))
         }
-        if (json["valueDate"] !== undefined) {
-            this.valueDate = json["valueDate"]!
+        if (json['valueDate'] !== undefined) {
+            this.valueDate = json['valueDate']!
         }
-        if (json["openingDate"] !== undefined) {
-            this.openingDate = json["openingDate"]!
+        if (json['openingDate'] !== undefined) {
+            this.openingDate = json['openingDate']!
         }
-        if (json["closingDate"] !== undefined) {
-            this.closingDate = json["closingDate"]!
+        if (json['closingDate'] !== undefined) {
+            this.closingDate = json['closingDate']!
         }
-        if (json["created"] !== undefined) {
-            this.created = json["created"]!
+        if (json['created'] !== undefined) {
+            this.created = json['created']!
         }
-        if (json["modified"] !== undefined) {
-            this.modified = json["modified"]!
+        if (json['modified'] !== undefined) {
+            this.modified = json['modified']!
         }
-        if (json["endOfLife"] !== undefined) {
-            this.endOfLife = json["endOfLife"]!
+        if (json['endOfLife'] !== undefined) {
+            this.endOfLife = json['endOfLife']!
         }
-        if (json["author"] !== undefined) {
-            this.author = json["author"]!
+        if (json['author'] !== undefined) {
+            this.author = json['author']!
         }
-        if (json["responsible"] !== undefined) {
-            this.responsible = json["responsible"]!
+        if (json['responsible'] !== undefined) {
+            this.responsible = json['responsible']!
         }
-        if (json["comment"] !== undefined) {
-            this.comment = json["comment"]!
+        if (json['comment'] !== undefined) {
+            this.comment = json['comment']!
         }
-        if (json["qualifiedLinks"] !== undefined) {
-            this.qualifiedLinks = {...json["qualifiedLinks"]!}
+        if (json['qualifiedLinks'] !== undefined) {
+            this.qualifiedLinks = { ...json['qualifiedLinks']! }
         }
-        if (json["codes"] !== undefined) {
-            this.codes = json["codes"]!.map((item: any) => new CodingReference(item))
+        if (json['codes'] !== undefined) {
+            this.codes = json['codes']!.map((item: any) => new CodingReference(item))
         }
-        if (json["labels"] !== undefined) {
-            this.labels = json["labels"]!.map((item: any) => new CodingReference(item))
+        if (json['labels'] !== undefined) {
+            this.labels = json['labels']!.map((item: any) => new CodingReference(item))
         }
-        if (json["systemMetaData"] !== undefined) {
-            this.systemMetaData = new SystemMetaDataEncrypted(json["systemMetaData"]!)
+        if (json['systemMetaData'] !== undefined) {
+            this.systemMetaData = new SystemMetaDataEncrypted(json['systemMetaData']!)
         }
     }
 }

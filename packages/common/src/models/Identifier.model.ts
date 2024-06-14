@@ -30,41 +30,41 @@ export class Identifier {
 
     toJSON(): IIdentifier {
         return {
-        id: this.id,
-        assigner: this.assigner,
-        start: this.start,
-        end: this.end,
-        system: this.system,
-        type: !!this.type ? this.type.toJSON() : undefined,
-        use: this.use,
-        value: this.value,
+            id: this.id,
+            assigner: this.assigner,
+            start: this.start,
+            end: this.end,
+            system: this.system,
+            type: !!this.type ? this.type.toJSON() : undefined,
+            use: this.use,
+            value: this.value,
         }
     }
 
-    constructor(json: Partial<IIdentifier> ) {
-        if (json["id"] !== undefined) {
-            this.id = json["id"]!
+    constructor(json: Partial<IIdentifier>) {
+        if (json['id'] !== undefined) {
+            this.id = json['id']!
         }
-        if (json["assigner"] !== undefined) {
-            this.assigner = json["assigner"]!
+        if (json['assigner'] !== undefined) {
+            this.assigner = json['assigner']!
         }
-        if (json["start"] !== undefined) {
-            this.start = json["start"]!
+        if (json['start'] !== undefined) {
+            this.start = json['start']!
         }
-        if (json["end"] !== undefined) {
-            this.end = json["end"]!
+        if (json['end'] !== undefined) {
+            this.end = json['end']!
         }
-        if (json["system"] !== undefined) {
-            this.system = json["system"]!
+        if (json['system'] !== undefined) {
+            this.system = json['system']!
         }
-        if (json["type"] !== undefined) {
-            this.type = new CodingReference(json["type"]!)
+        if (json['type'] !== undefined) {
+            this.type = new CodingReference(json['type']!)
         }
-        if (json["use"] !== undefined) {
-            this.use = json["use"]!
+        if (json['use'] !== undefined) {
+            this.use = json['use']!
         }
-        if (json["value"] !== undefined) {
-            this.value = json["value"]!
+        if (json['value'] !== undefined) {
+            this.value = json['value']!
         }
     }
 }

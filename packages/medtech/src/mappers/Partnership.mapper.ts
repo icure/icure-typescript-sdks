@@ -35,18 +35,18 @@ function toPartnershipPartnerId(dto: PartnershipDto): string | undefined {
 
 export function mapPartnershipDtoToPartnership(dto: PartnershipDto): Partnership {
     return new Partnership({
-    type: toPartnershipType(dto),
-    status: toPartnershipStatus(dto),
-    partnerId: toPartnershipPartnerId(dto),
+        type: toPartnershipType(dto),
+        status: toPartnershipStatus(dto),
+        partnerId: toPartnershipPartnerId(dto),
     })
 }
 
 export function mapPartnershipToPartnershipDto(domain: Partnership): PartnershipDto {
     return new PartnershipDto({
-    type: toPartnershipDtoType(domain),
-    status: toPartnershipDtoStatus(domain),
-    partnerId: toPartnershipDtoPartnerId(domain),
-    meToOtherRelationshipDescription: toPartnershipDtoMeToOtherRelationshipDescription(domain),
-    otherToMeRelationshipDescription: toPartnershipDtoOtherToMeRelationshipDescription(domain),
+        type: toPartnershipDtoType(domain),
+        status: toPartnershipDtoStatus(domain),
+        partnerId: toPartnershipDtoPartnerId(domain),
+        meToOtherRelationshipDescription: toPartnershipDtoMeToOtherRelationshipDescription(domain),
+        otherToMeRelationshipDescription: toPartnershipDtoOtherToMeRelationshipDescription(domain),
     })
 }

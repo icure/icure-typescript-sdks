@@ -1,6 +1,6 @@
 import { HealthcareProfessional } from '../models/HealthcareProfessional.model'
 import { Patient } from '../models/Patient.model'
-import { User, MessageFactory, ICureMessageFactory } from '@icure/typescript-common'
+import { ICureMessageFactory, MessageFactory, User } from '@icure/typescript-common'
 
 export interface MedTechMessageFactory extends MessageFactory<User, HealthcareProfessional, Patient> {}
 
@@ -20,4 +20,5 @@ class ICureMedTechMessageFactory extends ICureMessageFactory<User, Patient> {
         return patient.firstName
     }
 }
+
 export const iCureMedTechMessageFactory: MedTechMessageFactory = new ICureMedTechMessageFactory()

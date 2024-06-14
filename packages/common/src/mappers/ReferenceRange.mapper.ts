@@ -1,5 +1,5 @@
 import { ReferenceRange } from '../models/ReferenceRange.model'
-import { Annotation as AnnotationDto, CodeStub, ReferenceRange as ReferenceRangeDto, Range as RangeDto } from '@icure/api'
+import { Annotation as AnnotationDto, CodeStub, Range as RangeDto, ReferenceRange as ReferenceRangeDto } from '@icure/api'
 import { CodingReference } from '../models/CodingReference.model'
 import { Annotation } from '../models/Annotation.model'
 import { Range } from '../models/Range.model'
@@ -65,24 +65,24 @@ function toReferenceRangeStringValue(dto: ReferenceRangeDto): string | undefined
 
 export function mapReferenceRangeDtoToReferenceRange(dto: ReferenceRangeDto): ReferenceRange {
     return new ReferenceRange({
-    low: toReferenceRangeLow(dto),
-    high: toReferenceRangeHigh(dto),
-    tags: toReferenceRangeTags(dto),
-    codes: toReferenceRangeCodes(dto),
-    notes: toReferenceRangeNotes(dto),
-    age: toReferenceRangeAge(dto),
-    stringValue: toReferenceRangeStringValue(dto),
+        low: toReferenceRangeLow(dto),
+        high: toReferenceRangeHigh(dto),
+        tags: toReferenceRangeTags(dto),
+        codes: toReferenceRangeCodes(dto),
+        notes: toReferenceRangeNotes(dto),
+        age: toReferenceRangeAge(dto),
+        stringValue: toReferenceRangeStringValue(dto),
     })
 }
 
 export function mapReferenceRangeToReferenceRangeDto(domain: ReferenceRange): ReferenceRangeDto {
     return new ReferenceRangeDto({
-    low: toReferenceRangeDtoLow(domain),
-    high: toReferenceRangeDtoHigh(domain),
-    tags: toReferenceRangeDtoTags(domain),
-    codes: toReferenceRangeDtoCodes(domain),
-    notes: toReferenceRangeDtoNotes(domain),
-    age: toReferenceRangeDtoAge(domain),
-    stringValue: toReferenceRangeDtoStringValue(domain),
+        low: toReferenceRangeDtoLow(domain),
+        high: toReferenceRangeDtoHigh(domain),
+        tags: toReferenceRangeDtoTags(domain),
+        codes: toReferenceRangeDtoCodes(domain),
+        notes: toReferenceRangeDtoNotes(domain),
+        age: toReferenceRangeDtoAge(domain),
+        stringValue: toReferenceRangeDtoStringValue(domain),
     })
 }

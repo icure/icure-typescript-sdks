@@ -1,5 +1,3 @@
-import { CommonAnonymousApi } from './CommonAnonymousApi'
-
 export * from './impl/AuthenticationApiImpl'
 export * from './impl/CodeLikeApiImpl'
 export * from './impl/CryptoStrategiesBridge'

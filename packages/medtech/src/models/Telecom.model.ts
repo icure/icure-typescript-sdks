@@ -19,21 +19,21 @@ export class Telecom {
 
     toJSON(): ITelecom {
         return {
-        telecomType: this.telecomType,
-        telecomNumber: this.telecomNumber,
-        telecomDescription: this.telecomDescription,
+            telecomType: this.telecomType,
+            telecomNumber: this.telecomNumber,
+            telecomDescription: this.telecomDescription,
         }
     }
 
-    constructor(json: Partial<ITelecom> ) {
-        if (json["telecomType"] !== undefined) {
-            this.telecomType = json["telecomType"]!
+    constructor(json: Partial<ITelecom>) {
+        if (json['telecomType'] !== undefined) {
+            this.telecomType = json['telecomType']!
         }
-        if (json["telecomNumber"] !== undefined) {
-            this.telecomNumber = json["telecomNumber"]!
+        if (json['telecomNumber'] !== undefined) {
+            this.telecomNumber = json['telecomNumber']!
         }
-        if (json["telecomDescription"] !== undefined) {
-            this.telecomDescription = json["telecomDescription"]!
+        if (json['telecomDescription'] !== undefined) {
+            this.telecomDescription = json['telecomDescription']!
         }
     }
 }

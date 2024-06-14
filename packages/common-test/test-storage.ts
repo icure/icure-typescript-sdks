@@ -53,7 +53,13 @@ export class TestKeyStorage implements KeyStorageFacade {
     }
 }
 
-export async function testStorageWithKeys(keyFactory: StorageEntryKeysFactory, data: { dataOwnerId: string; pairs: { keyPair: KeyPair<string>; shaVersion: ShaVersion }[] }[]): Promise<{ keyStorage: KeyStorageFacade; storage: StorageFacade<string> }> {
+export async function testStorageWithKeys(
+    keyFactory: StorageEntryKeysFactory,
+    data: {
+        dataOwnerId: string
+        pairs: { keyPair: KeyPair<string>; shaVersion: ShaVersion }[]
+    }[],
+): Promise<{ keyStorage: KeyStorageFacade; storage: StorageFacade<string> }> {
     const keyStorage = new TestKeyStorage()
     const storage = new TestStorage()
     const icureStorage = new IcureStorageFacade(keyStorage, storage, keyFactory)
@@ -73,11 +79,19 @@ export async function testStorageWithKeys(keyFactory: StorageEntryKeysFactory, d
     return { keyStorage, storage }
 }
 
-export async function testStorageForUser(credentials: UserDetails): Promise<{ keyStorage: KeyStorageFacade; storage: StorageFacade<string> }> {
+export async function testStorageForUser(credentials: UserDetails): Promise<{
+    keyStorage: KeyStorageFacade
+    storage: StorageFacade<string>
+}> {
     return await testStorageWithKeys(new DefaultStorageEntryKeysFactory(), [
         {
             dataOwnerId: credentials.dataOwnerId,
-            pairs: [{ keyPair: { publicKey: credentials.publicKey, privateKey: credentials.privateKey }, shaVersion: ShaVersion.Sha1 }],
+            pairs: [
+                {
+                    keyPair: { publicKey: credentials.publicKey, privateKey: credentials.privateKey },
+                    shaVersion: ShaVersion.Sha1,
+                },
+            ],
         },
     ])
 }

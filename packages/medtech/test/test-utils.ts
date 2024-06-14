@@ -29,11 +29,23 @@ export class TestMessageFactory implements MedTechMessageFactory {
 }
 
 export class TestUtils {
-    static async createMedTechApiAndLoggedUserFor(iCureUrl: string, credentials: UserDetails, additionalBuilderSteps: (b: MedTechApi.Builder) => MedTechApi.Builder = (b) => b): Promise<{ api: MedTechApi; user: User }> {
+    static async createMedTechApiAndLoggedUserFor(
+        iCureUrl: string,
+        credentials: UserDetails,
+        additionalBuilderSteps: (b: MedTechApi.Builder) => MedTechApi.Builder = (b) => b,
+    ): Promise<{
+        api: MedTechApi
+        user: User
+    }> {
         const storage = await testStorageWithKeys(new DefaultStorageEntryKeysFactory(), [
             {
                 dataOwnerId: credentials.dataOwnerId,
-                pairs: [{ keyPair: { publicKey: credentials.publicKey, privateKey: credentials.privateKey }, shaVersion: ShaVersion.Sha256 }],
+                pairs: [
+                    {
+                        keyPair: { publicKey: credentials.publicKey, privateKey: credentials.privateKey },
+                        shaVersion: ShaVersion.Sha256,
+                    },
+                ],
             },
         ])
         const builderApi = new MedTechApi.Builder()

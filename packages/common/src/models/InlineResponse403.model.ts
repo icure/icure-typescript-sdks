@@ -22,41 +22,41 @@ export class InlineResponse403 {
 
     toJSON(): IInlineResponse403 {
         return {
-        _short: this._short,
-        _char: this._char,
-        _int: this._int,
-        _long: this._long,
-        _float: this._float,
-        _double: this._double,
-        direct: this.direct,
-        readOnly: this.readOnly,
+            _short: this._short,
+            _char: this._char,
+            _int: this._int,
+            _long: this._long,
+            _float: this._float,
+            _double: this._double,
+            direct: this.direct,
+            readOnly: this.readOnly,
         }
     }
 
-    constructor(json: Partial<IInlineResponse403> ) {
-        if (json["_short"] !== undefined) {
-            this._short = json["_short"]!
+    constructor(json: Partial<IInlineResponse403>) {
+        if (json['_short'] !== undefined) {
+            this._short = json['_short']!
         }
-        if (json["_char"] !== undefined) {
-            this._char = json["_char"]!
+        if (json['_char'] !== undefined) {
+            this._char = json['_char']!
         }
-        if (json["_int"] !== undefined) {
-            this._int = json["_int"]!
+        if (json['_int'] !== undefined) {
+            this._int = json['_int']!
         }
-        if (json["_long"] !== undefined) {
-            this._long = json["_long"]!
+        if (json['_long'] !== undefined) {
+            this._long = json['_long']!
         }
-        if (json["_float"] !== undefined) {
-            this._float = json["_float"]!
+        if (json['_float'] !== undefined) {
+            this._float = json['_float']!
         }
-        if (json["_double"] !== undefined) {
-            this._double = json["_double"]!
+        if (json['_double'] !== undefined) {
+            this._double = json['_double']!
         }
-        if (json["direct"] !== undefined) {
-            this.direct = json["direct"]!
+        if (json['direct'] !== undefined) {
+            this.direct = json['direct']!
         }
-        if (json["readOnly"] !== undefined) {
-            this.readOnly = json["readOnly"]!
+        if (json['readOnly'] !== undefined) {
+            this.readOnly = json['readOnly']!
         }
     }
 }

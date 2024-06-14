@@ -1,9 +1,10 @@
-import { CommonApi, DataOwnerLikeApi, DataOwnerLikeApiImpl, mapUserDtoToUser, mapUserToUserDto, User, DataOwnerWithType, UserDto } from '@icure/typescript-common'
+import { CommonApi, DataOwnerLikeApi, DataOwnerLikeApiImpl, DataOwnerWithType, mapUserDtoToUser, mapUserToUserDto, User, UserDto } from '@icure/typescript-common'
 import { DataOwner, DataOwnerWithType as EHRDataOwnerWithType } from '../models/DataOwner.model'
 import { Patient } from '../models/Patient.model'
 import dataOwnerMapper from '../mappers/DataOwner.mapper'
 
 export interface DataOwnerApi extends DataOwnerLikeApi<EHRDataOwnerWithType, User> {}
+
 class DataOwnerApiImpl extends DataOwnerLikeApiImpl<EHRDataOwnerWithType, DataOwner, Patient, User> {}
 
 export const dataOwnerApi = (api: CommonApi): DataOwnerApi =>

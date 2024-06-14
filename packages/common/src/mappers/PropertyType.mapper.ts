@@ -20,14 +20,14 @@ function toPropertyTypeType(dto: PropertyTypeStub): TypeEnum | undefined {
 
 export function mapPropertyTypeStubToPropertyType(dto: PropertyTypeStub): PropertyType {
     return new PropertyType({
-    identifier: toPropertyTypeIdentifier(dto),
-    type: toPropertyTypeType(dto),
+        identifier: toPropertyTypeIdentifier(dto),
+        type: toPropertyTypeType(dto),
     })
 }
 
 export function mapPropertyTypeToPropertyTypeStub(domain: PropertyType): PropertyTypeStub {
     return new PropertyTypeStub({
-    identifier: toPropertyTypeStubIdentifier(domain),
-    type: toPropertyTypeStubType(domain),
+        identifier: toPropertyTypeStubIdentifier(domain),
+        type: toPropertyTypeStubType(domain),
     })
 }

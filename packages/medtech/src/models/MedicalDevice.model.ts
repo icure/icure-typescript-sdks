@@ -10,21 +10,7 @@
  * Do not edit the class manually.
  */
 
-import {
-    CodingReference,
-    DeviceDto,
-    EntityId,
-    ICodingReference,
-    IIdentifier,
-    IProperty,
-    ISystemMetaDataOwner,
-    Identifier,
-    Property,
-    SystemMetaDataOwner,
-    base64string,
-    forceUuid,
-    mapTo
-} from '@icure/typescript-common';
+import { base64string, CodingReference, DeviceDto, EntityId, forceUuid, ICodingReference, Identifier, IIdentifier, IProperty, ISystemMetaDataOwner, mapTo, Property, SystemMetaDataOwner } from '@icure/typescript-common'
 
 @mapTo(DeviceDto)
 export class MedicalDevice {
@@ -106,91 +92,91 @@ export class MedicalDevice {
 
     toJSON(): IMedicalDevice {
         return {
-        id: this.id,
-        rev: this.rev,
-        deletionDate: this.deletionDate,
-        identifiers: this.identifiers.map(item => item.toJSON()),
-        created: this.created,
-        modified: this.modified,
-        author: this.author,
-        responsible: this.responsible,
-        labels: this.labels.map(item => item.toJSON()),
-        codes: this.codes.map(item => item.toJSON()),
-        endOfLife: this.endOfLife,
-        externalId: this.externalId,
-        name: this.name,
-        type: this.type,
-        brand: this.brand,
-        model: this.model,
-        serialNumber: this.serialNumber,
-        parentId: this.parentId,
-        picture: this.picture,
-        properties: this.properties.map(item => item.toJSON()),
-        systemMetaData: !!this.systemMetaData ? this.systemMetaData.toJSON() : undefined,
+            id: this.id,
+            rev: this.rev,
+            deletionDate: this.deletionDate,
+            identifiers: this.identifiers.map((item) => item.toJSON()),
+            created: this.created,
+            modified: this.modified,
+            author: this.author,
+            responsible: this.responsible,
+            labels: this.labels.map((item) => item.toJSON()),
+            codes: this.codes.map((item) => item.toJSON()),
+            endOfLife: this.endOfLife,
+            externalId: this.externalId,
+            name: this.name,
+            type: this.type,
+            brand: this.brand,
+            model: this.model,
+            serialNumber: this.serialNumber,
+            parentId: this.parentId,
+            picture: this.picture,
+            properties: this.properties.map((item) => item.toJSON()),
+            systemMetaData: !!this.systemMetaData ? this.systemMetaData.toJSON() : undefined,
         }
     }
 
-    constructor(json: Partial<IMedicalDevice> ) {
-        this.id = forceUuid(json["id"]!)
-        if (json["rev"] !== undefined) {
-            this.rev = json["rev"]!
+    constructor(json: Partial<IMedicalDevice>) {
+        this.id = forceUuid(json['id']!)
+        if (json['rev'] !== undefined) {
+            this.rev = json['rev']!
         }
-        if (json["deletionDate"] !== undefined) {
-            this.deletionDate = json["deletionDate"]!
+        if (json['deletionDate'] !== undefined) {
+            this.deletionDate = json['deletionDate']!
         }
-        if (json["identifiers"] !== undefined) {
-            this.identifiers = json["identifiers"]!.map((item: any) => new Identifier(item))
+        if (json['identifiers'] !== undefined) {
+            this.identifiers = json['identifiers']!.map((item: any) => new Identifier(item))
         }
-        if (json["created"] !== undefined) {
-            this.created = json["created"]!
+        if (json['created'] !== undefined) {
+            this.created = json['created']!
         }
-        if (json["modified"] !== undefined) {
-            this.modified = json["modified"]!
+        if (json['modified'] !== undefined) {
+            this.modified = json['modified']!
         }
-        if (json["author"] !== undefined) {
-            this.author = json["author"]!
+        if (json['author'] !== undefined) {
+            this.author = json['author']!
         }
-        if (json["responsible"] !== undefined) {
-            this.responsible = json["responsible"]!
+        if (json['responsible'] !== undefined) {
+            this.responsible = json['responsible']!
         }
-        if (json["labels"] !== undefined) {
-            this.labels = json["labels"]!.map((item: any) => new CodingReference(item))
+        if (json['labels'] !== undefined) {
+            this.labels = json['labels']!.map((item: any) => new CodingReference(item))
         }
-        if (json["codes"] !== undefined) {
-            this.codes = json["codes"]!.map((item: any) => new CodingReference(item))
+        if (json['codes'] !== undefined) {
+            this.codes = json['codes']!.map((item: any) => new CodingReference(item))
         }
-        if (json["endOfLife"] !== undefined) {
-            this.endOfLife = json["endOfLife"]!
+        if (json['endOfLife'] !== undefined) {
+            this.endOfLife = json['endOfLife']!
         }
-        if (json["externalId"] !== undefined) {
-            this.externalId = json["externalId"]!
+        if (json['externalId'] !== undefined) {
+            this.externalId = json['externalId']!
         }
-        if (json["name"] !== undefined) {
-            this.name = json["name"]!
+        if (json['name'] !== undefined) {
+            this.name = json['name']!
         }
-        if (json["type"] !== undefined) {
-            this.type = json["type"]!
+        if (json['type'] !== undefined) {
+            this.type = json['type']!
         }
-        if (json["brand"] !== undefined) {
-            this.brand = json["brand"]!
+        if (json['brand'] !== undefined) {
+            this.brand = json['brand']!
         }
-        if (json["model"] !== undefined) {
-            this.model = json["model"]!
+        if (json['model'] !== undefined) {
+            this.model = json['model']!
         }
-        if (json["serialNumber"] !== undefined) {
-            this.serialNumber = json["serialNumber"]!
+        if (json['serialNumber'] !== undefined) {
+            this.serialNumber = json['serialNumber']!
         }
-        if (json["parentId"] !== undefined) {
-            this.parentId = json["parentId"]!
+        if (json['parentId'] !== undefined) {
+            this.parentId = json['parentId']!
         }
-        if (json["picture"] !== undefined) {
-            this.picture = json["picture"]!
+        if (json['picture'] !== undefined) {
+            this.picture = json['picture']!
         }
-        if (json["properties"] !== undefined) {
-            this.properties = json["properties"]!.map((item: any) => new Property(item))
+        if (json['properties'] !== undefined) {
+            this.properties = json['properties']!.map((item: any) => new Property(item))
         }
-        if (json["systemMetaData"] !== undefined) {
-            this.systemMetaData = new SystemMetaDataOwner(json["systemMetaData"]!)
+        if (json['systemMetaData'] !== undefined) {
+            this.systemMetaData = new SystemMetaDataOwner(json['systemMetaData']!)
         }
     }
 }

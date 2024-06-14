@@ -1,6 +1,6 @@
 import { Component } from '../models/Component.model'
 import { Observation } from '../models/Observation.model'
-import { mapMeasureDtoToMeasure, mapMeasureToMeasureDto, mapTimeSeriesDtoToTimeSeries, mapTimeSeriesToTimeSeriesDto, Measure, TimeSeries, ContentDto, MeasureDto, MedicationDto, ServiceDto, TimeSeriesDto } from '@icure/typescript-common'
+import { ContentDto, mapMeasureDtoToMeasure, mapMeasureToMeasureDto, mapTimeSeriesDtoToTimeSeries, mapTimeSeriesToTimeSeriesDto, Measure, MeasureDto, MedicationDto, ServiceDto, TimeSeries, TimeSeriesDto } from '@icure/typescript-common'
 import { mapObservationToServiceDto, mapServiceDtoToObservation } from './Observation.mapper'
 
 function toContentDtoStringValue(domain: Component): string | undefined {
@@ -93,32 +93,32 @@ function toComponentRange(dto: ContentDto): Measure[] | undefined {
 
 export function mapContentDtoToComponent(dto: ContentDto): Component {
     return new Component({
-    numberValue: toComponentNumberValue(dto),
-    booleanValue: toComponentBooleanValue(dto),
-    instantValue: toComponentInstantValue(dto),
-    fuzzyDateValue: toComponentFuzzyDateValue(dto),
-    measureValue: toComponentMeasureValue(dto),
-    timeSeries: toComponentTimeSeries(dto),
-    compoundValue: toComponentCompoundValue(dto),
-    ratio: toComponentRatio(dto),
-    range: toComponentRange(dto),
+        numberValue: toComponentNumberValue(dto),
+        booleanValue: toComponentBooleanValue(dto),
+        instantValue: toComponentInstantValue(dto),
+        fuzzyDateValue: toComponentFuzzyDateValue(dto),
+        measureValue: toComponentMeasureValue(dto),
+        timeSeries: toComponentTimeSeries(dto),
+        compoundValue: toComponentCompoundValue(dto),
+        ratio: toComponentRatio(dto),
+        range: toComponentRange(dto),
     })
 }
 
 export function mapComponentToContentDto(domain: Component): ContentDto {
     return new ContentDto({
-    stringValue: toContentDtoStringValue(domain),
-    numberValue: toContentDtoNumberValue(domain),
-    booleanValue: toContentDtoBooleanValue(domain),
-    instantValue: toContentDtoInstantValue(domain),
-    fuzzyDateValue: toContentDtoFuzzyDateValue(domain),
-    binaryValue: toContentDtoBinaryValue(domain),
-    documentId: toContentDtoDocumentId(domain),
-    measureValue: toContentDtoMeasureValue(domain),
-    medicationValue: toContentDtoMedicationValue(domain),
-    timeSeries: toContentDtoTimeSeries(domain),
-    compoundValue: toContentDtoCompoundValue(domain),
-    ratio: toContentDtoRatio(domain),
-    range: toContentDtoRange(domain),
+        stringValue: toContentDtoStringValue(domain),
+        numberValue: toContentDtoNumberValue(domain),
+        booleanValue: toContentDtoBooleanValue(domain),
+        instantValue: toContentDtoInstantValue(domain),
+        fuzzyDateValue: toContentDtoFuzzyDateValue(domain),
+        binaryValue: toContentDtoBinaryValue(domain),
+        documentId: toContentDtoDocumentId(domain),
+        measureValue: toContentDtoMeasureValue(domain),
+        medicationValue: toContentDtoMedicationValue(domain),
+        timeSeries: toContentDtoTimeSeries(domain),
+        compoundValue: toContentDtoCompoundValue(domain),
+        ratio: toContentDtoRatio(domain),
+        range: toContentDtoRange(domain),
     })
 }

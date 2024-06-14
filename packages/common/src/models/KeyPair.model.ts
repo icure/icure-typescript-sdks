@@ -4,14 +4,14 @@ export class KeyPair implements IKeyPair {
 
     toJSON(): IKeyPair {
         return {
-        privateKey: this.privateKey,
-        publicKey: this.publicKey,
+            privateKey: this.privateKey,
+            publicKey: this.publicKey,
         }
     }
 
-    constructor(json: Partial<IKeyPair> & { privateKey: string,publicKey: string }) {
-        this.privateKey = json["privateKey"]!
-        this.publicKey = json["publicKey"]!
+    constructor(json: Partial<IKeyPair> & { privateKey: string; publicKey: string }) {
+        this.privateKey = json['privateKey']!
+        this.publicKey = json['publicKey']!
     }
 }
 

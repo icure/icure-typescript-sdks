@@ -1,4 +1,3 @@
-import { User } from '../models/User.model'
 import { EmailMessage } from '../models/api/EmailMessage'
 import { SMSMessage } from '../models/api/SMSMessage'
 

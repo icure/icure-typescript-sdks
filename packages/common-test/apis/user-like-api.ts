@@ -1,14 +1,10 @@
 import 'isomorphic-fetch'
-import { getEnvironmentInitializer, getTempEmail, hcp1Username, hcp2Username, hcp3Username, setLocalStorage, TestUtils } from '../test-utils'
-import { webcrypto } from 'crypto'
+import { getEnvironmentInitializer, getTempEmail, hcp1Username, setLocalStorage } from '../test-utils'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
-import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, forceUuid, MessageFactory, NotificationStatusEnum, NotificationTypeEnum, UserFilter } from '@icure/typescript-common'
+import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, forceUuid, MessageFactory } from '@icure/typescript-common'
 import { BaseApiTestContext, WithHelementApi, WithMaintenanceTaskApi, WithPatientApi, WithServiceApi } from './TestContexts'
-import { Patient, PersonName, sleep, User } from '@icure/api'
-import { doXOnYAndSubscribe } from '../websocket-utils'
-import { v4 } from 'uuid'
-import { describe, it, beforeAll } from '@jest/globals'
-import { CryptoPrimitives } from '@icure/api/icc-x-api/crypto/CryptoPrimitives'
+import { Patient, User } from '@icure/api'
+import { beforeAll, describe, it } from '@jest/globals'
 
 setLocalStorage(fetch)
 
@@ -486,7 +482,12 @@ export function testUserLikeApi<
             const { api } = await ctx.signUpUserUsingEmail(env!, 'A', 'B', 'patient', env.dataOwnerDetails[hcp1Username].dataOwnerId)
             const newPassword = forceUuid()
             const user = await ctx.userApi(api).getLogged()
-            const updatedUser = await ctx.userApi(api).createOrModify(ctx.toDSUser({ ...ctx.toUserDto(user), passwordHash: newPassword }))
+            const updatedUser = await ctx.userApi(api).createOrModify(
+                ctx.toDSUser({
+                    ...ctx.toUserDto(user),
+                    passwordHash: newPassword,
+                }),
+            )
             expect(ctx.toUserDto(updatedUser).id).toEqual(ctx.toUserDto(user).id)
             expect(ctx.toUserDto(updatedUser).rev).not.toEqual(ctx.toUserDto(user).rev)
             expect(ctx.toUserDto(updatedUser).passwordHash).toEqual('*')

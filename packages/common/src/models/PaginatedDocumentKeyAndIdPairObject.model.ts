@@ -16,17 +16,17 @@ export class PaginatedDocumentKeyAndIdPairObject {
 
     toJSON(): IPaginatedDocumentKeyAndIdPairObject {
         return {
-        startKey: this.startKey,
-        startKeyDocId: this.startKeyDocId,
+            startKey: this.startKey,
+            startKeyDocId: this.startKeyDocId,
         }
     }
 
-    constructor(json: Partial<IPaginatedDocumentKeyAndIdPairObject> ) {
-        if (json["startKey"] !== undefined) {
-            this.startKey = json["startKey"]!
+    constructor(json: Partial<IPaginatedDocumentKeyAndIdPairObject>) {
+        if (json['startKey'] !== undefined) {
+            this.startKey = json['startKey']!
         }
-        if (json["startKeyDocId"] !== undefined) {
-            this.startKeyDocId = json["startKeyDocId"]!
+        if (json['startKeyDocId'] !== undefined) {
+            this.startKeyDocId = json['startKeyDocId']!
         }
     }
 }

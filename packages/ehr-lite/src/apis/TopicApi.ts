@@ -1,4 +1,4 @@
-import { CommonApi, CryptoStrategies, mapTopicDtoToTopic, mapTopicToTopicDto, Reference, Topic, TopicLikeApi, TopicLikeApiImpl, HealthcarePartyDto, TopicDto, PatientDto, ServiceDto, HealthElementDto, DataOwnerWithTypeDto } from '@icure/typescript-common'
+import { CommonApi, CryptoStrategies, DataOwnerWithTypeDto, HealthcarePartyDto, HealthElementDto, mapTopicDtoToTopic, mapTopicToTopicDto, PatientDto, Reference, ServiceDto, Topic, TopicDto, TopicLikeApi, TopicLikeApiImpl } from '@icure/typescript-common'
 import { Practitioner } from '../models/Practitioner.model'
 import { Patient } from '../models/Patient.model'
 import { Observation } from '../models/Observation.model'
@@ -12,8 +12,11 @@ import DataOwnerMapper from '../mappers/DataOwner.mapper'
 
 export interface TopicApi extends TopicLikeApi<Topic, Practitioner, Patient, Observation, Condition> {
     addObservations(topic: Topic, observations: Reference<Observation>[]): Promise<Topic>
+
     addConditions(topic: Topic, conditions: Reference<Condition>[]): Promise<Topic>
+
     removeObservations(topic: Topic, observations: Reference<Observation>[]): Promise<Topic>
+
     removeConditions(topic: Topic, conditions: Reference<Condition>[]): Promise<Topic>
 }
 

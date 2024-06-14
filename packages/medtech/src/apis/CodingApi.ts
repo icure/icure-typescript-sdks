@@ -1,4 +1,4 @@
-import { CodeLikeApi, CodeLikeApiImpl, Coding, CommonApi, CommonFilter, mapCodeToCoding, mapCodingToCode, PaginatedList, CodeDto } from '@icure/typescript-common'
+import { CodeDto, CodeLikeApi, CodeLikeApiImpl, Coding, CommonApi, CommonFilter, mapCodeToCoding, mapCodingToCode, PaginatedList } from '@icure/typescript-common'
 
 export interface CodingApi extends CodeLikeApi<Coding> {
     /**
@@ -53,15 +53,19 @@ export class CodingApiImpl extends CodeLikeApiImpl<Coding> implements CodingApi 
     createOrModifyCoding(coding: Coding): Promise<Coding> {
         return this.createOrModify(coding)
     }
+
     createOrModifyCodings(codings: Array<Coding>): Promise<Array<Coding>> {
         return this.createOrModifyMany(codings)
     }
+
     filterCoding(filter: CommonFilter<CodeDto>, nextCodingId?: string, limit?: number): Promise<PaginatedList<Coding>> {
         return this.filterBy(filter, nextCodingId, limit)
     }
+
     getCoding(codingId: string): Promise<Coding> {
         return this.get(codingId)
     }
+
     matchCoding(filter: CommonFilter<CodeDto>): Promise<Array<string>> {
         return this.matchBy(filter)
     }

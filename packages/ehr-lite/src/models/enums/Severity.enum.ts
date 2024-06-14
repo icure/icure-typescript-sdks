@@ -5,6 +5,7 @@ export enum SeverityEnum {
     MODERATE = 'moderate',
     SEVERE = 'severe',
 }
+
 export namespace SeverityEnum {
     export function toCodeStub(severity: SeverityEnum): CodeStub {
         if (severity === SeverityEnum.SEVERE) {

@@ -1,5 +1,5 @@
 import { Content } from '../models/Content.model'
-import { mapMeasureDtoToMeasure, mapMeasureToMeasureDto, mapTimeSeriesDtoToTimeSeries, mapTimeSeriesToTimeSeriesDto, Measure, TimeSeries, ContentDto, MedicationDto, ServiceDto, MeasureDto, TimeSeriesDto } from '@icure/typescript-common'
+import { ContentDto, mapMeasureDtoToMeasure, mapMeasureToMeasureDto, mapTimeSeriesDtoToTimeSeries, mapTimeSeriesToTimeSeriesDto, Measure, MeasureDto, MedicationDto, ServiceDto, TimeSeries, TimeSeriesDto } from '@icure/typescript-common'
 import { DataSample } from '../models/DataSample.model'
 import { mapDataSampleToServiceDto, mapServiceDtoToDataSample } from './DataSample.mapper'
 import { b64_2ab, ua2b64 } from '@icure/api'
@@ -106,35 +106,35 @@ function toContentRange(dto: ContentDto): Measure[] | undefined {
 
 export function mapContentDtoToContent(dto: ContentDto): Content {
     return new Content({
-    stringValue: toContentStringValue(dto),
-    numberValue: toContentNumberValue(dto),
-    booleanValue: toContentBooleanValue(dto),
-    instantValue: toContentInstantValue(dto),
-    fuzzyDateValue: toContentFuzzyDateValue(dto),
-    binaryValue: toContentBinaryValue(dto),
-    documentId: toContentDocumentId(dto),
-    measureValue: toContentMeasureValue(dto),
-    timeSeries: toContentTimeSeries(dto),
-    compoundValue: toContentCompoundValue(dto),
-    ratio: toContentRatio(dto),
-    range: toContentRange(dto),
+        stringValue: toContentStringValue(dto),
+        numberValue: toContentNumberValue(dto),
+        booleanValue: toContentBooleanValue(dto),
+        instantValue: toContentInstantValue(dto),
+        fuzzyDateValue: toContentFuzzyDateValue(dto),
+        binaryValue: toContentBinaryValue(dto),
+        documentId: toContentDocumentId(dto),
+        measureValue: toContentMeasureValue(dto),
+        timeSeries: toContentTimeSeries(dto),
+        compoundValue: toContentCompoundValue(dto),
+        ratio: toContentRatio(dto),
+        range: toContentRange(dto),
     })
 }
 
 export function mapContentToContentDto(domain: Content): ContentDto {
     return new ContentDto({
-    stringValue: toContentDtoStringValue(domain),
-    numberValue: toContentDtoNumberValue(domain),
-    booleanValue: toContentDtoBooleanValue(domain),
-    instantValue: toContentDtoInstantValue(domain),
-    fuzzyDateValue: toContentDtoFuzzyDateValue(domain),
-    binaryValue: toContentDtoBinaryValue(domain),
-    documentId: toContentDtoDocumentId(domain),
-    measureValue: toContentDtoMeasureValue(domain),
-    medicationValue: toContentDtoMedicationValue(domain),
-    timeSeries: toContentDtoTimeSeries(domain),
-    compoundValue: toContentDtoCompoundValue(domain),
-    ratio: toContentDtoRatio(domain),
-    range: toContentDtoRange(domain),
+        stringValue: toContentDtoStringValue(domain),
+        numberValue: toContentDtoNumberValue(domain),
+        booleanValue: toContentDtoBooleanValue(domain),
+        instantValue: toContentDtoInstantValue(domain),
+        fuzzyDateValue: toContentDtoFuzzyDateValue(domain),
+        binaryValue: toContentDtoBinaryValue(domain),
+        documentId: toContentDtoDocumentId(domain),
+        measureValue: toContentDtoMeasureValue(domain),
+        medicationValue: toContentDtoMedicationValue(domain),
+        timeSeries: toContentDtoTimeSeries(domain),
+        compoundValue: toContentDtoCompoundValue(domain),
+        ratio: toContentDtoRatio(domain),
+        range: toContentDtoRange(domain),
     })
 }

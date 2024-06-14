@@ -10,21 +10,21 @@ export class RelatedPerson implements IRelatedPerson {
 
     toJSON(): IRelatedPerson {
         return {
-        type: this.type,
-        status: this.status,
-        personId: this.personId,
+            type: this.type,
+            status: this.status,
+            personId: this.personId,
         }
     }
 
-    constructor(json: Partial<IRelatedPerson> ) {
-        if (json["type"] !== undefined) {
-            this.type = json["type"]!
+    constructor(json: Partial<IRelatedPerson>) {
+        if (json['type'] !== undefined) {
+            this.type = json['type']!
         }
-        if (json["status"] !== undefined) {
-            this.status = json["status"]!
+        if (json['status'] !== undefined) {
+            this.status = json['status']!
         }
-        if (json["personId"] !== undefined) {
-            this.personId = json["personId"]!
+        if (json['personId'] !== undefined) {
+            this.personId = json['personId']!
         }
     }
 }

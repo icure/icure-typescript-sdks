@@ -1,4 +1,4 @@
-import { ServiceLikeApiImpl, Document, mapDocumentDtoToDocument, mapDocumentToDocumentDto, CommonApi, ServiceLikeApi, DocumentDto, PatientDto, ServiceDto } from '@icure/typescript-common'
+import { CommonApi, Document, DocumentDto, mapDocumentDtoToDocument, mapDocumentToDocumentDto, PatientDto, ServiceDto, ServiceLikeApi, ServiceLikeApiImpl } from '@icure/typescript-common'
 import { Patient } from '../models/Patient.model'
 import { Observation } from '../models/Observation.model'
 import { mapObservationToServiceDto, mapServiceDtoToObservation } from '../mappers/Observation.mapper'

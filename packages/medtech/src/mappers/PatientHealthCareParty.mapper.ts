@@ -35,18 +35,18 @@ function toPatientHealthCarePartyHealthcarePartyId(dto: PatientHealthCarePartyDt
 
 export function mapPatientHealthCarePartyDtoToPatientHealthCareParty(dto: PatientHealthCarePartyDto): PatientHealthCareParty {
     return new PatientHealthCareParty({
-    type: toPatientHealthCarePartyType(dto),
-    healthcarePartyId: toPatientHealthCarePartyHealthcarePartyId(dto),
+        type: toPatientHealthCarePartyType(dto),
+        healthcarePartyId: toPatientHealthCarePartyHealthcarePartyId(dto),
     })
 }
 
 export function mapPatientHealthCarePartyToPatientHealthCarePartyDto(domain: PatientHealthCareParty): PatientHealthCarePartyDto {
     return new PatientHealthCarePartyDto({
-    type: toPatientHealthCarePartyDtoType(domain),
-    healthcarePartyId: toPatientHealthCarePartyDtoHealthcarePartyId(domain),
-    sendFormats: toPatientHealthCarePartyDtoSendFormats(domain),
-    referralPeriods: toPatientHealthCarePartyDtoReferralPeriods(domain),
-    referral: toPatientHealthCarePartyDtoReferral(domain),
-    encryptedSelf: toPatientHealthCarePartyDtoEncryptedSelf(domain),
+        type: toPatientHealthCarePartyDtoType(domain),
+        healthcarePartyId: toPatientHealthCarePartyDtoHealthcarePartyId(domain),
+        sendFormats: toPatientHealthCarePartyDtoSendFormats(domain),
+        referralPeriods: toPatientHealthCarePartyDtoReferralPeriods(domain),
+        referral: toPatientHealthCarePartyDtoReferral(domain),
+        encryptedSelf: toPatientHealthCarePartyDtoEncryptedSelf(domain),
     })
 }

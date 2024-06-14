@@ -7,17 +7,17 @@ export class LocalComponent implements ILocalComponent {
 
     toJSON(): ILocalComponent {
         return {
-        stringValue: this.stringValue,
-        documentId: this.documentId,
+            stringValue: this.stringValue,
+            documentId: this.documentId,
         }
     }
 
-    constructor(json: Partial<ILocalComponent> ) {
-        if (json["stringValue"] !== undefined) {
-            this.stringValue = json["stringValue"]!
+    constructor(json: Partial<ILocalComponent>) {
+        if (json['stringValue'] !== undefined) {
+            this.stringValue = json['stringValue']!
         }
-        if (json["documentId"] !== undefined) {
-            this.documentId = json["documentId"]!
+        if (json['documentId'] !== undefined) {
+            this.documentId = json['documentId']!
         }
     }
 }

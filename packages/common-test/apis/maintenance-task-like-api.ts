@@ -7,7 +7,7 @@ import { BaseApiTestContext, WithMaintenanceTaskApi } from './TestContexts'
 import { expectArrayContainsExactlyInAnyOrder } from '../assertions'
 import { MaintenanceTask, User } from '@icure/api'
 import { doXOnYAndSubscribe } from '../websocket-utils'
-import { describe, it, beforeAll } from '@jest/globals'
+import { beforeAll, describe, it } from '@jest/globals'
 
 setLocalStorage(fetch)
 
@@ -155,7 +155,12 @@ export function testMaintenanceTaskLikeApi<
         it('should be able to modify an existing Notification as the creator', async () => {
             const createdNotification = await ctx.createMt(hcp1Api!, hcp2User!.healthcarePartyId!)
             const createdNotificationDto = ctx.toMtDto(createdNotification)
-            const modifiedNotification = await ctx.mtApi(hcp1Api).createOrModify(ctx.toDSMt({ ...ctx.toMtDto(createdNotification), status: NotificationStatusEnum.Ongoing }))
+            const modifiedNotification = await ctx.mtApi(hcp1Api).createOrModify(
+                ctx.toDSMt({
+                    ...ctx.toMtDto(createdNotification),
+                    status: NotificationStatusEnum.Ongoing,
+                }),
+            )
             const modifiedNotificationDto = ctx.toMtDto(modifiedNotification!)
             expect(modifiedNotification).toBeTruthy()
             assert(createdNotificationDto.id === modifiedNotificationDto.id)
@@ -166,7 +171,12 @@ export function testMaintenanceTaskLikeApi<
         it('should be able to modify an existing Notification as the delegate', async () => {
             const createdNotification = await ctx.createMt(hcp1Api!, hcp2User!.healthcarePartyId!)
             const createdNotificationDto = ctx.toMtDto(createdNotification)
-            const modifiedNotification = await ctx.mtApi(hcp2Api).createOrModify(ctx.toDSMt({ ...ctx.toMtDto(createdNotification), status: NotificationStatusEnum.Ongoing }))
+            const modifiedNotification = await ctx.mtApi(hcp2Api).createOrModify(
+                ctx.toDSMt({
+                    ...ctx.toMtDto(createdNotification),
+                    status: NotificationStatusEnum.Ongoing,
+                }),
+            )
             const modifiedNotificationDto = ctx.toMtDto(modifiedNotification!)
             expect(modifiedNotification).toBeTruthy()
             assert(createdNotificationDto.id === modifiedNotificationDto.id)

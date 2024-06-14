@@ -60,24 +60,24 @@ function toTypedValueObjectEncryptedSelf(dto: TypedValueObjectDto): string | und
 
 export function mapTypedValueObjectDtoToTypedValueObject(dto: TypedValueObjectDto): TypedValueObject {
     return new TypedValueObject({
-    type: toTypedValueObjectType(dto),
-    booleanValue: toTypedValueObjectBooleanValue(dto),
-    integerValue: toTypedValueObjectIntegerValue(dto),
-    doubleValue: toTypedValueObjectDoubleValue(dto),
-    stringValue: toTypedValueObjectStringValue(dto),
-    dateValue: toTypedValueObjectDateValue(dto),
-    encryptedSelf: toTypedValueObjectEncryptedSelf(dto),
+        type: toTypedValueObjectType(dto),
+        booleanValue: toTypedValueObjectBooleanValue(dto),
+        integerValue: toTypedValueObjectIntegerValue(dto),
+        doubleValue: toTypedValueObjectDoubleValue(dto),
+        stringValue: toTypedValueObjectStringValue(dto),
+        dateValue: toTypedValueObjectDateValue(dto),
+        encryptedSelf: toTypedValueObjectEncryptedSelf(dto),
     })
 }
 
 export function mapTypedValueObjectToTypedValueObjectDto(domain: TypedValueObject): TypedValueObjectDto {
     return new TypedValueObjectDto({
-    type: toTypedValueObjectDtoType(domain),
-    booleanValue: toTypedValueObjectDtoBooleanValue(domain),
-    integerValue: toTypedValueObjectDtoIntegerValue(domain),
-    doubleValue: toTypedValueObjectDtoDoubleValue(domain),
-    stringValue: toTypedValueObjectDtoStringValue(domain),
-    dateValue: toTypedValueObjectDtoDateValue(domain),
-    encryptedSelf: toTypedValueObjectDtoEncryptedSelf(domain),
+        type: toTypedValueObjectDtoType(domain),
+        booleanValue: toTypedValueObjectDtoBooleanValue(domain),
+        integerValue: toTypedValueObjectDtoIntegerValue(domain),
+        doubleValue: toTypedValueObjectDtoDoubleValue(domain),
+        stringValue: toTypedValueObjectDtoStringValue(domain),
+        dateValue: toTypedValueObjectDtoDateValue(domain),
+        encryptedSelf: toTypedValueObjectDtoEncryptedSelf(domain),
     })
 }

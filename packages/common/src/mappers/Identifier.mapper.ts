@@ -70,26 +70,26 @@ function toIdentifierValue(dto: IdentifierDto): string | undefined {
 
 export function mapIdentifierDtoToIdentifier(dto: IdentifierDto): Identifier {
     return new Identifier({
-    id: toIdentifierId(dto),
-    assigner: toIdentifierAssigner(dto),
-    start: toIdentifierStart(dto),
-    end: toIdentifierEnd(dto),
-    system: toIdentifierSystem(dto),
-    type: toIdentifierType(dto),
-    use: toIdentifierUse(dto),
-    value: toIdentifierValue(dto),
+        id: toIdentifierId(dto),
+        assigner: toIdentifierAssigner(dto),
+        start: toIdentifierStart(dto),
+        end: toIdentifierEnd(dto),
+        system: toIdentifierSystem(dto),
+        type: toIdentifierType(dto),
+        use: toIdentifierUse(dto),
+        value: toIdentifierValue(dto),
     })
 }
 
 export function mapIdentifierToIdentifierDto(domain: Identifier): IdentifierDto {
     return new IdentifierDto({
-    id: toIdentifierDtoId(domain),
-    assigner: toIdentifierDtoAssigner(domain),
-    start: toIdentifierDtoStart(domain),
-    end: toIdentifierDtoEnd(domain),
-    system: toIdentifierDtoSystem(domain),
-    type: toIdentifierDtoType(domain),
-    use: toIdentifierDtoUse(domain),
-    value: toIdentifierDtoValue(domain),
+        id: toIdentifierDtoId(domain),
+        assigner: toIdentifierDtoAssigner(domain),
+        start: toIdentifierDtoStart(domain),
+        end: toIdentifierDtoEnd(domain),
+        system: toIdentifierDtoSystem(domain),
+        type: toIdentifierDtoType(domain),
+        use: toIdentifierDtoUse(domain),
+        value: toIdentifierDtoValue(domain),
     })
 }

@@ -48,7 +48,14 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
 
     getMessage(messageCreationResult: MessageCreationResult<DSMessage>): DSMessage | null {
         if (messageCreationResult.hasOwnProperty('createdMessage')) {
-            return (messageCreationResult as Extract<MessageCreationResult<DSMessage>, { createdMessage: DSMessage }>).createdMessage
+            return (
+                messageCreationResult as Extract<
+                    MessageCreationResult<DSMessage>,
+                    {
+                        createdMessage: DSMessage
+                    }
+                >
+            ).createdMessage
         }
         return null
     }
@@ -115,7 +122,14 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
         const currentUser = await this.userApi.getCurrentUser()
 
         if (messageCreationResult.hasOwnProperty('creationProgress')) {
-            const creationProgress = (messageCreationResult as Extract<MessageCreationResult<DSMessage>, { creationProgress: MessageCreationProgress }>).creationProgress
+            const creationProgress = (
+                messageCreationResult as Extract<
+                    MessageCreationResult<DSMessage>,
+                    {
+                        creationProgress: MessageCreationProgress
+                    }
+                >
+            ).creationProgress
             return await this.handleMessageCreation(creationProgress, currentUser)
         }
 
@@ -443,12 +457,15 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
             } satisfies MessageCreationProgress
         }
 
-        const createdAttachments = attachmentCreationProgresses.reduce((acc, progress) => {
-            if (progress.step === AttachmentCreationStep.DOCUMENT_ATTACHED) {
-                acc.push(progress)
-            }
-            return acc
-        }, [] as Array<Extract<AttachmentCreationProgress, { step: AttachmentCreationStep.DOCUMENT_ATTACHED }>>)
+        const createdAttachments = attachmentCreationProgresses.reduce(
+            (acc, progress) => {
+                if (progress.step === AttachmentCreationStep.DOCUMENT_ATTACHED) {
+                    acc.push(progress)
+                }
+                return acc
+            },
+            [] as Array<Extract<AttachmentCreationProgress, { step: AttachmentCreationStep.DOCUMENT_ATTACHED }>>,
+        )
 
         return {
             step: MessageCreationStep.MESSAGE_ATTACHED,
@@ -577,12 +594,15 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
      * @returns AttachmentCreationProgress the progress of the document creation
      */
     private async createDocuments(attachmentProgresses: AttachmentCreationProgress[]): Promise<AttachmentCreationProgress[]> {
-        const documentsToCreate = attachmentProgresses.reduce((acc, progress) => {
-            if (progress.step === AttachmentCreationStep.DOCUMENT_INITIALISED) {
-                acc.push({ document: progress.instantiatedDocument, attachment: progress.attachment })
-            }
-            return acc
-        }, [] as Array<{ document: DocumentDto; attachment: AttachmentInput }>)
+        const documentsToCreate = attachmentProgresses.reduce(
+            (acc, progress) => {
+                if (progress.step === AttachmentCreationStep.DOCUMENT_INITIALISED) {
+                    acc.push({ document: progress.instantiatedDocument, attachment: progress.attachment })
+                }
+                return acc
+            },
+            [] as Array<{ document: DocumentDto; attachment: AttachmentInput }>,
+        )
 
         const documentCreationResults = await Promise.allSettled(documentsToCreate.map(async ({ document }) => await this.documentApi.createDocument(document)))
 
@@ -624,12 +644,15 @@ export class MessageLikeApiImpl<DSMessage, DSTopic, DSBinary> implements Message
      * @returns AttachmentCreationProgress the progress of the document creation
      */
     private async encryptAndSetDocumentAttachment(attachmentProgresses: AttachmentCreationProgress[]): Promise<AttachmentCreationProgress[]> {
-        const documentsToProcess = attachmentProgresses.reduce((acc, progress) => {
-            if (progress.step === AttachmentCreationStep.DOCUMENT_CREATED) {
-                acc.push({ document: progress.createdDocument, attachment: progress.attachment })
-            }
-            return acc
-        }, [] as Array<{ document: DocumentDto; attachment: AttachmentInput }>)
+        const documentsToProcess = attachmentProgresses.reduce(
+            (acc, progress) => {
+                if (progress.step === AttachmentCreationStep.DOCUMENT_CREATED) {
+                    acc.push({ document: progress.createdDocument, attachment: progress.attachment })
+                }
+                return acc
+            },
+            [] as Array<{ document: DocumentDto; attachment: AttachmentInput }>,
+        )
 
         const documentCreationResults = await Promise.allSettled(documentsToProcess.map(async ({ document, attachment }) => await this.documentApi.encryptAndSetDocumentAttachment(document, attachment.data, [attachment.uti])))
 

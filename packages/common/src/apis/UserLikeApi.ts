@@ -14,6 +14,7 @@ export interface UserLikeApi<DSUser, DSPatient> {
      * @param token The token that will be checked
      */
     checkTokenValidity(id: string, token: string): Promise<boolean>
+
     /**
      * Creates a User from an existing patient with a short-lived authentication token.
      * It creates an invitation message using the {@link MessageFactory} set on initialisation of the api and sends it to
@@ -29,6 +30,7 @@ export interface UserLikeApi<DSUser, DSPatient> {
      * @param user The user that must be created in the database.
      */
     createOrModify(user: DSUser): Promise<DSUser>
+
     /**
      * A token is used to authenticate the user. It is just like a password but it is destined to be used by programs instead of humans. Tokens have a limited validity period (one month).
      * Create a token for a user.
@@ -36,12 +38,14 @@ export interface UserLikeApi<DSUser, DSPatient> {
      * @param durationInSeconds the validity duration of the token, in seconds
      */
     createToken(id: string, durationInSeconds?: number): Promise<string>
+
     /**
      * Deletes the user identified by the provided unique id.
      * Delete an existing user.
      * @param id The UUID that uniquely identifies the user to be deleted.
      */
     delete(id: string): Promise<string>
+
     /**
      * Filters are complex selectors that are built by combining basic building blocks. You can learn more on how to build filters here {@link https://docs.icure.com/sdks/how-to/how-to-filter-data-with-advanced-search-criteria}. This method returns a paginated list of users (with a cursor that lets you query the following items).
      * Load users from the database by filtering them using the provided Filter.
@@ -50,11 +54,13 @@ export interface UserLikeApi<DSUser, DSPatient> {
      * @param limit The number of users to return in the queried page
      */
     filterBy(filter: CommonFilter<User>, nextUserId?: string, limit?: number): Promise<PaginatedList<DSUser>>
+
     /**
      * When you make a call to the server, an authentication token is used to identify you. This call returns the complete User object that corresponds to your authentication credentials.
      * Get the details of the logged User.
      */
     getLogged(): Promise<DSUser>
+
     /**
      * Each user is uniquely identified by a user id. The user id is a UUID. This id is the preferred method to retrieve one specific user.
      * Get a User by id.

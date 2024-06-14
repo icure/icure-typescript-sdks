@@ -23,21 +23,21 @@ export class Partnership {
 
     toJSON(): IPartnership {
         return {
-        type: this.type,
-        status: this.status,
-        partnerId: this.partnerId,
+            type: this.type,
+            status: this.status,
+            partnerId: this.partnerId,
         }
     }
 
-    constructor(json: Partial<IPartnership> ) {
-        if (json["type"] !== undefined) {
-            this.type = json["type"]!
+    constructor(json: Partial<IPartnership>) {
+        if (json['type'] !== undefined) {
+            this.type = json['type']!
         }
-        if (json["status"] !== undefined) {
-            this.status = json["status"]!
+        if (json['status'] !== undefined) {
+            this.status = json['status']!
         }
-        if (json["partnerId"] !== undefined) {
-            this.partnerId = json["partnerId"]!
+        if (json['partnerId'] !== undefined) {
+            this.partnerId = json['partnerId']!
         }
     }
 }

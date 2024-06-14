@@ -36,18 +36,18 @@ function toContactPointEncryptedSelf(dto: TelecomDto): string | undefined {
 
 export function mapTelecomDtoToContactPoint(dto: TelecomDto): ContactPoint {
     return new ContactPoint({
-    system: toContactPointSystem(dto),
-    value: toContactPointValue(dto),
-    description: toContactPointDescription(dto),
-    encryptedSelf: toContactPointEncryptedSelf(dto),
+        system: toContactPointSystem(dto),
+        value: toContactPointValue(dto),
+        description: toContactPointDescription(dto),
+        encryptedSelf: toContactPointEncryptedSelf(dto),
     })
 }
 
 export function mapContactPointToTelecomDto(domain: ContactPoint): TelecomDto {
     return new TelecomDto({
-    telecomType: toTelecomDtoTelecomType(domain),
-    telecomNumber: toTelecomDtoTelecomNumber(domain),
-    telecomDescription: toTelecomDtoTelecomDescription(domain),
-    encryptedSelf: toTelecomDtoEncryptedSelf(domain),
+        telecomType: toTelecomDtoTelecomType(domain),
+        telecomNumber: toTelecomDtoTelecomNumber(domain),
+        telecomDescription: toTelecomDtoTelecomDescription(domain),
+        encryptedSelf: toTelecomDtoEncryptedSelf(domain),
     })
 }

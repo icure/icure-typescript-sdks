@@ -18,49 +18,49 @@ export class Measure {
 
     toJSON(): IMeasure {
         return {
-        value: this.value,
-        ref: this.ref,
-        severity: this.severity,
-        severityCode: this.severityCode,
-        evolution: this.evolution,
-        unit: this.unit,
-        unitCodes: this.unitCodes?.map(item => item.toJSON()),
-        comment: this.comment,
-        comparator: this.comparator,
-        referenceRanges: this.referenceRanges?.map(item => item.toJSON()),
+            value: this.value,
+            ref: this.ref,
+            severity: this.severity,
+            severityCode: this.severityCode,
+            evolution: this.evolution,
+            unit: this.unit,
+            unitCodes: this.unitCodes?.map((item) => item.toJSON()),
+            comment: this.comment,
+            comparator: this.comparator,
+            referenceRanges: this.referenceRanges?.map((item) => item.toJSON()),
         }
     }
 
-    constructor(json: Partial<IMeasure> ) {
-        if (json["value"] !== undefined) {
-            this.value = json["value"]!
+    constructor(json: Partial<IMeasure>) {
+        if (json['value'] !== undefined) {
+            this.value = json['value']!
         }
-        if (json["ref"] !== undefined) {
-            this.ref = json["ref"]!
+        if (json['ref'] !== undefined) {
+            this.ref = json['ref']!
         }
-        if (json["severity"] !== undefined) {
-            this.severity = json["severity"]!
+        if (json['severity'] !== undefined) {
+            this.severity = json['severity']!
         }
-        if (json["severityCode"] !== undefined) {
-            this.severityCode = json["severityCode"]!
+        if (json['severityCode'] !== undefined) {
+            this.severityCode = json['severityCode']!
         }
-        if (json["evolution"] !== undefined) {
-            this.evolution = json["evolution"]!
+        if (json['evolution'] !== undefined) {
+            this.evolution = json['evolution']!
         }
-        if (json["unit"] !== undefined) {
-            this.unit = json["unit"]!
+        if (json['unit'] !== undefined) {
+            this.unit = json['unit']!
         }
-        if (json["unitCodes"] !== undefined) {
-            this.unitCodes = json["unitCodes"]!.map((item: any) => new CodingReference(item))
+        if (json['unitCodes'] !== undefined) {
+            this.unitCodes = json['unitCodes']!.map((item: any) => new CodingReference(item))
         }
-        if (json["comment"] !== undefined) {
-            this.comment = json["comment"]!
+        if (json['comment'] !== undefined) {
+            this.comment = json['comment']!
         }
-        if (json["comparator"] !== undefined) {
-            this.comparator = json["comparator"]!
+        if (json['comparator'] !== undefined) {
+            this.comparator = json['comparator']!
         }
-        if (json["referenceRanges"] !== undefined) {
-            this.referenceRanges = json["referenceRanges"]!.map((item: any) => new ReferenceRange(item))
+        if (json['referenceRanges'] !== undefined) {
+            this.referenceRanges = json['referenceRanges']!.map((item: any) => new ReferenceRange(item))
         }
     }
 }

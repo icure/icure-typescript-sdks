@@ -10,7 +10,13 @@ export enum DataOwnerTypeEnum {
     ORGANISATION = 'ORGANISATION',
 }
 
-export type DataOwnerWithType = { type: DataOwnerTypeEnum.PRACTITIONER; dataOwner: Practitioner } | { type: DataOwnerTypeEnum.ORGANISATION; dataOwner: Organisation } | { type: DataOwnerTypeEnum.PATIENT; dataOwner: Patient }
+export type DataOwnerWithType =
+    | { type: DataOwnerTypeEnum.PRACTITIONER; dataOwner: Practitioner }
+    | {
+          type: DataOwnerTypeEnum.ORGANISATION
+          dataOwner: Organisation
+      }
+    | { type: DataOwnerTypeEnum.PATIENT; dataOwner: Patient }
 
 /*
 class UseDataOwner implements DataOwnerLikeApi<DataOwnerWithType, DataOwnerType> {

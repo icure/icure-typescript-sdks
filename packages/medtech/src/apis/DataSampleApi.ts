@@ -1,4 +1,4 @@
-import { CommonApi, CommonFilter, Document, mapDocumentDtoToDocument, mapDocumentToDocumentDto, PaginatedList, ServiceLikeApi, ServiceLikeApiImpl, Connection, DocumentDto, PatientDto, ServiceDto, SubscriptionOptions } from '@icure/typescript-common'
+import { CommonApi, CommonFilter, Connection, Document, DocumentDto, mapDocumentDtoToDocument, mapDocumentToDocumentDto, PaginatedList, PatientDto, ServiceDto, ServiceLikeApi, ServiceLikeApiImpl, SubscriptionOptions } from '@icure/typescript-common'
 import { DataSample } from '../models/DataSample.model'
 import { Patient } from '../models/Patient.model'
 import { mapDataSampleToServiceDto, mapServiceDtoToDataSample } from '../mappers/DataSample.mapper'
@@ -122,6 +122,7 @@ export interface DataSampleApi extends ServiceLikeApi<DataSample, Patient, Docum
      * @param documentLanguage
      */
     setDataSampleAttachment(dataSampleId: string, body: ArrayBuffer, documentName?: string, documentVersion?: string, documentExternalUuid?: string, documentLanguage?: string): Promise<Document>
+
     /**
      * @deprecated use {@link DataSampleApi.getAttachmentContent} instead
      *
@@ -147,36 +148,47 @@ class DataSampleApiImpl extends ServiceLikeApiImpl<DataSample, Patient, Document
     createOrModifyDataSampleFor(patientId: string, dataSample: DataSample): Promise<DataSample> {
         return this.createOrModifyFor(patientId, dataSample)
     }
+
     createOrModifyDataSamplesFor(patientId: string, dataSamples: Array<DataSample>): Promise<Array<DataSample>> {
         return this.createOrModifyManyFor(patientId, dataSamples)
     }
+
     deleteDataSample(dataSampleId: string): Promise<string> {
         return this.delete(dataSampleId)
     }
+
     deleteDataSamples(requestBody: Array<string>): Promise<Array<string>> {
         return this.deleteMany(requestBody)
     }
+
     filterDataSample(filter: CommonFilter<DataSample>, nextDataSampleId?: string, limit?: number): Promise<PaginatedList<DataSample>> {
         return this.filterBy(filter, nextDataSampleId, limit)
     }
+
     getDataSample(dataSampleId: string): Promise<DataSample> {
         return this.get(dataSampleId)
     }
+
     matchDataSample(filter: CommonFilter<DataSample>): Promise<Array<string>> {
         return this.matchBy(filter)
     }
+
     getDataSamplesForPatient(patient: Patient): Promise<Array<DataSample>> {
         return this.getForPatient(patient)
     }
+
     subscribeToDataSampleEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<DataSample>, eventFired: (dataSample: DataSample) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
         return this.subscribeToEvents(eventTypes, filter, eventFired, options)
     }
+
     setDataSampleAttachment(dataSampleId: string, body: ArrayBuffer, documentName?: string, documentVersion?: string, documentExternalUuid?: string, documentLanguage?: string): Promise<Document> {
         return this.setAttachment(dataSampleId, body, documentName, documentVersion, documentExternalUuid, documentLanguage)
     }
+
     getDataSampleAttachmentContent(dataSampleId: string, documentId: string): Promise<ArrayBuffer> {
         return this.getAttachmentContent(dataSampleId, documentId)
     }
+
     getDataSampleAttachmentDocument(dataSampleId: string, documentId: string): Promise<Document> {
         return this.getAttachmentDocument(dataSampleId, documentId)
     }

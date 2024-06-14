@@ -1,7 +1,6 @@
-import { AnonymousApiBuilder, AuthenticationApi, CryptoStrategies, DataOwnerWithType, KeyStorageFacade, StorageFacade, CryptoPrimitives } from '@icure/typescript-common'
+import { AnonymousApiBuilder, AuthenticationApi, CommonAnonymousApi, CryptoPrimitives, CryptoStrategies, DataOwnerWithType, KeyStorageFacade, StorageFacade } from '@icure/typescript-common'
 import { EHRLiteApi } from './EHRLiteApi'
 import { authenticationApi } from './AuthenticationApi'
-import { CommonAnonymousApi } from '@icure/typescript-common'
 
 export class AnonymousEHRLiteApi extends CommonAnonymousApi<EHRLiteApi> {
     private readonly _authenticationApi: AuthenticationApi<EHRLiteApi>
@@ -14,7 +13,12 @@ export class AnonymousEHRLiteApi extends CommonAnonymousApi<EHRLiteApi> {
         keyStorage: KeyStorageFacade,
         private readonly cryptoPrimitives: CryptoPrimitives,
         private readonly cryptoStrategies: CryptoStrategies<DataOwnerWithType>,
-        authProcessInfo: { authProcessBySmsId: string; authProcessByEmailId?: string } | { authProcessBySmsId?: string; authProcessByEmailId: string },
+        authProcessInfo:
+            | { authProcessBySmsId: string; authProcessByEmailId?: string }
+            | {
+                  authProcessBySmsId?: string
+                  authProcessByEmailId: string
+              },
         private readonly _messageCharactersLimit: number | undefined,
     ) {
         super(msgGwUrl, msgGwSpecId, storage, keyStorage, undefined, undefined)

@@ -1,8 +1,9 @@
-import { CommonApi, HealthcarePartyLikeApi, HealthcarePartyLikeApiImpl, HealthcarePartyDto } from '@icure/typescript-common'
+import { CommonApi, HealthcarePartyDto, HealthcarePartyLikeApi, HealthcarePartyLikeApiImpl } from '@icure/typescript-common'
 import { Practitioner } from '../models/Practitioner.model'
 import { mapHealthcarePartyDtoToPractitioner, mapPractitionerToHealthcarePartyDto } from '../mappers/Practitioner.mapper'
 
 export interface PractitionerApi extends HealthcarePartyLikeApi<Practitioner> {}
+
 class PractitionerApiImpl extends HealthcarePartyLikeApiImpl<Practitioner> {}
 
 export const practitionerApi = (api: CommonApi, basePath: string): PractitionerApi =>

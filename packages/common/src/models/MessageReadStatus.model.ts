@@ -8,16 +8,16 @@ export class MessageReadStatus {
 
     toJSON(): IMessageReadStatus {
         return {
-        time: this.time,
-        read: this.read,
+            time: this.time,
+            read: this.read,
         }
     }
 
     constructor(json: Partial<IMessageReadStatus> & { read: boolean }) {
-        if (json["time"] !== undefined) {
-            this.time = json["time"]!
+        if (json['time'] !== undefined) {
+            this.time = json['time']!
         }
-        this.read = json["read"]!
+        this.read = json['read']!
     }
 }
 

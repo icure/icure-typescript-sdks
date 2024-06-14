@@ -19,14 +19,14 @@ function toMessageReadStatusRead(dto: MessageReadStatusDto): boolean {
 
 export function mapMessageReadStatusDtoToMessageReadStatus(dto: MessageReadStatusDto): MessageReadStatus {
     return new MessageReadStatus({
-    time: toMessageReadStatusTime(dto),
-    read: toMessageReadStatusRead(dto),
+        time: toMessageReadStatusTime(dto),
+        read: toMessageReadStatusRead(dto),
     })
 }
 
 export function mapMessageReadStatusToMessageReadStatusDto(domain: MessageReadStatus): MessageReadStatusDto {
     return new MessageReadStatusDto({
-    time: toMessageReadStatusDtoTime(domain),
-    read: toMessageReadStatusDtoRead(domain),
+        time: toMessageReadStatusDtoTime(domain),
+        read: toMessageReadStatusDtoRead(domain),
     })
 }

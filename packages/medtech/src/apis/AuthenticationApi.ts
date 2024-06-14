@@ -2,19 +2,18 @@ import {
     AuthenticationApiImpl,
     AuthenticationProcess,
     AuthenticationResult,
+    CryptoPrimitives,
     CryptoStrategies,
     DataOwnerWithType,
-    ErrorHandler,
-    MessageGatewayApi,
-    Sanitizer,
     DeviceDto,
+    ErrorHandler,
     HealthcarePartyDto,
     KeyStorageFacade,
+    MessageGatewayApi,
     PatientDto,
+    Sanitizer,
     StorageFacade,
-    CryptoPrimitives,
 } from '@icure/typescript-common'
-import Crypto from 'crypto'
 import { MedTechApi } from './MedTechApi'
 import { AuthenticationProvider } from '@icure/api/icc-x-api/auth/AuthenticationProvider'
 
@@ -50,7 +49,16 @@ export class AuthenticationApi extends AuthenticationApiImpl<MedTechApi> {
         return { ...res, medTechApi: res.api }
     }
 
-    protected initApi(username: string, password: string, initialTokens: { token: string; refreshToken: string } | undefined): Promise<MedTechApi> {
+    protected initApi(
+        username: string,
+        password: string,
+        initialTokens:
+            | {
+                  token: string
+                  refreshToken: string
+              }
+            | undefined,
+    ): Promise<MedTechApi> {
         const builder = new MedTechApi.Builder()
             .withICureBaseUrl(this.iCureBasePath)
             .withUserName(username)

@@ -4,6 +4,7 @@ export class RecordComponent extends ClassComponent {
     override get typeName(): string {
         return `Record<${this.keyType.typeName}, ${this.valueType.typeName}>`
     }
+
     override get interfaceName(): string {
         return `Record<${this.keyType.typeName}, ${this.valueType.interfaceName}>`
     }

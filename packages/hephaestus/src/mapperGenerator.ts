@@ -115,12 +115,12 @@ export const mapperGenerator = (project: Project, mapperLocation: string) => {
 
         // Temporary remove functions
         /*        toDomainFunctions?.forEach(({functionName, propertyName, type}) => {
-            mapperSourceFile.getFunctions().find((f) => f.getName() === functionName)?.remove()
-        })
+			mapperSourceFile.getFunctions().find((f) => f.getName() === functionName)?.remove()
+		})
 
-        toDtoFunctions?.forEach(({functionName, propertyName, type}) => {
-            mapperSourceFile.getFunctions().find((f) => f.getName() === functionName)?.remove()
-        })*/
+		toDtoFunctions?.forEach(({functionName, propertyName, type}) => {
+			mapperSourceFile.getFunctions().find((f) => f.getName() === functionName)?.remove()
+		})*/
         // End of temporary remove functions
 
         const mapperFileFunctions = mapperSourceFile.getFunctions()

@@ -1,7 +1,6 @@
 import { SystemMetaDataOwnerEncrypted } from '../../src'
 import { generateSystemMetaDataOwner } from './SystemMetaDataOwner.model'
 import { generateDelegationMap, generateRandomStringArray } from './utils'
-import { generateSecurityMetadata } from './SecurityMetadata.model'
 
 export function generateSystemMetaDataOwnerEncrypted(): SystemMetaDataOwnerEncrypted {
     const fakeSystemMetaDataOwner = generateSystemMetaDataOwner()

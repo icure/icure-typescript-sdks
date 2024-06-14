@@ -15,13 +15,13 @@ export class Filter {
 
     toJSON(): IFilter {
         return {
-        description: this.description,
+            description: this.description,
         }
     }
 
-    constructor(json: Partial<IFilter> ) {
-        if (json["description"] !== undefined) {
-            this.description = json["description"]!
+    constructor(json: Partial<IFilter>) {
+        if (json['description'] !== undefined) {
+            this.description = json['description']!
         }
     }
 }

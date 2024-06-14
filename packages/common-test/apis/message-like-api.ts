@@ -1,7 +1,7 @@
 import { getEnvironmentInitializer, hcp1Username, hcp2Username, setLocalStorage } from '../test-utils'
 import { BaseApiTestContext, WithDataOwnerApi, WithHcpApi, WithMessageApi, WithPatientApi, WithTopicApi } from './TestContexts'
 import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, FilterComposition, MessageFilter, TopicRoleEnum } from '@icure/typescript-common'
-import { describe, it, beforeAll } from '@jest/globals'
+import { beforeAll, describe, it } from '@jest/globals'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import 'isomorphic-fetch'
 import { Message, sleep, User } from '@icure/api'

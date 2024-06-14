@@ -9,15 +9,15 @@ export class PropertyType {
 
     toJSON(): IPropertyType {
         return {
-        identifier: this.identifier,
-        type: this.type,
+            identifier: this.identifier,
+            type: this.type,
         }
     }
 
     constructor(json: Partial<IPropertyType> & { identifier: string }) {
-        this.identifier = json["identifier"]!
-        if (json["type"] !== undefined) {
-            this.type = json["type"]!
+        this.identifier = json['identifier']!
+        if (json['type'] !== undefined) {
+            this.type = json['type']!
         }
     }
 }

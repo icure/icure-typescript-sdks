@@ -9,11 +9,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { Document as DocumentDto } from '@icure/api';
-import { EntityId } from '../types';
-import { mapTo } from '../utils/decorators';
-import { forceUuid } from "../utils/uuidUtils";
-import { ISystemMetaDataEncrypted, SystemMetaDataEncrypted } from './SystemMetaDataEncrypted.model';
+import { Document as DocumentDto } from '@icure/api'
+import { EntityId } from '../types'
+import { mapTo } from '../utils/decorators'
+import { forceUuid } from '../utils/uuidUtils'
+import { ISystemMetaDataEncrypted, SystemMetaDataEncrypted } from './SystemMetaDataEncrypted.model'
 
 @mapTo(DocumentDto)
 export class Document {
@@ -72,79 +72,79 @@ export class Document {
 
     toJSON(): IDocument {
         return {
-        id: this.id,
-        rev: this.rev,
-        created: this.created,
-        modified: this.modified,
-        author: this.author,
-        responsible: this.responsible,
-        medicalLocationId: this.medicalLocationId,
-        deletionDate: this.deletionDate,
-        objectStoreReference: this.objectStoreReference,
-        mainUti: this.mainUti,
-        name: this.name,
-        version: this.version,
-        otherUtis: this.otherUtis.map(item => item),
-        externalUuid: this.externalUuid,
-        size: this.size,
-        hash: this.hash,
-        attachmentId: this.attachmentId,
-        systemMetaData: !!this.systemMetaData ? this.systemMetaData.toJSON() : undefined,
+            id: this.id,
+            rev: this.rev,
+            created: this.created,
+            modified: this.modified,
+            author: this.author,
+            responsible: this.responsible,
+            medicalLocationId: this.medicalLocationId,
+            deletionDate: this.deletionDate,
+            objectStoreReference: this.objectStoreReference,
+            mainUti: this.mainUti,
+            name: this.name,
+            version: this.version,
+            otherUtis: this.otherUtis.map((item) => item),
+            externalUuid: this.externalUuid,
+            size: this.size,
+            hash: this.hash,
+            attachmentId: this.attachmentId,
+            systemMetaData: !!this.systemMetaData ? this.systemMetaData.toJSON() : undefined,
         }
     }
 
-    constructor(json: Partial<IDocument> ) {
-        this.id = forceUuid(json["id"]!)
-        if (json["rev"] !== undefined) {
-            this.rev = json["rev"]!
+    constructor(json: Partial<IDocument>) {
+        this.id = forceUuid(json['id']!)
+        if (json['rev'] !== undefined) {
+            this.rev = json['rev']!
         }
-        if (json["created"] !== undefined) {
-            this.created = json["created"]!
+        if (json['created'] !== undefined) {
+            this.created = json['created']!
         }
-        if (json["modified"] !== undefined) {
-            this.modified = json["modified"]!
+        if (json['modified'] !== undefined) {
+            this.modified = json['modified']!
         }
-        if (json["author"] !== undefined) {
-            this.author = json["author"]!
+        if (json['author'] !== undefined) {
+            this.author = json['author']!
         }
-        if (json["responsible"] !== undefined) {
-            this.responsible = json["responsible"]!
+        if (json['responsible'] !== undefined) {
+            this.responsible = json['responsible']!
         }
-        if (json["medicalLocationId"] !== undefined) {
-            this.medicalLocationId = json["medicalLocationId"]!
+        if (json['medicalLocationId'] !== undefined) {
+            this.medicalLocationId = json['medicalLocationId']!
         }
-        if (json["deletionDate"] !== undefined) {
-            this.deletionDate = json["deletionDate"]!
+        if (json['deletionDate'] !== undefined) {
+            this.deletionDate = json['deletionDate']!
         }
-        if (json["objectStoreReference"] !== undefined) {
-            this.objectStoreReference = json["objectStoreReference"]!
+        if (json['objectStoreReference'] !== undefined) {
+            this.objectStoreReference = json['objectStoreReference']!
         }
-        if (json["mainUti"] !== undefined) {
-            this.mainUti = json["mainUti"]!
+        if (json['mainUti'] !== undefined) {
+            this.mainUti = json['mainUti']!
         }
-        if (json["name"] !== undefined) {
-            this.name = json["name"]!
+        if (json['name'] !== undefined) {
+            this.name = json['name']!
         }
-        if (json["version"] !== undefined) {
-            this.version = json["version"]!
+        if (json['version'] !== undefined) {
+            this.version = json['version']!
         }
-        if (json["otherUtis"] !== undefined) {
-            this.otherUtis = json["otherUtis"]!.map((item: any) => item)
+        if (json['otherUtis'] !== undefined) {
+            this.otherUtis = json['otherUtis']!.map((item: any) => item)
         }
-        if (json["externalUuid"] !== undefined) {
-            this.externalUuid = json["externalUuid"]!
+        if (json['externalUuid'] !== undefined) {
+            this.externalUuid = json['externalUuid']!
         }
-        if (json["size"] !== undefined) {
-            this.size = json["size"]!
+        if (json['size'] !== undefined) {
+            this.size = json['size']!
         }
-        if (json["hash"] !== undefined) {
-            this.hash = json["hash"]!
+        if (json['hash'] !== undefined) {
+            this.hash = json['hash']!
         }
-        if (json["attachmentId"] !== undefined) {
-            this.attachmentId = json["attachmentId"]!
+        if (json['attachmentId'] !== undefined) {
+            this.attachmentId = json['attachmentId']!
         }
-        if (json["systemMetaData"] !== undefined) {
-            this.systemMetaData = new SystemMetaDataEncrypted(json["systemMetaData"]!)
+        if (json['systemMetaData'] !== undefined) {
+            this.systemMetaData = new SystemMetaDataEncrypted(json['systemMetaData']!)
         }
     }
 }

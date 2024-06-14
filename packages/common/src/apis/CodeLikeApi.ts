@@ -15,12 +15,14 @@ export interface CodeLikeApi<DSCode> {
      * @param code
      */
     createOrModify(code: DSCode): Promise<DSCode>
+
     /**
      * When modifying codes, you must ensure that the rev obtained when getting or creating the code is present as the rev is used to guarantee that the code has not been modified by a third party.
      * Create or update a batch of [Code]
      * @param codes
      */
     createOrModifyMany(codes: Array<DSCode>): Promise<Array<DSCode>>
+
     /**
      * Filters are complex selectors that are built by combining basic building blocks. You can learn more on how to build filters here {@link https://docs.icure.com/sdks/how-to/how-to-filter-data-with-advanced-search-criteria}. This method returns a paginated list of code (with a cursor that lets you query the following items).
      * Load codes from the database by filtering them using the provided [filter].
@@ -29,12 +31,14 @@ export interface CodeLikeApi<DSCode> {
      * @param limit The maximum number of codes that should contain the returned page. By default, a page contains 1000 codes
      */
     filterBy(filter: CommonFilter<Code>, nextCodeId?: string, limit?: number): Promise<PaginatedList<DSCode>>
+
     /**
      * Each code is uniquely identified by a code id. The code id is a UUID. This [codeId] is the preferred method to retrieve one specific code.
      * Get a [Code]
      * @param id
      */
     get(id: string): Promise<DSCode>
+
     /**
      * Filters are complex selectors that are built by combining basic building blocks. You can learn more on how to build filters here {@link https://docs.icure.com/sdks/how-to/how-to-filter-data-with-advanced-search-criteria}. This method returns a paginated list of code (with a cursor that lets you query the following items).
      * Load code ids from the database by filtering them using the provided [filter].

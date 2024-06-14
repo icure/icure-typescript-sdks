@@ -1,5 +1,5 @@
 import { Address, AddressAddressTypeEnum } from '../models/Address.model'
-import { Annotation, mapAnnotationDtoToAnnotation, mapAnnotationToAnnotationDto, AddressDto, TelecomDto, AnnotationDto } from '@icure/typescript-common'
+import { AddressDto, Annotation, AnnotationDto, mapAnnotationDtoToAnnotation, mapAnnotationToAnnotationDto, TelecomDto } from '@icure/typescript-common'
 import { Telecom } from '../models/Telecom.model'
 import { mapTelecomDtoToTelecom } from './Telecom.mapper'
 
@@ -109,36 +109,36 @@ function toAddressEncryptedSelf(dto: AddressDto): string | undefined {
 
 export function mapAddressDtoToAddress(dto: AddressDto): Address {
     return new Address({
-    addressType: toAddressAddressType(dto),
-    description: toAddressDescription(dto),
-    street: toAddressStreet(dto),
-    houseNumber: toAddressHouseNumber(dto),
-    postboxNumber: toAddressPostboxNumber(dto),
-    postalCode: toAddressPostalCode(dto),
-    city: toAddressCity(dto),
-    state: toAddressState(dto),
-    country: toAddressCountry(dto),
-    note: toAddressNote(dto),
-    telecoms: toAddressTelecoms(dto),
-    notes: toAddressNotes(dto),
-    encryptedSelf: toAddressEncryptedSelf(dto),
+        addressType: toAddressAddressType(dto),
+        description: toAddressDescription(dto),
+        street: toAddressStreet(dto),
+        houseNumber: toAddressHouseNumber(dto),
+        postboxNumber: toAddressPostboxNumber(dto),
+        postalCode: toAddressPostalCode(dto),
+        city: toAddressCity(dto),
+        state: toAddressState(dto),
+        country: toAddressCountry(dto),
+        note: toAddressNote(dto),
+        telecoms: toAddressTelecoms(dto),
+        notes: toAddressNotes(dto),
+        encryptedSelf: toAddressEncryptedSelf(dto),
     })
 }
 
 export function mapAddressToAddressDto(domain: Address): AddressDto {
     return new AddressDto({
-    addressType: toAddressDtoAddressType(domain),
-    descr: toAddressDtoDescr(domain),
-    street: toAddressDtoStreet(domain),
-    houseNumber: toAddressDtoHouseNumber(domain),
-    postboxNumber: toAddressDtoPostboxNumber(domain),
-    postalCode: toAddressDtoPostalCode(domain),
-    city: toAddressDtoCity(domain),
-    state: toAddressDtoState(domain),
-    country: toAddressDtoCountry(domain),
-    note: toAddressDtoNote(domain),
-    notes: toAddressDtoNotes(domain),
-    telecoms: toAddressDtoTelecoms(domain),
-    encryptedSelf: toAddressDtoEncryptedSelf(domain),
+        addressType: toAddressDtoAddressType(domain),
+        descr: toAddressDtoDescr(domain),
+        street: toAddressDtoStreet(domain),
+        houseNumber: toAddressDtoHouseNumber(domain),
+        postboxNumber: toAddressDtoPostboxNumber(domain),
+        postalCode: toAddressDtoPostalCode(domain),
+        city: toAddressDtoCity(domain),
+        state: toAddressDtoState(domain),
+        country: toAddressDtoCountry(domain),
+        note: toAddressDtoNote(domain),
+        notes: toAddressDtoNotes(domain),
+        telecoms: toAddressDtoTelecoms(domain),
+        encryptedSelf: toAddressDtoEncryptedSelf(domain),
     })
 }

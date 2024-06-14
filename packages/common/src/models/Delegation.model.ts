@@ -20,21 +20,21 @@ export class Delegation {
 
     toJSON(): IDelegation {
         return {
-        owner: this.owner,
-        delegatedTo: this.delegatedTo,
-        key: this.key,
+            owner: this.owner,
+            delegatedTo: this.delegatedTo,
+            key: this.key,
         }
     }
 
-    constructor(json: Partial<IDelegation> ) {
-        if (json["owner"] !== undefined) {
-            this.owner = json["owner"]!
+    constructor(json: Partial<IDelegation>) {
+        if (json['owner'] !== undefined) {
+            this.owner = json['owner']!
         }
-        if (json["delegatedTo"] !== undefined) {
-            this.delegatedTo = json["delegatedTo"]!
+        if (json['delegatedTo'] !== undefined) {
+            this.delegatedTo = json['delegatedTo']!
         }
-        if (json["key"] !== undefined) {
-            this.key = json["key"]!
+        if (json['key'] !== undefined) {
+            this.key = json['key']!
         }
     }
 }

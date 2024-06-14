@@ -7,8 +7,8 @@ import { KeyPair } from '../../models/KeyPair.model'
 import { CryptoActorStubWithType } from '@icure/api/icc-api/model/CryptoActorStub'
 import { DataOwnerWithType } from '../../models/DataOwner.model'
 import { Mapper } from '../Mapper'
-import KeyVerificationBehaviour = CryptoStrategies.KeyVerificationBehaviour
 import { hexPublicKeysWithSha1Of, hexPublicKeysWithSha256Of } from '@icure/api/icc-x-api/crypto/utils'
+import KeyVerificationBehaviour = CryptoStrategies.KeyVerificationBehaviour
 
 export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithType> implements BaseCryptoStrategies {
     constructor(
@@ -21,10 +21,12 @@ export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithTyp
         const canGenerate = await this.dsStrategies.allowNewKeyPairGeneration(this.dataOwnerMapper.toDomain(self))
         if (canGenerate) {
             const newKey = await cryptoPrimitives.RSA.generateKeyPair(ShaVersion.Sha256)
-            await this.dsStrategies.notifyKeyPairGeneration(new KeyPair({
-                privateKey: ua2hex(await cryptoPrimitives.RSA.exportKey(newKey.privateKey, 'pkcs8')),
-                publicKey: ua2hex(await cryptoPrimitives.RSA.exportKey(newKey.publicKey, 'spki')),
-            }))
+            await this.dsStrategies.notifyKeyPairGeneration(
+                new KeyPair({
+                    privateKey: ua2hex(await cryptoPrimitives.RSA.exportKey(newKey.privateKey, 'pkcs8')),
+                    publicKey: ua2hex(await cryptoPrimitives.RSA.exportKey(newKey.publicKey, 'spki')),
+                }),
+            )
             return newKey
         } else return false
     }

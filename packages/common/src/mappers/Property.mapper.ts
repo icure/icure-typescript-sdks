@@ -47,20 +47,20 @@ function toPropertyEncryptedSelf(dto: PropertyStub): string | undefined {
 
 export function mapPropertyStubToProperty(dto: PropertyStub): Property {
     return new Property({
-    id: toPropertyId(dto),
-    type: toPropertyType(dto),
-    typedValue: toPropertyTypedValue(dto),
-    deleted: toPropertyDeleted(dto),
-    encryptedSelf: toPropertyEncryptedSelf(dto),
+        id: toPropertyId(dto),
+        type: toPropertyType(dto),
+        typedValue: toPropertyTypedValue(dto),
+        deleted: toPropertyDeleted(dto),
+        encryptedSelf: toPropertyEncryptedSelf(dto),
     })
 }
 
 export function mapPropertyToPropertyStub(domain: Property): PropertyStub {
     return new PropertyStub({
-    id: toPropertyStubId(domain),
-    type: toPropertyStubType(domain),
-    typedValue: toPropertyStubTypedValue(domain),
-    deletionDate: toPropertyStubDeletionDate(domain),
-    encryptedSelf: toPropertyStubEncryptedSelf(domain),
+        id: toPropertyStubId(domain),
+        type: toPropertyStubType(domain),
+        typedValue: toPropertyStubTypedValue(domain),
+        deletionDate: toPropertyStubDeletionDate(domain),
+        encryptedSelf: toPropertyStubEncryptedSelf(domain),
     })
 }

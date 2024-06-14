@@ -1,7 +1,14 @@
 import { Binary } from '../models/Binary.model'
 import { b64_2ab, ua2b64 } from '@icure/api'
 
-export const mapDocumentAttachmentToBinary = (attachment: { data: ArrayBuffer; filename: string; uti: string }, mimeTypeProvider: (uti: string) => string) => {
+export const mapDocumentAttachmentToBinary = (
+    attachment: {
+        data: ArrayBuffer
+        filename: string
+        uti: string
+    },
+    mimeTypeProvider: (uti: string) => string,
+) => {
     return new Binary({
         contentType: mimeTypeProvider(attachment.uti),
         data: ua2b64(attachment.data),

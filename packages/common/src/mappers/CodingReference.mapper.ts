@@ -55,23 +55,23 @@ function toCodingReferenceContextLabel(dto: CodeStub): string | undefined {
 
 export function mapCodeStubToCodingReference(dto: CodeStub): CodingReference {
     return new CodingReference({
-    id: toCodingReferenceId(dto),
-    type: toCodingReferenceType(dto),
-    code: toCodingReferenceCode(dto),
-    version: toCodingReferenceVersion(dto),
-    context: toCodingReferenceContext(dto),
-    contextLabel: toCodingReferenceContextLabel(dto),
+        id: toCodingReferenceId(dto),
+        type: toCodingReferenceType(dto),
+        code: toCodingReferenceCode(dto),
+        version: toCodingReferenceVersion(dto),
+        context: toCodingReferenceContext(dto),
+        contextLabel: toCodingReferenceContextLabel(dto),
     })
 }
 
 export function mapCodingReferenceToCodeStub(domain: CodingReference): CodeStub {
     return new CodeStub({
-    id: toCodeStubId(domain),
-    context: toCodeStubContext(domain),
-    contextLabel: toCodeStubContextLabel(domain),
-    type: toCodeStubType(domain),
-    code: toCodeStubCode(domain),
-    version: toCodeStubVersion(domain),
-    label: toCodeStubLabel(domain),
+        id: toCodeStubId(domain),
+        context: toCodeStubContext(domain),
+        contextLabel: toCodeStubContextLabel(domain),
+        type: toCodeStubType(domain),
+        code: toCodeStubCode(domain),
+        version: toCodeStubVersion(domain),
+        label: toCodeStubLabel(domain),
     })
 }

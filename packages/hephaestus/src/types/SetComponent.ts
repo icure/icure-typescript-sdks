@@ -4,6 +4,7 @@ export class SetComponent extends ClassComponent {
     override get typeName(): string {
         return `Set<${this.children![0].typeName}>`
     }
+
     override get interfaceName(): string {
         return `Set<${this.children![0].interfaceName}>`
     }

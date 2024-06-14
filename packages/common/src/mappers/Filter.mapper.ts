@@ -29,10 +29,14 @@ import {
     HealthElementByHcPartyTagCodeFilter as HealthElementByHcPartyTagCodeFilterDto,
     HealthElementByIdsFilter as HealthElementByIdsFilterDto,
     IntersectionFilter as IntersectionFilterDto,
+    LatestMessageByHcPartyTransportGuidFilter as LatestMessageByHcPartyTransportGuidFilterDto,
     MaintenanceTask as MaintenanceTaskDto,
     MaintenanceTaskAfterDateFilter as MaintenanceTaskAfterDateFilterDto,
     MaintenanceTaskByHcPartyAndTypeFilter as MaintenanceTaskByHcPartyAndTypeFilterDto,
     MaintenanceTaskByIdsFilter as MaintenanceTaskByIdsFilterDto,
+    Message as MessageDto,
+    MessageByHcPartyFilter as MessageByHcPartyFilterDto,
+    MessageByHcPartyTransportGuidFilter as MessageByHcPartyTransportGuidFilterDto,
     Patient as PatientDto,
     PatientByHcPartyAndIdentifiersFilter as PatientByHcPartyAndIdentifiersFilterDto,
     PatientByHcPartyAndSsinsFilter as PatientByHcPartyAndSsinsFilterDto,
@@ -48,16 +52,12 @@ import {
     ServiceByHcPartyTagCodeDateFilter as ServiceByHcPartyTagCodeDateFilterDto,
     ServiceByIdsFilter,
     ServiceBySecretForeignKeys as ServiceBySecretForeignKeysDto,
+    Topic as TopicDto,
+    TopicByHcPartyFilter as TopicByHcPartyFilterDto,
+    TopicByParticipantFilter as TopicByParticipantFilterDto,
     UnionFilter as UnionFilterDto,
     User as UserDto,
     UserByIdsFilter as UserByIdsFilterDto,
-    Topic as TopicDto,
-    Message as MessageDto,
-    TopicByHcPartyFilter as TopicByHcPartyFilterDto,
-    TopicByParticipantFilter as TopicByParticipantFilterDto,
-    MessageByHcPartyFilter as MessageByHcPartyFilterDto,
-    MessageByHcPartyTransportGuidFilter as MessageByHcPartyTransportGuidFilterDto,
-    LatestMessageByHcPartyTransportGuidFilter as LatestMessageByHcPartyTransportGuidFilterDto,
 } from '@icure/api'
 import { UsersByPatientIdFilter as UsersByPatientIdFilterDto } from '@icure/api/icc-x-api/filters/UsersByPatientIdFilter'
 import { ComplementFilter } from '../filters/ComplementFilter'
@@ -66,7 +66,7 @@ import { IntersectionFilter } from '../filters/IntersectionFilter'
 import { AllCodesFilter, CodeByIdsFilter, CodeByRegionTypeLabelFilter } from '../filters/code'
 import { ServiceByHealthcarePartyFilter, ServiceByHealthcarePartyHealthElementIdsFilter, ServiceByHealthcarePartyIdentifiersFilter, ServiceByHealthcarePartyPatientFilter, ServiceByHealthcarePartyTagCodeDateFilter } from '../filters/service'
 import { AllDevicesFilter, DeviceByIdsFilter } from '../filters/device'
-import { HealthElementByHealthcarePartyFilter, HealthElementByHealthcarePartyIdentifiersFilter, HealthElementByHealthcarePartyTagCodeFilter, HealthElementByHealthcarePartyPatientFilter, HealthElementByIdsFilter } from '../filters/healthelement'
+import { HealthElementByHealthcarePartyFilter, HealthElementByHealthcarePartyIdentifiersFilter, HealthElementByHealthcarePartyPatientFilter, HealthElementByHealthcarePartyTagCodeFilter, HealthElementByIdsFilter } from '../filters/healthelement'
 import { AllHealthcarePartiesFilter, HealthcarePartyByIdsFilter, HealthcarePartyByLabelCodeFilter, HealthcarePartyByNameFilter } from '../filters/hcp'
 import { AllUsersFilter, UserByIdsFilter, UsersByPatientIdFilter } from '../filters/user'
 import {
