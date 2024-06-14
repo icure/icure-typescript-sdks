@@ -25,12 +25,7 @@ export class SecurityMetadata {
         }
     }
 
-    constructor(
-        json: Partial<ISecurityMetadata> & {
-            secureDelegations: Record<string, ISecureDelegation>
-            keysEquivalences: Record<string, string>
-        },
-    ) {
+    constructor(json: Partial<ISecurityMetadata> & { secureDelegations: Record<string, ISecureDelegation>; keysEquivalences: Record<string, string> }) {
         this.secureDelegations = Object.fromEntries(Object.entries(json['secureDelegations']!).map(([k, v]: [any, ISecureDelegation]) => [k, new SecureDelegation(v)]))
         this.keysEquivalences = { ...json['keysEquivalences']! }
     }

@@ -61,15 +61,7 @@ export class SecureDelegation {
         }
     }
 
-    constructor(
-        json: Partial<ISecureDelegation> & {
-            secretIds: string[]
-            encryptionKeys: string[]
-            owningEntityIds: string[]
-            parentDelegations: string[]
-            permissions: import('/Users/aduchate/Sources/icure/icure-typescript-sdks/packages/common/src/models/enums/AccessLevel.enum').AccessLevelEnum
-        },
-    ) {
+    constructor(json: Partial<ISecureDelegation> & { secretIds: string[]; encryptionKeys: string[]; owningEntityIds: string[]; parentDelegations: string[]; permissions: AccessLevelEnum }) {
         if (json['delegator'] !== undefined) {
             this.delegator = json['delegator']!
         }

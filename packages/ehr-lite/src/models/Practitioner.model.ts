@@ -1,7 +1,7 @@
 import { base64string, CodingReference, EntityId, forceUuid, HealthcarePartyDto, ICodingReference, Identifier, IIdentifier, IProperty, ISO639_1, ISystemMetaDataOwner, mapTo, Property, SystemMetaDataOwner } from '@icure/typescript-common'
+import { GenderEnum } from './enums/Gender.enum'
 import { HumanName, IHumanName } from './HumanName.model'
 import { ILocation, Location } from './Location.model'
-import { GenderEnum } from './enums/Gender.enum'
 
 @mapTo(HealthcarePartyDto)
 export class Practitioner implements IPractitioner {

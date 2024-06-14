@@ -17,10 +17,6 @@ export class MapComponent extends ClassComponent {
         return new MapComponent(false, this.optional, this.keyType, this.valueType)
     }
 
-    public notNullable(): ClassComponent {
-        return new MapComponent(false, this.keyType, this.valueType)
-    }
-
     get keyType(): ClassComponent {
         return this.children![0]
     }

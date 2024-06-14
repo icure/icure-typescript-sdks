@@ -3,7 +3,12 @@ import { ClassComponent } from './ClassComponent'
 export class DefaultComponent extends ClassComponent {
     constructor(nullable: boolean = false, optional: boolean = false, name?: string) {
         super(nullable, optional)
-        this.typeName = name ?? 'any'
+
+        if (name?.startsWith('import(')) {
+            this.typeName = name!.split(').').slice(-1)[0]
+        } else {
+            this.typeName = name ?? 'any'
+        }
     }
 
     override readonly typeName: string
