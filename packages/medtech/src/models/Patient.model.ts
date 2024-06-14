@@ -10,308 +10,36 @@
  * Do not edit the class manually.
  */
 
-import { Annotation, CodingReference, Identifier, PatientDto, Property, SystemMetaDataOwnerEncrypted, base64string, mapTo } from '@icure/typescript-common'
-import { Address } from './Address.model'
-import { HealthcareProfessionalGenderEnum } from './HealthcareProfessional.model'
-import { Partnership } from './Partnership.model'
-import { PatientHealthCareParty } from './PatientHealthCareParty.model'
-import { PersonName } from './PersonName.model'
+import { Annotation, base64string, CodingReference, EntityId, forceUuid, IAnnotation, ICodingReference, Identifier, IIdentifier, IProperty, ISystemMetaDataOwnerEncrypted, mapTo, PatientDto, Property, SystemMetaDataOwnerEncrypted } from '@icure/typescript-common'
+import { Address, IAddress } from './Address.model'
+import { IPartnership, Partnership } from './Partnership.model'
+import { IPatientHealthCareParty, PatientHealthCareParty } from './PatientHealthCareParty.model'
+import { IPersonName, PersonName } from './PersonName.model'
 
 @mapTo(PatientDto)
 export class Patient {
-    'id': string
-    'rev'?: string
-    'identifiers': Identifier[]
-    'created'?: number
-    'modified'?: number
-    'author'?: string
-    'responsible'?: string
-    'labels': Array<CodingReference>
-    'codes': Array<CodingReference>
-    'endOfLife'?: number
-    'deletionDate'?: number
-    'firstName'?: string
-    'lastName'?: string
-    'names': PersonName[]
-    'companyName'?: string
-    'languages': string[]
-    'addresses': Address[]
-    'civility'?: string
-    'gender'?: PatientGenderEnum
-    'birthSex'?: PatientBirthSexEnum
-    'mergeToPatientId'?: string
-    'mergedIds': Array<string>
-    'alias'?: string
-    'active': boolean
-    deactivationDate?: number
-    'deactivationReason': PatientDeactivationReasonEnum
-    'ssin'?: string
-    'maidenName'?: string
-    'spouseName'?: string
-    'partnerName'?: string
-    'personalStatus'?: PatientPersonalStatusEnum
-    'dateOfBirth'?: number
-    'dateOfDeath'?: number
-    'placeOfBirth'?: string
-    'placeOfDeath'?: string
-    'deceased'?: boolean
-    'education'?: string
-    'profession'?: string
-    'note'?: string
-    notes: Annotation[]
-    'administrativeNote'?: string
-    'nationality'?: string
-    'race'?: string
-    'ethnicity'?: string
-    'picture'?: base64string
-    'externalId'?: string
-    'partnerships': Partnership[]
-    'patientHealthCareParties': PatientHealthCareParty[]
-    'patientProfessions': CodingReference[]
-    'parameters': Record<string, string[]>
-    'properties': Array<Property>
-    'systemMetaData'?: SystemMetaDataOwnerEncrypted
-
-    constructor(json: Partial<IPatient>) {
-        const { identifiers, labels, codes, names, addresses, gender, birthSex, mergedIds, deactivationReason, personalStatus, picture, partnerships, patientHealthCareParties, patientProfessions, properties, systemMetaData, notes, ...simpleProperties } = json
-
-        Object.assign(this as Patient, simpleProperties as IPatient)
-
-        this.identifiers = identifiers ? [...identifiers]?.map((p) => new Identifier(p)) : []
-
-        this.labels = labels ? [...labels].map((it) => new CodingReference(it)) : []
-        this.codes = codes ? [...codes].map((it) => new CodingReference(it)) : []
-        this.notes = notes ? [...notes]?.map((it) => new Annotation(it)) : []
-
-        this.names = names?.map((n) => new PersonName(n)) ?? []
-        this.addresses = addresses?.map((a) => new Address(a)) ?? []
-        this.gender = gender as HealthcareProfessionalGenderEnum
-        this.birthSex = birthSex as HealthcareProfessionalGenderEnum
-        this.mergedIds = mergedIds ? [...mergedIds] : []
-        this.deactivationReason = deactivationReason as PatientDeactivationReasonEnum
-        this.personalStatus = personalStatus as PatientPersonalStatusEnum
-
-        this.picture = picture
-
-        this.partnerships = partnerships ? [...partnerships]?.map((p) => new Partnership(p)) : []
-        this.patientHealthCareParties = patientHealthCareParties ? [...patientHealthCareParties]?.map((p) => new PatientHealthCareParty(p)) : []
-        this.patientProfessions = patientProfessions ? [...patientProfessions]?.map((p) => new CodingReference(p)) : []
-
-        this.properties = properties ? [...properties]?.map((p) => new Property(p)) : []
-
-        this.systemMetaData = systemMetaData && new SystemMetaDataOwnerEncrypted(systemMetaData)
-    }
-
-    static toJSON(instance: Patient): IPatient {
-        const pojo: IPatient = {} as IPatient
-        pojo['id'] = instance.id
-        if (instance.rev !== undefined) pojo['rev'] = instance.rev
-        pojo['identifiers'] = instance.identifiers.map((item) => Identifier.toJSON(item))
-        if (instance.created !== undefined) pojo['created'] = instance.created
-        if (instance.modified !== undefined) pojo['modified'] = instance.modified
-        if (instance.author !== undefined) pojo['author'] = instance.author
-        if (instance.responsible !== undefined) pojo['responsible'] = instance.responsible
-        pojo['labels'] = instance.labels.map((item) => CodingReference.toJSON(item))
-        pojo['codes'] = instance.codes.map((item) => CodingReference.toJSON(item))
-        if (instance.endOfLife !== undefined) pojo['endOfLife'] = instance.endOfLife
-        if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
-        if (instance.firstName !== undefined) pojo['firstName'] = instance.firstName
-        if (instance.lastName !== undefined) pojo['lastName'] = instance.lastName
-        pojo['names'] = instance.names.map((item) => PersonName.toJSON(item))
-        if (instance.companyName !== undefined) pojo['companyName'] = instance.companyName
-        pojo['languages'] = instance.languages.map((item) => item)
-        pojo['addresses'] = instance.addresses.map((item) => Address.toJSON(item))
-        if (instance.civility !== undefined) pojo['civility'] = instance.civility
-        if (instance.gender !== undefined) pojo['gender'] = instance.gender
-        if (instance.birthSex !== undefined) pojo['birthSex'] = instance.birthSex
-        if (instance.mergeToPatientId !== undefined) pojo['mergeToPatientId'] = instance.mergeToPatientId
-        pojo['mergedIds'] = instance.mergedIds.map((item) => item)
-        if (instance.alias !== undefined) pojo['alias'] = instance.alias
-        pojo['active'] = instance.active
-        if (instance.deactivationDate !== undefined) pojo['deactivationDate'] = instance.deactivationDate
-        pojo['deactivationReason'] = instance.deactivationReason
-        if (instance.ssin !== undefined) pojo['ssin'] = instance.ssin
-        if (instance.maidenName !== undefined) pojo['maidenName'] = instance.maidenName
-        if (instance.spouseName !== undefined) pojo['spouseName'] = instance.spouseName
-        if (instance.partnerName !== undefined) pojo['partnerName'] = instance.partnerName
-        if (instance.personalStatus !== undefined) pojo['personalStatus'] = instance.personalStatus
-        if (instance.dateOfBirth !== undefined) pojo['dateOfBirth'] = instance.dateOfBirth
-        if (instance.dateOfDeath !== undefined) pojo['dateOfDeath'] = instance.dateOfDeath
-        if (instance.placeOfBirth !== undefined) pojo['placeOfBirth'] = instance.placeOfBirth
-        if (instance.placeOfDeath !== undefined) pojo['placeOfDeath'] = instance.placeOfDeath
-        if (instance.deceased !== undefined) pojo['deceased'] = instance.deceased
-        if (instance.education !== undefined) pojo['education'] = instance.education
-        if (instance.profession !== undefined) pojo['profession'] = instance.profession
-        if (instance.note !== undefined) pojo['note'] = instance.note
-        pojo['notes'] = instance.notes.map((item) => Annotation.toJSON(item))
-        if (instance.administrativeNote !== undefined) pojo['administrativeNote'] = instance.administrativeNote
-        if (instance.nationality !== undefined) pojo['nationality'] = instance.nationality
-        if (instance.race !== undefined) pojo['race'] = instance.race
-        if (instance.ethnicity !== undefined) pojo['ethnicity'] = instance.ethnicity
-        if (instance.picture !== undefined) pojo['picture'] = instance.picture
-        if (instance.externalId !== undefined) pojo['externalId'] = instance.externalId
-        pojo['partnerships'] = instance.partnerships.map((item) => Partnership.toJSON(item))
-        pojo['patientHealthCareParties'] = instance.patientHealthCareParties.map((item) => PatientHealthCareParty.toJSON(item))
-        pojo['patientProfessions'] = instance.patientProfessions.map((item) => CodingReference.toJSON(item))
-        pojo['parameters'] = { ...instance.parameters }
-        pojo['properties'] = instance.properties.map((item) => Property.toJSON(item))
-        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = SystemMetaDataOwnerEncrypted.toJSON(instance.systemMetaData)
-        return pojo
-    }
-
-    static fromJSON(pojo: IPatient): Patient {
-        const obj = {} as IPatient
-        obj['id'] = pojo['id']
-        if (pojo['rev'] !== undefined) {
-            obj['rev'] = pojo['rev']!
-        }
-        obj['identifiers'] = pojo['identifiers'].map((item: any) => Identifier.fromJSON(item))
-        if (pojo['created'] !== undefined) {
-            obj['created'] = pojo['created']!
-        }
-        if (pojo['modified'] !== undefined) {
-            obj['modified'] = pojo['modified']!
-        }
-        if (pojo['author'] !== undefined) {
-            obj['author'] = pojo['author']!
-        }
-        if (pojo['responsible'] !== undefined) {
-            obj['responsible'] = pojo['responsible']!
-        }
-        obj['labels'] = pojo['labels'].map((item: any) => CodingReference.fromJSON(item))
-        obj['codes'] = pojo['codes'].map((item: any) => CodingReference.fromJSON(item))
-        if (pojo['endOfLife'] !== undefined) {
-            obj['endOfLife'] = pojo['endOfLife']!
-        }
-        if (pojo['deletionDate'] !== undefined) {
-            obj['deletionDate'] = pojo['deletionDate']!
-        }
-        if (pojo['firstName'] !== undefined) {
-            obj['firstName'] = pojo['firstName']!
-        }
-        if (pojo['lastName'] !== undefined) {
-            obj['lastName'] = pojo['lastName']!
-        }
-        obj['names'] = pojo['names'].map((item: any) => PersonName.fromJSON(item))
-        if (pojo['companyName'] !== undefined) {
-            obj['companyName'] = pojo['companyName']!
-        }
-        obj['languages'] = pojo['languages'].map((item: any) => item)
-        obj['addresses'] = pojo['addresses'].map((item: any) => Address.fromJSON(item))
-        if (pojo['civility'] !== undefined) {
-            obj['civility'] = pojo['civility']!
-        }
-        if (pojo['gender'] !== undefined) {
-            obj['gender'] = pojo['gender']!
-        }
-        if (pojo['birthSex'] !== undefined) {
-            obj['birthSex'] = pojo['birthSex']!
-        }
-        if (pojo['mergeToPatientId'] !== undefined) {
-            obj['mergeToPatientId'] = pojo['mergeToPatientId']!
-        }
-        obj['mergedIds'] = pojo['mergedIds'].map((item: any) => item)
-        if (pojo['alias'] !== undefined) {
-            obj['alias'] = pojo['alias']!
-        }
-        obj['active'] = pojo['active']
-        if (pojo['deactivationDate'] !== undefined) {
-            obj['deactivationDate'] = pojo['deactivationDate']!
-        }
-        obj['deactivationReason'] = pojo['deactivationReason']
-        if (pojo['ssin'] !== undefined) {
-            obj['ssin'] = pojo['ssin']!
-        }
-        if (pojo['maidenName'] !== undefined) {
-            obj['maidenName'] = pojo['maidenName']!
-        }
-        if (pojo['spouseName'] !== undefined) {
-            obj['spouseName'] = pojo['spouseName']!
-        }
-        if (pojo['partnerName'] !== undefined) {
-            obj['partnerName'] = pojo['partnerName']!
-        }
-        if (pojo['personalStatus'] !== undefined) {
-            obj['personalStatus'] = pojo['personalStatus']!
-        }
-        if (pojo['dateOfBirth'] !== undefined) {
-            obj['dateOfBirth'] = pojo['dateOfBirth']!
-        }
-        if (pojo['dateOfDeath'] !== undefined) {
-            obj['dateOfDeath'] = pojo['dateOfDeath']!
-        }
-        if (pojo['placeOfBirth'] !== undefined) {
-            obj['placeOfBirth'] = pojo['placeOfBirth']!
-        }
-        if (pojo['placeOfDeath'] !== undefined) {
-            obj['placeOfDeath'] = pojo['placeOfDeath']!
-        }
-        if (pojo['deceased'] !== undefined) {
-            obj['deceased'] = pojo['deceased']!
-        }
-        if (pojo['education'] !== undefined) {
-            obj['education'] = pojo['education']!
-        }
-        if (pojo['profession'] !== undefined) {
-            obj['profession'] = pojo['profession']!
-        }
-        if (pojo['note'] !== undefined) {
-            obj['note'] = pojo['note']!
-        }
-        obj['notes'] = pojo['notes'].map((item: any) => Annotation.fromJSON(item))
-        if (pojo['administrativeNote'] !== undefined) {
-            obj['administrativeNote'] = pojo['administrativeNote']!
-        }
-        if (pojo['nationality'] !== undefined) {
-            obj['nationality'] = pojo['nationality']!
-        }
-        if (pojo['race'] !== undefined) {
-            obj['race'] = pojo['race']!
-        }
-        if (pojo['ethnicity'] !== undefined) {
-            obj['ethnicity'] = pojo['ethnicity']!
-        }
-        if (pojo['picture'] !== undefined) {
-            obj['picture'] = pojo['picture']!
-        }
-        if (pojo['externalId'] !== undefined) {
-            obj['externalId'] = pojo['externalId']!
-        }
-        obj['partnerships'] = pojo['partnerships'].map((item: any) => Partnership.fromJSON(item))
-        obj['patientHealthCareParties'] = pojo['patientHealthCareParties'].map((item: any) => PatientHealthCareParty.fromJSON(item))
-        obj['patientProfessions'] = pojo['patientProfessions'].map((item: any) => CodingReference.fromJSON(item))
-        obj['parameters'] = { ...pojo['parameters'] }
-        obj['properties'] = pojo['properties'].map((item: any) => Property.fromJSON(item))
-        if (pojo['systemMetaData'] !== undefined) {
-            obj['systemMetaData'] = SystemMetaDataOwnerEncrypted.fromJSON(pojo['systemMetaData']!)
-        }
-        return new Patient(obj)
-    }
-}
-
-export interface IPatient {
-    id?: string
+    id: EntityId
     rev?: string
-    identifiers: Array<Identifier>
+    identifiers: Identifier[] = []
     created?: number
     modified?: number
     author?: string
     responsible?: string
-    labels: Array<CodingReference>
-    codes: Array<CodingReference>
+    labels: CodingReference[] = []
+    codes: CodingReference[] = []
     endOfLife?: number
     deletionDate?: number
     firstName?: string
     lastName?: string
-    names: Array<PersonName>
+    names: PersonName[] = []
     companyName?: string
-    languages: Array<string>
-    addresses: Array<Address>
+    languages: string[] = []
+    addresses: Address[] = []
     civility?: string
     gender?: PatientGenderEnum
     birthSex?: PatientBirthSexEnum
     mergeToPatientId?: string
-    mergedIds: Array<string>
+    mergedIds: string[] = []
     alias?: string
     active?: boolean
     deactivationDate?: number
@@ -329,19 +57,288 @@ export interface IPatient {
     education?: string
     profession?: string
     note?: string
-    notes: Annotation[]
+    notes: Annotation[] = []
     administrativeNote?: string
     nationality?: string
     race?: string
     ethnicity?: string
     picture?: base64string
     externalId?: string
-    partnerships: Array<Partnership>
-    patientHealthCareParties: Array<PatientHealthCareParty>
-    patientProfessions: Array<CodingReference>
-    parameters?: Record<string, string[]>
-    properties: Array<Property>
+    partnerships: Partnership[] = []
+    patientHealthCareParties: PatientHealthCareParty[] = []
+    patientProfessions: CodingReference[] = []
+    parameters: Record<string, string[]> = {}
+    properties: Property[] = []
     systemMetaData?: SystemMetaDataOwnerEncrypted
+
+    toJSON(): IPatient {
+        return {
+            id: this.id,
+            rev: this.rev,
+            identifiers: this.identifiers.map((item) => item.toJSON()),
+            created: this.created,
+            modified: this.modified,
+            author: this.author,
+            responsible: this.responsible,
+            labels: this.labels.map((item) => item.toJSON()),
+            codes: this.codes.map((item) => item.toJSON()),
+            endOfLife: this.endOfLife,
+            deletionDate: this.deletionDate,
+            firstName: this.firstName,
+            lastName: this.lastName,
+            names: this.names.map((item) => item.toJSON()),
+            companyName: this.companyName,
+            languages: this.languages.map((item) => item),
+            addresses: this.addresses.map((item) => item.toJSON()),
+            civility: this.civility,
+            gender: this.gender,
+            birthSex: this.birthSex,
+            mergeToPatientId: this.mergeToPatientId,
+            mergedIds: this.mergedIds.map((item) => item),
+            alias: this.alias,
+            active: this.active,
+            deactivationDate: this.deactivationDate,
+            deactivationReason: this.deactivationReason,
+            ssin: this.ssin,
+            maidenName: this.maidenName,
+            spouseName: this.spouseName,
+            partnerName: this.partnerName,
+            personalStatus: this.personalStatus,
+            dateOfBirth: this.dateOfBirth,
+            dateOfDeath: this.dateOfDeath,
+            placeOfBirth: this.placeOfBirth,
+            placeOfDeath: this.placeOfDeath,
+            deceased: this.deceased,
+            education: this.education,
+            profession: this.profession,
+            note: this.note,
+            notes: this.notes.map((item) => item.toJSON()),
+            administrativeNote: this.administrativeNote,
+            nationality: this.nationality,
+            race: this.race,
+            ethnicity: this.ethnicity,
+            picture: this.picture,
+            externalId: this.externalId,
+            partnerships: this.partnerships.map((item) => item.toJSON()),
+            patientHealthCareParties: this.patientHealthCareParties.map((item) => item.toJSON()),
+            patientProfessions: this.patientProfessions.map((item) => item.toJSON()),
+            parameters: { ...this.parameters },
+            properties: this.properties.map((item) => item.toJSON()),
+            systemMetaData: !!this.systemMetaData ? this.systemMetaData.toJSON() : undefined,
+        }
+    }
+
+    constructor(json: Partial<IPatient>) {
+        this.id = forceUuid(json['id']!)
+        if (json['rev'] !== undefined) {
+            this.rev = json['rev']!
+        }
+        if (json['identifiers'] !== undefined) {
+            this.identifiers = json['identifiers']!.map((item: any) => new Identifier(item))
+        }
+        if (json['created'] !== undefined) {
+            this.created = json['created']!
+        }
+        if (json['modified'] !== undefined) {
+            this.modified = json['modified']!
+        }
+        if (json['author'] !== undefined) {
+            this.author = json['author']!
+        }
+        if (json['responsible'] !== undefined) {
+            this.responsible = json['responsible']!
+        }
+        if (json['labels'] !== undefined) {
+            this.labels = json['labels']!.map((item: any) => new CodingReference(item))
+        }
+        if (json['codes'] !== undefined) {
+            this.codes = json['codes']!.map((item: any) => new CodingReference(item))
+        }
+        if (json['endOfLife'] !== undefined) {
+            this.endOfLife = json['endOfLife']!
+        }
+        if (json['deletionDate'] !== undefined) {
+            this.deletionDate = json['deletionDate']!
+        }
+        if (json['firstName'] !== undefined) {
+            this.firstName = json['firstName']!
+        }
+        if (json['lastName'] !== undefined) {
+            this.lastName = json['lastName']!
+        }
+        if (json['names'] !== undefined) {
+            this.names = json['names']!.map((item: any) => new PersonName(item))
+        }
+        if (json['companyName'] !== undefined) {
+            this.companyName = json['companyName']!
+        }
+        if (json['languages'] !== undefined) {
+            this.languages = json['languages']!.map((item: any) => item)
+        }
+        if (json['addresses'] !== undefined) {
+            this.addresses = json['addresses']!.map((item: any) => new Address(item))
+        }
+        if (json['civility'] !== undefined) {
+            this.civility = json['civility']!
+        }
+        if (json['gender'] !== undefined) {
+            this.gender = json['gender']!
+        }
+        if (json['birthSex'] !== undefined) {
+            this.birthSex = json['birthSex']!
+        }
+        if (json['mergeToPatientId'] !== undefined) {
+            this.mergeToPatientId = json['mergeToPatientId']!
+        }
+        if (json['mergedIds'] !== undefined) {
+            this.mergedIds = json['mergedIds']!.map((item: any) => item)
+        }
+        if (json['alias'] !== undefined) {
+            this.alias = json['alias']!
+        }
+        if (json['active'] !== undefined) {
+            this.active = json['active']!
+        }
+        if (json['deactivationDate'] !== undefined) {
+            this.deactivationDate = json['deactivationDate']!
+        }
+        if (json['deactivationReason'] !== undefined) {
+            this.deactivationReason = json['deactivationReason']!
+        }
+        if (json['ssin'] !== undefined) {
+            this.ssin = json['ssin']!
+        }
+        if (json['maidenName'] !== undefined) {
+            this.maidenName = json['maidenName']!
+        }
+        if (json['spouseName'] !== undefined) {
+            this.spouseName = json['spouseName']!
+        }
+        if (json['partnerName'] !== undefined) {
+            this.partnerName = json['partnerName']!
+        }
+        if (json['personalStatus'] !== undefined) {
+            this.personalStatus = json['personalStatus']!
+        }
+        if (json['dateOfBirth'] !== undefined) {
+            this.dateOfBirth = json['dateOfBirth']!
+        }
+        if (json['dateOfDeath'] !== undefined) {
+            this.dateOfDeath = json['dateOfDeath']!
+        }
+        if (json['placeOfBirth'] !== undefined) {
+            this.placeOfBirth = json['placeOfBirth']!
+        }
+        if (json['placeOfDeath'] !== undefined) {
+            this.placeOfDeath = json['placeOfDeath']!
+        }
+        if (json['deceased'] !== undefined) {
+            this.deceased = json['deceased']!
+        }
+        if (json['education'] !== undefined) {
+            this.education = json['education']!
+        }
+        if (json['profession'] !== undefined) {
+            this.profession = json['profession']!
+        }
+        if (json['note'] !== undefined) {
+            this.note = json['note']!
+        }
+        if (json['notes'] !== undefined) {
+            this.notes = json['notes']!.map((item: any) => new Annotation(item))
+        }
+        if (json['administrativeNote'] !== undefined) {
+            this.administrativeNote = json['administrativeNote']!
+        }
+        if (json['nationality'] !== undefined) {
+            this.nationality = json['nationality']!
+        }
+        if (json['race'] !== undefined) {
+            this.race = json['race']!
+        }
+        if (json['ethnicity'] !== undefined) {
+            this.ethnicity = json['ethnicity']!
+        }
+        if (json['picture'] !== undefined) {
+            this.picture = json['picture']!
+        }
+        if (json['externalId'] !== undefined) {
+            this.externalId = json['externalId']!
+        }
+        if (json['partnerships'] !== undefined) {
+            this.partnerships = json['partnerships']!.map((item: any) => new Partnership(item))
+        }
+        if (json['patientHealthCareParties'] !== undefined) {
+            this.patientHealthCareParties = json['patientHealthCareParties']!.map((item: any) => new PatientHealthCareParty(item))
+        }
+        if (json['patientProfessions'] !== undefined) {
+            this.patientProfessions = json['patientProfessions']!.map((item: any) => new CodingReference(item))
+        }
+        if (json['parameters'] !== undefined) {
+            this.parameters = { ...json['parameters']! }
+        }
+        if (json['properties'] !== undefined) {
+            this.properties = json['properties']!.map((item: any) => new Property(item))
+        }
+        if (json['systemMetaData'] !== undefined) {
+            this.systemMetaData = new SystemMetaDataOwnerEncrypted(json['systemMetaData']!)
+        }
+    }
+}
+
+export interface IPatient {
+    id?: EntityId
+    rev?: string
+    identifiers: IIdentifier[]
+    created?: number
+    modified?: number
+    author?: string
+    responsible?: string
+    labels: ICodingReference[]
+    codes: ICodingReference[]
+    endOfLife?: number
+    deletionDate?: number
+    firstName?: string
+    lastName?: string
+    names: IPersonName[]
+    companyName?: string
+    languages: string[]
+    addresses: IAddress[]
+    civility?: string
+    gender?: PatientGenderEnum
+    birthSex?: PatientBirthSexEnum
+    mergeToPatientId?: string
+    mergedIds: string[]
+    alias?: string
+    active?: boolean
+    deactivationDate?: number
+    deactivationReason?: PatientDeactivationReasonEnum
+    ssin?: string
+    maidenName?: string
+    spouseName?: string
+    partnerName?: string
+    personalStatus?: PatientPersonalStatusEnum
+    dateOfBirth?: number
+    dateOfDeath?: number
+    placeOfBirth?: string
+    placeOfDeath?: string
+    deceased?: boolean
+    education?: string
+    profession?: string
+    note?: string
+    notes: IAnnotation[]
+    administrativeNote?: string
+    nationality?: string
+    race?: string
+    ethnicity?: string
+    picture?: base64string
+    externalId?: string
+    partnerships: IPartnership[]
+    patientHealthCareParties: IPatientHealthCareParty[]
+    patientProfessions: ICodingReference[]
+    parameters?: Record<string, string[]>
+    properties: IProperty[]
+    systemMetaData?: ISystemMetaDataOwnerEncrypted
 }
 
 export type PatientGenderEnum = 'male' | 'female' | 'indeterminate' | 'changed' | 'changedToMale' | 'changedToFemale' | 'unknown'

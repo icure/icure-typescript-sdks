@@ -1,4 +1,4 @@
-import { Annotation, CodingReference, HealthElementDto, Identifier, SystemMetaDataEncrypted, forceUuid, mapTo } from '@icure/typescript-common'
+import { Annotation, CodingReference, EntityId, forceUuid, HealthElementDto, IAnnotation, ICodingReference, Identifier, IIdentifier, ISystemMetaDataEncrypted, mapTo, SystemMetaDataEncrypted } from '@icure/typescript-common'
 import { CategoryEnum } from './enums/Category.enum'
 import { ClinicalStatusEnum } from './enums/ClinicalStatus.enum'
 import { SeverityEnum } from './enums/Severity.enum'
@@ -6,8 +6,8 @@ import { VerificationStatusEnum } from './enums/VerificationStatus.enum'
 
 @mapTo(HealthElementDto)
 export class Condition implements ICondition {
-    id: string
-    identifiers: Identifier[]
+    id: EntityId
+    identifiers: Identifier[] = []
     rev?: string
     created?: number
     modified?: number
@@ -18,9 +18,9 @@ export class Condition implements ICondition {
     verificationStatus?: VerificationStatusEnum
     category?: CategoryEnum
     severity?: SeverityEnum
-    bodySite?: Array<CodingReference>
-    tags: Array<CodingReference>
-    codes: Array<CodingReference>
+    bodySite?: CodingReference[] = []
+    tags: CodingReference[] = []
+    codes: CodingReference[] = []
     endOfLife?: number
     deletionDate?: number
     healthcareElementId?: string
@@ -28,136 +28,115 @@ export class Condition implements ICondition {
     openingDate?: number
     closingDate?: number
     description?: string
-    notes: Annotation[]
+    notes: Annotation[] = []
     systemMetaData?: SystemMetaDataEncrypted
 
-    constructor(condition: Partial<ICondition>) {
-        this.id = forceUuid(condition.id)
-        this.identifiers = condition.identifiers ?? []
-        this.rev = condition.rev
-        this.created = condition.created
-        this.modified = condition.modified
-        this.author = condition.author
-        this.responsible = condition.responsible
-        this.medicalLocationId = condition.medicalLocationId
-        this.clinicalStatus = condition.clinicalStatus
-        this.verificationStatus = condition.verificationStatus
-        this.category = condition.category
-        this.severity = condition.severity
-        this.bodySite = condition.bodySite
-        this.tags = condition.tags ?? []
-        this.codes = condition.codes ?? []
-        this.endOfLife = condition.endOfLife
-        this.deletionDate = condition.deletionDate
-        this.healthcareElementId = condition.healthcareElementId
-        this.recordedDate = condition.recordedDate
-        this.openingDate = condition.openingDate
-        this.closingDate = condition.closingDate
-        this.description = condition.description
-        this.notes = condition.notes ?? []
-        this.systemMetaData = condition.systemMetaData
+    toJSON(): ICondition {
+        return {
+            id: this.id,
+            identifiers: this.identifiers.map((item) => item.toJSON()),
+            rev: this.rev,
+            created: this.created,
+            modified: this.modified,
+            author: this.author,
+            responsible: this.responsible,
+            medicalLocationId: this.medicalLocationId,
+            clinicalStatus: this.clinicalStatus,
+            verificationStatus: this.verificationStatus,
+            category: this.category,
+            severity: this.severity,
+            bodySite: this.bodySite?.map((item) => item.toJSON()),
+            tags: this.tags.map((item) => item.toJSON()),
+            codes: this.codes.map((item) => item.toJSON()),
+            endOfLife: this.endOfLife,
+            deletionDate: this.deletionDate,
+            healthcareElementId: this.healthcareElementId,
+            recordedDate: this.recordedDate,
+            openingDate: this.openingDate,
+            closingDate: this.closingDate,
+            description: this.description,
+            notes: this.notes.map((item) => item.toJSON()),
+            systemMetaData: !!this.systemMetaData ? this.systemMetaData.toJSON() : undefined,
+        }
     }
 
-    static toJSON(instance: Condition): ICondition {
-        const pojo: ICondition = {} as ICondition
-        pojo['id'] = instance.id
-        pojo['identifiers'] = instance.identifiers.map((item) => Identifier.toJSON(item))
-        if (instance.rev !== undefined) pojo['rev'] = instance.rev
-        if (instance.created !== undefined) pojo['created'] = instance.created
-        if (instance.modified !== undefined) pojo['modified'] = instance.modified
-        if (instance.author !== undefined) pojo['author'] = instance.author
-        if (instance.responsible !== undefined) pojo['responsible'] = instance.responsible
-        if (instance.medicalLocationId !== undefined) pojo['medicalLocationId'] = instance.medicalLocationId
-        if (instance.clinicalStatus !== undefined) pojo['clinicalStatus'] = instance.clinicalStatus
-        if (instance.verificationStatus !== undefined) pojo['verificationStatus'] = instance.verificationStatus
-        if (instance.category !== undefined) pojo['category'] = instance.category
-        if (instance.severity !== undefined) pojo['severity'] = instance.severity
-        if (instance.bodySite !== undefined) pojo['bodySite'] = instance.bodySite.map((item) => CodingReference.toJSON(item))
-        pojo['tags'] = instance.tags.map((item) => CodingReference.toJSON(item))
-        pojo['codes'] = instance.codes.map((item) => CodingReference.toJSON(item))
-        if (instance.endOfLife !== undefined) pojo['endOfLife'] = instance.endOfLife
-        if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
-        if (instance.healthcareElementId !== undefined) pojo['healthcareElementId'] = instance.healthcareElementId
-        if (instance.recordedDate !== undefined) pojo['recordedDate'] = instance.recordedDate
-        if (instance.openingDate !== undefined) pojo['openingDate'] = instance.openingDate
-        if (instance.closingDate !== undefined) pojo['closingDate'] = instance.closingDate
-        if (instance.description !== undefined) pojo['description'] = instance.description
-        pojo['notes'] = instance.notes.map((item) => Annotation.toJSON(item))
-        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = SystemMetaDataEncrypted.toJSON(instance.systemMetaData)
-        return pojo
-    }
-
-    static fromJSON(pojo: ICondition): Condition {
-        const obj = {} as ICondition
-        obj['id'] = pojo['id']
-        obj['identifiers'] = pojo['identifiers'].map((item: any) => Identifier.fromJSON(item))
-        if (pojo['rev'] !== undefined) {
-            obj['rev'] = pojo['rev']!
+    constructor(json: Partial<ICondition>) {
+        this.id = forceUuid(json['id']!)
+        if (json['identifiers'] !== undefined) {
+            this.identifiers = json['identifiers']!.map((item: any) => new Identifier(item))
         }
-        if (pojo['created'] !== undefined) {
-            obj['created'] = pojo['created']!
+        if (json['rev'] !== undefined) {
+            this.rev = json['rev']!
         }
-        if (pojo['modified'] !== undefined) {
-            obj['modified'] = pojo['modified']!
+        if (json['created'] !== undefined) {
+            this.created = json['created']!
         }
-        if (pojo['author'] !== undefined) {
-            obj['author'] = pojo['author']!
+        if (json['modified'] !== undefined) {
+            this.modified = json['modified']!
         }
-        if (pojo['responsible'] !== undefined) {
-            obj['responsible'] = pojo['responsible']!
+        if (json['author'] !== undefined) {
+            this.author = json['author']!
         }
-        if (pojo['medicalLocationId'] !== undefined) {
-            obj['medicalLocationId'] = pojo['medicalLocationId']!
+        if (json['responsible'] !== undefined) {
+            this.responsible = json['responsible']!
         }
-        if (pojo['clinicalStatus'] !== undefined) {
-            obj['clinicalStatus'] = pojo['clinicalStatus']!
+        if (json['medicalLocationId'] !== undefined) {
+            this.medicalLocationId = json['medicalLocationId']!
         }
-        if (pojo['verificationStatus'] !== undefined) {
-            obj['verificationStatus'] = pojo['verificationStatus']!
+        if (json['clinicalStatus'] !== undefined) {
+            this.clinicalStatus = json['clinicalStatus']!
         }
-        if (pojo['category'] !== undefined) {
-            obj['category'] = pojo['category']!
+        if (json['verificationStatus'] !== undefined) {
+            this.verificationStatus = json['verificationStatus']!
         }
-        if (pojo['severity'] !== undefined) {
-            obj['severity'] = pojo['severity']!
+        if (json['category'] !== undefined) {
+            this.category = json['category']!
         }
-        if (pojo['bodySite'] !== undefined) {
-            obj['bodySite'] = pojo['bodySite']!.map((item: any) => CodingReference.fromJSON(item))
+        if (json['severity'] !== undefined) {
+            this.severity = json['severity']!
         }
-        obj['tags'] = pojo['tags'].map((item: any) => CodingReference.fromJSON(item))
-        obj['codes'] = pojo['codes'].map((item: any) => CodingReference.fromJSON(item))
-        if (pojo['endOfLife'] !== undefined) {
-            obj['endOfLife'] = pojo['endOfLife']!
+        if (json['bodySite'] !== undefined) {
+            this.bodySite = json['bodySite']!.map((item: any) => new CodingReference(item))
         }
-        if (pojo['deletionDate'] !== undefined) {
-            obj['deletionDate'] = pojo['deletionDate']!
+        if (json['tags'] !== undefined) {
+            this.tags = json['tags']!.map((item: any) => new CodingReference(item))
         }
-        if (pojo['healthcareElementId'] !== undefined) {
-            obj['healthcareElementId'] = pojo['healthcareElementId']!
+        if (json['codes'] !== undefined) {
+            this.codes = json['codes']!.map((item: any) => new CodingReference(item))
         }
-        if (pojo['recordedDate'] !== undefined) {
-            obj['recordedDate'] = pojo['recordedDate']!
+        if (json['endOfLife'] !== undefined) {
+            this.endOfLife = json['endOfLife']!
         }
-        if (pojo['openingDate'] !== undefined) {
-            obj['openingDate'] = pojo['openingDate']!
+        if (json['deletionDate'] !== undefined) {
+            this.deletionDate = json['deletionDate']!
         }
-        if (pojo['closingDate'] !== undefined) {
-            obj['closingDate'] = pojo['closingDate']!
+        if (json['healthcareElementId'] !== undefined) {
+            this.healthcareElementId = json['healthcareElementId']!
         }
-        if (pojo['description'] !== undefined) {
-            obj['description'] = pojo['description']!
+        if (json['recordedDate'] !== undefined) {
+            this.recordedDate = json['recordedDate']!
         }
-        obj['notes'] = pojo['notes'].map((item: any) => Annotation.fromJSON(item))
-        if (pojo['systemMetaData'] !== undefined) {
-            obj['systemMetaData'] = SystemMetaDataEncrypted.fromJSON(pojo['systemMetaData']!)
+        if (json['openingDate'] !== undefined) {
+            this.openingDate = json['openingDate']!
         }
-        return new Condition(obj)
+        if (json['closingDate'] !== undefined) {
+            this.closingDate = json['closingDate']!
+        }
+        if (json['description'] !== undefined) {
+            this.description = json['description']!
+        }
+        if (json['notes'] !== undefined) {
+            this.notes = json['notes']!.map((item: any) => new Annotation(item))
+        }
+        if (json['systemMetaData'] !== undefined) {
+            this.systemMetaData = new SystemMetaDataEncrypted(json['systemMetaData']!)
+        }
     }
 }
 
 export interface ICondition {
     id?: string
-    identifiers: Identifier[]
+    identifiers: IIdentifier[]
     rev?: string
     created?: number
     modified?: number
@@ -168,9 +147,9 @@ export interface ICondition {
     verificationStatus?: VerificationStatusEnum
     category?: CategoryEnum
     severity?: SeverityEnum
-    bodySite?: Array<CodingReference>
-    tags: Array<CodingReference>
-    codes: Array<CodingReference>
+    bodySite?: ICodingReference[]
+    tags: ICodingReference[]
+    codes: ICodingReference[]
     endOfLife?: number
     deletionDate?: number
     healthcareElementId?: string
@@ -178,6 +157,6 @@ export interface ICondition {
     openingDate?: number
     closingDate?: number
     description?: string
-    notes: Annotation[]
-    systemMetaData?: SystemMetaDataEncrypted
+    notes: IAnnotation[]
+    systemMetaData?: ISystemMetaDataEncrypted
 }

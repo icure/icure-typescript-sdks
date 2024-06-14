@@ -3,7 +3,11 @@ import { SecureDelegation as SecureDelegationDto, SecurityMetadata as SecurityMe
 import { SecureDelegation } from '../models/SecureDelegation.model'
 import { mapSecureDelegationDtoToSecureDelegation, mapSecureDelegationToSecureDelegationDto } from './SecureDelegation.mapper'
 
-function toSecurityMetadataDtoSecureDelegations(domain: SecurityMetadata): { [hash: string]: SecureDelegationDto } | undefined {
+function toSecurityMetadataDtoSecureDelegations(domain: SecurityMetadata):
+    | {
+          [hash: string]: SecureDelegationDto
+      }
+    | undefined {
     return Object.fromEntries(Object.entries(domain.secureDelegations).map(([k, v]) => [k, mapSecureDelegationToSecureDelegationDto(v)]))
 }
 

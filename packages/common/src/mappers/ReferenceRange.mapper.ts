@@ -1,5 +1,5 @@
 import { ReferenceRange } from '../models/ReferenceRange.model'
-import { Annotation as AnnotationDto, CodeStub, ReferenceRange as ReferenceRangeDto, Range as RangeDto } from '@icure/api'
+import { Annotation as AnnotationDto, CodeStub, Range as RangeDto, ReferenceRange as ReferenceRangeDto } from '@icure/api'
 import { CodingReference } from '../models/CodingReference.model'
 import { Annotation } from '../models/Annotation.model'
 import { Range } from '../models/Range.model'

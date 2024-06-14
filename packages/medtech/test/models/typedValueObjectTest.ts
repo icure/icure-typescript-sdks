@@ -2,7 +2,6 @@ import 'mocha'
 
 import { TypedValueObject } from '../..'
 import { assert } from 'chai'
-import { newDelegation } from './delegationTest'
 
 export function newTypedValueObject(): TypedValueObject {
     return new TypedValueObject({

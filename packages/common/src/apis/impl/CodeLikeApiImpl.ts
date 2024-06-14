@@ -1,6 +1,6 @@
 import { CodeLikeApi } from '../CodeLikeApi'
 import { Mapper } from '../Mapper'
-import { Code, FilterChainCode, IccCodeXApi, PaginatedListCode } from '@icure/api'
+import { Code, FilterChainCode, IccCodeXApi } from '@icure/api'
 import { ErrorHandler } from '../../services/ErrorHandler'
 import { firstOrNull } from '../../utils/functionalUtils'
 import { PaginatedList } from '../../models/PaginatedList.model'
@@ -10,7 +10,11 @@ import { CommonFilter } from '../../filters/filters'
 import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
 
 export class CodeLikeApiImpl<DSCode> implements CodeLikeApi<DSCode> {
-    constructor(private readonly mapper: Mapper<DSCode, Code>, private readonly errorHandler: ErrorHandler, private readonly codeApi: IccCodeXApi) {}
+    constructor(
+        private readonly mapper: Mapper<DSCode, Code>,
+        private readonly errorHandler: ErrorHandler,
+        private readonly codeApi: IccCodeXApi,
+    ) {}
 
     private static isCodeId(id?: string): boolean {
         const codeRegex = new RegExp(`[a-zA-Z0-9]{0,80}\\|[a-zA-Z0-9.-]{0,80}\\|[a-zA-Z0-9.]{0,80}`)

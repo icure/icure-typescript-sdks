@@ -1,78 +1,80 @@
-import { CodingReference } from './CodingReference.model'
-import { Delegation } from './Delegation.model'
-import { SecurityMetadata } from './SecurityMetadata.model'
+import { CodingReference, ICodingReference } from './CodingReference.model'
+import { Delegation, IDelegation } from './Delegation.model'
+import { ISecurityMetadata, SecurityMetadata } from './SecurityMetadata.model'
 
 export class SystemMetaDataOwnerEncrypted {
     publicKey?: string
-    hcPartyKeys: Record<string, string[]>
-    privateKeyShamirPartitions: Record<string, string>
-    secretForeignKeys: string[]
-    cryptedForeignKeys: Record<string, Array<Delegation>>
-    delegations: Record<string, Array<Delegation>>
-    encryptionKeys: Record<string, Array<Delegation>>
-    aesExchangeKeys: Record<string, Record<string, Record<string, string>>>
-    transferKeys: Record<string, Record<string, string>>
+    hcPartyKeys: Record<string, string[]> = {}
+    privateKeyShamirPartitions: Record<string, string> = {}
+    secretForeignKeys: string[] = []
+    cryptedForeignKeys: Record<string, Delegation[]> = {}
+    delegations: Record<string, Delegation[]> = {}
+    encryptionKeys: Record<string, Delegation[]> = {}
+    aesExchangeKeys: Record<string, Record<string, Record<string, string>>> = {}
+    transferKeys: Record<string, Record<string, string>> = {}
     securityMetadata?: SecurityMetadata
-    publicKeysForOaepWithSha256: Array<string>
+    publicKeysForOaepWithSha256: string[] = []
     encryptedSelf?: string
-    tags: Array<CodingReference>
+    tags: CodingReference[] = []
 
-    constructor(systemMetaDataOwnerEncrypted: Partial<ISystemMetaDataOwnerEncrypted>) {
-        this.publicKey = systemMetaDataOwnerEncrypted.publicKey
-        this.hcPartyKeys = systemMetaDataOwnerEncrypted.hcPartyKeys ?? {}
-        this.privateKeyShamirPartitions = systemMetaDataOwnerEncrypted.privateKeyShamirPartitions ?? {}
-        this.secretForeignKeys = systemMetaDataOwnerEncrypted.secretForeignKeys ?? []
-        this.cryptedForeignKeys = systemMetaDataOwnerEncrypted.cryptedForeignKeys ?? {}
-        this.delegations = systemMetaDataOwnerEncrypted.delegations ?? {}
-        this.encryptionKeys = systemMetaDataOwnerEncrypted.encryptionKeys ?? {}
-        this.aesExchangeKeys = systemMetaDataOwnerEncrypted.aesExchangeKeys ?? {}
-        this.transferKeys = systemMetaDataOwnerEncrypted.transferKeys ?? {}
-        this.securityMetadata = systemMetaDataOwnerEncrypted.securityMetadata
-        this.encryptedSelf = systemMetaDataOwnerEncrypted.encryptedSelf
-        this.publicKeysForOaepWithSha256 = systemMetaDataOwnerEncrypted.publicKeysForOaepWithSha256 ?? []
-        this.tags = systemMetaDataOwnerEncrypted.tags ?? new Array<CodingReference>()
+    toJSON(): ISystemMetaDataOwnerEncrypted {
+        return {
+            publicKey: this.publicKey,
+            hcPartyKeys: { ...this.hcPartyKeys },
+            privateKeyShamirPartitions: { ...this.privateKeyShamirPartitions },
+            secretForeignKeys: this.secretForeignKeys.map((item) => item),
+            cryptedForeignKeys: Object.fromEntries(Object.entries(this.cryptedForeignKeys).map(([k, v]: [any, Delegation[]]) => [k, v.map((item) => item.toJSON())])),
+            delegations: Object.fromEntries(Object.entries(this.delegations).map(([k, v]: [any, Delegation[]]) => [k, v.map((item) => item.toJSON())])),
+            encryptionKeys: Object.fromEntries(Object.entries(this.encryptionKeys).map(([k, v]: [any, Delegation[]]) => [k, v.map((item) => item.toJSON())])),
+            aesExchangeKeys: { ...this.aesExchangeKeys },
+            transferKeys: { ...this.transferKeys },
+            securityMetadata: !!this.securityMetadata ? this.securityMetadata.toJSON() : undefined,
+            publicKeysForOaepWithSha256: this.publicKeysForOaepWithSha256.map((item) => item),
+            encryptedSelf: this.encryptedSelf,
+            tags: this.tags.map((item) => item.toJSON()),
+        }
     }
 
-    static toJSON(instance: SystemMetaDataOwnerEncrypted): ISystemMetaDataOwnerEncrypted {
-        const pojo: ISystemMetaDataOwnerEncrypted = {} as ISystemMetaDataOwnerEncrypted
-        if (instance.publicKey !== undefined) pojo['publicKey'] = instance.publicKey
-        pojo['hcPartyKeys'] = { ...instance.hcPartyKeys }
-        pojo['privateKeyShamirPartitions'] = { ...instance.privateKeyShamirPartitions }
-        pojo['secretForeignKeys'] = instance.secretForeignKeys.map((item) => item)
-        pojo['cryptedForeignKeys'] = { ...instance.cryptedForeignKeys }
-        pojo['delegations'] = { ...instance.delegations }
-        pojo['encryptionKeys'] = { ...instance.encryptionKeys }
-        pojo['aesExchangeKeys'] = { ...instance.aesExchangeKeys }
-        pojo['transferKeys'] = { ...instance.transferKeys }
-        if (instance.securityMetadata !== undefined) pojo['securityMetadata'] = SecurityMetadata.toJSON(instance.securityMetadata)
-        pojo['publicKeysForOaepWithSha256'] = instance.publicKeysForOaepWithSha256.map((item) => item)
-        if (instance.encryptedSelf !== undefined) pojo['encryptedSelf'] = instance.encryptedSelf
-        pojo['tags'] = instance.tags.map((item) => CodingReference.toJSON(item))
-        return pojo
-    }
-
-    static fromJSON(pojo: ISystemMetaDataOwnerEncrypted): SystemMetaDataOwnerEncrypted {
-        const obj = {} as ISystemMetaDataOwnerEncrypted
-        if (pojo['publicKey'] !== undefined) {
-            obj['publicKey'] = pojo['publicKey']!
+    constructor(json: Partial<ISystemMetaDataOwnerEncrypted>) {
+        if (json['publicKey'] !== undefined) {
+            this.publicKey = json['publicKey']!
         }
-        obj['hcPartyKeys'] = { ...pojo['hcPartyKeys'] }
-        obj['privateKeyShamirPartitions'] = { ...pojo['privateKeyShamirPartitions'] }
-        obj['secretForeignKeys'] = pojo['secretForeignKeys'].map((item: any) => item)
-        obj['cryptedForeignKeys'] = { ...pojo['cryptedForeignKeys'] }
-        obj['delegations'] = { ...pojo['delegations'] }
-        obj['encryptionKeys'] = { ...pojo['encryptionKeys'] }
-        obj['aesExchangeKeys'] = { ...pojo['aesExchangeKeys'] }
-        obj['transferKeys'] = { ...pojo['transferKeys'] }
-        if (pojo['securityMetadata'] !== undefined) {
-            obj['securityMetadata'] = SecurityMetadata.fromJSON(pojo['securityMetadata']!)
+        if (json['hcPartyKeys'] !== undefined) {
+            this.hcPartyKeys = { ...json['hcPartyKeys']! }
         }
-        obj['publicKeysForOaepWithSha256'] = pojo['publicKeysForOaepWithSha256'].map((item: any) => item)
-        if (pojo['encryptedSelf'] !== undefined) {
-            obj['encryptedSelf'] = pojo['encryptedSelf']!
+        if (json['privateKeyShamirPartitions'] !== undefined) {
+            this.privateKeyShamirPartitions = { ...json['privateKeyShamirPartitions']! }
         }
-        obj['tags'] = pojo['tags'].map((item: any) => CodingReference.fromJSON(item))
-        return new SystemMetaDataOwnerEncrypted(obj)
+        if (json['secretForeignKeys'] !== undefined) {
+            this.secretForeignKeys = json['secretForeignKeys']!.map((item: any) => item)
+        }
+        if (json['cryptedForeignKeys'] !== undefined) {
+            this.cryptedForeignKeys = Object.fromEntries(Object.entries(json['cryptedForeignKeys']!).map(([k, v]: [any, IDelegation[]]) => [k, v.map((item: any) => new Delegation(item))]))
+        }
+        if (json['delegations'] !== undefined) {
+            this.delegations = Object.fromEntries(Object.entries(json['delegations']!).map(([k, v]: [any, IDelegation[]]) => [k, v.map((item: any) => new Delegation(item))]))
+        }
+        if (json['encryptionKeys'] !== undefined) {
+            this.encryptionKeys = Object.fromEntries(Object.entries(json['encryptionKeys']!).map(([k, v]: [any, IDelegation[]]) => [k, v.map((item: any) => new Delegation(item))]))
+        }
+        if (json['aesExchangeKeys'] !== undefined) {
+            this.aesExchangeKeys = { ...json['aesExchangeKeys']! }
+        }
+        if (json['transferKeys'] !== undefined) {
+            this.transferKeys = { ...json['transferKeys']! }
+        }
+        if (json['securityMetadata'] !== undefined) {
+            this.securityMetadata = new SecurityMetadata(json['securityMetadata']!)
+        }
+        if (json['publicKeysForOaepWithSha256'] !== undefined) {
+            this.publicKeysForOaepWithSha256 = json['publicKeysForOaepWithSha256']!.map((item: any) => item)
+        }
+        if (json['encryptedSelf'] !== undefined) {
+            this.encryptedSelf = json['encryptedSelf']!
+        }
+        if (json['tags'] !== undefined) {
+            this.tags = json['tags']!.map((item: any) => new CodingReference(item))
+        }
     }
 }
 
@@ -81,13 +83,13 @@ export interface ISystemMetaDataOwnerEncrypted {
     hcPartyKeys: Record<string, string[]>
     privateKeyShamirPartitions: Record<string, string>
     secretForeignKeys: string[]
-    cryptedForeignKeys: Record<string, Array<Delegation>>
-    delegations: Record<string, Array<Delegation>>
-    encryptionKeys: Record<string, Array<Delegation>>
+    cryptedForeignKeys: Record<string, Array<IDelegation>>
+    delegations: Record<string, Array<IDelegation>>
+    encryptionKeys: Record<string, Array<IDelegation>>
     aesExchangeKeys: Record<string, Record<string, Record<string, string>>>
     transferKeys: Record<string, Record<string, string>>
-    securityMetadata?: SecurityMetadata
-    publicKeysForOaepWithSha256: Array<string>
+    securityMetadata?: ISecurityMetadata
+    publicKeysForOaepWithSha256: string[]
     encryptedSelf?: string
-    tags: Array<CodingReference>
+    tags: ICodingReference[]
 }

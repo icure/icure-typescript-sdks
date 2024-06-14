@@ -10,7 +10,7 @@ import { domainTypeTag, mapCodeStubToCodingReference } from '@icure/typescript-c
 import { LocalComponent } from '../../src'
 
 export function generateObservation(): Observation {
-    const observation = {
+    return new Observation({
         id: v4(),
         transactionId: 'sampleTransactionId',
         identifiers: [generateIdentifier()],
@@ -32,7 +32,5 @@ export function generateObservation(): Observation {
         tags: [generateCodingReference()],
         systemMetaData: generateSystemMetaDataEncrypted(mapCodeStubToCodingReference(domainTypeTag('observation'))),
         notes: [generateAnnotation()],
-    } satisfies Observation
-
-    return new Observation(observation)
+    })
 }

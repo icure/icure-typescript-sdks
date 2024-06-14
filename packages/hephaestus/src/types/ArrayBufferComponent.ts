@@ -2,8 +2,12 @@ import { ClassComponent } from './ClassComponent'
 import { ImportDeclaration, SourceFile } from 'ts-morph'
 
 export class ArrayBufferComponent extends ClassComponent {
+    override get typeName(): string {
+        return 'ArrayBuffer'
+    }
+
     public notNullable(): ArrayBufferComponent {
-        return new ArrayBufferComponent(false, this.children)
+        return new ArrayBufferComponent(false, this.optional, this.children)
     }
 
     computeDeserializer(value: string): string {

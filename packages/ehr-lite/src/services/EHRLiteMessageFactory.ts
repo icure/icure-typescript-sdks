@@ -1,5 +1,5 @@
 import { Patient } from '../models/Patient.model'
-import { User, MessageFactory, ICureMessageFactory } from '@icure/typescript-common'
+import { ICureMessageFactory, MessageFactory, User } from '@icure/typescript-common'
 import { Practitioner } from '../models/Practitioner.model'
 import { Organisation } from '../models/Organisation.model'
 
@@ -23,4 +23,5 @@ class ICureEHRLiteMessageFactory extends ICureMessageFactory<User, Patient> {
         return name
     }
 }
+
 export const iCureEHRLiteMessageFactory: EHRLiteMessageFactory = new ICureEHRLiteMessageFactory()

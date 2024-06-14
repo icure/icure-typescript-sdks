@@ -1,5 +1,5 @@
 import { AuthenticationApi } from '../AuthenticationApi'
-import { BasicApis, BasicAuthenticationProvider, Device, HealthcareParty, IccAuthApi, JwtAuthenticationProvider, NoAuthenticationProvider, Patient, retry, StorageFacade, ua2hex, User } from '@icure/api'
+import { BasicApis, Device, HealthcareParty, IccAuthApi, JwtAuthenticationProvider, NoAuthenticationProvider, Patient, retry, StorageFacade, ua2hex, User } from '@icure/api'
 import { Sanitizer } from '../../services/Sanitizer'
 import { ErrorHandler } from '../../services/ErrorHandler'
 import { MessageGatewayApi } from '../MessageGatewayApi'
@@ -10,8 +10,6 @@ import { RecaptchaType } from '../../models/RecaptchaType.model'
 import { CommonApi } from '../CommonApi'
 import { forceUuid } from '../../utils/uuidUtils'
 import { NotificationTypeEnum } from '../../models/Notification.model'
-import { JwtBridgedAuthService } from '@icure/api/icc-x-api/auth/JwtBridgedAuthService'
-import { EnsembleAuthService } from '@icure/api/icc-x-api/auth/EnsembleAuthService'
 import { AuthenticationProvider } from '@icure/api/icc-x-api/auth/AuthenticationProvider'
 
 const DEVICE_ID_KEY = 'ICURE.DEVICE_ID'
@@ -174,7 +172,7 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
             keyPairs: userKeyPairs,
             token: password,
             groupId: user.groupId!,
-            userId: user.id,
+            userId: user.id!,
         })
     }
 
@@ -194,7 +192,16 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
         return newDeviceId
     }
 
-    protected abstract initApi(username: string, password: string, initialTokens: { token: string; refreshToken: string } | undefined): Promise<DSApi>
+    protected abstract initApi(
+        username: string,
+        password: string,
+        initialTokens:
+            | {
+                  token: string
+                  refreshToken: string
+              }
+            | undefined,
+    ): Promise<DSApi>
 
     protected abstract validatePatient(patientDto: Patient): void
 

@@ -1,6 +1,6 @@
 import { Component } from '../models/Component.model'
 import { Observation } from '../models/Observation.model'
-import { mapMeasureDtoToMeasure, mapMeasureToMeasureDto, mapTimeSeriesDtoToTimeSeries, mapTimeSeriesToTimeSeriesDto, Measure, TimeSeries, ContentDto, MeasureDto, MedicationDto, ServiceDto, TimeSeriesDto } from '@icure/typescript-common'
+import { ContentDto, mapMeasureDtoToMeasure, mapMeasureToMeasureDto, mapTimeSeriesDtoToTimeSeries, mapTimeSeriesToTimeSeriesDto, Measure, MeasureDto, MedicationDto, ServiceDto, TimeSeries, TimeSeriesDto } from '@icure/typescript-common'
 import { mapObservationToServiceDto, mapServiceDtoToObservation } from './Observation.mapper'
 
 function toContentDtoStringValue(domain: Component): string | undefined {

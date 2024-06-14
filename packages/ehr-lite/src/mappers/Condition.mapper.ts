@@ -2,10 +2,17 @@ import { Condition } from '../models/Condition.model'
 import {
     addUniqueObjectsToArray,
     Annotation,
+    AnnotationDto,
+    CareTeamMember,
+    CodeStub,
     CodingReference,
+    DelegationDto,
+    Episode,
     filteringOutInternalTags,
     forceUuid,
+    HealthElementDto,
     Identifier,
+    IdentifierDto,
     mapAnnotationDtoToAnnotation,
     mapAnnotationToAnnotationDto,
     mapCodeStubToCodingReference,
@@ -13,6 +20,8 @@ import {
     mapIdentifierDtoToIdentifier,
     mapIdentifierToIdentifierDto,
     mergeTagsWithInternalTags,
+    PlanOfAction,
+    SecurityMetadataDto,
     SystemMetaDataEncrypted,
     toCryptedForeignKeys,
     toDelegations,
@@ -21,21 +30,11 @@ import {
     toSecretForeignKeys,
     toSecurityMetadataDto,
     toSystemMetaDataEncrypted,
-    CareTeamMember,
-    CodeStub,
-    DelegationDto,
-    Episode,
-    HealthElementDto,
-    IdentifierDto,
-    PlanOfAction,
-    SecurityMetadataDto,
-    AnnotationDto,
 } from '@icure/typescript-common'
 import { ClinicalStatusEnum } from '../models/enums/ClinicalStatus.enum'
 import { VerificationStatusEnum } from '../models/enums/VerificationStatus.enum'
 import { CategoryEnum } from '../models/enums/Category.enum'
 import { SeverityEnum } from '../models/enums/Severity.enum'
-import { b64_2ab, ua2b64 } from '@icure/api'
 
 function toHealthElementDtoId(domain: Condition): string {
     return forceUuid(domain.id)

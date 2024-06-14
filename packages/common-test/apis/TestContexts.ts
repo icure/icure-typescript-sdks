@@ -15,24 +15,22 @@ import {
     MaintenanceTaskFilter,
     MaintenanceTaskLikeApi,
     MessageFactory,
+    MessageLikeApi,
     PatientLikeApi,
     RecaptchaType,
     ServiceFilter,
     ServiceLikeApi,
     SimpleCryptoStrategies,
-    UserLikeApi,
     TopicLikeApi,
-    MessageLikeApi,
-    MessageCreationResult,
+    UserLikeApi,
 } from '@icure/typescript-common'
 import { testStorageWithKeys } from '../test-storage'
 import { webcrypto } from 'crypto'
 import { getTempEmail, TestUtils } from '../test-utils'
 import { assert } from 'chai'
-import { DataOwnerWithType as DataOwnerWithTypeDto, HealthcareParty, HealthElement, KeyStorageFacade, MaintenanceTask, Patient, Service, sleep, StorageFacade, User, Document, Device, retry, Topic, Message, IccDocumentXApi, ShaVersion } from '@icure/api'
+import { DataOwnerWithType as DataOwnerWithTypeDto, Device, Document, HealthcareParty, HealthElement, KeyStorageFacade, MaintenanceTask, Message, Patient, retry, Service, ShaVersion, sleep, StorageFacade, Topic, User } from '@icure/api'
 import { TestVars, UserDetails } from '@icure/test-setup/types'
 import { DefaultStorageEntryKeysFactory } from '@icure/api/icc-x-api/storage/DefaultStorageEntryKeysFactory'
-import { Binary } from '@icure/ehr-lite-sdk'
 
 export abstract class BaseApiTestContext<
     DSAnonymousApiBuilder extends AnonymousApiBuilder<DSCryptoStrategies, DSAnonymousApi>,
@@ -47,28 +45,61 @@ export abstract class BaseApiTestContext<
     private lastRegisterCall = 0
 
     abstract newAnonymousApiBuilder(): AnonymousApiBuilder<DSCryptoStrategies, DSAnonymousApi>
+
     abstract newApiBuilder(): AuthenticatedApiBuilder<DSCryptoStrategies, DSMessageFactory, DSApi>
+
     abstract newSimpleCryptoStrategies(availableKeys?: KeyPair[]): DSCryptoStrategies & SimpleCryptoStrategies<any>
+
     abstract newTestMessageFactory(): DSMessageFactory
+
     abstract userApi(api: DSApi): UserLikeApi<DSUser, any>
+
     abstract toUserDto(dsUser: DSUser): User
+
     abstract toDSUser(userDto: User): DSUser
+
     abstract hcpProcessId(env: TestVars): string
+
     abstract patProcessId(env: TestVars): string
 
-    async masterApi(env: TestVars, additionalBuilderSteps: (builder: AuthenticatedApiBuilder<DSCryptoStrategies, any, DSApi>) => AuthenticatedApiBuilder<DSCryptoStrategies, any, DSApi> = (x) => x): Promise<{ api: DSApi; user: User }> {
+    async masterApi(
+        env: TestVars,
+        additionalBuilderSteps: (builder: AuthenticatedApiBuilder<DSCryptoStrategies, any, DSApi>) => AuthenticatedApiBuilder<DSCryptoStrategies, any, DSApi> = (x) => x,
+    ): Promise<{
+        api: DSApi
+        user: User
+    }> {
         return this.apiForCredentials(env, env.masterHcp!, additionalBuilderSteps)
     }
 
-    async apiForEnvUser(env: TestVars, username: string, additionalBuilderSteps: (builder: AuthenticatedApiBuilder<DSCryptoStrategies, any, DSApi>) => AuthenticatedApiBuilder<DSCryptoStrategies, any, DSApi> = (x) => x): Promise<{ api: DSApi; user: User }> {
+    async apiForEnvUser(
+        env: TestVars,
+        username: string,
+        additionalBuilderSteps: (builder: AuthenticatedApiBuilder<DSCryptoStrategies, any, DSApi>) => AuthenticatedApiBuilder<DSCryptoStrategies, any, DSApi> = (x) => x,
+    ): Promise<{
+        api: DSApi
+        user: User
+    }> {
         return this.apiForCredentials(env, env.dataOwnerDetails[username], additionalBuilderSteps)
     }
 
-    private async apiForCredentials(env: TestVars, credentials: UserDetails, additionalBuilderSteps: (builder: AuthenticatedApiBuilder<DSCryptoStrategies, any, DSApi>) => AuthenticatedApiBuilder<DSCryptoStrategies, any, DSApi> = (x) => x): Promise<{ api: DSApi; user: User }> {
+    private async apiForCredentials(
+        env: TestVars,
+        credentials: UserDetails,
+        additionalBuilderSteps: (builder: AuthenticatedApiBuilder<DSCryptoStrategies, any, DSApi>) => AuthenticatedApiBuilder<DSCryptoStrategies, any, DSApi> = (x) => x,
+    ): Promise<{
+        api: DSApi
+        user: User
+    }> {
         const storage = await testStorageWithKeys(new DefaultStorageEntryKeysFactory(), [
             {
                 dataOwnerId: credentials.dataOwnerId,
-                pairs: [{ keyPair: { publicKey: credentials.publicKey, privateKey: credentials.privateKey }, shaVersion: ShaVersion.Sha1 }],
+                pairs: [
+                    {
+                        keyPair: { publicKey: credentials.publicKey, privateKey: credentials.privateKey },
+                        shaVersion: ShaVersion.Sha1,
+                    },
+                ],
             },
         ])
         const builderApi = this.newApiBuilder()
@@ -167,81 +198,134 @@ export interface WithAuthenticationApi<DSApi extends CommonApi> {
 
 export interface WithHcpApi<DSApi, DSHcp> {
     hcpApi(api: DSApi): HealthcarePartyLikeApi<DSHcp>
+
     toHcpDto(dsHcp: DSHcp): HealthcareParty
+
     toDSHcp(hcpDto: HealthcareParty): DSHcp
 }
 
 export interface WithPatientApi<DSApi, DSPatient> {
     patientApi(api: DSApi): PatientLikeApi<DSPatient>
+
     toPatientDto(dsPatient: DSPatient): Patient
+
     toDSPatient(patientDto: Patient): DSPatient
+
     createPatient(api: DSApi): Promise<DSPatient>
+
     checkPatientAccessibleAndDecrypted(api: DSApi, patient: DSPatient, checkDeepEquals: boolean): Promise<void>
+
     // checkPatientAccessibleButEncrypted(api: DSApi, patient: DSPatient): Promise<void>
     checkPatientInaccessible(api: DSApi, patient: DSPatient): Promise<void>
+
     checkDefaultPatientDecrypted(patient: DSPatient): void
 }
 
 export interface WithDataOwnerApi<DSApi, DSDataOwnerWithType extends DataOwnerWithType, DSUser> {
     dataOwnerApi(api: DSApi): DataOwnerLikeApi<DSDataOwnerWithType, DSUser>
+
     toDataOwnerDto(dsDataOwner: DSDataOwnerWithType): DataOwnerWithTypeDto
+
     toDSDataOwner(dataOwnerDto: DataOwnerWithTypeDto): DSDataOwnerWithType
 }
 
 export interface WithServiceApi<DSApi, DSService, DSPatient, DSDocument> {
     serviceApi(api: DSApi): ServiceLikeApi<DSService, DSPatient, DSDocument>
+
     toServiceDto(dsService: DSService): Service
+
     createServiceForPatient(api: DSApi, patient: DSPatient): Promise<DSService>
+
     createServicesForPatient(api: DSApi, patient: DSPatient): Promise<DSService[]>
+
     toDSService(serviceDto: Service): DSService
+
     checkServiceAccessibleAndDecrypted(api: DSApi, service: DSService, checkDeepEquals: boolean): Promise<void>
+
     checkServiceAccessibleButEncrypted(api: DSApi, service: DSService): Promise<void>
+
     checkServiceInaccessible(api: DSApi, service: DSService): Promise<void>
+
     checkDefaultServiceDecrypted(service: DSService): void
+
     newServiceFilter(api: DSApi): ServiceFilter<DSPatient>
+
     toDocumentDto(dsDocument: DSDocument): Document
 }
 
 export interface WithMaintenanceTaskApi<DSApi, DSMaintenanceTask> {
     mtApi(api: DSApi): MaintenanceTaskLikeApi<DSMaintenanceTask>
+
     toMtDto(dsMt: DSMaintenanceTask): MaintenanceTask
+
     toDSMt(mtDto: MaintenanceTask): DSMaintenanceTask
+
     createMt(api: DSApi, delegate: string): Promise<DSMaintenanceTask>
+
     newMtFilter(api: DSApi): MaintenanceTaskFilter
 }
 
 export interface WithHelementApi<DSApi, DSHealthElement, DSPatient> {
     helementApi(api: DSApi): HealthElementLikeApi<DSHealthElement, DSPatient>
+
     createHelementForPatient(api: DSApi, patient: DSPatient): Promise<DSHealthElement>
+
     toHelementDto(dsHelement: DSHealthElement): HealthElement
+
     toDSHelement(helementDto: HealthElement): DSHealthElement
+
     // Check the api can retrieve the helement from the server and decrypt it
     checkHelementAccessibleAndDecrypted(api: DSApi, helement: DSHealthElement, checkDeepEquals: boolean): Promise<void>
+
     // Check the api can retrieve the helement from the server but can't decrypt it
     // checkHelementAccessibleButEncrypted(api: DSApi, helement: DSHealthElement): Promise<void>
     // Check the api can't retrieve the helement from the server
     checkHelementInaccessible(api: DSApi, helement: DSHealthElement): Promise<void>
+
     // Check already retrieved helement is decrypted
     checkDefaultHelementDecrypted(helement: DSHealthElement): void
+
     newHelementFilter(api: DSApi): HealthElementFilter<DSPatient>
 }
 
 export interface WithDeviceApi<DSApi, DSDevice> {
     deviceApi(api: DSApi): DeviceLikeApi<DSDevice>
+
     toDeviceDto(dsDevice: DSDevice): Device
+
     toDSDevice(deviceDto: Device): DSDevice
 }
 
 export interface WithTopicApi<DSApi, DSTopic, DSHcp, DSPatient, DSService, DSHealthElement> {
     topicApi(api: DSApi): TopicLikeApi<DSTopic, DSHcp, DSPatient, DSService, DSHealthElement>
+
     toTopicDto(dsTopic: DSTopic): Topic
+
     toDSTopic(topicDto: Topic): DSTopic
 }
 
 export interface WithMessageApi<DSApi, DSMessage, DSTopic, DSBinary> {
     messageApi(api: DSApi): MessageLikeApi<DSMessage, DSTopic, DSBinary>
+
     toMessageDto(dsMessage: DSMessage): Message
+
     toDSMessage(messageDto: Message): DSMessage
-    toDSBinary(binaryDto: { data: ArrayBuffer; filename: string; uti: string }, mimeTypeProvider: (uti: string) => string): DSBinary
-    toBinaryDto(dsBinary: DSBinary, utiProvider: (mimeType: string, extension: string) => string): { data: ArrayBuffer; filename: string; uti: string }
+
+    toDSBinary(
+        binaryDto: {
+            data: ArrayBuffer
+            filename: string
+            uti: string
+        },
+        mimeTypeProvider: (uti: string) => string,
+    ): DSBinary
+
+    toBinaryDto(
+        dsBinary: DSBinary,
+        utiProvider: (mimeType: string, extension: string) => string,
+    ): {
+        data: ArrayBuffer
+        filename: string
+        uti: string
+    }
 }

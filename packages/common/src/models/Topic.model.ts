@@ -1,134 +1,116 @@
 import { Topic as TopicDto } from '@icure/api'
+import { EntityId } from '../types'
 import { mapTo } from '../utils/decorators'
 import { forceUuid } from '../utils/uuidUtils'
-import { CodingReference } from './CodingReference.model'
-import { SystemMetaDataEncrypted } from './SystemMetaDataEncrypted.model'
-import { TopicRole } from './enums/TopicRole.enum'
+import { CodingReference, ICodingReference } from './CodingReference.model'
+import { ISystemMetaDataEncrypted, SystemMetaDataEncrypted } from './SystemMetaDataEncrypted.model'
+import { TopicRoleEnum } from './enums/TopicRole.enum'
 
 @mapTo(TopicDto)
 export class Topic {
-    id: string
+    id: EntityId
     rev?: string
     created?: number
     modified?: number
     author?: string
     responsible?: string
     medicalLocationId?: string
-    tags?: Array<CodingReference>
-    codes?: Array<CodingReference>
+    tags?: CodingReference[] = []
+    codes?: CodingReference[] = []
     endOfLife?: number
     deletionDate?: number
     descr?: string
-    linkedHealthElements?: Array<string>
-    linkedServices?: Array<string>
-    activeParticipants: Record<string, TopicRole>
+    linkedHealthElements?: string[] = []
+    linkedServices?: string[] = []
+    activeParticipants: Record<string, TopicRoleEnum> = {}
     systemMetadata?: SystemMetaDataEncrypted
 
-    constructor(topic: Partial<ITopic>) {
-        this.id = forceUuid(topic.id)
-        this.rev = topic.rev
-        this.created = topic.created
-        this.modified = topic.modified
-        this.author = topic.author
-        this.responsible = topic.responsible
-        this.medicalLocationId = topic.medicalLocationId
-        this.tags = topic.tags
-        this.codes = topic.codes
-        this.endOfLife = topic.endOfLife
-        this.deletionDate = topic.deletionDate
-        this.descr = topic.descr
-        this.linkedHealthElements = topic.linkedHealthElements
-        this.linkedServices = topic.linkedServices
-        this.activeParticipants = topic.activeParticipants ?? {}
-        this.systemMetadata = topic.systemMetadata
+    toJSON(): ITopic {
+        return {
+            id: this.id,
+            rev: this.rev,
+            created: this.created,
+            modified: this.modified,
+            author: this.author,
+            responsible: this.responsible,
+            medicalLocationId: this.medicalLocationId,
+            tags: this.tags?.map((item) => item.toJSON()),
+            codes: this.codes?.map((item) => item.toJSON()),
+            endOfLife: this.endOfLife,
+            deletionDate: this.deletionDate,
+            descr: this.descr,
+            linkedHealthElements: this.linkedHealthElements?.map((item) => item),
+            linkedServices: this.linkedServices?.map((item) => item),
+            activeParticipants: { ...this.activeParticipants },
+            systemMetadata: !!this.systemMetadata ? this.systemMetadata.toJSON() : undefined,
+        }
     }
 
-    static toJSON(instance: Topic): ITopic {
-        const pojo: ITopic = {} as ITopic
-        pojo['id'] = instance.id
-        if (instance.rev !== undefined) pojo['rev'] = instance.rev
-        if (instance.created !== undefined) pojo['created'] = instance.created
-        if (instance.modified !== undefined) pojo['modified'] = instance.modified
-        if (instance.author !== undefined) pojo['author'] = instance.author
-        if (instance.responsible !== undefined) pojo['responsible'] = instance.responsible
-        if (instance.medicalLocationId !== undefined) pojo['medicalLocationId'] = instance.medicalLocationId
-        if (instance.tags !== undefined) pojo['tags'] = instance.tags.map((item) => CodingReference.toJSON(item))
-        if (instance.codes !== undefined) pojo['codes'] = instance.codes.map((item) => CodingReference.toJSON(item))
-        if (instance.endOfLife !== undefined) pojo['endOfLife'] = instance.endOfLife
-        if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
-        if (instance.descr !== undefined) pojo['descr'] = instance.descr
-        if (instance.linkedHealthElements !== undefined) pojo['linkedHealthElements'] = instance.linkedHealthElements.map((item) => item)
-        if (instance.linkedServices !== undefined) pojo['linkedServices'] = instance.linkedServices.map((item) => item)
-        pojo['activeParticipants'] = { ...instance.activeParticipants }
-        if (instance.systemMetadata !== undefined) pojo['systemMetadata'] = SystemMetaDataEncrypted.toJSON(instance.systemMetadata)
-        return pojo
-    }
-
-    static fromJSON(pojo: ITopic): Topic {
-        const obj = {} as ITopic
-        obj['id'] = pojo['id']
-        if (pojo['rev'] !== undefined) {
-            obj['rev'] = pojo['rev']!
+    constructor(json: Partial<ITopic>) {
+        this.id = forceUuid(json['id']!)
+        if (json['rev'] !== undefined) {
+            this.rev = json['rev']!
         }
-        if (pojo['created'] !== undefined) {
-            obj['created'] = pojo['created']!
+        if (json['created'] !== undefined) {
+            this.created = json['created']!
         }
-        if (pojo['modified'] !== undefined) {
-            obj['modified'] = pojo['modified']!
+        if (json['modified'] !== undefined) {
+            this.modified = json['modified']!
         }
-        if (pojo['author'] !== undefined) {
-            obj['author'] = pojo['author']!
+        if (json['author'] !== undefined) {
+            this.author = json['author']!
         }
-        if (pojo['responsible'] !== undefined) {
-            obj['responsible'] = pojo['responsible']!
+        if (json['responsible'] !== undefined) {
+            this.responsible = json['responsible']!
         }
-        if (pojo['medicalLocationId'] !== undefined) {
-            obj['medicalLocationId'] = pojo['medicalLocationId']!
+        if (json['medicalLocationId'] !== undefined) {
+            this.medicalLocationId = json['medicalLocationId']!
         }
-        if (pojo['tags'] !== undefined) {
-            obj['tags'] = pojo['tags']!.map((item: any) => CodingReference.fromJSON(item))
+        if (json['tags'] !== undefined) {
+            this.tags = json['tags']!.map((item: any) => new CodingReference(item))
         }
-        if (pojo['codes'] !== undefined) {
-            obj['codes'] = pojo['codes']!.map((item: any) => CodingReference.fromJSON(item))
+        if (json['codes'] !== undefined) {
+            this.codes = json['codes']!.map((item: any) => new CodingReference(item))
         }
-        if (pojo['endOfLife'] !== undefined) {
-            obj['endOfLife'] = pojo['endOfLife']!
+        if (json['endOfLife'] !== undefined) {
+            this.endOfLife = json['endOfLife']!
         }
-        if (pojo['deletionDate'] !== undefined) {
-            obj['deletionDate'] = pojo['deletionDate']!
+        if (json['deletionDate'] !== undefined) {
+            this.deletionDate = json['deletionDate']!
         }
-        if (pojo['descr'] !== undefined) {
-            obj['descr'] = pojo['descr']!
+        if (json['descr'] !== undefined) {
+            this.descr = json['descr']!
         }
-        if (pojo['linkedHealthElements'] !== undefined) {
-            obj['linkedHealthElements'] = pojo['linkedHealthElements']!.map((item: any) => item)
+        if (json['linkedHealthElements'] !== undefined) {
+            this.linkedHealthElements = json['linkedHealthElements']!.map((item: any) => item)
         }
-        if (pojo['linkedServices'] !== undefined) {
-            obj['linkedServices'] = pojo['linkedServices']!.map((item: any) => item)
+        if (json['linkedServices'] !== undefined) {
+            this.linkedServices = json['linkedServices']!.map((item: any) => item)
         }
-        obj['activeParticipants'] = { ...pojo['activeParticipants'] }
-        if (pojo['systemMetadata'] !== undefined) {
-            obj['systemMetadata'] = SystemMetaDataEncrypted.fromJSON(pojo['systemMetadata']!)
+        if (json['activeParticipants'] !== undefined) {
+            this.activeParticipants = { ...json['activeParticipants']! }
         }
-        return new Topic(obj)
+        if (json['systemMetadata'] !== undefined) {
+            this.systemMetadata = new SystemMetaDataEncrypted(json['systemMetadata']!)
+        }
     }
 }
 
 export interface ITopic {
-    id: string
+    id: EntityId
     rev?: string
     created?: number
     modified?: number
     author?: string
     responsible?: string
     medicalLocationId?: string
-    tags?: Array<CodingReference>
-    codes?: Array<CodingReference>
+    tags?: ICodingReference[]
+    codes?: ICodingReference[]
     endOfLife?: number
     deletionDate?: number
     descr?: string
-    linkedHealthElements?: Array<string>
-    linkedServices?: Array<string>
-    activeParticipants?: Record<string, TopicRole>
-    systemMetadata?: SystemMetaDataEncrypted
+    linkedHealthElements?: string[]
+    linkedServices?: string[]
+    activeParticipants?: Record<string, TopicRoleEnum>
+    systemMetadata?: ISystemMetaDataEncrypted
 }

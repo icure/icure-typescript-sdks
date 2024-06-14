@@ -4,25 +4,13 @@ import { HumanNameUseEnum } from './enums/HumanNameUse.enum'
 @mapTo(PersonNameDto)
 export class HumanName implements IHumanName {
     family?: string
-    given: string[]
+    given: string[] = []
     start?: number
     end?: number
-    prefix: string[]
-    suffix: string[]
+    prefix: string[] = []
+    suffix: string[] = []
     text?: string
     use?: HumanNameUseEnum
-
-    constructor(humanName: Partial<IHumanName>) {
-        this.family = humanName.family
-        this.given = humanName.given ?? []
-        this.start = humanName.start
-        this.end = humanName.end
-        this.prefix = humanName.prefix ?? []
-        this.suffix = humanName.suffix ?? []
-        this.text = humanName.text
-        this.use = humanName.use
-    }
-
     // /**
     //  * Get the preferred name for a human which has/had one or more names, chosen in according to the following rules.
     //  * The preferred name is a name with at least one {@link HumanName.given} name or a {@link HumanName.family} name,
@@ -45,40 +33,44 @@ export class HumanName implements IHumanName {
     //       candidates[0]
     // }
 
-    static toJSON(instance: HumanName): IHumanName {
-        const pojo: IHumanName = {} as IHumanName
-        if (instance.family !== undefined) pojo['family'] = instance.family
-        pojo['given'] = instance.given.map((item) => item)
-        if (instance.start !== undefined) pojo['start'] = instance.start
-        if (instance.end !== undefined) pojo['end'] = instance.end
-        pojo['prefix'] = instance.prefix.map((item) => item)
-        pojo['suffix'] = instance.suffix.map((item) => item)
-        if (instance.text !== undefined) pojo['text'] = instance.text
-        if (instance.use !== undefined) pojo['use'] = instance.use
-        return pojo
+    toJSON(): IHumanName {
+        return {
+            family: this.family,
+            given: this.given.map((item) => item),
+            start: this.start,
+            end: this.end,
+            prefix: this.prefix.map((item) => item),
+            suffix: this.suffix.map((item) => item),
+            text: this.text,
+            use: this.use,
+        }
     }
 
-    static fromJSON(pojo: IHumanName): HumanName {
-        const obj = {} as IHumanName
-        if (pojo['family'] !== undefined) {
-            obj['family'] = pojo['family']!
+    constructor(json: Partial<IHumanName>) {
+        if (json['family'] !== undefined) {
+            this.family = json['family']!
         }
-        obj['given'] = pojo['given'].map((item: any) => item)
-        if (pojo['start'] !== undefined) {
-            obj['start'] = pojo['start']!
+        if (json['given'] !== undefined) {
+            this.given = json['given']!.map((item: any) => item)
         }
-        if (pojo['end'] !== undefined) {
-            obj['end'] = pojo['end']!
+        if (json['start'] !== undefined) {
+            this.start = json['start']!
         }
-        obj['prefix'] = pojo['prefix'].map((item: any) => item)
-        obj['suffix'] = pojo['suffix'].map((item: any) => item)
-        if (pojo['text'] !== undefined) {
-            obj['text'] = pojo['text']!
+        if (json['end'] !== undefined) {
+            this.end = json['end']!
         }
-        if (pojo['use'] !== undefined) {
-            obj['use'] = pojo['use']!
+        if (json['prefix'] !== undefined) {
+            this.prefix = json['prefix']!.map((item: any) => item)
         }
-        return new HumanName(obj)
+        if (json['suffix'] !== undefined) {
+            this.suffix = json['suffix']!.map((item: any) => item)
+        }
+        if (json['text'] !== undefined) {
+            this.text = json['text']!
+        }
+        if (json['use'] !== undefined) {
+            this.use = json['use']!
+        }
     }
 }
 

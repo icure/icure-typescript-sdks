@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import { ContentDto, Measure, TimeSeries, base64string, mapTo } from '@icure/typescript-common'
-import { DataSample } from './DataSample.model'
+import { base64string, ContentDto, IMeasure, ITimeSeries, mapTo, Measure, TimeSeries } from '@icure/typescript-common'
+import { DataSample, IDataSample } from './DataSample.model'
 
 /**
  * Information contained in the data sample (Measure, number, ...). Content is localized, using ISO language code as key
@@ -19,85 +19,79 @@ import { DataSample } from './DataSample.model'
 
 @mapTo(ContentDto)
 export class Content {
-    constructor(json: Partial<IContent>) {
-        Object.assign(this as Content, json)
-    }
-
-    'stringValue'?: string
-    'numberValue'?: number
-    'booleanValue'?: boolean
-    'instantValue'?: number
+    stringValue?: string
+    numberValue?: number
+    booleanValue?: boolean
+    instantValue?: number
     /**
      * Value as date. The format could have a all three (day, month and year) or values on any of these three, whatever is known.
      */
-    'fuzzyDateValue'?: number
-    'binaryValue'?: base64string
+    fuzzyDateValue?: number
+    binaryValue?: base64string
     /**
      * Linked document.
      */
-    'documentId'?: string
-    'measureValue'?: Measure
-    'timeSeries'?: TimeSeries
-    'compoundValue'?: Array<DataSample>
-    'ratio'?: Array<Measure>
-    'range'?: Array<Measure>
+    documentId?: string
+    measureValue?: Measure
+    timeSeries?: TimeSeries
+    compoundValue?: DataSample[]
+    ratio?: Measure[]
+    range?: Measure[]
 
-    static toJSON(instance: Content): IContent {
-        const pojo: IContent = {} as IContent
-        if (instance.stringValue !== undefined) pojo['stringValue'] = instance.stringValue
-        if (instance.numberValue !== undefined) pojo['numberValue'] = instance.numberValue
-        if (instance.booleanValue !== undefined) pojo['booleanValue'] = instance.booleanValue
-        if (instance.instantValue !== undefined) pojo['instantValue'] = instance.instantValue
-        if (instance.fuzzyDateValue !== undefined) pojo['fuzzyDateValue'] = instance.fuzzyDateValue
-        if (instance.binaryValue !== undefined) pojo['binaryValue'] = instance.binaryValue
-        if (instance.documentId !== undefined) pojo['documentId'] = instance.documentId
-        if (instance.measureValue !== undefined) pojo['measureValue'] = Measure.toJSON(instance.measureValue)
-        if (instance.timeSeries !== undefined) pojo['timeSeries'] = TimeSeries.toJSON(instance.timeSeries)
-        if (instance.compoundValue !== undefined) pojo['compoundValue'] = instance.compoundValue.map((item) => DataSample.toJSON(item))
-        if (instance.ratio !== undefined) pojo['ratio'] = instance.ratio.map((item) => Measure.toJSON(item))
-        if (instance.range !== undefined) pojo['range'] = instance.range.map((item) => Measure.toJSON(item))
-        return pojo
+    toJSON(): IContent {
+        return {
+            stringValue: this.stringValue,
+            numberValue: this.numberValue,
+            booleanValue: this.booleanValue,
+            instantValue: this.instantValue,
+            fuzzyDateValue: this.fuzzyDateValue,
+            binaryValue: this.binaryValue,
+            documentId: this.documentId,
+            measureValue: !!this.measureValue ? this.measureValue.toJSON() : undefined,
+            timeSeries: !!this.timeSeries ? this.timeSeries.toJSON() : undefined,
+            compoundValue: this.compoundValue?.map((item) => item.toJSON()),
+            ratio: this.ratio?.map((item) => item.toJSON()),
+            range: this.range?.map((item) => item.toJSON()),
+        }
     }
 
-    static fromJSON(pojo: IContent): Content {
-        const obj = {} as IContent
-        if (pojo['stringValue'] !== undefined) {
-            obj['stringValue'] = pojo['stringValue']!
+    constructor(json: Partial<IContent>) {
+        if (json['stringValue'] !== undefined) {
+            this.stringValue = json['stringValue']!
         }
-        if (pojo['numberValue'] !== undefined) {
-            obj['numberValue'] = pojo['numberValue']!
+        if (json['numberValue'] !== undefined) {
+            this.numberValue = json['numberValue']!
         }
-        if (pojo['booleanValue'] !== undefined) {
-            obj['booleanValue'] = pojo['booleanValue']!
+        if (json['booleanValue'] !== undefined) {
+            this.booleanValue = json['booleanValue']!
         }
-        if (pojo['instantValue'] !== undefined) {
-            obj['instantValue'] = pojo['instantValue']!
+        if (json['instantValue'] !== undefined) {
+            this.instantValue = json['instantValue']!
         }
-        if (pojo['fuzzyDateValue'] !== undefined) {
-            obj['fuzzyDateValue'] = pojo['fuzzyDateValue']!
+        if (json['fuzzyDateValue'] !== undefined) {
+            this.fuzzyDateValue = json['fuzzyDateValue']!
         }
-        if (pojo['binaryValue'] !== undefined) {
-            obj['binaryValue'] = pojo['binaryValue']!
+        if (json['binaryValue'] !== undefined) {
+            this.binaryValue = json['binaryValue']!
         }
-        if (pojo['documentId'] !== undefined) {
-            obj['documentId'] = pojo['documentId']!
+        if (json['documentId'] !== undefined) {
+            this.documentId = json['documentId']!
         }
-        if (pojo['measureValue'] !== undefined) {
-            obj['measureValue'] = Measure.fromJSON(pojo['measureValue']!)
+        if (json['measureValue'] !== undefined) {
+            this.measureValue = new Measure(json['measureValue']!)
         }
-        if (pojo['timeSeries'] !== undefined) {
-            obj['timeSeries'] = TimeSeries.fromJSON(pojo['timeSeries']!)
+        if (json['timeSeries'] !== undefined) {
+            this.timeSeries = new TimeSeries(json['timeSeries']!)
         }
-        if (pojo['compoundValue'] !== undefined) {
-            obj['compoundValue'] = pojo['compoundValue']!.map((item: any) => DataSample.fromJSON(item))
+        if (json['compoundValue'] !== undefined) {
+            this.compoundValue = json['compoundValue']!.map((item: any) => new DataSample(item))
         }
-        if (pojo['ratio'] !== undefined) {
-            obj['ratio'] = pojo['ratio']!.map((item: any) => Measure.fromJSON(item))
+        if (json['ratio'] !== undefined) {
+            this.ratio = json['ratio']!.map((item: any) => new Measure(item))
         }
-        if (pojo['range'] !== undefined) {
-            obj['range'] = pojo['range']!.map((item: any) => Measure.fromJSON(item))
+        if (json['range'] !== undefined) {
+            this.range = json['range']!.map((item: any) => new Measure(item))
         }
-        return new Content(obj)
     }
 }
 
@@ -109,9 +103,9 @@ export interface IContent {
     fuzzyDateValue?: number
     binaryValue?: base64string
     documentId?: string
-    measureValue?: Measure
-    timeSeries?: TimeSeries
-    compoundValue?: Array<DataSample>
-    ratio?: Array<Measure>
-    range?: Array<Measure>
+    measureValue?: IMeasure
+    timeSeries?: ITimeSeries
+    compoundValue?: IDataSample[]
+    ratio?: IMeasure[]
+    range?: IMeasure[]
 }

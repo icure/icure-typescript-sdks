@@ -2,13 +2,22 @@ import { HealthcareProfessional, HealthcareProfessionalGenderEnum } from '../mod
 import { PersonName } from '../models/PersonName.model'
 import { Address } from '../models/Address.model'
 import {
+    AddressDto,
+    CodeStub,
     CodingReference,
+    FinancialInstitutionInformation,
+    FlatRateTarification,
     forceUuid,
+    HealthcarePartyDto,
+    HealthcarePartyHistoryStatus,
+    IdentifierDto,
     mapCodeStubToCodingReference,
     mapCodingReferenceToCodeStub,
     mapPropertyStubToProperty,
     mapPropertyToPropertyStub,
+    PersonNameDto,
     Property,
+    PropertyStub,
     SystemMetaDataOwner,
     toAesExchangeKeys,
     toHcPartyKeys,
@@ -17,15 +26,6 @@ import {
     toPublicKeysForOaepWithSha256,
     toSystemMetaDataOwner,
     toTransferKeys,
-    AddressDto,
-    CodeStub,
-    FinancialInstitutionInformation,
-    FlatRateTarification,
-    HealthcarePartyDto,
-    HealthcarePartyHistoryStatus,
-    IdentifierDto,
-    PersonNameDto,
-    PropertyStub,
 } from '@icure/typescript-common'
 import { mapPersonNameDtoToPersonName, mapPersonNameToPersonNameDto } from './PersonName.mapper'
 import { mapAddressDtoToAddress, mapAddressToAddressDto } from './Address.mapper'

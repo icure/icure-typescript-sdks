@@ -1,7 +1,7 @@
 import { getEnvironmentInitializer, hcp1Username, hcp2Username, hcp3Username, patUsername, setLocalStorage } from '../test-utils'
 import { BaseApiTestContext, WithDataOwnerApi, WithHcpApi, WithHelementApi, WithPatientApi, WithServiceApi, WithTopicApi } from './TestContexts'
-import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, TopicFilter, TopicRole } from '@icure/typescript-common'
-import { describe, it, beforeAll } from '@jest/globals'
+import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, TopicFilter, TopicRoleEnum } from '@icure/typescript-common'
+import { beforeAll, describe, it } from '@jest/globals'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import 'isomorphic-fetch'
 import { sleep, Topic } from '@icure/api'
@@ -48,11 +48,11 @@ export function testTopicLikeApi<
                 [
                     {
                         participant: masterUser.healthcarePartyId!,
-                        role: TopicRole.OWNER,
+                        role: TopicRoleEnum.OWNER,
                     },
                     {
                         participant: hcp2User.healthcarePartyId!,
-                        role: TopicRole.PARTICIPANT,
+                        role: TopicRoleEnum.PARTICIPANT,
                     },
                 ],
                 'Topic description',
@@ -80,7 +80,7 @@ export function testTopicLikeApi<
                 [
                     {
                         participant: masterUser.healthcarePartyId!,
-                        role: TopicRole.OWNER,
+                        role: TopicRoleEnum.OWNER,
                     },
                 ],
                 'Topic description',
@@ -94,7 +94,7 @@ export function testTopicLikeApi<
 
             const gotTopic = await ctx.topicApi(masterApi).addParticipant(topic, {
                 ref: hcp2User.healthcarePartyId!,
-                role: TopicRole.PARTICIPANT,
+                role: TopicRoleEnum.PARTICIPANT,
             })
             expect(gotTopic).toBeTruthy()
 
@@ -125,11 +125,11 @@ export function testTopicLikeApi<
                 [
                     {
                         participant: masterUser.healthcarePartyId!,
-                        role: TopicRole.OWNER,
+                        role: TopicRoleEnum.OWNER,
                     },
                     {
                         participant: hcp2User.healthcarePartyId!,
-                        role: TopicRole.PARTICIPANT,
+                        role: TopicRoleEnum.PARTICIPANT,
                     },
                 ],
                 'Topic description',
@@ -172,11 +172,11 @@ export function testTopicLikeApi<
                 [
                     {
                         participant: masterUser.healthcarePartyId!,
-                        role: TopicRole.OWNER,
+                        role: TopicRoleEnum.OWNER,
                     },
                     {
                         participant: hcp2User.healthcarePartyId!,
-                        role: TopicRole.PARTICIPANT,
+                        role: TopicRoleEnum.PARTICIPANT,
                     },
                 ],
                 'Topic description',
@@ -204,11 +204,11 @@ export function testTopicLikeApi<
                 [
                     {
                         participant: masterUser.healthcarePartyId!,
-                        role: TopicRole.OWNER,
+                        role: TopicRoleEnum.OWNER,
                     },
                     {
                         participant: hcp2User.healthcarePartyId!,
-                        role: TopicRole.PARTICIPANT,
+                        role: TopicRoleEnum.PARTICIPANT,
                     },
                 ],
                 'Topic description',
@@ -237,11 +237,11 @@ export function testTopicLikeApi<
                 [
                     {
                         participant: masterUser.healthcarePartyId!,
-                        role: TopicRole.OWNER,
+                        role: TopicRoleEnum.OWNER,
                     },
                     {
                         participant: hcp2User.healthcarePartyId!,
-                        role: TopicRole.PARTICIPANT,
+                        role: TopicRoleEnum.PARTICIPANT,
                     },
                 ],
                 'Topic description',
@@ -271,11 +271,11 @@ export function testTopicLikeApi<
                 [
                     {
                         participant: masterUser.healthcarePartyId!,
-                        role: TopicRole.OWNER,
+                        role: TopicRoleEnum.OWNER,
                     },
                     {
                         participant: hcp2User.healthcarePartyId!,
-                        role: TopicRole.PARTICIPANT,
+                        role: TopicRoleEnum.PARTICIPANT,
                     },
                 ],
                 'Topic description',
@@ -312,11 +312,11 @@ export function testTopicLikeApi<
                     [
                         {
                             participant: masterUser.healthcarePartyId!,
-                            role: TopicRole.OWNER,
+                            role: TopicRoleEnum.OWNER,
                         },
                         {
                             participant: patientUser.patientId!,
-                            role: TopicRole.PARTICIPANT,
+                            role: TopicRoleEnum.PARTICIPANT,
                         },
                     ],
                     'Topic description',
@@ -332,7 +332,7 @@ export function testTopicLikeApi<
                 [
                     {
                         participant: masterUser.healthcarePartyId!,
-                        role: TopicRole.OWNER,
+                        role: TopicRoleEnum.OWNER,
                     },
                 ],
                 'Topic description',
@@ -341,7 +341,7 @@ export function testTopicLikeApi<
             await expect(
                 ctx.topicApi(masterApi).addParticipant(topic, {
                     ref: patientUser.patientId!,
-                    role: TopicRole.PARTICIPANT,
+                    role: TopicRoleEnum.PARTICIPANT,
                 }),
             ).rejects.toThrow()
         })
@@ -378,11 +378,11 @@ export function testTopicLikeApi<
                         [
                             {
                                 participant: hcp1User.healthcarePartyId!,
-                                role: TopicRole.OWNER,
+                                role: TopicRoleEnum.OWNER,
                             },
                             {
                                 participant: hcp2User.healthcarePartyId!,
-                                role: TopicRole.PARTICIPANT,
+                                role: TopicRoleEnum.PARTICIPANT,
                             },
                         ],
                         'Topic description',

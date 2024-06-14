@@ -23,22 +23,22 @@ import {
     userApi,
 } from '../../index'
 import {
+    Apis,
     AuthenticatedApiBuilder,
+    AuthSecretProvider,
+    AuthSecretProviderBridge,
     CommonApi,
+    CryptoPrimitives,
     CryptoStrategies,
     CryptoStrategiesBridge,
-    KeyStorageFacade,
-    StorageFacade,
-    Apis,
-    IccCryptoXApi,
-    DataOwnerWithTypeDto,
     DataOwnerTypeEnumDto,
-    CryptoPrimitives,
-    IcureApi,
-    AuthSecretProvider,
+    DataOwnerWithTypeDto,
     ErrorHandler,
+    IccCryptoXApi,
+    IcureApi,
+    KeyStorageFacade,
     Sanitizer,
-    AuthSecretProviderBridge,
+    StorageFacade,
 } from '@icure/typescript-common'
 import dataOwnerMapper from '../mappers/DataOwner.mapper'
 import { MedTechCryptoStrategies } from '../services/MedTechCryptoStrategies'
@@ -221,6 +221,7 @@ export class MedTechApi extends CommonApi {
 export function medTechApi(initialisationApi?: MedTechApi) {
     return new MedTechApi.Builder(initialisationApi)
 }
+
 export namespace MedTechApi {
     export class Builder extends AuthenticatedApiBuilder<MedTechCryptoStrategies, MedTechMessageFactory, MedTechApi> {
         constructor(initialisationApi?: MedTechApi) {

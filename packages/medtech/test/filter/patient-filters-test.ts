@@ -1,10 +1,9 @@
 import 'isomorphic-fetch'
 import { MedTechApi } from '../../src/apis/MedTechApi'
-import { User } from '@icure/typescript-common'
+import { FilterComposition, NoOpFilter, User } from '@icure/typescript-common'
 import { Patient } from '../../src/models/Patient.model'
 import { expect } from 'chai'
 import { PatientFilter } from '../../src/filter/PatientFilterDsl'
-import { FilterComposition, NoOpFilter } from '@icure/typescript-common'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import { v4 as uuid } from 'uuid'
 import { mapPatientToPatientDto } from '../../src/mappers/Patient.mapper'
@@ -78,7 +77,10 @@ describe('Patient Filters Test', function () {
         const patients = await api.patientApi.filterPatients(filter)
         expect(patients.rows.length).to.be.greaterThan(0)
         for (const p of patients.rows) {
-            const accessInfo = await api.cryptoApi.delegationsDeAnonymization.getDataOwnersWithAccessTo({ entity: mapPatientToPatientDto(p)!, type: 'Patient' })
+            const accessInfo = await api.cryptoApi.delegationsDeAnonymization.getDataOwnersWithAccessTo({
+                entity: mapPatientToPatientDto(p)!,
+                type: 'Patient',
+            })
             expect(Object.keys(accessInfo.permissionsByDataOwnerId)).to.contain(user.healthcarePartyId!)
         }
     })

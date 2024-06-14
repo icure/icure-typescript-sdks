@@ -1,6 +1,5 @@
-import { AuthenticationApiImpl, CryptoStrategies, DataOwnerWithType, ErrorHandler, extractDomainType, MessageGatewayApi, Sanitizer, DeviceDto, HealthcarePartyDto, KeyStorageFacade, PatientDto, StorageFacade, CryptoPrimitives } from '@icure/typescript-common'
+import { AuthenticationApiImpl, CryptoPrimitives, CryptoStrategies, DataOwnerWithType, DeviceDto, ErrorHandler, extractDomainType, HealthcarePartyDto, KeyStorageFacade, MessageGatewayApi, PatientDto, Sanitizer, StorageFacade } from '@icure/typescript-common'
 import { EHRLiteApi } from './EHRLiteApi'
-import Crypto from 'crypto'
 import { DataOwnerTypeEnum } from '../models/DataOwner.model'
 import { AuthenticationProvider } from '@icure/api/icc-x-api/auth/AuthenticationProvider'
 
@@ -25,7 +24,16 @@ export class AuthenticationApi extends AuthenticationApiImpl<EHRLiteApi> {
         super(messageGatewayApi, errorHandler, sanitizer, iCureBasePath, authProcessByEmailId, authProcessBySmsId, storage, msgGtwSpecId, msgGtwUrl, authProvider, fetchImpl)
     }
 
-    protected initApi(username: string, password: string, initialTokens: { token: string; refreshToken: string } | undefined): Promise<EHRLiteApi> {
+    protected initApi(
+        username: string,
+        password: string,
+        initialTokens:
+            | {
+                  token: string
+                  refreshToken: string
+              }
+            | undefined,
+    ): Promise<EHRLiteApi> {
         const builder = new EHRLiteApi.Builder()
             .withICureBaseUrl(this.iCureBasePath)
             .withUserName(username)

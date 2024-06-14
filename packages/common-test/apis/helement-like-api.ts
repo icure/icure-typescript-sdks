@@ -6,7 +6,7 @@ import { BaseApiTestContext, WithHelementApi, WithPatientApi } from './TestConte
 import { expectArrayContainsExactlyInAnyOrder } from '../assertions'
 import { CodeStub, HealthElement, Patient, User } from '@icure/api'
 import { doXOnYAndSubscribe } from '../websocket-utils'
-import { describe, it, beforeAll } from '@jest/globals'
+import { beforeAll, describe, it } from '@jest/globals'
 
 setLocalStorage(fetch)
 
@@ -239,9 +239,7 @@ export function testHelementLikeApi<DSAnonymousApiBuilder extends AnonymousApiBu
                                 tags: [new CodeStub({ code: testCode, type: testType })],
                             }),
                         ),
-                        (
-                            await ctx.toPatientDto(patient)
-                        ).id,
+                        (await ctx.toPatientDto(patient)).id,
                     )
                 },
                 (status) => {

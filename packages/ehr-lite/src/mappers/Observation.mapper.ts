@@ -1,12 +1,18 @@
 import { Observation } from '../models/Observation.model'
 import {
     Annotation,
+    AnnotationDto,
+    CodeStub,
     CodingReference,
+    ContentDto,
     convertNestedMapToObject,
     convertObjectToNestedMap,
+    DelegationDto,
     extractEncryptedSelf,
     filteringOutInternalTags,
     Identifier,
+    IdentifierDto,
+    ISO639_1,
     mapAnnotationDtoToAnnotation,
     mapAnnotationToAnnotationDto,
     mapCodeStubToCodingReference,
@@ -14,6 +20,8 @@ import {
     mapIdentifierDtoToIdentifier,
     mapIdentifierToIdentifierDto,
     mergeTagsWithInternalTags,
+    SecurityMetadataDto,
+    ServiceDto,
     SystemMetaDataEncrypted,
     toCryptedForeignKeys,
     toDelegations,
@@ -21,14 +29,6 @@ import {
     toSecretForeignKeys,
     toSecurityMetadataDto,
     toSystemMetaDataEncrypted,
-    AnnotationDto,
-    CodeStub,
-    ContentDto,
-    DelegationDto,
-    IdentifierDto,
-    ISO639_1,
-    SecurityMetadataDto,
-    ServiceDto,
 } from '@icure/typescript-common'
 import { Component } from '../models/Component.model'
 import { LocalComponent } from '../models/LocalComponent.model'

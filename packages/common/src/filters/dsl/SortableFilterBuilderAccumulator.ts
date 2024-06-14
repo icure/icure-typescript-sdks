@@ -121,13 +121,16 @@ export class SortableFilterBuilderAccumulator<T> {
         }
 
         // Groups the filters by type and strategy. A filter can be present in more than one strategy (e.g. byAge / dateOfBirthBetween in PatientFilterDsl).
-        const filtersByTypeAndStrategy = awaitedFilters.reduce((filters, current) => {
-            const key = `${current.filter.$type}-${current.strategy}`
-            return {
-                ...filters,
-                [key]: [...(filters[key] ?? []), current],
-            }
-        }, {} as { [key: string]: AwaitedFilter<T>[] })
+        const filtersByTypeAndStrategy = awaitedFilters.reduce(
+            (filters, current) => {
+                const key = `${current.filter.$type}-${current.strategy}`
+                return {
+                    ...filters,
+                    [key]: [...(filters[key] ?? []), current],
+                }
+            },
+            {} as { [key: string]: AwaitedFilter<T>[] },
+        )
 
         // Combines the filter of the same type and strategy
         const listOfCombinedFilters = Object.values(filtersByTypeAndStrategy).reduce((p, c) => {
@@ -208,7 +211,11 @@ export class SortableFilterBuilderAccumulator<T> {
     }
 
     private extractObjectsIdsFromFilter(filter: Filter<T>, field: string) {
-        return (((filter as unknown as { [key: string]: { id: string }[] })[field] ?? {}) as { id: string }[]).map(({ id }) => id)
+        return (
+            ((filter as unknown as { [key: string]: { id: string }[] })[field] ?? {}) as {
+                id: string
+            }[]
+        ).map(({ id }) => id)
     }
 
     private extractIdsFromFilter(filter: Filter<T>, field: string) {

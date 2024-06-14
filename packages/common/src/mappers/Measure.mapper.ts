@@ -3,7 +3,7 @@ import { mapCodeStubToCodingReference, mapCodingReferenceToCodeStub } from './Co
 import { CodingReference } from '../models/CodingReference.model'
 import { ReferenceRange } from '../models/ReferenceRange.model'
 import { mapReferenceRangeDtoToReferenceRange, mapReferenceRangeToReferenceRangeDto } from './ReferenceRange.mapper'
-import { MeasureDto, CodeStub, ReferenceRangeDto } from '../index'
+import { CodeStub, MeasureDto, ReferenceRangeDto } from '../index'
 
 function toMeasureDtoValue(domain: Measure): number | undefined {
     return domain.value

@@ -5,8 +5,8 @@ describe(`Patient serialization and deserialization`, () => {
     it('should correctly serialize and deserialize from instance to JSON and back', () => {
         const instance = generatePatient()
 
-        const json = Patient.toJSON(instance)
-        const newInstance = Patient.fromJSON(json)
+        const json = instance.toJSON()
+        const newInstance = new Patient(json)
 
         expect(newInstance).toEqual(instance)
     })

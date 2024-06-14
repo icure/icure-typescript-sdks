@@ -1,14 +1,9 @@
 import { SecurityMetadata as SecurityMetadataDto } from '@icure/api'
 import { mapTo } from '../utils/decorators'
-import { SecureDelegation } from './SecureDelegation.model'
+import { ISecureDelegation, SecureDelegation } from './SecureDelegation.model'
 
 @mapTo(SecurityMetadataDto)
 export class SecurityMetadata {
-    constructor(securityMetadata?: Partial<ISecurityMetadata>) {
-        this.secureDelegations = securityMetadata?.secureDelegations ?? {}
-        this.keysEquivalences = securityMetadata?.keysEquivalences ?? {}
-    }
-
     /**
      * Secure delegations
      *
@@ -23,22 +18,25 @@ export class SecurityMetadata {
      */
     keysEquivalences: Record<string, string>
 
-    static toJSON(instance: SecurityMetadata): ISecurityMetadata {
-        const pojo: ISecurityMetadata = {} as ISecurityMetadata
-        pojo['secureDelegations'] = { ...instance.secureDelegations }
-        pojo['keysEquivalences'] = { ...instance.keysEquivalences }
-        return pojo
+    toJSON(): ISecurityMetadata {
+        return {
+            secureDelegations: Object.fromEntries(Object.entries(this.secureDelegations).map(([k, v]: [any, SecureDelegation]) => [k, v.toJSON()])),
+            keysEquivalences: { ...this.keysEquivalences },
+        }
     }
 
-    static fromJSON(pojo: ISecurityMetadata): SecurityMetadata {
-        const obj = {} as ISecurityMetadata
-        obj['secureDelegations'] = { ...pojo['secureDelegations'] }
-        obj['keysEquivalences'] = { ...pojo['keysEquivalences'] }
-        return new SecurityMetadata(obj)
+    constructor(
+        json: Partial<ISecurityMetadata> & {
+            secureDelegations: Record<string, ISecureDelegation>
+            keysEquivalences: Record<string, string>
+        },
+    ) {
+        this.secureDelegations = Object.fromEntries(Object.entries(json['secureDelegations']!).map(([k, v]: [any, ISecureDelegation]) => [k, new SecureDelegation(v)]))
+        this.keysEquivalences = { ...json['keysEquivalences']! }
     }
 }
 
 export interface ISecurityMetadata {
-    secureDelegations: Record<string, SecureDelegation>
+    secureDelegations: Record<string, ISecureDelegation>
     keysEquivalences: Record<string, string>
 }

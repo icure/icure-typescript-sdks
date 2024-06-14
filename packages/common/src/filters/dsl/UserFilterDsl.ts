@@ -36,7 +36,12 @@ export class UserFilter extends SortableFilterBuilder<User, UserFilterSortStepDe
     }
 
     byPatientId(patientId: string): UserFilter {
-        this._builderAccumulator.addSingletonFilter(Promise.resolve({ patientId: patientId, $type: 'UsersByPatientIdFilter' }))
+        this._builderAccumulator.addSingletonFilter(
+            Promise.resolve({
+                patientId: patientId,
+                $type: 'UsersByPatientIdFilter',
+            }),
+        )
         return this
     }
 

@@ -255,6 +255,7 @@ function toAnnotationMarkdown(dto: AnnotationDto): Record<ISO639_1, string> {
 function toAnnotationTarget(dto: AnnotationDto): string | undefined {
     return dto.location
 }
+
 function toAnnotationEncryptedSelf(dto: AnnotationDto): string | undefined {
     return dto.encryptedSelf
 }

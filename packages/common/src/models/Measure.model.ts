@@ -1,7 +1,7 @@
 import { Measure as MeasureDto } from '@icure/api'
 import { mapTo } from '../utils/decorators'
-import { CodingReference } from './CodingReference.model'
-import { ReferenceRange } from './ReferenceRange.model'
+import { CodingReference, ICodingReference } from './CodingReference.model'
+import { IReferenceRange, ReferenceRange } from './ReferenceRange.model'
 
 @mapTo(MeasureDto)
 export class Measure {
@@ -11,72 +11,57 @@ export class Measure {
     severityCode?: string
     evolution?: number
     unit?: string
-    unitCodes?: CodingReference[]
+    unitCodes?: CodingReference[] = []
     comment?: string
     comparator?: string
-    referenceRanges?: ReferenceRange[]
+    referenceRanges?: ReferenceRange[] = []
 
-    constructor(measure: Partial<IMeasure>) {
-        this.value = measure.value
-        this.ref = measure.ref
-        this.severity = measure.severity
-        this.severityCode = measure.severityCode
-        this.evolution = measure.evolution
-        this.unit = measure.unit
-        this.unitCodes = measure.unitCodes
-        this.comment = measure.comment
-        this.comparator = measure.comparator
-        this.referenceRanges = measure.referenceRanges
+    toJSON(): IMeasure {
+        return {
+            value: this.value,
+            ref: this.ref,
+            severity: this.severity,
+            severityCode: this.severityCode,
+            evolution: this.evolution,
+            unit: this.unit,
+            unitCodes: this.unitCodes?.map((item) => item.toJSON()),
+            comment: this.comment,
+            comparator: this.comparator,
+            referenceRanges: this.referenceRanges?.map((item) => item.toJSON()),
+        }
     }
 
-    static toJSON(instance: Measure): IMeasure {
-        const pojo: IMeasure = {} as IMeasure
-        if (instance.value !== undefined) pojo['value'] = instance.value
-        if (instance.ref !== undefined) pojo['ref'] = instance.ref
-        if (instance.severity !== undefined) pojo['severity'] = instance.severity
-        if (instance.severityCode !== undefined) pojo['severityCode'] = instance.severityCode
-        if (instance.evolution !== undefined) pojo['evolution'] = instance.evolution
-        if (instance.unit !== undefined) pojo['unit'] = instance.unit
-        if (instance.unitCodes !== undefined) pojo['unitCodes'] = instance.unitCodes.map((item) => CodingReference.toJSON(item))
-        if (instance.comment !== undefined) pojo['comment'] = instance.comment
-        if (instance.comparator !== undefined) pojo['comparator'] = instance.comparator
-        if (instance.referenceRanges !== undefined) pojo['referenceRanges'] = instance.referenceRanges.map((item) => ReferenceRange.toJSON(item))
-        return pojo
-    }
-
-    static fromJSON(pojo: IMeasure): Measure {
-        const obj = {} as IMeasure
-        if (pojo['value'] !== undefined) {
-            obj['value'] = pojo['value']!
+    constructor(json: Partial<IMeasure>) {
+        if (json['value'] !== undefined) {
+            this.value = json['value']!
         }
-        if (pojo['ref'] !== undefined) {
-            obj['ref'] = pojo['ref']!
+        if (json['ref'] !== undefined) {
+            this.ref = json['ref']!
         }
-        if (pojo['severity'] !== undefined) {
-            obj['severity'] = pojo['severity']!
+        if (json['severity'] !== undefined) {
+            this.severity = json['severity']!
         }
-        if (pojo['severityCode'] !== undefined) {
-            obj['severityCode'] = pojo['severityCode']!
+        if (json['severityCode'] !== undefined) {
+            this.severityCode = json['severityCode']!
         }
-        if (pojo['evolution'] !== undefined) {
-            obj['evolution'] = pojo['evolution']!
+        if (json['evolution'] !== undefined) {
+            this.evolution = json['evolution']!
         }
-        if (pojo['unit'] !== undefined) {
-            obj['unit'] = pojo['unit']!
+        if (json['unit'] !== undefined) {
+            this.unit = json['unit']!
         }
-        if (pojo['unitCodes'] !== undefined) {
-            obj['unitCodes'] = pojo['unitCodes']!.map((item: any) => CodingReference.fromJSON(item))
+        if (json['unitCodes'] !== undefined) {
+            this.unitCodes = json['unitCodes']!.map((item: any) => new CodingReference(item))
         }
-        if (pojo['comment'] !== undefined) {
-            obj['comment'] = pojo['comment']!
+        if (json['comment'] !== undefined) {
+            this.comment = json['comment']!
         }
-        if (pojo['comparator'] !== undefined) {
-            obj['comparator'] = pojo['comparator']!
+        if (json['comparator'] !== undefined) {
+            this.comparator = json['comparator']!
         }
-        if (pojo['referenceRanges'] !== undefined) {
-            obj['referenceRanges'] = pojo['referenceRanges']!.map((item: any) => ReferenceRange.fromJSON(item))
+        if (json['referenceRanges'] !== undefined) {
+            this.referenceRanges = json['referenceRanges']!.map((item: any) => new ReferenceRange(item))
         }
-        return new Measure(obj)
     }
 }
 
@@ -89,8 +74,8 @@ export interface IMeasure {
     severityCode?: string
     evolution?: number
     unit?: string
-    unitCodes?: CodingReference[]
+    unitCodes?: ICodingReference[]
     comment?: string
     comparator?: string
-    referenceRanges?: ReferenceRange[]
+    referenceRanges?: IReferenceRange[]
 }

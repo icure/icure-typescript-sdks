@@ -9,170 +9,153 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { Annotation, CodingReference, HealthElementDto, Identifier, SystemMetaDataEncrypted, forceUuid, mapTo } from '@icure/typescript-common'
+import { Annotation, CodingReference, EntityId, forceUuid, HealthElementDto, IAnnotation, ICodingReference, Identifier, IIdentifier, ISystemMetaDataEncrypted, mapTo, SystemMetaDataEncrypted } from '@icure/typescript-common'
 
 @mapTo(HealthElementDto)
 export class HealthcareElement {
     /**
      * The Id of the healthcare element. We encourage using either a v4 UUID or a HL7 Id.
      */
-    'id': string
-    'identifiers': Array<Identifier>
+    id: EntityId
+    identifiers: Identifier[] = []
     /**
      * The revision of the healthcare element in the database, used for conflict management / optimistic locking.
      */
-    'rev'?: string
-    'created'?: number
-    'modified'?: number
-    'author'?: string
-    'responsible'?: string
-    'medicalLocationId'?: string
-    'labels': Array<CodingReference>
-    'codes': Array<CodingReference>
-    'endOfLife'?: number
-    'deletionDate'?: number
-    /**
-     * The logical id of the healthcare element, used to link together different versions of the same healthcare element. We encourage using either a v4 UUID or a HL7 Id.
-     */
-    'healthcareElementId'?: string
-    /**
-     * The date (unix epoch in ms) when the healthcare element is noted to have started and also closes on the same date
-     */
-    'valueDate'?: number
-    /**
-     * The date (unix epoch in ms) of the start of the healthcare element.
-     */
-    'openingDate'?: number
-    /**
-     * The date (unix epoch in ms) marking the end of the healthcare element.
-     */
-    'closingDate'?: number
-    /**
-     * Description of the healthcare element.
-     */
-    'description'?: string
-    /**
-     * A text note (can be confidential, encrypted by default).
-     */
-    'note'?: string
-    notes: Annotation[]
-    'systemMetaData'?: SystemMetaDataEncrypted
-
-    constructor(json: Partial<IHealthcareElement>) {
-        this.id = forceUuid(json.id)
-        this.identifiers = json.identifiers ?? []
-        this.rev = json.rev
-        this.created = json.created
-        this.modified = json.modified
-        this.author = json.author
-        this.responsible = json.responsible
-        this.medicalLocationId = json.medicalLocationId
-        this.labels = json.labels ?? []
-        this.codes = json.codes ?? []
-        this.endOfLife = json.endOfLife
-        this.deletionDate = json.deletionDate
-        this.healthcareElementId = json.healthcareElementId
-        this.valueDate = json.valueDate
-        this.openingDate = json.openingDate
-        this.closingDate = json.closingDate
-        this.description = json.description
-        this.note = json.note
-        this.notes = json.notes ?? []
-        this.systemMetaData = json.systemMetaData
-    }
-
-    static toJSON(instance: HealthcareElement): IHealthcareElement {
-        const pojo: IHealthcareElement = {} as IHealthcareElement
-        pojo['id'] = instance.id
-        pojo['identifiers'] = instance.identifiers.map((item) => Identifier.toJSON(item))
-        if (instance.rev !== undefined) pojo['rev'] = instance.rev
-        if (instance.created !== undefined) pojo['created'] = instance.created
-        if (instance.modified !== undefined) pojo['modified'] = instance.modified
-        if (instance.author !== undefined) pojo['author'] = instance.author
-        if (instance.responsible !== undefined) pojo['responsible'] = instance.responsible
-        if (instance.medicalLocationId !== undefined) pojo['medicalLocationId'] = instance.medicalLocationId
-        pojo['labels'] = instance.labels.map((item) => CodingReference.toJSON(item))
-        pojo['codes'] = instance.codes.map((item) => CodingReference.toJSON(item))
-        if (instance.endOfLife !== undefined) pojo['endOfLife'] = instance.endOfLife
-        if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
-        if (instance.healthcareElementId !== undefined) pojo['healthcareElementId'] = instance.healthcareElementId
-        if (instance.valueDate !== undefined) pojo['valueDate'] = instance.valueDate
-        if (instance.openingDate !== undefined) pojo['openingDate'] = instance.openingDate
-        if (instance.closingDate !== undefined) pojo['closingDate'] = instance.closingDate
-        if (instance.description !== undefined) pojo['description'] = instance.description
-        if (instance.note !== undefined) pojo['note'] = instance.note
-        pojo['notes'] = instance.notes.map((item) => Annotation.toJSON(item))
-        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = SystemMetaDataEncrypted.toJSON(instance.systemMetaData)
-        return pojo
-    }
-
-    static fromJSON(pojo: IHealthcareElement): HealthcareElement {
-        const obj = {} as IHealthcareElement
-        obj['id'] = pojo['id']
-        obj['identifiers'] = pojo['identifiers'].map((item: any) => Identifier.fromJSON(item))
-        if (pojo['rev'] !== undefined) {
-            obj['rev'] = pojo['rev']!
-        }
-        if (pojo['created'] !== undefined) {
-            obj['created'] = pojo['created']!
-        }
-        if (pojo['modified'] !== undefined) {
-            obj['modified'] = pojo['modified']!
-        }
-        if (pojo['author'] !== undefined) {
-            obj['author'] = pojo['author']!
-        }
-        if (pojo['responsible'] !== undefined) {
-            obj['responsible'] = pojo['responsible']!
-        }
-        if (pojo['medicalLocationId'] !== undefined) {
-            obj['medicalLocationId'] = pojo['medicalLocationId']!
-        }
-        obj['labels'] = pojo['labels'].map((item: any) => CodingReference.fromJSON(item))
-        obj['codes'] = pojo['codes'].map((item: any) => CodingReference.fromJSON(item))
-        if (pojo['endOfLife'] !== undefined) {
-            obj['endOfLife'] = pojo['endOfLife']!
-        }
-        if (pojo['deletionDate'] !== undefined) {
-            obj['deletionDate'] = pojo['deletionDate']!
-        }
-        if (pojo['healthcareElementId'] !== undefined) {
-            obj['healthcareElementId'] = pojo['healthcareElementId']!
-        }
-        if (pojo['valueDate'] !== undefined) {
-            obj['valueDate'] = pojo['valueDate']!
-        }
-        if (pojo['openingDate'] !== undefined) {
-            obj['openingDate'] = pojo['openingDate']!
-        }
-        if (pojo['closingDate'] !== undefined) {
-            obj['closingDate'] = pojo['closingDate']!
-        }
-        if (pojo['description'] !== undefined) {
-            obj['description'] = pojo['description']!
-        }
-        if (pojo['note'] !== undefined) {
-            obj['note'] = pojo['note']!
-        }
-        obj['notes'] = pojo['notes'].map((item: any) => Annotation.fromJSON(item))
-        if (pojo['systemMetaData'] !== undefined) {
-            obj['systemMetaData'] = SystemMetaDataEncrypted.fromJSON(pojo['systemMetaData']!)
-        }
-        return new HealthcareElement(obj)
-    }
-}
-
-export interface IHealthcareElement {
-    id?: string
-    identifiers: Array<Identifier>
     rev?: string
     created?: number
     modified?: number
     author?: string
     responsible?: string
     medicalLocationId?: string
-    labels: Array<CodingReference>
-    codes: Array<CodingReference>
+    labels: CodingReference[] = []
+    codes: CodingReference[] = []
+    endOfLife?: number
+    deletionDate?: number
+    /**
+     * The logical id of the healthcare element, used to link together different versions of the same healthcare element. We encourage using either a v4 UUID or a HL7 Id.
+     */
+    healthcareElementId?: string
+    /**
+     * The date (unix epoch in ms) when the healthcare element is noted to have started and also closes on the same date
+     */
+    valueDate?: number
+    /**
+     * The date (unix epoch in ms) of the start of the healthcare element.
+     */
+    openingDate?: number
+    /**
+     * The date (unix epoch in ms) marking the end of the healthcare element.
+     */
+    closingDate?: number
+    /**
+     * Description of the healthcare element.
+     */
+    description?: string
+    /**
+     * A text note (can be confidential, encrypted by default).
+     */
+    note?: string
+    notes: Annotation[] = []
+    systemMetaData?: SystemMetaDataEncrypted
+
+    toJSON(): IHealthcareElement {
+        return {
+            id: this.id,
+            identifiers: this.identifiers.map((item) => item.toJSON()),
+            rev: this.rev,
+            created: this.created,
+            modified: this.modified,
+            author: this.author,
+            responsible: this.responsible,
+            medicalLocationId: this.medicalLocationId,
+            labels: this.labels.map((item) => item.toJSON()),
+            codes: this.codes.map((item) => item.toJSON()),
+            endOfLife: this.endOfLife,
+            deletionDate: this.deletionDate,
+            healthcareElementId: this.healthcareElementId,
+            valueDate: this.valueDate,
+            openingDate: this.openingDate,
+            closingDate: this.closingDate,
+            description: this.description,
+            note: this.note,
+            notes: this.notes.map((item) => item.toJSON()),
+            systemMetaData: !!this.systemMetaData ? this.systemMetaData.toJSON() : undefined,
+        }
+    }
+
+    constructor(json: Partial<IHealthcareElement>) {
+        this.id = forceUuid(json['id']!)
+        if (json['identifiers'] !== undefined) {
+            this.identifiers = json['identifiers']!.map((item: any) => new Identifier(item))
+        }
+        if (json['rev'] !== undefined) {
+            this.rev = json['rev']!
+        }
+        if (json['created'] !== undefined) {
+            this.created = json['created']!
+        }
+        if (json['modified'] !== undefined) {
+            this.modified = json['modified']!
+        }
+        if (json['author'] !== undefined) {
+            this.author = json['author']!
+        }
+        if (json['responsible'] !== undefined) {
+            this.responsible = json['responsible']!
+        }
+        if (json['medicalLocationId'] !== undefined) {
+            this.medicalLocationId = json['medicalLocationId']!
+        }
+        if (json['labels'] !== undefined) {
+            this.labels = json['labels']!.map((item: any) => new CodingReference(item))
+        }
+        if (json['codes'] !== undefined) {
+            this.codes = json['codes']!.map((item: any) => new CodingReference(item))
+        }
+        if (json['endOfLife'] !== undefined) {
+            this.endOfLife = json['endOfLife']!
+        }
+        if (json['deletionDate'] !== undefined) {
+            this.deletionDate = json['deletionDate']!
+        }
+        if (json['healthcareElementId'] !== undefined) {
+            this.healthcareElementId = json['healthcareElementId']!
+        }
+        if (json['valueDate'] !== undefined) {
+            this.valueDate = json['valueDate']!
+        }
+        if (json['openingDate'] !== undefined) {
+            this.openingDate = json['openingDate']!
+        }
+        if (json['closingDate'] !== undefined) {
+            this.closingDate = json['closingDate']!
+        }
+        if (json['description'] !== undefined) {
+            this.description = json['description']!
+        }
+        if (json['note'] !== undefined) {
+            this.note = json['note']!
+        }
+        if (json['notes'] !== undefined) {
+            this.notes = json['notes']!.map((item: any) => new Annotation(item))
+        }
+        if (json['systemMetaData'] !== undefined) {
+            this.systemMetaData = new SystemMetaDataEncrypted(json['systemMetaData']!)
+        }
+    }
+}
+
+export interface IHealthcareElement {
+    id?: EntityId
+    identifiers: IIdentifier[]
+    rev?: string
+    created?: number
+    modified?: number
+    author?: string
+    responsible?: string
+    medicalLocationId?: string
+    labels: ICodingReference[]
+    codes: ICodingReference[]
     endOfLife?: number
     deletionDate?: number
     healthcareElementId?: string
@@ -181,6 +164,6 @@ export interface IHealthcareElement {
     closingDate?: number
     description?: string
     note?: string
-    notes: Annotation[]
-    systemMetaData?: SystemMetaDataEncrypted
+    notes: IAnnotation[]
+    systemMetaData?: ISystemMetaDataEncrypted
 }

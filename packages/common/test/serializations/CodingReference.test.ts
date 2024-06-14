@@ -5,8 +5,8 @@ describe(`CodingReference serialization and deserialization`, () => {
     it('should correctly serialize and deserialize from instance to JSON and back', () => {
         const instance = generateCodingReference()
 
-        const json = CodingReference.toJSON(instance)
-        const newInstance = CodingReference.fromJSON(json)
+        const json = instance.toJSON()
+        const newInstance = new CodingReference(json)
 
         expect(newInstance).toEqual(instance)
     })

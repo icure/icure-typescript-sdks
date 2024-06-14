@@ -1,9 +1,16 @@
 import { ClassComponent } from './ClassComponent'
-import { ImportDeclaration } from 'ts-morph'
 
 export class SetComponent extends ClassComponent {
+    override get typeName(): string {
+        return `Set<${this.children![0].typeName}>`
+    }
+
+    override get interfaceName(): string {
+        return `Set<${this.children![0].interfaceName}>`
+    }
+
     public notNullable(): ClassComponent {
-        return new SetComponent(false, this.children)
+        return new SetComponent(false, this.optional, this.children)
     }
 
     computeDeserializer(value: string): string {

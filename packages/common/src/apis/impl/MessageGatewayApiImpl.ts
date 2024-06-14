@@ -5,8 +5,8 @@ import { ErrorHandler } from '../../services/ErrorHandler'
 import { AuthenticationProcessBody } from '../../models/api/AuthenticationProcessBody'
 import { EmailMessage } from '../../models/api/EmailMessage'
 import { SMSMessage } from '../../models/api/SMSMessage'
-import Header = XHR.Header
 import { v4 as uuid } from 'uuid'
+import Header = XHR.Header
 
 export class MessageGatewayApiImpl implements MessageGatewayApi {
     private readonly authHeader: XHR.Header | null

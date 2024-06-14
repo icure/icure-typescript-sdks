@@ -3,7 +3,7 @@ import { v4 as uuid } from 'uuid'
 import { MaintenanceTask } from '@icure/api/icc-api/model/MaintenanceTask'
 import { assert } from 'chai'
 import { Identifier } from '@icure/api'
-import { Property, Delegation, Notification, SystemMetaDataEncrypted, mapMaintenanceTaskToNotification, NotificationTypeEnum, recordOf, mapNotificationToMaintenanceTask } from '@icure/typescript-common'
+import { Delegation, mapMaintenanceTaskToNotification, mapNotificationToMaintenanceTask, Notification, NotificationTypeEnum, Property, recordOf, SystemMetaDataEncrypted } from '@icure/typescript-common'
 
 function identifierEquality(identifier1: Identifier, identifier2: Identifier) {
     return identifier1.id === identifier2.id

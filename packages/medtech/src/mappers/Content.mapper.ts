@@ -1,5 +1,5 @@
 import { Content } from '../models/Content.model'
-import { mapMeasureDtoToMeasure, mapMeasureToMeasureDto, mapTimeSeriesDtoToTimeSeries, mapTimeSeriesToTimeSeriesDto, Measure, TimeSeries, ContentDto, MedicationDto, ServiceDto, MeasureDto, TimeSeriesDto } from '@icure/typescript-common'
+import { ContentDto, mapMeasureDtoToMeasure, mapMeasureToMeasureDto, mapTimeSeriesDtoToTimeSeries, mapTimeSeriesToTimeSeriesDto, Measure, MeasureDto, MedicationDto, ServiceDto, TimeSeries, TimeSeriesDto } from '@icure/typescript-common'
 import { DataSample } from '../models/DataSample.model'
 import { mapDataSampleToServiceDto, mapServiceDtoToDataSample } from './DataSample.mapper'
 import { b64_2ab, ua2b64 } from '@icure/api'

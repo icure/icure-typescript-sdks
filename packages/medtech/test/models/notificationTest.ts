@@ -1,13 +1,10 @@
 import 'mocha'
-import { Notification } from '../..'
+import { Delegation, Notification, Property, SystemMetaDataEncrypted } from '../..'
 import { v4 as uuid } from 'uuid'
 import { MaintenanceTask } from '@icure/api/icc-api/model/MaintenanceTask'
-import { Delegation } from '../..'
-import { Property } from '../..'
-import { SystemMetaDataEncrypted } from '../..'
 import { assert } from 'chai'
 import { newIdentifier } from './identifierTest'
-import { recordOf, NotificationTypeEnum } from '@icure/typescript-common'
+import { NotificationTypeEnum, recordOf } from '@icure/typescript-common'
 
 export function newNotification(): Notification {
     return new Notification({

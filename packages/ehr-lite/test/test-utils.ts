@@ -1,5 +1,5 @@
 import { EmailMessage, SMSMessage, User } from '@icure/typescript-common'
-import { Patient, Organisation, Practitioner } from '../src'
+import { Organisation, Patient, Practitioner } from '../src'
 import { EHRLiteMessageFactory } from '../src/services/EHRLiteMessageFactory'
 
 export class TestMessageFactory implements EHRLiteMessageFactory {

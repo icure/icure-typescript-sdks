@@ -1,8 +1,11 @@
 import { MedicalDevice } from '../models/MedicalDevice.model'
 import {
+    CodeStub,
     CodingReference,
+    DeviceDto,
     forceUuid,
     Identifier,
+    IdentifierDto,
     mapCodeStubToCodingReference,
     mapCodingReferenceToCodeStub,
     mapIdentifierDtoToIdentifier,
@@ -10,6 +13,7 @@ import {
     mapPropertyStubToProperty,
     mapPropertyToPropertyStub,
     Property,
+    PropertyStub,
     SystemMetaDataOwner,
     toAesExchangeKeys,
     toHcPartyKeys,
@@ -18,10 +22,6 @@ import {
     toPublicKeysForOaepWithSha256,
     toSystemMetaDataOwner,
     toTransferKeys,
-    CodeStub,
-    DeviceDto,
-    IdentifierDto,
-    PropertyStub,
 } from '@icure/typescript-common'
 import { b64_2ab, ua2b64 } from '@icure/api'
 

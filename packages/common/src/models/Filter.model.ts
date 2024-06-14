@@ -11,22 +11,18 @@
  */
 
 export class Filter {
+    description?: string
+
+    toJSON(): IFilter {
+        return {
+            description: this.description,
+        }
+    }
+
     constructor(json: Partial<IFilter>) {
-        Object.assign(this as Filter, json)
-    }
-
-    'description': string
-
-    static toJSON(instance: Filter): IFilter {
-        const pojo: IFilter = {} as IFilter
-        pojo['description'] = instance.description
-        return pojo
-    }
-
-    static fromJSON(pojo: IFilter): Filter {
-        const obj = {} as IFilter
-        obj['description'] = pojo['description']
-        return new Filter(obj)
+        if (json['description'] !== undefined) {
+            this.description = json['description']!
+        }
     }
 }
 

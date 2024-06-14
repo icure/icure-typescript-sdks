@@ -6,7 +6,7 @@ import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, D
 import { BaseApiTestContext, WithDataOwnerApi, WithHcpApi, WithPatientApi } from './TestContexts'
 import { HealthcareParty, jwk2spki, ShaVersion, sleep, User } from '@icure/api'
 import { doXOnYAndSubscribe } from '../websocket-utils'
-import { describe, it, beforeAll } from '@jest/globals'
+import { beforeAll, describe, it } from '@jest/globals'
 
 setLocalStorage(fetch)
 

@@ -1,27 +1,26 @@
 // hephaestus-ignore-file
-import { PaginatedDocumentKeyAndIdPairObject } from './PaginatedDocumentKeyAndIdPairObject.model'
+import { IPaginatedDocumentKeyAndIdPairObject, PaginatedDocumentKeyAndIdPairObject } from './PaginatedDocumentKeyAndIdPairObject.model'
 
 export class PaginatedList<T> {
+    rows: T[] = ([] = [])
+    nextKeyPair?: PaginatedDocumentKeyAndIdPairObject
+
     constructor(json: Partial<IPaginatedList<T>>) {
-        Object.assign(this as PaginatedList<T>, json)
+        this.rows = json['rows'] || [] //
+        this.nextKeyPair = json['nextKeyPair'] ? new PaginatedDocumentKeyAndIdPairObject(json['nextKeyPair']) : undefined
     }
 
-    'rows': Array<T>
-    'nextKeyPair'?: PaginatedDocumentKeyAndIdPairObject
-
     static toJSON<I, K extends I>(instance: PaginatedList<K>, elementToJson: (tInstance: K) => I): IPaginatedList<I> {
-        const pojo: any = {}
-        pojo['rows'] = instance.rows.map(elementToJson)
-        if (instance.nextKeyPair) {
-            pojo['nextKeyPair'] = PaginatedDocumentKeyAndIdPairObject.toJSON(instance.nextKeyPair)
+        return {
+            rows: instance.rows.map(elementToJson),
+            nextKeyPair: instance.nextKeyPair?.toJSON(),
         }
-        return pojo
     }
 
     static fromJSON<I, K extends I>(pojo: IPaginatedList<I>, elementFromJson: (tPojo: I) => K): PaginatedList<K> {
         return new PaginatedList({
             rows: pojo['rows'].map(elementFromJson),
-            nextKeyPair: pojo['nextKeyPair'] ? PaginatedDocumentKeyAndIdPairObject.fromJSON(pojo['nextKeyPair']) : undefined,
+            nextKeyPair: pojo['nextKeyPair'],
         })
     }
 
@@ -31,6 +30,6 @@ export class PaginatedList<T> {
 }
 
 export interface IPaginatedList<T> {
-    rows: Array<T>
-    nextKeyPair?: PaginatedDocumentKeyAndIdPairObject
+    rows: T[]
+    nextKeyPair?: IPaginatedDocumentKeyAndIdPairObject
 }

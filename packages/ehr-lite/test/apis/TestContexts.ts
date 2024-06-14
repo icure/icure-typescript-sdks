@@ -1,51 +1,56 @@
 import { BaseApiTestContext, WithAuthenticationApi, WithDataOwnerApi, WithHcpApi, WithHelementApi, WithMaintenanceTaskApi, WithMessageApi, WithPatientApi, WithServiceApi, WithTopicApi } from '../../../common-test/apis/TestContexts'
 import {
+    Annotation,
     AnonymousEHRLiteApi,
+    AuthenticationApi,
     Condition,
     ConditionApi,
     ConditionFilter,
+    DataOwnerApi,
+    DataOwnerWithType,
     EHRLiteApi,
     HumanName,
     LocalComponent,
+    mapMessageDtoToMessage,
+    mapMessageToMessageDto,
+    mapTopicDtoToTopic,
+    mapTopicToTopicDto,
+    MessageLikeApi,
+    NotificationApi,
     NotificationFilter,
     Observation,
     ObservationApi,
     ObservationFilter,
     Organisation,
     OrganisationApi,
+    Patient,
+    PatientApi,
     Practitioner,
     PractitionerApi,
-    DataOwnerWithType,
-    AuthenticationApi,
-    mapTopicDtoToTopic,
-    mapTopicToTopicDto,
-    MessageLikeApi,
-    mapMessageDtoToMessage,
-    mapMessageToMessageDto,
+    UserApi,
 } from '../../src'
 import { EHRLiteCryptoStrategies, SimpleEHRLiteCryptoStrategies } from '../../src/services/EHRLiteCryptoStrategies'
 import {
+    CodingReference,
+    Document,
     domainTypeTag,
     extractDomainTypeTag,
     KeyPair,
+    MaintenanceTaskFilter,
     mapDocumentToDocumentDto,
-    recordOf,
+    mapMaintenanceTaskToNotification,
+    mapNotificationToMaintenanceTask,
     mapUserDtoToUser,
     mapUserToUserDto,
-    User,
-    Document,
-    CodingReference,
-    mapNotificationToMaintenanceTask,
-    mapMaintenanceTaskToNotification,
-    MaintenanceTaskFilter,
-    NotificationTypeEnum,
-    Notification,
-    Topic,
     Message,
+    Notification,
+    NotificationTypeEnum,
+    recordOf,
+    Topic,
+    User,
 } from '@icure/typescript-common'
 import { EHRLiteMessageFactory } from '../../src/services/EHRLiteMessageFactory'
-import { HealthcareParty, Patient as PatientDto, Service, User as UserDto, DataOwnerWithType as DataOwnerWithTypeDto, Document as DocumentDto, HealthElement, CodeStub, MaintenanceTask, Topic as TopicDto, Message as MessageDto } from '@icure/api'
-import { UserApi, Patient, PatientApi, Annotation, NotificationApi, DataOwnerApi } from '../../src'
+import { CodeStub, DataOwnerWithType as DataOwnerWithTypeDto, Document as DocumentDto, HealthcareParty, HealthElement, MaintenanceTask, Message as MessageDto, Patient as PatientDto, Service, Topic as TopicDto, User as UserDto } from '@icure/api'
 import { TestMessageFactory } from '../test-utils'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../../src/mappers/Patient.mapper'
 import { mapConditionToHealthElementDto, mapHealthElementDtoToCondition } from '../../src/mappers/Condition.mapper'
@@ -106,6 +111,7 @@ function annotation1(): Annotation {
         }),
     })
 }
+
 function annotation2(): Annotation {
     return new Annotation({
         markdown: recordOf({

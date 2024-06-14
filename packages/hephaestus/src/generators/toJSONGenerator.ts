@@ -8,17 +8,17 @@ export function toJSONGenerator(classDeclaration: ClassDeclaration, bundle: Clas
     // Add new toJSON method
     classDeclaration.addMethod({
         name: 'toJSON',
-        isStatic: true,
+        isStatic: false,
         isAbstract: false,
         returnType: `I${classDeclaration.getName()}`,
-        parameters: [{ name: 'instance', type: classDeclaration.getName() }],
+        parameters: [],
         statements: (writer) => {
             // write the method body
-            writer.writeLine(`const pojo: I${classDeclaration.getName()} = {} as I${classDeclaration.getName()}`)
+            writer.writeLine(`return {`)
 
-            bundle.computeSerializer('pojo', 'instance').forEach((line) => writer.writeLine(line))
+            bundle.computeSerializer('this').forEach((line) => writer.writeLine(line))
 
-            writer.writeLine('return pojo')
+            writer.writeLine('}')
         },
     })
 }

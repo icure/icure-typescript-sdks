@@ -5,8 +5,8 @@ describe(`LocalComponent serialization and deserialization`, () => {
     it('should correctly serialize and deserialize from instance to JSON and back', () => {
         const instance = generateLocalComponent()
 
-        const json = LocalComponent.toJSON(instance)
-        const newInstance = LocalComponent.fromJSON(json)
+        const json = instance.toJSON()
+        const newInstance = new LocalComponent(json)
 
         expect(newInstance).toEqual(instance)
     })

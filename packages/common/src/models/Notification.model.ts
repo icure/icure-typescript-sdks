@@ -1,149 +1,136 @@
 import { MaintenanceTask } from '@icure/api'
+import { EntityId } from '../types'
 import { mapTo } from '../utils/decorators'
 import { forceUuid } from '../utils/uuidUtils'
-import { Identifier } from './Identifier.model'
-import { Property } from './Property.model'
-import { SystemMetaDataEncrypted } from './SystemMetaDataEncrypted.model'
+import { Identifier, IIdentifier } from './Identifier.model'
+import { IProperty, Property } from './Property.model'
+import { ISystemMetaDataEncrypted, SystemMetaDataEncrypted } from './SystemMetaDataEncrypted.model'
 
 @mapTo(MaintenanceTask)
 export class Notification {
     /**
-     * The Id of the notification. We encourage using either a v4 UUID or a HL7 Id.
+     * The Id of the notification. We encourage using either a v4 UUID
      */
-    'id': string
+    id: EntityId
     /**
      * The revision of the patient in the database, used for conflict management / optimistic locking.
      */
-    'rev'?: string
+    rev?: string
     /**
      * The status of the notification.
      */
-    'status'?: NotificationStatusEnum
+    status?: NotificationStatusEnum
     /**
      * The creation date of the notification (encoded as epoch).
      */
-    'created'?: number
+    created?: number
     /**
      * Soft delete (unix epoch in ms) timestamp of the patient
      */
-    'endOfLife'?: number
+    endOfLife?: number
     /**
      * the soft delete timestamp. When a patient is "deleted", this is set to a non-null value: the moment of the deletion
      */
-    'deletionDate'?: number
+    deletionDate?: number
     /**
-     * Typically used for business / client identifiers. An identifier should identify a notification uniquely and unambiguously. However, iCure can't guarantee the uniqueness of those identifiers : This is something you need to take care of.
+     * Typically used for business / client identifiers. An identifier should identify a notification uniquely and unambiguously. However, iCure cant guarantee the uniqueness of those identifiers : This is something you need to take care of.
      */
-    'identifiers': Array<Identifier>
+    identifiers: Identifier[] = []
     /**
      * the last modification date of the notification (encoded as epoch).
      */
-    'modified'?: number
+    modified?: number
     /**
      * The id of the [User] that created this notification. When creating the notification, this field will be filled automatically by the current user id if not provided.
      */
-    'author'?: string
+    author?: string
     /**
      * The id of the data owner that is responsible for this notification. When creating the notification, will be filled automatically by the current user data owner id ([HealthcareProfessional], [Patient] or [MedicalDevice]) if missing
      */
-    'responsible'?: string
+    responsible?: string
     /**
      * Additional properties for the notification.
      */
-    'properties': Array<Property>
+    properties: Property[] = []
     /**
      * The type of the notification.
      */
-    'type'?: NotificationTypeEnum
-    'systemMetaData'?: SystemMetaDataEncrypted
+    type?: NotificationTypeEnum
+    systemMetaData?: SystemMetaDataEncrypted
 
-    constructor(notification: Partial<INotification>) {
-        this.id = forceUuid(notification.id)
-        this.rev = notification.rev
-        this.status = notification.status
-        this.created = notification.created
-        this.endOfLife = notification.endOfLife
-        this.deletionDate = notification.deletionDate
-        this.identifiers = notification.identifiers ?? []
-        this.modified = notification.modified
-        this.author = notification.author
-        this.responsible = notification.responsible
-        this.properties = notification.properties ?? []
-        this.type = notification.type
-        this.systemMetaData = notification.systemMetaData
+    toJSON(): INotification {
+        return {
+            id: this.id,
+            rev: this.rev,
+            status: this.status,
+            created: this.created,
+            endOfLife: this.endOfLife,
+            deletionDate: this.deletionDate,
+            identifiers: this.identifiers.map((item) => item.toJSON()),
+            modified: this.modified,
+            author: this.author,
+            responsible: this.responsible,
+            properties: this.properties.map((item) => item.toJSON()),
+            type: this.type,
+            systemMetaData: !!this.systemMetaData ? this.systemMetaData.toJSON() : undefined,
+        }
     }
 
-    static toJSON(instance: Notification): INotification {
-        const pojo: INotification = {} as INotification
-        pojo['id'] = instance.id
-        if (instance.rev !== undefined) pojo['rev'] = instance.rev
-        if (instance.status !== undefined) pojo['status'] = instance.status
-        if (instance.created !== undefined) pojo['created'] = instance.created
-        if (instance.endOfLife !== undefined) pojo['endOfLife'] = instance.endOfLife
-        if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
-        pojo['identifiers'] = instance.identifiers.map((item) => Identifier.toJSON(item))
-        if (instance.modified !== undefined) pojo['modified'] = instance.modified
-        if (instance.author !== undefined) pojo['author'] = instance.author
-        if (instance.responsible !== undefined) pojo['responsible'] = instance.responsible
-        pojo['properties'] = instance.properties.map((item) => Property.toJSON(item))
-        if (instance.type !== undefined) pojo['type'] = instance.type
-        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = SystemMetaDataEncrypted.toJSON(instance.systemMetaData)
-        return pojo
-    }
-
-    static fromJSON(pojo: INotification): Notification {
-        const obj = {} as INotification
-        obj['id'] = pojo['id']
-        if (pojo['rev'] !== undefined) {
-            obj['rev'] = pojo['rev']!
+    constructor(json: Partial<INotification>) {
+        this.id = forceUuid(json['id']!)
+        if (json['rev'] !== undefined) {
+            this.rev = json['rev']!
         }
-        if (pojo['status'] !== undefined) {
-            obj['status'] = pojo['status']!
+        if (json['status'] !== undefined) {
+            this.status = json['status']!
         }
-        if (pojo['created'] !== undefined) {
-            obj['created'] = pojo['created']!
+        if (json['created'] !== undefined) {
+            this.created = json['created']!
         }
-        if (pojo['endOfLife'] !== undefined) {
-            obj['endOfLife'] = pojo['endOfLife']!
+        if (json['endOfLife'] !== undefined) {
+            this.endOfLife = json['endOfLife']!
         }
-        if (pojo['deletionDate'] !== undefined) {
-            obj['deletionDate'] = pojo['deletionDate']!
+        if (json['deletionDate'] !== undefined) {
+            this.deletionDate = json['deletionDate']!
         }
-        obj['identifiers'] = pojo['identifiers'].map((item: any) => Identifier.fromJSON(item))
-        if (pojo['modified'] !== undefined) {
-            obj['modified'] = pojo['modified']!
+        if (json['identifiers'] !== undefined) {
+            this.identifiers = json['identifiers']!.map((item: any) => new Identifier(item))
         }
-        if (pojo['author'] !== undefined) {
-            obj['author'] = pojo['author']!
+        if (json['modified'] !== undefined) {
+            this.modified = json['modified']!
         }
-        if (pojo['responsible'] !== undefined) {
-            obj['responsible'] = pojo['responsible']!
+        if (json['author'] !== undefined) {
+            this.author = json['author']!
         }
-        obj['properties'] = pojo['properties'].map((item: any) => Property.fromJSON(item))
-        if (pojo['type'] !== undefined) {
-            obj['type'] = pojo['type']!
+        if (json['responsible'] !== undefined) {
+            this.responsible = json['responsible']!
         }
-        if (pojo['systemMetaData'] !== undefined) {
-            obj['systemMetaData'] = SystemMetaDataEncrypted.fromJSON(pojo['systemMetaData']!)
+        if (json['properties'] !== undefined) {
+            this.properties = json['properties']!.map((item: any) => new Property(item))
         }
-        return new Notification(obj)
+        if (json['type'] !== undefined) {
+            this.type = json['type']!
+        }
+        if (json['systemMetaData'] !== undefined) {
+            this.systemMetaData = new SystemMetaDataEncrypted(json['systemMetaData']!)
+        }
     }
 }
 
 export interface INotification {
-    id: string
+    id: EntityId
     rev?: string
     status?: NotificationStatusEnum
-    identifiers: Array<Identifier>
+    identifiers: IIdentifier[]
     created?: number
     modified?: number
     endOfLife?: number
     deletionDate?: number
     author?: string
     responsible?: string
-    properties: Array<Property>
+    properties: IProperty[]
     type?: NotificationTypeEnum
-    systemMetaData?: SystemMetaDataEncrypted
+    systemMetaData?: ISystemMetaDataEncrypted
 }
 
 export type NotificationTypeEnum = MaintenanceTask.TaskTypeEnum

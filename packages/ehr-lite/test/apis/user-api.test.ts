@@ -1,4 +1,4 @@
-import { ObservationApiAware, ConditionApiAware, EhrLiteBaseTestContext, NotificationApiAware, PatientApiAware } from './TestContexts'
+import { ConditionApiAware, EhrLiteBaseTestContext, NotificationApiAware, ObservationApiAware, PatientApiAware } from './TestContexts'
 import { testUserLikeApi } from '../../../common-test/apis/user-like-api'
 
 const UserApiTestContext = ConditionApiAware(PatientApiAware(NotificationApiAware(ObservationApiAware(EhrLiteBaseTestContext))))

@@ -1,48 +1,48 @@
-import { CodingReference } from './CodingReference.model'
+import { CodingReference, ICodingReference } from './CodingReference.model'
 
 export class SystemMetaDataOwner {
     publicKey?: string
-    hcPartyKeys: Record<string, string[]>
-    privateKeyShamirPartitions: Record<string, string>
-    aesExchangeKeys: Record<string, Record<string, Record<string, string>>>
-    transferKeys: Record<string, Record<string, string>>
-    publicKeysForOaepWithSha256: Array<string>
-    tags: Array<CodingReference>
+    hcPartyKeys: Record<string, string[]> = {}
+    privateKeyShamirPartitions: Record<string, string> = {}
+    aesExchangeKeys: Record<string, Record<string, Record<string, string>>> = {}
+    transferKeys: Record<string, Record<string, string>> = {}
+    publicKeysForOaepWithSha256: string[] = []
+    tags: CodingReference[] = []
 
-    constructor(systemMetaDataOwner: Partial<ISystemMetaDataOwner>) {
-        this.publicKey = systemMetaDataOwner.publicKey
-        this.hcPartyKeys = systemMetaDataOwner.hcPartyKeys ?? {}
-        this.privateKeyShamirPartitions = systemMetaDataOwner.privateKeyShamirPartitions ?? {}
-        this.aesExchangeKeys = systemMetaDataOwner.aesExchangeKeys ?? {}
-        this.transferKeys = systemMetaDataOwner.transferKeys ?? {}
-        this.publicKeysForOaepWithSha256 = systemMetaDataOwner.publicKeysForOaepWithSha256 ?? []
-        this.tags = systemMetaDataOwner.tags ?? new Array<CodingReference>()
-    }
-
-    static toJSON(instance: SystemMetaDataOwner): ISystemMetaDataOwner {
-        const pojo: ISystemMetaDataOwner = {} as ISystemMetaDataOwner
-        if (instance.publicKey !== undefined) pojo['publicKey'] = instance.publicKey
-        pojo['hcPartyKeys'] = { ...instance.hcPartyKeys }
-        pojo['privateKeyShamirPartitions'] = { ...instance.privateKeyShamirPartitions }
-        pojo['aesExchangeKeys'] = { ...instance.aesExchangeKeys }
-        pojo['transferKeys'] = { ...instance.transferKeys }
-        pojo['publicKeysForOaepWithSha256'] = instance.publicKeysForOaepWithSha256.map((item) => item)
-        pojo['tags'] = instance.tags.map((item) => CodingReference.toJSON(item))
-        return pojo
-    }
-
-    static fromJSON(pojo: ISystemMetaDataOwner): SystemMetaDataOwner {
-        const obj = {} as ISystemMetaDataOwner
-        if (pojo['publicKey'] !== undefined) {
-            obj['publicKey'] = pojo['publicKey']!
+    toJSON(): ISystemMetaDataOwner {
+        return {
+            publicKey: this.publicKey,
+            hcPartyKeys: { ...this.hcPartyKeys },
+            privateKeyShamirPartitions: { ...this.privateKeyShamirPartitions },
+            aesExchangeKeys: { ...this.aesExchangeKeys },
+            transferKeys: { ...this.transferKeys },
+            publicKeysForOaepWithSha256: this.publicKeysForOaepWithSha256.map((item) => item),
+            tags: this.tags.map((item) => item.toJSON()),
         }
-        obj['hcPartyKeys'] = { ...pojo['hcPartyKeys'] }
-        obj['privateKeyShamirPartitions'] = { ...pojo['privateKeyShamirPartitions'] }
-        obj['aesExchangeKeys'] = { ...pojo['aesExchangeKeys'] }
-        obj['transferKeys'] = { ...pojo['transferKeys'] }
-        obj['publicKeysForOaepWithSha256'] = pojo['publicKeysForOaepWithSha256'].map((item: any) => item)
-        obj['tags'] = pojo['tags'].map((item: any) => CodingReference.fromJSON(item))
-        return new SystemMetaDataOwner(obj)
+    }
+
+    constructor(json: Partial<ISystemMetaDataOwner>) {
+        if (json['publicKey'] !== undefined) {
+            this.publicKey = json['publicKey']!
+        }
+        if (json['hcPartyKeys'] !== undefined) {
+            this.hcPartyKeys = { ...json['hcPartyKeys']! }
+        }
+        if (json['privateKeyShamirPartitions'] !== undefined) {
+            this.privateKeyShamirPartitions = { ...json['privateKeyShamirPartitions']! }
+        }
+        if (json['aesExchangeKeys'] !== undefined) {
+            this.aesExchangeKeys = { ...json['aesExchangeKeys']! }
+        }
+        if (json['transferKeys'] !== undefined) {
+            this.transferKeys = { ...json['transferKeys']! }
+        }
+        if (json['publicKeysForOaepWithSha256'] !== undefined) {
+            this.publicKeysForOaepWithSha256 = json['publicKeysForOaepWithSha256']!.map((item: any) => item)
+        }
+        if (json['tags'] !== undefined) {
+            this.tags = json['tags']!.map((item: any) => new CodingReference(item))
+        }
     }
 }
 
@@ -52,6 +52,6 @@ export interface ISystemMetaDataOwner {
     privateKeyShamirPartitions: Record<string, string>
     aesExchangeKeys: Record<string, Record<string, Record<string, string>>>
     transferKeys: Record<string, Record<string, string>>
-    publicKeysForOaepWithSha256: Array<string>
-    tags: Array<CodingReference>
+    publicKeysForOaepWithSha256: string[]
+    tags: ICodingReference[]
 }

@@ -19,6 +19,7 @@ import { toPaginatedList } from '../../mappers/PaginatedList.mapper'
 import { iccRestApiPath } from '@icure/api/icc-api/api/IccRestApiPath'
 import { HealthcarePartyDto, PatientDto, UserDto } from '../../index'
 import UseEnum = PersonName.UseEnum
+
 export class UserLikeApiImpl<DSUser, DSPatient, DSHealthcareParty> implements UserLikeApi<DSUser, DSPatient> {
     constructor(
         private readonly userMapper: Mapper<DSUser, UserDto>,

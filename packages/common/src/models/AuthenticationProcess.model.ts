@@ -1,35 +1,35 @@
 export class AuthenticationProcess {
-    constructor(json: Partial<IAuthenticationProcess>) {
-        Object.assign(this as AuthenticationProcess, json)
-    }
-
     /**
      * Id of this process used later for reference
      */
-    'requestId': string
+    requestId: string
     /**
      * Login information
      */
-    'login': string
+    login: string
     /**
      * Bypass Token Check
      */
-    'bypassTokenCheck': boolean
+    bypassTokenCheck: boolean
 
-    static toJSON(instance: AuthenticationProcess): IAuthenticationProcess {
-        const pojo: IAuthenticationProcess = {} as IAuthenticationProcess
-        pojo['requestId'] = instance.requestId
-        pojo['login'] = instance.login
-        pojo['bypassTokenCheck'] = instance.bypassTokenCheck
-        return pojo
+    toJSON(): IAuthenticationProcess {
+        return {
+            requestId: this.requestId,
+            login: this.login,
+            bypassTokenCheck: this.bypassTokenCheck,
+        }
     }
 
-    static fromJSON(pojo: IAuthenticationProcess): AuthenticationProcess {
-        const obj = {} as IAuthenticationProcess
-        obj['requestId'] = pojo['requestId']
-        obj['login'] = pojo['login']
-        obj['bypassTokenCheck'] = pojo['bypassTokenCheck']
-        return new AuthenticationProcess(obj)
+    constructor(
+        json: Partial<IAuthenticationProcess> & {
+            requestId: string
+            login: string
+            bypassTokenCheck: boolean
+        },
+    ) {
+        this.requestId = json['requestId']!
+        this.login = json['login']!
+        this.bypassTokenCheck = json['bypassTokenCheck']!
     }
 }
 

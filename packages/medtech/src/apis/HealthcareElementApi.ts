@@ -1,4 +1,4 @@
-import { CommonApi, CommonFilter, HealthElementLikeApi, HealthElementLikeApiImpl, PaginatedList, Connection, HealthElementDto, PatientDto, SubscriptionOptions } from '@icure/typescript-common'
+import { CommonApi, CommonFilter, Connection, HealthElementDto, HealthElementLikeApi, HealthElementLikeApiImpl, PaginatedList, PatientDto, SubscriptionOptions } from '@icure/typescript-common'
 import { mapHealthcareElementToHealthElementDto, mapHealthElementDtoToHealthcareElement } from '../mappers/HealthcareElement.mapper'
 import { Patient } from '../models/Patient.model'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'

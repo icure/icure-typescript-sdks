@@ -1,7 +1,7 @@
 import { AccessLevelEnum, SecureDelegation } from '../../src'
 
 export function generateSecureDelegation(): SecureDelegation {
-    const secureDelegation = {
+    return new SecureDelegation({
         delegator: 'sampleDelegator',
         delegate: 'sampleDelegate',
         secretIds: ['secretId1', 'secretId2'],
@@ -10,7 +10,5 @@ export function generateSecureDelegation(): SecureDelegation {
         parentDelegations: ['parentDelegation1', 'parentDelegation2'],
         exchangeDataId: 'sampleExchangeDataId',
         permissions: AccessLevelEnum.WRITE,
-    } satisfies SecureDelegation
-
-    return new SecureDelegation(secureDelegation)
+    })
 }

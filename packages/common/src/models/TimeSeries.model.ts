@@ -18,49 +18,57 @@ import { mapTo } from '../utils/decorators'
  */
 @mapTo(TimeSeriesDto)
 export class TimeSeries {
+    fields: string[] = []
+    samples: Array<number>[] = []
+    min: number[] = []
+    max: number[] = []
+    mean: number[] = []
+    median: number[] = []
+    variance: number[] = []
+
+    toJSON(): ITimeSeries {
+        return {
+            fields: this.fields.map((item) => item),
+            samples: this.samples.map((item) => item.map((item) => item)),
+            min: this.min.map((item) => item),
+            max: this.max.map((item) => item),
+            mean: this.mean.map((item) => item),
+            median: this.median.map((item) => item),
+            variance: this.variance.map((item) => item),
+        }
+    }
+
     constructor(json: Partial<ITimeSeries>) {
-        Object.assign(this as TimeSeries, json)
-    }
-
-    'fields': Array<string>
-    'samples': Array<Array<number>>
-    'min': Array<number>
-    'max': Array<number>
-    'mean': Array<number>
-    'median': Array<number>
-    'variance': Array<number>
-
-    static toJSON(instance: TimeSeries): ITimeSeries {
-        const pojo: ITimeSeries = {} as ITimeSeries
-        pojo['fields'] = instance.fields.map((item) => item)
-        pojo['samples'] = instance.samples.map((item) => item.map((item) => item))
-        pojo['min'] = instance.min.map((item) => item)
-        pojo['max'] = instance.max.map((item) => item)
-        pojo['mean'] = instance.mean.map((item) => item)
-        pojo['median'] = instance.median.map((item) => item)
-        pojo['variance'] = instance.variance.map((item) => item)
-        return pojo
-    }
-
-    static fromJSON(pojo: ITimeSeries): TimeSeries {
-        const obj = {} as ITimeSeries
-        obj['fields'] = pojo['fields'].map((item: any) => item)
-        obj['samples'] = pojo['samples'].map((item: any) => item.map((item: any) => item))
-        obj['min'] = pojo['min'].map((item: any) => item)
-        obj['max'] = pojo['max'].map((item: any) => item)
-        obj['mean'] = pojo['mean'].map((item: any) => item)
-        obj['median'] = pojo['median'].map((item: any) => item)
-        obj['variance'] = pojo['variance'].map((item: any) => item)
-        return new TimeSeries(obj)
+        if (json['fields'] !== undefined) {
+            this.fields = json['fields']!.map((item: any) => item)
+        }
+        if (json['samples'] !== undefined) {
+            this.samples = json['samples']!.map((item: any) => item.map((item: any) => item))
+        }
+        if (json['min'] !== undefined) {
+            this.min = json['min']!.map((item: any) => item)
+        }
+        if (json['max'] !== undefined) {
+            this.max = json['max']!.map((item: any) => item)
+        }
+        if (json['mean'] !== undefined) {
+            this.mean = json['mean']!.map((item: any) => item)
+        }
+        if (json['median'] !== undefined) {
+            this.median = json['median']!.map((item: any) => item)
+        }
+        if (json['variance'] !== undefined) {
+            this.variance = json['variance']!.map((item: any) => item)
+        }
     }
 }
 
 export interface ITimeSeries {
-    fields: Array<string>
+    fields: string[]
     samples: Array<Array<number>>
-    min: Array<number>
-    max: Array<number>
-    mean: Array<number>
-    median: Array<number>
-    variance: Array<number>
+    min: number[]
+    max: number[]
+    mean: number[]
+    median: number[]
+    variance: number[]
 }

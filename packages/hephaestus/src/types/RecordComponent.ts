@@ -1,12 +1,20 @@
 import { ClassComponent } from './ClassComponent'
 
 export class RecordComponent extends ClassComponent {
-    constructor(nullable: boolean = false, keyType: ClassComponent, valueType: ClassComponent) {
-        super(nullable, [keyType, valueType])
+    override get typeName(): string {
+        return `Record<${this.keyType.typeName}, ${this.valueType.typeName}>`
+    }
+
+    override get interfaceName(): string {
+        return `Record<${this.keyType.typeName}, ${this.valueType.interfaceName}>`
+    }
+
+    constructor(nullable: boolean = false, optional: boolean = false, keyType: ClassComponent, valueType: ClassComponent) {
+        super(nullable, optional, [keyType, valueType])
     }
 
     public notNullable(): ClassComponent {
-        return new RecordComponent(false, this.keyType, this.valueType)
+        return new RecordComponent(false, this.optional, this.keyType, this.valueType)
     }
 
     get keyType(): ClassComponent {
@@ -21,7 +29,7 @@ export class RecordComponent extends ClassComponent {
         let keyDeserializer = this.keyType.computeDeserializer('k')
         let valueDeserializer = this.valueType.computeDeserializer('v')
 
-        let mapper = keyDeserializer === 'k' && valueDeserializer === 'v' ? `{...${value}}` : `Object.fromEntries(Object.entries(${value}).map(([k, v]: [any, any]) => [${keyDeserializer}, ${valueDeserializer}]))`
+        let mapper = keyDeserializer === 'k' && valueDeserializer === 'v' ? `{...${value}}` : `Object.fromEntries(Object.entries(${value}).map(([k, v]: [any, ${this.valueType.interfaceName}]) => [${keyDeserializer}, ${valueDeserializer}]))`
 
         return this.nullable ? `${value} ? ${mapper} : undefined` : mapper
     }
@@ -30,7 +38,7 @@ export class RecordComponent extends ClassComponent {
         let keySerializer = this.keyType.computeSerializer('k')
         let valueSerializer = this.valueType.computeSerializer('v')
 
-        let mapper = keySerializer === 'k' && valueSerializer === 'v' ? `{...${value}}` : `Object.fromEntries(Object.entries(${value}).map(([k, v]: [any, any]) => [${keySerializer}, ${valueSerializer}]))`
+        let mapper = keySerializer === 'k' && valueSerializer === 'v' ? `{...${value}}` : `Object.fromEntries(Object.entries(${value}).map(([k, v]: [any, ${this.valueType.typeName}]) => [${keySerializer}, ${valueSerializer}]))`
 
         return this.nullable ? `${value} ? ${mapper} : undefined` : mapper
     }

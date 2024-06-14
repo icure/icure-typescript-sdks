@@ -10,206 +10,188 @@
  * Do not edit the class manually.
  */
 
-import { CodingReference, DeviceDto, Identifier, Property, SystemMetaDataOwner, base64string, forceUuid, mapTo } from '@icure/typescript-common'
+import { base64string, CodingReference, DeviceDto, EntityId, forceUuid, ICodingReference, Identifier, IIdentifier, IProperty, ISystemMetaDataOwner, mapTo, Property, SystemMetaDataOwner } from '@icure/typescript-common'
 
 @mapTo(DeviceDto)
 export class MedicalDevice {
-    constructor(json: Partial<IMedicalDevice>) {
-        this.id = forceUuid(json.id)
-        this.rev = json.rev
-        this.deletionDate = json.deletionDate
-        this.identifiers = json.identifiers ?? []
-        this.created = json.created
-        this.modified = json.modified
-        this.author = json.author
-        this.responsible = json.responsible
-        this.properties = json.properties ?? []
-        this.labels = json.labels ?? []
-        this.codes = json.codes ?? []
-        this.endOfLife = json.endOfLife
-        this.externalId = json.externalId
-        this.name = json.name
-        this.type = json.type
-        this.brand = json.brand
-        this.model = json.model
-        this.serialNumber = json.serialNumber
-        this.parentId = json.parentId
-        this.systemMetaData = json.systemMetaData
-        this.picture = json.picture
-    }
-
     /**
      * The Id of the MedicalDevice. We encourage using either a v4 UUID or a HL7 Id.
      */
-    'id': string
+    id: EntityId
     /**
      * the revision of the medical device in the database, used for conflict management / optimistic locking.
      */
-    'rev'?: string
+    rev?: string
     /**
      * the soft delete timestamp. When a medical device is ”deleted“, this is set to a non null value: the moment of the deletion
      */
-    'deletionDate'?: number
+    deletionDate?: number
     /**
-     * Typically used for business / client identifiers. An identifier should identify a device uniquely and unambiguously. However, iCure can't guarantee the uniqueness of those identifiers : This is something you need to take care of.
+     * Typically used for business / client identifiers. An identifier should identify a device uniquely and unambiguously. However, iCure cant guarantee the uniqueness of those identifiers : This is something you need to take care of.
      */
-    'identifiers': Array<Identifier>
+    identifiers: Identifier[] = []
     /**
      * the creation date of the medical device (encoded as epoch).
      */
-    'created'?: number
+    created?: number
     /**
      * the last modification date of the medical device (encoded as epoch).
      */
-    'modified'?: number
+    modified?: number
     /**
      * The id of the [User] that created this medical device. When creating the device, this field will be filled automatically by the current user id if not provided.
      */
-    'author'?: string
+    author?: string
     /**
      * The id of the data owner that is responsible of this medical device. When creating the medical device, will be filled automatically by the current user data owner id ([HealthcareProfessional], [Patient] or [MedicalDevice]) if missing
      */
-    'responsible'?: string
+    responsible?: string
     /**
      * A label is an item from a codification system that qualifies a medical device as being member of a certain class, whatever the value it might have taken. If the label qualifies the content of a field, it means that whatever the content of the field, the label will always apply. LOINC is a codification system typically used for labels.
      */
-    'labels': Array<CodingReference>
+    labels: CodingReference[] = []
     /**
      * A code is an item from a codification system that qualifies the content of this medical device. SNOMED-CT, ICPC-2 or ICD-10 codifications systems can be used for codes
      */
-    'codes': Array<CodingReference>
+    codes: CodingReference[] = []
     /**
      * Soft delete (unix epoch in ms) timestamp of the medical device
      */
-    'endOfLife'?: number
+    endOfLife?: number
     /**
      * An external (from another source) id with no guarantee or requirement for unicity.
      */
-    'externalId'?: string
+    externalId?: string
     /**
      * Name of the device/application recording the data
      */
-    'name'?: string
+    name?: string
     /**
      * Type of device/application recording the data. (eg. \"smartphone\", \"watch\",...)
      */
-    'type'?: string
+    type?: string
     /**
      * Brand of the device recording the data
      */
-    'brand'?: string
+    brand?: string
     /**
      * Model of the device recording the data
      */
-    'model'?: string
+    model?: string
     /**
      * Serial number of the device recording the data
      */
-    'serialNumber'?: string
-    'parentId'?: string
+    serialNumber?: string
+    parentId?: string
     /**
      * Picture of the device/application
      */
-    'picture'?: base64string
-    'properties': Array<Property>
-    'systemMetaData'?: SystemMetaDataOwner
+    picture?: base64string
+    properties: Property[] = []
+    systemMetaData?: SystemMetaDataOwner
 
-    static toJSON(instance: MedicalDevice): IMedicalDevice {
-        const pojo: IMedicalDevice = {} as IMedicalDevice
-        pojo['id'] = instance.id
-        if (instance.rev !== undefined) pojo['rev'] = instance.rev
-        if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
-        pojo['identifiers'] = instance.identifiers.map((item) => Identifier.toJSON(item))
-        if (instance.created !== undefined) pojo['created'] = instance.created
-        if (instance.modified !== undefined) pojo['modified'] = instance.modified
-        if (instance.author !== undefined) pojo['author'] = instance.author
-        if (instance.responsible !== undefined) pojo['responsible'] = instance.responsible
-        pojo['labels'] = instance.labels.map((item) => CodingReference.toJSON(item))
-        pojo['codes'] = instance.codes.map((item) => CodingReference.toJSON(item))
-        if (instance.endOfLife !== undefined) pojo['endOfLife'] = instance.endOfLife
-        if (instance.externalId !== undefined) pojo['externalId'] = instance.externalId
-        if (instance.name !== undefined) pojo['name'] = instance.name
-        if (instance.type !== undefined) pojo['type'] = instance.type
-        if (instance.brand !== undefined) pojo['brand'] = instance.brand
-        if (instance.model !== undefined) pojo['model'] = instance.model
-        if (instance.serialNumber !== undefined) pojo['serialNumber'] = instance.serialNumber
-        if (instance.parentId !== undefined) pojo['parentId'] = instance.parentId
-        if (instance.picture !== undefined) pojo['picture'] = instance.picture
-        pojo['properties'] = instance.properties.map((item) => Property.toJSON(item))
-        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = SystemMetaDataOwner.toJSON(instance.systemMetaData)
-        return pojo
+    toJSON(): IMedicalDevice {
+        return {
+            id: this.id,
+            rev: this.rev,
+            deletionDate: this.deletionDate,
+            identifiers: this.identifiers.map((item) => item.toJSON()),
+            created: this.created,
+            modified: this.modified,
+            author: this.author,
+            responsible: this.responsible,
+            labels: this.labels.map((item) => item.toJSON()),
+            codes: this.codes.map((item) => item.toJSON()),
+            endOfLife: this.endOfLife,
+            externalId: this.externalId,
+            name: this.name,
+            type: this.type,
+            brand: this.brand,
+            model: this.model,
+            serialNumber: this.serialNumber,
+            parentId: this.parentId,
+            picture: this.picture,
+            properties: this.properties.map((item) => item.toJSON()),
+            systemMetaData: !!this.systemMetaData ? this.systemMetaData.toJSON() : undefined,
+        }
     }
 
-    static fromJSON(pojo: IMedicalDevice): MedicalDevice {
-        const obj = {} as IMedicalDevice
-        obj['id'] = pojo['id']
-        if (pojo['rev'] !== undefined) {
-            obj['rev'] = pojo['rev']!
+    constructor(json: Partial<IMedicalDevice>) {
+        this.id = forceUuid(json['id']!)
+        if (json['rev'] !== undefined) {
+            this.rev = json['rev']!
         }
-        if (pojo['deletionDate'] !== undefined) {
-            obj['deletionDate'] = pojo['deletionDate']!
+        if (json['deletionDate'] !== undefined) {
+            this.deletionDate = json['deletionDate']!
         }
-        obj['identifiers'] = pojo['identifiers'].map((item: any) => Identifier.fromJSON(item))
-        if (pojo['created'] !== undefined) {
-            obj['created'] = pojo['created']!
+        if (json['identifiers'] !== undefined) {
+            this.identifiers = json['identifiers']!.map((item: any) => new Identifier(item))
         }
-        if (pojo['modified'] !== undefined) {
-            obj['modified'] = pojo['modified']!
+        if (json['created'] !== undefined) {
+            this.created = json['created']!
         }
-        if (pojo['author'] !== undefined) {
-            obj['author'] = pojo['author']!
+        if (json['modified'] !== undefined) {
+            this.modified = json['modified']!
         }
-        if (pojo['responsible'] !== undefined) {
-            obj['responsible'] = pojo['responsible']!
+        if (json['author'] !== undefined) {
+            this.author = json['author']!
         }
-        obj['labels'] = pojo['labels'].map((item: any) => CodingReference.fromJSON(item))
-        obj['codes'] = pojo['codes'].map((item: any) => CodingReference.fromJSON(item))
-        if (pojo['endOfLife'] !== undefined) {
-            obj['endOfLife'] = pojo['endOfLife']!
+        if (json['responsible'] !== undefined) {
+            this.responsible = json['responsible']!
         }
-        if (pojo['externalId'] !== undefined) {
-            obj['externalId'] = pojo['externalId']!
+        if (json['labels'] !== undefined) {
+            this.labels = json['labels']!.map((item: any) => new CodingReference(item))
         }
-        if (pojo['name'] !== undefined) {
-            obj['name'] = pojo['name']!
+        if (json['codes'] !== undefined) {
+            this.codes = json['codes']!.map((item: any) => new CodingReference(item))
         }
-        if (pojo['type'] !== undefined) {
-            obj['type'] = pojo['type']!
+        if (json['endOfLife'] !== undefined) {
+            this.endOfLife = json['endOfLife']!
         }
-        if (pojo['brand'] !== undefined) {
-            obj['brand'] = pojo['brand']!
+        if (json['externalId'] !== undefined) {
+            this.externalId = json['externalId']!
         }
-        if (pojo['model'] !== undefined) {
-            obj['model'] = pojo['model']!
+        if (json['name'] !== undefined) {
+            this.name = json['name']!
         }
-        if (pojo['serialNumber'] !== undefined) {
-            obj['serialNumber'] = pojo['serialNumber']!
+        if (json['type'] !== undefined) {
+            this.type = json['type']!
         }
-        if (pojo['parentId'] !== undefined) {
-            obj['parentId'] = pojo['parentId']!
+        if (json['brand'] !== undefined) {
+            this.brand = json['brand']!
         }
-        if (pojo['picture'] !== undefined) {
-            obj['picture'] = pojo['picture']!
+        if (json['model'] !== undefined) {
+            this.model = json['model']!
         }
-        obj['properties'] = pojo['properties'].map((item: any) => Property.fromJSON(item))
-        if (pojo['systemMetaData'] !== undefined) {
-            obj['systemMetaData'] = SystemMetaDataOwner.fromJSON(pojo['systemMetaData']!)
+        if (json['serialNumber'] !== undefined) {
+            this.serialNumber = json['serialNumber']!
         }
-        return new MedicalDevice(obj)
+        if (json['parentId'] !== undefined) {
+            this.parentId = json['parentId']!
+        }
+        if (json['picture'] !== undefined) {
+            this.picture = json['picture']!
+        }
+        if (json['properties'] !== undefined) {
+            this.properties = json['properties']!.map((item: any) => new Property(item))
+        }
+        if (json['systemMetaData'] !== undefined) {
+            this.systemMetaData = new SystemMetaDataOwner(json['systemMetaData']!)
+        }
     }
 }
 
 export interface IMedicalDevice {
-    id?: string
+    id?: EntityId
     rev?: string
     deletionDate?: number
-    identifiers: Array<Identifier>
+    identifiers: IIdentifier[]
     created?: number
     modified?: number
     author?: string
     responsible?: string
-    labels: Array<CodingReference>
-    codes: Array<CodingReference>
+    labels: ICodingReference[]
+    codes: ICodingReference[]
     endOfLife?: number
     externalId?: string
     name?: string
@@ -219,6 +201,6 @@ export interface IMedicalDevice {
     serialNumber?: string
     parentId?: string
     picture?: base64string
-    properties: Array<Property>
-    systemMetaData?: SystemMetaDataOwner
+    properties: IProperty[]
+    systemMetaData?: ISystemMetaDataOwner
 }

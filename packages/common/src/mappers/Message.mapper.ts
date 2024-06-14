@@ -1,5 +1,5 @@
 import { Message } from '../models/Message.model'
-import { CodeStub, Delegation, Message as MessageDto, MessageReadStatus as MessageReadStatusDto, SecurityMetadata as SecurityMetadataDto, MessageAttachment as MessageAttachmentDto } from '@icure/api'
+import { CodeStub, Delegation, Message as MessageDto, MessageAttachment as MessageAttachmentDto, MessageReadStatus as MessageReadStatusDto, SecurityMetadata as SecurityMetadataDto } from '@icure/api'
 import { mapCodeStubToCodingReference, mapCodingReferenceToCodeStub } from './CodingReference.mapper'
 import { CodingReference } from '../models/CodingReference.model'
 import { MessageReadStatus } from '../models/MessageReadStatus.model'
@@ -208,6 +208,7 @@ function toMessageDeletionDate(dto: MessageDto): number | undefined {
 function toMessageSender(dto: MessageDto): string | undefined {
     return dto.fromHealthcarePartyId
 }
+
 function toMessageMetas(dto: MessageDto): Record<string, string> | undefined {
     return !!dto.metas ? Object.fromEntries(Object.entries(dto.metas)) : undefined
 }

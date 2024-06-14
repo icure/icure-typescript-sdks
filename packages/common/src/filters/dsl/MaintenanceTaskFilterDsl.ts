@@ -40,7 +40,10 @@ export class MaintenanceTaskFilter implements DataOwnerFilterBuilder<Maintenance
 class MaintenanceTaskFilterWithDataOwner extends SortableFilterBuilder<MaintenanceTask, MaintenanceTaskFilterSortStepDecorator> implements BaseMaintenanceTaskFilterBuilder<MaintenanceTaskFilterWithDataOwner>, FilterBuilder<MaintenanceTask> {
     _dataOwnerId: Promise<string>
 
-    constructor(private api: CommonApi, dataOwnerId?: string) {
+    constructor(
+        private api: CommonApi,
+        dataOwnerId?: string,
+    ) {
         super()
         this._dataOwnerId = !!dataOwnerId ? Promise.resolve(dataOwnerId) : api.baseApi.userApi.getCurrentUser().then((u) => api.baseApi.dataOwnerApi.getDataOwnerIdOf(u))
     }
@@ -92,7 +95,11 @@ class MaintenanceTaskFilterWithDataOwner extends SortableFilterBuilder<Maintenan
         } else if (filters.length === 1) {
             return filters[0]
         } else {
-            return { healthcarePartyId: await this._dataOwnerId, date: 0, $type: 'MaintenanceTasksAfterDateFilter' } as MaintenanceTasksAfterDateFilter
+            return {
+                healthcarePartyId: await this._dataOwnerId,
+                date: 0,
+                $type: 'MaintenanceTasksAfterDateFilter',
+            } as MaintenanceTasksAfterDateFilter
         }
     }
 }

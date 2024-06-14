@@ -1,4 +1,4 @@
-import { CommonApi, CommonFilter, MaintenanceTaskLikeApi, MaintenanceTaskLikeApiImpl, mapMaintenanceTaskToNotification, mapNotificationToMaintenanceTask, Notification, PaginatedList, Connection, MaintenanceTaskDto, SubscriptionOptions } from '@icure/typescript-common'
+import { CommonApi, CommonFilter, Connection, MaintenanceTaskDto, MaintenanceTaskLikeApi, MaintenanceTaskLikeApiImpl, mapMaintenanceTaskToNotification, mapNotificationToMaintenanceTask, Notification, PaginatedList, SubscriptionOptions } from '@icure/typescript-common'
 
 export interface NotificationApi extends MaintenanceTaskLikeApi<Notification> {
     /**
@@ -84,21 +84,27 @@ class NotificationApiImpl extends MaintenanceTaskLikeApiImpl<Notification> imple
     createOrModifyNotification(notification: Notification, delegate?: string): Promise<Notification | undefined> {
         return this.createOrModify(notification, delegate)
     }
+
     deleteNotification(notificationId: string): Promise<string | undefined> {
         return this.delete(notificationId)
     }
+
     filterNotifications(filter: CommonFilter<MaintenanceTaskDto>, nextNotificationId?: string, limit?: number): Promise<PaginatedList<Notification>> {
         return this.filterBy(filter, nextNotificationId, limit)
     }
+
     getNotification(notificationId: string): Promise<Notification | undefined> {
         return this.get(notificationId)
     }
+
     getPendingNotificationsAfter(fromDate?: number): Promise<Array<Notification>> {
         return this.getPendingAfter(fromDate)
     }
+
     updateNotificationStatus(notification: Notification, newStatus: MaintenanceTaskDto.StatusEnum): Promise<Notification | undefined> {
         return this.updateStatus(notification, newStatus)
     }
+
     subscribeToNotificationEvents(eventTypes: ('CREATE' | 'UPDATE')[], filter: CommonFilter<MaintenanceTaskDto>, eventFired: (dataSample: Notification) => Promise<void>, options?: SubscriptionOptions): Promise<Connection> {
         return this.subscribeToEvents(eventTypes, filter, eventFired, options)
     }

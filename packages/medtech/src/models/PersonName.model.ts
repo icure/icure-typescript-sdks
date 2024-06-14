@@ -17,63 +17,63 @@ import { mapTo, PersonNameDto } from '@icure/typescript-common'
  */
 @mapTo(PersonNameDto)
 export class PersonName {
+    lastName?: string
+    firstNames: string[] = []
+    start?: number
+    end?: number
+    prefix: string[] = []
+    suffix: string[] = []
+    text?: string
+    use?: PersonNameUseEnum
+
+    toJSON(): IPersonName {
+        return {
+            lastName: this.lastName,
+            firstNames: this.firstNames.map((item) => item),
+            start: this.start,
+            end: this.end,
+            prefix: this.prefix.map((item) => item),
+            suffix: this.suffix.map((item) => item),
+            text: this.text,
+            use: this.use,
+        }
+    }
+
     constructor(json: Partial<IPersonName>) {
-        Object.assign(this as PersonName, json as IPersonName)
-    }
-
-    'lastName'?: string
-    'firstNames': Array<string>
-    'start'?: number
-    'end'?: number
-    'prefix': Array<string>
-    'suffix': Array<string>
-    'text'?: string
-    'use'?: PersonNameUseEnum
-
-    static toJSON(instance: PersonName): IPersonName {
-        const pojo: IPersonName = {} as IPersonName
-        if (instance.lastName !== undefined) pojo['lastName'] = instance.lastName
-        pojo['firstNames'] = instance.firstNames.map((item) => item)
-        if (instance.start !== undefined) pojo['start'] = instance.start
-        if (instance.end !== undefined) pojo['end'] = instance.end
-        pojo['prefix'] = instance.prefix.map((item) => item)
-        pojo['suffix'] = instance.suffix.map((item) => item)
-        if (instance.text !== undefined) pojo['text'] = instance.text
-        if (instance.use !== undefined) pojo['use'] = instance.use
-        return pojo
-    }
-
-    static fromJSON(pojo: IPersonName): PersonName {
-        const obj = {} as IPersonName
-        if (pojo['lastName'] !== undefined) {
-            obj['lastName'] = pojo['lastName']!
+        if (json['lastName'] !== undefined) {
+            this.lastName = json['lastName']!
         }
-        obj['firstNames'] = pojo['firstNames'].map((item: any) => item)
-        if (pojo['start'] !== undefined) {
-            obj['start'] = pojo['start']!
+        if (json['firstNames'] !== undefined) {
+            this.firstNames = json['firstNames']!.map((item: any) => item)
         }
-        if (pojo['end'] !== undefined) {
-            obj['end'] = pojo['end']!
+        if (json['start'] !== undefined) {
+            this.start = json['start']!
         }
-        obj['prefix'] = pojo['prefix'].map((item: any) => item)
-        obj['suffix'] = pojo['suffix'].map((item: any) => item)
-        if (pojo['text'] !== undefined) {
-            obj['text'] = pojo['text']!
+        if (json['end'] !== undefined) {
+            this.end = json['end']!
         }
-        if (pojo['use'] !== undefined) {
-            obj['use'] = pojo['use']!
+        if (json['prefix'] !== undefined) {
+            this.prefix = json['prefix']!.map((item: any) => item)
         }
-        return new PersonName(obj)
+        if (json['suffix'] !== undefined) {
+            this.suffix = json['suffix']!.map((item: any) => item)
+        }
+        if (json['text'] !== undefined) {
+            this.text = json['text']!
+        }
+        if (json['use'] !== undefined) {
+            this.use = json['use']!
+        }
     }
 }
 
 export interface IPersonName {
     lastName?: string
-    firstNames: Array<string>
+    firstNames: string[]
     start?: number
     end?: number
-    prefix: Array<string>
-    suffix: Array<string>
+    prefix: string[]
+    suffix: string[]
     text?: string
     use?: PersonNameUseEnum
 }

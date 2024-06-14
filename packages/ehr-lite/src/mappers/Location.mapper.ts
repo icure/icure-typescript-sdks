@@ -1,5 +1,5 @@
 import { Location } from '../models/Location.model'
-import { Annotation, mapAnnotationDtoToAnnotation, mapAnnotationToAnnotationDto, AddressDto, AnnotationDto, TelecomDto } from '@icure/typescript-common'
+import { AddressDto, Annotation, AnnotationDto, mapAnnotationDtoToAnnotation, mapAnnotationToAnnotationDto, TelecomDto } from '@icure/typescript-common'
 import { ContactPoint } from '../models/ContactPoint.model'
 import { LocationAddressTypeEnum } from '../models/enums/LocationAddressType.enum'
 import { mapContactPointToTelecomDto, mapTelecomDtoToContactPoint } from './ContactPoint.mapper'

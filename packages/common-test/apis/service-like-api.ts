@@ -7,7 +7,7 @@ import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, f
 import { BaseApiTestContext, WithHelementApi, WithPatientApi, WithServiceApi } from './TestContexts'
 import { expectArrayContainsExactlyInAnyOrder } from '../assertions'
 import { doXOnYAndSubscribe } from '../websocket-utils'
-import { describe, it, beforeAll } from '@jest/globals'
+import { beforeAll, describe, it } from '@jest/globals'
 
 setLocalStorage(fetch)
 
@@ -598,7 +598,10 @@ export function testServiceLikeApi<
             const retrievedUnmodifiedService = await ctx.serviceApi(api).get(servicesDto[1].id!)
             const retrievedUnmodifiedServiceDto = ctx.toServiceDto(retrievedUnmodifiedService)
             // Compare without considering encrypted self: random IV will make it different
-            expect({ ...retrievedUnmodifiedServiceDto, encryptedSelf: undefined }).toEqual({ ...servicesDto[1], encryptedSelf: undefined })
+            expect({ ...retrievedUnmodifiedServiceDto, encryptedSelf: undefined }).toEqual({
+                ...servicesDto[1],
+                encryptedSelf: undefined,
+            })
         })
 
         const subscribeAndCreateContactOrService = async (options: SubscriptionOptions, eventTypes: ('CREATE' | 'UPDATE')[], supplier: () => Promise<void>) => {

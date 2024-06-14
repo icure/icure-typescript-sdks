@@ -1,12 +1,12 @@
 import { Document } from '../models/Document.model'
 import { CodeStub, DataAttachment, DeletedAttachment, Document as DocumentDto, DocumentTemplate, SecurityMetadata as SecurityMetadataDto } from '@icure/api'
-import { Delegation } from '../models/Delegation.model'
-import DocumentLocationEnum = DocumentDto.DocumentLocationEnum
-import DocumentTypeEnum = DocumentTemplate.DocumentTypeEnum
-import DocumentStatusEnum = DocumentDto.DocumentStatusEnum
 import { forceUuid } from '../utils/uuidUtils'
 import { toCryptedForeignKeys, toDelegations, toEncryptedSelf, toEncryptionKeys, toSecretForeignKeys, toSecurityMetadataDto, toSystemMetaDataEncrypted } from './SystemMetaData.mapper'
 import { SystemMetaDataEncrypted } from '../models/SystemMetaDataEncrypted.model'
+import { DelegationDto } from '../index'
+import DocumentLocationEnum = DocumentDto.DocumentLocationEnum
+import DocumentTypeEnum = DocumentTemplate.DocumentTypeEnum
+import DocumentStatusEnum = DocumentDto.DocumentStatusEnum
 
 function toDocumentDtoId(domain: Document): string {
     return forceUuid(domain.id)
@@ -132,15 +132,15 @@ function toDocumentDtoSecretForeignKeys(domain: Document): string[] | undefined 
     return toSecretForeignKeys(domain.systemMetaData)
 }
 
-function toDocumentDtoCryptedForeignKeys(domain: Document): { [key: string]: Delegation[] } | undefined {
+function toDocumentDtoCryptedForeignKeys(domain: Document): { [key: string]: DelegationDto[] } | undefined {
     return toCryptedForeignKeys(domain.systemMetaData)
 }
 
-function toDocumentDtoDelegations(domain: Document): { [key: string]: Delegation[] } | undefined {
+function toDocumentDtoDelegations(domain: Document): { [key: string]: DelegationDto[] } | undefined {
     return toDelegations(domain.systemMetaData)
 }
 
-function toDocumentDtoEncryptionKeys(domain: Document): { [key: string]: Delegation[] } | undefined {
+function toDocumentDtoEncryptionKeys(domain: Document): { [key: string]: DelegationDto[] } | undefined {
     return toEncryptionKeys(domain.systemMetaData)
 }
 

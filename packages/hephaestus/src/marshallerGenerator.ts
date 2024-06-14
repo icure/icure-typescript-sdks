@@ -21,7 +21,7 @@ export function marshallerGenerator(project: Project) {
             console.log('Marshalling ', classDeclaration.getName())
 
             const classComponents: [string, ClassComponent][] = classDeclaration.getProperties().map((property) => {
-                return [property.getName().replace(/['"]/gi, ''), classComponentFactory(property.getType())]
+                return [property.getName().replace(/['"]/gi, ''), classComponentFactory(property.getType(), property)]
             })
 
             const bundle = new ClassBundle(classDeclaration.getName()!, new Map(classComponents))

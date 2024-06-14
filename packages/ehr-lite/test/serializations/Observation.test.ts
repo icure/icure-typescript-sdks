@@ -5,8 +5,8 @@ describe(`Observation serialization and deserialization`, () => {
     it('should correctly serialize and deserialize from instance to JSON and back', () => {
         const instance = generateObservation()
 
-        const json = Observation.toJSON(instance)
-        const newInstance = Observation.fromJSON(json)
+        const json = instance.toJSON()
+        const newInstance = new Observation(json)
 
         expect(newInstance).toEqual(instance)
     })

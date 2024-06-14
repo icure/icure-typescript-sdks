@@ -1,146 +1,135 @@
-import { CodingReference, HealthcarePartyDto, ISO639_1, Identifier, Property, SystemMetaDataOwner, base64string, forceUuid, mapTo } from '@icure/typescript-common'
-import { HumanName } from './HumanName.model'
-import { Location } from './Location.model'
+import { base64string, CodingReference, EntityId, forceUuid, HealthcarePartyDto, ICodingReference, Identifier, IIdentifier, IProperty, ISO639_1, ISystemMetaDataOwner, mapTo, Property, SystemMetaDataOwner } from '@icure/typescript-common'
+import { HumanName, IHumanName } from './HumanName.model'
+import { ILocation, Location } from './Location.model'
 import { GenderEnum } from './enums/Gender.enum'
 
 @mapTo(HealthcarePartyDto)
 export class Practitioner implements IPractitioner {
-    id: string
+    id: EntityId
     rev?: string
     created?: number
     modified?: number
-    identifiers: Identifier[]
-    tags: Array<CodingReference>
-    codes: Array<CodingReference>
+    identifiers: Identifier[] = []
+    tags: CodingReference[] = []
+    codes: CodingReference[] = []
     deletionDate?: number
     name?: string
     lastName?: string
     firstName?: string
-    names: HumanName[]
+    names: HumanName[] = []
     gender?: GenderEnum
     civility?: string
     speciality?: string
     parentId?: string
     userId?: string
-    addresses: Location[]
-    languages: string[]
+    addresses: Location[] = []
+    languages: string[] = []
     picture?: base64string
-    specialityCodes: Array<CodingReference>
-    description: Record<ISO639_1, string>
-    properties: Array<Property>
+    specialityCodes: CodingReference[] = []
+    description: Record<ISO639_1, string> = {} as Record<ISO639_1, string>
+    properties: Property[] = []
     systemMetaData?: SystemMetaDataOwner
 
-    constructor(practitioner: Partial<IPractitioner>) {
-        this.id = forceUuid(practitioner.id)
-        this.rev = practitioner.rev
-        this.created = practitioner.created
-        this.modified = practitioner.modified
-        this.identifiers = practitioner.identifiers ?? []
-        this.tags = practitioner.tags ?? []
-        this.codes = practitioner.codes ?? []
-        this.deletionDate = practitioner.deletionDate
-        this.name = practitioner.name
-        this.lastName = practitioner.lastName
-        this.firstName = practitioner.firstName
-        this.names = practitioner.names ?? []
-        this.gender = practitioner.gender
-        this.civility = practitioner.civility
-        this.speciality = practitioner.speciality
-        this.parentId = practitioner.parentId
-        this.userId = practitioner.userId
-        this.addresses = practitioner.addresses ?? []
-        this.languages = practitioner.languages ?? []
-        this.picture = practitioner.picture
-        this.specialityCodes = practitioner.specialityCodes ?? []
-        this.description = practitioner.description ?? ({} as Record<ISO639_1, string>)
-        this.properties = practitioner.properties ?? []
-        this.systemMetaData = practitioner.systemMetaData
+    toJSON(): IPractitioner {
+        return {
+            id: this.id,
+            rev: this.rev,
+            created: this.created,
+            modified: this.modified,
+            identifiers: this.identifiers.map((item) => item.toJSON()),
+            tags: this.tags.map((item) => item.toJSON()),
+            codes: this.codes.map((item) => item.toJSON()),
+            deletionDate: this.deletionDate,
+            name: this.name,
+            lastName: this.lastName,
+            firstName: this.firstName,
+            names: this.names.map((item) => item.toJSON()),
+            gender: this.gender,
+            civility: this.civility,
+            speciality: this.speciality,
+            parentId: this.parentId,
+            userId: this.userId,
+            addresses: this.addresses.map((item) => item.toJSON()),
+            languages: this.languages.map((item) => item),
+            picture: this.picture,
+            specialityCodes: this.specialityCodes.map((item) => item.toJSON()),
+            description: { ...this.description },
+            properties: this.properties.map((item) => item.toJSON()),
+            systemMetaData: !!this.systemMetaData ? this.systemMetaData.toJSON() : undefined,
+        }
     }
 
-    static toJSON(instance: Practitioner): IPractitioner {
-        const pojo: IPractitioner = {} as IPractitioner
-        pojo['id'] = instance.id
-        if (instance.rev !== undefined) pojo['rev'] = instance.rev
-        if (instance.created !== undefined) pojo['created'] = instance.created
-        if (instance.modified !== undefined) pojo['modified'] = instance.modified
-        pojo['identifiers'] = instance.identifiers.map((item) => Identifier.toJSON(item))
-        pojo['tags'] = instance.tags.map((item) => CodingReference.toJSON(item))
-        pojo['codes'] = instance.codes.map((item) => CodingReference.toJSON(item))
-        if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
-        if (instance.name !== undefined) pojo['name'] = instance.name
-        if (instance.lastName !== undefined) pojo['lastName'] = instance.lastName
-        if (instance.firstName !== undefined) pojo['firstName'] = instance.firstName
-        pojo['names'] = instance.names.map((item) => HumanName.toJSON(item))
-        if (instance.gender !== undefined) pojo['gender'] = instance.gender
-        if (instance.civility !== undefined) pojo['civility'] = instance.civility
-        if (instance.speciality !== undefined) pojo['speciality'] = instance.speciality
-        if (instance.parentId !== undefined) pojo['parentId'] = instance.parentId
-        if (instance.userId !== undefined) pojo['userId'] = instance.userId
-        pojo['addresses'] = instance.addresses.map((item) => Location.toJSON(item))
-        pojo['languages'] = instance.languages.map((item) => item)
-        if (instance.picture !== undefined) pojo['picture'] = instance.picture
-        pojo['specialityCodes'] = instance.specialityCodes.map((item) => CodingReference.toJSON(item))
-        pojo['description'] = { ...instance.description }
-        pojo['properties'] = instance.properties.map((item) => Property.toJSON(item))
-        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = SystemMetaDataOwner.toJSON(instance.systemMetaData)
-        return pojo
-    }
-
-    static fromJSON(pojo: IPractitioner): Practitioner {
-        const obj = {} as IPractitioner
-        obj['id'] = pojo['id']
-        if (pojo['rev'] !== undefined) {
-            obj['rev'] = pojo['rev']!
+    constructor(json: Partial<IPractitioner>) {
+        this.id = forceUuid(json['id']!)
+        if (json['rev'] !== undefined) {
+            this.rev = json['rev']!
         }
-        if (pojo['created'] !== undefined) {
-            obj['created'] = pojo['created']!
+        if (json['created'] !== undefined) {
+            this.created = json['created']!
         }
-        if (pojo['modified'] !== undefined) {
-            obj['modified'] = pojo['modified']!
+        if (json['modified'] !== undefined) {
+            this.modified = json['modified']!
         }
-        obj['identifiers'] = pojo['identifiers'].map((item: any) => Identifier.fromJSON(item))
-        obj['tags'] = pojo['tags'].map((item: any) => CodingReference.fromJSON(item))
-        obj['codes'] = pojo['codes'].map((item: any) => CodingReference.fromJSON(item))
-        if (pojo['deletionDate'] !== undefined) {
-            obj['deletionDate'] = pojo['deletionDate']!
+        if (json['identifiers'] !== undefined) {
+            this.identifiers = json['identifiers']!.map((item: any) => new Identifier(item))
         }
-        if (pojo['name'] !== undefined) {
-            obj['name'] = pojo['name']!
+        if (json['tags'] !== undefined) {
+            this.tags = json['tags']!.map((item: any) => new CodingReference(item))
         }
-        if (pojo['lastName'] !== undefined) {
-            obj['lastName'] = pojo['lastName']!
+        if (json['codes'] !== undefined) {
+            this.codes = json['codes']!.map((item: any) => new CodingReference(item))
         }
-        if (pojo['firstName'] !== undefined) {
-            obj['firstName'] = pojo['firstName']!
+        if (json['deletionDate'] !== undefined) {
+            this.deletionDate = json['deletionDate']!
         }
-        obj['names'] = pojo['names'].map((item: any) => HumanName.fromJSON(item))
-        if (pojo['gender'] !== undefined) {
-            obj['gender'] = pojo['gender']!
+        if (json['name'] !== undefined) {
+            this.name = json['name']!
         }
-        if (pojo['civility'] !== undefined) {
-            obj['civility'] = pojo['civility']!
+        if (json['lastName'] !== undefined) {
+            this.lastName = json['lastName']!
         }
-        if (pojo['speciality'] !== undefined) {
-            obj['speciality'] = pojo['speciality']!
+        if (json['firstName'] !== undefined) {
+            this.firstName = json['firstName']!
         }
-        if (pojo['parentId'] !== undefined) {
-            obj['parentId'] = pojo['parentId']!
+        if (json['names'] !== undefined) {
+            this.names = json['names']!.map((item: any) => new HumanName(item))
         }
-        if (pojo['userId'] !== undefined) {
-            obj['userId'] = pojo['userId']!
+        if (json['gender'] !== undefined) {
+            this.gender = json['gender']!
         }
-        obj['addresses'] = pojo['addresses'].map((item: any) => Location.fromJSON(item))
-        obj['languages'] = pojo['languages'].map((item: any) => item)
-        if (pojo['picture'] !== undefined) {
-            obj['picture'] = pojo['picture']!
+        if (json['civility'] !== undefined) {
+            this.civility = json['civility']!
         }
-        obj['specialityCodes'] = pojo['specialityCodes'].map((item: any) => CodingReference.fromJSON(item))
-        obj['description'] = { ...pojo['description'] }
-        obj['properties'] = pojo['properties'].map((item: any) => Property.fromJSON(item))
-        if (pojo['systemMetaData'] !== undefined) {
-            obj['systemMetaData'] = SystemMetaDataOwner.fromJSON(pojo['systemMetaData']!)
+        if (json['speciality'] !== undefined) {
+            this.speciality = json['speciality']!
         }
-        return new Practitioner(obj)
+        if (json['parentId'] !== undefined) {
+            this.parentId = json['parentId']!
+        }
+        if (json['userId'] !== undefined) {
+            this.userId = json['userId']!
+        }
+        if (json['addresses'] !== undefined) {
+            this.addresses = json['addresses']!.map((item: any) => new Location(item))
+        }
+        if (json['languages'] !== undefined) {
+            this.languages = json['languages']!.map((item: any) => item)
+        }
+        if (json['picture'] !== undefined) {
+            this.picture = json['picture']!
+        }
+        if (json['specialityCodes'] !== undefined) {
+            this.specialityCodes = json['specialityCodes']!.map((item: any) => new CodingReference(item))
+        }
+        if (json['description'] !== undefined) {
+            this.description = { ...json['description']! }
+        }
+        if (json['properties'] !== undefined) {
+            this.properties = json['properties']!.map((item: any) => new Property(item))
+        }
+        if (json['systemMetaData'] !== undefined) {
+            this.systemMetaData = new SystemMetaDataOwner(json['systemMetaData']!)
+        }
     }
 }
 
@@ -149,24 +138,24 @@ export interface IPractitioner {
     rev?: string
     created?: number
     modified?: number
-    identifiers: Identifier[]
-    tags: Array<CodingReference>
-    codes: Array<CodingReference>
+    identifiers: IIdentifier[]
+    tags: ICodingReference[]
+    codes: ICodingReference[]
     deletionDate?: number
     name?: string
     lastName?: string
     firstName?: string
-    names: HumanName[]
+    names: IHumanName[]
     gender?: GenderEnum
     civility?: string
     speciality?: string
     parentId?: string
     userId?: string
-    addresses: Location[]
+    addresses: ILocation[]
     languages: string[]
     picture?: base64string
-    specialityCodes: Array<CodingReference>
+    specialityCodes: ICodingReference[]
     description: Record<ISO639_1, string>
-    properties: Array<Property>
-    systemMetaData?: SystemMetaDataOwner
+    properties: IProperty[]
+    systemMetaData?: ISystemMetaDataOwner
 }

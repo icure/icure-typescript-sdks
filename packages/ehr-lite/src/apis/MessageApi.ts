@@ -1,4 +1,4 @@
-import { CommonApi, mapMessageDtoToMessage, mapMessageToMessageDto, mapTopicDtoToTopic, mapTopicToTopicDto, Message, MessageLikeApi, MessageLikeApiImpl, Topic, MessageDto, TopicDto } from '@icure/typescript-common'
+import { CommonApi, mapMessageDtoToMessage, mapMessageToMessageDto, mapTopicDtoToTopic, mapTopicToTopicDto, Message, MessageDto, MessageLikeApi, MessageLikeApiImpl, Topic, TopicDto } from '@icure/typescript-common'
 import { Binary } from '../models/Binary.model'
 import { mapBinaryToDocumentAttachment, mapDocumentAttachmentToBinary } from '../mappers/Binary.mapper'
 

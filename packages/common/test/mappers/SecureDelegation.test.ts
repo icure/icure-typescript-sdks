@@ -1,4 +1,3 @@
-import { generateSecureDelegation } from '../models/SecureDelegation.model'
 import { SecureDelegation } from '../../src'
 
 describe('SecureDelegation', function () {

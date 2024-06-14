@@ -5,27 +5,20 @@ export class LocalComponent implements ILocalComponent {
     stringValue?: string
     documentId?: string
 
-    constructor(localComponent: Partial<ILocalComponent>) {
-        this.stringValue = localComponent?.stringValue
-        this.documentId = localComponent?.documentId
+    toJSON(): ILocalComponent {
+        return {
+            stringValue: this.stringValue,
+            documentId: this.documentId,
+        }
     }
 
-    static toJSON(instance: LocalComponent): ILocalComponent {
-        const pojo: ILocalComponent = {} as ILocalComponent
-        if (instance.stringValue !== undefined) pojo['stringValue'] = instance.stringValue
-        if (instance.documentId !== undefined) pojo['documentId'] = instance.documentId
-        return pojo
-    }
-
-    static fromJSON(pojo: ILocalComponent): LocalComponent {
-        const obj = {} as ILocalComponent
-        if (pojo['stringValue'] !== undefined) {
-            obj['stringValue'] = pojo['stringValue']!
+    constructor(json: Partial<ILocalComponent>) {
+        if (json['stringValue'] !== undefined) {
+            this.stringValue = json['stringValue']!
         }
-        if (pojo['documentId'] !== undefined) {
-            obj['documentId'] = pojo['documentId']!
+        if (json['documentId'] !== undefined) {
+            this.documentId = json['documentId']!
         }
-        return new LocalComponent(obj)
     }
 }
 

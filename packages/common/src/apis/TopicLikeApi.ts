@@ -3,7 +3,7 @@ import { PaginatedList } from '../models/PaginatedList.model'
 import { Connection, SubscriptionOptions, Topic as TopicDto } from '@icure/api'
 import { CodingReference } from '../models/CodingReference.model'
 import { Reference } from '../types/Reference'
-import { TopicRole } from '../models/enums/TopicRole.enum'
+import { TopicRoleEnum } from '../models/enums/TopicRole.enum'
 
 export interface TopicLikeApi<DSTopic, DSHcp, DSPatient, DSService, DSHealthElement> {
     /**
@@ -26,7 +26,7 @@ export interface TopicLikeApi<DSTopic, DSHcp, DSPatient, DSService, DSHealthElem
      * @returns the created topic
      */
     create(
-        participants: { participant: Reference<DSHcp>; role: TopicRole }[],
+        participants: { participant: Reference<DSHcp>; role: TopicRoleEnum }[],
         description?: string,
         patient?: Reference<DSPatient>,
         healthElements?: Array<Reference<DSHealthElement>>,
@@ -43,7 +43,7 @@ export interface TopicLikeApi<DSTopic, DSHcp, DSPatient, DSService, DSHealthElem
      *
      * @returns the updated topic
      */
-    addParticipant(topic: DSTopic, participant: { ref: Reference<DSHcp>; role: TopicRole }): Promise<DSTopic>
+    addParticipant(topic: DSTopic, participant: { ref: Reference<DSHcp>; role: TopicRoleEnum }): Promise<DSTopic>
 
     /**
      * Remove participants from a topic

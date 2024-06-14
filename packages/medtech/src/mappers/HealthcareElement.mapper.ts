@@ -1,15 +1,24 @@
 import { HealthcareElement } from '../models/HealthcareElement.model'
 import {
     Annotation,
+    AnnotationDto,
+    CareTeamMember,
+    CodeStub,
     CodingReference,
+    DelegationDto,
+    Episode,
     forceUuid,
+    HealthElementDto,
     Identifier,
+    IdentifierDto,
     mapAnnotationDtoToAnnotation,
     mapAnnotationToAnnotationDto,
     mapCodeStubToCodingReference,
     mapCodingReferenceToCodeStub,
     mapIdentifierDtoToIdentifier,
     mapIdentifierToIdentifierDto,
+    PlanOfAction,
+    SecurityMetadataDto,
     SystemMetaDataEncrypted,
     toCryptedForeignKeys,
     toDelegations,
@@ -18,15 +27,6 @@ import {
     toSecretForeignKeys,
     toSecurityMetadataDto,
     toSystemMetaDataEncrypted,
-    AnnotationDto,
-    CareTeamMember,
-    CodeStub,
-    DelegationDto,
-    Episode,
-    HealthElementDto,
-    IdentifierDto,
-    PlanOfAction,
-    SecurityMetadataDto,
 } from '@icure/typescript-common'
 
 function toHealthElementDtoId(domain: HealthcareElement): string {
@@ -146,7 +146,11 @@ function toHealthElementDtoSecretForeignKeys(domain: HealthcareElement): string[
     return !!domain.systemMetaData ? toSecretForeignKeys(domain.systemMetaData) : undefined
 }
 
-function toHealthElementDtoCryptedForeignKeys(domain: HealthcareElement): { [key: string]: DelegationDto[] } | undefined {
+function toHealthElementDtoCryptedForeignKeys(domain: HealthcareElement):
+    | {
+          [key: string]: DelegationDto[]
+      }
+    | undefined {
     return !!domain.systemMetaData ? toCryptedForeignKeys(domain.systemMetaData) : undefined
 }
 
@@ -273,9 +277,8 @@ export function mapHealthElementDtoToHealthcareElement(dto: HealthElementDto): H
 
 export function mapHealthcareElementToHealthElementDto(domain: HealthcareElement): HealthElementDto {
     const id = toHealthElementDtoId(domain)
-
     return new HealthElementDto({
-        id: toHealthElementDtoId(domain),
+        id: id,
         identifiers: toHealthElementDtoIdentifiers(domain),
         rev: toHealthElementDtoRev(domain),
         created: toHealthElementDtoCreated(domain),

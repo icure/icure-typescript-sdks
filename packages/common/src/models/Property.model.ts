@@ -1,7 +1,7 @@
 import { PropertyStub } from '@icure/api'
 import { mapTo } from '../utils/decorators'
-import { PropertyType } from './PropertyType.model'
-import { TypedValueObject } from './TypedValueObject.model'
+import { IPropertyType, PropertyType } from './PropertyType.model'
+import { ITypedValueObject, TypedValueObject } from './TypedValueObject.model'
 
 @mapTo(PropertyStub)
 export class Property {
@@ -11,47 +11,37 @@ export class Property {
     deleted?: number
     encryptedSelf?: string
 
-    constructor(property: Partial<IProperty>) {
-        this.id = property.id!
-        this.type = property.type
-        this.typedValue = property.typedValue
-        this.deleted = property.deleted
-        this.encryptedSelf = property.encryptedSelf
+    toJSON(): IProperty {
+        return {
+            id: this.id,
+            type: !!this.type ? this.type.toJSON() : undefined,
+            typedValue: !!this.typedValue ? this.typedValue.toJSON() : undefined,
+            deleted: this.deleted,
+            encryptedSelf: this.encryptedSelf,
+        }
     }
 
-    static toJSON(instance: Property): IProperty {
-        const pojo: IProperty = {} as IProperty
-        pojo['id'] = instance.id
-        if (instance.type !== undefined) pojo['type'] = PropertyType.toJSON(instance.type)
-        if (instance.typedValue !== undefined) pojo['typedValue'] = TypedValueObject.toJSON(instance.typedValue)
-        if (instance.deleted !== undefined) pojo['deleted'] = instance.deleted
-        if (instance.encryptedSelf !== undefined) pojo['encryptedSelf'] = instance.encryptedSelf
-        return pojo
-    }
-
-    static fromJSON(pojo: IProperty): Property {
-        const obj = {} as IProperty
-        obj['id'] = pojo['id']
-        if (pojo['type'] !== undefined) {
-            obj['type'] = PropertyType.fromJSON(pojo['type']!)
+    constructor(json: Partial<IProperty> & { id: string }) {
+        this.id = json['id']!
+        if (json['type'] !== undefined) {
+            this.type = new PropertyType(json['type']!)
         }
-        if (pojo['typedValue'] !== undefined) {
-            obj['typedValue'] = TypedValueObject.fromJSON(pojo['typedValue']!)
+        if (json['typedValue'] !== undefined) {
+            this.typedValue = new TypedValueObject(json['typedValue']!)
         }
-        if (pojo['deleted'] !== undefined) {
-            obj['deleted'] = pojo['deleted']!
+        if (json['deleted'] !== undefined) {
+            this.deleted = json['deleted']!
         }
-        if (pojo['encryptedSelf'] !== undefined) {
-            obj['encryptedSelf'] = pojo['encryptedSelf']!
+        if (json['encryptedSelf'] !== undefined) {
+            this.encryptedSelf = json['encryptedSelf']!
         }
-        return new Property(obj)
     }
 }
 
 export interface IProperty {
     id: string
-    type?: PropertyType
-    typedValue?: TypedValueObject
+    type?: IPropertyType
+    typedValue?: ITypedValueObject
     deleted?: number
     encryptedSelf?: string
 }

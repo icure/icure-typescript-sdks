@@ -1,5 +1,5 @@
 import { Address, AddressAddressTypeEnum } from '../models/Address.model'
-import { Annotation, mapAnnotationDtoToAnnotation, mapAnnotationToAnnotationDto, AddressDto, TelecomDto, AnnotationDto } from '@icure/typescript-common'
+import { AddressDto, Annotation, AnnotationDto, mapAnnotationDtoToAnnotation, mapAnnotationToAnnotationDto, TelecomDto } from '@icure/typescript-common'
 import { Telecom } from '../models/Telecom.model'
 import { mapTelecomDtoToTelecom } from './Telecom.mapper'
 

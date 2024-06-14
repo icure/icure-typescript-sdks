@@ -1,125 +1,117 @@
-import { CodingReference, HealthcarePartyDto, ISO639_1, Identifier, Property, SystemMetaDataOwner, base64string, forceUuid, mapTo } from '@icure/typescript-common'
-import { Location } from './Location.model'
+import { base64string, CodingReference, EntityId, forceUuid, HealthcarePartyDto, ICodingReference, Identifier, IIdentifier, IProperty, ISO639_1, ISystemMetaDataOwner, mapTo, Property, SystemMetaDataOwner } from '@icure/typescript-common'
+import { ILocation, Location } from './Location.model'
 
 @mapTo(HealthcarePartyDto)
 export class Organisation implements IOrganisation {
-    id: string
+    id: EntityId
     rev?: string
     created?: number
     modified?: number
-    identifiers: Identifier[]
-    tags: Array<CodingReference>
-    codes: Array<CodingReference>
+    identifiers: Identifier[] = []
+    tags: CodingReference[] = []
+    codes: CodingReference[] = []
     deletionDate?: number
     name?: string
     parentId?: string
     userId?: string
-    addresses: Location[]
-    languages: string[]
+    addresses: Location[] = []
+    languages: string[] = []
     picture?: base64string
-    description: Record<ISO639_1, string>
-    properties: Array<Property>
+    description: Record<ISO639_1, string> = {} as Record<ISO639_1, string>
+    properties: Property[] = []
     systemMetaData?: SystemMetaDataOwner
 
-    constructor(organisation: Partial<IOrganisation>) {
-        this.id = forceUuid(organisation.id)
-        this.rev = organisation.rev
-        this.created = organisation.created
-        this.modified = organisation.modified
-        this.identifiers = organisation.identifiers ?? []
-        this.tags = organisation.tags ?? []
-        this.codes = organisation.codes ?? []
-        this.deletionDate = organisation.deletionDate
-        this.name = organisation.name
-        this.parentId = organisation.parentId
-        this.userId = organisation.userId
-        this.addresses = organisation.addresses ?? []
-        this.languages = organisation.languages ?? []
-        this.picture = organisation.picture
-        this.description = organisation.description ?? ({} as Record<ISO639_1, string>)
-        this.properties = organisation.properties ?? []
-        this.systemMetaData = organisation.systemMetaData
+    toJSON(): IOrganisation {
+        return {
+            id: this.id,
+            rev: this.rev,
+            created: this.created,
+            modified: this.modified,
+            identifiers: this.identifiers.map((item) => item.toJSON()),
+            tags: this.tags.map((item) => item.toJSON()),
+            codes: this.codes.map((item) => item.toJSON()),
+            deletionDate: this.deletionDate,
+            name: this.name,
+            parentId: this.parentId,
+            userId: this.userId,
+            addresses: this.addresses.map((item) => item.toJSON()),
+            languages: this.languages.map((item) => item),
+            picture: this.picture,
+            description: { ...this.description },
+            properties: this.properties.map((item) => item.toJSON()),
+            systemMetaData: !!this.systemMetaData ? this.systemMetaData.toJSON() : undefined,
+        }
     }
 
-    static toJSON(instance: Organisation): IOrganisation {
-        const pojo: IOrganisation = {} as IOrganisation
-        pojo['id'] = instance.id
-        if (instance.rev !== undefined) pojo['rev'] = instance.rev
-        if (instance.created !== undefined) pojo['created'] = instance.created
-        if (instance.modified !== undefined) pojo['modified'] = instance.modified
-        pojo['identifiers'] = instance.identifiers.map((item) => Identifier.toJSON(item))
-        pojo['tags'] = instance.tags.map((item) => CodingReference.toJSON(item))
-        pojo['codes'] = instance.codes.map((item) => CodingReference.toJSON(item))
-        if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
-        if (instance.name !== undefined) pojo['name'] = instance.name
-        if (instance.parentId !== undefined) pojo['parentId'] = instance.parentId
-        if (instance.userId !== undefined) pojo['userId'] = instance.userId
-        pojo['addresses'] = instance.addresses.map((item) => Location.toJSON(item))
-        pojo['languages'] = instance.languages.map((item) => item)
-        if (instance.picture !== undefined) pojo['picture'] = instance.picture
-        pojo['description'] = { ...instance.description }
-        pojo['properties'] = instance.properties.map((item) => Property.toJSON(item))
-        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = SystemMetaDataOwner.toJSON(instance.systemMetaData)
-        return pojo
-    }
-
-    static fromJSON(pojo: IOrganisation): Organisation {
-        const obj = {} as IOrganisation
-        obj['id'] = pojo['id']
-        if (pojo['rev'] !== undefined) {
-            obj['rev'] = pojo['rev']!
+    constructor(json: Partial<IOrganisation>) {
+        this.id = forceUuid(json['id']!)
+        if (json['rev'] !== undefined) {
+            this.rev = json['rev']!
         }
-        if (pojo['created'] !== undefined) {
-            obj['created'] = pojo['created']!
+        if (json['created'] !== undefined) {
+            this.created = json['created']!
         }
-        if (pojo['modified'] !== undefined) {
-            obj['modified'] = pojo['modified']!
+        if (json['modified'] !== undefined) {
+            this.modified = json['modified']!
         }
-        obj['identifiers'] = pojo['identifiers'].map((item: any) => Identifier.fromJSON(item))
-        obj['tags'] = pojo['tags'].map((item: any) => CodingReference.fromJSON(item))
-        obj['codes'] = pojo['codes'].map((item: any) => CodingReference.fromJSON(item))
-        if (pojo['deletionDate'] !== undefined) {
-            obj['deletionDate'] = pojo['deletionDate']!
+        if (json['identifiers'] !== undefined) {
+            this.identifiers = json['identifiers']!.map((item: any) => new Identifier(item))
         }
-        if (pojo['name'] !== undefined) {
-            obj['name'] = pojo['name']!
+        if (json['tags'] !== undefined) {
+            this.tags = json['tags']!.map((item: any) => new CodingReference(item))
         }
-        if (pojo['parentId'] !== undefined) {
-            obj['parentId'] = pojo['parentId']!
+        if (json['codes'] !== undefined) {
+            this.codes = json['codes']!.map((item: any) => new CodingReference(item))
         }
-        if (pojo['userId'] !== undefined) {
-            obj['userId'] = pojo['userId']!
+        if (json['deletionDate'] !== undefined) {
+            this.deletionDate = json['deletionDate']!
         }
-        obj['addresses'] = pojo['addresses'].map((item: any) => Location.fromJSON(item))
-        obj['languages'] = pojo['languages'].map((item: any) => item)
-        if (pojo['picture'] !== undefined) {
-            obj['picture'] = pojo['picture']!
+        if (json['name'] !== undefined) {
+            this.name = json['name']!
         }
-        obj['description'] = { ...pojo['description'] }
-        obj['properties'] = pojo['properties'].map((item: any) => Property.fromJSON(item))
-        if (pojo['systemMetaData'] !== undefined) {
-            obj['systemMetaData'] = SystemMetaDataOwner.fromJSON(pojo['systemMetaData']!)
+        if (json['parentId'] !== undefined) {
+            this.parentId = json['parentId']!
         }
-        return new Organisation(obj)
+        if (json['userId'] !== undefined) {
+            this.userId = json['userId']!
+        }
+        if (json['addresses'] !== undefined) {
+            this.addresses = json['addresses']!.map((item: any) => new Location(item))
+        }
+        if (json['languages'] !== undefined) {
+            this.languages = json['languages']!.map((item: any) => item)
+        }
+        if (json['picture'] !== undefined) {
+            this.picture = json['picture']!
+        }
+        if (json['description'] !== undefined) {
+            this.description = { ...json['description']! }
+        }
+        if (json['properties'] !== undefined) {
+            this.properties = json['properties']!.map((item: any) => new Property(item))
+        }
+        if (json['systemMetaData'] !== undefined) {
+            this.systemMetaData = new SystemMetaDataOwner(json['systemMetaData']!)
+        }
     }
 }
 
 export interface IOrganisation {
-    id: string
+    id: EntityId
     rev?: string
     created?: number
     modified?: number
-    identifiers: Identifier[]
-    tags: Array<CodingReference>
-    codes: Array<CodingReference>
+    identifiers: IIdentifier[]
+    tags: ICodingReference[]
+    codes: ICodingReference[]
     deletionDate?: number
     name?: string
     parentId?: string
     userId?: string
-    addresses: Location[]
+    addresses: ILocation[]
     languages: string[]
     picture?: base64string
     description: Record<ISO639_1, string>
-    properties: Array<Property>
-    systemMetaData?: SystemMetaDataOwner
+    properties: IProperty[]
+    systemMetaData?: ISystemMetaDataOwner
 }

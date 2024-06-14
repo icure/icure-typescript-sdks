@@ -1,5 +1,4 @@
-import { CodingReference, SecurityMetadata, SystemMetaDataEncrypted } from '../../src'
-import { generateSecurityMetadata } from './SecurityMetadata.model'
+import { CodingReference, SystemMetaDataEncrypted } from '../../src'
 import { generateDelegationMap } from './utils'
 
 export function generateSystemMetaDataEncrypted(domainTagType?: CodingReference): SystemMetaDataEncrypted {

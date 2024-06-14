@@ -11,27 +11,23 @@
  */
 
 export class PaginatedDocumentKeyAndIdPairObject {
-    constructor(json: Partial<IPaginatedDocumentKeyAndIdPairObject>) {
-        Object.assign(this as PaginatedDocumentKeyAndIdPairObject, json)
-    }
+    startKey?: any
+    startKeyDocId?: string
 
-    'startKey'?: any
-    'startKeyDocId'?: string
-
-    static toJSON(instance: PaginatedDocumentKeyAndIdPairObject): IPaginatedDocumentKeyAndIdPairObject {
-        const pojo: IPaginatedDocumentKeyAndIdPairObject = {} as IPaginatedDocumentKeyAndIdPairObject
-        pojo['startKey'] = instance.startKey
-        if (instance.startKeyDocId !== undefined) pojo['startKeyDocId'] = instance.startKeyDocId
-        return pojo
-    }
-
-    static fromJSON(pojo: IPaginatedDocumentKeyAndIdPairObject): PaginatedDocumentKeyAndIdPairObject {
-        const obj = {} as IPaginatedDocumentKeyAndIdPairObject
-        obj['startKey'] = pojo['startKey']
-        if (pojo['startKeyDocId'] !== undefined) {
-            obj['startKeyDocId'] = pojo['startKeyDocId']!
+    toJSON(): IPaginatedDocumentKeyAndIdPairObject {
+        return {
+            startKey: this.startKey,
+            startKeyDocId: this.startKeyDocId,
         }
-        return new PaginatedDocumentKeyAndIdPairObject(obj)
+    }
+
+    constructor(json: Partial<IPaginatedDocumentKeyAndIdPairObject>) {
+        if (json['startKey'] !== undefined) {
+            this.startKey = json['startKey']!
+        }
+        if (json['startKeyDocId'] !== undefined) {
+            this.startKeyDocId = json['startKeyDocId']!
+        }
     }
 }
 

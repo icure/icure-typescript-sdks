@@ -37,7 +37,15 @@ export class CodeFilter extends SortableFilterBuilder<Code, CodeFilterSortStepDe
     }
 
     byRegionLanguageTypeLabel(region: string | undefined, language: string, type: string, label?: string): CodeFilter {
-        this._builderAccumulator.addFilter(Promise.resolve({ region, type, language, label, $type: 'CodeByRegionTypeLabelFilter' }))
+        this._builderAccumulator.addFilter(
+            Promise.resolve({
+                region,
+                type,
+                language,
+                label,
+                $type: 'CodeByRegionTypeLabelFilter',
+            }),
+        )
         return this
     }
 

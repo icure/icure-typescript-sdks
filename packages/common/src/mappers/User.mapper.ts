@@ -132,8 +132,8 @@ export function toUserDtoAuthenticationTokens(domain: User):
     return Object.fromEntries(Object.entries(domain.authenticationTokens))
 }
 
-export function toUserId(dto: UserDto): string | undefined {
-    return dto.id
+export function toUserId(dto: UserDto): string {
+    return dto.id ?? forceUuid()
 }
 
 export function toUserRev(dto: UserDto): string | undefined {

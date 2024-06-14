@@ -5,7 +5,7 @@
     <working-dir value="$PROJECT_DIR$/packages/medtech" />
     <jest-options value="--runInBand" />
     <envs>
-      <env name="COMPOSE_FILE_URL" value="file://$PROJECT_DIR$/../icure-typescript-sdk/test/scratch/docker-compose-cloud-debuggable.yaml" />
+      <env name="COMPOSE_FILE_URL" value="file://$USER_HOME$/tests/docker-compose-cloud.yaml" />
       <env name="ICURE_TS_TEST_URL" value="http://127.0.0.1:16044" />
     </envs>
     <scope-kind value="ALL" />

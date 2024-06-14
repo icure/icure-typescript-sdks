@@ -13,34 +13,28 @@ import { mapTo, TelecomDto } from '@icure/typescript-common'
 
 @mapTo(TelecomDto)
 export class Telecom {
+    telecomType?: TelecomTelecomTypeEnum
+    telecomNumber?: string
+    telecomDescription?: string
+
+    toJSON(): ITelecom {
+        return {
+            telecomType: this.telecomType,
+            telecomNumber: this.telecomNumber,
+            telecomDescription: this.telecomDescription,
+        }
+    }
+
     constructor(json: Partial<ITelecom>) {
-        Object.assign(this as Telecom, json as ITelecom)
-    }
-
-    'telecomType'?: TelecomTelecomTypeEnum
-    'telecomNumber'?: string
-    'telecomDescription'?: string
-
-    static toJSON(instance: Telecom): ITelecom {
-        const pojo: ITelecom = {} as ITelecom
-        if (instance.telecomType !== undefined) pojo['telecomType'] = instance.telecomType
-        if (instance.telecomNumber !== undefined) pojo['telecomNumber'] = instance.telecomNumber
-        if (instance.telecomDescription !== undefined) pojo['telecomDescription'] = instance.telecomDescription
-        return pojo
-    }
-
-    static fromJSON(pojo: ITelecom): Telecom {
-        const obj = {} as ITelecom
-        if (pojo['telecomType'] !== undefined) {
-            obj['telecomType'] = pojo['telecomType']!
+        if (json['telecomType'] !== undefined) {
+            this.telecomType = json['telecomType']!
         }
-        if (pojo['telecomNumber'] !== undefined) {
-            obj['telecomNumber'] = pojo['telecomNumber']!
+        if (json['telecomNumber'] !== undefined) {
+            this.telecomNumber = json['telecomNumber']!
         }
-        if (pojo['telecomDescription'] !== undefined) {
-            obj['telecomDescription'] = pojo['telecomDescription']!
+        if (json['telecomDescription'] !== undefined) {
+            this.telecomDescription = json['telecomDescription']!
         }
-        return new Telecom(obj)
     }
 }
 

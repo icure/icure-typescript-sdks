@@ -1,17 +1,17 @@
 import 'mocha'
 
-import { Content } from '../..'
-import { assert, expect } from 'chai'
+import { Content, DataSample } from '../..'
+import { assert } from 'chai'
 import { newMeasure } from './measureTest'
 import { newTimeSeries } from './timeSeriesTest'
 import { newDataSample } from './dataSampleTest'
-import { DataSample } from '../..'
 import { recordOf } from '@icure/typescript-common'
 import { v4 } from 'uuid'
 
 export function partialContent(): Content {
     return new Content({ stringValue: 'stringValue' })
 }
+
 export function newContent(): Content {
     return new Content({
         stringValue: 'stringValue',
@@ -23,7 +23,12 @@ export function newContent(): Content {
         documentId: v4(),
         measureValue: newMeasure(),
         timeSeries: newTimeSeries(),
-        compoundValue: [new DataSample({ ...newDataSample(false), content: recordOf({ en: new Content({ stringValue: 'stringValue' }) }) })],
+        compoundValue: [
+            new DataSample({
+                ...newDataSample(false),
+                content: recordOf({ en: new Content({ stringValue: 'stringValue' }) }),
+            }),
+        ],
         ratio: [newMeasure(), newMeasure()],
         range: [newMeasure(), newMeasure()],
     })

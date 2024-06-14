@@ -1,11 +1,19 @@
 import { Organisation } from '../models/Organisation.model'
 import { Location } from '../models/Location.model'
 import {
+    AddressDto,
+    CodeStub,
     CodingReference,
     convertMapToObject,
     convertObjectToMap,
     filteringOutInternalTags,
+    FinancialInstitutionInformation,
+    FlatRateTarification,
+    HealthcarePartyDto,
+    HealthcarePartyHistoryStatus,
     Identifier,
+    IdentifierDto,
+    ISO639_1,
     mapCodeStubToCodingReference,
     mapCodingReferenceToCodeStub,
     mapIdentifierDtoToIdentifier,
@@ -13,7 +21,9 @@ import {
     mapPropertyStubToProperty,
     mapPropertyToPropertyStub,
     mergeTagsWithInternalTags,
+    PersonNameDto,
     Property,
+    PropertyStub,
     SystemMetaDataOwner,
     toAesExchangeKeys,
     toHcPartyKeys,
@@ -22,16 +32,6 @@ import {
     toPublicKeysForOaepWithSha256,
     toSystemMetaDataOwner,
     toTransferKeys,
-    AddressDto,
-    CodeStub,
-    FinancialInstitutionInformation,
-    FlatRateTarification,
-    HealthcarePartyDto,
-    HealthcarePartyHistoryStatus,
-    IdentifierDto,
-    ISO639_1,
-    PersonNameDto,
-    PropertyStub,
 } from '@icure/typescript-common'
 import { mapAddressDtoToLocation, mapLocationToAddressDto } from './Location.mapper'
 import { healthcareProfessionalIdentifiers } from './utils/HealthProfessional.utils'

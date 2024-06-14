@@ -5,6 +5,7 @@ import { SMSMessage } from '../models/api/SMSMessage'
 export interface MessageGatewayApi {
     // TODO should be changed to support jwt auth and should be based on email templates.
     sendEmail(recipientEmail: string, email: EmailMessage): Promise<boolean>
+
     // TODO should be changed to support jwt auth and should be based on email templates.
     sendSMS(recipientMobileNumber: string, sms: SMSMessage): Promise<boolean>
 

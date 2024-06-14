@@ -5,7 +5,7 @@ import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import { Device, sleep } from '@icure/api'
 import 'isomorphic-fetch'
 import { doXOnYAndSubscribe } from '../websocket-utils'
-import { describe, it, beforeAll } from '@jest/globals'
+import { beforeAll, describe, it } from '@jest/globals'
 
 setLocalStorage(fetch)
 

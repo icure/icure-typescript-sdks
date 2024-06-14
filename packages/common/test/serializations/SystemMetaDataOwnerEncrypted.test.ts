@@ -5,8 +5,8 @@ describe(`SystemMetaDataOwnerEncrypted serialization and deserialization`, () =>
     it('should correctly serialize and deserialize from instance to JSON and back', () => {
         const instance = generateSystemMetaDataOwnerEncrypted()
 
-        const json = SystemMetaDataOwnerEncrypted.toJSON(instance)
-        const newInstance = SystemMetaDataOwnerEncrypted.fromJSON(json)
+        const json = instance.toJSON()
+        const newInstance = new SystemMetaDataOwnerEncrypted(json)
 
         expect(newInstance).toEqual(instance)
     })

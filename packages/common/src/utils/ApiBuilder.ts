@@ -1,6 +1,6 @@
 import { CryptoStrategies } from '../services/CryptoStrategies'
-import { AuthSecretProvider, CommonApi, ErrorHandler, ErrorHandlerImpl, formatICureApiUrl, ICURE_CLOUD_URL, MessageFactory, MessageGatewayApi, MessageGatewayApiImpl, MSG_GW_CLOUD_URL, Sanitizer, SanitizerImpl } from '../index'
-import { KeyStorageFacade, KeyStorageImpl, LocalStorageImpl, StorageFacade, CryptoPrimitives, WebCryptoPrimitives } from '@icure/api'
+import { AuthSecretProvider, CommonApi, ErrorHandler, ErrorHandlerImpl, formatICureApiUrl, ICURE_CLOUD_URL, MessageFactory, MessageGatewayApiImpl, MSG_GW_CLOUD_URL, Sanitizer, SanitizerImpl } from '../index'
+import { CryptoPrimitives, KeyStorageFacade, KeyStorageImpl, LocalStorageImpl, StorageFacade, WebCryptoPrimitives } from '@icure/api'
 import { CommonAnonymousApi } from '../apis/CommonAnonymousApi'
 import { AuthSecretProviderBridge } from '../services/impl/AuthSecretProviderBridge'
 
@@ -81,7 +81,17 @@ export abstract class AnonymousApiBuilder<DSCryptoStrategies extends CryptoStrat
         const authProcessByEmailId = this.authProcessByEmailId
         const authProcessBySmsId = this.authProcessBySmsId
         const cryptoStrategies = this.cryptoStrategies
-        const authProcessInfo = !!authProcessByEmailId && !!authProcessBySmsId ? { authProcessBySmsId, authProcessByEmailId } : !!authProcessBySmsId ? { authProcessBySmsId } : !!authProcessByEmailId ? { authProcessByEmailId } : undefined
+        const authProcessInfo =
+            !!authProcessByEmailId && !!authProcessBySmsId
+                ? {
+                      authProcessBySmsId,
+                      authProcessByEmailId,
+                  }
+                : !!authProcessBySmsId
+                ? { authProcessBySmsId }
+                : !!authProcessByEmailId
+                ? { authProcessByEmailId }
+                : undefined
         if (!authProcessInfo) {
             throw new Error('At least one between authProcessIdBySms and authProcessByEmailId is required')
         }
@@ -115,7 +125,12 @@ export abstract class AnonymousApiBuilder<DSCryptoStrategies extends CryptoStrat
         keyStorage: KeyStorageFacade
         primitives: CryptoPrimitives
         cryptoStrategies: DSCryptoStrategies
-        authProcessInfo: { authProcessBySmsId: string; authProcessByEmailId?: string } | { authProcessBySmsId?: string; authProcessByEmailId: string }
+        authProcessInfo:
+            | { authProcessBySmsId: string; authProcessByEmailId?: string }
+            | {
+                  authProcessBySmsId?: string
+                  authProcessByEmailId: string
+              }
     }): Promise<DSApi>
 }
 
@@ -174,7 +189,16 @@ export abstract class AuthenticatedApiBuilder<DSCryptoStrategies extends CryptoS
         const sanitizer = new SanitizerImpl(errorHandler)
         if (secretProvider != undefined) {
             const anonymousMessageGatewayApi = msgGwUrl && msgGwSpecId ? new MessageGatewayApiImpl(msgGwUrl, msgGwSpecId, errorHandler, sanitizer, undefined, undefined) : undefined
-            const bridgedProvider = new AuthSecretProviderBridge(secretProvider, anonymousMessageGatewayApi, { email: authProcessByEmailId, sms: authProcessBySmsId }, username, sanitizer)
+            const bridgedProvider = new AuthSecretProviderBridge(
+                secretProvider,
+                anonymousMessageGatewayApi,
+                {
+                    email: authProcessByEmailId,
+                    sms: authProcessBySmsId,
+                },
+                username,
+                sanitizer,
+            )
             loginDetails = {
                 username,
                 secretProvider: bridgedProvider,

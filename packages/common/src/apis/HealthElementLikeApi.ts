@@ -67,12 +67,12 @@ export interface HealthElementLikeApi<DSHealthElement, DSPatient> {
     matchBy(filter: CommonFilter<HealthElement>): Promise<Array<string>>
 
     /**
-   * Service where current user gives access to the healthcare Element information to another dataOwner (HCP, patient or device).
-   * For this, the current user data owner should be able to access the healthcare Element provided in argument in order to provide access to another data owner.
+	 * Service where current user gives access to the healthcare Element information to another dataOwner (HCP, patient or device).
+	 * For this, the current user data owner should be able to access the healthcare Element provided in argument in order to provide access to another data owner.
 
-   * @param healthElement Healthcare Element the current data owner would like to share with another data owner
-   * @param delegatedTo ID of the data owner to which current user would like to give access
-   */
+	 * @param healthElement Healthcare Element the current data owner would like to share with another data owner
+	 * @param delegatedTo ID of the data owner to which current user would like to give access
+	 */
     giveAccessTo(healthElement: DSHealthElement, delegatedTo: string): Promise<DSHealthElement>
 
     /**

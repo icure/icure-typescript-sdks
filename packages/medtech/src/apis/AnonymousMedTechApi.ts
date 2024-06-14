@@ -1,5 +1,5 @@
 import { AuthenticationApi, CryptoStrategies, DataOwnerWithType, MedTechApi } from '../../index'
-import { AnonymousApiBuilder, CommonAnonymousApi, KeyStorageFacade, StorageFacade, CryptoPrimitives } from '@icure/typescript-common'
+import { AnonymousApiBuilder, CommonAnonymousApi, CryptoPrimitives, KeyStorageFacade, StorageFacade } from '@icure/typescript-common'
 import { MedTechCryptoStrategies } from '../services/MedTechCryptoStrategies'
 
 export class AnonymousMedTechApi extends CommonAnonymousApi<MedTechApi> {
@@ -16,7 +16,12 @@ export class AnonymousMedTechApi extends CommonAnonymousApi<MedTechApi> {
         keyStorage: KeyStorageFacade,
         private readonly cryptoPrimitives: CryptoPrimitives,
         private readonly cryptoStrategies: CryptoStrategies<DataOwnerWithType>,
-        authProcessInfo: { authProcessBySmsId: string; authProcessByEmailId?: string } | { authProcessBySmsId?: string; authProcessByEmailId: string },
+        authProcessInfo:
+            | { authProcessBySmsId: string; authProcessByEmailId?: string }
+            | {
+                  authProcessBySmsId?: string
+                  authProcessByEmailId: string
+              },
     ) {
         super(msgGwUrl, msgGwSpecId, storage, keyStorage)
         this._msgGwUrl = msgGwUrl
@@ -54,7 +59,12 @@ export namespace AnonymousMedTechApi {
             keyStorage: KeyStorageFacade
             primitives: CryptoPrimitives
             cryptoStrategies: MedTechCryptoStrategies
-            authProcessInfo: { authProcessBySmsId: string; authProcessByEmailId?: string } | { authProcessBySmsId?: string; authProcessByEmailId: string }
+            authProcessInfo:
+                | { authProcessBySmsId: string; authProcessByEmailId?: string }
+                | {
+                      authProcessBySmsId?: string
+                      authProcessByEmailId: string
+                  }
         }): Promise<AnonymousMedTechApi> {
             return Promise.resolve(new AnonymousMedTechApi(props.iCureBaseUrl, props.msgGwUrl, props.msgGwSpecId, props.storage, props.keyStorage, props.primitives, props.cryptoStrategies, props.authProcessInfo))
         }

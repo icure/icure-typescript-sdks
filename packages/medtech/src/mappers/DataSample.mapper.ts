@@ -1,13 +1,20 @@
 import { DataSample } from '../models/DataSample.model'
 import {
+    AnnotationDto,
+    CodeStub,
     CodingReference,
-    extractEncryptedSelf,
+    ContentDto,
+    DelegationDto,
     forceUuid,
     Identifier,
+    IdentifierDto,
+    ISO639_1,
     mapCodeStubToCodingReference,
     mapCodingReferenceToCodeStub,
     mapIdentifierDtoToIdentifier,
     mapIdentifierToIdentifierDto,
+    SecurityMetadataDto,
+    ServiceDto,
     SystemMetaDataEncrypted,
     toCryptedForeignKeys,
     toDelegations,
@@ -16,14 +23,6 @@ import {
     toSecretForeignKeys,
     toSecurityMetadataDto,
     toSystemMetaDataEncrypted,
-    AnnotationDto,
-    CodeStub,
-    ContentDto,
-    DelegationDto,
-    IdentifierDto,
-    ISO639_1,
-    SecurityMetadataDto,
-    ServiceDto,
 } from '@icure/typescript-common'
 import { Content } from '../models/Content.model'
 import { mapContentDtoToContent, mapContentToContentDto } from './Content.mapper'

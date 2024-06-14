@@ -3,7 +3,7 @@ import { CodeStub, Delegation, SecurityMetadata as SecurityMetadataDto, Topic as
 import { CodingReference } from '../models/CodingReference.model'
 import { SystemMetaDataEncrypted } from '../models/SystemMetaDataEncrypted.model'
 import { mapCodeStubToCodingReference } from './CodingReference.mapper'
-import { TopicRole } from '../models/enums/TopicRole.enum'
+import { TopicRoleEnum } from '../models/enums/TopicRole.enum'
 import { toCryptedForeignKeys, toDelegations, toEncryptedSelf, toEncryptionKeys, toSecretForeignKeys, toSecurityMetadataDto, toSystemMetaDataEncrypted } from './SystemMetaData.mapper'
 
 function toTopicDtoId(domain: Topic): string | undefined {
@@ -55,7 +55,7 @@ function toTopicDtoDeletionDate(domain: Topic): number | undefined {
 }
 
 function toTopicDtoActiveParticipants(domain: Topic): { [key: string]: TopicRoleDto } | undefined {
-    return Object.fromEntries(Object.entries(domain.activeParticipants ?? {}).map(([k, v]) => [k, v as TopicRoleDto]))
+    return Object.fromEntries(Object.entries(domain.activeParticipants ?? {}).map(([k, v]) => [k, v as string as TopicRoleDto]))
 }
 
 function toTopicDtoSecurityMetadata(domain: Topic): SecurityMetadataDto | undefined {
@@ -130,8 +130,8 @@ function toTopicDescr(dto: TopicDto): string | undefined {
     return dto.description
 }
 
-function toTopicActiveParticipants(dto: TopicDto): Record<string, TopicRole> {
-    return Object.fromEntries(Object.entries(dto.activeParticipants ?? {}).map(([k, v]) => [k, v as TopicRole]))
+function toTopicActiveParticipants(dto: TopicDto): Record<string, TopicRoleEnum> {
+    return Object.fromEntries(Object.entries(dto.activeParticipants ?? {}).map(([k, v]) => [k, v as string as TopicRoleEnum]))
 }
 
 function toTopicSystemMetadata(dto: TopicDto): SystemMetaDataEncrypted | undefined {

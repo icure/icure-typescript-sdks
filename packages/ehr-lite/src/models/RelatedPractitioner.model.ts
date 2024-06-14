@@ -7,32 +7,24 @@ export class RelatedPractitioner implements IRelatedPractitioner {
     healthcarePartyId?: string
     encryptedSelf?: string
 
-    constructor(relatedPractitioner?: Partial<IRelatedPractitioner>) {
-        this.type = relatedPractitioner?.type
-        this.healthcarePartyId = relatedPractitioner?.healthcarePartyId
-        this.encryptedSelf = relatedPractitioner?.encryptedSelf
+    toJSON(): IRelatedPractitioner {
+        return {
+            type: this.type,
+            healthcarePartyId: this.healthcarePartyId,
+            encryptedSelf: this.encryptedSelf,
+        }
     }
 
-    static toJSON(instance: RelatedPractitioner): IRelatedPractitioner {
-        const pojo: IRelatedPractitioner = {} as IRelatedPractitioner
-        if (instance.type !== undefined) pojo['type'] = instance.type
-        if (instance.healthcarePartyId !== undefined) pojo['healthcarePartyId'] = instance.healthcarePartyId
-        if (instance.encryptedSelf !== undefined) pojo['encryptedSelf'] = instance.encryptedSelf
-        return pojo
-    }
-
-    static fromJSON(pojo: IRelatedPractitioner): RelatedPractitioner {
-        const obj = {} as IRelatedPractitioner
-        if (pojo['type'] !== undefined) {
-            obj['type'] = pojo['type']!
+    constructor(json: Partial<IRelatedPractitioner>) {
+        if (json['type'] !== undefined) {
+            this.type = json['type']!
         }
-        if (pojo['healthcarePartyId'] !== undefined) {
-            obj['healthcarePartyId'] = pojo['healthcarePartyId']!
+        if (json['healthcarePartyId'] !== undefined) {
+            this.healthcarePartyId = json['healthcarePartyId']!
         }
-        if (pojo['encryptedSelf'] !== undefined) {
-            obj['encryptedSelf'] = pojo['encryptedSelf']!
+        if (json['encryptedSelf'] !== undefined) {
+            this.encryptedSelf = json['encryptedSelf']!
         }
-        return new RelatedPractitioner(obj)
     }
 }
 
