@@ -2,7 +2,7 @@ import { ClassComponent } from './ClassComponent'
 import { ImportDeclaration, SourceFile } from 'ts-morph'
 
 export class EntityIdComponent extends ClassComponent {
-    override get name(): string {
+    override get typeName(): string {
         return 'EntityId'
     }
     public notNullable(): ClassComponent {

@@ -13,7 +13,7 @@ export class MessageAttachment {
         }
     }
 
-    constructor(json: Partial<IMessageAttachment>) {
+    constructor(json: Partial<IMessageAttachment> ) {
         if (json["type"] !== undefined) {
             this.type = json["type"]!
         }

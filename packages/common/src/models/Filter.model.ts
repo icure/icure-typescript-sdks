@@ -19,7 +19,7 @@ export class Filter {
         }
     }
 
-    constructor(json: Partial<IFilter>) {
+    constructor(json: Partial<IFilter> ) {
         if (json["description"] !== undefined) {
             this.description = json["description"]!
         }

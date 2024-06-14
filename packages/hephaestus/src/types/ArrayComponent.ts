@@ -1,11 +1,11 @@
 import { ClassComponent } from './ClassComponent'
 
 export class ArrayComponent extends ClassComponent {
-    override get name(): string {
-        return `${this.children![0].name}[]`
+    override get typeName(): string {
+        return `${this.children![0].typeName}[]`
     }
-    override get iname(): string {
-        return `${this.children![0].iname}[]`
+    override get interfaceName(): string {
+        return `${this.children![0].interfaceName}[]`
     }
     public notNullable(): ClassComponent {
         return new ArrayComponent(false, this.optional, this.children)

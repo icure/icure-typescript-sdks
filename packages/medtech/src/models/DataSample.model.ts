@@ -121,7 +121,7 @@ export class DataSample {
         healthcareElementIds: this.healthcareElementIds?.map(item => item),
         canvasesIds: this.canvasesIds?.map(item => item),
         index: this.index,
-        content: Object.fromEntries(Object.entries(this.content).map(([k, v]: [any, Content]) => [k, v.toJSON()])),
+        content: Object.fromEntries(Object.entries(this.content).map(([k, v]: [import("/Users/aduchate/Sources/icure/icure-typescript-sdks/node_modules/@icure/api/icc-api/model/ISO639_1").ISO639_1, Content]) => [k, v.toJSON()])),
         valueDate: this.valueDate,
         openingDate: this.openingDate,
         closingDate: this.closingDate,
@@ -138,7 +138,7 @@ export class DataSample {
         }
     }
 
-    constructor(json: Partial<IDataSample>) {
+    constructor(json: Partial<IDataSample> & { qualifiedLinks: Record<string, Record<string, string>> }) {
         this.id = forceUuid(json["id"]!)
         if (json["transactionId"] !== undefined) {
             this.transactionId = json["transactionId"]!
@@ -159,7 +159,7 @@ export class DataSample {
             this.index = json["index"]!
         }
         if (json["content"] !== undefined) {
-            this.content = Object.fromEntries(Object.entries(json["content"]!).map(([k, v]: [any, IContent]) => [k, new Content(v)]))
+            this.content = Object.fromEntries(Object.entries(json["content"]!).map(([k, v]: [import("/Users/aduchate/Sources/icure/icure-typescript-sdks/node_modules/@icure/api/icc-api/model/ISO639_1").ISO639_1, IContent]) => [k, new Content(v)]))
         }
         if (json["valueDate"] !== undefined) {
             this.valueDate = json["valueDate"]!

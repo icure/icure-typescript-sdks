@@ -71,7 +71,7 @@ export class Condition implements ICondition {
         }
     }
 
-    constructor(json: Partial<ICondition>) {
+    constructor(json: Partial<ICondition> ) {
         this.id = forceUuid(json["id"]!)
         if (json["identifiers"] !== undefined) {
             this.identifiers = json["identifiers"]!.map((item: any) => new Identifier(item))

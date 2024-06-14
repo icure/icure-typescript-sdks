@@ -12,7 +12,7 @@ export class LocalComponent implements ILocalComponent {
         }
     }
 
-    constructor(json: Partial<ILocalComponent>) {
+    constructor(json: Partial<ILocalComponent> ) {
         if (json["stringValue"] !== undefined) {
             this.stringValue = json["stringValue"]!
         }

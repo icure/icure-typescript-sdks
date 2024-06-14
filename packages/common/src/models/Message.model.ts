@@ -45,7 +45,7 @@ export class Message {
         created: this.created,
         modified: this.modified,
         sent: this.sent,
-        readStatus: this.readStatus ? Object.fromEntries(Object.entries(this.readStatus).map(([k, v]: [any, MessageReadStatus]) => [k, v.toJSON()])) : undefined,
+        readStatus: this.readStatus ? Object.fromEntries(Object.entries(this.readStatus).map(([k, v]: [string, MessageReadStatus]) => [k, v.toJSON()])) : undefined,
         attachments: this.attachments?.map(item => item.toJSON()),
         author: this.author,
         responsible: this.responsible,
@@ -61,7 +61,7 @@ export class Message {
         }
     }
 
-    constructor(json: Partial<IMessage>) {
+    constructor(json: Partial<IMessage> ) {
         this.id = forceUuid(json["id"]!)
         if (json["rev"] !== undefined) {
             this.rev = json["rev"]!
@@ -76,7 +76,7 @@ export class Message {
             this.sent = json["sent"]!
         }
         if (json["readStatus"] !== undefined) {
-            this.readStatus = Object.fromEntries(Object.entries(json["readStatus"]!).map(([k, v]: [any, IMessageReadStatus]) => [k, new MessageReadStatus(v)]))
+            this.readStatus = Object.fromEntries(Object.entries(json["readStatus"]!).map(([k, v]: [string, IMessageReadStatus]) => [k, new MessageReadStatus(v)]))
         }
         if (json["attachments"] !== undefined) {
             this.attachments = json["attachments"]!.map((item: any) => new MessageAttachment(item))

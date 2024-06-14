@@ -14,7 +14,7 @@ export class PropertyType {
         }
     }
 
-    constructor(json: Partial<IPropertyType>) {
+    constructor(json: Partial<IPropertyType> & { identifier: string }) {
         this.identifier = json["identifier"]!
         if (json["type"] !== undefined) {
             this.type = json["type"]!

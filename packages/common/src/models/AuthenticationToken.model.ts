@@ -35,7 +35,7 @@ export class AuthenticationToken {
         }
     }
 
-    constructor(json: Partial<IAuthenticationToken>) {
+    constructor(json: Partial<IAuthenticationToken> & { token: string,creationTime: number,validity: number }) {
         this.token = json["token"]!
         this.creationTime = json["creationTime"]!
         this.validity = json["validity"]!

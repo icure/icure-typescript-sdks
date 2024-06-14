@@ -142,7 +142,7 @@ export class Patient {
         }
     }
 
-    constructor(json: Partial<IPatient>) {
+    constructor(json: Partial<IPatient> ) {
         this.id = forceUuid(json["id"]!)
         if (json["rev"] !== undefined) {
             this.rev = json["rev"]!

@@ -55,7 +55,7 @@ export class Content {
         }
     }
 
-    constructor(json: Partial<IContent>) {
+    constructor(json: Partial<IContent> ) {
         if (json["stringValue"] !== undefined) {
             this.stringValue = json["stringValue"]!
         }

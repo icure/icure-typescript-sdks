@@ -96,7 +96,7 @@ export class HealthcareElement {
         }
     }
 
-    constructor(json: Partial<IHealthcareElement>) {
+    constructor(json: Partial<IHealthcareElement> ) {
         this.id = forceUuid(json["id"]!)
         if (json["identifiers"] !== undefined) {
             this.identifiers = json["identifiers"]!.map((item: any) => new Identifier(item))

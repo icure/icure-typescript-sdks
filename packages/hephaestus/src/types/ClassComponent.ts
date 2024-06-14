@@ -4,9 +4,9 @@ export abstract class ClassComponent {
     readonly children?: ClassComponent[]
     readonly nullable: boolean = false
     readonly optional: boolean = false
-    abstract get name(): string
-    get iname(): string {
-        return this.name
+    abstract get typeName(): string
+    get interfaceName(): string {
+        return this.typeName
     }
     constructor(nullable: boolean = false, optional: boolean = false, children?: ClassComponent[]) {
         this.nullable = nullable

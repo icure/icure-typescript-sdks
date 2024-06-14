@@ -34,7 +34,7 @@ export class Location implements ILocation {
         }
     }
 
-    constructor(json: Partial<ILocation>) {
+    constructor(json: Partial<ILocation> ) {
         if (json["addressType"] !== undefined) {
             this.addressType = json["addressType"]!
         }

@@ -20,7 +20,7 @@ export class AuthenticationProcess {
         }
     }
 
-    constructor(json: Partial<IAuthenticationProcess>) {
+    constructor(json: Partial<IAuthenticationProcess> & { requestId: string,login: string,bypassTokenCheck: boolean }) {
         this.requestId = json["requestId"]!
         this.login = json["login"]!
         this.bypassTokenCheck = json["bypassTokenCheck"]!

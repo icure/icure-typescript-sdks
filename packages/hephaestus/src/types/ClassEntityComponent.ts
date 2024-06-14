@@ -2,19 +2,19 @@ import { ClassComponent } from './ClassComponent'
 
 export class ClassEntityComponent extends ClassComponent {
     public notNullable(): ClassComponent {
-        return new ClassEntityComponent(this.name, false, this.optional)
+        return new ClassEntityComponent(this.typeName, false, this.optional)
     }
-    override readonly name: string
-    override get iname(): string {
-        return `I${this.name}`
+    override readonly typeName: string
+    override get interfaceName(): string {
+        return `I${this.typeName}`
     }
     constructor(name: string, nullable: boolean, optional: boolean) {
         super(nullable, optional)
-        this.name = name
+        this.typeName = name
     }
 
     computeDeserializer(value: string): string {
-        return this.nullable ? `!!${value} ? new ${this.name}(${value}) : undefined` : `new ${this.name}(${value})`
+        return this.nullable ? `!!${value} ? new ${this.typeName}(${value}) : undefined` : `new ${this.typeName}(${value})`
     }
 
     computeSerializer(value: string): string {

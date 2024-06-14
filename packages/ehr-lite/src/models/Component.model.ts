@@ -27,7 +27,7 @@ export class Component implements IComponent {
         }
     }
 
-    constructor(json: Partial<IComponent>) {
+    constructor(json: Partial<IComponent> ) {
         if (json["numberValue"] !== undefined) {
             this.numberValue = json["numberValue"]!
         }

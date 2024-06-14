@@ -38,7 +38,7 @@ export class TimeSeries {
         }
     }
 
-    constructor(json: Partial<ITimeSeries>) {
+    constructor(json: Partial<ITimeSeries> ) {
         if (json["fields"] !== undefined) {
             this.fields = json["fields"]!.map((item: any) => item)
         }

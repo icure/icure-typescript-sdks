@@ -24,7 +24,7 @@ export class TypedValueObject {
         }
     }
 
-    constructor(json: Partial<ITypedValueObject>) {
+    constructor(json: Partial<ITypedValueObject> ) {
         if (json["type"] !== undefined) {
             this.type = json["type"]!
         }

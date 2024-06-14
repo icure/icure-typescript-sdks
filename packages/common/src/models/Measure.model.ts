@@ -31,7 +31,7 @@ export class Measure {
         }
     }
 
-    constructor(json: Partial<IMeasure>) {
+    constructor(json: Partial<IMeasure> ) {
         if (json["value"] !== undefined) {
             this.value = json["value"]!
         }

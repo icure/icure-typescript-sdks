@@ -1,7 +1,5 @@
 import { CodeStub } from '@icure/api';
-import { EntityId } from '../types';
 import { mapTo } from '../utils/decorators';
-import { forceUuid } from "../utils/uuidUtils";
 
 @mapTo(CodeStub)
 export class CodingReference {
@@ -23,7 +21,7 @@ export class CodingReference {
         }
     }
 
-    constructor(json: Partial<ICodingReference>) {
+    constructor(json: Partial<ICodingReference> & { id: string }) {
         this.id = json["id"]!
         if (json["type"] !== undefined) {
             this.type = json["type"]!

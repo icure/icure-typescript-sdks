@@ -9,7 +9,7 @@ export class KeyPair implements IKeyPair {
         }
     }
 
-    constructor(json: Partial<IKeyPair>) {
+    constructor(json: Partial<IKeyPair> & { privateKey: string,publicKey: string }) {
         this.privateKey = json["privateKey"]!
         this.publicKey = json["publicKey"]!
     }

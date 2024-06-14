@@ -27,7 +27,7 @@ export class PatientHealthCareParty {
         }
     }
 
-    constructor(json: Partial<IPatientHealthCareParty>) {
+    constructor(json: Partial<IPatientHealthCareParty> ) {
         if (json["type"] !== undefined) {
             this.type = json["type"]!
         }

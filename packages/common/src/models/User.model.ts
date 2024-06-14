@@ -125,11 +125,11 @@ export class User {
         sharingDataWith: {...this.sharingDataWith},
         email: this.email,
         mobilePhone: this.mobilePhone,
-        authenticationTokens: Object.fromEntries(Object.entries(this.authenticationTokens).map(([k, v]: [any, AuthenticationToken]) => [k, v.toJSON()])),
+        authenticationTokens: Object.fromEntries(Object.entries(this.authenticationTokens).map(([k, v]: [string, AuthenticationToken]) => [k, v.toJSON()])),
         }
     }
 
-    constructor(json: Partial<IUser>) {
+    constructor(json: Partial<IUser> & { id: string,authenticationTokens: Record<string, IAuthenticationToken> }) {
         this.id = json["id"]!
         if (json["rev"] !== undefined) {
             this.rev = json["rev"]!
@@ -188,7 +188,7 @@ export class User {
         if (json["mobilePhone"] !== undefined) {
             this.mobilePhone = json["mobilePhone"]!
         }
-        this.authenticationTokens = Object.fromEntries(Object.entries(json["authenticationTokens"]!).map(([k, v]: [any, IAuthenticationToken]) => [k, new AuthenticationToken(v)]))
+        this.authenticationTokens = Object.fromEntries(Object.entries(json["authenticationTokens"]!).map(([k, v]: [string, IAuthenticationToken]) => [k, new AuthenticationToken(v)]))
     }
 }
 

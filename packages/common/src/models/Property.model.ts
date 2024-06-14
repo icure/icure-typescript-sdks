@@ -1,7 +1,5 @@
 import { PropertyStub } from '@icure/api'
-import { EntityId } from '../types'
 import { mapTo } from '../utils/decorators'
-import { forceUuid } from '../utils/uuidUtils'
 import { IPropertyType, PropertyType } from './PropertyType.model'
 import { ITypedValueObject, TypedValueObject } from './TypedValueObject.model'
 
@@ -23,7 +21,7 @@ export class Property {
         }
     }
 
-    constructor(json: Partial<IProperty>) {
+    constructor(json: Partial<IProperty> & { id: string }) {
         this.id = json["id"]!
         if (json["type"] !== undefined) {
             this.type = new PropertyType(json["type"]!)

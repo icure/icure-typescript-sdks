@@ -18,7 +18,7 @@ export function classComponentFactory(propertyType: Type, property?: PropertyDec
         return new DefaultComponent(nullable)
     }
 
-    if (type.isUnion() && type.isNullable()) {
+    if (type.isUnion() && type.isNullable() || type.getText() === 'any') {
         nullable = true
         type = type.getNonNullableType()
     }
@@ -44,9 +44,10 @@ export function classComponentFactory(propertyType: Type, property?: PropertyDec
         type.getBaseTypeOfLiteralType().getText()
         if (typeType === '__type') {
             const regex = /Record<\s*((?:string|number|boolean|bigint|symbol|import\("[^"]+"\)\.[^,\s]+))\s*,\s*([\s\S]+)\s*>/
-            const typeArguments = type.getTypeArguments()
             const match = type.getText().match(regex)
             const valueTypeName = match![2]
+            const keyTypeName = match![1]
+            const shortKeyTypeName = keyTypeName.match(/import\(".+?"\).(.+)/)?.[1] ?? keyTypeName
 
             let valueType: ClassComponent
             let shortType: string | undefined
@@ -57,10 +58,10 @@ export function classComponentFactory(propertyType: Type, property?: PropertyDec
                     valueType = new ClassEntityComponent(shortType, false, false)
                 }
             } else {
-                valueType = new DefaultComponent(false)
+                valueType = new DefaultComponent(false, false, valueTypeName)
             }
 
-            return new RecordComponent(nullable, optional, new DefaultComponent(false), valueType)
+            return new RecordComponent(nullable, optional, new DefaultComponent(false, false, keyTypeName), valueType)
         }
 
         if (typeType === 'Map') {
@@ -81,5 +82,5 @@ export function classComponentFactory(propertyType: Type, property?: PropertyDec
         throw new Error('Not implemented for type: ' + type.getSymbol()!.compilerSymbol.escapedName)
     }
 
-    return new DefaultComponent(nullable, optional)
+    return new DefaultComponent(nullable, optional, type.getText())
 }

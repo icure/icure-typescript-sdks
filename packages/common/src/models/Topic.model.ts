@@ -46,7 +46,7 @@ export class Topic {
         }
     }
 
-    constructor(json: Partial<ITopic>) {
+    constructor(json: Partial<ITopic> ) {
         this.id = forceUuid(json["id"]!)
         if (json["rev"] !== undefined) {
             this.rev = json["rev"]!

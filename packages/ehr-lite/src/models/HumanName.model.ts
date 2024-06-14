@@ -46,7 +46,7 @@ export class HumanName implements IHumanName {
         }
     }
 
-    constructor(json: Partial<IHumanName>) {
+    constructor(json: Partial<IHumanName> ) {
         if (json["family"] !== undefined) {
             this.family = json["family"]!
         }

@@ -33,7 +33,7 @@ export class InlineResponse403 {
         }
     }
 
-    constructor(json: Partial<IInlineResponse403>) {
+    constructor(json: Partial<IInlineResponse403> ) {
         if (json["_short"] !== undefined) {
             this._short = json["_short"]!
         }

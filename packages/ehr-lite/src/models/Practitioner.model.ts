@@ -74,7 +74,7 @@ export class Practitioner implements IPractitioner {
         }
     }
 
-    constructor(json: Partial<IPractitioner>) {
+    constructor(json: Partial<IPractitioner> ) {
         this.id = forceUuid(json["id"]!)
         if (json["rev"] !== undefined) {
             this.rev = json["rev"]!

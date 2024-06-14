@@ -16,7 +16,7 @@ export class RelatedPerson implements IRelatedPerson {
         }
     }
 
-    constructor(json: Partial<IRelatedPerson>) {
+    constructor(json: Partial<IRelatedPerson> ) {
         if (json["type"] !== undefined) {
             this.type = json["type"]!
         }

@@ -15,7 +15,7 @@ export class RelatedPractitioner implements IRelatedPractitioner {
         }
     }
 
-    constructor(json: Partial<IRelatedPractitioner>) {
+    constructor(json: Partial<IRelatedPractitioner> ) {
         if (json["type"] !== undefined) {
             this.type = json["type"]!
         }

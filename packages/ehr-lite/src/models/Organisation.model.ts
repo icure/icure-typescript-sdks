@@ -58,7 +58,7 @@ export class Organisation implements IOrganisation {
         }
     }
 
-    constructor(json: Partial<IOrganisation>) {
+    constructor(json: Partial<IOrganisation> ) {
         this.id = forceUuid(json["id"]!)
         if (json["rev"] !== undefined) {
             this.rev = json["rev"]!

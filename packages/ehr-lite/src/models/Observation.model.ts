@@ -57,7 +57,7 @@ export class Observation implements IObservation {
         endOfLife: this.endOfLife,
         author: this.author,
         performer: this.performer,
-        localContent: Object.fromEntries(Object.entries(this.localContent).map(([k, v]: [any, LocalComponent]) => [k, v.toJSON()])),
+        localContent: Object.fromEntries(Object.entries(this.localContent).map(([k, v]: [import("/Users/aduchate/Sources/icure/icure-typescript-sdks/node_modules/@icure/api/icc-api/model/ISO639_1").ISO639_1, LocalComponent]) => [k, v.toJSON()])),
         qualifiedLinks: {...this.qualifiedLinks},
         codes: this.codes.map(item => item.toJSON()),
         tags: this.tags.map(item => item.toJSON()),
@@ -66,7 +66,7 @@ export class Observation implements IObservation {
         }
     }
 
-    constructor(json: Partial<IObservation>) {
+    constructor(json: Partial<IObservation> ) {
         this.id = forceUuid(json["id"]!)
         if (json["transactionId"] !== undefined) {
             this.transactionId = json["transactionId"]!
@@ -111,7 +111,7 @@ export class Observation implements IObservation {
             this.performer = json["performer"]!
         }
         if (json["localContent"] !== undefined) {
-            this.localContent = Object.fromEntries(Object.entries(json["localContent"]!).map(([k, v]: [any, ILocalComponent]) => [k, new LocalComponent(v)]))
+            this.localContent = Object.fromEntries(Object.entries(json["localContent"]!).map(([k, v]: [import("/Users/aduchate/Sources/icure/icure-typescript-sdks/node_modules/@icure/api/icc-api/model/ISO639_1").ISO639_1, ILocalComponent]) => [k, new LocalComponent(v)]))
         }
         if (json["qualifiedLinks"] !== undefined) {
             this.qualifiedLinks = {...json["qualifiedLinks"]!}

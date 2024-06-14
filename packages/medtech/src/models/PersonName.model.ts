@@ -39,7 +39,7 @@ export class PersonName {
         }
     }
 
-    constructor(json: Partial<IPersonName>) {
+    constructor(json: Partial<IPersonName> ) {
         if (json["lastName"] !== undefined) {
             this.lastName = json["lastName"]!
         }

@@ -26,7 +26,7 @@ export class ReferenceRange {
         }
     }
 
-    constructor(json: Partial<IReferenceRange>) {
+    constructor(json: Partial<IReferenceRange> ) {
         if (json["low"] !== undefined) {
             this.low = json["low"]!
         }

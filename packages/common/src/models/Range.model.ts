@@ -13,7 +13,7 @@ export class Range {
         }
     }
 
-    constructor(json: Partial<IRange>) {
+    constructor(json: Partial<IRange> ) {
         if (json["low"] !== undefined) {
             this.low = json["low"]!
         }

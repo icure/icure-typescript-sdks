@@ -59,7 +59,7 @@ export class Coding {
         }
     }
 
-    constructor(json: Partial<ICoding>) {
+    constructor(json: Partial<ICoding> ) {
         this.id = forceUuid(json["id"]!)
         if (json["rev"] !== undefined) {
             this.rev = json["rev"]!

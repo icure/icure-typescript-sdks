@@ -140,7 +140,7 @@ export class HealthcareProfessional {
         }
     }
 
-    constructor(json: Partial<IHealthcareProfessional>) {
+    constructor(json: Partial<IHealthcareProfessional> ) {
         this.id = forceUuid(json["id"]!)
         if (json["rev"] !== undefined) {
             this.rev = json["rev"]!

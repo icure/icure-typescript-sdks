@@ -41,7 +41,7 @@ export class Identifier {
         }
     }
 
-    constructor(json: Partial<IIdentifier>) {
+    constructor(json: Partial<IIdentifier> ) {
         if (json["id"] !== undefined) {
             this.id = json["id"]!
         }

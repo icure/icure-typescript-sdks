@@ -13,7 +13,7 @@ export class MessageReadStatus {
         }
     }
 
-    constructor(json: Partial<IMessageReadStatus>) {
+    constructor(json: Partial<IMessageReadStatus> & { read: boolean }) {
         if (json["time"] !== undefined) {
             this.time = json["time"]!
         }

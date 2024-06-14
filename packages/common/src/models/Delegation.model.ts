@@ -26,7 +26,7 @@ export class Delegation {
         }
     }
 
-    constructor(json: Partial<IDelegation>) {
+    constructor(json: Partial<IDelegation> ) {
         if (json["owner"] !== undefined) {
             this.owner = json["owner"]!
         }

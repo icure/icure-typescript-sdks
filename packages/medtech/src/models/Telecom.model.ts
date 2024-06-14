@@ -25,7 +25,7 @@ export class Telecom {
         }
     }
 
-    constructor(json: Partial<ITelecom>) {
+    constructor(json: Partial<ITelecom> ) {
         if (json["telecomType"] !== undefined) {
             this.telecomType = json["telecomType"]!
         }

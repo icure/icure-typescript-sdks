@@ -75,7 +75,7 @@ export class Notification {
         }
     }
 
-    constructor(json: Partial<INotification>) {
+    constructor(json: Partial<INotification> & { id: string }) {
         this.id = json["id"]!
         if (json["rev"] !== undefined) {
             this.rev = json["rev"]!

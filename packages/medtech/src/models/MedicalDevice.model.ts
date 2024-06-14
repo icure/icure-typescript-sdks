@@ -17,13 +17,14 @@ import {
     ICodingReference,
     IIdentifier,
     IProperty,
+    ISystemMetaDataOwner,
     Identifier,
     Property,
     SystemMetaDataOwner,
     base64string,
     forceUuid,
-    mapTo, ISystemMetaDataOwner
-} from '@icure/typescript-common'
+    mapTo
+} from '@icure/typescript-common';
 
 @mapTo(DeviceDto)
 export class MedicalDevice {
@@ -129,7 +130,7 @@ export class MedicalDevice {
         }
     }
 
-    constructor(json: Partial<IMedicalDevice>) {
+    constructor(json: Partial<IMedicalDevice> ) {
         this.id = forceUuid(json["id"]!)
         if (json["rev"] !== undefined) {
             this.rev = json["rev"]!

@@ -23,9 +23,9 @@ export class SystemMetaDataOwnerEncrypted {
         hcPartyKeys: {...this.hcPartyKeys},
         privateKeyShamirPartitions: {...this.privateKeyShamirPartitions},
         secretForeignKeys: this.secretForeignKeys.map(item => item),
-        cryptedForeignKeys: Object.fromEntries(Object.entries(this.cryptedForeignKeys).map(([k, v]: [any, Delegation[]]) => [k, v.map(item => item.toJSON())])),
-        delegations: Object.fromEntries(Object.entries(this.delegations).map(([k, v]: [any, Delegation[]]) => [k, v.map(item => item.toJSON())])),
-        encryptionKeys: Object.fromEntries(Object.entries(this.encryptionKeys).map(([k, v]: [any, Delegation[]]) => [k, v.map(item => item.toJSON())])),
+        cryptedForeignKeys: Object.fromEntries(Object.entries(this.cryptedForeignKeys).map(([k, v]: [string, Delegation[]]) => [k, v.map(item => item.toJSON())])),
+        delegations: Object.fromEntries(Object.entries(this.delegations).map(([k, v]: [string, Delegation[]]) => [k, v.map(item => item.toJSON())])),
+        encryptionKeys: Object.fromEntries(Object.entries(this.encryptionKeys).map(([k, v]: [string, Delegation[]]) => [k, v.map(item => item.toJSON())])),
         aesExchangeKeys: {...this.aesExchangeKeys},
         transferKeys: {...this.transferKeys},
         securityMetadata: !!this.securityMetadata ? this.securityMetadata.toJSON() : undefined,
@@ -35,7 +35,7 @@ export class SystemMetaDataOwnerEncrypted {
         }
     }
 
-    constructor(json: Partial<ISystemMetaDataOwnerEncrypted>) {
+    constructor(json: Partial<ISystemMetaDataOwnerEncrypted> ) {
         if (json["publicKey"] !== undefined) {
             this.publicKey = json["publicKey"]!
         }
@@ -49,13 +49,13 @@ export class SystemMetaDataOwnerEncrypted {
             this.secretForeignKeys = json["secretForeignKeys"]!.map((item: any) => item)
         }
         if (json["cryptedForeignKeys"] !== undefined) {
-            this.cryptedForeignKeys = Object.fromEntries(Object.entries(json["cryptedForeignKeys"]!).map(([k, v]: [any, IDelegation[]]) => [k, v.map((item: any) => new Delegation(item))]))
+            this.cryptedForeignKeys = Object.fromEntries(Object.entries(json["cryptedForeignKeys"]!).map(([k, v]: [string, IDelegation[]]) => [k, v.map((item: any) => new Delegation(item))]))
         }
         if (json["delegations"] !== undefined) {
-            this.delegations = Object.fromEntries(Object.entries(json["delegations"]!).map(([k, v]: [any, IDelegation[]]) => [k, v.map((item: any) => new Delegation(item))]))
+            this.delegations = Object.fromEntries(Object.entries(json["delegations"]!).map(([k, v]: [string, IDelegation[]]) => [k, v.map((item: any) => new Delegation(item))]))
         }
         if (json["encryptionKeys"] !== undefined) {
-            this.encryptionKeys = Object.fromEntries(Object.entries(json["encryptionKeys"]!).map(([k, v]: [any, IDelegation[]]) => [k, v.map((item: any) => new Delegation(item))]))
+            this.encryptionKeys = Object.fromEntries(Object.entries(json["encryptionKeys"]!).map(([k, v]: [string, IDelegation[]]) => [k, v.map((item: any) => new Delegation(item))]))
         }
         if (json["aesExchangeKeys"] !== undefined) {
             this.aesExchangeKeys = {...json["aesExchangeKeys"]!}

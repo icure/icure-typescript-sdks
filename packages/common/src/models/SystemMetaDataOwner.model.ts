@@ -21,7 +21,7 @@ export class SystemMetaDataOwner {
         }
     }
 
-    constructor(json: Partial<ISystemMetaDataOwner>) {
+    constructor(json: Partial<ISystemMetaDataOwner> ) {
         if (json["publicKey"] !== undefined) {
             this.publicKey = json["publicKey"]!
         }

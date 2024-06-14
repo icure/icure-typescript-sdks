@@ -1,11 +1,11 @@
 import { ClassComponent } from './ClassComponent'
 
 export class MapComponent extends ClassComponent {
-    override get name(): string {
-        return `Map<${this.keyType.name}, ${this.valueType.name}>`
+    override get typeName(): string {
+        return `Map<${this.keyType.typeName}, ${this.valueType.typeName}>`
     }
-    override get iname(): string {
-        return `Map<${this.keyType.name}, ${this.valueType.iname}>`
+    override get interfaceName(): string {
+        return `Map<${this.keyType.typeName}, ${this.valueType.interfaceName}>`
     }
     constructor(nullable: boolean = false, optional: boolean = false, keyType: ClassComponent, valueType: ClassComponent) {
         super(nullable, optional, [keyType, valueType])

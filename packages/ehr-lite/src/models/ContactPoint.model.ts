@@ -17,7 +17,7 @@ export class ContactPoint implements IContactPoint {
         }
     }
 
-    constructor(json: Partial<IContactPoint>) {
+    constructor(json: Partial<IContactPoint> ) {
         if (json["system"] !== undefined) {
             this.system = json["system"]!
         }

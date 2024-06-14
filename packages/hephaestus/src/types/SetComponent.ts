@@ -1,11 +1,11 @@
 import { ClassComponent } from './ClassComponent'
 
 export class SetComponent extends ClassComponent {
-    override get name(): string {
-        return `Set<${this.children![0].name}>`
+    override get typeName(): string {
+        return `Set<${this.children![0].typeName}>`
     }
-    override get iname(): string {
-        return `Set<${this.children![0].iname}>`
+    override get interfaceName(): string {
+        return `Set<${this.children![0].interfaceName}>`
     }
 
     public notNullable(): ClassComponent {

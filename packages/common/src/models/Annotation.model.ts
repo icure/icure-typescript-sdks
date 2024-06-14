@@ -28,7 +28,7 @@ export class Annotation {
         }
     }
 
-    constructor(json: Partial<IAnnotation>) {
+    constructor(json: Partial<IAnnotation> ) {
         this.id = forceUuid(json["id"]!)
         if (json["tags"] !== undefined) {
             this.tags = json["tags"]!.map((item: any) => new CodingReference(item))

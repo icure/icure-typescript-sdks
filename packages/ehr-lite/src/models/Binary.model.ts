@@ -13,7 +13,7 @@ export class Binary implements IBinary {
         }
     }
 
-    constructor(json: Partial<IBinary>) {
+    constructor(json: Partial<IBinary> & { contentType: string,data: string,filename: string }) {
         this.contentType = json["contentType"]!
         this.data = json["data"]!
         this.filename = json["filename"]!

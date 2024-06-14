@@ -93,7 +93,7 @@ export class Document {
         }
     }
 
-    constructor(json: Partial<IDocument>) {
+    constructor(json: Partial<IDocument> ) {
         this.id = forceUuid(json["id"]!)
         if (json["rev"] !== undefined) {
             this.rev = json["rev"]!

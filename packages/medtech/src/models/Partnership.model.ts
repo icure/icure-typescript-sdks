@@ -29,7 +29,7 @@ export class Partnership {
         }
     }
 
-    constructor(json: Partial<IPartnership>) {
+    constructor(json: Partial<IPartnership> ) {
         if (json["type"] !== undefined) {
             this.type = json["type"]!
         }

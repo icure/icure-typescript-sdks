@@ -50,7 +50,7 @@ export class Address {
         }
     }
 
-    constructor(json: Partial<IAddress>) {
+    constructor(json: Partial<IAddress> ) {
         if (json["addressType"] !== undefined) {
             this.addressType = json["addressType"]!
         }

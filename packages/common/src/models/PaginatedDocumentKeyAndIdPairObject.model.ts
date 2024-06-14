@@ -21,8 +21,10 @@ export class PaginatedDocumentKeyAndIdPairObject {
         }
     }
 
-    constructor(json: Partial<IPaginatedDocumentKeyAndIdPairObject>) {
-        this.startKey = json["startKey"]!
+    constructor(json: Partial<IPaginatedDocumentKeyAndIdPairObject> ) {
+        if (json["startKey"] !== undefined) {
+            this.startKey = json["startKey"]!
+        }
         if (json["startKeyDocId"] !== undefined) {
             this.startKeyDocId = json["startKeyDocId"]!
         }
