@@ -14,9 +14,9 @@ export class SystemMetaDataEncrypted {
     toJSON(): ISystemMetaDataEncrypted {
         return {
         secretForeignKeys: this.secretForeignKeys.map(item => item),
-        cryptedForeignKeys: Object.fromEntries(Object.entries(this.cryptedForeignKeys).map(([k, v]: [string, Delegation[]]) => [k, v.map(item => item.toJSON())])),
-        delegations: Object.fromEntries(Object.entries(this.delegations).map(([k, v]: [string, Delegation[]]) => [k, v.map(item => item.toJSON())])),
-        encryptionKeys: Object.fromEntries(Object.entries(this.encryptionKeys).map(([k, v]: [string, Delegation[]]) => [k, v.map(item => item.toJSON())])),
+        cryptedForeignKeys: Object.fromEntries(Object.entries(this.cryptedForeignKeys).map(([k, v]: [any, Delegation[]]) => [k, v.map(item => item.toJSON())])),
+        delegations: Object.fromEntries(Object.entries(this.delegations).map(([k, v]: [any, Delegation[]]) => [k, v.map(item => item.toJSON())])),
+        encryptionKeys: Object.fromEntries(Object.entries(this.encryptionKeys).map(([k, v]: [any, Delegation[]]) => [k, v.map(item => item.toJSON())])),
         securityMetadata: !!this.securityMetadata ? this.securityMetadata.toJSON() : undefined,
         encryptedSelf: this.encryptedSelf,
         tags: this.tags.map(item => item.toJSON()),

@@ -45,7 +45,7 @@ export class Message {
         created: this.created,
         modified: this.modified,
         sent: this.sent,
-        readStatus: this.readStatus ? Object.fromEntries(Object.entries(this.readStatus).map(([k, v]: [string, MessageReadStatus]) => [k, v.toJSON()])) : undefined,
+        readStatus: this.readStatus ? Object.fromEntries(Object.entries(this.readStatus).map(([k, v]: [any, MessageReadStatus]) => [k, v.toJSON()])) : undefined,
         attachments: this.attachments?.map(item => item.toJSON()),
         author: this.author,
         responsible: this.responsible,

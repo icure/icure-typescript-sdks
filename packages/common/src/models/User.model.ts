@@ -125,7 +125,7 @@ export class User {
         sharingDataWith: {...this.sharingDataWith},
         email: this.email,
         mobilePhone: this.mobilePhone,
-        authenticationTokens: Object.fromEntries(Object.entries(this.authenticationTokens).map(([k, v]: [string, AuthenticationToken]) => [k, v.toJSON()])),
+        authenticationTokens: Object.fromEntries(Object.entries(this.authenticationTokens).map(([k, v]: [any, AuthenticationToken]) => [k, v.toJSON()])),
         }
     }
 

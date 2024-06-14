@@ -20,7 +20,7 @@ export class SecurityMetadata {
 
     toJSON(): ISecurityMetadata {
         return {
-        secureDelegations: Object.fromEntries(Object.entries(this.secureDelegations).map(([k, v]: [string, SecureDelegation]) => [k, v.toJSON()])),
+        secureDelegations: Object.fromEntries(Object.entries(this.secureDelegations).map(([k, v]: [any, SecureDelegation]) => [k, v.toJSON()])),
         keysEquivalences: {...this.keysEquivalences},
         }
     }
