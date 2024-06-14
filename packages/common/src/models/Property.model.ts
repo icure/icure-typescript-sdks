@@ -1,13 +1,13 @@
 import { PropertyStub } from '@icure/api'
-import { forceUuid } from "@icure/typescript-common"
 import { EntityId } from '../types'
 import { mapTo } from '../utils/decorators'
+import { forceUuid } from '../utils/uuidUtils'
 import { IPropertyType, PropertyType } from './PropertyType.model'
 import { ITypedValueObject, TypedValueObject } from './TypedValueObject.model'
 
 @mapTo(PropertyStub)
 export class Property {
-    id: EntityId
+    id: string
     type?: PropertyType
     typedValue?: TypedValueObject
     deleted?: number
@@ -24,7 +24,7 @@ export class Property {
     }
 
     constructor(json: Partial<IProperty>) {
-        this.id = forceUuid(json["id"]!)
+        this.id = json["id"]!
         if (json["type"] !== undefined) {
             this.type = new PropertyType(json["type"]!)
         }
@@ -41,7 +41,7 @@ export class Property {
 }
 
 export interface IProperty {
-    id: EntityId
+    id: string
     type?: IPropertyType
     typedValue?: ITypedValueObject
     deleted?: number

@@ -27,7 +27,7 @@ export class SimpleCryptoStrategies<DSDataOwnerWithType extends DataOwnerWithTyp
      * If a new key pair was initialised during api initialisation this will return the generated keypair.
      */
     get generatedKeyPair(): KeyPair | undefined {
-        return this._generatedKeyPair ? { ...this._generatedKeyPair } : undefined
+        return this._generatedKeyPair ? new KeyPair({ ...this._generatedKeyPair }) : undefined
     }
 
     allowNewKeyPairGeneration(self: DSDataOwnerWithType): Promise<boolean> {

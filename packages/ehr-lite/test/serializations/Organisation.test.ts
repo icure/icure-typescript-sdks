@@ -5,8 +5,8 @@ describe(`Organisation serialization and deserialization`, () => {
     it('should correctly serialize and deserialize from instance to JSON and back', () => {
         const instance = generateOrganisation()
 
-        const json = Organisation.toJSON(instance)
-        const newInstance = Organisation.fromJSON(json)
+        const json = instance.toJSON()
+        const newInstance = new Organisation(json)
 
         expect(newInstance).toEqual(instance)
     })

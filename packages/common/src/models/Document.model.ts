@@ -10,9 +10,9 @@
  * Do not edit the class manually.
  */
 import { Document as DocumentDto } from '@icure/api';
-import { forceUuid } from "@icure/typescript-common";
 import { EntityId } from '../types';
 import { mapTo } from '../utils/decorators';
+import { forceUuid } from "../utils/uuidUtils";
 import { ISystemMetaDataEncrypted, SystemMetaDataEncrypted } from './SystemMetaDataEncrypted.model';
 
 @mapTo(DocumentDto)

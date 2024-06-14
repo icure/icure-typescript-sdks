@@ -5,8 +5,8 @@ describe(`RelatedPerson serialization and deserialization`, () => {
     it('should correctly serialize and deserialize from instance to JSON and back', () => {
         const instance = generateRelatedPerson()
 
-        const json = RelatedPerson.toJSON(instance)
-        const newInstance = RelatedPerson.fromJSON(json)
+        const json = instance.toJSON()
+        const newInstance = new RelatedPerson(json)
 
         expect(newInstance).toEqual(instance)
     })

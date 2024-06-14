@@ -272,8 +272,9 @@ export function mapHealthElementDtoToHealthcareElement(dto: HealthElementDto): H
 }
 
 export function mapHealthcareElementToHealthElementDto(domain: HealthcareElement): HealthElementDto {
+    const id = toHealthElementDtoId(domain)
     return new HealthElementDto({
-    id: toHealthElementDtoId(domain),
+    id: id,
     identifiers: toHealthElementDtoIdentifiers(domain),
     rev: toHealthElementDtoRev(domain),
     created: toHealthElementDtoCreated(domain),
@@ -285,7 +286,7 @@ export function mapHealthcareElementToHealthElementDto(domain: HealthcareElement
     codes: toHealthElementDtoCodes(domain),
     endOfLife: toHealthElementDtoEndOfLife(domain),
     deletionDate: toHealthElementDtoDeletionDate(domain),
-    healthElementId: toHealthElementDtoHealthElementId(domain),
+    healthElementId: toHealthElementDtoHealthElementId(domain, id),
     valueDate: toHealthElementDtoValueDate(domain),
     openingDate: toHealthElementDtoOpeningDate(domain),
     closingDate: toHealthElementDtoClosingDate(domain),

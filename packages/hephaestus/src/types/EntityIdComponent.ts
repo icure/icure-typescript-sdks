@@ -19,9 +19,10 @@ export class EntityIdComponent extends ClassComponent {
 
     imports(sourceFile: SourceFile): ImportDeclaration[] {
         return [
+
             sourceFile.addImportDeclaration({
                 namedImports: ['forceUuid'],
-                moduleSpecifier: '@icure/typescript-common',
+                moduleSpecifier: sourceFile.getDirectoryPath().includes('packages/common/') ? '../utils/uuidUtils' : '@icure/typescript-common',
             }),
         ]
     }

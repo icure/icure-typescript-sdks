@@ -55,7 +55,7 @@ function toTopicDtoDeletionDate(domain: Topic): number | undefined {
 }
 
 function toTopicDtoActiveParticipants(domain: Topic): { [key: string]: TopicRoleDto } | undefined {
-    return Object.fromEntries(Object.entries(domain.activeParticipants ?? {}).map(([k, v]) => [k, v as TopicRoleDto]))
+    return Object.fromEntries(Object.entries(domain.activeParticipants ?? {}).map(([k, v]) => [k, v as string as TopicRoleDto]))
 }
 
 function toTopicDtoSecurityMetadata(domain: Topic): SecurityMetadataDto | undefined {
@@ -131,7 +131,7 @@ function toTopicDescr(dto: TopicDto): string | undefined {
 }
 
 function toTopicActiveParticipants(dto: TopicDto): Record<string, TopicRoleEnum> {
-    return Object.fromEntries(Object.entries(dto.activeParticipants ?? {}).map(([k, v]) => [k, v as TopicRoleEnum]))
+    return Object.fromEntries(Object.entries(dto.activeParticipants ?? {}).map(([k, v]) => [k, v as string as TopicRoleEnum]))
 }
 
 function toTopicSystemMetadata(dto: TopicDto): SystemMetaDataEncrypted | undefined {

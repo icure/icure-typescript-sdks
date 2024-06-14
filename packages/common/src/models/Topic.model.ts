@@ -1,7 +1,7 @@
 import { Topic as TopicDto } from '@icure/api'
-import { forceUuid } from "@icure/typescript-common"
 import { EntityId } from '../types'
 import { mapTo } from '../utils/decorators'
+import { forceUuid } from "../utils/uuidUtils"
 import { CodingReference, ICodingReference } from './CodingReference.model'
 import { ISystemMetaDataEncrypted, SystemMetaDataEncrypted } from './SystemMetaDataEncrypted.model'
 import { TopicRoleEnum } from './enums/TopicRole.enum'

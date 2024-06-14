@@ -5,8 +5,8 @@ describe(`PropertyType serialization and deserialization`, () => {
     it('should correctly serialize and deserialize from instance to JSON and back', () => {
         const instance = generatePropertyType()
 
-        const json = PropertyType.toJSON(instance)
-        const newInstance = PropertyType.fromJSON(json)
+        const json = instance.toJSON()
+        const newInstance = new PropertyType(json)
 
         expect(newInstance).toEqual(instance)
     })

@@ -11,9 +11,9 @@
  */
 
 import { Code } from '@icure/api';
-import { forceUuid } from "@icure/typescript-common";
 import { EntityId } from '../types';
 import { mapTo } from '../utils/decorators';
+import { forceUuid } from "../utils/uuidUtils";
 
 @mapTo(Code)
 export class Coding {

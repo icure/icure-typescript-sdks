@@ -57,7 +57,7 @@ export class Observation implements IObservation {
         endOfLife: this.endOfLife,
         author: this.author,
         performer: this.performer,
-        localContent: Object.fromEntries(Object.entries(this.localContent).map(([k, v]: [any, any]) => [k, v.toJSON()])),
+        localContent: Object.fromEntries(Object.entries(this.localContent).map(([k, v]: [any, LocalComponent]) => [k, v.toJSON()])),
         qualifiedLinks: {...this.qualifiedLinks},
         codes: this.codes.map(item => item.toJSON()),
         tags: this.tags.map(item => item.toJSON()),
@@ -111,7 +111,7 @@ export class Observation implements IObservation {
             this.performer = json["performer"]!
         }
         if (json["localContent"] !== undefined) {
-            this.localContent = Object.fromEntries(Object.entries(json["localContent"]!).map(([k, v]: [any, any]) => [k, new LocalComponent(v)]))
+            this.localContent = Object.fromEntries(Object.entries(json["localContent"]!).map(([k, v]: [any, ILocalComponent]) => [k, new LocalComponent(v)]))
         }
         if (json["qualifiedLinks"] !== undefined) {
             this.qualifiedLinks = {...json["qualifiedLinks"]!}

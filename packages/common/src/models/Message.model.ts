@@ -1,7 +1,7 @@
 import { Message as MessageDto } from '@icure/api'
-import { forceUuid } from "@icure/typescript-common"
 import { EntityId } from '../types'
 import { mapTo } from '../utils/decorators'
+import { forceUuid } from "../utils/uuidUtils"
 import { CodingReference, ICodingReference } from './CodingReference.model'
 import { IMessageAttachment, MessageAttachment } from './MessageAttachment.model'
 import { IMessageReadStatus, MessageReadStatus } from './MessageReadStatus.model'

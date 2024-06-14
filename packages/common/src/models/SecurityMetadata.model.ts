@@ -1,6 +1,6 @@
 import { SecurityMetadata as SecurityMetadataDto } from '@icure/api'
 import { mapTo } from '../utils/decorators'
-import { SecureDelegation } from './SecureDelegation.model'
+import { ISecureDelegation, SecureDelegation } from './SecureDelegation.model'
 
 @mapTo(SecurityMetadataDto)
 export class SecurityMetadata {
@@ -32,6 +32,6 @@ export class SecurityMetadata {
 }
 
 export interface ISecurityMetadata {
-    secureDelegations: Record<string, SecureDelegation>
+    secureDelegations: Record<string, ISecureDelegation>
     keysEquivalences: Record<string, string>
 }

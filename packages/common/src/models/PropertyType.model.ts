@@ -4,7 +4,7 @@ import { TypeEnum } from './enums/Type.enum'
 
 @mapTo(PropertyTypeStub)
 export class PropertyType {
-    identifier?: string
+    identifier: string
     type?: TypeEnum
 
     toJSON(): IPropertyType {
@@ -15,9 +15,7 @@ export class PropertyType {
     }
 
     constructor(json: Partial<IPropertyType>) {
-        if (json["identifier"] !== undefined) {
-            this.identifier = json["identifier"]!
-        }
+        this.identifier = json["identifier"]!
         if (json["type"] !== undefined) {
             this.type = json["type"]!
         }
@@ -25,6 +23,6 @@ export class PropertyType {
 }
 
 export interface IPropertyType {
-    identifier?: string
+    identifier: string
     type?: TypeEnum
 }

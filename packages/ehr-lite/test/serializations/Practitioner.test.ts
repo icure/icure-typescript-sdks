@@ -5,8 +5,8 @@ describe(`Practitioner serialization and deserialization`, () => {
     it('should correctly serialize and deserialize from instance to JSON and back', () => {
         const instance = generatePractitioner()
 
-        const json = Practitioner.toJSON(instance)
-        const newInstance = Practitioner.fromJSON(json)
+        const json = instance.toJSON()
+        const newInstance = new Practitioner(json)
 
         expect(newInstance).toEqual(instance)
     })

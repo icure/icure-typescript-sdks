@@ -22,8 +22,8 @@ import {
     SystemMetaDataOwner,
     base64string,
     forceUuid,
-    mapTo
-} from '@icure/typescript-common';
+    mapTo, ISystemMetaDataOwner
+} from '@icure/typescript-common'
 
 @mapTo(DeviceDto)
 export class MedicalDevice {
@@ -215,5 +215,5 @@ export interface IMedicalDevice {
     parentId?: string
     picture?: base64string
     properties: IProperty[]
-    systemMetaData?: SystemMetaDataOwner
+    systemMetaData?: ISystemMetaDataOwner
 }

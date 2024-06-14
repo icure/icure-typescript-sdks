@@ -1,11 +1,11 @@
 import { CodeStub } from '@icure/api';
-import { forceUuid } from "@icure/typescript-common";
 import { EntityId } from '../types';
 import { mapTo } from '../utils/decorators';
+import { forceUuid } from "../utils/uuidUtils";
 
 @mapTo(CodeStub)
 export class CodingReference {
-    id: EntityId
+    id: string
     type?: string
     code?: string
     version?: string
@@ -24,7 +24,7 @@ export class CodingReference {
     }
 
     constructor(json: Partial<ICodingReference>) {
-        this.id = forceUuid(json["id"]!)
+        this.id = json["id"]!
         if (json["type"] !== undefined) {
             this.type = json["type"]!
         }
@@ -44,7 +44,7 @@ export class CodingReference {
 }
 
 export interface ICodingReference {
-    id: EntityId
+    id: string
     type?: string
     code?: string
     version?: string
