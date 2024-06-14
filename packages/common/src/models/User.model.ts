@@ -188,7 +188,7 @@ export class User {
         if (json["mobilePhone"] !== undefined) {
             this.mobilePhone = json["mobilePhone"]!
         }
-        this.authenticationTokens = Object.fromEntries(Object.entries(json["authenticationTokens"]!).map(([k, v]: [string, IAuthenticationToken]) => [k, new AuthenticationToken(v)]))
+        this.authenticationTokens = Object.fromEntries(Object.entries(json["authenticationTokens"]!).map(([k, v]: [any, IAuthenticationToken]) => [k, new AuthenticationToken(v)]))
     }
 }
 

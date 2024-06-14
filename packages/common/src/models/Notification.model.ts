@@ -8,9 +8,9 @@ import { ISystemMetaDataEncrypted, SystemMetaDataEncrypted } from './SystemMetaD
 @mapTo(MaintenanceTask)
 export class Notification {
     /**
-     * The Id of the notification. We encourage using either a v4 UUID or a HL7 Id.
+     * The Id of the notification. We encourage using either a v4 UUID
      */
-    id: string
+    id: EntityId
     /**
      * The revision of the patient in the database, used for conflict management / optimistic locking.
      */

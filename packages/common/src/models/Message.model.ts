@@ -76,7 +76,7 @@ export class Message {
             this.sent = json["sent"]!
         }
         if (json["readStatus"] !== undefined) {
-            this.readStatus = Object.fromEntries(Object.entries(json["readStatus"]!).map(([k, v]: [string, IMessageReadStatus]) => [k, new MessageReadStatus(v)]))
+            this.readStatus = Object.fromEntries(Object.entries(json["readStatus"]!).map(([k, v]: [any, IMessageReadStatus]) => [k, new MessageReadStatus(v)]))
         }
         if (json["attachments"] !== undefined) {
             this.attachments = json["attachments"]!.map((item: any) => new MessageAttachment(item))

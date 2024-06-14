@@ -28,13 +28,13 @@ export class SystemMetaDataEncrypted {
             this.secretForeignKeys = json["secretForeignKeys"]!.map((item: any) => item)
         }
         if (json["cryptedForeignKeys"] !== undefined) {
-            this.cryptedForeignKeys = Object.fromEntries(Object.entries(json["cryptedForeignKeys"]!).map(([k, v]: [string, IDelegation[]]) => [k, v.map((item: any) => new Delegation(item))]))
+            this.cryptedForeignKeys = Object.fromEntries(Object.entries(json["cryptedForeignKeys"]!).map(([k, v]: [any, IDelegation[]]) => [k, v.map((item: any) => new Delegation(item))]))
         }
         if (json["delegations"] !== undefined) {
-            this.delegations = Object.fromEntries(Object.entries(json["delegations"]!).map(([k, v]: [string, IDelegation[]]) => [k, v.map((item: any) => new Delegation(item))]))
+            this.delegations = Object.fromEntries(Object.entries(json["delegations"]!).map(([k, v]: [any, IDelegation[]]) => [k, v.map((item: any) => new Delegation(item))]))
         }
         if (json["encryptionKeys"] !== undefined) {
-            this.encryptionKeys = Object.fromEntries(Object.entries(json["encryptionKeys"]!).map(([k, v]: [string, IDelegation[]]) => [k, v.map((item: any) => new Delegation(item))]))
+            this.encryptionKeys = Object.fromEntries(Object.entries(json["encryptionKeys"]!).map(([k, v]: [any, IDelegation[]]) => [k, v.map((item: any) => new Delegation(item))]))
         }
         if (json["securityMetadata"] !== undefined) {
             this.securityMetadata = new SecurityMetadata(json["securityMetadata"]!)

@@ -101,7 +101,7 @@ export class DataSample {
     /**
      * Links towards related data samples (possibly in other batches)
      */
-    qualifiedLinks: Record<string, Record<string, string>>
+    qualifiedLinks: Record<string, Record<string, string>> = {}
     /**
      * A code is an item from a codification system that qualifies the content of this data sample. SNOMED-CT, ICPC-2 or ICD-10 codifications systems can be used for codes
      */
@@ -138,7 +138,7 @@ export class DataSample {
         }
     }
 
-    constructor(json: Partial<IDataSample> & { qualifiedLinks: Record<string, Record<string, string>> }) {
+    constructor(json: Partial<IDataSample> ) {
         this.id = forceUuid(json["id"]!)
         if (json["transactionId"] !== undefined) {
             this.transactionId = json["transactionId"]!
@@ -188,7 +188,9 @@ export class DataSample {
         if (json["comment"] !== undefined) {
             this.comment = json["comment"]!
         }
-        this.qualifiedLinks = {...json["qualifiedLinks"]!}
+        if (json["qualifiedLinks"] !== undefined) {
+            this.qualifiedLinks = {...json["qualifiedLinks"]!}
+        }
         if (json["codes"] !== undefined) {
             this.codes = json["codes"]!.map((item: any) => new CodingReference(item))
         }
