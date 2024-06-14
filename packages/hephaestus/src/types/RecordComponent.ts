@@ -28,7 +28,7 @@ export class RecordComponent extends ClassComponent {
         let keyDeserializer = this.keyType.computeDeserializer('k')
         let valueDeserializer = this.valueType.computeDeserializer('v')
 
-        let mapper = keyDeserializer === 'k' && valueDeserializer === 'v' ? `{...${value}}` : `Object.fromEntries(Object.entries(${value}).map(([k, v]: [${this.keyType.typeName}, ${this.valueType.interfaceName}]) => [${keyDeserializer}, ${valueDeserializer}]))`
+        let mapper = keyDeserializer === 'k' && valueDeserializer === 'v' ? `{...${value}}` : `Object.fromEntries(Object.entries(${value}).map(([k, v]: [any, ${this.valueType.interfaceName}]) => [${keyDeserializer}, ${valueDeserializer}]))`
 
         return this.nullable ? `${value} ? ${mapper} : undefined` : mapper
     }
