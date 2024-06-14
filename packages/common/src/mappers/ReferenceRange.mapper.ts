@@ -65,24 +65,24 @@ function toReferenceRangeStringValue(dto: ReferenceRangeDto): string | undefined
 
 export function mapReferenceRangeDtoToReferenceRange(dto: ReferenceRangeDto): ReferenceRange {
     return new ReferenceRange({
-        low: toReferenceRangeLow(dto),
-        high: toReferenceRangeHigh(dto),
-        tags: toReferenceRangeTags(dto),
-        codes: toReferenceRangeCodes(dto),
-        notes: toReferenceRangeNotes(dto),
-        age: toReferenceRangeAge(dto),
-        stringValue: toReferenceRangeStringValue(dto),
+    low: toReferenceRangeLow(dto),
+    high: toReferenceRangeHigh(dto),
+    tags: toReferenceRangeTags(dto),
+    codes: toReferenceRangeCodes(dto),
+    notes: toReferenceRangeNotes(dto),
+    age: toReferenceRangeAge(dto),
+    stringValue: toReferenceRangeStringValue(dto),
     })
 }
 
 export function mapReferenceRangeToReferenceRangeDto(domain: ReferenceRange): ReferenceRangeDto {
     return new ReferenceRangeDto({
-        low: toReferenceRangeDtoLow(domain),
-        high: toReferenceRangeDtoHigh(domain),
-        tags: toReferenceRangeDtoTags(domain),
-        codes: toReferenceRangeDtoCodes(domain),
-        notes: toReferenceRangeDtoNotes(domain),
-        age: toReferenceRangeDtoAge(domain),
-        stringValue: toReferenceRangeDtoStringValue(domain),
+    low: toReferenceRangeDtoLow(domain),
+    high: toReferenceRangeDtoHigh(domain),
+    tags: toReferenceRangeDtoTags(domain),
+    codes: toReferenceRangeDtoCodes(domain),
+    notes: toReferenceRangeDtoNotes(domain),
+    age: toReferenceRangeDtoAge(domain),
+    stringValue: toReferenceRangeDtoStringValue(domain),
     })
 }

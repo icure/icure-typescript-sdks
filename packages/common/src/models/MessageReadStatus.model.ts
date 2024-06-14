@@ -6,29 +6,22 @@ export class MessageReadStatus {
     time?: number
     read: boolean
 
-    constructor(messageReadStatus: Partial<IMessageReadStatus>) {
-        this.time = messageReadStatus.time
-        this.read = messageReadStatus.read ?? false
-    }
-
-    static toJSON(instance: MessageReadStatus): IMessageReadStatus {
-        const pojo: IMessageReadStatus = {} as IMessageReadStatus
-        if (instance.time !== undefined) pojo['time'] = instance.time
-        pojo['read'] = instance.read
-        return pojo
-    }
-
-    static fromJSON(pojo: IMessageReadStatus): MessageReadStatus {
-        const obj = {} as IMessageReadStatus
-        if (pojo['time'] !== undefined) {
-            obj['time'] = pojo['time']!
+    toJSON(): IMessageReadStatus {
+        return {
+        time: this.time,
+        read: this.read,
         }
-        obj['read'] = pojo['read']
-        return new MessageReadStatus(obj)
+    }
+
+    constructor(json: Partial<IMessageReadStatus>) {
+        if (json["time"] !== undefined) {
+            this.time = json["time"]!
+        }
+        this.read = json["read"]!
     }
 }
 
-interface IMessageReadStatus {
+export interface IMessageReadStatus {
     time?: number
     read: boolean
 }

@@ -1,70 +1,62 @@
-import { Annotation as AnnotationDto, ISO639_1 } from '@icure/api'
-import { mapTo } from '../utils/decorators'
-import { forceUuid } from '../utils/uuidUtils'
-import { CodingReference } from './CodingReference.model'
+import { Annotation as AnnotationDto, ISO639_1 } from '@icure/api';
+import { forceUuid } from "@icure/typescript-common";
+import { EntityId } from '../types';
+import { mapTo } from '../utils/decorators';
+import { CodingReference, ICodingReference } from './CodingReference.model';
 
 @mapTo(AnnotationDto)
 export class Annotation {
-    id: string
-    tags: Array<CodingReference>
+    id: EntityId
+    tags: CodingReference[] = []
     author?: string
     created?: number
     modified?: number
-    markdown: Record<ISO639_1, string>
+    markdown: Record<ISO639_1, string> = {} as Record<ISO639_1, string>
     target?: string
     encryptedSelf?: string
 
-    constructor(annotation: Partial<IAnnotation>) {
-        this.id = forceUuid(annotation.id)
-        this.tags = annotation.tags ?? []
-        this.author = annotation.author
-        this.created = annotation.created
-        this.modified = annotation.modified
-        this.markdown = annotation.markdown ?? ({} as Record<ISO639_1, string>)
-        this.target = annotation.target
-        this.encryptedSelf = annotation.encryptedSelf
+    toJSON(): IAnnotation {
+        return {
+        id: this.id,
+        tags: this.tags.map(item => item.toJSON()),
+        author: this.author,
+        created: this.created,
+        modified: this.modified,
+        markdown: {...this.markdown},
+        target: this.target,
+        encryptedSelf: this.encryptedSelf,
+        }
     }
 
-    static toJSON(instance: Annotation): IAnnotation {
-        const pojo: IAnnotation = {} as IAnnotation
-        pojo['id'] = instance.id
-        pojo['tags'] = instance.tags.map((item) => CodingReference.toJSON(item))
-        if (instance.author !== undefined) pojo['author'] = instance.author
-        if (instance.created !== undefined) pojo['created'] = instance.created
-        if (instance.modified !== undefined) pojo['modified'] = instance.modified
-        pojo['markdown'] = { ...instance.markdown }
-        if (instance.target !== undefined) pojo['target'] = instance.target
-        if (instance.encryptedSelf !== undefined) pojo['encryptedSelf'] = instance.encryptedSelf
-        return pojo
-    }
-
-    static fromJSON(pojo: IAnnotation): Annotation {
-        const obj = {} as IAnnotation
-        obj['id'] = pojo['id']
-        obj['tags'] = pojo['tags'].map((item: any) => CodingReference.fromJSON(item))
-        if (pojo['author'] !== undefined) {
-            obj['author'] = pojo['author']!
+    constructor(json: Partial<IAnnotation>) {
+        this.id = forceUuid(json["id"]!)
+        if (json["tags"] !== undefined) {
+            this.tags = json["tags"]!.map((item: any) => new CodingReference(item))
         }
-        if (pojo['created'] !== undefined) {
-            obj['created'] = pojo['created']!
+        if (json["author"] !== undefined) {
+            this.author = json["author"]!
         }
-        if (pojo['modified'] !== undefined) {
-            obj['modified'] = pojo['modified']!
+        if (json["created"] !== undefined) {
+            this.created = json["created"]!
         }
-        obj['markdown'] = { ...pojo['markdown'] }
-        if (pojo['target'] !== undefined) {
-            obj['target'] = pojo['target']!
+        if (json["modified"] !== undefined) {
+            this.modified = json["modified"]!
         }
-        if (pojo['encryptedSelf'] !== undefined) {
-            obj['encryptedSelf'] = pojo['encryptedSelf']!
+        if (json["markdown"] !== undefined) {
+            this.markdown = {...json["markdown"]!}
         }
-        return new Annotation(obj)
+        if (json["target"] !== undefined) {
+            this.target = json["target"]!
+        }
+        if (json["encryptedSelf"] !== undefined) {
+            this.encryptedSelf = json["encryptedSelf"]!
+        }
     }
 }
 
-interface IAnnotation {
-    id: string
-    tags: Array<CodingReference>
+export interface IAnnotation {
+    id: EntityId
+    tags: ICodingReference[]
     author?: string
     created?: number
     modified?: number

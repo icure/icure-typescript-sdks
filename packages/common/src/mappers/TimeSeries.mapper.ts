@@ -59,24 +59,24 @@ function toTimeSeriesVariance(dto: TimeSeriesDto): number[] {
 
 export function mapTimeSeriesDtoToTimeSeries(dto: TimeSeriesDto): TimeSeries {
     return new TimeSeries({
-        fields: toTimeSeriesFields(dto),
-        samples: toTimeSeriesSamples(dto),
-        min: toTimeSeriesMin(dto),
-        max: toTimeSeriesMax(dto),
-        mean: toTimeSeriesMean(dto),
-        median: toTimeSeriesMedian(dto),
-        variance: toTimeSeriesVariance(dto),
+    fields: toTimeSeriesFields(dto),
+    samples: toTimeSeriesSamples(dto),
+    min: toTimeSeriesMin(dto),
+    max: toTimeSeriesMax(dto),
+    mean: toTimeSeriesMean(dto),
+    median: toTimeSeriesMedian(dto),
+    variance: toTimeSeriesVariance(dto),
     })
 }
 
 export function mapTimeSeriesToTimeSeriesDto(domain: TimeSeries): TimeSeriesDto {
     return new TimeSeriesDto({
-        fields: toTimeSeriesDtoFields(domain),
-        samples: toTimeSeriesDtoSamples(domain),
-        min: toTimeSeriesDtoMin(domain),
-        max: toTimeSeriesDtoMax(domain),
-        mean: toTimeSeriesDtoMean(domain),
-        median: toTimeSeriesDtoMedian(domain),
-        variance: toTimeSeriesDtoVariance(domain),
+    fields: toTimeSeriesDtoFields(domain),
+    samples: toTimeSeriesDtoSamples(domain),
+    min: toTimeSeriesDtoMin(domain),
+    max: toTimeSeriesDtoMax(domain),
+    mean: toTimeSeriesDtoMean(domain),
+    median: toTimeSeriesDtoMedian(domain),
+    variance: toTimeSeriesDtoVariance(domain),
     })
 }

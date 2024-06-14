@@ -19,14 +19,14 @@ function toMessageAttachmentIds(dto: MessageAttachmentDto): string[] | undefined
 
 export function mapMessageAttachmentDtoToMessageAttachment(dto: MessageAttachmentDto): MessageAttachment {
     return new MessageAttachment({
-        type: toMessageAttachmentType(dto),
-        ids: toMessageAttachmentIds(dto),
+    type: toMessageAttachmentType(dto),
+    ids: toMessageAttachmentIds(dto),
     })
 }
 
 export function mapMessageAttachmentToMessageAttachmentDto(domain: MessageAttachment): MessageAttachmentDto {
     return new MessageAttachmentDto({
-        type: toMessageAttachmentDtoType(domain),
-        ids: toMessageAttachmentDtoIds(domain),
+    type: toMessageAttachmentDtoType(domain),
+    ids: toMessageAttachmentDtoIds(domain),
     })
 }

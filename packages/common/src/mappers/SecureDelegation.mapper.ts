@@ -68,26 +68,26 @@ function toSecureDelegationPermissions(dto: SecureDelegationDto): AccessLevelEnu
 
 export function mapSecureDelegationDtoToSecureDelegation(dto: SecureDelegationDto): SecureDelegation {
     return new SecureDelegation({
-        delegator: toSecureDelegationDelegator(dto),
-        delegate: toSecureDelegationDelegate(dto),
-        secretIds: toSecureDelegationSecretIds(dto),
-        encryptionKeys: toSecureDelegationEncryptionKeys(dto),
-        owningEntityIds: toSecureDelegationOwningEntityIds(dto),
-        parentDelegations: toSecureDelegationParentDelegations(dto),
-        exchangeDataId: toSecureDelegationExchangeDataId(dto),
-        permissions: toSecureDelegationPermissions(dto),
+    delegator: toSecureDelegationDelegator(dto),
+    delegate: toSecureDelegationDelegate(dto),
+    secretIds: toSecureDelegationSecretIds(dto),
+    encryptionKeys: toSecureDelegationEncryptionKeys(dto),
+    owningEntityIds: toSecureDelegationOwningEntityIds(dto),
+    parentDelegations: toSecureDelegationParentDelegations(dto),
+    exchangeDataId: toSecureDelegationExchangeDataId(dto),
+    permissions: toSecureDelegationPermissions(dto),
     })
 }
 
 export function mapSecureDelegationToSecureDelegationDto(domain: SecureDelegation): SecureDelegationDto {
     return new SecureDelegationDto({
-        delegator: toSecureDelegationDtoDelegator(domain),
-        delegate: toSecureDelegationDtoDelegate(domain),
-        secretIds: toSecureDelegationDtoSecretIds(domain),
-        encryptionKeys: toSecureDelegationDtoEncryptionKeys(domain),
-        owningEntityIds: toSecureDelegationDtoOwningEntityIds(domain),
-        parentDelegations: toSecureDelegationDtoParentDelegations(domain),
-        exchangeDataId: toSecureDelegationDtoExchangeDataId(domain),
-        permissions: toSecureDelegationDtoPermissions(domain),
+    delegator: toSecureDelegationDtoDelegator(domain),
+    delegate: toSecureDelegationDtoDelegate(domain),
+    secretIds: toSecureDelegationDtoSecretIds(domain),
+    encryptionKeys: toSecureDelegationDtoEncryptionKeys(domain),
+    owningEntityIds: toSecureDelegationDtoOwningEntityIds(domain),
+    parentDelegations: toSecureDelegationDtoParentDelegations(domain),
+    exchangeDataId: toSecureDelegationDtoExchangeDataId(domain),
+    permissions: toSecureDelegationDtoPermissions(domain),
     })
 }

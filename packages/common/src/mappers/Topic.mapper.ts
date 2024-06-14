@@ -3,7 +3,7 @@ import { CodeStub, Delegation, SecurityMetadata as SecurityMetadataDto, Topic as
 import { CodingReference } from '../models/CodingReference.model'
 import { SystemMetaDataEncrypted } from '../models/SystemMetaDataEncrypted.model'
 import { mapCodeStubToCodingReference } from './CodingReference.mapper'
-import { TopicRole } from '../models/enums/TopicRole.enum'
+import { TopicRoleEnum } from '../models/enums/TopicRole.enum'
 import { toCryptedForeignKeys, toDelegations, toEncryptedSelf, toEncryptionKeys, toSecretForeignKeys, toSecurityMetadataDto, toSystemMetaDataEncrypted } from './SystemMetaData.mapper'
 
 function toTopicDtoId(domain: Topic): string | undefined {
@@ -130,8 +130,8 @@ function toTopicDescr(dto: TopicDto): string | undefined {
     return dto.description
 }
 
-function toTopicActiveParticipants(dto: TopicDto): Record<string, TopicRole> {
-    return Object.fromEntries(Object.entries(dto.activeParticipants ?? {}).map(([k, v]) => [k, v as TopicRole]))
+function toTopicActiveParticipants(dto: TopicDto): Record<string, TopicRoleEnum> {
+    return Object.fromEntries(Object.entries(dto.activeParticipants ?? {}).map(([k, v]) => [k, v as TopicRoleEnum]))
 }
 
 function toTopicSystemMetadata(dto: TopicDto): SystemMetaDataEncrypted | undefined {
@@ -156,47 +156,47 @@ function toTopicLinkedServices(dto: TopicDto): Array<string> | undefined {
 
 export function mapTopicDtoToTopic(dto: TopicDto): Topic {
     return new Topic({
-        id: toTopicId(dto),
-        rev: toTopicRev(dto),
-        created: toTopicCreated(dto),
-        modified: toTopicModified(dto),
-        author: toTopicAuthor(dto),
-        responsible: toTopicResponsible(dto),
-        medicalLocationId: toTopicMedicalLocationId(dto),
-        tags: toTopicTags(dto),
-        codes: toTopicCodes(dto),
-        endOfLife: toTopicEndOfLife(dto),
-        deletionDate: toTopicDeletionDate(dto),
-        descr: toTopicDescr(dto),
-        linkedHealthElements: toTopicLinkedHealthElements(dto),
-        linkedServices: toTopicLinkedServices(dto),
-        activeParticipants: toTopicActiveParticipants(dto),
-        systemMetadata: toTopicSystemMetadata(dto),
+    id: toTopicId(dto),
+    rev: toTopicRev(dto),
+    created: toTopicCreated(dto),
+    modified: toTopicModified(dto),
+    author: toTopicAuthor(dto),
+    responsible: toTopicResponsible(dto),
+    medicalLocationId: toTopicMedicalLocationId(dto),
+    tags: toTopicTags(dto),
+    codes: toTopicCodes(dto),
+    endOfLife: toTopicEndOfLife(dto),
+    deletionDate: toTopicDeletionDate(dto),
+    descr: toTopicDescr(dto),
+    linkedHealthElements: toTopicLinkedHealthElements(dto),
+    linkedServices: toTopicLinkedServices(dto),
+    activeParticipants: toTopicActiveParticipants(dto),
+    systemMetadata: toTopicSystemMetadata(dto),
     })
 }
 
 export function mapTopicToTopicDto(domain: Topic): TopicDto {
     return new TopicDto({
-        id: toTopicDtoId(domain),
-        rev: toTopicDtoRev(domain),
-        created: toTopicDtoCreated(domain),
-        modified: toTopicDtoModified(domain),
-        description: toTopicDtoDescription(domain),
-        tags: toTopicDtoTags(domain),
-        codes: toTopicDtoCodes(domain),
-        author: toTopicDtoAuthor(domain),
-        responsible: toTopicDtoResponsible(domain),
-        medicalLocationId: toTopicDtoMedicalLocationId(domain),
-        endOfLife: toTopicDtoEndOfLife(domain),
-        deletionDate: toTopicDtoDeletionDate(domain),
-        activeParticipants: toTopicDtoActiveParticipants(domain),
-        linkedServices: toTopicDtoLinkedServices(domain),
-        linkedHealthElements: toTopicDtoLinkedHealthElements(domain),
-        securityMetadata: toTopicDtoSecurityMetadata(domain),
-        secretForeignKeys: toTopicDtoSecretForeignKeys(domain),
-        cryptedForeignKeys: toTopicDtoCryptedForeignKeys(domain),
-        delegations: toTopicDtoDelegations(domain),
-        encryptionKeys: toTopicDtoEncryptionKeys(domain),
-        encryptedSelf: toTopicDtoEncryptedSelf(domain),
+    id: toTopicDtoId(domain),
+    rev: toTopicDtoRev(domain),
+    created: toTopicDtoCreated(domain),
+    modified: toTopicDtoModified(domain),
+    description: toTopicDtoDescription(domain),
+    tags: toTopicDtoTags(domain),
+    codes: toTopicDtoCodes(domain),
+    author: toTopicDtoAuthor(domain),
+    responsible: toTopicDtoResponsible(domain),
+    medicalLocationId: toTopicDtoMedicalLocationId(domain),
+    endOfLife: toTopicDtoEndOfLife(domain),
+    deletionDate: toTopicDtoDeletionDate(domain),
+    activeParticipants: toTopicDtoActiveParticipants(domain),
+    linkedServices: toTopicDtoLinkedServices(domain),
+    linkedHealthElements: toTopicDtoLinkedHealthElements(domain),
+    securityMetadata: toTopicDtoSecurityMetadata(domain),
+    secretForeignKeys: toTopicDtoSecretForeignKeys(domain),
+    cryptedForeignKeys: toTopicDtoCryptedForeignKeys(domain),
+    delegations: toTopicDtoDelegations(domain),
+    encryptionKeys: toTopicDtoEncryptionKeys(domain),
+    encryptedSelf: toTopicDtoEncryptedSelf(domain),
     })
 }

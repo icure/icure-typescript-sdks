@@ -2,7 +2,8 @@ import { CryptoStrategies as BaseCryptoStrategies } from '@icure/api/icc-x-api/c
 import { CryptoStrategies } from '../../services/CryptoStrategies'
 import { DataOwnerWithType as DataOwnerWithTypeDto, hex2ua, ShaVersion, ua2hex } from '@icure/api'
 import { CryptoPrimitives } from '@icure/api/icc-x-api/crypto/CryptoPrimitives'
-import { KeyPair } from '@icure/api/icc-x-api/crypto/RSA'
+import { KeyPair as RSAKeyPair } from '@icure/api/icc-x-api/crypto/RSA'
+import { KeyPair } from '../../models/KeyPair.model'
 import { CryptoActorStubWithType } from '@icure/api/icc-api/model/CryptoActorStub'
 import { DataOwnerWithType } from '../../models/DataOwner.model'
 import { Mapper } from '../Mapper'
@@ -16,14 +17,14 @@ export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithTyp
         private readonly cryptoActorStubToDomainTypeMapper: (stub: CryptoActorStubWithType) => DSDataOwnerWithType['type'],
     ) {}
 
-    async generateNewKeyForDataOwner(self: DataOwnerWithTypeDto, cryptoPrimitives: CryptoPrimitives): Promise<KeyPair<CryptoKey> | boolean> {
+    async generateNewKeyForDataOwner(self: DataOwnerWithTypeDto, cryptoPrimitives: CryptoPrimitives): Promise<RSAKeyPair<CryptoKey> | boolean> {
         const canGenerate = await this.dsStrategies.allowNewKeyPairGeneration(this.dataOwnerMapper.toDomain(self))
         if (canGenerate) {
             const newKey = await cryptoPrimitives.RSA.generateKeyPair(ShaVersion.Sha256)
-            await this.dsStrategies.notifyKeyPairGeneration({
+            await this.dsStrategies.notifyKeyPairGeneration(new KeyPair({
                 privateKey: ua2hex(await cryptoPrimitives.RSA.exportKey(newKey.privateKey, 'pkcs8')),
                 publicKey: ua2hex(await cryptoPrimitives.RSA.exportKey(newKey.publicKey, 'spki')),
-            })
+            }))
             return newKey
         } else return false
     }
@@ -38,7 +39,7 @@ export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithTyp
     ): Promise<{
         [dataOwnerId: string]: {
             recoveredKeys: {
-                [keyPairFingerprint: string]: KeyPair<CryptoKey>
+                [keyPairFingerprint: string]: RSAKeyPair<CryptoKey>
             }
             keyAuthenticity: {
                 [keyPairFingerprint: string]: boolean
@@ -83,7 +84,7 @@ export class CryptoStrategiesBridge<DSDataOwnerWithType extends DataOwnerWithTyp
             [dataOwnerWithType.dataOwner.id!]: {
                 recoveredKeys: Object.fromEntries(
                     await Promise.all(
-                        recoveredKeyPairs.map(async (x): Promise<[string, KeyPair<CryptoKey>]> => {
+                        recoveredKeyPairs.map(async (x): Promise<[string, RSAKeyPair<CryptoKey>]> => {
                             if (sha1Keys.has(x.publicKey)) {
                                 return [x.publicKey.slice(-32), await cryptoPrimitives.RSA.importKeyPair('pkcs8', hex2ua(x.privateKey), 'spki', hex2ua(x.publicKey), ShaVersion.Sha1)]
                             }

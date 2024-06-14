@@ -11,41 +11,41 @@
  */
 
 import { User as UserDto } from '@icure/api'
+import { EntityId } from '../types'
 import { mapTo } from '../utils/decorators'
-import { forceUuid } from '../utils/uuidUtils'
-import { AuthenticationToken } from './AuthenticationToken.model'
-import { Property } from './Property.model'
+import { AuthenticationToken, IAuthenticationToken } from './AuthenticationToken.model'
+import { IProperty, Property } from './Property.model'
 
 @mapTo(UserDto)
 export class User {
     /**
      * the Id of the user. We encourage using either a v4 UUID or a HL7 Id.
      */
-    'id': string
+    id: string
     /**
      * the revision of the user in the database, used for conflict management / optimistic locking.
      */
-    'rev'?: string
+    rev?: string
     /**
      * the soft delete timestamp. When a user is ”deleted“, this is set to a non null value: the moment of the deletion
      */
-    'deletionDate'?: number
+    deletionDate?: number
     /**
      * the creation date of the user (encoded as epoch).
      */
-    'created'?: number
+    created?: number
     /**
      * Last name of the user. This is the official last name that should be used for official administrative purposes.
      */
-    'name'?: string
+    name?: string
     /**
      * Extra properties for the user. Those properties are typed (see class Property)
      */
-    'properties': Array<Property>
+    properties: Property[] = []
     /**
      * Roles assigned to this user
      */
-    'roles': Array<string>
+    roles: string[] = []
     /**
      * If the user is considered as an admin by the cloud environment
      */
@@ -57,171 +57,151 @@ export class User {
     /**
      * Username for this user. We encourage using an email address
      */
-    'login'?: string
+    login?: string
     /**
      * Hashed version of the password (BCrypt is used for hashing)
      */
-    'passwordHash'?: string
+    passwordHash?: string
     /**
      * Secret token used to verify 2fa
      */
-    'secret'?: string
+    secret?: string
     /**
      * Whether the user has activated two factors authentication
      */
-    'use2fa'?: boolean
+    use2fa?: boolean
     /**
      * id of the group (practice/hospital) the user is member of
      */
-    'groupId'?: string
+    groupId?: string
     /**
      * Id of the healthcare party if the user is a healthcare party.
      */
-    'healthcarePartyId'?: string
+    healthcarePartyId?: string
     /**
      * Id of the patient if the user is a patient
      */
-    'patientId'?: string
+    patientId?: string
     /**
      * Id of the patient if the user is a patient
      */
-    'deviceId'?: string
+    deviceId?: string
     /**
      * Ids of the dataOwners with who the user is sharing all new data he is creating in iCure : All Data Types that may be shared can be found in SharedDataType enum
      */
-    'sharingDataWith': Record<SharedDataType, Array<string>>
+    sharingDataWith: Record<SharedDataType, Array<string>> = {} as Record<SharedDataType, Array<string>>
     /**
      * email address of the user (used for token exchange or password recovery).
      */
-    'email'?: string
+    email?: string
     /**
      * mobile phone of the user (used for token exchange or password recovery).
      */
-    'mobilePhone'?: string
+    mobilePhone?: string
     /**
      * Encrypted and time-limited Authentication tokens used for inter-applications authentication
      */
-    'authenticationTokens': Record<string, AuthenticationToken>
+    authenticationTokens: Record<string, AuthenticationToken>
+
+    toJSON(): IUser {
+        return {
+        id: this.id,
+        rev: this.rev,
+        deletionDate: this.deletionDate,
+        created: this.created,
+        name: this.name,
+        properties: this.properties.map(item => item.toJSON()),
+        roles: this.roles.map(item => item),
+        isAdmin: this.isAdmin,
+        inheritsRoles: this.inheritsRoles,
+        login: this.login,
+        passwordHash: this.passwordHash,
+        secret: this.secret,
+        use2fa: this.use2fa,
+        groupId: this.groupId,
+        healthcarePartyId: this.healthcarePartyId,
+        patientId: this.patientId,
+        deviceId: this.deviceId,
+        sharingDataWith: {...this.sharingDataWith},
+        email: this.email,
+        mobilePhone: this.mobilePhone,
+        authenticationTokens: Object.fromEntries(Object.entries(this.authenticationTokens).map(([k, v]: [any, AuthenticationToken]) => [k, v.toJSON()])),
+        }
+    }
 
     constructor(json: Partial<IUser>) {
-        this.id = forceUuid(json.id)
-        this.rev = json.rev
-        this.deletionDate = json.deletionDate
-        this.created = json.created
-        this.name = json.name
-        this.properties = json.properties ?? []
-        this.roles = json.roles ?? []
-        this.isAdmin = json.isAdmin
-        this.inheritsRoles = json.inheritsRoles
-        this.login = json.login
-        this.passwordHash = json.passwordHash
-        this.secret = json.secret
-        this.use2fa = json.use2fa
-        this.groupId = json.groupId
-        this.healthcarePartyId = json.healthcarePartyId
-        this.patientId = json.patientId
-        this.deviceId = json.deviceId
-        this.sharingDataWith = json.sharingDataWith ?? ({} as Record<SharedDataType, Array<string>>)
-        this.email = json.email
-        this.mobilePhone = json.mobilePhone
-        this.authenticationTokens = json.authenticationTokens ?? {}
-    }
-
-    static toJSON(instance: User): IUser {
-        const pojo: IUser = {} as IUser
-        pojo['id'] = instance.id
-        if (instance.rev !== undefined) pojo['rev'] = instance.rev
-        if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
-        if (instance.created !== undefined) pojo['created'] = instance.created
-        if (instance.name !== undefined) pojo['name'] = instance.name
-        pojo['properties'] = instance.properties.map((item) => Property.toJSON(item))
-        pojo['roles'] = instance.roles.map((item) => item)
-        if (instance.isAdmin !== undefined) pojo['isAdmin'] = instance.isAdmin
-        if (instance.inheritsRoles !== undefined) pojo['inheritsRoles'] = instance.inheritsRoles
-        if (instance.login !== undefined) pojo['login'] = instance.login
-        if (instance.passwordHash !== undefined) pojo['passwordHash'] = instance.passwordHash
-        if (instance.secret !== undefined) pojo['secret'] = instance.secret
-        if (instance.use2fa !== undefined) pojo['use2fa'] = instance.use2fa
-        if (instance.groupId !== undefined) pojo['groupId'] = instance.groupId
-        if (instance.healthcarePartyId !== undefined) pojo['healthcarePartyId'] = instance.healthcarePartyId
-        if (instance.patientId !== undefined) pojo['patientId'] = instance.patientId
-        if (instance.deviceId !== undefined) pojo['deviceId'] = instance.deviceId
-        pojo['sharingDataWith'] = { ...instance.sharingDataWith }
-        if (instance.email !== undefined) pojo['email'] = instance.email
-        if (instance.mobilePhone !== undefined) pojo['mobilePhone'] = instance.mobilePhone
-        pojo['authenticationTokens'] = { ...instance.authenticationTokens }
-        return pojo
-    }
-
-    static fromJSON(pojo: IUser): User {
-        const obj = {} as IUser
-        obj['id'] = pojo['id']
-        if (pojo['rev'] !== undefined) {
-            obj['rev'] = pojo['rev']!
+        this.id = json["id"]!
+        if (json["rev"] !== undefined) {
+            this.rev = json["rev"]!
         }
-        if (pojo['deletionDate'] !== undefined) {
-            obj['deletionDate'] = pojo['deletionDate']!
+        if (json["deletionDate"] !== undefined) {
+            this.deletionDate = json["deletionDate"]!
         }
-        if (pojo['created'] !== undefined) {
-            obj['created'] = pojo['created']!
+        if (json["created"] !== undefined) {
+            this.created = json["created"]!
         }
-        if (pojo['name'] !== undefined) {
-            obj['name'] = pojo['name']!
+        if (json["name"] !== undefined) {
+            this.name = json["name"]!
         }
-        obj['properties'] = pojo['properties'].map((item: any) => Property.fromJSON(item))
-        obj['roles'] = pojo['roles'].map((item: any) => item)
-        if (pojo['isAdmin'] !== undefined) {
-            obj['isAdmin'] = pojo['isAdmin']!
+        if (json["properties"] !== undefined) {
+            this.properties = json["properties"]!.map((item: any) => new Property(item))
         }
-        if (pojo['inheritsRoles'] !== undefined) {
-            obj['inheritsRoles'] = pojo['inheritsRoles']!
+        if (json["roles"] !== undefined) {
+            this.roles = json["roles"]!.map((item: any) => item)
         }
-        if (pojo['login'] !== undefined) {
-            obj['login'] = pojo['login']!
+        if (json["isAdmin"] !== undefined) {
+            this.isAdmin = json["isAdmin"]!
         }
-        if (pojo['passwordHash'] !== undefined) {
-            obj['passwordHash'] = pojo['passwordHash']!
+        if (json["inheritsRoles"] !== undefined) {
+            this.inheritsRoles = json["inheritsRoles"]!
         }
-        if (pojo['secret'] !== undefined) {
-            obj['secret'] = pojo['secret']!
+        if (json["login"] !== undefined) {
+            this.login = json["login"]!
         }
-        if (pojo['use2fa'] !== undefined) {
-            obj['use2fa'] = pojo['use2fa']!
+        if (json["passwordHash"] !== undefined) {
+            this.passwordHash = json["passwordHash"]!
         }
-        if (pojo['groupId'] !== undefined) {
-            obj['groupId'] = pojo['groupId']!
+        if (json["secret"] !== undefined) {
+            this.secret = json["secret"]!
         }
-        if (pojo['healthcarePartyId'] !== undefined) {
-            obj['healthcarePartyId'] = pojo['healthcarePartyId']!
+        if (json["use2fa"] !== undefined) {
+            this.use2fa = json["use2fa"]!
         }
-        if (pojo['patientId'] !== undefined) {
-            obj['patientId'] = pojo['patientId']!
+        if (json["groupId"] !== undefined) {
+            this.groupId = json["groupId"]!
         }
-        if (pojo['deviceId'] !== undefined) {
-            obj['deviceId'] = pojo['deviceId']!
+        if (json["healthcarePartyId"] !== undefined) {
+            this.healthcarePartyId = json["healthcarePartyId"]!
         }
-        obj['sharingDataWith'] = { ...pojo['sharingDataWith'] }
-        if (pojo['email'] !== undefined) {
-            obj['email'] = pojo['email']!
+        if (json["patientId"] !== undefined) {
+            this.patientId = json["patientId"]!
         }
-        if (pojo['mobilePhone'] !== undefined) {
-            obj['mobilePhone'] = pojo['mobilePhone']!
+        if (json["deviceId"] !== undefined) {
+            this.deviceId = json["deviceId"]!
         }
-        obj['authenticationTokens'] = { ...pojo['authenticationTokens'] }
-        return new User(obj)
+        if (json["sharingDataWith"] !== undefined) {
+            this.sharingDataWith = {...json["sharingDataWith"]!}
+        }
+        if (json["email"] !== undefined) {
+            this.email = json["email"]!
+        }
+        if (json["mobilePhone"] !== undefined) {
+            this.mobilePhone = json["mobilePhone"]!
+        }
+        this.authenticationTokens = Object.fromEntries(Object.entries(json["authenticationTokens"]!).map(([k, v]: [any, IAuthenticationToken]) => [k, new AuthenticationToken(v)]))
     }
 }
 
 export type SharedDataType = 'all' | 'administrativeData' | 'generalInformation' | 'financialInformation' | 'medicalInformation' | 'sensitiveInformation' | 'confidentialInformation'
 
-interface IUser {
-    id: string
+export interface IUser {
+    id: EntityId
     rev?: string
     deletionDate?: number
     created?: number
     name?: string
-    properties: Array<Property>
-    roles: Array<string>
+    properties: IProperty[]
+    roles: string[]
     isAdmin?: boolean
     inheritsRoles?: boolean
     login?: string
@@ -235,5 +215,5 @@ interface IUser {
     sharingDataWith: Record<SharedDataType, Array<string>>
     email?: string
     mobilePhone?: string
-    authenticationTokens: Record<string, AuthenticationToken>
+    authenticationTokens: Record<string, IAuthenticationToken>
 }

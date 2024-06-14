@@ -19,14 +19,14 @@ function toRangeHigh(dto: RangeDto): number | undefined {
 
 export function mapRangeDtoToRange(dto: RangeDto): Range {
     return new Range({
-        low: toRangeLow(dto),
-        high: toRangeHigh(dto),
+    low: toRangeLow(dto),
+    high: toRangeHigh(dto),
     })
 }
 
 export function mapRangeToRangeDto(domain: Range): RangeDto {
     return new RangeDto({
-        low: toRangeDtoLow(domain),
-        high: toRangeDtoHigh(domain),
+    low: toRangeDtoLow(domain),
+    high: toRangeDtoHigh(domain),
     })
 }

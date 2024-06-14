@@ -261,27 +261,27 @@ function toAnnotationEncryptedSelf(dto: AnnotationDto): string | undefined {
 
 export function mapAnnotationDtoToAnnotation(dto: AnnotationDto): Annotation {
     return new Annotation({
-        id: toAnnotationId(dto),
-        tags: toAnnotationTags(dto),
-        author: toAnnotationAuthor(dto),
-        created: toAnnotationCreated(dto),
-        modified: toAnnotationModified(dto),
-        markdown: toAnnotationMarkdown(dto),
-        target: toAnnotationTarget(dto),
-        encryptedSelf: toAnnotationEncryptedSelf(dto),
+    id: toAnnotationId(dto),
+    tags: toAnnotationTags(dto),
+    author: toAnnotationAuthor(dto),
+    created: toAnnotationCreated(dto),
+    modified: toAnnotationModified(dto),
+    markdown: toAnnotationMarkdown(dto),
+    target: toAnnotationTarget(dto),
+    encryptedSelf: toAnnotationEncryptedSelf(dto),
     })
 }
 
 export function mapAnnotationToAnnotationDto(domain: Annotation): AnnotationDto {
     return new AnnotationDto({
-        id: toAnnotationDtoId(domain),
-        author: toAnnotationDtoAuthor(domain),
-        created: toAnnotationDtoCreated(domain),
-        modified: toAnnotationDtoModified(domain),
-        text: toAnnotationDtoText(domain),
-        markdown: toAnnotationDtoMarkdown(domain),
-        tags: toAnnotationDtoTags(domain),
-        location: toAnnotationDtoLocation(domain),
-        encryptedSelf: toAnnotationDtoEncryptedSelf(domain),
+    id: toAnnotationDtoId(domain),
+    author: toAnnotationDtoAuthor(domain),
+    created: toAnnotationDtoCreated(domain),
+    modified: toAnnotationDtoModified(domain),
+    text: toAnnotationDtoText(domain),
+    markdown: toAnnotationDtoMarkdown(domain),
+    tags: toAnnotationDtoTags(domain),
+    location: toAnnotationDtoLocation(domain),
+    encryptedSelf: toAnnotationDtoEncryptedSelf(domain),
     })
 }

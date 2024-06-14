@@ -1,23 +1,38 @@
-import { Annotation, CodingReference, Identifier, PatientDto, Property, SystemMetaDataOwnerEncrypted, base64string, forceUuid, mapTo } from '@icure/typescript-common'
-import { HumanName } from './HumanName.model'
-import { Location } from './Location.model'
-import { RelatedPerson } from './RelatedPerson.model'
-import { RelatedPractitioner } from './RelatedPractitioner.model'
+import {
+    Annotation,
+    CodingReference,
+    EntityId,
+    IAnnotation,
+    ICodingReference,
+    IIdentifier,
+    IProperty, ISystemMetaDataOwnerEncrypted,
+    Identifier,
+    PatientDto,
+    Property,
+    SystemMetaDataOwnerEncrypted,
+    base64string,
+    forceUuid,
+    mapTo
+} from '@icure/typescript-common'
+import { HumanName, IHumanName } from './HumanName.model'
+import { ILocation, Location } from './Location.model'
+import { IRelatedPerson, RelatedPerson } from './RelatedPerson.model'
+import { IRelatedPractitioner, RelatedPractitioner } from './RelatedPractitioner.model'
 import { GenderEnum } from './enums/Gender.enum'
 import { PatientDeactivationReasonEnum } from './enums/PatientDeactivationReason.enum'
 import { PatientPersonalStatusEnum } from './enums/PatientPersonalStatus.enum'
 
 @mapTo(PatientDto)
 export class Patient implements IPatient {
-    id: string
+    id: EntityId
     rev?: string
-    identifiers: Identifier[]
+    identifiers: Identifier[] = []
     created?: number
     modified?: number
     author?: string
     responsible?: string
-    tags: Array<CodingReference>
-    codes: Array<CodingReference>
+    tags: CodingReference[] = []
+    codes: CodingReference[] = []
     endOfLife?: number
     deletionDate?: number
     // /**
@@ -41,14 +56,14 @@ export class Patient implements IPatient {
     /**
      * All names of the patient. Note that these names are not searchable / filterable.
      */
-    names: HumanName[]
-    languages: string[]
-    addresses: Location[]
+    names: HumanName[] = []
+    languages: string[] = []
+    addresses: Location[] = []
     civility?: string
     gender?: GenderEnum
     birthSex?: GenderEnum
     mergeToPatientId?: string
-    mergedIds: string[]
+    mergedIds: string[] = []
     active?: boolean
     deactivationDate?: number
     deactivationReason?: PatientDeactivationReasonEnum
@@ -61,65 +76,17 @@ export class Patient implements IPatient {
     deceased?: boolean
     education?: string
     profession?: string
-    notes: Annotation[]
+    notes: Annotation[] = []
     nationality?: string
     race?: string
     ethnicity?: string
     picture?: base64string
     externalId?: string
-    relatives: RelatedPerson[]
-    patientPractitioners: RelatedPractitioner[]
-    patientProfessions: CodingReference[]
-    properties: Array<Property>
+    relatives: RelatedPerson[] = []
+    patientPractitioners: RelatedPractitioner[] = []
+    patientProfessions: CodingReference[] = []
+    properties: Property[] = []
     systemMetaData?: SystemMetaDataOwnerEncrypted
-
-    constructor(patient: Partial<IPatient>) {
-        this.id = forceUuid(patient.id)
-        this.rev = patient.rev
-        this.identifiers = patient.identifiers ?? []
-        this.created = patient.created
-        this.modified = patient.modified
-        this.author = patient.author
-        this.responsible = patient.responsible
-        this.tags = patient.tags ?? []
-        this.codes = patient.codes ?? []
-        this.endOfLife = patient.endOfLife
-        this.deletionDate = patient.deletionDate
-        this.names = patient.names ?? []
-        this.languages = patient.languages ?? []
-        this.addresses = patient.addresses ?? []
-        this.civility = patient.civility
-        this.gender = patient.gender
-        this.birthSex = patient.birthSex
-        this.mergeToPatientId = patient.mergeToPatientId
-        this.mergedIds = patient.mergedIds ?? []
-        this.active = patient.active
-        this.deactivationDate = patient.deactivationDate
-        this.deactivationReason = patient.deactivationReason
-        this.ssin = patient.ssin
-        this.personalStatus = patient.personalStatus
-        this.dateOfBirth = patient.dateOfBirth
-        this.dateOfDeath = patient.dateOfDeath
-        this.placeOfBirth = patient.placeOfBirth
-        this.placeOfDeath = patient.placeOfDeath
-        this.deceased = patient.deceased
-        this.education = patient.education
-        this.profession = patient.profession
-        this.notes = patient.notes ?? []
-        this.nationality = patient.nationality
-        this.race = patient.race
-        this.ethnicity = patient.ethnicity
-        this.picture = patient.picture
-        this.externalId = patient.externalId
-        this.relatives = patient.relatives ?? []
-        this.patientPractitioners = patient.patientPractitioners ?? []
-        this.patientProfessions = patient.patientProfessions ?? []
-        this.properties = patient.properties ?? []
-        this.systemMetaData = patient.systemMetaData
-        this.firstName = patient.firstName
-        this.lastName = patient.lastName
-    }
-
     // /**
     //  * Get the preferred name of a patient. Equivalent to `HumanName.preferredNameFrom(patient.names)`.
     //  * See {@link HumanName.preferredNameFrom} for more details.
@@ -130,182 +97,204 @@ export class Patient implements IPatient {
     //     return HumanName.preferredNameFrom(patient.names)
     // }
 
-    static toJSON(instance: Patient): IPatient {
-        const pojo: IPatient = {} as IPatient
-        pojo['id'] = instance.id
-        if (instance.rev !== undefined) pojo['rev'] = instance.rev
-        pojo['identifiers'] = instance.identifiers.map((item) => Identifier.toJSON(item))
-        if (instance.created !== undefined) pojo['created'] = instance.created
-        if (instance.modified !== undefined) pojo['modified'] = instance.modified
-        if (instance.author !== undefined) pojo['author'] = instance.author
-        if (instance.responsible !== undefined) pojo['responsible'] = instance.responsible
-        pojo['tags'] = instance.tags.map((item) => CodingReference.toJSON(item))
-        pojo['codes'] = instance.codes.map((item) => CodingReference.toJSON(item))
-        if (instance.endOfLife !== undefined) pojo['endOfLife'] = instance.endOfLife
-        if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
-        if (instance.firstName !== undefined) pojo['firstName'] = instance.firstName
-        if (instance.lastName !== undefined) pojo['lastName'] = instance.lastName
-        pojo['names'] = instance.names.map((item) => HumanName.toJSON(item))
-        pojo['languages'] = instance.languages.map((item) => item)
-        pojo['addresses'] = instance.addresses.map((item) => Location.toJSON(item))
-        if (instance.civility !== undefined) pojo['civility'] = instance.civility
-        if (instance.gender !== undefined) pojo['gender'] = instance.gender
-        if (instance.birthSex !== undefined) pojo['birthSex'] = instance.birthSex
-        if (instance.mergeToPatientId !== undefined) pojo['mergeToPatientId'] = instance.mergeToPatientId
-        pojo['mergedIds'] = instance.mergedIds.map((item) => item)
-        if (instance.active !== undefined) pojo['active'] = instance.active
-        if (instance.deactivationDate !== undefined) pojo['deactivationDate'] = instance.deactivationDate
-        if (instance.deactivationReason !== undefined) pojo['deactivationReason'] = instance.deactivationReason
-        if (instance.ssin !== undefined) pojo['ssin'] = instance.ssin
-        if (instance.personalStatus !== undefined) pojo['personalStatus'] = instance.personalStatus
-        if (instance.dateOfBirth !== undefined) pojo['dateOfBirth'] = instance.dateOfBirth
-        if (instance.dateOfDeath !== undefined) pojo['dateOfDeath'] = instance.dateOfDeath
-        if (instance.placeOfBirth !== undefined) pojo['placeOfBirth'] = instance.placeOfBirth
-        if (instance.placeOfDeath !== undefined) pojo['placeOfDeath'] = instance.placeOfDeath
-        if (instance.deceased !== undefined) pojo['deceased'] = instance.deceased
-        if (instance.education !== undefined) pojo['education'] = instance.education
-        if (instance.profession !== undefined) pojo['profession'] = instance.profession
-        pojo['notes'] = instance.notes.map((item) => Annotation.toJSON(item))
-        if (instance.nationality !== undefined) pojo['nationality'] = instance.nationality
-        if (instance.race !== undefined) pojo['race'] = instance.race
-        if (instance.ethnicity !== undefined) pojo['ethnicity'] = instance.ethnicity
-        if (instance.picture !== undefined) pojo['picture'] = instance.picture
-        if (instance.externalId !== undefined) pojo['externalId'] = instance.externalId
-        pojo['relatives'] = instance.relatives.map((item) => RelatedPerson.toJSON(item))
-        pojo['patientPractitioners'] = instance.patientPractitioners.map((item) => RelatedPractitioner.toJSON(item))
-        pojo['patientProfessions'] = instance.patientProfessions.map((item) => CodingReference.toJSON(item))
-        pojo['properties'] = instance.properties.map((item) => Property.toJSON(item))
-        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataOwnerEncrypted.toJSON(instance.systemMetaData) : undefined
-        return pojo
+    toJSON(): IPatient {
+        return {
+        id: this.id,
+        rev: this.rev,
+        identifiers: this.identifiers.map(item => item.toJSON()),
+        created: this.created,
+        modified: this.modified,
+        author: this.author,
+        responsible: this.responsible,
+        tags: this.tags.map(item => item.toJSON()),
+        codes: this.codes.map(item => item.toJSON()),
+        endOfLife: this.endOfLife,
+        deletionDate: this.deletionDate,
+        firstName: this.firstName,
+        lastName: this.lastName,
+        names: this.names.map(item => item.toJSON()),
+        languages: this.languages.map(item => item),
+        addresses: this.addresses.map(item => item.toJSON()),
+        civility: this.civility,
+        gender: this.gender,
+        birthSex: this.birthSex,
+        mergeToPatientId: this.mergeToPatientId,
+        mergedIds: this.mergedIds.map(item => item),
+        active: this.active,
+        deactivationDate: this.deactivationDate,
+        deactivationReason: this.deactivationReason,
+        ssin: this.ssin,
+        personalStatus: this.personalStatus,
+        dateOfBirth: this.dateOfBirth,
+        dateOfDeath: this.dateOfDeath,
+        placeOfBirth: this.placeOfBirth,
+        placeOfDeath: this.placeOfDeath,
+        deceased: this.deceased,
+        education: this.education,
+        profession: this.profession,
+        notes: this.notes.map(item => item.toJSON()),
+        nationality: this.nationality,
+        race: this.race,
+        ethnicity: this.ethnicity,
+        picture: this.picture,
+        externalId: this.externalId,
+        relatives: this.relatives.map(item => item.toJSON()),
+        patientPractitioners: this.patientPractitioners.map(item => item.toJSON()),
+        patientProfessions: this.patientProfessions.map(item => item.toJSON()),
+        properties: this.properties.map(item => item.toJSON()),
+        systemMetaData: !!this.systemMetaData ? this.systemMetaData.toJSON() : undefined,
+        }
     }
 
-    static fromJSON(pojo: IPatient): Patient {
-        const obj = {} as IPatient
-        obj['id'] = pojo['id']
-        if (pojo['rev'] !== undefined) {
-            obj['rev'] = pojo['rev']!
+    constructor(json: Partial<IPatient>) {
+        this.id = forceUuid(json["id"]!)
+        if (json["rev"] !== undefined) {
+            this.rev = json["rev"]!
         }
-        obj['identifiers'] = pojo['identifiers'].map((item: any) => Identifier.fromJSON(item))
-        if (pojo['created'] !== undefined) {
-            obj['created'] = pojo['created']!
+        if (json["identifiers"] !== undefined) {
+            this.identifiers = json["identifiers"]!.map((item: any) => new Identifier(item))
         }
-        if (pojo['modified'] !== undefined) {
-            obj['modified'] = pojo['modified']!
+        if (json["created"] !== undefined) {
+            this.created = json["created"]!
         }
-        if (pojo['author'] !== undefined) {
-            obj['author'] = pojo['author']!
+        if (json["modified"] !== undefined) {
+            this.modified = json["modified"]!
         }
-        if (pojo['responsible'] !== undefined) {
-            obj['responsible'] = pojo['responsible']!
+        if (json["author"] !== undefined) {
+            this.author = json["author"]!
         }
-        obj['tags'] = pojo['tags'].map((item: any) => CodingReference.fromJSON(item))
-        obj['codes'] = pojo['codes'].map((item: any) => CodingReference.fromJSON(item))
-        if (pojo['endOfLife'] !== undefined) {
-            obj['endOfLife'] = pojo['endOfLife']!
+        if (json["responsible"] !== undefined) {
+            this.responsible = json["responsible"]!
         }
-        if (pojo['deletionDate'] !== undefined) {
-            obj['deletionDate'] = pojo['deletionDate']!
+        if (json["tags"] !== undefined) {
+            this.tags = json["tags"]!.map((item: any) => new CodingReference(item))
         }
-        if (pojo['firstName'] !== undefined) {
-            obj['firstName'] = pojo['firstName']!
+        if (json["codes"] !== undefined) {
+            this.codes = json["codes"]!.map((item: any) => new CodingReference(item))
         }
-        if (pojo['lastName'] !== undefined) {
-            obj['lastName'] = pojo['lastName']!
+        if (json["endOfLife"] !== undefined) {
+            this.endOfLife = json["endOfLife"]!
         }
-        obj['names'] = pojo['names'].map((item: any) => HumanName.fromJSON(item))
-        obj['languages'] = pojo['languages'].map((item: any) => item)
-        obj['addresses'] = pojo['addresses'].map((item: any) => Location.fromJSON(item))
-        if (pojo['civility'] !== undefined) {
-            obj['civility'] = pojo['civility']!
+        if (json["deletionDate"] !== undefined) {
+            this.deletionDate = json["deletionDate"]!
         }
-        if (pojo['gender'] !== undefined) {
-            obj['gender'] = pojo['gender']!
+        if (json["firstName"] !== undefined) {
+            this.firstName = json["firstName"]!
         }
-        if (pojo['birthSex'] !== undefined) {
-            obj['birthSex'] = pojo['birthSex']!
+        if (json["lastName"] !== undefined) {
+            this.lastName = json["lastName"]!
         }
-        if (pojo['mergeToPatientId'] !== undefined) {
-            obj['mergeToPatientId'] = pojo['mergeToPatientId']!
+        if (json["names"] !== undefined) {
+            this.names = json["names"]!.map((item: any) => new HumanName(item))
         }
-        obj['mergedIds'] = pojo['mergedIds'].map((item: any) => item)
-        if (pojo['active'] !== undefined) {
-            obj['active'] = pojo['active']!
+        if (json["languages"] !== undefined) {
+            this.languages = json["languages"]!.map((item: any) => item)
         }
-        if (pojo['deactivationDate'] !== undefined) {
-            obj['deactivationDate'] = pojo['deactivationDate']!
+        if (json["addresses"] !== undefined) {
+            this.addresses = json["addresses"]!.map((item: any) => new Location(item))
         }
-        if (pojo['deactivationReason'] !== undefined) {
-            obj['deactivationReason'] = pojo['deactivationReason']!
+        if (json["civility"] !== undefined) {
+            this.civility = json["civility"]!
         }
-        if (pojo['ssin'] !== undefined) {
-            obj['ssin'] = pojo['ssin']!
+        if (json["gender"] !== undefined) {
+            this.gender = json["gender"]!
         }
-        if (pojo['personalStatus'] !== undefined) {
-            obj['personalStatus'] = pojo['personalStatus']!
+        if (json["birthSex"] !== undefined) {
+            this.birthSex = json["birthSex"]!
         }
-        if (pojo['dateOfBirth'] !== undefined) {
-            obj['dateOfBirth'] = pojo['dateOfBirth']!
+        if (json["mergeToPatientId"] !== undefined) {
+            this.mergeToPatientId = json["mergeToPatientId"]!
         }
-        if (pojo['dateOfDeath'] !== undefined) {
-            obj['dateOfDeath'] = pojo['dateOfDeath']!
+        if (json["mergedIds"] !== undefined) {
+            this.mergedIds = json["mergedIds"]!.map((item: any) => item)
         }
-        if (pojo['placeOfBirth'] !== undefined) {
-            obj['placeOfBirth'] = pojo['placeOfBirth']!
+        if (json["active"] !== undefined) {
+            this.active = json["active"]!
         }
-        if (pojo['placeOfDeath'] !== undefined) {
-            obj['placeOfDeath'] = pojo['placeOfDeath']!
+        if (json["deactivationDate"] !== undefined) {
+            this.deactivationDate = json["deactivationDate"]!
         }
-        if (pojo['deceased'] !== undefined) {
-            obj['deceased'] = pojo['deceased']!
+        if (json["deactivationReason"] !== undefined) {
+            this.deactivationReason = json["deactivationReason"]!
         }
-        if (pojo['education'] !== undefined) {
-            obj['education'] = pojo['education']!
+        if (json["ssin"] !== undefined) {
+            this.ssin = json["ssin"]!
         }
-        if (pojo['profession'] !== undefined) {
-            obj['profession'] = pojo['profession']!
+        if (json["personalStatus"] !== undefined) {
+            this.personalStatus = json["personalStatus"]!
         }
-        obj['notes'] = pojo['notes'].map((item: any) => Annotation.fromJSON(item))
-        if (pojo['nationality'] !== undefined) {
-            obj['nationality'] = pojo['nationality']!
+        if (json["dateOfBirth"] !== undefined) {
+            this.dateOfBirth = json["dateOfBirth"]!
         }
-        if (pojo['race'] !== undefined) {
-            obj['race'] = pojo['race']!
+        if (json["dateOfDeath"] !== undefined) {
+            this.dateOfDeath = json["dateOfDeath"]!
         }
-        if (pojo['ethnicity'] !== undefined) {
-            obj['ethnicity'] = pojo['ethnicity']!
+        if (json["placeOfBirth"] !== undefined) {
+            this.placeOfBirth = json["placeOfBirth"]!
         }
-        if (pojo['picture'] !== undefined) {
-            obj['picture'] = pojo['picture']!
+        if (json["placeOfDeath"] !== undefined) {
+            this.placeOfDeath = json["placeOfDeath"]!
         }
-        if (pojo['externalId'] !== undefined) {
-            obj['externalId'] = pojo['externalId']!
+        if (json["deceased"] !== undefined) {
+            this.deceased = json["deceased"]!
         }
-        obj['relatives'] = pojo['relatives'].map((item: any) => RelatedPerson.fromJSON(item))
-        obj['patientPractitioners'] = pojo['patientPractitioners'].map((item: any) => RelatedPractitioner.fromJSON(item))
-        obj['patientProfessions'] = pojo['patientProfessions'].map((item: any) => CodingReference.fromJSON(item))
-        obj['properties'] = pojo['properties'].map((item: any) => Property.fromJSON(item))
-        if (pojo['systemMetaData'] !== undefined) {
-            obj['systemMetaData'] = !!pojo['systemMetaData']! ? SystemMetaDataOwnerEncrypted.fromJSON(pojo['systemMetaData']!) : undefined
+        if (json["education"] !== undefined) {
+            this.education = json["education"]!
         }
-        return new Patient(obj)
+        if (json["profession"] !== undefined) {
+            this.profession = json["profession"]!
+        }
+        if (json["notes"] !== undefined) {
+            this.notes = json["notes"]!.map((item: any) => new Annotation(item))
+        }
+        if (json["nationality"] !== undefined) {
+            this.nationality = json["nationality"]!
+        }
+        if (json["race"] !== undefined) {
+            this.race = json["race"]!
+        }
+        if (json["ethnicity"] !== undefined) {
+            this.ethnicity = json["ethnicity"]!
+        }
+        if (json["picture"] !== undefined) {
+            this.picture = json["picture"]!
+        }
+        if (json["externalId"] !== undefined) {
+            this.externalId = json["externalId"]!
+        }
+        if (json["relatives"] !== undefined) {
+            this.relatives = json["relatives"]!.map((item: any) => new RelatedPerson(item))
+        }
+        if (json["patientPractitioners"] !== undefined) {
+            this.patientPractitioners = json["patientPractitioners"]!.map((item: any) => new RelatedPractitioner(item))
+        }
+        if (json["patientProfessions"] !== undefined) {
+            this.patientProfessions = json["patientProfessions"]!.map((item: any) => new CodingReference(item))
+        }
+        if (json["properties"] !== undefined) {
+            this.properties = json["properties"]!.map((item: any) => new Property(item))
+        }
+        if (json["systemMetaData"] !== undefined) {
+            this.systemMetaData = new SystemMetaDataOwnerEncrypted(json["systemMetaData"]!)
+        }
     }
 }
 
-interface IPatient {
-    id: string
+export interface IPatient {
+    id: EntityId
     rev?: string
-    identifiers: Identifier[]
+    identifiers: IIdentifier[]
     created?: number
     modified?: number
     author?: string
     responsible?: string
-    tags: Array<CodingReference>
-    codes: Array<CodingReference>
+    tags: ICodingReference[]
+    codes: ICodingReference[]
     endOfLife?: number
     deletionDate?: number
-    names: HumanName[]
+    names: IHumanName[]
     languages: string[]
-    addresses: Location[]
+    addresses: ILocation[]
     civility?: string
     gender?: GenderEnum
     birthSex?: GenderEnum
@@ -323,17 +312,17 @@ interface IPatient {
     deceased?: boolean
     education?: string
     profession?: string
-    notes: Annotation[]
+    notes: IAnnotation[]
     nationality?: string
     race?: string
     ethnicity?: string
     picture?: base64string
     externalId?: string
-    relatives: RelatedPerson[]
-    patientPractitioners: RelatedPractitioner[]
-    patientProfessions: CodingReference[]
-    properties: Array<Property>
-    systemMetaData?: SystemMetaDataOwnerEncrypted
+    relatives: IRelatedPerson[]
+    patientPractitioners: IRelatedPractitioner[]
+    patientProfessions: ICodingReference[]
+    properties: IProperty[]
+    systemMetaData?: ISystemMetaDataOwnerEncrypted
     firstName?: string
     lastName?: string
 }

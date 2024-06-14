@@ -1,14 +1,28 @@
-import { Annotation, CodingReference, ISO639_1, Identifier, ServiceDto, SystemMetaDataEncrypted, forceUuid, mapTo } from '@icure/typescript-common'
-import { Component } from './Component.model'
-import { LocalComponent } from './LocalComponent.model'
+import {
+    Annotation,
+    CodingReference,
+    EntityId,
+    IAnnotation,
+    ICodingReference,
+    IIdentifier,
+    ISO639_1,
+    ISystemMetaDataEncrypted,
+    Identifier,
+    ServiceDto,
+    SystemMetaDataEncrypted,
+    forceUuid,
+    mapTo
+} from '@icure/typescript-common';
+import { Component, IComponent } from './Component.model';
+import { ILocalComponent, LocalComponent } from './LocalComponent.model';
 
 @mapTo(ServiceDto)
 export class Observation implements IObservation {
-    id: string
+    id: EntityId
     transactionId?: string
-    identifiers: Identifier[]
+    identifiers: Identifier[] = []
     batchId?: string
-    healthcareElementIds?: string[]
+    healthcareElementIds?: string[] = []
     index?: number
     component?: Component
     valueDate?: number
@@ -19,126 +33,112 @@ export class Observation implements IObservation {
     endOfLife?: number
     author?: string
     performer?: string
-    localContent: Record<ISO639_1, LocalComponent>
-    qualifiedLinks: Record<string, Record<string, string>>
-    codes: Array<CodingReference>
-    tags: Array<CodingReference>
+    localContent: Record<ISO639_1, LocalComponent> = {} as Record<ISO639_1, LocalComponent>
+    qualifiedLinks: Record<string, Record<string, string>> = {}
+    codes: CodingReference[] = []
+    tags: CodingReference[] = []
     systemMetaData?: SystemMetaDataEncrypted
-    notes: Annotation[]
+    notes: Annotation[] = []
 
-    constructor(observation: Partial<IObservation>) {
-        this.id = forceUuid(observation.id)
-        this.transactionId = observation.transactionId
-        this.identifiers = observation.identifiers ?? []
-        this.batchId = observation.batchId
-        this.healthcareElementIds = observation.healthcareElementIds
-        this.index = observation.index
-        this.component = observation.component
-        this.valueDate = observation.valueDate
-        this.openingDate = observation.openingDate
-        this.closingDate = observation.closingDate
-        this.created = observation.created
-        this.modified = observation.modified
-        this.endOfLife = observation.endOfLife
-        this.author = observation.author
-        this.performer = observation.performer
-        this.localContent = observation.localContent ?? ({} as Record<ISO639_1, LocalComponent>)
-        this.qualifiedLinks = observation.qualifiedLinks ?? {}
-        this.codes = observation.codes ?? []
-        this.tags = observation.tags ?? []
-        this.systemMetaData = observation.systemMetaData
-        this.notes = observation.notes ?? []
+    toJSON(): IObservation {
+        return {
+        id: this.id,
+        transactionId: this.transactionId,
+        identifiers: this.identifiers.map(item => item.toJSON()),
+        batchId: this.batchId,
+        healthcareElementIds: this.healthcareElementIds?.map(item => item),
+        index: this.index,
+        component: !!this.component ? this.component.toJSON() : undefined,
+        valueDate: this.valueDate,
+        openingDate: this.openingDate,
+        closingDate: this.closingDate,
+        created: this.created,
+        modified: this.modified,
+        endOfLife: this.endOfLife,
+        author: this.author,
+        performer: this.performer,
+        localContent: Object.fromEntries(Object.entries(this.localContent).map(([k, v]: [any, any]) => [k, v.toJSON()])),
+        qualifiedLinks: {...this.qualifiedLinks},
+        codes: this.codes.map(item => item.toJSON()),
+        tags: this.tags.map(item => item.toJSON()),
+        systemMetaData: !!this.systemMetaData ? this.systemMetaData.toJSON() : undefined,
+        notes: this.notes.map(item => item.toJSON()),
+        }
     }
 
-    static toJSON(instance: Observation): IObservation {
-        const pojo: IObservation = {} as IObservation
-        pojo['id'] = instance.id
-        if (instance.transactionId !== undefined) pojo['transactionId'] = instance.transactionId
-        pojo['identifiers'] = instance.identifiers.map((item) => Identifier.toJSON(item))
-        if (instance.batchId !== undefined) pojo['batchId'] = instance.batchId
-        if (instance.healthcareElementIds !== undefined) pojo['healthcareElementIds'] = instance.healthcareElementIds?.map((item) => item)
-        if (instance.index !== undefined) pojo['index'] = instance.index
-        if (instance.component !== undefined) pojo['component'] = !!instance.component ? Component.toJSON(instance.component) : undefined
-        if (instance.valueDate !== undefined) pojo['valueDate'] = instance.valueDate
-        if (instance.openingDate !== undefined) pojo['openingDate'] = instance.openingDate
-        if (instance.closingDate !== undefined) pojo['closingDate'] = instance.closingDate
-        if (instance.created !== undefined) pojo['created'] = instance.created
-        if (instance.modified !== undefined) pojo['modified'] = instance.modified
-        if (instance.endOfLife !== undefined) pojo['endOfLife'] = instance.endOfLife
-        if (instance.author !== undefined) pojo['author'] = instance.author
-        if (instance.performer !== undefined) pojo['performer'] = instance.performer
-        pojo['localContent'] = { ...instance.localContent }
-        pojo['qualifiedLinks'] = { ...instance.qualifiedLinks }
-        pojo['codes'] = instance.codes.map((item) => CodingReference.toJSON(item))
-        pojo['tags'] = instance.tags.map((item) => CodingReference.toJSON(item))
-        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataEncrypted.toJSON(instance.systemMetaData) : undefined
-        pojo['notes'] = instance.notes.map((item) => Annotation.toJSON(item))
-        return pojo
-    }
-
-    static fromJSON(pojo: IObservation): Observation {
-        const obj = {} as IObservation
-        obj['id'] = pojo['id']
-        if (pojo['transactionId'] !== undefined) {
-            obj['transactionId'] = pojo['transactionId']!
+    constructor(json: Partial<IObservation>) {
+        this.id = forceUuid(json["id"]!)
+        if (json["transactionId"] !== undefined) {
+            this.transactionId = json["transactionId"]!
         }
-        obj['identifiers'] = pojo['identifiers'].map((item: any) => Identifier.fromJSON(item))
-        if (pojo['batchId'] !== undefined) {
-            obj['batchId'] = pojo['batchId']!
+        if (json["identifiers"] !== undefined) {
+            this.identifiers = json["identifiers"]!.map((item: any) => new Identifier(item))
         }
-        if (pojo['healthcareElementIds'] !== undefined) {
-            obj['healthcareElementIds'] = pojo['healthcareElementIds']!?.map((item: any) => item)
+        if (json["batchId"] !== undefined) {
+            this.batchId = json["batchId"]!
         }
-        if (pojo['index'] !== undefined) {
-            obj['index'] = pojo['index']!
+        if (json["healthcareElementIds"] !== undefined) {
+            this.healthcareElementIds = json["healthcareElementIds"]!.map((item: any) => item)
         }
-        if (pojo['component'] !== undefined) {
-            obj['component'] = !!pojo['component']! ? Component.fromJSON(pojo['component']!) : undefined
+        if (json["index"] !== undefined) {
+            this.index = json["index"]!
         }
-        if (pojo['valueDate'] !== undefined) {
-            obj['valueDate'] = pojo['valueDate']!
+        if (json["component"] !== undefined) {
+            this.component = new Component(json["component"]!)
         }
-        if (pojo['openingDate'] !== undefined) {
-            obj['openingDate'] = pojo['openingDate']!
+        if (json["valueDate"] !== undefined) {
+            this.valueDate = json["valueDate"]!
         }
-        if (pojo['closingDate'] !== undefined) {
-            obj['closingDate'] = pojo['closingDate']!
+        if (json["openingDate"] !== undefined) {
+            this.openingDate = json["openingDate"]!
         }
-        if (pojo['created'] !== undefined) {
-            obj['created'] = pojo['created']!
+        if (json["closingDate"] !== undefined) {
+            this.closingDate = json["closingDate"]!
         }
-        if (pojo['modified'] !== undefined) {
-            obj['modified'] = pojo['modified']!
+        if (json["created"] !== undefined) {
+            this.created = json["created"]!
         }
-        if (pojo['endOfLife'] !== undefined) {
-            obj['endOfLife'] = pojo['endOfLife']!
+        if (json["modified"] !== undefined) {
+            this.modified = json["modified"]!
         }
-        if (pojo['author'] !== undefined) {
-            obj['author'] = pojo['author']!
+        if (json["endOfLife"] !== undefined) {
+            this.endOfLife = json["endOfLife"]!
         }
-        if (pojo['performer'] !== undefined) {
-            obj['performer'] = pojo['performer']!
+        if (json["author"] !== undefined) {
+            this.author = json["author"]!
         }
-        obj['localContent'] = { ...pojo['localContent'] }
-        obj['qualifiedLinks'] = { ...pojo['qualifiedLinks'] }
-        obj['codes'] = pojo['codes'].map((item: any) => CodingReference.fromJSON(item))
-        obj['tags'] = pojo['tags'].map((item: any) => CodingReference.fromJSON(item))
-        if (pojo['systemMetaData'] !== undefined) {
-            obj['systemMetaData'] = !!pojo['systemMetaData']! ? SystemMetaDataEncrypted.fromJSON(pojo['systemMetaData']!) : undefined
+        if (json["performer"] !== undefined) {
+            this.performer = json["performer"]!
         }
-        obj['notes'] = pojo['notes'].map((item: any) => Annotation.fromJSON(item))
-        return new Observation(obj)
+        if (json["localContent"] !== undefined) {
+            this.localContent = Object.fromEntries(Object.entries(json["localContent"]!).map(([k, v]: [any, any]) => [k, new LocalComponent(v)]))
+        }
+        if (json["qualifiedLinks"] !== undefined) {
+            this.qualifiedLinks = {...json["qualifiedLinks"]!}
+        }
+        if (json["codes"] !== undefined) {
+            this.codes = json["codes"]!.map((item: any) => new CodingReference(item))
+        }
+        if (json["tags"] !== undefined) {
+            this.tags = json["tags"]!.map((item: any) => new CodingReference(item))
+        }
+        if (json["systemMetaData"] !== undefined) {
+            this.systemMetaData = new SystemMetaDataEncrypted(json["systemMetaData"]!)
+        }
+        if (json["notes"] !== undefined) {
+            this.notes = json["notes"]!.map((item: any) => new Annotation(item))
+        }
     }
 }
 
-interface IObservation {
-    id: string
+export interface IObservation {
+    id: EntityId
     transactionId?: string
-    identifiers: Identifier[]
+    identifiers: IIdentifier[]
     batchId?: string
     healthcareElementIds?: string[]
     index?: number
-    component?: Component
+    component?: IComponent
     valueDate?: number
     openingDate?: number
     closingDate?: number
@@ -147,10 +147,10 @@ interface IObservation {
     endOfLife?: number
     author?: string
     performer?: string
-    localContent: Record<ISO639_1, LocalComponent>
+    localContent: Record<ISO639_1, ILocalComponent>
     qualifiedLinks: Record<string, Record<string, string>>
-    codes: Array<CodingReference>
-    tags: Array<CodingReference>
-    systemMetaData?: SystemMetaDataEncrypted
-    notes: Annotation[]
+    codes: ICodingReference[]
+    tags: ICodingReference[]
+    systemMetaData?: ISystemMetaDataEncrypted
+    notes: IAnnotation[]
 }

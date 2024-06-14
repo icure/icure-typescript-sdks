@@ -2,9 +2,24 @@ import { TopicLikeApi } from '../TopicLikeApi'
 import { Reference } from '../../types/Reference'
 import { CodingReference } from '../../models/CodingReference.model'
 import { PaginatedList } from '../../models/PaginatedList.model'
-import { Connection, HealthcareParty, HealthElement, IccAuthApi, IccContactXApi, IccPatientXApi, IccUserXApi, Patient, SecureDelegation, Service, SubscriptionOptions, Topic as TopicDto, TopicRole as TopicRoleDto } from '@icure/api'
+import {
+    Connection,
+    HealthcareParty,
+    HealthElement,
+    IccAuthApi,
+    IccContactXApi,
+    IccPatientXApi,
+    IccUserXApi,
+    Patient,
+    SecureDelegation,
+    Service,
+    SubscriptionOptions,
+    Topic as TopicDto,
+    TopicRole,
+    TopicRole as TopicRoleDto
+} from '@icure/api'
 import { CommonFilter, NoOpFilter } from '../../filters/filters'
-import { TopicRole } from '../../models/enums/TopicRole.enum'
+import { TopicRoleEnum } from '../../models/enums/TopicRole.enum'
 import { IccTopicXApi } from '@icure/api/icc-x-api/icc-topic-x-api'
 import { ErrorHandler } from '../../services/ErrorHandler'
 import { Mapper } from '../Mapper'
@@ -34,7 +49,7 @@ export class TopicLikeApiImpl<DSTopic, DSHcp, DSPatient, DSService, DSHealthElem
         private readonly cryptoStrategies: CryptoStrategies<DSDataOwnerWithType>,
     ) {}
 
-    async addParticipant(topic: DSTopic, participant: { ref: Reference<DSHcp>; role: TopicRole }): Promise<DSTopic> {
+    async addParticipant(topic: DSTopic, participant: { ref: Reference<DSHcp>; role: TopicRoleEnum }): Promise<DSTopic> {
         const hcpId = typeof participant.ref === 'string' ? participant.ref : this.hcpMapper.toDto(participant.ref).id!
         const dataOwner = await this.dataOwnerApi.getDataOwner(hcpId)
 
@@ -47,7 +62,7 @@ export class TopicLikeApiImpl<DSTopic, DSHcp, DSPatient, DSService, DSHealthElem
                 .addParticipantWithTopic(
                     {
                         dataOwnerId: hcpId,
-                        topicRole: participant.role,
+                        topicRole: participant.role as string as TopicRole,
                     },
                     this.topicMapper.toDto(topic),
                 )
@@ -90,7 +105,7 @@ export class TopicLikeApiImpl<DSTopic, DSHcp, DSPatient, DSService, DSHealthElem
     }
 
     async create(
-        participants: { participant: Reference<DSHcp>; role: TopicRole }[],
+        participants: { participant: Reference<DSHcp>; role: TopicRoleEnum }[],
         description?: string,
         patient?: Reference<DSPatient>,
         healthElements?: Array<Reference<DSHealthElement>>,
@@ -110,9 +125,9 @@ export class TopicLikeApiImpl<DSTopic, DSHcp, DSPatient, DSService, DSHealthElem
             }
         }
 
-        const activeParticipants: { role: TopicRole; hcpId: string }[] = [...(participants ?? [])].map((curr) => {
+        const activeParticipants: { role: TopicRoleEnum; hcpId: string }[] = [...(participants ?? [])].map((curr) => {
             let hcpId = this.getRefIds([curr.participant], (hcp) => this.hcpMapper.toDto(hcp).id!)[0]
-            return { hcpId, role: curr.role as TopicRoleDto }
+            return { hcpId, role: curr.role as string as TopicRoleEnum }
         })
 
         const dataOwners = await Promise.all(activeParticipants.map(async (curr) => ({ dataOwner: await this.dataOwnerApi.getDataOwner(curr.hcpId), hcpId: curr.hcpId })))
@@ -120,7 +135,7 @@ export class TopicLikeApiImpl<DSTopic, DSHcp, DSPatient, DSService, DSHealthElem
             throw this.errorHandler.createErrorWithMessage("Data owner that requires anonymous delegation aren't supported yet")
         }
 
-        if (!activeParticipants.some(({ hcpId, role }) => hcpId === dataOwnerId && role === TopicRole.OWNER)) {
+        if (!activeParticipants.some(({ hcpId, role }) => hcpId === dataOwnerId && role === TopicRoleEnum.OWNER)) {
             throw this.errorHandler.createErrorWithMessage("The current user must be a participant of the topic with the role 'OWNER'")
         }
 

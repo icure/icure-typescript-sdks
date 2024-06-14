@@ -4,32 +4,26 @@ import { mapTo } from '../utils/decorators'
 @mapTo(MessageAttachmentDto)
 export class MessageAttachment {
     type?: 'annex' | 'body'
-    ids?: string[]
+    ids?: string[] = []
 
-    constructor(data: Partial<IMessageAttachment>) {
-        Object.assign(this, data)
+    toJSON(): IMessageAttachment {
+        return {
+        type: this.type,
+        ids: this.ids?.map(item => item),
+        }
     }
 
-    static toJSON(instance: MessageAttachment): IMessageAttachment {
-        const pojo: IMessageAttachment = {} as IMessageAttachment
-        if (instance.type !== undefined) pojo['type'] = instance.type
-        if (instance.ids !== undefined) pojo['ids'] = instance.ids.map((item) => item)
-        return pojo
-    }
-
-    static fromJSON(pojo: IMessageAttachment): MessageAttachment {
-        const obj = {} as IMessageAttachment
-        if (pojo['type'] !== undefined) {
-            obj['type'] = pojo['type']!
+    constructor(json: Partial<IMessageAttachment>) {
+        if (json["type"] !== undefined) {
+            this.type = json["type"]!
         }
-        if (pojo['ids'] !== undefined) {
-            obj['ids'] = pojo['ids']!.map((item: any) => item)
+        if (json["ids"] !== undefined) {
+            this.ids = json["ids"]!.map((item: any) => item)
         }
-        return new MessageAttachment(obj)
     }
 }
 
-interface IMessageAttachment {
+export interface IMessageAttachment {
     type?: 'annex' | 'body'
     ids?: string[]
 }

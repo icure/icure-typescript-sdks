@@ -10,106 +10,14 @@
  * Do not edit the class manually.
  */
 
-import { AddressDto, Annotation, mapTo } from '@icure/typescript-common'
-import { Telecom } from './Telecom.model'
+import { AddressDto, Annotation, IAnnotation, mapTo } from '@icure/typescript-common'
+import { ITelecom, Telecom } from './Telecom.model'
 
 /**
  * the list of addresses (with address type).
  */
 @mapTo(AddressDto)
 export class Address {
-    'addressType'?: AddressAddressTypeEnum
-    'description'?: string
-    'street'?: string
-    'houseNumber'?: string
-    'postboxNumber'?: string
-    'postalCode'?: string
-    'city'?: string
-    'state'?: string
-    'country'?: string
-    'note'?: string
-    'telecoms': Array<Telecom>
-    notes?: Annotation[]
-    encryptedSelf?: string
-
-    constructor(json: Partial<IAddress>) {
-        this.addressType = json.addressType
-        this.description = json.description
-        this.street = json.street
-        this.houseNumber = json.houseNumber
-        this.postboxNumber = json.postboxNumber
-        this.postalCode = json.postalCode
-        this.city = json.city
-        this.state = json.state
-        this.country = json.country
-        this.note = json.note
-        this.telecoms = json.telecoms ?? []
-        this.notes = json.notes
-        this.encryptedSelf = json.encryptedSelf
-    }
-
-    static toJSON(instance: Address): IAddress {
-        const pojo: IAddress = {} as IAddress
-        if (instance.addressType !== undefined) pojo['addressType'] = instance.addressType
-        if (instance.description !== undefined) pojo['description'] = instance.description
-        if (instance.street !== undefined) pojo['street'] = instance.street
-        if (instance.houseNumber !== undefined) pojo['houseNumber'] = instance.houseNumber
-        if (instance.postboxNumber !== undefined) pojo['postboxNumber'] = instance.postboxNumber
-        if (instance.postalCode !== undefined) pojo['postalCode'] = instance.postalCode
-        if (instance.city !== undefined) pojo['city'] = instance.city
-        if (instance.state !== undefined) pojo['state'] = instance.state
-        if (instance.country !== undefined) pojo['country'] = instance.country
-        if (instance.note !== undefined) pojo['note'] = instance.note
-        pojo['telecoms'] = instance.telecoms.map((item) => Telecom.toJSON(item))
-        if (instance.notes !== undefined) pojo['notes'] = instance.notes.map((item) => Annotation.toJSON(item))
-        if (instance.encryptedSelf !== undefined) pojo['encryptedSelf'] = instance.encryptedSelf
-        return pojo
-    }
-
-    static fromJSON(pojo: IAddress): Address {
-        const obj = {} as IAddress
-        if (pojo['addressType'] !== undefined) {
-            obj['addressType'] = pojo['addressType']!
-        }
-        if (pojo['description'] !== undefined) {
-            obj['description'] = pojo['description']!
-        }
-        if (pojo['street'] !== undefined) {
-            obj['street'] = pojo['street']!
-        }
-        if (pojo['houseNumber'] !== undefined) {
-            obj['houseNumber'] = pojo['houseNumber']!
-        }
-        if (pojo['postboxNumber'] !== undefined) {
-            obj['postboxNumber'] = pojo['postboxNumber']!
-        }
-        if (pojo['postalCode'] !== undefined) {
-            obj['postalCode'] = pojo['postalCode']!
-        }
-        if (pojo['city'] !== undefined) {
-            obj['city'] = pojo['city']!
-        }
-        if (pojo['state'] !== undefined) {
-            obj['state'] = pojo['state']!
-        }
-        if (pojo['country'] !== undefined) {
-            obj['country'] = pojo['country']!
-        }
-        if (pojo['note'] !== undefined) {
-            obj['note'] = pojo['note']!
-        }
-        obj['telecoms'] = pojo['telecoms'].map((item: any) => Telecom.fromJSON(item))
-        if (pojo['notes'] !== undefined) {
-            obj['notes'] = pojo['notes']!.map((item: any) => Annotation.fromJSON(item))
-        }
-        if (pojo['encryptedSelf'] !== undefined) {
-            obj['encryptedSelf'] = pojo['encryptedSelf']!
-        }
-        return new Address(obj)
-    }
-}
-
-interface IAddress {
     addressType?: AddressAddressTypeEnum
     description?: string
     street?: string
@@ -120,8 +28,84 @@ interface IAddress {
     state?: string
     country?: string
     note?: string
-    notes?: Annotation[]
-    telecoms: Array<Telecom>
+    telecoms: Telecom[] = []
+    notes: Annotation[] = []
+    encryptedSelf?: string
+
+    toJSON(): IAddress {
+        return {
+        addressType: this.addressType,
+        description: this.description,
+        street: this.street,
+        houseNumber: this.houseNumber,
+        postboxNumber: this.postboxNumber,
+        postalCode: this.postalCode,
+        city: this.city,
+        state: this.state,
+        country: this.country,
+        note: this.note,
+        telecoms: this.telecoms.map(item => item.toJSON()),
+        notes: this.notes.map(item => item.toJSON()),
+        encryptedSelf: this.encryptedSelf,
+        }
+    }
+
+    constructor(json: Partial<IAddress>) {
+        if (json["addressType"] !== undefined) {
+            this.addressType = json["addressType"]!
+        }
+        if (json["description"] !== undefined) {
+            this.description = json["description"]!
+        }
+        if (json["street"] !== undefined) {
+            this.street = json["street"]!
+        }
+        if (json["houseNumber"] !== undefined) {
+            this.houseNumber = json["houseNumber"]!
+        }
+        if (json["postboxNumber"] !== undefined) {
+            this.postboxNumber = json["postboxNumber"]!
+        }
+        if (json["postalCode"] !== undefined) {
+            this.postalCode = json["postalCode"]!
+        }
+        if (json["city"] !== undefined) {
+            this.city = json["city"]!
+        }
+        if (json["state"] !== undefined) {
+            this.state = json["state"]!
+        }
+        if (json["country"] !== undefined) {
+            this.country = json["country"]!
+        }
+        if (json["note"] !== undefined) {
+            this.note = json["note"]!
+        }
+        if (json["telecoms"] !== undefined) {
+            this.telecoms = json["telecoms"]!.map((item: any) => new Telecom(item))
+        }
+        if (json["notes"] !== undefined) {
+            this.notes = json["notes"]!.map((item: any) => new Annotation(item))
+        }
+        if (json["encryptedSelf"] !== undefined) {
+            this.encryptedSelf = json["encryptedSelf"]!
+        }
+    }
+}
+
+export interface IAddress {
+    addressType?: AddressAddressTypeEnum
+    description?: string
+    street?: string
+    houseNumber?: string
+    postboxNumber?: string
+    postalCode?: string
+    city?: string
+    state?: string
+    country?: string
+    note?: string
+    notes: IAnnotation[]
+    telecoms: ITelecom[]
     encryptedSelf?: string
 }
 

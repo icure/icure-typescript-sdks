@@ -10,22 +10,19 @@ export class ClassBundle {
         this.components = components
     }
 
-    public computeSerializer(variableName: string, instanceName: string): string[] {
+    public computeSerializer(instanceName: string): string[] {
         return [...this.components.entries()].map(([propertyName, component]) => {
-            if (component.nullable) {
-                return `if (${instanceName}.${propertyName} !== undefined) ${variableName}["${propertyName}"] = ${component.notNullable().computeSerializer(`${instanceName}.${propertyName}`)}`
-            }
-            return `${variableName}["${propertyName}"] = ${component.computeSerializer(`${instanceName}.${propertyName}`)}`
+            return `${propertyName}: ${component.computeSerializer(`${instanceName}.${propertyName}`)},`
         })
     }
 
-    public computeDeserializer(variableName: string): string[] {
+    public computeDeserializer(variableName: string, instanceName: string): string[] {
         return [...this.components.entries()].flatMap(([propertyName, component]) => {
-            if (component.nullable) {
-                return [`if (${variableName}["${propertyName}"] !== undefined) {`, `    obj['${propertyName}'] = ${component.notNullable().computeDeserializer(`${variableName}["${propertyName}"]!`)}`, '}']
+            if (component.nullable || component.optional) {
+                return [`if (${variableName}["${propertyName}"] !== undefined) {`, `    ${instanceName}.${propertyName} = ${component.notNullable().computeDeserializer(`${variableName}["${propertyName}"]!`)}`, '}']
             }
 
-            return [`obj['${propertyName}'] = ${component.computeDeserializer(`${variableName}["${propertyName}"]`)}`]
+            return [`${instanceName}.${propertyName} = ${component.computeDeserializer(`${variableName}["${propertyName}"]!`)}`]
         })
     }
 

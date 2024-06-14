@@ -12,56 +12,44 @@ export class TypedValueObject {
     dateValue?: number
     encryptedSelf?: string
 
-    constructor(typedValueObject?: Partial<ITypedValueObject>) {
-        this.type = typedValueObject?.type
-        this.booleanValue = typedValueObject?.booleanValue
-        this.integerValue = typedValueObject?.integerValue
-        this.doubleValue = typedValueObject?.doubleValue
-        this.stringValue = typedValueObject?.stringValue
-        this.dateValue = typedValueObject?.dateValue
-        this.encryptedSelf = typedValueObject?.encryptedSelf
+    toJSON(): ITypedValueObject {
+        return {
+        type: this.type,
+        booleanValue: this.booleanValue,
+        integerValue: this.integerValue,
+        doubleValue: this.doubleValue,
+        stringValue: this.stringValue,
+        dateValue: this.dateValue,
+        encryptedSelf: this.encryptedSelf,
+        }
     }
 
-    static toJSON(instance: TypedValueObject): ITypedValueObject {
-        const pojo: ITypedValueObject = {} as ITypedValueObject
-        if (instance.type !== undefined) pojo['type'] = instance.type
-        if (instance.booleanValue !== undefined) pojo['booleanValue'] = instance.booleanValue
-        if (instance.integerValue !== undefined) pojo['integerValue'] = instance.integerValue
-        if (instance.doubleValue !== undefined) pojo['doubleValue'] = instance.doubleValue
-        if (instance.stringValue !== undefined) pojo['stringValue'] = instance.stringValue
-        if (instance.dateValue !== undefined) pojo['dateValue'] = instance.dateValue
-        if (instance.encryptedSelf !== undefined) pojo['encryptedSelf'] = instance.encryptedSelf
-        return pojo
-    }
-
-    static fromJSON(pojo: ITypedValueObject): TypedValueObject {
-        const obj = {} as ITypedValueObject
-        if (pojo['type'] !== undefined) {
-            obj['type'] = pojo['type']!
+    constructor(json: Partial<ITypedValueObject>) {
+        if (json["type"] !== undefined) {
+            this.type = json["type"]!
         }
-        if (pojo['booleanValue'] !== undefined) {
-            obj['booleanValue'] = pojo['booleanValue']!
+        if (json["booleanValue"] !== undefined) {
+            this.booleanValue = json["booleanValue"]!
         }
-        if (pojo['integerValue'] !== undefined) {
-            obj['integerValue'] = pojo['integerValue']!
+        if (json["integerValue"] !== undefined) {
+            this.integerValue = json["integerValue"]!
         }
-        if (pojo['doubleValue'] !== undefined) {
-            obj['doubleValue'] = pojo['doubleValue']!
+        if (json["doubleValue"] !== undefined) {
+            this.doubleValue = json["doubleValue"]!
         }
-        if (pojo['stringValue'] !== undefined) {
-            obj['stringValue'] = pojo['stringValue']!
+        if (json["stringValue"] !== undefined) {
+            this.stringValue = json["stringValue"]!
         }
-        if (pojo['dateValue'] !== undefined) {
-            obj['dateValue'] = pojo['dateValue']!
+        if (json["dateValue"] !== undefined) {
+            this.dateValue = json["dateValue"]!
         }
-        if (pojo['encryptedSelf'] !== undefined) {
-            obj['encryptedSelf'] = pojo['encryptedSelf']!
+        if (json["encryptedSelf"] !== undefined) {
+            this.encryptedSelf = json["encryptedSelf"]!
         }
-        return new TypedValueObject(obj)
     }
 }
 
-interface ITypedValueObject {
+export interface ITypedValueObject {
     type?: TypeEnum
     booleanValue?: boolean
     integerValue?: number

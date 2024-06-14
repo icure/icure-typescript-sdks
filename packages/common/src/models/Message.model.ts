@@ -1,24 +1,25 @@
 import { Message as MessageDto } from '@icure/api'
+import { forceUuid } from "@icure/typescript-common"
+import { EntityId } from '../types'
 import { mapTo } from '../utils/decorators'
-import { CodingReference } from './CodingReference.model'
-import { MessageAttachment } from './MessageAttachment.model'
-import { MessageReadStatus } from './MessageReadStatus.model'
-import { SystemMetaDataEncrypted } from './SystemMetaDataEncrypted.model'
-import { forceUuid } from '../utils/uuidUtils'
+import { CodingReference, ICodingReference } from './CodingReference.model'
+import { IMessageAttachment, MessageAttachment } from './MessageAttachment.model'
+import { IMessageReadStatus, MessageReadStatus } from './MessageReadStatus.model'
+import { ISystemMetaDataEncrypted, SystemMetaDataEncrypted } from './SystemMetaDataEncrypted.model'
 
 @mapTo(MessageDto)
 export class Message {
-    id: string
+    id: EntityId
     rev?: string
     created?: number
     modified?: number
     sent?: number
     readStatus?: Record<string, MessageReadStatus>
-    attachments?: MessageAttachment[]
+    attachments?: MessageAttachment[] = []
     author?: string
     responsible?: string
-    tags: Array<CodingReference>
-    codes: Array<CodingReference>
+    tags: CodingReference[] = []
+    codes: CodingReference[] = []
     endOfLife?: number
     deletionDate?: number
     sender?: string
@@ -26,27 +27,6 @@ export class Message {
     content?: string
     topicId?: string
     systemMetadata?: SystemMetaDataEncrypted
-
-    constructor(message: Partial<IMessage>) {
-        this.id = forceUuid(message.id)
-        this.rev = message.rev
-        this.created = message.created
-        this.modified = message.modified
-        this.sent = message.sent
-        this.readStatus = message.readStatus
-        this.author = message.author
-        this.responsible = message.responsible
-        this.tags = message.tags ?? []
-        this.codes = message.codes ?? []
-        this.endOfLife = message.endOfLife
-        this.deletionDate = message.deletionDate
-        this.sender = message.sender
-        this.metas = message.metas
-        this.content = message.content
-        this.topicId = message.topicId
-        this.systemMetadata = message.systemMetadata
-        this.attachments = message.attachments
-    }
 
     /**
      * Determine if the message is truncated, meaning the content is not complete and there is an attachment with the full content
@@ -58,100 +38,102 @@ export class Message {
         return this.attachments?.some((attachment) => attachment.type === 'body') ?? false
     }
 
-    static toJSON(instance: Message): IMessage {
-        const pojo: IMessage = {} as IMessage
-        pojo['id'] = instance.id
-        if (instance.rev !== undefined) pojo['rev'] = instance.rev
-        if (instance.created !== undefined) pojo['created'] = instance.created
-        if (instance.modified !== undefined) pojo['modified'] = instance.modified
-        if (instance.sent !== undefined) pojo['sent'] = instance.sent
-        if (instance.readStatus !== undefined) pojo['readStatus'] = { ...instance.readStatus }
-        if (instance.attachments !== undefined) pojo['attachments'] = instance.attachments.map((item) => MessageAttachment.toJSON(item))
-        if (instance.author !== undefined) pojo['author'] = instance.author
-        if (instance.responsible !== undefined) pojo['responsible'] = instance.responsible
-        pojo['tags'] = instance.tags.map((item) => CodingReference.toJSON(item))
-        pojo['codes'] = instance.codes.map((item) => CodingReference.toJSON(item))
-        if (instance.endOfLife !== undefined) pojo['endOfLife'] = instance.endOfLife
-        if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
-        if (instance.sender !== undefined) pojo['sender'] = instance.sender
-        if (instance.metas !== undefined) pojo['metas'] = { ...instance.metas }
-        if (instance.content !== undefined) pojo['content'] = instance.content
-        if (instance.topicId !== undefined) pojo['topicId'] = instance.topicId
-        if (instance.systemMetadata !== undefined) pojo['systemMetadata'] = SystemMetaDataEncrypted.toJSON(instance.systemMetadata)
-        return pojo
+    toJSON(): IMessage {
+        return {
+        id: this.id,
+        rev: this.rev,
+        created: this.created,
+        modified: this.modified,
+        sent: this.sent,
+        readStatus: this.readStatus ? Object.fromEntries(Object.entries(this.readStatus).map(([k, v]: [any, MessageReadStatus]) => [k, v.toJSON()])) : undefined,
+        attachments: this.attachments?.map(item => item.toJSON()),
+        author: this.author,
+        responsible: this.responsible,
+        tags: this.tags.map(item => item.toJSON()),
+        codes: this.codes.map(item => item.toJSON()),
+        endOfLife: this.endOfLife,
+        deletionDate: this.deletionDate,
+        sender: this.sender,
+        metas: this.metas ? {...this.metas} : undefined,
+        content: this.content,
+        topicId: this.topicId,
+        systemMetadata: !!this.systemMetadata ? this.systemMetadata.toJSON() : undefined,
+        }
     }
 
-    static fromJSON(pojo: IMessage): Message {
-        const obj = {} as IMessage
-        obj['id'] = pojo['id']
-        if (pojo['rev'] !== undefined) {
-            obj['rev'] = pojo['rev']!
+    constructor(json: Partial<IMessage>) {
+        this.id = forceUuid(json["id"]!)
+        if (json["rev"] !== undefined) {
+            this.rev = json["rev"]!
         }
-        if (pojo['created'] !== undefined) {
-            obj['created'] = pojo['created']!
+        if (json["created"] !== undefined) {
+            this.created = json["created"]!
         }
-        if (pojo['modified'] !== undefined) {
-            obj['modified'] = pojo['modified']!
+        if (json["modified"] !== undefined) {
+            this.modified = json["modified"]!
         }
-        if (pojo['sent'] !== undefined) {
-            obj['sent'] = pojo['sent']!
+        if (json["sent"] !== undefined) {
+            this.sent = json["sent"]!
         }
-        if (pojo['readStatus'] !== undefined) {
-            obj['readStatus'] = { ...pojo['readStatus']! }
+        if (json["readStatus"] !== undefined) {
+            this.readStatus = Object.fromEntries(Object.entries(json["readStatus"]!).map(([k, v]: [any, IMessageReadStatus]) => [k, new MessageReadStatus(v)]))
         }
-        if (pojo['attachments'] !== undefined) {
-            obj['attachments'] = pojo['attachments']!.map((item: any) => MessageAttachment.fromJSON(item))
+        if (json["attachments"] !== undefined) {
+            this.attachments = json["attachments"]!.map((item: any) => new MessageAttachment(item))
         }
-        if (pojo['author'] !== undefined) {
-            obj['author'] = pojo['author']!
+        if (json["author"] !== undefined) {
+            this.author = json["author"]!
         }
-        if (pojo['responsible'] !== undefined) {
-            obj['responsible'] = pojo['responsible']!
+        if (json["responsible"] !== undefined) {
+            this.responsible = json["responsible"]!
         }
-        obj['tags'] = pojo['tags'].map((item: any) => CodingReference.fromJSON(item))
-        obj['codes'] = pojo['codes'].map((item: any) => CodingReference.fromJSON(item))
-        if (pojo['endOfLife'] !== undefined) {
-            obj['endOfLife'] = pojo['endOfLife']!
+        if (json["tags"] !== undefined) {
+            this.tags = json["tags"]!.map((item: any) => new CodingReference(item))
         }
-        if (pojo['deletionDate'] !== undefined) {
-            obj['deletionDate'] = pojo['deletionDate']!
+        if (json["codes"] !== undefined) {
+            this.codes = json["codes"]!.map((item: any) => new CodingReference(item))
         }
-        if (pojo['sender'] !== undefined) {
-            obj['sender'] = pojo['sender']!
+        if (json["endOfLife"] !== undefined) {
+            this.endOfLife = json["endOfLife"]!
         }
-        if (pojo['metas'] !== undefined) {
-            obj['metas'] = { ...pojo['metas']! }
+        if (json["deletionDate"] !== undefined) {
+            this.deletionDate = json["deletionDate"]!
         }
-        if (pojo['content'] !== undefined) {
-            obj['content'] = pojo['content']!
+        if (json["sender"] !== undefined) {
+            this.sender = json["sender"]!
         }
-        if (pojo['topicId'] !== undefined) {
-            obj['topicId'] = pojo['topicId']!
+        if (json["metas"] !== undefined) {
+            this.metas = {...json["metas"]!}
         }
-        if (pojo['systemMetadata'] !== undefined) {
-            obj['systemMetadata'] = SystemMetaDataEncrypted.fromJSON(pojo['systemMetadata']!)
+        if (json["content"] !== undefined) {
+            this.content = json["content"]!
         }
-        return new Message(obj)
+        if (json["topicId"] !== undefined) {
+            this.topicId = json["topicId"]!
+        }
+        if (json["systemMetadata"] !== undefined) {
+            this.systemMetadata = new SystemMetaDataEncrypted(json["systemMetadata"]!)
+        }
     }
 }
 
-interface IMessage {
-    id: string
+export interface IMessage {
+    id: EntityId
     rev?: string
     created?: number
     modified?: number
     sent?: number
-    readStatus?: Record<string, MessageReadStatus>
-    attachments?: MessageAttachment[]
+    readStatus?: Record<string, IMessageReadStatus>
+    attachments?: IMessageAttachment[]
     author?: string
     responsible?: string
-    tags: Array<CodingReference>
-    codes: Array<CodingReference>
+    tags: ICodingReference[]
+    codes: ICodingReference[]
     endOfLife?: number
     deletionDate?: number
     sender?: string
     metas?: Record<string, string>
     content?: string
     topicId?: string
-    systemMetadata?: SystemMetaDataEncrypted
+    systemMetadata?: ISystemMetaDataEncrypted
 }

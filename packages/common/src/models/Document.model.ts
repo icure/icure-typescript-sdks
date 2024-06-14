@@ -9,167 +9,148 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { Document as DocumentDto } from '@icure/api'
-import { mapTo } from '../utils/decorators'
-import { SystemMetaDataEncrypted } from './SystemMetaDataEncrypted.model'
+import { Document as DocumentDto } from '@icure/api';
+import { forceUuid } from "@icure/typescript-common";
+import { EntityId } from '../types';
+import { mapTo } from '../utils/decorators';
+import { ISystemMetaDataEncrypted, SystemMetaDataEncrypted } from './SystemMetaDataEncrypted.model';
 
 @mapTo(DocumentDto)
 export class Document {
-    constructor(json: Partial<IDocument>) {
-        this.id = json.id!
-        this.rev = json.rev
-        this.created = json.created
-        this.modified = json.modified
-        this.author = json.author
-        this.responsible = json.responsible
-        this.medicalLocationId = json.medicalLocationId
-        this.deletionDate = json.deletionDate
-        this.objectStoreReference = json.objectStoreReference
-        this.mainUti = json.mainUti
-        this.externalUuid = json.externalUuid
-        this.size = json.size
-        this.hash = json.hash
-        this.attachmentId = json.attachmentId
-        this.name = json.name
-        this.version = json.version
-        this.otherUtis = json.otherUtis ?? []
-        this.systemMetaData = json.systemMetaData
-    }
-
     /**
      * The Id of the document. We encourage using either a v4 UUID or a HL7 Id.
      */
-    'id': string
+    id: EntityId
     /**
      * The revision of the document in the database, used for conflict management / optimistic locking.
      */
-    'rev'?: string
-    'created'?: number
-    'modified'?: number
-    'author'?: string
-    'responsible'?: string
-    'medicalLocationId'?: string
-    'deletionDate'?: number
+    rev?: string
+    created?: number
+    modified?: number
+    author?: string
+    responsible?: string
+    medicalLocationId?: string
+    deletionDate?: number
     /**
      * Reference in object store
      */
-    'objectStoreReference'?: string
+    objectStoreReference?: string
     /**
      * The main Uniform Type Identifier of the document (https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/understanding_utis/understand_utis_conc/understand_utis_conc.html#//apple_ref/doc/uid/TP40001319-CH202-CHDHIJDE)
      */
-    'mainUti'?: string
+    mainUti?: string
     /**
      * Name of the document
      */
-    'name'?: string
+    name?: string
     /**
      * The document version
      */
-    'version'?: string
+    version?: string
     /**
      * Extra Uniform Type Identifiers
      */
-    'otherUtis': Array<string>
+    otherUtis: string[] = []
     /**
      * A unique external id (from another external source).
      */
-    'externalUuid'?: string
+    externalUuid?: string
     /**
      * Size of the document file
      */
-    'size'?: number
+    size?: number
     /**
      * Hashed version of the document
      */
-    'hash'?: string
+    hash?: string
     /**
      * Id of attachment to this document
      */
-    'attachmentId'?: string
+    attachmentId?: string
 
     systemMetaData?: SystemMetaDataEncrypted
 
-    static toJSON(instance: Document): IDocument {
-        const pojo: IDocument = {} as IDocument
-        pojo['id'] = instance.id
-        if (instance.rev !== undefined) pojo['rev'] = instance.rev
-        if (instance.created !== undefined) pojo['created'] = instance.created
-        if (instance.modified !== undefined) pojo['modified'] = instance.modified
-        if (instance.author !== undefined) pojo['author'] = instance.author
-        if (instance.responsible !== undefined) pojo['responsible'] = instance.responsible
-        if (instance.medicalLocationId !== undefined) pojo['medicalLocationId'] = instance.medicalLocationId
-        if (instance.deletionDate !== undefined) pojo['deletionDate'] = instance.deletionDate
-        if (instance.objectStoreReference !== undefined) pojo['objectStoreReference'] = instance.objectStoreReference
-        if (instance.mainUti !== undefined) pojo['mainUti'] = instance.mainUti
-        if (instance.name !== undefined) pojo['name'] = instance.name
-        if (instance.version !== undefined) pojo['version'] = instance.version
-        pojo['otherUtis'] = instance.otherUtis.map((item) => item)
-        if (instance.externalUuid !== undefined) pojo['externalUuid'] = instance.externalUuid
-        if (instance.size !== undefined) pojo['size'] = instance.size
-        if (instance.hash !== undefined) pojo['hash'] = instance.hash
-        if (instance.attachmentId !== undefined) pojo['attachmentId'] = instance.attachmentId
-        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = SystemMetaDataEncrypted.toJSON(instance.systemMetaData)
-        return pojo
+    toJSON(): IDocument {
+        return {
+        id: this.id,
+        rev: this.rev,
+        created: this.created,
+        modified: this.modified,
+        author: this.author,
+        responsible: this.responsible,
+        medicalLocationId: this.medicalLocationId,
+        deletionDate: this.deletionDate,
+        objectStoreReference: this.objectStoreReference,
+        mainUti: this.mainUti,
+        name: this.name,
+        version: this.version,
+        otherUtis: this.otherUtis.map(item => item),
+        externalUuid: this.externalUuid,
+        size: this.size,
+        hash: this.hash,
+        attachmentId: this.attachmentId,
+        systemMetaData: !!this.systemMetaData ? this.systemMetaData.toJSON() : undefined,
+        }
     }
 
-    static fromJSON(pojo: IDocument): Document {
-        const obj = {} as IDocument
-        obj['id'] = pojo['id']
-        if (pojo['rev'] !== undefined) {
-            obj['rev'] = pojo['rev']!
+    constructor(json: Partial<IDocument>) {
+        this.id = forceUuid(json["id"]!)
+        if (json["rev"] !== undefined) {
+            this.rev = json["rev"]!
         }
-        if (pojo['created'] !== undefined) {
-            obj['created'] = pojo['created']!
+        if (json["created"] !== undefined) {
+            this.created = json["created"]!
         }
-        if (pojo['modified'] !== undefined) {
-            obj['modified'] = pojo['modified']!
+        if (json["modified"] !== undefined) {
+            this.modified = json["modified"]!
         }
-        if (pojo['author'] !== undefined) {
-            obj['author'] = pojo['author']!
+        if (json["author"] !== undefined) {
+            this.author = json["author"]!
         }
-        if (pojo['responsible'] !== undefined) {
-            obj['responsible'] = pojo['responsible']!
+        if (json["responsible"] !== undefined) {
+            this.responsible = json["responsible"]!
         }
-        if (pojo['medicalLocationId'] !== undefined) {
-            obj['medicalLocationId'] = pojo['medicalLocationId']!
+        if (json["medicalLocationId"] !== undefined) {
+            this.medicalLocationId = json["medicalLocationId"]!
         }
-        if (pojo['deletionDate'] !== undefined) {
-            obj['deletionDate'] = pojo['deletionDate']!
+        if (json["deletionDate"] !== undefined) {
+            this.deletionDate = json["deletionDate"]!
         }
-        if (pojo['objectStoreReference'] !== undefined) {
-            obj['objectStoreReference'] = pojo['objectStoreReference']!
+        if (json["objectStoreReference"] !== undefined) {
+            this.objectStoreReference = json["objectStoreReference"]!
         }
-        if (pojo['mainUti'] !== undefined) {
-            obj['mainUti'] = pojo['mainUti']!
+        if (json["mainUti"] !== undefined) {
+            this.mainUti = json["mainUti"]!
         }
-        if (pojo['name'] !== undefined) {
-            obj['name'] = pojo['name']!
+        if (json["name"] !== undefined) {
+            this.name = json["name"]!
         }
-        if (pojo['version'] !== undefined) {
-            obj['version'] = pojo['version']!
+        if (json["version"] !== undefined) {
+            this.version = json["version"]!
         }
-        obj['otherUtis'] = pojo['otherUtis'].map((item: any) => item)
-        if (pojo['externalUuid'] !== undefined) {
-            obj['externalUuid'] = pojo['externalUuid']!
+        if (json["otherUtis"] !== undefined) {
+            this.otherUtis = json["otherUtis"]!.map((item: any) => item)
         }
-        if (pojo['size'] !== undefined) {
-            obj['size'] = pojo['size']!
+        if (json["externalUuid"] !== undefined) {
+            this.externalUuid = json["externalUuid"]!
         }
-        if (pojo['hash'] !== undefined) {
-            obj['hash'] = pojo['hash']!
+        if (json["size"] !== undefined) {
+            this.size = json["size"]!
         }
-        if (pojo['attachmentId'] !== undefined) {
-            obj['attachmentId'] = pojo['attachmentId']!
+        if (json["hash"] !== undefined) {
+            this.hash = json["hash"]!
         }
-        if (pojo['systemMetaData'] !== undefined) {
-            obj['systemMetaData'] = SystemMetaDataEncrypted.fromJSON(pojo['systemMetaData']!)
+        if (json["attachmentId"] !== undefined) {
+            this.attachmentId = json["attachmentId"]!
         }
-        return new Document(obj)
+        if (json["systemMetaData"] !== undefined) {
+            this.systemMetaData = new SystemMetaDataEncrypted(json["systemMetaData"]!)
+        }
     }
 }
 
-interface IDocument {
-    id: string
+export interface IDocument {
+    id: EntityId
     rev?: string
     created?: number
     modified?: number
@@ -181,10 +162,10 @@ interface IDocument {
     mainUti?: string
     name?: string
     version?: string
-    otherUtis: Array<string>
+    otherUtis: string[]
     externalUuid?: string
     size?: number
     hash?: string
     attachmentId?: string
-    systemMetaData: SystemMetaDataEncrypted
+    systemMetaData?: ISystemMetaDataEncrypted
 }

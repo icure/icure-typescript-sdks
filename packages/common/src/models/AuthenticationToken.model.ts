@@ -14,41 +14,35 @@
  * Encrypted and time-limited Authentication tokens used for inter-applications authentication
  */
 export class AuthenticationToken {
-    constructor(json: Partial<IAuthenticationToken>) {
-        Object.assign(this as AuthenticationToken, json)
-    }
-
     /**
      * Encrypted token
      */
-    'token': string
+    token: string
     /**
      * Validity starting time of the token
      */
-    'creationTime': number
+    creationTime: number
     /**
      * Token validity in seconds
      */
-    'validity': number
+    validity: number
 
-    static toJSON(instance: AuthenticationToken): IAuthenticationToken {
-        const pojo: IAuthenticationToken = {} as IAuthenticationToken
-        pojo['token'] = instance.token
-        pojo['creationTime'] = instance.creationTime
-        pojo['validity'] = instance.validity
-        return pojo
+    toJSON(): IAuthenticationToken {
+        return {
+        token: this.token,
+        creationTime: this.creationTime,
+        validity: this.validity,
+        }
     }
 
-    static fromJSON(pojo: IAuthenticationToken): AuthenticationToken {
-        const obj = {} as IAuthenticationToken
-        obj['token'] = pojo['token']
-        obj['creationTime'] = pojo['creationTime']
-        obj['validity'] = pojo['validity']
-        return new AuthenticationToken(obj)
+    constructor(json: Partial<IAuthenticationToken>) {
+        this.token = json["token"]!
+        this.creationTime = json["creationTime"]!
+        this.validity = json["validity"]!
     }
 }
 
-interface IAuthenticationToken {
+export interface IAuthenticationToken {
     token: string
     creationTime: number
     validity: number

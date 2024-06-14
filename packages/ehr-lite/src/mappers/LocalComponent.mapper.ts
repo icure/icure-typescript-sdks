@@ -63,25 +63,25 @@ function toLocalComponentDocumentId(dto: ContentDto): string | undefined {
 
 export function mapContentDtoToLocalComponent(dto: ContentDto): LocalComponent {
     return new LocalComponent({
-        stringValue: toLocalComponentStringValue(dto),
-        documentId: toLocalComponentDocumentId(dto),
+    stringValue: toLocalComponentStringValue(dto),
+    documentId: toLocalComponentDocumentId(dto),
     })
 }
 
 export function mapLocalComponentToContentDto(domain: LocalComponent): ContentDto {
     return new ContentDto({
-        stringValue: toContentDtoStringValue(domain),
-        numberValue: toContentDtoNumberValue(domain),
-        booleanValue: toContentDtoBooleanValue(domain),
-        instantValue: toContentDtoInstantValue(domain),
-        fuzzyDateValue: toContentDtoFuzzyDateValue(domain),
-        binaryValue: toContentDtoBinaryValue(domain),
-        documentId: toContentDtoDocumentId(domain),
-        measureValue: toContentDtoMeasureValue(domain),
-        medicationValue: toContentDtoMedicationValue(domain),
-        timeSeries: toContentDtoTimeSeries(domain),
-        compoundValue: toContentDtoCompoundValue(domain),
-        ratio: toContentDtoRatio(domain),
-        range: toContentDtoRange(domain),
+    stringValue: toContentDtoStringValue(domain),
+    numberValue: toContentDtoNumberValue(domain),
+    booleanValue: toContentDtoBooleanValue(domain),
+    instantValue: toContentDtoInstantValue(domain),
+    fuzzyDateValue: toContentDtoFuzzyDateValue(domain),
+    binaryValue: toContentDtoBinaryValue(domain),
+    documentId: toContentDtoDocumentId(domain),
+    measureValue: toContentDtoMeasureValue(domain),
+    medicationValue: toContentDtoMedicationValue(domain),
+    timeSeries: toContentDtoTimeSeries(domain),
+    compoundValue: toContentDtoCompoundValue(domain),
+    ratio: toContentDtoRatio(domain),
+    range: toContentDtoRange(domain),
     })
 }

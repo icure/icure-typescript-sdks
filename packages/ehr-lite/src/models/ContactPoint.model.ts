@@ -8,40 +8,32 @@ export class ContactPoint implements IContactPoint {
     description?: string
     encryptedSelf?: string
 
-    constructor(contactPoint?: Partial<IContactPoint>) {
-        this.system = contactPoint?.system
-        this.value = contactPoint?.value
-        this.description = contactPoint?.description
+    toJSON(): IContactPoint {
+        return {
+        system: this.system,
+        value: this.value,
+        description: this.description,
+        encryptedSelf: this.encryptedSelf,
+        }
     }
 
-    static toJSON(instance: ContactPoint): IContactPoint {
-        const pojo: IContactPoint = {} as IContactPoint
-        if (instance.system !== undefined) pojo['system'] = instance.system
-        if (instance.value !== undefined) pojo['value'] = instance.value
-        if (instance.description !== undefined) pojo['description'] = instance.description
-        if (instance.encryptedSelf !== undefined) pojo['encryptedSelf'] = instance.encryptedSelf
-        return pojo
-    }
-
-    static fromJSON(pojo: IContactPoint): ContactPoint {
-        const obj = {} as IContactPoint
-        if (pojo['system'] !== undefined) {
-            obj['system'] = pojo['system']!
+    constructor(json: Partial<IContactPoint>) {
+        if (json["system"] !== undefined) {
+            this.system = json["system"]!
         }
-        if (pojo['value'] !== undefined) {
-            obj['value'] = pojo['value']!
+        if (json["value"] !== undefined) {
+            this.value = json["value"]!
         }
-        if (pojo['description'] !== undefined) {
-            obj['description'] = pojo['description']!
+        if (json["description"] !== undefined) {
+            this.description = json["description"]!
         }
-        if (pojo['encryptedSelf'] !== undefined) {
-            obj['encryptedSelf'] = pojo['encryptedSelf']!
+        if (json["encryptedSelf"] !== undefined) {
+            this.encryptedSelf = json["encryptedSelf"]!
         }
-        return new ContactPoint(obj)
     }
 }
 
-interface IContactPoint {
+export interface IContactPoint {
     system?: ContactPointTelecomTypeEnum
     value?: string
     description?: string

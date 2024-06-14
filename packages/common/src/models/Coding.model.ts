@@ -10,97 +10,91 @@
  * Do not edit the class manually.
  */
 
-import { Code } from '@icure/api'
-import { mapTo } from '../utils/decorators'
+import { Code } from '@icure/api';
+import { forceUuid } from "@icure/typescript-common";
+import { EntityId } from '../types';
+import { mapTo } from '../utils/decorators';
 
 @mapTo(Code)
 export class Coding {
-    constructor(json: Partial<ICoding>) {
-        this.id = json.id ?? `${json.type}|${json.code}|${json.version}`
-        this.rev = json.rev
-        this.type = json.type
-        this.code = json.code
-        this.version = json.version
-        this.regions = json.regions ?? []
-        this.description = json.description
-        this.qualifiedLinks = json.qualifiedLinks ?? {}
-        this.searchTerms = json.searchTerms ?? {}
-    }
-
     /**
      * the Id of the coding. We encourage using either a v4 UUID or a HL7 Id.
      */
-    'id': string
+    id: EntityId
     /**
      * the revision of the coding in the database, used for conflict management / optimistic locking.
      */
-    'rev'?: string
-    'type'?: string
-    'code'?: string
+    rev?: string
+    type?: string
+    code?: string
     /**
      * Must be lexicographically searchable
      */
-    'version'?: string
-    'regions': Array<string>
+    version?: string
+    regions: string[] = []
     /**
      * Description (ex: {en: Rheumatic Aortic Stenosis, fr: Sténose rhumatoïde de l'Aorte})
      */
-    'description'?: Record<string, string>
+    description?: Record<string, string>
     /**
      * Links towards related codes
      */
-    'qualifiedLinks': Record<string, Array<string>>
+    qualifiedLinks: Record<string, Array<string>> = {}
     /**
      * Extra search terms/ language
      */
-    'searchTerms': Record<string, Array<string>>
+    searchTerms: Record<string, Array<string>> = {}
 
-    static toJSON(instance: Coding): ICoding {
-        const pojo: ICoding = {} as ICoding
-        pojo['id'] = instance.id
-        if (instance.rev !== undefined) pojo['rev'] = instance.rev
-        if (instance.type !== undefined) pojo['type'] = instance.type
-        if (instance.code !== undefined) pojo['code'] = instance.code
-        if (instance.version !== undefined) pojo['version'] = instance.version
-        pojo['regions'] = instance.regions.map((item) => item)
-        if (instance.description !== undefined) pojo['description'] = { ...instance.description }
-        pojo['qualifiedLinks'] = { ...instance.qualifiedLinks }
-        pojo['searchTerms'] = { ...instance.searchTerms }
-        return pojo
+    toJSON(): ICoding {
+        return {
+        id: this.id,
+        rev: this.rev,
+        type: this.type,
+        code: this.code,
+        version: this.version,
+        regions: this.regions.map(item => item),
+        description: this.description ? {...this.description} : undefined,
+        qualifiedLinks: {...this.qualifiedLinks},
+        searchTerms: {...this.searchTerms},
+        }
     }
 
-    static fromJSON(pojo: ICoding): Coding {
-        const obj = {} as ICoding
-        obj['id'] = pojo['id']
-        if (pojo['rev'] !== undefined) {
-            obj['rev'] = pojo['rev']!
+    constructor(json: Partial<ICoding>) {
+        this.id = forceUuid(json["id"]!)
+        if (json["rev"] !== undefined) {
+            this.rev = json["rev"]!
         }
-        if (pojo['type'] !== undefined) {
-            obj['type'] = pojo['type']!
+        if (json["type"] !== undefined) {
+            this.type = json["type"]!
         }
-        if (pojo['code'] !== undefined) {
-            obj['code'] = pojo['code']!
+        if (json["code"] !== undefined) {
+            this.code = json["code"]!
         }
-        if (pojo['version'] !== undefined) {
-            obj['version'] = pojo['version']!
+        if (json["version"] !== undefined) {
+            this.version = json["version"]!
         }
-        obj['regions'] = pojo['regions'].map((item: any) => item)
-        if (pojo['description'] !== undefined) {
-            obj['description'] = { ...pojo['description']! }
+        if (json["regions"] !== undefined) {
+            this.regions = json["regions"]!.map((item: any) => item)
         }
-        obj['qualifiedLinks'] = { ...pojo['qualifiedLinks'] }
-        obj['searchTerms'] = { ...pojo['searchTerms'] }
-        return new Coding(obj)
+        if (json["description"] !== undefined) {
+            this.description = {...json["description"]!}
+        }
+        if (json["qualifiedLinks"] !== undefined) {
+            this.qualifiedLinks = {...json["qualifiedLinks"]!}
+        }
+        if (json["searchTerms"] !== undefined) {
+            this.searchTerms = {...json["searchTerms"]!}
+        }
     }
 }
 
-interface ICoding {
-    id: string
+export interface ICoding {
+    id: EntityId
     rev?: string
     type?: string
     code?: string
     version?: string
-    regions: Array<string>
+    regions: string[]
     description?: Record<string, string>
     qualifiedLinks: Record<string, Array<string>>
     searchTerms: Record<string, Array<string>>

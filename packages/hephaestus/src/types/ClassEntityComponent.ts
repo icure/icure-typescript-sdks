@@ -2,20 +2,22 @@ import { ClassComponent } from './ClassComponent'
 
 export class ClassEntityComponent extends ClassComponent {
     public notNullable(): ClassComponent {
-        return new ClassEntityComponent(this.name, false)
+        return new ClassEntityComponent(this.name, false, this.optional)
     }
-    readonly name: string
-
-    constructor(name: string, nullable: boolean) {
-        super(nullable)
+    override readonly name: string
+    override get iname(): string {
+        return `I${this.name}`
+    }
+    constructor(name: string, nullable: boolean, optional: boolean) {
+        super(nullable, optional)
         this.name = name
     }
 
     computeDeserializer(value: string): string {
-        return this.nullable ? `!!${value} ? ${this.name}.fromJSON(${value}) : undefined` : `${this.name}.fromJSON(${value})`
+        return this.nullable ? `!!${value} ? new ${this.name}(${value}) : undefined` : `new ${this.name}(${value})`
     }
 
     computeSerializer(value: string): string {
-        return this.nullable ? `!!${value} ? ${this.name}.toJSON(${value}) : undefined` : `${this.name}.toJSON(${value})`
+        return this.nullable ? `!!${value} ? ${value}.toJSON() : undefined` : `${value}.toJSON()`
     }
 }

@@ -1,5 +1,5 @@
-import { ContentDto, Measure, TimeSeries, mapTo } from '@icure/typescript-common'
-import { Observation } from './Observation.model'
+import { ContentDto, IMeasure, ITimeSeries, Measure, TimeSeries, mapTo } from '@icure/typescript-common'
+import { IObservation, Observation } from './Observation.model'
 
 @mapTo(ContentDto)
 export class Component implements IComponent {
@@ -9,77 +9,63 @@ export class Component implements IComponent {
     fuzzyDateValue?: number
     measureValue?: Measure
     timeSeries?: TimeSeries
-    compoundValue?: Observation[]
-    ratio?: Measure[]
-    range?: Measure[]
+    compoundValue?: Observation[] = []
+    ratio?: Measure[] = []
+    range?: Measure[] = []
 
-    constructor(component?: Partial<IComponent>) {
-        this.numberValue = component?.numberValue
-        this.booleanValue = component?.booleanValue
-        this.instantValue = component?.instantValue
-        this.fuzzyDateValue = component?.fuzzyDateValue
-        this.measureValue = component?.measureValue
-        this.timeSeries = component?.timeSeries
-        this.compoundValue = component?.compoundValue
-        this.ratio = component?.ratio
-        this.range = component?.range
+    toJSON(): IComponent {
+        return {
+        numberValue: this.numberValue,
+        booleanValue: this.booleanValue,
+        instantValue: this.instantValue,
+        fuzzyDateValue: this.fuzzyDateValue,
+        measureValue: !!this.measureValue ? this.measureValue.toJSON() : undefined,
+        timeSeries: !!this.timeSeries ? this.timeSeries.toJSON() : undefined,
+        compoundValue: this.compoundValue?.map(item => item.toJSON()),
+        ratio: this.ratio?.map(item => item.toJSON()),
+        range: this.range?.map(item => item.toJSON()),
+        }
     }
 
-    static toJSON(instance: Component): IComponent {
-        const pojo: IComponent = {} as IComponent
-        if (instance.numberValue !== undefined) pojo['numberValue'] = instance.numberValue
-        if (instance.booleanValue !== undefined) pojo['booleanValue'] = instance.booleanValue
-        if (instance.instantValue !== undefined) pojo['instantValue'] = instance.instantValue
-        if (instance.fuzzyDateValue !== undefined) pojo['fuzzyDateValue'] = instance.fuzzyDateValue
-        if (instance.measureValue !== undefined) pojo['measureValue'] = !!instance.measureValue ? Measure.toJSON(instance.measureValue) : undefined
-        if (instance.timeSeries !== undefined) pojo['timeSeries'] = !!instance.timeSeries ? TimeSeries.toJSON(instance.timeSeries) : undefined
-        if (instance.compoundValue !== undefined) pojo['compoundValue'] = instance.compoundValue?.map((item) => Observation.toJSON(item))
-        if (instance.ratio !== undefined) pojo['ratio'] = instance.ratio?.map((item) => Measure.toJSON(item))
-        if (instance.range !== undefined) pojo['range'] = instance.range?.map((item) => Measure.toJSON(item))
-        return pojo
-    }
-
-    static fromJSON(pojo: IComponent): Component {
-        const obj = {} as IComponent
-        if (pojo['numberValue'] !== undefined) {
-            obj['numberValue'] = pojo['numberValue']!
+    constructor(json: Partial<IComponent>) {
+        if (json["numberValue"] !== undefined) {
+            this.numberValue = json["numberValue"]!
         }
-        if (pojo['booleanValue'] !== undefined) {
-            obj['booleanValue'] = pojo['booleanValue']!
+        if (json["booleanValue"] !== undefined) {
+            this.booleanValue = json["booleanValue"]!
         }
-        if (pojo['instantValue'] !== undefined) {
-            obj['instantValue'] = pojo['instantValue']!
+        if (json["instantValue"] !== undefined) {
+            this.instantValue = json["instantValue"]!
         }
-        if (pojo['fuzzyDateValue'] !== undefined) {
-            obj['fuzzyDateValue'] = pojo['fuzzyDateValue']!
+        if (json["fuzzyDateValue"] !== undefined) {
+            this.fuzzyDateValue = json["fuzzyDateValue"]!
         }
-        if (pojo['measureValue'] !== undefined) {
-            obj['measureValue'] = !!pojo['measureValue']! ? Measure.fromJSON(pojo['measureValue']!) : undefined
+        if (json["measureValue"] !== undefined) {
+            this.measureValue = new Measure(json["measureValue"]!)
         }
-        if (pojo['timeSeries'] !== undefined) {
-            obj['timeSeries'] = !!pojo['timeSeries']! ? TimeSeries.fromJSON(pojo['timeSeries']!) : undefined
+        if (json["timeSeries"] !== undefined) {
+            this.timeSeries = new TimeSeries(json["timeSeries"]!)
         }
-        if (pojo['compoundValue'] !== undefined) {
-            obj['compoundValue'] = pojo['compoundValue']!?.map((item: any) => Observation.fromJSON(item))
+        if (json["compoundValue"] !== undefined) {
+            this.compoundValue = json["compoundValue"]!.map((item: any) => new Observation(item))
         }
-        if (pojo['ratio'] !== undefined) {
-            obj['ratio'] = pojo['ratio']!?.map((item: any) => Measure.fromJSON(item))
+        if (json["ratio"] !== undefined) {
+            this.ratio = json["ratio"]!.map((item: any) => new Measure(item))
         }
-        if (pojo['range'] !== undefined) {
-            obj['range'] = pojo['range']!?.map((item: any) => Measure.fromJSON(item))
+        if (json["range"] !== undefined) {
+            this.range = json["range"]!.map((item: any) => new Measure(item))
         }
-        return new Component(obj)
     }
 }
 
-interface IComponent {
+export interface IComponent {
     numberValue?: number
     booleanValue?: boolean
     instantValue?: number
     fuzzyDateValue?: number
-    measureValue?: Measure
-    timeSeries?: TimeSeries
-    compoundValue?: Observation[]
-    ratio?: Measure[]
-    range?: Measure[]
+    measureValue?: IMeasure
+    timeSeries?: ITimeSeries
+    compoundValue?: IObservation[]
+    ratio?: IMeasure[]
+    range?: IMeasure[]
 }

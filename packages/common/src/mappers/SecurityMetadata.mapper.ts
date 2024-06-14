@@ -21,14 +21,14 @@ function toSecurityMetadataKeysEquivalences(dto: SecurityMetadataDto): Record<st
 
 export function mapSecurityMetadataDtoToSecurityMetadata(dto: SecurityMetadataDto): SecurityMetadata {
     return new SecurityMetadata({
-        secureDelegations: toSecurityMetadataSecureDelegations(dto),
-        keysEquivalences: toSecurityMetadataKeysEquivalences(dto),
+    secureDelegations: toSecurityMetadataSecureDelegations(dto),
+    keysEquivalences: toSecurityMetadataKeysEquivalences(dto),
     })
 }
 
 export function mapSecurityMetadataToSecurityMetadataDto(domain: SecurityMetadata): SecurityMetadataDto {
     return new SecurityMetadataDto({
-        secureDelegations: toSecurityMetadataDtoSecureDelegations(domain),
-        keysEquivalences: toSecurityMetadataDtoKeysEquivalences(domain),
+    secureDelegations: toSecurityMetadataDtoSecureDelegations(domain),
+    keysEquivalences: toSecurityMetadataDtoKeysEquivalences(domain),
     })
 }

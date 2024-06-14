@@ -1,6 +1,6 @@
 import { getEnvironmentInitializer, hcp1Username, hcp2Username, setLocalStorage } from '../test-utils'
 import { BaseApiTestContext, WithDataOwnerApi, WithHcpApi, WithMessageApi, WithPatientApi, WithTopicApi } from './TestContexts'
-import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, FilterComposition, MessageFilter, TopicRole } from '@icure/typescript-common'
+import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, DataOwnerWithType, FilterComposition, MessageFilter, TopicRoleEnum } from '@icure/typescript-common'
 import { describe, it, beforeAll } from '@jest/globals'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
 import 'isomorphic-fetch'
@@ -61,11 +61,11 @@ export function testMessageLikeApi<
                 [
                     {
                         participant: ownerUser.healthcarePartyId!,
-                        role: TopicRole.OWNER,
+                        role: TopicRoleEnum.OWNER,
                     },
                     {
                         participant: participantUser.healthcarePartyId!,
-                        role: TopicRole.PARTICIPANT,
+                        role: TopicRoleEnum.PARTICIPANT,
                     },
                 ],
                 'Topic description',

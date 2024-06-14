@@ -17,38 +17,32 @@ import { mapTo, PartnershipDto } from '@icure/typescript-common'
  */
 @mapTo(PartnershipDto)
 export class Partnership {
+    type?: PartnershipTypeEnum
+    status?: PartnershipStatusEnum
+    partnerId?: string
+
+    toJSON(): IPartnership {
+        return {
+        type: this.type,
+        status: this.status,
+        partnerId: this.partnerId,
+        }
+    }
+
     constructor(json: Partial<IPartnership>) {
-        Object.assign(this as Partnership, json as IPartnership)
-    }
-
-    'type'?: PartnershipTypeEnum
-    'status'?: PartnershipStatusEnum
-    'partnerId'?: string
-
-    static toJSON(instance: Partnership): IPartnership {
-        const pojo: IPartnership = {} as IPartnership
-        if (instance.type !== undefined) pojo['type'] = instance.type
-        if (instance.status !== undefined) pojo['status'] = instance.status
-        if (instance.partnerId !== undefined) pojo['partnerId'] = instance.partnerId
-        return pojo
-    }
-
-    static fromJSON(pojo: IPartnership): Partnership {
-        const obj = {} as IPartnership
-        if (pojo['type'] !== undefined) {
-            obj['type'] = pojo['type']!
+        if (json["type"] !== undefined) {
+            this.type = json["type"]!
         }
-        if (pojo['status'] !== undefined) {
-            obj['status'] = pojo['status']!
+        if (json["status"] !== undefined) {
+            this.status = json["status"]!
         }
-        if (pojo['partnerId'] !== undefined) {
-            obj['partnerId'] = pojo['partnerId']!
+        if (json["partnerId"] !== undefined) {
+            this.partnerId = json["partnerId"]!
         }
-        return new Partnership(obj)
     }
 }
 
-interface IPartnership {
+export interface IPartnership {
     type?: PartnershipTypeEnum
     status?: PartnershipStatusEnum
     partnerId?: string

@@ -1,27 +1,21 @@
 export class KeyPair implements IKeyPair {
-    privateKey!: string
-    publicKey!: string
+    privateKey: string
+    publicKey: string
+
+    toJSON(): IKeyPair {
+        return {
+        privateKey: this.privateKey,
+        publicKey: this.publicKey,
+        }
+    }
 
     constructor(json: Partial<IKeyPair>) {
-        Object.assign(this as KeyPair, json)
-    }
-
-    static toJSON(instance: KeyPair): IKeyPair {
-        const pojo: IKeyPair = {} as IKeyPair
-        pojo['privateKey'] = instance.privateKey
-        pojo['publicKey'] = instance.publicKey
-        return pojo
-    }
-
-    static fromJSON(pojo: IKeyPair): KeyPair {
-        const obj = {} as IKeyPair
-        obj['privateKey'] = pojo['privateKey']
-        obj['publicKey'] = pojo['publicKey']
-        return new KeyPair(obj)
+        this.privateKey = json["privateKey"]!
+        this.publicKey = json["publicKey"]!
     }
 }
 
-interface IKeyPair {
+export interface IKeyPair {
     privateKey: string
     publicKey: string
 }

@@ -1,12 +1,18 @@
 import { ClassComponent } from './ClassComponent'
 
 export class MapComponent extends ClassComponent {
-    constructor(nullable: boolean = false, keyType: ClassComponent, valueType: ClassComponent) {
-        super(nullable, [keyType, valueType])
+    override get name(): string {
+        return `Map<${this.keyType.name}, ${this.valueType.name}>`
+    }
+    override get iname(): string {
+        return `Map<${this.keyType.name}, ${this.valueType.iname}>`
+    }
+    constructor(nullable: boolean = false, optional: boolean = false, keyType: ClassComponent, valueType: ClassComponent) {
+        super(nullable, optional, [keyType, valueType])
     }
 
     public notNullable(): ClassComponent {
-        return new MapComponent(false, this.keyType, this.valueType)
+        return new MapComponent(false, this.optional, this.keyType, this.valueType)
     }
 
     get keyType(): ClassComponent {

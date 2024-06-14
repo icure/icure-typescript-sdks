@@ -10,8 +10,6 @@ import { RecaptchaType } from '../../models/RecaptchaType.model'
 import { CommonApi } from '../CommonApi'
 import { forceUuid } from '../../utils/uuidUtils'
 import { NotificationTypeEnum } from '../../models/Notification.model'
-import { JwtBridgedAuthService } from '@icure/api/icc-x-api/auth/JwtBridgedAuthService'
-import { EnsembleAuthService } from '@icure/api/icc-x-api/auth/EnsembleAuthService'
 import { AuthenticationProvider } from '@icure/api/icc-x-api/auth/AuthenticationProvider'
 
 const DEVICE_ID_KEY = 'ICURE.DEVICE_ID'
@@ -174,7 +172,7 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
             keyPairs: userKeyPairs,
             token: password,
             groupId: user.groupId!,
-            userId: user.id,
+            userId: user.id!,
         })
     }
 

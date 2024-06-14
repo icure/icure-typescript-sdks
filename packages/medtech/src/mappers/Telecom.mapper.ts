@@ -31,17 +31,17 @@ function toTelecomTelecomDescription(dto: TelecomDto): string | undefined {
 
 export function mapTelecomDtoToTelecom(dto: TelecomDto): Telecom {
     return new Telecom({
-        telecomType: toTelecomTelecomType(dto),
-        telecomNumber: toTelecomTelecomNumber(dto),
-        telecomDescription: toTelecomTelecomDescription(dto),
+    telecomType: toTelecomTelecomType(dto),
+    telecomNumber: toTelecomTelecomNumber(dto),
+    telecomDescription: toTelecomTelecomDescription(dto),
     })
 }
 
 export function mapTelecomToTelecomDto(domain: Telecom): TelecomDto {
     return new TelecomDto({
-        telecomType: toTelecomDtoTelecomType(domain),
-        telecomNumber: toTelecomDtoTelecomNumber(domain),
-        telecomDescription: toTelecomDtoTelecomDescription(domain),
-        encryptedSelf: toTelecomDtoEncryptedSelf(domain),
+    telecomType: toTelecomDtoTelecomType(domain),
+    telecomNumber: toTelecomDtoTelecomNumber(domain),
+    telecomDescription: toTelecomDtoTelecomDescription(domain),
+    encryptedSelf: toTelecomDtoEncryptedSelf(domain),
     })
 }
