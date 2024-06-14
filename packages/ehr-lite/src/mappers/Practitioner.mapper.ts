@@ -291,8 +291,7 @@ function toPractitionerIdentifiers(dto: HealthcarePartyDto): Identifier[] | unde
 }
 
 function toPractitionerTags({ tags }: HealthcarePartyDto): Array<CodingReference> | undefined {
-    const filteredTags = filteringOutInternalTags(PRACTITIONER_FHIR_TYPE, tags)
-    return !!filteredTags ? new Set(filteredTags) : undefined
+    return filteringOutInternalTags(PRACTITIONER_FHIR_TYPE, tags)
 }
 
 function toPractitionerCodes(dto: HealthcarePartyDto): Array<CodingReference> | undefined {

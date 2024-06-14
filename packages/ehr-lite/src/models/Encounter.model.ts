@@ -1,6 +1,6 @@
-import { Annotation, CodingReference, ContactDto, forceUuid, Identifier, mapTo, SystemMetaDataEncrypted } from '@icure/typescript-common'
-import { Immunization } from './Immunization.model'
-import { Observation } from './Observation.model'
+import { Annotation, CodingReference, ContactDto, IAnnotation, ICodingReference, Identifier, IIdentifier, ISystemMetaDataEncrypted, mapTo, SystemMetaDataEncrypted } from '@icure/typescript-common'
+import { IImmunization, Immunization } from './Immunization.model'
+import { IObservation, Observation } from './Observation.model'
 
 /**
  * Encounter model
@@ -24,13 +24,13 @@ import { Observation } from './Observation.model'
 export class Encounter {
     id: string
     rev?: string
-    identifiers?: Identifier[]
+    identifiers: Identifier[] = []
     codes: CodingReference[] = []
     tags: CodingReference[] = []
     type?: CodingReference
     startTime?: number
     endTime?: number
-    reasonCode?: CodingReference[]
+    reasonCode: CodingReference[] = []
     diagnosis: string[] = []
     serviceProvider?: string
     created?: number
@@ -38,138 +38,117 @@ export class Encounter {
     endOfLife?: number
     author?: string
     performer?: string
-    immunizations?: Immunization[]
-    observations?: Observation[]
-    notes?: Annotation[]
+    immunizations: Immunization[] = []
+    observations: Observation[] = []
+    notes: Annotation[] = []
     systemMetaData?: SystemMetaDataEncrypted
 
-    constructor(encounter: Partial<IEncounter>) {
-        this.id = forceUuid(encounter.id)
-        this.rev = encounter.rev
-        this.identifiers = encounter.identifiers
-        if (encounter.codes !== undefined) this.codes = encounter.codes
-        if (encounter.tags !== undefined) this.tags = encounter.tags
-        this.type = encounter.type
-        this.startTime = encounter.startTime
-        this.endTime = encounter.endTime
-        this.reasonCode = encounter.reasonCode
-        if (encounter.diagnosis !== undefined) this.diagnosis = encounter.diagnosis
-        this.serviceProvider = encounter.serviceProvider
-        this.created = encounter.created
-        this.modified = encounter.modified
-        this.endOfLife = encounter.endOfLife
-        this.author = encounter.author
-        this.performer = encounter.performer
-        this.immunizations = encounter.immunizations
-        this.observations = encounter.observations
-        this.notes = encounter.notes
-        this.systemMetaData = encounter.systemMetaData
+    toJSON(): IEncounter {
+        return {
+            id: this.id,
+            rev: this.rev,
+            identifiers: this.identifiers.map((item) => item.toJSON()),
+            codes: this.codes.map((item) => item.toJSON()),
+            tags: this.tags.map((item) => item.toJSON()),
+            type: !!this.type ? this.type.toJSON() : undefined,
+            startTime: this.startTime,
+            endTime: this.endTime,
+            reasonCode: this.reasonCode.map((item) => item.toJSON()),
+            diagnosis: this.diagnosis.map((item) => item),
+            serviceProvider: this.serviceProvider,
+            created: this.created,
+            modified: this.modified,
+            endOfLife: this.endOfLife,
+            author: this.author,
+            performer: this.performer,
+            immunizations: this.immunizations.map((item) => item.toJSON()),
+            observations: this.observations.map((item) => item.toJSON()),
+            notes: this.notes.map((item) => item.toJSON()),
+            systemMetaData: !!this.systemMetaData ? this.systemMetaData.toJSON() : undefined,
+        }
     }
 
-    static toJSON(instance: Encounter): any {
-        const pojo: any = {}
-        pojo['id'] = instance.id
-        if (instance.rev !== undefined) pojo['rev'] = instance.rev
-        if (instance.identifiers !== undefined) pojo['identifiers'] = instance.identifiers?.map((item) => Identifier.toJSON(item))
-        pojo['codes'] = instance.codes.map((item) => CodingReference.toJSON(item))
-        pojo['tags'] = instance.tags.map((item) => CodingReference.toJSON(item))
-        if (instance.type !== undefined) pojo['type'] = !!instance.type ? CodingReference.toJSON(instance.type) : undefined
-        if (instance.startTime !== undefined) pojo['startTime'] = instance.startTime
-        if (instance.endTime !== undefined) pojo['endTime'] = instance.endTime
-        if (instance.reasonCode !== undefined) pojo['reasonCode'] = instance.reasonCode?.map((item) => CodingReference.toJSON(item))
-        if (instance.diagnosis !== undefined) pojo['diagnosis'] = instance.diagnosis?.map((item) => item)
-        if (instance.serviceProvider !== undefined) pojo['serviceProvider'] = instance.serviceProvider
-        if (instance.created !== undefined) pojo['created'] = instance.created
-        if (instance.modified !== undefined) pojo['modified'] = instance.modified
-        if (instance.endOfLife !== undefined) pojo['endOfLife'] = instance.endOfLife
-        if (instance.author !== undefined) pojo['author'] = instance.author
-        if (instance.performer !== undefined) pojo['performer'] = instance.performer
-        if (instance.immunizations !== undefined) pojo['immunizations'] = instance.immunizations?.map((item) => Immunization.toJSON(item))
-        if (instance.observations !== undefined) pojo['observations'] = instance.observations?.map((item) => Observation.toJSON(item))
-        if (instance.notes !== undefined) pojo['notes'] = instance.notes?.map((item) => Annotation.toJSON(item))
-        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataEncrypted.toJSON(instance.systemMetaData) : undefined
-        return pojo
-    }
-
-    static fromJSON(pojo: any): Encounter {
-        const obj = {} as IEncounter
-        obj['id'] = pojo['id']
-        if (pojo['rev'] !== undefined) {
-            obj['rev'] = pojo['rev']
+    constructor(json: Partial<IEncounter> & { id: string }) {
+        this.id = json['id']!
+        if (json['rev'] !== undefined) {
+            this.rev = json['rev']!
         }
-        if (pojo['identifiers'] !== undefined) {
-            obj['identifiers'] = pojo['identifiers']?.map((item: any) => Identifier.fromJSON(item))
+        if (json['identifiers'] !== undefined) {
+            this.identifiers = json['identifiers']!.map((item: any) => new Identifier(item))
         }
-        obj['codes'] = pojo['codes'].map((item: any) => CodingReference.fromJSON(item))
-        obj['tags'] = pojo['tags'].map((item: any) => CodingReference.fromJSON(item))
-        if (pojo['type'] !== undefined) {
-            obj['type'] = !!pojo['type'] ? CodingReference.fromJSON(pojo['type']) : undefined
+        if (json['codes'] !== undefined) {
+            this.codes = json['codes']!.map((item: any) => new CodingReference(item))
         }
-        if (pojo['startTime'] !== undefined) {
-            obj['startTime'] = pojo['startTime']
+        if (json['tags'] !== undefined) {
+            this.tags = json['tags']!.map((item: any) => new CodingReference(item))
         }
-        if (pojo['endTime'] !== undefined) {
-            obj['endTime'] = pojo['endTime']
+        if (json['type'] !== undefined) {
+            this.type = new CodingReference(json['type']!)
         }
-        if (pojo['reasonCode'] !== undefined) {
-            obj['reasonCode'] = pojo['reasonCode']?.map((item: any) => CodingReference.fromJSON(item))
+        if (json['startTime'] !== undefined) {
+            this.startTime = json['startTime']!
         }
-        if (pojo['diagnosis'] !== undefined) {
-            obj['diagnosis'] = pojo['diagnosis']?.map((item: any) => item)
+        if (json['endTime'] !== undefined) {
+            this.endTime = json['endTime']!
         }
-        if (pojo['serviceProvider'] !== undefined) {
-            obj['serviceProvider'] = pojo['serviceProvider']
+        if (json['reasonCode'] !== undefined) {
+            this.reasonCode = json['reasonCode']!.map((item: any) => new CodingReference(item))
         }
-        if (pojo['created'] !== undefined) {
-            obj['created'] = pojo['created']
+        if (json['diagnosis'] !== undefined) {
+            this.diagnosis = json['diagnosis']!.map((item: any) => item)
         }
-        if (pojo['modified'] !== undefined) {
-            obj['modified'] = pojo['modified']
+        if (json['serviceProvider'] !== undefined) {
+            this.serviceProvider = json['serviceProvider']!
         }
-        if (pojo['endOfLife'] !== undefined) {
-            obj['endOfLife'] = pojo['endOfLife']
+        if (json['created'] !== undefined) {
+            this.created = json['created']!
         }
-        if (pojo['author'] !== undefined) {
-            obj['author'] = pojo['author']
+        if (json['modified'] !== undefined) {
+            this.modified = json['modified']!
         }
-        if (pojo['performer'] !== undefined) {
-            obj['performer'] = pojo['performer']
+        if (json['endOfLife'] !== undefined) {
+            this.endOfLife = json['endOfLife']!
         }
-        if (pojo['immunizations'] !== undefined) {
-            obj['immunizations'] = pojo['immunizations']?.map((item: any) => Immunization.fromJSON(item))
+        if (json['author'] !== undefined) {
+            this.author = json['author']!
         }
-        if (pojo['observations'] !== undefined) {
-            obj['observations'] = pojo['observations']?.map((item: any) => Observation.fromJSON(item))
+        if (json['performer'] !== undefined) {
+            this.performer = json['performer']!
         }
-        if (pojo['notes'] !== undefined) {
-            obj['notes'] = pojo['notes']?.map((item: any) => Annotation.fromJSON(item))
+        if (json['immunizations'] !== undefined) {
+            this.immunizations = json['immunizations']!.map((item: any) => new Immunization(item))
         }
-        if (pojo['systemMetaData'] !== undefined) {
-            obj['systemMetaData'] = !!pojo['systemMetaData'] ? SystemMetaDataEncrypted.fromJSON(pojo['systemMetaData']) : undefined
+        if (json['observations'] !== undefined) {
+            this.observations = json['observations']!.map((item: any) => new Observation(item))
         }
-        return new Encounter(obj)
+        if (json['notes'] !== undefined) {
+            this.notes = json['notes']!.map((item: any) => new Annotation(item))
+        }
+        if (json['systemMetaData'] !== undefined) {
+            this.systemMetaData = new SystemMetaDataEncrypted(json['systemMetaData']!)
+        }
     }
 }
 
-interface IEncounter {
-    id?: string
+export interface IEncounter {
+    id: string
     rev?: string
-    identifiers?: Identifier[]
-    codes?: CodingReference[]
-    tags?: CodingReference[]
-    type?: CodingReference
+    identifiers: IIdentifier[]
+    codes: ICodingReference[]
+    tags: ICodingReference[]
+    type?: ICodingReference
     startTime?: number
     endTime?: number
-    reasonCode?: CodingReference[]
-    diagnosis?: string[]
+    reasonCode: ICodingReference[]
+    diagnosis: string[]
     serviceProvider?: string
     created?: number
     modified?: number
     endOfLife?: number
     author?: string
     performer?: string
-    immunizations?: Immunization[]
-    observations?: Observation[]
-    notes?: Annotation[]
-    systemMetaData?: SystemMetaDataEncrypted
+    immunizations: IImmunization[]
+    observations: IObservation[]
+    notes: IAnnotation[]
+    systemMetaData?: ISystemMetaDataEncrypted
 }

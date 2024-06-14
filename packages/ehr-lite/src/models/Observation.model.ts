@@ -8,7 +8,7 @@ export class Observation implements IObservation {
     transactionId?: string
     identifiers: Identifier[] = []
     batchId?: string
-    healthcareElementIds?: string[] = []
+    healthcareElementIds: string[] = []
     index?: number
     component?: Component
     valueDate?: number
@@ -32,7 +32,7 @@ export class Observation implements IObservation {
             transactionId: this.transactionId,
             identifiers: this.identifiers.map((item) => item.toJSON()),
             batchId: this.batchId,
-            healthcareElementIds: this.healthcareElementIds?.map((item) => item),
+            healthcareElementIds: this.healthcareElementIds.map((item) => item),
             index: this.index,
             component: !!this.component ? this.component.toJSON() : undefined,
             valueDate: this.valueDate,
@@ -122,7 +122,7 @@ export interface IObservation {
     transactionId?: string
     identifiers: IIdentifier[]
     batchId?: string
-    healthcareElementIds?: string[]
+    healthcareElementIds: string[]
     index?: number
     component?: IComponent
     valueDate?: number

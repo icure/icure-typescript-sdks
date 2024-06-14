@@ -288,8 +288,7 @@ function toOrganisationIdentifiers(dto: HealthcarePartyDto): Identifier[] | unde
 }
 
 function toOrganisationTags({ tags }: HealthcarePartyDto): Array<CodingReference> | undefined {
-    const filteredTags = filteringOutInternalTags(ORGANISATION_FHIR_TYPE, tags)
-    return !!filteredTags ? new Set(filteredTags) : undefined
+    return filteringOutInternalTags(ORGANISATION_FHIR_TYPE, tags)
 }
 
 function toOrganisationCodes(dto: HealthcarePartyDto): Array<CodingReference> | undefined {

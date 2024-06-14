@@ -1,5 +1,5 @@
-import { Annotation, CodingReference, Identifier, ISO639_1, mapTo, ServiceDto, SystemMetaDataEncrypted } from '@icure/typescript-common'
-import { Quantity } from './Quantity.model'
+import { Annotation, CodingReference, IAnnotation, ICodingReference, Identifier, IIdentifier, ISO639_1, ISystemMetaDataEncrypted, mapTo, ServiceDto, SystemMetaDataEncrypted } from '@icure/typescript-common'
+import { IQuantity, Quantity } from './Quantity.model'
 
 /**
  * Immunization model
@@ -28,7 +28,7 @@ import { Quantity } from './Quantity.model'
 export class Immunization {
     id: string
     index?: number
-    identifiers?: Identifier[]
+    identifiers: Identifier[] = []
     encounterId?: string
     doseQuantity?: Quantity
     administeredAt?: number
@@ -42,143 +42,125 @@ export class Immunization {
     created?: number
     modified?: number
     endOfLife?: number
-    codes: CodingReference[]
-    tags: CodingReference[]
+    codes: CodingReference[] = []
+    tags: CodingReference[] = []
     language?: ISO639_1
     systemMetaData?: SystemMetaDataEncrypted
-    notes?: Annotation[]
+    notes: Annotation[] = []
 
-    constructor(immunization: IImmunization) {
-        this.id = immunization.id
-        this.index = immunization.index
-        this.identifiers = immunization.identifiers
-        this.encounterId = immunization.encounterId
-        this.doseQuantity = immunization.doseQuantity
-        this.administeredAt = immunization.administeredAt
-        this.recorder = immunization.recorder
-        this.status = immunization.status
-        this.statusReason = immunization.statusReason
-        this.vaccineCode = immunization.vaccineCode
-        this.subPotentReason = immunization.subPotentReason
-        this.site = immunization.site
-        this.recorded = immunization.recorded
-        this.created = immunization.created
-        this.modified = immunization.modified
-        this.endOfLife = immunization.endOfLife
-        this.codes = immunization.codes ?? []
-        this.tags = immunization.tags ?? []
-        this.language = immunization.language
-        this.systemMetaData = immunization.systemMetaData
-        this.notes = immunization.notes
+    toJSON(): IImmunization {
+        return {
+            id: this.id,
+            index: this.index,
+            identifiers: this.identifiers.map((item) => item.toJSON()),
+            encounterId: this.encounterId,
+            doseQuantity: !!this.doseQuantity ? this.doseQuantity.toJSON() : undefined,
+            administeredAt: this.administeredAt,
+            recorder: this.recorder,
+            status: this.status,
+            statusReason: !!this.statusReason ? this.statusReason.toJSON() : undefined,
+            vaccineCode: !!this.vaccineCode ? this.vaccineCode.toJSON() : undefined,
+            subPotentReason: !!this.subPotentReason ? this.subPotentReason.toJSON() : undefined,
+            site: !!this.site ? this.site.toJSON() : undefined,
+            recorded: this.recorded,
+            created: this.created,
+            modified: this.modified,
+            endOfLife: this.endOfLife,
+            codes: this.codes.map((item) => item.toJSON()),
+            tags: this.tags.map((item) => item.toJSON()),
+            language: this.language,
+            systemMetaData: !!this.systemMetaData ? this.systemMetaData.toJSON() : undefined,
+            notes: this.notes.map((item) => item.toJSON()),
+        }
     }
 
-    static toJSON(instance: Immunization): any {
-        const pojo: any = {}
-        pojo['id'] = instance.id
-        if (instance.index !== undefined) pojo['index'] = instance.index
-        if (instance.identifiers !== undefined) pojo['identifiers'] = instance.identifiers?.map((item) => Identifier.toJSON(item))
-        if (instance.encounterId !== undefined) pojo['encounterId'] = instance.encounterId
-        if (instance.doseQuantity !== undefined) pojo['doseQuantity'] = !!instance.doseQuantity ? Quantity.toJSON(instance.doseQuantity) : undefined
-        if (instance.recorder !== undefined) pojo['recorder'] = instance.recorder
-        if (instance.status !== undefined) pojo['status'] = instance.status
-        if (instance.statusReason !== undefined) pojo['statusReason'] = !!instance.statusReason ? CodingReference.toJSON(instance.statusReason) : undefined
-        if (instance.vaccineCode !== undefined) pojo['vaccineCode'] = !!instance.vaccineCode ? CodingReference.toJSON(instance.vaccineCode) : undefined
-        if (instance.subPotentReason !== undefined) pojo['subPotentReason'] = !!instance.subPotentReason ? CodingReference.toJSON(instance.subPotentReason) : undefined
-        if (instance.site !== undefined) pojo['site'] = !!instance.site ? CodingReference.toJSON(instance.site) : undefined
-        if (instance.recorded !== undefined) pojo['recorded'] = instance.recorded
-        if (instance.created !== undefined) pojo['created'] = instance.created
-        if (instance.modified !== undefined) pojo['modified'] = instance.modified
-        if (instance.endOfLife !== undefined) pojo['endOfLife'] = instance.endOfLife
-        pojo['codes'] = instance.codes.map((item) => CodingReference.toJSON(item))
-        pojo['tags'] = instance.tags.map((item) => CodingReference.toJSON(item))
-        if (instance.language !== undefined) pojo['language'] = instance.language
-        if (instance.systemMetaData !== undefined) pojo['systemMetaData'] = !!instance.systemMetaData ? SystemMetaDataEncrypted.toJSON(instance.systemMetaData) : undefined
-        if (instance.notes !== undefined) pojo['notes'] = instance.notes?.map((item) => Annotation.toJSON(item))
-        return pojo
-    }
-
-    static fromJSON(pojo: any): Immunization {
-        const obj = {} as IImmunization
-        obj['id'] = pojo['id']
-        if (pojo['index'] !== undefined) {
-            obj['index'] = pojo['index']
+    constructor(json: Partial<IImmunization> & { id: string }) {
+        this.id = json['id']!
+        if (json['index'] !== undefined) {
+            this.index = json['index']!
         }
-        if (pojo['identifiers'] !== undefined) {
-            obj['identifiers'] = pojo['identifiers']?.map((item: any) => Identifier.fromJSON(item))
+        if (json['identifiers'] !== undefined) {
+            this.identifiers = json['identifiers']!.map((item: any) => new Identifier(item))
         }
-        if (pojo['encounterId'] !== undefined) {
-            obj['encounterId'] = pojo['encounterId']
+        if (json['encounterId'] !== undefined) {
+            this.encounterId = json['encounterId']!
         }
-        if (pojo['doseQuantity'] !== undefined) {
-            obj['doseQuantity'] = !!pojo['doseQuantity'] ? Quantity.fromJSON(pojo['doseQuantity']) : undefined
+        if (json['doseQuantity'] !== undefined) {
+            this.doseQuantity = new Quantity(json['doseQuantity']!)
         }
-        if (pojo['recorder'] !== undefined) {
-            obj['recorder'] = pojo['recorder']
+        if (json['administeredAt'] !== undefined) {
+            this.administeredAt = json['administeredAt']!
         }
-        if (pojo['status'] !== undefined) {
-            obj['status'] = pojo['status']
+        if (json['recorder'] !== undefined) {
+            this.recorder = json['recorder']!
         }
-        if (pojo['statusReason'] !== undefined) {
-            obj['statusReason'] = !!pojo['statusReason'] ? CodingReference.fromJSON(pojo['statusReason']) : undefined
+        if (json['status'] !== undefined) {
+            this.status = json['status']!
         }
-        if (pojo['vaccineCode'] !== undefined) {
-            obj['vaccineCode'] = !!pojo['vaccineCode'] ? CodingReference.fromJSON(pojo['vaccineCode']) : undefined
+        if (json['statusReason'] !== undefined) {
+            this.statusReason = new CodingReference(json['statusReason']!)
         }
-        if (pojo['subPotentReason'] !== undefined) {
-            obj['subPotentReason'] = !!pojo['subPotentReason'] ? CodingReference.fromJSON(pojo['subPotentReason']) : undefined
+        if (json['vaccineCode'] !== undefined) {
+            this.vaccineCode = new CodingReference(json['vaccineCode']!)
         }
-        if (pojo['site'] !== undefined) {
-            obj['site'] = !!pojo['site'] ? CodingReference.fromJSON(pojo['site']) : undefined
+        if (json['subPotentReason'] !== undefined) {
+            this.subPotentReason = new CodingReference(json['subPotentReason']!)
         }
-        if (pojo['recorded'] !== undefined) {
-            obj['recorded'] = pojo['recorded']
+        if (json['site'] !== undefined) {
+            this.site = new CodingReference(json['site']!)
         }
-        if (pojo['created'] !== undefined) {
-            obj['created'] = pojo['created']
+        if (json['recorded'] !== undefined) {
+            this.recorded = json['recorded']!
         }
-        if (pojo['modified'] !== undefined) {
-            obj['modified'] = pojo['modified']
+        if (json['created'] !== undefined) {
+            this.created = json['created']!
         }
-        if (pojo['endOfLife'] !== undefined) {
-            obj['endOfLife'] = pojo['endOfLife']
+        if (json['modified'] !== undefined) {
+            this.modified = json['modified']!
         }
-        obj['codes'] = pojo['codes'].map((item: any) => CodingReference.fromJSON(item))
-        obj['tags'] = pojo['tags'].map((item: any) => CodingReference.fromJSON(item))
-        if (pojo['language'] !== undefined) {
-            obj['language'] = pojo['language']
+        if (json['endOfLife'] !== undefined) {
+            this.endOfLife = json['endOfLife']!
         }
-        if (pojo['systemMetaData'] !== undefined) {
-            obj['systemMetaData'] = !!pojo['systemMetaData'] ? SystemMetaDataEncrypted.fromJSON(pojo['systemMetaData']) : undefined
+        if (json['codes'] !== undefined) {
+            this.codes = json['codes']!.map((item: any) => new CodingReference(item))
         }
-        if (pojo['notes'] !== undefined) {
-            obj['notes'] = pojo['notes']?.map((item: any) => Annotation.fromJSON(item))
+        if (json['tags'] !== undefined) {
+            this.tags = json['tags']!.map((item: any) => new CodingReference(item))
         }
-        return new Immunization(obj)
+        if (json['language'] !== undefined) {
+            this.language = json['language']!
+        }
+        if (json['systemMetaData'] !== undefined) {
+            this.systemMetaData = new SystemMetaDataEncrypted(json['systemMetaData']!)
+        }
+        if (json['notes'] !== undefined) {
+            this.notes = json['notes']!.map((item: any) => new Annotation(item))
+        }
     }
 }
 
-interface IImmunization {
+export interface IImmunization {
     id: string
     index?: number
-    identifiers?: Identifier[]
+    identifiers: IIdentifier[]
     encounterId?: string
-    doseQuantity?: Quantity
+    doseQuantity?: IQuantity
     administeredAt?: number
     recorder?: string
     status?: ImmunizationStatus
-    statusReason?: CodingReference
-    vaccineCode?: CodingReference
-    subPotentReason?: CodingReference
-    site?: CodingReference
+    statusReason?: ICodingReference
+    vaccineCode?: ICodingReference
+    subPotentReason?: ICodingReference
+    site?: ICodingReference
     recorded?: number
     created?: number
     modified?: number
     endOfLife?: number
-    codes?: CodingReference[]
-    tags?: CodingReference[]
+    codes: ICodingReference[]
+    tags: ICodingReference[]
     language?: ISO639_1
-    systemMetaData?: SystemMetaDataEncrypted
-    notes?: Annotation[]
+    systemMetaData?: ISystemMetaDataEncrypted
+    notes: IAnnotation[]
 }
 
 export type ImmunizationStatus = 'completed' | 'entered-in-error' | 'not-done'

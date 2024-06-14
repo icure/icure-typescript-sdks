@@ -269,9 +269,8 @@ function toObservationCodes(dto: ServiceDto): Array<CodingReference> | undefined
     return !!dto.codes ? dto.codes.map(mapCodeStubToCodingReference) : undefined
 }
 
-function toObservationTags({ tags }: ServiceDto): Array<CodingReference> | undefined {
-    const filteredTags = filteringOutInternalTags(OBSERVATION_FHIR_TYPE, tags)
-    return !!filteredTags ? new Set(filteredTags) : undefined
+function toObservationTags({ tags }: ServiceDto): CodingReference[] | undefined {
+    return filteringOutInternalTags(OBSERVATION_FHIR_TYPE, tags) ?? []
 }
 
 function toObservationSystemMetaData(dto: ServiceDto): SystemMetaDataEncrypted | undefined {

@@ -6,6 +6,7 @@ import {
     CodingReference,
     ContactDto,
     Delegation,
+    DelegationDto,
     filteringOutInternalTags,
     forceUuid,
     Identifier,
@@ -155,15 +156,15 @@ function toContactDtoSecretForeignKeys({ systemMetaData }: Encounter): string[] 
     return toSecretForeignKeys(systemMetaData)
 }
 
-function toContactDtoCryptedForeignKeys({ systemMetaData }: Encounter): { [key: string]: Delegation[] } | undefined {
+function toContactDtoCryptedForeignKeys({ systemMetaData }: Encounter): { [key: string]: DelegationDto[] } | undefined {
     return toCryptedForeignKeys(systemMetaData)
 }
 
-function toContactDtoDelegations({ systemMetaData }: Encounter): { [key: string]: Delegation[] } | undefined {
+function toContactDtoDelegations({ systemMetaData }: Encounter): { [key: string]: DelegationDto[] } | undefined {
     return toDelegations(systemMetaData)
 }
 
-function toContactDtoEncryptionKeys({ systemMetaData }: Encounter): { [key: string]: Delegation[] } | undefined {
+function toContactDtoEncryptionKeys({ systemMetaData }: Encounter): { [key: string]: DelegationDto[] } | undefined {
     return toEncryptionKeys(systemMetaData)
 }
 

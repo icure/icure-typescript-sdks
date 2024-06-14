@@ -48,7 +48,7 @@ export const filteringOutInternalTags = (fhirType: string, tags: CodeStub[] | un
     const domainTypeTag = extractDomainTypeTag(tags)
     const fhirTypeUpperCased = fhirType.toUpperCase()
     if ((!domainTypeTag || domainTypeTag.code?.toUpperCase() !== fhirTypeUpperCased) && throwOnMissing) throw new Error(`${fhirTypeUpperCased} domain tag type is missing`)
-    const filteredTags = tags?.filter((tag) => tag.type !== ICURE_INTERNAL_FHIR_TAG_TYPE)
+    const filteredTags = tags?.filter((tag) => tag.type != ICURE_INTERNAL_FHIR_TAG_TYPE) ?? []
     return !!filteredTags?.length ? filteredTags.map(mapCodeStubToCodingReference) : undefined
 }
 
@@ -56,6 +56,6 @@ export const mergeTagsWithInternalTags = (fhir: string, tags: CodingReference[] 
     if (!systemMetaData) {
         return addUniqueObjectsToArray(tags?.map(mapCodingReferenceToCodeStub) ?? [], domainTypeTag(fhir))
     }
-    const systemMetaDataCodeStubs = systemMetaDataTags(systemMetaData)
-    return addUniqueObjectsToArray(tags ?? [], ...systemMetaDataCodeStubs).map(mapCodingReferenceToCodeStub)
+    const systemMetaDataCodingReferences = systemMetaDataTags(systemMetaData)
+    return addUniqueObjectsToArray(tags ?? [], ...systemMetaDataCodingReferences).map(mapCodingReferenceToCodeStub)
 }

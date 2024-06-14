@@ -1,4 +1,3 @@
-import { EntityWithDelegationTypeName, HealthElement, IntersectionFilter, Patient } from '@icure/api'
 import { EntityWithDelegationTypeName, HealthElement, IntersectionFilter } from '@icure/api'
 import { Filter } from '../Filter'
 import { DataOwnerFilterBuilder, FilterBuilder, NoOpFilter, SortableFilterBuilder } from './filterDsl'

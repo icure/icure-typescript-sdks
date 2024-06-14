@@ -1,12 +1,10 @@
 import { BaseApiTestContext, WithAuthenticationApi, WithContactApi, WithDataOwnerApi, WithHcpApi, WithHelementApi, WithMaintenanceTaskApi, WithMessageApi, WithPatientApi, WithServiceApi, WithTopicApi } from '../../../common-test/apis/TestContexts'
 import {
-    Annotation,
     AnonymousEHRLiteApi,
     AuthenticationApi,
     Condition,
     ConditionApi,
     ConditionFilter,
-    DataOwnerApi,
     DataOwnerWithType,
     EHRLiteApi,
     HumanName,
@@ -16,18 +14,14 @@ import {
     mapTopicDtoToTopic,
     mapTopicToTopicDto,
     MessageLikeApi,
-    NotificationApi,
     NotificationFilter,
     Observation,
     ObservationApi,
     ObservationFilter,
     Organisation,
     OrganisationApi,
-    Patient,
-    PatientApi,
     Practitioner,
     PractitionerApi,
-    UserApi,
     forceUuid,
     EncounterFilter,
     ContactFilter,
@@ -66,7 +60,6 @@ import {
 } from '@icure/typescript-common'
 import { EHRLiteMessageFactory } from '../../src/services/EHRLiteMessageFactory'
 import { HealthcareParty, Patient as PatientDto, Service, User as UserDto, DataOwnerWithType as DataOwnerWithTypeDto, Document as DocumentDto, HealthElement, CodeStub, MaintenanceTask, Topic as TopicDto, Message as MessageDto, Contact } from '@icure/api'
-import { CodeStub, DataOwnerWithType as DataOwnerWithTypeDto, Document as DocumentDto, HealthcareParty, HealthElement, MaintenanceTask, Message as MessageDto, Patient as PatientDto, Service, Topic as TopicDto, User as UserDto } from '@icure/api'
 import { TestMessageFactory } from '../test-utils'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../../src/mappers/Patient.mapper'
 import { mapConditionToHealthElementDto, mapHealthElementDtoToCondition } from '../../src/mappers/Condition.mapper'
@@ -298,7 +291,7 @@ export function EncounterApiAware<TBase extends Constructor<any>>(Base: TBase): 
             expect(retrieved.notes!.length).toBeGreaterThan(0)
             retrieved.notes!.forEach((note) => {
                 expect(note.markdown).toBeTruthy()
-                expect(note.markdown.size).toBeGreaterThan(0)
+                expect(Object.entries(note.markdown).length).toBeGreaterThan(0)
             })
             if (checkDeepEquals) {
                 expect(retrieved).toEqual(contact)

@@ -7,6 +7,7 @@ import {
     CodingReference,
     ContentDto,
     Delegation,
+    DelegationDto,
     filteringOutInternalTags,
     forceUuid,
     Identifier,
@@ -81,15 +82,15 @@ function toServiceDtoSecretForeignKeys(domain: Immunization): string[] | undefin
     return !!domain.systemMetaData ? toSecretForeignKeys(domain.systemMetaData) : undefined
 }
 
-function toServiceDtoCryptedForeignKeys(domain: Immunization): { [key: string]: Delegation[] } | undefined {
+function toServiceDtoCryptedForeignKeys(domain: Immunization): { [key: string]: DelegationDto[] } | undefined {
     return !!domain.systemMetaData ? toCryptedForeignKeys(domain.systemMetaData) : undefined
 }
 
-function toServiceDtoDelegations(domain: Immunization): { [key: string]: Delegation[] } | undefined {
+function toServiceDtoDelegations(domain: Immunization): { [key: string]: DelegationDto[] } | undefined {
     return !!domain.systemMetaData ? toDelegations(domain.systemMetaData) : undefined
 }
 
-function toServiceDtoEncryptionKeys(domain: Immunization): { [key: string]: Delegation[] } | undefined {
+function toServiceDtoEncryptionKeys(domain: Immunization): { [key: string]: DelegationDto[] } | undefined {
     return !!domain.systemMetaData ? toEncryptionKeys(domain.systemMetaData) : undefined
 }
 
@@ -392,6 +393,12 @@ function toImmunizationDoseQuantity({ content }: ServiceDto): Quantity | undefin
     return regimen !== undefined && regimen.length > 0 && regimen[0].administratedQuantity ? mapAdministrationQuantityDtoToQuantity(regimen[0].administratedQuantity) : undefined
 }
 
+function toImmunizationAdministeredAt(dto: ServiceDto): number | undefined {
+    const contentDto = dto.content ? Object.values(dto.content)[0] : undefined
+    const regimen = contentDto?.medicationValue?.regimen
+    return regimen !== undefined && regimen.length > 0 && regimen[0].date ? regimen[0].date : undefined
+}
+
 export function mapServiceDtoToImmunization(dto: ServiceDto): Immunization {
     return new Immunization({
         id: toImmunizationId(dto),
@@ -399,6 +406,7 @@ export function mapServiceDtoToImmunization(dto: ServiceDto): Immunization {
         identifiers: toImmunizationIdentifiers(dto),
         encounterId: toImmunizationEncounterId(dto),
         doseQuantity: toImmunizationDoseQuantity(dto),
+        administeredAt: toImmunizationAdministeredAt(dto),
         recorder: toImmunizationRecorder(dto),
         status: toImmunizationStatus(dto),
         statusReason: toImmunizationStatusReason(dto),
