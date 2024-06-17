@@ -30,7 +30,7 @@ export class CodingReference {
             this.code = json['code']!
         }
         if (json['version'] !== undefined) {
-            this.version = json['version']!
+            this.version = json['version'] ?? '1'
         }
         if (json['context'] !== undefined) {
             this.context = json['context']!
