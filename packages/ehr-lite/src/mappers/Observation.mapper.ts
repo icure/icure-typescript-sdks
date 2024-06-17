@@ -250,13 +250,13 @@ function toObservationPerformer(dto: ServiceDto): string | undefined {
     return dto.responsible
 }
 
-function toObservationLocalContent(dto: ServiceDto): Record<ISO639_1, LocalComponent> | undefined {
+function toObservationLocalContent(dto: ServiceDto): Partial<Record<ISO639_1, LocalComponent>> | undefined {
     const localizedContent = Object.entries(dto.content ?? {})?.filter(([key]) => key !== 'xx')
     return Object.fromEntries(
         localizedContent.map(([key, value]) => {
             return [key as ISO639_1, mapContentDtoToLocalComponent(value)]
         }),
-    ) as Record<ISO639_1, LocalComponent>
+    )
 }
 
 function toObservationQualifiedLinks(dto: ServiceDto): Record<string, Record<string, string>> | undefined {

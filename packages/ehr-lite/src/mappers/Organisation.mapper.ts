@@ -321,8 +321,8 @@ function toOrganisationPicture(dto: HealthcarePartyDto): string | undefined {
     return dto.picture ? ua2b64(dto.picture) : undefined
 }
 
-function toOrganisationDescription(dto: HealthcarePartyDto): Record<ISO639_1, string> | undefined {
-    return !!dto.descr ? (convertObjectToMap(dto.descr) as Record<ISO639_1, string>) : undefined
+function toOrganisationDescription(dto: HealthcarePartyDto): Partial<Record<ISO639_1, string>> | undefined {
+    return !!dto.descr ? convertObjectToMap(dto.descr) : undefined
 }
 
 function toOrganisationProperties(dto: HealthcarePartyDto): Array<Property> | undefined {

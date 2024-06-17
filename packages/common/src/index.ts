@@ -62,6 +62,7 @@ export {
     Message as MessageDto,
     Topic as TopicDto,
     ReferenceRange as ReferenceRangeDto,
+    AuthenticationToken as AuthenticationTokenDto
 } from '@icure/api'
 export { NativeCryptoPrimitivesBridge } from '@icure/api/icc-x-api/crypto/NativeCryptoPrimitivesBridge'
 export { DataOwnerTypeEnum as DataOwnerTypeEnumDto } from '@icure/api/icc-api/model/DataOwnerTypeEnum'

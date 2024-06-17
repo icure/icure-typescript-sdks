@@ -26,7 +26,7 @@ export function generateObservation(): Observation {
         endOfLife: 1621872000000,
         author: 'sampleAuthor',
         performer: 'samplePerformer',
-        localContent: Object.fromEntries([['en', generateLocalComponent()]]) as Record<string, LocalComponent>,
+        localContent: Object.fromEntries([['en', generateLocalComponent()]]),
         qualifiedLinks: Object.fromEntries([['linkType', Object.fromEntries([['linkId', 'linkValue']])]]),
         codes: [generateCodingReference()],
         tags: [generateCodingReference()],

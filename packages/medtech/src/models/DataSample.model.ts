@@ -49,7 +49,7 @@ export class DataSample {
     /**
      * Information contained in the data sample (Measure, number, ...). Content is localized, using ISO language code as key
      */
-    content: Record<ISO639_1, Content> = {} as Record<ISO639_1, Content>
+    content: Partial<Record<ISO639_1, Content>> = {}
     /**
      * The date (YYYYMMDDhhmmss) when the Data sample is noted to have started and also closes on the same date
      */
@@ -199,7 +199,7 @@ export interface IDataSample {
     healthcareElementIds?: string[]
     canvasesIds?: string[]
     index?: number
-    content: Record<ISO639_1, IContent>
+    content: Partial<Record<ISO639_1, IContent>>
     valueDate?: number
     openingDate?: number
     closingDate?: number

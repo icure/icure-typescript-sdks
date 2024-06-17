@@ -111,7 +111,7 @@ function toCodingQualifiedLinks(dto: Code): Record<string, string[]> {
 }
 
 function toCodingSearchTerms(dto: Code): Record<string, Array<string>> {
-    return !!dto.searchTerms ? { ...dto.searchTerms } : ({} as Record<string, Array<string>>)
+    return !!dto.searchTerms ? { ...dto.searchTerms } : {}
 }
 
 export function mapCodeToCoding(dto: Code): Coding {
