@@ -5,15 +5,16 @@ import { IQuantity, Quantity } from './Quantity.model'
  * Immunization model
  *
  * @param id Immunization id
+ * @param index Index of the immunization (for sorting)
  * @param identifiers Immunization identifiers
- * @param administeredProduct Medication administered
+ * @param encounterId Encounter id where the immunization was administered (populated if immunization is obtained directly, aka not nested in the encounter)
+ * @param doseQuantity Amount of vaccine administered
  * @param occurrenceDateTime Date of immunization (YYYYMMDDhhmmss)
  * @param recorder Who recorded the immunization (Practitioner or Organization id)
  * @param status Status of the immunization [completed|entered-in-error|not-done] [Value set](https://hl7.org/fhir/R4/valueset-immunization-status.html)
  * @param statusReason Reason why the immunization status is not completed (`status` = `not-done`)
- * @param vaccineCode Vaccine code. A type of vaccine, typically identified diseas it covers
+ * @param vaccineCode Vaccine code. A type of vaccine, typically identified disease it covers
  * @param subPotentReason Reason why a dose is subpotent (e.g.partially administered) [Value set](https://hl7.org/fhir/R4/valueset-immunization-subpotent-reason.html)
- * @param encounter Encounter where the immunization was administered
  * @param site Site where the immunization was administered, e.g. left arm or right arm, etc. [SNOMED CT Body Structure code](https://hl7.org/fhir/R4/valueset-body-site.html)
  * @param recorded When the immunization was recorded (YYYYMMDDhhmmss)
  * @param created When the immunization was created (Unix timestamp)
@@ -31,7 +32,7 @@ export class Immunization {
     identifiers: Identifier[] = []
     encounterId?: string
     doseQuantity?: Quantity
-    administeredAt?: number
+    occurrenceDateTime?: number
     recorder?: string
     status?: ImmunizationStatus
     statusReason?: CodingReference
@@ -55,7 +56,7 @@ export class Immunization {
             identifiers: this.identifiers.map((item) => item.toJSON()),
             encounterId: this.encounterId,
             doseQuantity: !!this.doseQuantity ? this.doseQuantity.toJSON() : undefined,
-            administeredAt: this.administeredAt,
+            occurrenceDateTime: this.occurrenceDateTime,
             recorder: this.recorder,
             status: this.status,
             statusReason: !!this.statusReason ? this.statusReason.toJSON() : undefined,
@@ -88,8 +89,8 @@ export class Immunization {
         if (json['doseQuantity'] !== undefined) {
             this.doseQuantity = new Quantity(json['doseQuantity']!)
         }
-        if (json['administeredAt'] !== undefined) {
-            this.administeredAt = json['administeredAt']!
+        if (json['occurrenceDateTime'] !== undefined) {
+            this.occurrenceDateTime = json['occurrenceDateTime']!
         }
         if (json['recorder'] !== undefined) {
             this.recorder = json['recorder']!
@@ -145,7 +146,7 @@ export interface IImmunization {
     identifiers: IIdentifier[]
     encounterId?: string
     doseQuantity?: IQuantity
-    administeredAt?: number
+    occurrenceDateTime?: number
     recorder?: string
     status?: ImmunizationStatus
     statusReason?: ICodingReference

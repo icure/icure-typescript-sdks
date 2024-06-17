@@ -14,6 +14,7 @@ import {
     mapAnnotationDtoToAnnotation,
     mapAnnotationToAnnotationDto,
     mapCodeStubToCodingReference,
+    mapCodingReferenceToCodeStub,
     mapIdentifierDtoToIdentifier,
     mapIdentifierToIdentifierDto,
     mergeTagsWithInternalTags,
@@ -67,12 +68,16 @@ function toContactDtoMedicalLocationId(domain: Encounter): string | undefined {
     return undefined
 }
 
-function toContactDtoTags({ tags, reasonCode, systemMetaData }: Encounter): CodeStub[] | undefined {
-    return mergeTagsWithInternalTags(ENCOUNTER_FHIR_TYPE, [...tags, ...(reasonCode?.map((tag) => new CodingReference({ ...tag, context: REASON_CONTEXT })) ?? [])], systemMetaData)
+function toContactDtoTags({ tags, reasonCodes, systemMetaData }: Encounter): CodeStub[] | undefined {
+    return mergeTagsWithInternalTags(
+        ENCOUNTER_FHIR_TYPE,
+        [...tags, ...(reasonCodes?.map((tag) => new CodingReference({ id: tag.id, code: tag.code, version: tag.version, contextLabel: tag.contextLabel, context: `${ENCOUNTER_FHIR_TYPE}.${REASON_CONTEXT}` })) ?? [])],
+        systemMetaData,
+    )
 }
 
 function toContactDtoCodes({ codes }: Encounter): CodeStub[] | undefined {
-    return codes.map(mapCodeStubToCodingReference)
+    return codes.map(mapCodingReferenceToCodeStub)
 }
 
 function toContactDtoIdentifier({ identifiers }: Encounter): IdentifierDto[] | undefined {
@@ -112,7 +117,7 @@ function toContactDtoExternalId(domain: Encounter): string | undefined {
 }
 
 function toContactDtoEncounterType({ type }: Encounter): CodeStub | undefined {
-    return type ? mapCodeStubToCodingReference(type) : undefined
+    return type ? mapCodingReferenceToCodeStub(type) : undefined
 }
 
 function toContactDtoSubContacts(domain: Encounter): SubContactDto[] | undefined {
@@ -208,12 +213,8 @@ function toEncounterEndTime({ closingDate }: ContactDto): number | undefined {
     return closingDate
 }
 
-function toEncounterReasonCode({ tags }: ContactDto): CodingReference[] | undefined {
-    return tags?.filter((tag) => tag.context === REASON_CONTEXT).map(mapCodeStubToCodingReference)
-}
-
-function toEncounterServiceProvider({ responsible }: ContactDto): string | undefined {
-    return responsible
+function toEncounterReasonCodes({ tags }: ContactDto): CodingReference[] | undefined {
+    return tags?.filter((tag) => tag.context === `${ENCOUNTER_FHIR_TYPE}.${REASON_CONTEXT}`).map(mapCodeStubToCodingReference)
 }
 
 function toEncounterNotes({ notes }: ContactDto): Annotation[] | undefined {
@@ -270,14 +271,13 @@ export function mapContactDtoToEncounter(dto: ContactDto): Encounter {
         type: toEncounterType(dto),
         startTime: toEncounterStartTime(dto),
         endTime: toEncounterEndTime(dto),
-        reasonCode: toEncounterReasonCode(dto),
+        reasonCodes: toEncounterReasonCodes(dto),
         diagnosis: toEncounterDiagnosis(dto),
-        serviceProvider: toEncounterServiceProvider(dto),
+        performer: toEncounterPerformer(dto),
+        author: toEncounterAuthor(dto),
         created: toEncounterCreated(dto),
         modified: toEncounterModified(dto),
         endOfLife: toEncounterEndOfLife(dto),
-        author: toEncounterAuthor(dto),
-        performer: toEncounterPerformer(dto),
         immunizations: toEncounterImmunizations(dto),
         observations: toEncounterObservations(dto),
         notes: toEncounterNotes(dto),

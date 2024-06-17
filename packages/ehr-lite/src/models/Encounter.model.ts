@@ -8,15 +8,22 @@ import { IObservation, Observation } from './Observation.model'
  * An Encounter is a contact between a patient and a healthcare provider.
  *
  * @param id The unique identifier of the encounter.
+ * @param rev The revision id of the encounter.
  * @param identifiers The list of identifiers associated with the encounter.
  * @param codes The list of codes associated with the encounter.
  * @param tags The list of tags associated with the encounter.
  * @param type Specific type of encounter. [Value set](https://hl7.org/fhir/R4/valueset-encounter-type.html)
  * @param startTime The start time of the encounter (Unix timestamp).
  * @param endTime The end time of the encounter (Unix timestamp).
- * @param reasonCode The reason the encounter takes place.
+ * @param reasonCodes The reason the encounter takes place.
  * @param diagnosis The list of underlying condition id associated with the encounter.
- * @param serviceProvider The provider or organization who is responsible for the enconter.
+ * @param performer The provider or organization who is responsible for the enconter.
+ * @param author The author of the encounter. This is the person who encoded the encounter.
+ * @param created The creation time of the encounter (Unix timestamp).
+ * @param modified The last modification time of the encounter (Unix timestamp).
+ * @param endOfLife The end of lifetime of the encounter (Unix timestamp).
+ * @param immunizations The list of immunizations associated with the encounter.
+ * @param observations The list of observations associated with the encounter.
  * @param notes The list of notes associated with the encounter.
  * @param systemMetaData System metadata
  */
@@ -30,14 +37,13 @@ export class Encounter {
     type?: CodingReference
     startTime?: number
     endTime?: number
-    reasonCode: CodingReference[] = []
+    reasonCodes: CodingReference[] = []
     diagnosis: string[] = []
-    serviceProvider?: string
+    performer?: string
+    author?: string
     created?: number
     modified?: number
     endOfLife?: number
-    author?: string
-    performer?: string
     immunizations: Immunization[] = []
     observations: Observation[] = []
     notes: Annotation[] = []
@@ -53,14 +59,13 @@ export class Encounter {
             type: !!this.type ? this.type.toJSON() : undefined,
             startTime: this.startTime,
             endTime: this.endTime,
-            reasonCode: this.reasonCode.map((item) => item.toJSON()),
+            reasonCodes: this.reasonCodes.map((item) => item.toJSON()),
             diagnosis: this.diagnosis.map((item) => item),
-            serviceProvider: this.serviceProvider,
+            performer: this.performer,
+            author: this.author,
             created: this.created,
             modified: this.modified,
             endOfLife: this.endOfLife,
-            author: this.author,
-            performer: this.performer,
             immunizations: this.immunizations.map((item) => item.toJSON()),
             observations: this.observations.map((item) => item.toJSON()),
             notes: this.notes.map((item) => item.toJSON()),
@@ -91,14 +96,17 @@ export class Encounter {
         if (json['endTime'] !== undefined) {
             this.endTime = json['endTime']!
         }
-        if (json['reasonCode'] !== undefined) {
-            this.reasonCode = json['reasonCode']!.map((item: any) => new CodingReference(item))
+        if (json['reasonCodes'] !== undefined) {
+            this.reasonCodes = json['reasonCodes']!.map((item: any) => new CodingReference(item))
         }
         if (json['diagnosis'] !== undefined) {
             this.diagnosis = json['diagnosis']!.map((item: any) => item)
         }
-        if (json['serviceProvider'] !== undefined) {
-            this.serviceProvider = json['serviceProvider']!
+        if (json['performer'] !== undefined) {
+            this.performer = json['performer']!
+        }
+        if (json['author'] !== undefined) {
+            this.author = json['author']!
         }
         if (json['created'] !== undefined) {
             this.created = json['created']!
@@ -108,12 +116,6 @@ export class Encounter {
         }
         if (json['endOfLife'] !== undefined) {
             this.endOfLife = json['endOfLife']!
-        }
-        if (json['author'] !== undefined) {
-            this.author = json['author']!
-        }
-        if (json['performer'] !== undefined) {
-            this.performer = json['performer']!
         }
         if (json['immunizations'] !== undefined) {
             this.immunizations = json['immunizations']!.map((item: any) => new Immunization(item))
@@ -139,9 +141,8 @@ export interface IEncounter {
     type?: ICodingReference
     startTime?: number
     endTime?: number
-    reasonCode: ICodingReference[]
+    reasonCodes: ICodingReference[]
     diagnosis: string[]
-    serviceProvider?: string
     created?: number
     modified?: number
     endOfLife?: number

@@ -277,7 +277,7 @@ export function EncounterApiAware<TBase extends Constructor<any>>(Base: TBase): 
                                 unit: 'mg',
                             }),
                             site: new CodingReference({ id: 'SNOMED|123456|1', type: 'SNOMED', code: '123456', version: '1' }),
-                            administeredAt: 202406111506,
+                            occurrenceDateTime: 202406111506,
                             language: 'en',
                             notes: [annotation1()],
                         }),

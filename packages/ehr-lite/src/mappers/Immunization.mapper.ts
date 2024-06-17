@@ -106,7 +106,7 @@ function toServiceDtoIndex({ index }: Immunization): number | undefined {
     return index
 }
 
-function toServiceDtoContent({ language, doseQuantity, vaccineCode, administeredAt }: Immunization):
+function toServiceDtoContent({ language, doseQuantity, vaccineCode, occurrenceDateTime }: Immunization):
     | {
           [key: string]: ContentDto
       }
@@ -116,7 +116,7 @@ function toServiceDtoContent({ language, doseQuantity, vaccineCode, administered
             language ?? 'xx',
             new ContentDto({
                 medicationValue:
-                    doseQuantity && vaccineCode && administeredAt
+                    doseQuantity || vaccineCode || occurrenceDateTime
                         ? new MedicationDto({
                               medicinalProduct: vaccineCode
                                   ? new MedicinalproductDto({
@@ -124,10 +124,10 @@ function toServiceDtoContent({ language, doseQuantity, vaccineCode, administered
                                     })
                                   : undefined,
                               regimen:
-                                  doseQuantity && administeredAt
+                                  doseQuantity && occurrenceDateTime
                                       ? new RegimenItemDto({
                                             administratedQuantity: mapQuantityToAdministrationQuantityDto(doseQuantity),
-                                            date: administeredAt,
+                                            date: occurrenceDateTime,
                                         })
                                       : undefined,
                           })
@@ -393,7 +393,7 @@ function toImmunizationDoseQuantity({ content }: ServiceDto): Quantity | undefin
     return regimen !== undefined && regimen.length > 0 && regimen[0].administratedQuantity ? mapAdministrationQuantityDtoToQuantity(regimen[0].administratedQuantity) : undefined
 }
 
-function toImmunizationAdministeredAt(dto: ServiceDto): number | undefined {
+function toImmunizationOccurrenceDateTime(dto: ServiceDto): number | undefined {
     const contentDto = dto.content ? Object.values(dto.content)[0] : undefined
     const regimen = contentDto?.medicationValue?.regimen
     return regimen !== undefined && regimen.length > 0 && regimen[0].date ? regimen[0].date : undefined
@@ -406,7 +406,7 @@ export function mapServiceDtoToImmunization(dto: ServiceDto): Immunization {
         identifiers: toImmunizationIdentifiers(dto),
         encounterId: toImmunizationEncounterId(dto),
         doseQuantity: toImmunizationDoseQuantity(dto),
-        administeredAt: toImmunizationAdministeredAt(dto),
+        occurrenceDateTime: toImmunizationOccurrenceDateTime(dto),
         recorder: toImmunizationRecorder(dto),
         status: toImmunizationStatus(dto),
         statusReason: toImmunizationStatusReason(dto),
