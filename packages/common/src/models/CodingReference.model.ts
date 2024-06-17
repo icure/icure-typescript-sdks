@@ -21,8 +21,8 @@ export class CodingReference {
         }
     }
 
-    constructor(json: Partial<ICodingReference> & { id: string }) {
-        this.id = json['id']!
+    constructor(json: Partial<ICodingReference> & ({ id: string } | { type: string; code: string })) {
+        this.id = json['id'] ?? `${json['type']}|${json['code']}|${json['version'] ?? '1'}`
         if (json['type'] !== undefined) {
             this.type = json['type']!
         }
