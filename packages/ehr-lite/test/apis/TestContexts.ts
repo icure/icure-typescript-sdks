@@ -37,6 +37,8 @@ import {
     Immunization,
     Quantity,
     Component,
+    ImmunizationFilter,
+    ImmunizationApi,
 } from '../../src'
 import { EHRLiteCryptoStrategies, SimpleEHRLiteCryptoStrategies } from '../../src/services/EHRLiteCryptoStrategies'
 import {
@@ -65,13 +67,14 @@ import { HealthcareParty, Patient as PatientDto, Service, User as UserDto, Docum
 import { TestMessageFactory } from '../test-utils'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../../src/mappers/Patient.mapper'
 import { mapConditionToHealthElementDto, mapHealthElementDtoToCondition } from '../../src/mappers/Condition.mapper'
-import { mapObservationToServiceDto, mapServiceDtoToObservation } from '../../src/mappers/Observation.mapper'
+import { mapObservationToServiceDto, mapServiceDtoToObservation, OBSERVATION_FHIR_TYPE } from '../../src/mappers/Observation.mapper'
 import { mapHealthcarePartyDtoToPractitioner, mapPractitionerToHealthcarePartyDto } from '../../src/mappers/Practitioner.mapper'
 import { mapHealthcarePartyDtoToOrganisation, mapOrganisationToHealthcarePartyDto } from '../../src/mappers/Organisation.mapper'
 import dataOwnerMapper from '../../src/mappers/DataOwner.mapper'
 import { TestVars } from '@icure/test-setup/types'
 import { mapBinaryToDocumentAttachment, mapDocumentAttachmentToBinary } from '../../src/mappers/Binary.mapper'
 import { mapContactDtoToEncounter, mapEncounterToContactDto } from '../../src/mappers/Encounter.mapper'
+import { IMMUNIZATION_FHIR_TYPE, mapImmunizationToServiceDto, mapServiceDtoToImmunization } from '../../src/mappers/Immunization.mapper'
 
 export class EhrLiteBaseTestContext extends BaseApiTestContext<AnonymousEHRLiteApi.Builder, AnonymousEHRLiteApi, EHRLiteApi, EHRLiteCryptoStrategies, User, EHRLiteMessageFactory> {
     newAnonymousApiBuilder(): AnonymousEHRLiteApi.Builder {
@@ -135,7 +138,7 @@ function annotation2(): Annotation {
 function addDomainTypeTagIfMissing(tags: CodeStub[] | undefined, domainType: string): CodeStub[] {
     const found = extractDomainTypeTag(tags)
     if (tags && found) {
-        expect(found.code).toEqual(domainType)
+        expect(found.code).toEqual(domainType.toUpperCase())
         return tags!
     } else return [...(tags ?? []), domainTypeTag(domainType)]
 }
@@ -380,7 +383,7 @@ export function ObservationApiAware<TBase extends Constructor<any>>(Base: TBase)
         toDSService(serviceDto: Service): Observation {
             return mapServiceDtoToObservation({
                 ...serviceDto,
-                tags: addDomainTypeTagIfMissing(serviceDto.tags, 'observation'.toUpperCase()),
+                tags: addDomainTypeTagIfMissing(serviceDto.tags, OBSERVATION_FHIR_TYPE),
             })
         }
 
@@ -390,6 +393,104 @@ export function ObservationApiAware<TBase extends Constructor<any>>(Base: TBase)
 
         toServiceDto(dsService: Observation): Service {
             return mapObservationToServiceDto(dsService)
+        }
+    }
+}
+
+export function ImmunizationApiAware<TBase extends Constructor<any>>(Base: TBase): TBase & Constructor<WithServiceApi<EHRLiteApi, Immunization, Patient, Document>> {
+    return class ImmunizationApiAwareImpl extends Base implements WithServiceApi<EHRLiteApi, Immunization, Patient, Document> {
+        checkDefaultServiceDecrypted(service: Immunization): void {
+            expect(service.notes[0].markdown).toEqual(annotation1().markdown)
+        }
+
+        async checkServiceAccessibleAndDecrypted(api: EHRLiteApi, service: Immunization, checkDeepEquals: boolean): Promise<void> {
+            const retrieved = await api.immunizationApi.get(service.id!)
+            expect(retrieved).toBeTruthy()
+            expect(Object.keys(retrieved.notes).length).toBeGreaterThan(0)
+            if (checkDeepEquals) expect(retrieved).toEqual(service)
+        }
+
+        async checkServiceAccessibleButEncrypted(api: EHRLiteApi, service: Immunization): Promise<void> {
+            const retrieved = await api.immunizationApi.get(service.id!)
+            expect(retrieved).toBeTruthy()
+            expect(Object.keys(retrieved.notes)).toHaveLength(0)
+        }
+
+        async checkServiceInaccessible(api: EHRLiteApi, service: Immunization): Promise<void> {
+            await expect(api.immunizationApi.get(service.id!)).rejects.toBeInstanceOf(Error)
+        }
+
+        createServiceForPatient(api: EHRLiteApi, patient: Patient): Promise<Immunization> {
+            return api.immunizationApi.createOrModifyFor(
+                patient.id!,
+                new Immunization({
+                    id: forceUuid(),
+                    vaccineCode: new CodingReference({ id: 'ICD-11|A01|1', type: 'ICD-11', code: 'A01', version: '1' }),
+                    doseQuantity: new Quantity({
+                        value: 15,
+                        code: new CodingReference({ id: 'UCUM|mg|1', type: 'UCUM', code: 'mg', version: '1' }),
+                        unit: 'mg',
+                    }),
+                    site: new CodingReference({ id: 'SNOMED|123456|1', type: 'SNOMED', code: '123456', version: '1' }),
+                    occurrenceDateTime: 202406111506,
+                    language: 'en',
+                    notes: [annotation1()],
+                }),
+            )
+        }
+
+        createServicesForPatient(api: EHRLiteApi, patient: Patient): Promise<Immunization[]> {
+            return api.immunizationApi.createOrModifyManyFor(patient.id!, [
+                new Immunization({
+                    id: forceUuid(),
+                    vaccineCode: new CodingReference({ id: 'ICD-11|A01|1', type: 'ICD-11', code: 'A01', version: '1' }),
+                    doseQuantity: new Quantity({
+                        value: 15,
+                        code: new CodingReference({ id: 'UCUM|mg|1', type: 'UCUM', code: 'mg', version: '1' }),
+                        unit: 'mg',
+                    }),
+                    site: new CodingReference({ id: 'SNOMED|123456|1', type: 'SNOMED', code: '123456', version: '1' }),
+                    occurrenceDateTime: 202406111506,
+                    language: 'en',
+                    notes: [annotation1()],
+                }),
+                new Immunization({
+                    id: forceUuid(),
+                    vaccineCode: new CodingReference({ id: 'ICD-12|A02|1', type: 'ICD-12', code: 'A02', version: '1' }),
+                    doseQuantity: new Quantity({
+                        value: 26,
+                        code: new CodingReference({ id: 'UCUM|ml|1', type: 'UCUM', code: 'mg', version: '1' }),
+                        unit: 'ml',
+                    }),
+                    site: new CodingReference({ id: 'SNOMED|123456|1', type: 'SNOMED', code: '123456', version: '1' }),
+                    occurrenceDateTime: 202406111506,
+                    language: 'en',
+                    notes: [annotation1()],
+                }),
+            ])
+        }
+
+        newServiceFilter(api: EHRLiteApi): ImmunizationFilter {
+            return new ImmunizationFilter(api)
+        }
+
+        serviceApi(api: EHRLiteApi): ImmunizationApi {
+            return api.immunizationApi
+        }
+
+        toDSService(serviceDto: Service): Immunization {
+            return mapServiceDtoToImmunization({
+                ...serviceDto,
+                tags: addDomainTypeTagIfMissing(serviceDto.tags, IMMUNIZATION_FHIR_TYPE),
+            })
+        }
+
+        toDocumentDto(dsDocument: Document): DocumentDto {
+            return mapDocumentToDocumentDto(dsDocument)
+        }
+
+        toServiceDto(dsService: Immunization): Service {
+            return mapImmunizationToServiceDto(dsService)
         }
     }
 }

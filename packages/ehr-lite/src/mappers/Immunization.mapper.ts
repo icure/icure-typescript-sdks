@@ -46,8 +46,8 @@ const SUB_POTENT_REASON_CONTEXT = 'subPotentReason'
 const SITE_CONTEXT = 'site'
 const CONTEXTS = [STATUS_CONTEXT, STATUS_REASON_CONTEXT, VACCINE_CODE_CONTEXT, SUB_POTENT_REASON_CONTEXT, SITE_CONTEXT].map((context) => `${IMMUNIZATION_FHIR_TYPE}.${context}`)
 
-function toServiceDtoId(domain: Immunization): string | undefined {
-    return forceUuid(domain.id)
+function toServiceDtoId({ id }: Immunization): string | undefined {
+    return forceUuid(id)
 }
 
 function toServiceDtoTransactionId(domain: Immunization): string | undefined {
@@ -305,7 +305,7 @@ function toServiceDtoSecurityMetadata({ systemMetaData }: Immunization): Securit
 }
 
 function toImmunizationId({ id }: ServiceDto): string {
-    return id!!
+    return id!
 }
 
 function toImmunizationIdentifiers(dto: ServiceDto): Identifier[] | undefined {
