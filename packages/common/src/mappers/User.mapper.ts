@@ -192,8 +192,8 @@ export function toUserDeviceId(dto: UserDto): string | undefined {
     return dto.deviceId
 }
 
-export function toUserSharingDataWith(dto: UserDto): Record<SharedDataType, Array<string>> {
-    return Object.fromEntries(Object.entries(dto.autoDelegations ?? {}).map(([k, v]) => [k, v])) as Record<SharedDataType, Array<string>>
+export function toUserSharingDataWith(dto: UserDto): Partial<Record<SharedDataType, Array<string>>> {
+    return Object.fromEntries(Object.entries(dto.autoDelegations ?? {}).map(([k, v]) => [k, v]))
 }
 
 export function toUserEmail(dto: UserDto): string | undefined {
@@ -205,7 +205,7 @@ export function toUserMobilePhone(dto: UserDto): string | undefined {
 }
 
 export function toUserAuthenticationTokens(dto: UserDto): Record<string, AuthenticationToken> {
-    return (!!dto.authenticationTokens ? { ...dto.authenticationTokens } : {}) as Record<string, AuthenticationToken>
+    return !!dto.authenticationTokens ? Object.fromEntries(Object.entries(dto.authenticationTokens).map(([k, at]) => [k, new AuthenticationToken(at)])) : {}
 }
 
 function toUserDtoSystemMetadata(domain: User): SystemMetadata | undefined {

@@ -352,8 +352,8 @@ function toPractitionerSpecialityCodes(dto: HealthcarePartyDto): Array<CodingRef
     return !!dto.specialityCodes ? dto.specialityCodes.map(mapCodeStubToCodingReference) : undefined
 }
 
-function toPractitionerDescription(dto: HealthcarePartyDto): Record<ISO639_1, string> | undefined {
-    return !!dto.descr ? (convertObjectToMap(dto.descr) as Record<ISO639_1, string>) : undefined
+function toPractitionerDescription(dto: HealthcarePartyDto): Partial<Record<ISO639_1, string>> | undefined {
+    return !!dto.descr ? convertObjectToMap(dto.descr) : undefined
 }
 
 function toPractitionerProperties(dto: HealthcarePartyDto): Array<Property> | undefined {

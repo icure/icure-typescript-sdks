@@ -89,7 +89,7 @@ export class User {
     /**
      * Ids of the dataOwners with who the user is sharing all new data he is creating in iCure : All Data Types that may be shared can be found in SharedDataType enum
      */
-    sharingDataWith: Record<SharedDataType, Array<string>> = {} as Record<SharedDataType, Array<string>>
+    sharingDataWith: Partial<Record<SharedDataType, Array<string>>> = {}
     /**
      * email address of the user (used for token exchange or password recovery).
      */
@@ -212,7 +212,7 @@ export interface IUser {
     healthcarePartyId?: string
     patientId?: string
     deviceId?: string
-    sharingDataWith: Record<SharedDataType, Array<string>>
+    sharingDataWith: Partial<Record<SharedDataType, Array<string>>>
     email?: string
     mobilePhone?: string
     authenticationTokens: Record<string, IAuthenticationToken>

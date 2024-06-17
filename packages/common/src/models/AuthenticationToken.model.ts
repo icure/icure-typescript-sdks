@@ -10,9 +10,13 @@
  * Do not edit the class manually.
  */
 
+import { mapTo } from '../utils/decorators'
+import { AuthenticationTokenDto } from '../index'
+
 /**
  * Encrypted and time-limited Authentication tokens used for inter-applications authentication
  */
+@mapTo(AuthenticationTokenDto)
 export class AuthenticationToken {
     /**
      * Encrypted token
