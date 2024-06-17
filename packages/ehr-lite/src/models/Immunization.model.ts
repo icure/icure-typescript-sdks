@@ -1,4 +1,4 @@
-import { Annotation, CodingReference, IAnnotation, ICodingReference, Identifier, IIdentifier, ISO639_1, ISystemMetaDataEncrypted, mapTo, ServiceDto, SystemMetaDataEncrypted } from '@icure/typescript-common'
+import { Annotation, CodingReference, EntityId, forceUuid, IAnnotation, ICodingReference, Identifier, IIdentifier, ISO639_1, ISystemMetaDataEncrypted, mapTo, ServiceDto, SystemMetaDataEncrypted } from '@icure/typescript-common'
 import { IQuantity, Quantity } from './Quantity.model'
 
 /**
@@ -26,7 +26,7 @@ import { IQuantity, Quantity } from './Quantity.model'
  */
 @mapTo(ServiceDto)
 export class Immunization {
-    id: string
+    id: EntityId
     index?: number
     identifiers: Identifier[] = []
     encounterId?: string
@@ -74,8 +74,8 @@ export class Immunization {
         }
     }
 
-    constructor(json: Partial<IImmunization> & { id: string }) {
-        this.id = json['id']!
+    constructor(json: Partial<IImmunization>) {
+        this.id = forceUuid(json['id']!)
         if (json['index'] !== undefined) {
             this.index = json['index']!
         }
@@ -140,7 +140,7 @@ export class Immunization {
 }
 
 export interface IImmunization {
-    id: string
+    id: EntityId
     index?: number
     identifiers: IIdentifier[]
     encounterId?: string

@@ -1,4 +1,4 @@
-import { Annotation, CodingReference, ContactDto, IAnnotation, ICodingReference, Identifier, IIdentifier, ISystemMetaDataEncrypted, mapTo, SystemMetaDataEncrypted } from '@icure/typescript-common'
+import { Annotation, CodingReference, ContactDto, EntityId, forceUuid, IAnnotation, ICodingReference, Identifier, IIdentifier, ISystemMetaDataEncrypted, mapTo, SystemMetaDataEncrypted } from '@icure/typescript-common'
 import { IImmunization, Immunization } from './Immunization.model'
 import { IObservation, Observation } from './Observation.model'
 
@@ -22,7 +22,7 @@ import { IObservation, Observation } from './Observation.model'
  */
 @mapTo(ContactDto)
 export class Encounter {
-    id: string
+    id: EntityId
     rev?: string
     identifiers: Identifier[] = []
     codes: CodingReference[] = []
@@ -68,8 +68,8 @@ export class Encounter {
         }
     }
 
-    constructor(json: Partial<IEncounter> & { id: string }) {
-        this.id = json['id']!
+    constructor(json: Partial<IEncounter>) {
+        this.id = forceUuid(json['id']!)
         if (json['rev'] !== undefined) {
             this.rev = json['rev']!
         }
@@ -131,7 +131,7 @@ export class Encounter {
 }
 
 export interface IEncounter {
-    id: string
+    id: EntityId
     rev?: string
     identifiers: IIdentifier[]
     codes: ICodingReference[]
