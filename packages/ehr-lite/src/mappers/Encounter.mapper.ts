@@ -35,10 +35,10 @@ import { mapObservationToServiceDto, mapServiceDtoToObservation, OBSERVATION_FHI
 import { Immunization } from '../models/Immunization.model'
 import { Observation } from '../models/Observation.model'
 
+export const ENCOUNTER_FHIR_TYPE = 'Encounter'
+
 const REASON_CONTEXT = 'reason'
 const CONTEXTS = [REASON_CONTEXT].map((context) => `${ENCOUNTER_FHIR_TYPE}.${context}`)
-
-export const ENCOUNTER_FHIR_TYPE = 'Encounter'
 
 function toContactDtoId(domain: Encounter): string | undefined {
     return forceUuid(domain.id)

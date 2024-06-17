@@ -36,6 +36,7 @@ import {
     Encounter,
     Immunization,
     Quantity,
+    Component,
 } from '../../src'
 import { EHRLiteCryptoStrategies, SimpleEHRLiteCryptoStrategies } from '../../src/services/EHRLiteCryptoStrategies'
 import {
@@ -57,9 +58,10 @@ import {
     Topic,
     User,
     ContactLikeApi,
+    DataOwnerWithTypeDto,
 } from '@icure/typescript-common'
 import { EHRLiteMessageFactory } from '../../src/services/EHRLiteMessageFactory'
-import { HealthcareParty, Patient as PatientDto, Service, User as UserDto, DataOwnerWithType as DataOwnerWithTypeDto, Document as DocumentDto, HealthElement, CodeStub, MaintenanceTask, Topic as TopicDto, Message as MessageDto, Contact } from '@icure/api'
+import { HealthcareParty, Patient as PatientDto, Service, User as UserDto, Document as DocumentDto, HealthElement, CodeStub, MaintenanceTask, Topic as TopicDto, Message as MessageDto, Contact, ISO639_1 } from '@icure/api'
 import { TestMessageFactory } from '../test-utils'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../../src/mappers/Patient.mapper'
 import { mapConditionToHealthElementDto, mapHealthElementDtoToCondition } from '../../src/mappers/Condition.mapper'
@@ -116,7 +118,7 @@ function annotation1(): Annotation {
         markdown: recordOf({
             en: 'This should be encrypted',
             fr: 'Ceci devrait être crypté',
-        }),
+        }) as Record<ISO639_1, string>,
     })
 }
 
@@ -125,7 +127,7 @@ function annotation2(): Annotation {
         markdown: recordOf({
             en: 'This should be encrypted',
             fr: 'Ceci devrait être crypté',
-        }),
+        }) as Record<ISO639_1, string>,
     })
 }
 
@@ -349,7 +351,7 @@ export function ObservationApiAware<TBase extends Constructor<any>>(Base: TBase)
                 patient.id!,
                 new Observation({
                     tags: [new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })],
-                    localContent: recordOf({ en: new LocalComponent({ stringValue: 'Hello world' }) }),
+                    localContent: recordOf({ en: new LocalComponent({ stringValue: 'Hello world' }) }) as Record<ISO639_1, LocalComponent>,
                 }),
             )
         }
@@ -358,11 +360,11 @@ export function ObservationApiAware<TBase extends Constructor<any>>(Base: TBase)
             return api.observationApi.createOrModifyManyFor(patient.id!, [
                 new Observation({
                     tags: [new CodingReference({ id: 'testid2', type: 'IC-TEST', code: 'TEST' })],
-                    localContent: recordOf({ en: new LocalComponent({ stringValue: 'Hello world' }) }),
+                    localContent: recordOf({ en: new LocalComponent({ stringValue: 'Hello world' }) }) as Record<ISO639_1, LocalComponent>,
                 }),
                 new Observation({
                     tags: [new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })],
-                    localContent: recordOf({ en: new LocalComponent({ stringValue: 'Good night world' }) }),
+                    localContent: recordOf({ en: new LocalComponent({ stringValue: 'Good night world' }) }) as Record<ISO639_1, LocalComponent>,
                 }),
             ])
         }

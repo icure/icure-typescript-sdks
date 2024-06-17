@@ -1,7 +1,7 @@
 import { Connection, sleep } from '@icure/api'
 import { CommonApi } from '@icure/typescript-common'
 
-export async function doXOnYAndSubscribe<Y>(api: CommonApi, options: {}, connectionPromise: Promise<Connection>, x: () => Promise<Y>, statusListener: (status: string) => void, eventReceivedPromiseReject: (reason?: any) => void, eventReceivedPromise: Promise<void>) {
+export async function doXOnYAndSubscribe<Y>(api: CommonApi, options: {}, connectionPromise: Promise<Connection>, onConnected: () => Promise<Y>, statusListener: (status: string) => void, eventReceivedPromiseReject: (reason?: any) => void, eventReceivedPromise: Promise<void>) {
     const connection = (await connectionPromise)
         .onClosed(async () => {
             statusListener('CLOSED')
@@ -10,7 +10,7 @@ export async function doXOnYAndSubscribe<Y>(api: CommonApi, options: {}, connect
         .onConnected(async () => {
             statusListener('CONNECTED')
             await sleep(2_000)
-            await x()
+            await onConnected()
         })
 
     const timeout = setTimeout(eventReceivedPromiseReject, 20_000)

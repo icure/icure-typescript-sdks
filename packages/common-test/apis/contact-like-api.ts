@@ -170,7 +170,17 @@ export function testContactLikeApi<DSAnonymousApiBuilder extends AnonymousApiBui
 
         const subscribeAndCreateContact = async (options: {}, eventTypes: ('CREATE' | 'UPDATE')[]) => {
             const { api, user } = await ctx.apiForEnvUser(env, hcp1Username)
-            // TODO fix event listener type
+
+            const patient = await ctx.patientApi(api).createOrModify(
+                ctx.toDSPatient(
+                    new Patient({
+                        firstName: 'John',
+                        lastName: 'Snow',
+                        note: 'Winter is coming',
+                    }),
+                ),
+            )
+
             const connectionPromise = async (options: {}, dataOwnerId: string, eventListener: (contact: ContactDto) => Promise<void>) =>
                 ctx.contactApi(api).subscribeToEvents(eventTypes, await ctx.newContactFilter(api).forDataOwner(hcp1User.healthcarePartyId!).byLabelCodeDateFilter(testType, testCode).build(), eventListener as unknown as any, options)
 
@@ -192,17 +202,7 @@ export function testContactLikeApi<DSAnonymousApiBuilder extends AnonymousApiBui
                     eventReceivedPromiseResolve()
                 }),
                 async () => {
-                    const patient = await ctx.patientApi(api).createOrModify(
-                        ctx.toDSPatient(
-                            new Patient({
-                                firstName: 'John',
-                                lastName: 'Snow',
-                                note: 'Winter is coming',
-                            }),
-                        ),
-                    )
-
-                    ctx.createContactForPatient(api, patient)
+                    await ctx.createContactForPatient(api, patient)
                 },
                 (status) => {
                     statuses.push(status)

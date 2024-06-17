@@ -25,12 +25,13 @@ import {
     UserLikeApi,
     ContactLikeApi,
     ContactFilter,
+    DataOwnerWithTypeDto,
 } from '@icure/typescript-common'
 import { testStorageWithKeys } from '../test-storage'
 import { webcrypto } from 'crypto'
 import { getTempEmail, TestUtils } from '../test-utils'
 import { assert } from 'chai'
-import { DataOwnerWithType as DataOwnerWithTypeDto, HealthcareParty, HealthElement, KeyStorageFacade, MaintenanceTask, Patient, Service, sleep, StorageFacade, User, Document, Device, retry, Topic, Message, ShaVersion, Contact } from '@icure/api'
+import { HealthcareParty, HealthElement, KeyStorageFacade, MaintenanceTask, Patient, Service, sleep, StorageFacade, User, Document, Device, retry, Topic, Message, ShaVersion, Contact } from '@icure/api'
 import { TestVars, UserDetails } from '@icure/test-setup/types'
 import { DefaultStorageEntryKeysFactory } from '@icure/api/icc-x-api/storage/DefaultStorageEntryKeysFactory'
 
