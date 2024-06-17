@@ -43,11 +43,10 @@ export function classComponentFactory(propertyType: Type, property?: PropertyDec
         }
         type.getBaseTypeOfLiteralType().getText()
         if (typeType === '__type') {
-            const regex = /Record<\s*((?:string|number|boolean|bigint|symbol|import\("[^"]+"\)\.[^,\s]+))\s*,\s*([\s\S]+)\s*>/
+            const regex = /Record<\s*(string|number|boolean|bigint|symbol|import\("[^"]+"\)\.[^,\s]+)\s*,\s*([^\s>]+?)[\s>]+/
             const match = type.getText().match(regex)
             const valueTypeName = match![2]
             const keyTypeName = match![1]
-            const shortKeyTypeName = keyTypeName.match(/import\(".+?"\).(.+)/)?.[1] ?? keyTypeName
 
             let valueType: ClassComponent
             let shortType: string | undefined

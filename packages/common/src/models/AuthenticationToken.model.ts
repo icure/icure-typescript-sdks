@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import { mapTo } from '../utils/decorators'
 import { AuthenticationTokenDto } from '../index'
+import { mapTo } from '../utils/decorators'
 
 /**
  * Encrypted and time-limited Authentication tokens used for inter-applications authentication
