@@ -1,4 +1,4 @@
-import { Observation } from '../../src/models/Observation.model'
+import { Observation } from '../../src'
 import { generateIdentifier } from '../../../common/test/models/Identifier.model'
 import { generateComponent } from './Component.model'
 import { generateLocalComponent } from './LocalComponent.model'

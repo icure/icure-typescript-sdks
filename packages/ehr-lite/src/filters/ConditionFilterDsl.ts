@@ -1,9 +1,10 @@
 import { CommonApi, domainTypeTag, HealthElementFilter, HealthElementFilterWithDataOwner, PatientDto } from '@icure/typescript-common'
 import { Patient } from '../models/Patient.model'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../mappers/Patient.mapper'
+import { CONDITION_FHIR_TYPE } from '../mappers/Condition.mapper'
 
 export class ConditionFilter extends HealthElementFilter<Patient> {
-    private readonly heDomainTag = domainTypeTag('condition')
+    private readonly heDomainTag = domainTypeTag(CONDITION_FHIR_TYPE)
 
     constructor(api: CommonApi) {
         const patientMapper = {

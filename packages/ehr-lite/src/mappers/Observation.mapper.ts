@@ -35,6 +35,8 @@ import { LocalComponent } from '../models/LocalComponent.model'
 import { mapContentDtoToLocalComponent, mapLocalComponentToContentDto } from './LocalComponent.mapper'
 import { mapComponentToContentDto, mapContentDtoToComponent } from './Component.mapper'
 
+export const OBSERVATION_FHIR_TYPE = 'Observation'
+
 function toServiceDtoId(domain: Observation): string | undefined {
     return domain.id
 }
@@ -182,7 +184,7 @@ function toServiceDtoCodes(domain: Observation): CodeStub[] | undefined {
 }
 
 function toServiceDtoTags(domain: Observation): CodeStub[] | undefined {
-    return mergeTagsWithInternalTags('observation', domain.tags, domain.systemMetaData)
+    return mergeTagsWithInternalTags(OBSERVATION_FHIR_TYPE, [...domain.tags], domain.systemMetaData)
 }
 
 function toServiceDtoEncryptedSelf(domain: Observation): string | undefined {
@@ -267,8 +269,8 @@ function toObservationCodes(dto: ServiceDto): Array<CodingReference> | undefined
     return !!dto.codes ? dto.codes.map(mapCodeStubToCodingReference) : undefined
 }
 
-function toObservationTags(dto: ServiceDto): Array<CodingReference> | undefined {
-    return filteringOutInternalTags('observation', dto.tags)
+function toObservationTags({ tags }: ServiceDto): CodingReference[] | undefined {
+    return filteringOutInternalTags(OBSERVATION_FHIR_TYPE, tags) ?? []
 }
 
 function toObservationSystemMetaData(dto: ServiceDto): SystemMetaDataEncrypted | undefined {

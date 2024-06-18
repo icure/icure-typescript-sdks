@@ -43,7 +43,7 @@ export class SortableFilterBuilderAccumulator<T> {
         ]
     }
 
-    private add<F extends Filter<T>, K extends keyof F>(filter: Promise<F>, strategy: FilterStrategy, idKey?: K) {
+    private add<F extends Filter<T>, K extends keyof Omit<F, '$type'>>(filter: Promise<F>, strategy: FilterStrategy, idKey?: K) {
         this._filters = [
             ...this._filters,
             {
@@ -65,7 +65,7 @@ export class SortableFilterBuilderAccumulator<T> {
      * @param filter a Promise that will resolve in the filter to add.
      * @param key the field of the filter that contains the ids.
      */
-    addByIdsFilter<F extends Filter<T>, K extends keyof F>(filter: Promise<F>, key: K) {
+    addByIdsFilter<F extends Filter<T>, K extends keyof Omit<F, '$type'>>(filter: Promise<F>, key: K) {
         this.add(filter, FilterStrategy.ByIds, key)
     }
 
@@ -80,7 +80,7 @@ export class SortableFilterBuilderAccumulator<T> {
      * @param filter a Promise that will resolve in the filter to add.
      * @param field the field of the filter that contains the ids.
      */
-    addByIdsObjectsFilter<F extends Filter<T>, K extends keyof F>(filter: Promise<F>, field: K) {
+    addByIdsObjectsFilter<F extends Filter<T>, K extends keyof Omit<F, '$type'>>(filter: Promise<F>, field: K) {
         this.add(filter, FilterStrategy.ByIdsObjects, field)
     }
 

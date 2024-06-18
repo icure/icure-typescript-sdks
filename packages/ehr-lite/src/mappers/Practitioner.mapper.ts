@@ -40,6 +40,8 @@ import { GenderEnum } from '../models/enums/Gender.enum'
 import { healthcareProfessionalIdentifiers } from './utils/HealthProfessional.utils'
 import { b64_2ab, ua2b64 } from '@icure/api'
 
+const PRACTITIONER_FHIR_TYPE = 'practitioner'
+
 function toHealthcarePartyDtoId(domain: Practitioner): string | undefined {
     return domain.id
 }
@@ -65,7 +67,7 @@ function toHealthcarePartyDtoIdentifier(domain: Practitioner): IdentifierDto[] |
 }
 
 function toHealthcarePartyDtoTags(domain: Practitioner): CodeStub[] | undefined {
-    return mergeTagsWithInternalTags('practitioner', domain.tags, domain.systemMetaData)
+    return mergeTagsWithInternalTags(PRACTITIONER_FHIR_TYPE, [...domain.tags], domain.systemMetaData)
 }
 
 function toHealthcarePartyDtoCodes(domain: Practitioner): CodeStub[] | undefined {
@@ -288,8 +290,8 @@ function toPractitionerIdentifiers(dto: HealthcarePartyDto): Identifier[] | unde
     return identifiers.map(mapIdentifierDtoToIdentifier)
 }
 
-function toPractitionerTags(dto: HealthcarePartyDto): Array<CodingReference> | undefined {
-    return filteringOutInternalTags('practitioner', dto.tags)
+function toPractitionerTags({ tags }: HealthcarePartyDto): Array<CodingReference> | undefined {
+    return filteringOutInternalTags(PRACTITIONER_FHIR_TYPE, tags)
 }
 
 function toPractitionerCodes(dto: HealthcarePartyDto): Array<CodingReference> | undefined {

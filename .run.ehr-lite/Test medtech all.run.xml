@@ -1,11 +1,12 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Test medtech all" type="JavaScriptTestRunnerJest">
-    <node-interpreter value="project" />
+    <node-interpreter value="$USER_HOME$/.nvm/versions/node/v20.12.2/bin/node" />
     <jest-package value="$PROJECT_DIR$/node_modules/jest" />
     <working-dir value="$PROJECT_DIR$/packages/medtech" />
     <jest-options value="--runInBand" />
     <envs>
-      <env name="COMPOSE_FILE_URL" value="file://$USER_HOME$/tests/docker-compose-cloud.yaml" />
+      <env name="AS_VERSION" value="5.0.219-gff3a43db96" />
+      <env name="COMPOSE_FILE_URL" value="file://$USER_HOME$/IdeaProjects/icure-typescript-sdk/custom-docker-compose-cloud.yaml" />
       <env name="ICURE_TS_TEST_URL" value="http://127.0.0.1:16044" />
     </envs>
     <scope-kind value="ALL" />

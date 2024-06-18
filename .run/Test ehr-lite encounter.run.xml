@@ -1,0 +1,18 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Test ehr-lite encounter" type="JavaScriptTestRunnerJest">
+    <config-file value="$PROJECT_DIR$/packages/ehr-lite/jest.config.js" />
+    <node-interpreter value="node" />
+    <jest-package value="$PROJECT_DIR$/node_modules/jest" />
+    <working-dir value="$PROJECT_DIR$/packages/ehr-lite" />
+    <jest-options value="--runInBand" />
+    <envs>
+      <env name="AS_VERSION" value="5.0.217-g48e3ab0dc8" />
+      <env name="COMPOSE_FILE_URL" value="file://$USER_HOME$/IdeaProjects/icure-typescript-sdk/custom-docker-compose-cloud.yaml" />
+      <env name="ICURE_TS_TEST_URL" value="http://127.0.0.1:16044" />
+      <env name="MOCK_VERSION" value="0.1.35-g3355cfab9c" />
+    </envs>
+    <scope-kind value="TEST_FILE" />
+    <test-file value="$PROJECT_DIR$/packages/ehr-lite/test/apis/encounter-api.test.ts" />
+    <method v="2" />
+  </configuration>
+</component>

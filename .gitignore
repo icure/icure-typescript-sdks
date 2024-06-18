@@ -43,3 +43,5 @@ Thumbs.db
 !.yarn/releases
 **/test/scratch
 /custom-docker-compose-cloud.yaml
+
+.nx/cache

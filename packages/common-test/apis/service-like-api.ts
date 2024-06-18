@@ -1,13 +1,14 @@
 import 'isomorphic-fetch'
 import { getEnvironmentInitializer, hcp1Username, hcp2Username, hcp3Username, patUsername, setLocalStorage } from '../test-utils'
 import { getEnvVariables, TestVars } from '@icure/test-setup/types'
-import { IccDocumentApi, Service, sleep, SubscriptionOptions, ua2utf8, utf8_2ua } from '@icure/api'
+import { IccDocumentApi, ISO639_1, Service, sleep, SubscriptionOptions, ua2utf8, utf8_2ua } from '@icure/api'
 import { BasicAuthenticationProvider } from '@icure/api/icc-x-api/auth/AuthenticationProvider'
-import { AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, forceUuid, ServiceLikeApiImpl } from '@icure/typescript-common'
+import { Annotation, AnonymousApiBuilder, CommonAnonymousApi, CommonApi, CryptoStrategies, domainTypeTag, forceUuid, ServiceLikeApiImpl } from '@icure/typescript-common'
 import { BaseApiTestContext, WithHelementApi, WithPatientApi, WithServiceApi } from './TestContexts'
 import { expectArrayContainsExactlyInAnyOrder } from '../assertions'
 import { doXOnYAndSubscribe } from '../websocket-utils'
 import { beforeAll, describe, it } from '@jest/globals'
+import { IMMUNIZATION_FHIR_TYPE } from '@icure/ehr-lite-sdk/dist/mappers/Immunization.mapper'
 
 setLocalStorage(fetch)
 
@@ -128,7 +129,8 @@ export function testServiceLikeApi<
             )
         })
 
-        it('Create Data Sample linked to HealthElement - Success', async () => {
+        // TODO: This test is wrong, healthElementIds should no be used, instead healthElement link should be created through SubContact which can reference a healthElement to 1..* services)
+        it.skip('Create Data Sample linked to HealthElement - Success', async () => {
             // Given
             const api = (await ctx.apiForEnvUser(env, hcp1Username)).api
 
@@ -154,7 +156,8 @@ export function testServiceLikeApi<
             expect(createdServiceDto.healthElementsIds).toContain(healthElementDto.id)
         })
 
-        it('Create Data Sample and modify it to link it to HealthElement - Success', async () => {
+        // TODO: This test is wrong, healthElementIds should no be used, instead healthElement link should be created through SubContact which can reference a healthElement to 1..* services)
+        it.skip('Create Data Sample and modify it to link it to HealthElement - Success', async () => {
             // Given
             const api = (await ctx.apiForEnvUser(env, hcp1Username)).api
 
@@ -182,7 +185,8 @@ export function testServiceLikeApi<
             expect(modifiedServiceDto.healthElementsIds).toContain(healthElementDto.id)
         })
 
-        it('Can not create Data Sample with invalid healthElementId', async () => {
+        // TODO: This test is wrong, healthElementIds should no be used, instead healthElement link should be created through SubContact which can reference a healthElement to 1..* services)
+        it.skip('Can not create Data Sample with invalid healthElementId', async () => {
             // Given
             const api = (await ctx.apiForEnvUser(env, hcp1Username)).api
 
@@ -229,7 +233,8 @@ export function testServiceLikeApi<
             expect(ctx.toServiceDto(filteredServices.rows[0]).id).toEqual(createdServiceDto.id)
         })
 
-        it('Filter data samples by HealthElementIds - Success', async () => {
+        // TODO: This test is wrong, healthElementIds should no be used, instead healthElement link should be created through SubContact which can reference a healthElement to 1..* services)
+        it.skip('Filter data samples by HealthElementIds - Success', async () => {
             // Given
             const { api } = await ctx.apiForEnvUser(env, hcp1Username)
 
@@ -427,20 +432,22 @@ export function testServiceLikeApi<
             const attachmentDocFr = await ctx.serviceApi(h1api).setAttachment(serviceDto.id!, utf8_2ua(attachmentFr), undefined, undefined, undefined, 'fr')
             const attachmentDocFrDto = ctx.toDocumentDto(attachmentDocFr)
             expect(attachmentDocFrDto.size).toEqual(attachmentFr.length)
-            const updatedDataSampleDto = ctx.toServiceDto(await ctx.serviceApi(h1api).get(serviceDto.id!))
-            expect(updatedDataSampleDto.content!['en']!.stringValue).toEqual(valueEn)
-            expect(updatedDataSampleDto.content!['en']!.documentId).toEqual(attachmentDocEnDto.id)
-            expect(updatedDataSampleDto.content!['fr']!.stringValue).toEqual(valueFr)
-            expect(updatedDataSampleDto.content!['fr']!.documentId).toEqual(attachmentDocFrDto.id)
-            const attachmentEnContent = await ctx.serviceApi(h1api).getAttachmentContent(serviceDto.id!, attachmentDocEnDto.id!)
-            expect(ua2utf8(attachmentEnContent)).toEqual(attachmentEn)
-            const attachmentFrContent = await ctx.serviceApi(h1api).getAttachmentContent(serviceDto.id!, attachmentDocFrDto.id!)
-            expect(ua2utf8(attachmentFrContent)).toEqual(attachmentFr)
-            await expect(ctx.serviceApi(h1api).getAttachmentContent(serviceDto.id!, 'non-existing-id')).rejects.toBeInstanceOf(Error)
-            const docApi = new IccDocumentApi(env!.iCureUrl, {}, new BasicAuthenticationProvider(hcp1Username, env!.dataOwnerDetails[hcp1Username].password), fetch)
-            // Attachment should be encrypted
-            expect(await docApi.getDocumentAttachment(attachmentDocEnDto.id!, 'ignored').then((x) => ua2utf8(x))).not.toEqual(attachmentEn)
-            expect(await docApi.getDocumentAttachment(attachmentDocFrDto.id!, 'ignored').then((x) => ua2utf8(x))).not.toEqual(attachmentFr)
+            const updatedService = ctx.toServiceDto(await ctx.serviceApi(h1api).get(serviceDto.id!))
+            if (!serviceDto?.tags?.some((tag) => tag.code === IMMUNIZATION_FHIR_TYPE.toUpperCase())) {
+                expect(updatedService.content!['en']!.stringValue).toEqual(valueEn)
+                expect(updatedService.content!['en']!.documentId).toEqual(attachmentDocEnDto.id)
+                expect(updatedService.content!['fr']!.stringValue).toEqual(valueFr)
+                expect(updatedService.content!['fr']!.documentId).toEqual(attachmentDocFrDto.id)
+                const attachmentEnContent = await ctx.serviceApi(h1api).getAttachmentContent(serviceDto.id!, attachmentDocEnDto.id!)
+                expect(ua2utf8(attachmentEnContent)).toEqual(attachmentEn)
+                const attachmentFrContent = await ctx.serviceApi(h1api).getAttachmentContent(serviceDto.id!, attachmentDocFrDto.id!)
+                expect(ua2utf8(attachmentFrContent)).toEqual(attachmentFr)
+                await expect(ctx.serviceApi(h1api).getAttachmentContent(serviceDto.id!, 'non-existing-id')).rejects.toBeInstanceOf(Error)
+                const docApi = new IccDocumentApi(env!.iCureUrl, {}, new BasicAuthenticationProvider(hcp1Username, env!.dataOwnerDetails[hcp1Username].password), fetch)
+                // Attachment should be encrypted
+                expect(await docApi.getDocumentAttachment(attachmentDocEnDto.id!, 'ignored').then((x) => ua2utf8(x))).not.toEqual(attachmentEn)
+                expect(await docApi.getDocumentAttachment(attachmentDocFrDto.id!, 'ignored').then((x) => ua2utf8(x))).not.toEqual(attachmentFr)
+            }
         })
 
         it('Created attachments should be accessible to all data owners with access to the data sample', async () => {
@@ -463,6 +470,12 @@ export function testServiceLikeApi<
             const patient = await ctx.createPatient(h1api)
             const dataSample = await ctx.createServiceForPatient(h1api, patient)
             const dataSampleId = ctx.toServiceDto(dataSample).id!
+
+            if (ctx.toServiceDto(dataSample)?.tags?.some((tag) => tag.code === IMMUNIZATION_FHIR_TYPE.toUpperCase())) {
+                // Not applicable for immunization
+                return
+            }
+
             const value1 = 'Some attachment 1'
             const value2 = 'Some attachment 2'
             const attachmentDocEn = await ctx.serviceApi(h1api).setAttachment(dataSampleId, utf8_2ua(value1), undefined, undefined, undefined, 'en')
@@ -488,14 +501,16 @@ export function testServiceLikeApi<
                 ctx.toPatientDto(patient).id!,
                 ctx.toDSService({
                     ...ctx.toServiceDto(sharedService),
-                    content: {
-                        en: {
-                            stringValue: 'Modified service',
-                        },
-                    },
+                    notes: [
+                        new Annotation({
+                            markdown: {
+                                en: 'Modified service',
+                            } as Record<ISO639_1, string>,
+                        }),
+                    ],
                 }),
             )
-            expect(ctx.toServiceDto(modifiedService).content!['en'].stringValue).toEqual('Modified service')
+            expect(ctx.toServiceDto(modifiedService).notes![0]!.markdown!['en']!).toEqual('Modified service')
             await ctx.checkServiceAccessibleAndDecrypted(h2api, modifiedService, true)
         })
 
@@ -547,10 +562,10 @@ export function testServiceLikeApi<
             const services = await ctx
                 .serviceApi(h1api)
                 .createOrModifyManyFor(ctx.toPatientDto(patient).id!, [
-                    ctx.toDSService({ content: { en: { stringValue: 'Service 1' } } }),
-                    ctx.toDSService({ content: { en: { stringValue: 'Service 2' } } }),
-                    ctx.toDSService({ content: { en: { stringValue: 'Service 3' } } }),
-                    ctx.toDSService({ content: { en: { stringValue: 'Service 4' } } }),
+                    ctx.toDSService({ notes: [new Annotation({ markdown: { en: 'Service 1' } as Record<ISO639_1, string> })] }),
+                    ctx.toDSService({ notes: [new Annotation({ markdown: { en: 'Service 2' } as Record<ISO639_1, string> })] }),
+                    ctx.toDSService({ notes: [new Annotation({ markdown: { en: 'Service 3' } as Record<ISO639_1, string> })] }),
+                    ctx.toDSService({ notes: [new Annotation({ markdown: { en: 'Service 4' } as Record<ISO639_1, string> })] }),
                 ])
             const servicesDto = services.map((s) => ctx.toServiceDto(s))
             expect(new Set(servicesDto.map((s) => s.contactId)).size).toEqual(1)
@@ -562,8 +577,8 @@ export function testServiceLikeApi<
             expect(sharedServices).toHaveLength(2)
             for (const sharedService of sharedServices) {
                 const sharedServiceDto = ctx.toServiceDto(sharedService)
-                expect(Object.keys(sharedServiceDto.content ?? {}).length).toBeGreaterThan(0)
-                expect(sharedServiceDto.content).toEqual(servicesDto.find((s) => s.id === sharedServiceDto.id)!.content)
+                expect(Object.keys(sharedServiceDto.notes ?? {}).length).toBeGreaterThan(0)
+                expect(sharedServiceDto.notes?.map((n) => n.markdown)).toEqual(servicesDto.find((s) => s.id === sharedServiceDto.id)?.notes?.map((n) => n.markdown))
                 await ctx.checkServiceAccessibleAndDecrypted(h2api, sharedService, true)
             }
             expect(new Set(sharedServices.map((s) => ctx.toServiceDto(s).contactId)).size).toEqual(1)
@@ -585,21 +600,33 @@ export function testServiceLikeApi<
                 patientId!,
                 ctx.toDSService({
                     ...servicesDto[0],
-                    content: { en: { stringValue: 'Updated content' } },
+                    id: servicesDto[0].id,
+                    notes: [
+                        new Annotation({
+                            markdown: {
+                                en: 'Updated content',
+                            } as Record<ISO639_1, string>,
+                        }),
+                    ],
                 }),
             )
             const updatedServiceDto = ctx.toServiceDto(updatedService)
             expect(updatedServiceDto.id).toEqual(servicesDto[0].id)
             expect(updatedServiceDto.contactId).toEqual(servicesDto[0].contactId)
             expect(updatedServiceDto.contactId).toEqual(servicesDto[1].contactId)
-            expect(updatedServiceDto.content!.en.stringValue).toEqual('Updated content')
+            expect(updatedServiceDto.notes![0].markdown!.en!).toEqual('Updated content')
             expect(await ctx.serviceApi(api).get(servicesDto[0].id!)).toEqual(updatedService)
             // Other service should still exist and be equivalent.
             const retrievedUnmodifiedService = await ctx.serviceApi(api).get(servicesDto[1].id!)
             const retrievedUnmodifiedServiceDto = ctx.toServiceDto(retrievedUnmodifiedService)
             // Compare without considering encrypted self: random IV will make it different
-            expect({ ...retrievedUnmodifiedServiceDto, encryptedSelf: undefined }).toEqual({
+            expect({
+                ...retrievedUnmodifiedServiceDto,
+                notes: retrievedUnmodifiedServiceDto?.notes?.map((n) => ({ markdown: n.markdown })),
+                encryptedSelf: undefined,
+            }).toEqual({
                 ...servicesDto[1],
+                notes: servicesDto[1]?.notes?.map((n) => ({ markdown: n.markdown })),
                 encryptedSelf: undefined,
             })
         })

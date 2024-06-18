@@ -1,12 +1,10 @@
-import { BaseApiTestContext, WithAuthenticationApi, WithDataOwnerApi, WithHcpApi, WithHelementApi, WithMaintenanceTaskApi, WithMessageApi, WithPatientApi, WithServiceApi, WithTopicApi } from '../../../common-test/apis/TestContexts'
+import { BaseApiTestContext, WithAuthenticationApi, WithContactApi, WithDataOwnerApi, WithHcpApi, WithHelementApi, WithMaintenanceTaskApi, WithMessageApi, WithPatientApi, WithServiceApi, WithTopicApi } from '../../../common-test/apis/TestContexts'
 import {
-    Annotation,
     AnonymousEHRLiteApi,
     AuthenticationApi,
     Condition,
     ConditionApi,
     ConditionFilter,
-    DataOwnerApi,
     DataOwnerWithType,
     EHRLiteApi,
     HumanName,
@@ -16,18 +14,31 @@ import {
     mapTopicDtoToTopic,
     mapTopicToTopicDto,
     MessageLikeApi,
-    NotificationApi,
     NotificationFilter,
     Observation,
     ObservationApi,
     ObservationFilter,
     Organisation,
     OrganisationApi,
-    Patient,
-    PatientApi,
     Practitioner,
     PractitionerApi,
+    forceUuid,
+    EncounterFilter,
+    ContactFilter,
     UserApi,
+    Patient,
+    PatientApi,
+    Annotation,
+    NotificationApi,
+    DataOwnerApi,
+    TopicApi,
+    Binary,
+    Encounter,
+    Immunization,
+    Quantity,
+    Component,
+    ImmunizationFilter,
+    ImmunizationApi,
 } from '../../src'
 import { EHRLiteCryptoStrategies, SimpleEHRLiteCryptoStrategies } from '../../src/services/EHRLiteCryptoStrategies'
 import {
@@ -48,20 +59,22 @@ import {
     recordOf,
     Topic,
     User,
+    ContactLikeApi,
+    DataOwnerWithTypeDto,
 } from '@icure/typescript-common'
 import { EHRLiteMessageFactory } from '../../src/services/EHRLiteMessageFactory'
-import { CodeStub, DataOwnerWithType as DataOwnerWithTypeDto, Document as DocumentDto, HealthcareParty, HealthElement, MaintenanceTask, Message as MessageDto, Patient as PatientDto, Service, Topic as TopicDto, User as UserDto } from '@icure/api'
+import { HealthcareParty, Patient as PatientDto, Service, User as UserDto, Document as DocumentDto, HealthElement, CodeStub, MaintenanceTask, Topic as TopicDto, Message as MessageDto, Contact, ISO639_1 } from '@icure/api'
 import { TestMessageFactory } from '../test-utils'
 import { mapPatientDtoToPatient, mapPatientToPatientDto } from '../../src/mappers/Patient.mapper'
 import { mapConditionToHealthElementDto, mapHealthElementDtoToCondition } from '../../src/mappers/Condition.mapper'
-import { mapObservationToServiceDto, mapServiceDtoToObservation } from '../../src/mappers/Observation.mapper'
+import { mapObservationToServiceDto, mapServiceDtoToObservation, OBSERVATION_FHIR_TYPE } from '../../src/mappers/Observation.mapper'
 import { mapHealthcarePartyDtoToPractitioner, mapPractitionerToHealthcarePartyDto } from '../../src/mappers/Practitioner.mapper'
 import { mapHealthcarePartyDtoToOrganisation, mapOrganisationToHealthcarePartyDto } from '../../src/mappers/Organisation.mapper'
 import dataOwnerMapper from '../../src/mappers/DataOwner.mapper'
 import { TestVars } from '@icure/test-setup/types'
-import { TopicApi } from '../../src/apis/TopicApi'
-import { Binary } from '../../src/models/Binary.model'
 import { mapBinaryToDocumentAttachment, mapDocumentAttachmentToBinary } from '../../src/mappers/Binary.mapper'
+import { mapContactDtoToEncounter, mapEncounterToContactDto } from '../../src/mappers/Encounter.mapper'
+import { IMMUNIZATION_FHIR_TYPE, mapImmunizationToServiceDto, mapServiceDtoToImmunization } from '../../src/mappers/Immunization.mapper'
 
 export class EhrLiteBaseTestContext extends BaseApiTestContext<AnonymousEHRLiteApi.Builder, AnonymousEHRLiteApi, EHRLiteApi, EHRLiteCryptoStrategies, User, EHRLiteMessageFactory> {
     newAnonymousApiBuilder(): AnonymousEHRLiteApi.Builder {
@@ -108,7 +121,7 @@ function annotation1(): Annotation {
         markdown: recordOf({
             en: 'This should be encrypted',
             fr: 'Ceci devrait être crypté',
-        }),
+        }) as Record<ISO639_1, string>,
     })
 }
 
@@ -117,7 +130,7 @@ function annotation2(): Annotation {
         markdown: recordOf({
             en: 'This should be encrypted',
             fr: 'Ceci devrait être crypté',
-        }),
+        }) as Record<ISO639_1, string>,
     })
 }
 
@@ -125,7 +138,7 @@ function annotation2(): Annotation {
 function addDomainTypeTagIfMissing(tags: CodeStub[] | undefined, domainType: string): CodeStub[] {
     const found = extractDomainTypeTag(tags)
     if (tags && found) {
-        expect(found.code).toEqual(domainType)
+        expect(found.code).toEqual(domainType.toUpperCase())
         return tags!
     } else return [...(tags ?? []), domainTypeTag(domainType)]
 }
@@ -187,7 +200,7 @@ export function PatientApiAware<TBase extends Constructor<any>>(Base: TBase): TB
 }
 
 export function ConditionApiAware<TBase extends Constructor<any>>(Base: TBase): TBase & Constructor<WithHelementApi<EHRLiteApi, Condition, Patient>> {
-    return class ConditionApiA4wareImpl extends Base implements WithHelementApi<EHRLiteApi, Condition, Patient> {
+    return class ConditionApiAwareImpl extends Base implements WithHelementApi<EHRLiteApi, Condition, Patient> {
         checkDefaultHelementDecrypted(helement: Condition): void {
             expect(helement.notes).toBeTruthy()
             expect(helement.notes).toHaveLength(1)
@@ -241,6 +254,78 @@ export function ConditionApiAware<TBase extends Constructor<any>>(Base: TBase): 
     }
 }
 
+export function EncounterApiAware<TBase extends Constructor<any>>(Base: TBase): TBase & Constructor<WithContactApi<EHRLiteApi, Encounter, Patient>> {
+    return class EncounterApiAwareImpl extends Base implements WithContactApi<EHRLiteApi, Encounter, Patient> {
+        contactApi(api: EHRLiteApi): ContactLikeApi<Encounter> {
+            return api.encounterApi
+        }
+        async createContactForPatient(api: EHRLiteApi, patient: Patient): Promise<Encounter> {
+            const encounterId = forceUuid()
+            const currentUser = await api.userApi.getLogged()
+            const dataOwnerId = api.dataOwnerApi.getDataOwnerIdOf(currentUser)
+            return api.encounterApi.createOrModifyFor(
+                patient.id!,
+                new Encounter({
+                    id: encounterId,
+                    tags: [new CodingReference({ id: 'IC-TEST|TEST|1', type: 'IC-TEST', code: 'TEST', version: '1' })],
+                    startTime: 202406111500,
+                    endTime: 202406111600,
+                    performer: dataOwnerId,
+                    notes: [annotation1()],
+                    immunizations: [
+                        new Immunization({
+                            id: forceUuid(),
+                            vaccineCode: new CodingReference({ id: 'ICD-11|A01|1', type: 'ICD-11', code: 'A01', version: '1' }),
+                            doseQuantity: new Quantity({
+                                value: 15,
+                                code: new CodingReference({ id: 'UCUM|mg|1', type: 'UCUM', code: 'mg', version: '1' }),
+                                unit: 'mg',
+                            }),
+                            site: new CodingReference({ id: 'SNOMED|123456|1', type: 'SNOMED', code: '123456', version: '1' }),
+                            occurrenceDateTime: 202406111506,
+                            language: 'en',
+                            notes: [annotation1()],
+                        }),
+                    ],
+                }),
+            )
+        }
+        async checkContactAccessibleAndDecrypted(api: EHRLiteApi, contact: Encounter, checkDeepEquals: boolean): Promise<void> {
+            const retrieved = await api.encounterApi.get(contact.id)
+            expect(retrieved.notes).toBeTruthy()
+            expect(retrieved.notes!.length).toBeGreaterThan(0)
+            retrieved.notes!.forEach((note) => {
+                expect(note.markdown).toBeTruthy()
+                expect(Object.entries(note.markdown).length).toBeGreaterThan(0)
+            })
+            if (checkDeepEquals) {
+                expect(retrieved).toEqual(contact)
+            }
+        }
+        async checkContactInaccessible(api: EHRLiteApi, contact: Encounter): Promise<void> {
+            await expect(api.conditionApi.get(contact.id)).rejects.toBeInstanceOf(Error)
+        }
+        checkDefaultContactDecrypted(contact: Encounter): void {
+            expect(contact.notes).toBeTruthy()
+            expect(contact.notes).toHaveLength(1)
+            expect(contact.notes![0].markdown).toEqual(annotation1().markdown)
+            expect(contact.immunizations).toBeTruthy()
+            expect(contact.immunizations).toHaveLength(1)
+            expect(contact.immunizations![0].notes).toBeTruthy()
+        }
+        newContactFilter(api: EHRLiteApi): ContactFilter<Patient> {
+            return new EncounterFilter(api)
+        }
+        toContactDto(dsContact: Encounter): Contact {
+            return mapEncounterToContactDto(dsContact)
+        }
+
+        toDSContact(contactDto: Contact): Encounter {
+            return mapContactDtoToEncounter(contactDto)
+        }
+    }
+}
+
 export function ObservationApiAware<TBase extends Constructor<any>>(Base: TBase): TBase & Constructor<WithServiceApi<EHRLiteApi, Observation, Patient, Document>> {
     return class ObservationApiAwareImpl extends Base implements WithServiceApi<EHRLiteApi, Observation, Patient, Document> {
         checkDefaultServiceDecrypted(service: Observation): void {
@@ -269,7 +354,7 @@ export function ObservationApiAware<TBase extends Constructor<any>>(Base: TBase)
                 patient.id!,
                 new Observation({
                     tags: [new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })],
-                    localContent: recordOf({ en: new LocalComponent({ stringValue: 'Hello world' }) }),
+                    localContent: recordOf({ en: new LocalComponent({ stringValue: 'Hello world' }) }) as Record<ISO639_1, LocalComponent>,
                 }),
             )
         }
@@ -278,11 +363,11 @@ export function ObservationApiAware<TBase extends Constructor<any>>(Base: TBase)
             return api.observationApi.createOrModifyManyFor(patient.id!, [
                 new Observation({
                     tags: [new CodingReference({ id: 'testid2', type: 'IC-TEST', code: 'TEST' })],
-                    localContent: recordOf({ en: new LocalComponent({ stringValue: 'Hello world' }) }),
+                    localContent: recordOf({ en: new LocalComponent({ stringValue: 'Hello world' }) }) as Record<ISO639_1, LocalComponent>,
                 }),
                 new Observation({
                     tags: [new CodingReference({ id: 'testid', type: 'IC-TEST', code: 'TEST' })],
-                    localContent: recordOf({ en: new LocalComponent({ stringValue: 'Good night world' }) }),
+                    localContent: recordOf({ en: new LocalComponent({ stringValue: 'Good night world' }) }) as Record<ISO639_1, LocalComponent>,
                 }),
             ])
         }
@@ -298,7 +383,7 @@ export function ObservationApiAware<TBase extends Constructor<any>>(Base: TBase)
         toDSService(serviceDto: Service): Observation {
             return mapServiceDtoToObservation({
                 ...serviceDto,
-                tags: addDomainTypeTagIfMissing(serviceDto.tags, 'observation'.toUpperCase()),
+                tags: addDomainTypeTagIfMissing(serviceDto.tags, OBSERVATION_FHIR_TYPE),
             })
         }
 
@@ -308,6 +393,104 @@ export function ObservationApiAware<TBase extends Constructor<any>>(Base: TBase)
 
         toServiceDto(dsService: Observation): Service {
             return mapObservationToServiceDto(dsService)
+        }
+    }
+}
+
+export function ImmunizationApiAware<TBase extends Constructor<any>>(Base: TBase): TBase & Constructor<WithServiceApi<EHRLiteApi, Immunization, Patient, Document>> {
+    return class ImmunizationApiAwareImpl extends Base implements WithServiceApi<EHRLiteApi, Immunization, Patient, Document> {
+        checkDefaultServiceDecrypted(service: Immunization): void {
+            expect(service.notes[0].markdown).toEqual(annotation1().markdown)
+        }
+
+        async checkServiceAccessibleAndDecrypted(api: EHRLiteApi, service: Immunization, checkDeepEquals: boolean): Promise<void> {
+            const retrieved = await api.immunizationApi.get(service.id!)
+            expect(retrieved).toBeTruthy()
+            expect(Object.keys(retrieved.notes).length).toBeGreaterThan(0)
+            if (checkDeepEquals) expect(retrieved).toEqual(service)
+        }
+
+        async checkServiceAccessibleButEncrypted(api: EHRLiteApi, service: Immunization): Promise<void> {
+            const retrieved = await api.immunizationApi.get(service.id!)
+            expect(retrieved).toBeTruthy()
+            expect(Object.keys(retrieved.notes)).toHaveLength(0)
+        }
+
+        async checkServiceInaccessible(api: EHRLiteApi, service: Immunization): Promise<void> {
+            await expect(api.immunizationApi.get(service.id!)).rejects.toBeInstanceOf(Error)
+        }
+
+        createServiceForPatient(api: EHRLiteApi, patient: Patient): Promise<Immunization> {
+            return api.immunizationApi.createOrModifyFor(
+                patient.id!,
+                new Immunization({
+                    id: forceUuid(),
+                    vaccineCode: new CodingReference({ id: 'ICD-11|A01|1', type: 'ICD-11', code: 'A01', version: '1' }),
+                    doseQuantity: new Quantity({
+                        value: 15,
+                        code: new CodingReference({ id: 'UCUM|mg|1', type: 'UCUM', code: 'mg', version: '1' }),
+                        unit: 'mg',
+                    }),
+                    site: new CodingReference({ id: 'SNOMED|123456|1', type: 'SNOMED', code: '123456', version: '1' }),
+                    occurrenceDateTime: 202406111506,
+                    language: 'en',
+                    notes: [annotation1()],
+                }),
+            )
+        }
+
+        createServicesForPatient(api: EHRLiteApi, patient: Patient): Promise<Immunization[]> {
+            return api.immunizationApi.createOrModifyManyFor(patient.id!, [
+                new Immunization({
+                    id: forceUuid(),
+                    vaccineCode: new CodingReference({ id: 'ICD-11|A01|1', type: 'ICD-11', code: 'A01', version: '1' }),
+                    doseQuantity: new Quantity({
+                        value: 15,
+                        code: new CodingReference({ id: 'UCUM|mg|1', type: 'UCUM', code: 'mg', version: '1' }),
+                        unit: 'mg',
+                    }),
+                    site: new CodingReference({ id: 'SNOMED|123456|1', type: 'SNOMED', code: '123456', version: '1' }),
+                    occurrenceDateTime: 202406111506,
+                    language: 'en',
+                    notes: [annotation1()],
+                }),
+                new Immunization({
+                    id: forceUuid(),
+                    vaccineCode: new CodingReference({ id: 'ICD-12|A02|1', type: 'ICD-12', code: 'A02', version: '1' }),
+                    doseQuantity: new Quantity({
+                        value: 26,
+                        code: new CodingReference({ id: 'UCUM|ml|1', type: 'UCUM', code: 'mg', version: '1' }),
+                        unit: 'ml',
+                    }),
+                    site: new CodingReference({ id: 'SNOMED|123456|1', type: 'SNOMED', code: '123456', version: '1' }),
+                    occurrenceDateTime: 202406111506,
+                    language: 'en',
+                    notes: [annotation1()],
+                }),
+            ])
+        }
+
+        newServiceFilter(api: EHRLiteApi): ImmunizationFilter {
+            return new ImmunizationFilter(api)
+        }
+
+        serviceApi(api: EHRLiteApi): ImmunizationApi {
+            return api.immunizationApi
+        }
+
+        toDSService(serviceDto: Service): Immunization {
+            return mapServiceDtoToImmunization({
+                ...serviceDto,
+                tags: addDomainTypeTagIfMissing(serviceDto.tags, IMMUNIZATION_FHIR_TYPE),
+            })
+        }
+
+        toDocumentDto(dsDocument: Document): DocumentDto {
+            return mapDocumentToDocumentDto(dsDocument)
+        }
+
+        toServiceDto(dsService: Immunization): Service {
+            return mapImmunizationToServiceDto(dsService)
         }
     }
 }

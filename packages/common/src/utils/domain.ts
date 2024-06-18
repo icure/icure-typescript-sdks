@@ -44,19 +44,18 @@ export const domainTypeTag = (domainType: string): CodeStub => {
     })
 }
 
-export const filteringOutInternalTags = (fhirType: string, tags: CodeStub[] | undefined, throwOnMissing: boolean = true): Array<CodingReference> | undefined => {
+export const filteringOutInternalTags = (fhirType: string, tags: CodeStub[] | undefined, throwOnMissing: boolean = true): CodingReference[] | undefined => {
     const domainTypeTag = extractDomainTypeTag(tags)
     const fhirTypeUpperCased = fhirType.toUpperCase()
     if ((!domainTypeTag || domainTypeTag.code?.toUpperCase() !== fhirTypeUpperCased) && throwOnMissing) throw new Error(`${fhirTypeUpperCased} domain tag type is missing`)
-    const filteredTags = tags?.filter((tag) => tag.type !== ICURE_INTERNAL_FHIR_TAG_TYPE)
+    const filteredTags = tags?.filter((tag) => tag.type != ICURE_INTERNAL_FHIR_TAG_TYPE) ?? []
     return !!filteredTags?.length ? filteredTags.map(mapCodeStubToCodingReference) : undefined
 }
 
-export const mergeTagsWithInternalTags = (fhir: string, tags: Array<CodingReference> | undefined, systemMetaData: SystemMetaDataEncrypted | SystemMetaDataOwnerEncrypted | SystemMetaDataOwner | undefined): CodeStub[] => {
-    const tagArray = [...(tags ?? [])]
+export const mergeTagsWithInternalTags = (fhir: string, tags: CodingReference[] | undefined, systemMetaData: SystemMetaDataEncrypted | SystemMetaDataOwnerEncrypted | SystemMetaDataOwner | undefined): CodeStub[] => {
     if (!systemMetaData) {
-        return addUniqueObjectsToArray(tagArray?.map(mapCodingReferenceToCodeStub) ?? [], domainTypeTag(fhir))
+        return addUniqueObjectsToArray(tags?.map(mapCodingReferenceToCodeStub) ?? [], domainTypeTag(fhir))
     }
-    const systemMetaDataCodeStubs = systemMetaDataTags(systemMetaData)
-    return addUniqueObjectsToArray(tagArray, ...systemMetaDataCodeStubs).map(mapCodingReferenceToCodeStub)
+    const systemMetaDataCodingReferences = systemMetaDataTags(systemMetaData)
+    return addUniqueObjectsToArray(tags ?? [], ...systemMetaDataCodingReferences).map(mapCodingReferenceToCodeStub)
 }

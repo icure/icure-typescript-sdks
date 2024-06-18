@@ -37,6 +37,8 @@ import { mapAddressDtoToLocation, mapLocationToAddressDto } from './Location.map
 import { healthcareProfessionalIdentifiers } from './utils/HealthProfessional.utils'
 import { b64_2ab, ua2b64 } from '@icure/api'
 
+const ORGANISATION_FHIR_TYPE = 'Organisation'
+
 function toHealthcarePartyDtoId(domain: Organisation): string | undefined {
     return domain.id
 }
@@ -62,7 +64,7 @@ function toHealthcarePartyDtoIdentifier(domain: Organisation): IdentifierDto[] |
 }
 
 function toHealthcarePartyDtoTags(domain: Organisation): CodeStub[] | undefined {
-    return mergeTagsWithInternalTags('organisation', domain.tags, domain.systemMetaData)
+    return mergeTagsWithInternalTags(ORGANISATION_FHIR_TYPE, [...domain.tags], domain.systemMetaData)
 }
 
 function toHealthcarePartyDtoCodes(domain: Organisation): CodeStub[] | undefined {
@@ -285,8 +287,8 @@ function toOrganisationIdentifiers(dto: HealthcarePartyDto): Identifier[] | unde
     return identifiers.map(mapIdentifierDtoToIdentifier)
 }
 
-function toOrganisationTags(dto: HealthcarePartyDto): Array<CodingReference> | undefined {
-    return filteringOutInternalTags('organisation', dto.tags)
+function toOrganisationTags({ tags }: HealthcarePartyDto): Array<CodingReference> | undefined {
+    return filteringOutInternalTags(ORGANISATION_FHIR_TYPE, tags)
 }
 
 function toOrganisationCodes(dto: HealthcarePartyDto): Array<CodingReference> | undefined {
