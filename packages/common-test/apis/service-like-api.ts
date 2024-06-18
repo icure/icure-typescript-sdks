@@ -600,6 +600,7 @@ export function testServiceLikeApi<
                 patientId!,
                 ctx.toDSService({
                     ...servicesDto[0],
+                    id: servicesDto[0].id,
                     notes: [
                         new Annotation({
                             markdown: {

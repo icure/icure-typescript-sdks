@@ -8,16 +8,16 @@ import { PatientDto } from '../../index'
 
 export class ContactFilter<DSPatient> implements DataOwnerFilterBuilder<Contact, ContactFilterWithDataOwner<DSPatient>> {
     constructor(
-        private diocane: CommonApi,
+        private api: CommonApi,
         private patientMapper: Mapper<DSPatient, PatientDto>,
     ) {}
 
     forDataOwner(dataOwnerId: string): ContactFilterWithDataOwner<DSPatient> {
-        return new ContactFilterWithDataOwner(this.diocane, this.patientMapper, dataOwnerId)
+        return new ContactFilterWithDataOwner(this.api, this.patientMapper, dataOwnerId)
     }
 
     forSelf(): ContactFilterWithDataOwner<DSPatient> {
-        return new ContactFilterWithDataOwner(this.diocane, this.patientMapper)
+        return new ContactFilterWithDataOwner(this.api, this.patientMapper)
     }
 }
 
@@ -75,7 +75,7 @@ export class ContactFilterWithDataOwner<DSPatient> extends SortableFilterBuilder
     }
 
     byServiceIds(serviceIds: string[]): ContactFilterWithDataOwner<DSPatient> {
-        this._builderAccumulator.addSingletonFilter(Promise.resolve({ ids: serviceIds, $type: 'ContactByServiceIdsFilter' }))
+        this._builderAccumulator.addByIdsFilter(Promise.resolve({ ids: serviceIds, $type: 'ContactByServiceIdsFilter' }), '$type')
         return this
     }
 
