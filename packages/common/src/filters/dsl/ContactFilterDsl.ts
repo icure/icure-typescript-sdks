@@ -75,7 +75,7 @@ export class ContactFilterWithDataOwner<DSPatient> extends SortableFilterBuilder
     }
 
     byServiceIds(serviceIds: string[]): ContactFilterWithDataOwner<DSPatient> {
-        this._builderAccumulator.addByIdsFilter(Promise.resolve({ ids: serviceIds, $type: 'ContactByServiceIdsFilter' }), '$type')
+        this._builderAccumulator.addByIdsFilter(Promise.resolve({ ids: serviceIds, $type: 'ContactByServiceIdsFilter' }), 'ids')
         return this
     }
 
