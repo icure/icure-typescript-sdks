@@ -17,10 +17,7 @@ function toAuthenticationTokenDtoDeletionDate(domain: AuthenticationToken): numb
     return undefined
 }
 
-function toAuthenticationTokenToken(dto: AuthenticationTokenDto): string {
-    if (!dto.token) {
-        throw new Error('Token is required')
-    }
+function toAuthenticationTokenToken(dto: AuthenticationTokenDto): string | undefined {
     return dto.token
 }
 

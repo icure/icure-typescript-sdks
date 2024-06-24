@@ -21,7 +21,7 @@ export class AuthenticationToken {
     /**
      * Encrypted token
      */
-    token: string
+    token?: string
     /**
      * Validity starting time of the token
      */
@@ -39,7 +39,7 @@ export class AuthenticationToken {
         }
     }
 
-    constructor(json: Partial<IAuthenticationToken> & { token: string; creationTime: number; validity: number }) {
+    constructor(json: Partial<IAuthenticationToken> & { creationTime: number; validity: number }) {
         this.token = json['token']!
         this.creationTime = json['creationTime']!
         this.validity = json['validity']!
@@ -47,7 +47,7 @@ export class AuthenticationToken {
 }
 
 export interface IAuthenticationToken {
-    token: string
+    token?: string
     creationTime: number
     validity: number
 }
