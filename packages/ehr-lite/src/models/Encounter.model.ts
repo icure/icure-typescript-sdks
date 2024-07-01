@@ -39,7 +39,7 @@ export class Encounter {
     endTime?: number
     reasonCodes: CodingReference[] = []
     diagnosis: string[] = []
-    performer?: string
+    serviceProvider?: string
     author?: string
     created?: number
     modified?: number
@@ -61,7 +61,7 @@ export class Encounter {
             endTime: this.endTime,
             reasonCodes: this.reasonCodes.map((item) => item.toJSON()),
             diagnosis: this.diagnosis.map((item) => item),
-            performer: this.performer,
+            serviceProvider: this.serviceProvider,
             author: this.author,
             created: this.created,
             modified: this.modified,
@@ -102,8 +102,8 @@ export class Encounter {
         if (json['diagnosis'] !== undefined) {
             this.diagnosis = json['diagnosis']!.map((item: any) => item)
         }
-        if (json['performer'] !== undefined) {
-            this.performer = json['performer']!
+        if (json['serviceProvider'] !== undefined) {
+            this.serviceProvider = json['serviceProvider']!
         }
         if (json['author'] !== undefined) {
             this.author = json['author']!
@@ -147,7 +147,7 @@ export interface IEncounter {
     modified?: number
     endOfLife?: number
     author?: string
-    performer?: string
+    serviceProvider?: string
     immunizations: IImmunization[]
     observations: IObservation[]
     notes: IAnnotation[]

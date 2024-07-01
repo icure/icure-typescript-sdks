@@ -270,7 +270,7 @@ export function EncounterApiAware<TBase extends Constructor<any>>(Base: TBase): 
                     tags: [new CodingReference({ id: 'IC-TEST|TEST|1', type: 'IC-TEST', code: 'TEST', version: '1' })],
                     startTime: 202406111500,
                     endTime: 202406111600,
-                    performer: dataOwnerId,
+                    serviceProvider: dataOwnerId,
                     notes: [annotation1()],
                     immunizations: [
                         new Immunization({

@@ -1,5 +1,6 @@
 import { Encounter } from '../models/Encounter.model'
 import {
+    addUniqueObjectsToArray,
     Annotation,
     AnnotationDto,
     CodeStub,
@@ -60,8 +61,8 @@ function toContactDtoAuthor({ author }: Encounter): string | undefined {
     return author
 }
 
-function toContactDtoResponsible({ performer }: Encounter): string | undefined {
-    return performer
+function toContactDtoResponsible({ serviceProvider }: Encounter): string | undefined {
+    return serviceProvider
 }
 
 function toContactDtoMedicalLocationId(domain: Encounter): string | undefined {
@@ -69,15 +70,13 @@ function toContactDtoMedicalLocationId(domain: Encounter): string | undefined {
 }
 
 function toContactDtoTags({ tags, reasonCodes, systemMetaData }: Encounter): CodeStub[] | undefined {
-    return mergeTagsWithInternalTags(
-        ENCOUNTER_FHIR_TYPE,
-        [...tags, ...(reasonCodes?.map((tag) => new CodingReference({ id: tag.id, code: tag.code, version: tag.version, contextLabel: tag.contextLabel, context: `${ENCOUNTER_FHIR_TYPE}.${REASON_CONTEXT}` })) ?? [])],
-        systemMetaData,
-    )
+    return mergeTagsWithInternalTags(ENCOUNTER_FHIR_TYPE, tags, systemMetaData)
 }
 
-function toContactDtoCodes({ codes }: Encounter): CodeStub[] | undefined {
-    return codes.map(mapCodingReferenceToCodeStub)
+function toContactDtoCodes({ codes, reasonCodes }: Encounter): CodeStub[] | undefined {
+    return codes
+        ? addUniqueObjectsToArray(codes, ...reasonCodes?.map((tag) => new CodingReference({ id: tag.id, code: tag.code, version: tag.version, contextLabel: tag.contextLabel, context: `${ENCOUNTER_FHIR_TYPE}.${REASON_CONTEXT}` }))).map(mapCodingReferenceToCodeStub)
+        : undefined
 }
 
 function toContactDtoIdentifier({ identifiers }: Encounter): IdentifierDto[] | undefined {
@@ -149,8 +148,8 @@ function toContactDtoServices({ immunizations, observations }: Encounter): Servi
     })
 }
 
-function toContactDtoHealthcarePartyId({ performer }: Encounter): string | undefined {
-    return performer
+function toContactDtoHealthcarePartyId({ serviceProvider }: Encounter): string | undefined {
+    return serviceProvider
 }
 
 function toContactDtoModifiedContactId(domain: Encounter): string | undefined {
@@ -198,7 +197,7 @@ function toEncounterCodes({ codes }: ContactDto): CodingReference[] | undefined 
 }
 
 function toEncounterTags({ tags }: ContactDto): CodingReference[] | undefined {
-    return filteringOutInternalTags(ENCOUNTER_FHIR_TYPE, tags?.filter((tag) => (tag.context ? !CONTEXTS.includes(tag.context) : true)))
+    return filteringOutInternalTags(ENCOUNTER_FHIR_TYPE, tags)
 }
 
 function toEncounterType({ encounterType }: ContactDto): CodingReference | undefined {
@@ -213,8 +212,8 @@ function toEncounterEndTime({ closingDate }: ContactDto): number | undefined {
     return closingDate
 }
 
-function toEncounterReasonCodes({ tags }: ContactDto): CodingReference[] | undefined {
-    return tags?.filter((tag) => tag.context === `${ENCOUNTER_FHIR_TYPE}.${REASON_CONTEXT}`).map(mapCodeStubToCodingReference)
+function toEncounterReasonCodes({ codes }: ContactDto): CodingReference[] | undefined {
+    return codes?.filter((tag) => tag.context === `${ENCOUNTER_FHIR_TYPE}.${REASON_CONTEXT}`).map(mapCodeStubToCodingReference)
 }
 
 function toEncounterNotes({ notes }: ContactDto): Annotation[] | undefined {
@@ -249,7 +248,7 @@ function toEncounterAuthor({ author }: ContactDto): string | undefined {
     return author
 }
 
-function toEncounterPerformer({ responsible }: ContactDto): string | undefined {
+function toEncounterServiceProvider({ responsible }: ContactDto): string | undefined {
     return responsible
 }
 
@@ -273,7 +272,7 @@ export function mapContactDtoToEncounter(dto: ContactDto): Encounter {
         endTime: toEncounterEndTime(dto),
         reasonCodes: toEncounterReasonCodes(dto),
         diagnosis: toEncounterDiagnosis(dto),
-        performer: toEncounterPerformer(dto),
+        serviceProvider: toEncounterServiceProvider(dto),
         author: toEncounterAuthor(dto),
         created: toEncounterCreated(dto),
         modified: toEncounterModified(dto),
