@@ -6,7 +6,6 @@ import {
     CodeStub,
     CodingReference,
     ContentDto,
-    Delegation,
     DelegationDto,
     filteringOutInternalTags,
     forceUuid,
@@ -205,8 +204,10 @@ function toServiceDtoQualifiedLinks(domain: Immunization): { [key: string]: { [k
     return undefined
 }
 
-function toServiceDtoCodes({ codes }: Immunization): CodeStub[] | undefined {
-    return codes.map(mapCodingReferenceToCodeStub)
+function toServiceDtoCodes({ codes, status, statusReason, subPotentReason, site }: Immunization): CodeStub[] | undefined {
+    const additionalCodes: CodeStub[] = [immunizationStatusToCodeStub(status), immunizationStatusReasonToCodeStub(statusReason), immunizationSubPotentReasonToCodeStub(subPotentReason), immunizationSiteToCodeStub(site)].filter((code) => !!codes) as CodeStub[]
+
+    return addUniqueObjectsToArray(codes.map(mapCodingReferenceToCodeStub), ...additionalCodes)
 }
 
 function immunizationStatusToCodeStub(status: ImmunizationStatus | undefined): CodeStub | null {
@@ -246,15 +247,6 @@ function extractImmunizationStatusReasonFromCodeStub(tags: CodeStub[]): CodingRe
     return statusReasonTag ? mapCodeStubToCodingReference(statusReasonTag) : undefined
 }
 
-function immunizationVaccineCodeToCodeStub(vaccineCode: CodingReference | undefined): CodeStub | null {
-    return vaccineCode
-        ? new CodeStub({
-              ...mapCodingReferenceToCodeStub(vaccineCode),
-              context: `${IMMUNIZATION_FHIR_TYPE}.${VACCINE_CODE_CONTEXT}`,
-          })
-        : null
-}
-
 function extractImmunizationVaccineCodeFromCodeStub(tags: CodeStub[]): CodingReference | undefined {
     const vaccineCodeTag = tags.find((tag) => tag.context === `${IMMUNIZATION_FHIR_TYPE}.${VACCINE_CODE_CONTEXT}`)
     return vaccineCodeTag ? mapCodeStubToCodingReference(vaccineCodeTag) : undefined
@@ -288,12 +280,8 @@ function extractImmunizationSiteFromCodeStub(tags: CodeStub[]): CodingReference 
     return siteTag ? mapCodeStubToCodingReference(siteTag) : undefined
 }
 
-function toServiceDtoTags({ tags, status, statusReason, vaccineCode, subPotentReason, site, systemMetaData }: Immunization): CodeStub[] | undefined {
-    const additionalTags: CodeStub[] = [immunizationStatusToCodeStub(status), immunizationStatusReasonToCodeStub(statusReason), immunizationVaccineCodeToCodeStub(vaccineCode), immunizationSubPotentReasonToCodeStub(subPotentReason), immunizationSiteToCodeStub(site)].filter(
-        (tag) => !!tag,
-    ) as CodeStub[]
-
-    return addUniqueObjectsToArray(mergeTagsWithInternalTags(IMMUNIZATION_FHIR_TYPE, tags, systemMetaData), ...additionalTags)
+function toServiceDtoTags({ tags, systemMetaData }: Immunization): CodeStub[] | undefined {
+    return mergeTagsWithInternalTags(IMMUNIZATION_FHIR_TYPE, tags, systemMetaData)
 }
 
 function toServiceDtoEncryptedSelf({ systemMetaData }: Immunization): string | undefined {
@@ -316,24 +304,24 @@ function toImmunizationRecorder({ responsible }: ServiceDto): string | undefined
     return responsible
 }
 
-function toImmunizationStatus({ tags }: ServiceDto): ImmunizationStatus | undefined {
-    return tags !== undefined ? extractImmunizationStatusFromCodeStub(tags) : undefined
+function toImmunizationStatus({ codes }: ServiceDto): ImmunizationStatus | undefined {
+    return codes != undefined ? extractImmunizationStatusFromCodeStub(codes) : undefined
 }
 
-function toImmunizationStatusReason({ tags }: ServiceDto): CodingReference | undefined {
-    return tags != undefined ? extractImmunizationStatusReasonFromCodeStub(tags) : undefined
+function toImmunizationStatusReason({ codes }: ServiceDto): CodingReference | undefined {
+    return codes != undefined ? extractImmunizationStatusReasonFromCodeStub(codes) : undefined
 }
 
-function toImmunizationVaccineCode({ tags }: ServiceDto): CodingReference | undefined {
-    return tags != undefined ? extractImmunizationVaccineCodeFromCodeStub(tags) : undefined
+function toImmunizationVaccineCode({ codes }: ServiceDto): CodingReference | undefined {
+    return codes != undefined ? extractImmunizationVaccineCodeFromCodeStub(codes) : undefined
 }
 
-function toImmunizationSubPotentReason({ tags }: ServiceDto): CodingReference | undefined {
-    return tags != undefined ? extractImmunizationSubPotentReasonFromCodeStub(tags) : undefined
+function toImmunizationSubPotentReason({ codes }: ServiceDto): CodingReference | undefined {
+    return codes != undefined ? extractImmunizationSubPotentReasonFromCodeStub(codes) : undefined
 }
 
-function toImmunizationSite({ tags }: ServiceDto): CodingReference | undefined {
-    return tags != undefined ? extractImmunizationSiteFromCodeStub(tags) : undefined
+function toImmunizationSite({ codes }: ServiceDto): CodingReference | undefined {
+    return codes != undefined ? extractImmunizationSiteFromCodeStub(codes) : undefined
 }
 
 function toImmunizationRecorded({ valueDate }: ServiceDto): number | undefined {
