@@ -1,4 +1,5 @@
 import { Annotation, CodingReference, ContactDto, EntityId, forceUuid, IAnnotation, ICodingReference, Identifier, IIdentifier, ISystemMetaDataEncrypted, mapTo, SystemMetaDataEncrypted } from '@icure/typescript-common'
+import { EncounterClass } from './enums/EncounterClass.enum'
 import { IImmunization, Immunization } from './Immunization.model'
 import { IObservation, Observation } from './Observation.model'
 
@@ -12,6 +13,7 @@ import { IObservation, Observation } from './Observation.model'
  * @param identifiers The list of identifiers associated with the encounter.
  * @param codes The list of codes associated with the encounter.
  * @param tags The list of tags associated with the encounter.
+ * @param class The class of encounter. [Value set](https://hl7.org/fhir/R4/v3/ActEncounterCode/vs.html)
  * @param type Specific type of encounter. [Value set](https://hl7.org/fhir/R4/valueset-encounter-type.html)
  * @param startTime The start time of the encounter (Unix timestamp).
  * @param endTime The end time of the encounter (Unix timestamp).
@@ -34,6 +36,7 @@ export class Encounter {
     identifiers: Identifier[] = []
     codes: CodingReference[] = []
     tags: CodingReference[] = []
+    encounterClass: EncounterClass
     type?: CodingReference
     startTime?: number
     endTime?: number
@@ -56,6 +59,7 @@ export class Encounter {
             identifiers: this.identifiers.map((item) => item.toJSON()),
             codes: this.codes.map((item) => item.toJSON()),
             tags: this.tags.map((item) => item.toJSON()),
+            encounterClass: this.encounterClass,
             type: !!this.type ? this.type.toJSON() : undefined,
             startTime: this.startTime,
             endTime: this.endTime,
@@ -73,7 +77,7 @@ export class Encounter {
         }
     }
 
-    constructor(json: Partial<IEncounter>) {
+    constructor(json: Partial<IEncounter> & { encounterClass: EncounterClass }) {
         this.id = forceUuid(json['id']!)
         if (json['rev'] !== undefined) {
             this.rev = json['rev']!
@@ -87,6 +91,7 @@ export class Encounter {
         if (json['tags'] !== undefined) {
             this.tags = json['tags']!.map((item: any) => new CodingReference(item))
         }
+        this.encounterClass = json['encounterClass']!
         if (json['type'] !== undefined) {
             this.type = new CodingReference(json['type']!)
         }
@@ -138,6 +143,7 @@ export interface IEncounter {
     identifiers: IIdentifier[]
     codes: ICodingReference[]
     tags: ICodingReference[]
+    encounterClass: EncounterClass
     type?: ICodingReference
     startTime?: number
     endTime?: number

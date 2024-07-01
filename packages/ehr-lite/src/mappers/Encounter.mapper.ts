@@ -35,11 +35,13 @@ import { IMMUNIZATION_FHIR_TYPE, mapImmunizationToServiceDto, mapServiceDtoToImm
 import { mapObservationToServiceDto, mapServiceDtoToObservation, OBSERVATION_FHIR_TYPE } from './Observation.mapper'
 import { Immunization } from '../models/Immunization.model'
 import { Observation } from '../models/Observation.model'
+import { EncounterClass } from '../models/enums/EncounterClass.enum'
 
 export const ENCOUNTER_FHIR_TYPE = 'Encounter'
 
 const REASON_CONTEXT = 'reason'
-const CONTEXTS = [REASON_CONTEXT].map((context) => `${ENCOUNTER_FHIR_TYPE}.${context}`)
+const CLASS_CONTEXT = 'class'
+const CONTEXTS = [REASON_CONTEXT, CLASS_CONTEXT].map((context) => `${ENCOUNTER_FHIR_TYPE}.${context}`)
 
 function toContactDtoId(domain: Encounter): string | undefined {
     return forceUuid(domain.id)
@@ -73,9 +75,13 @@ function toContactDtoTags({ tags, reasonCodes, systemMetaData }: Encounter): Cod
     return mergeTagsWithInternalTags(ENCOUNTER_FHIR_TYPE, tags, systemMetaData)
 }
 
-function toContactDtoCodes({ codes, reasonCodes }: Encounter): CodeStub[] | undefined {
+function toContactDtoCodes({ codes, reasonCodes, encounterClass }: Encounter): CodeStub[] | undefined {
     return codes
-        ? addUniqueObjectsToArray(codes, ...reasonCodes?.map((tag) => new CodingReference({ id: tag.id, code: tag.code, version: tag.version, contextLabel: tag.contextLabel, context: `${ENCOUNTER_FHIR_TYPE}.${REASON_CONTEXT}` }))).map(mapCodingReferenceToCodeStub)
+        ? addUniqueObjectsToArray(
+              codes.map(mapCodingReferenceToCodeStub),
+              ...reasonCodes?.map((tag) => new CodingReference({ id: tag.id, code: tag.code, version: tag.version, contextLabel: tag.contextLabel, context: `${ENCOUNTER_FHIR_TYPE}.${REASON_CONTEXT}` }))?.map(mapCodingReferenceToCodeStub),
+              EncounterClass.toCodeStub(encounterClass),
+          )
         : undefined
 }
 
@@ -260,6 +266,15 @@ function toEncounterObservations({ services }: ContactDto): Observation[] | unde
     return services?.filter((service) => service.tags?.some((tag) => tag.code?.toUpperCase() === OBSERVATION_FHIR_TYPE.toUpperCase()))?.map(mapServiceDtoToObservation)
 }
 
+function toEncounterEncounterClass({ codes }: ContactDto): EncounterClass {
+    const encounterClass = codes?.find((tag) => tag.context === `${ENCOUNTER_FHIR_TYPE}.${CLASS_CONTEXT}`)
+    if (!encounterClass) {
+        throw new Error('Encounter class is missing')
+    }
+
+    return EncounterClass.fromCodeStub(encounterClass)
+}
+
 export function mapContactDtoToEncounter(dto: ContactDto): Encounter {
     return new Encounter({
         id: toEncounterId(dto),
@@ -267,6 +282,7 @@ export function mapContactDtoToEncounter(dto: ContactDto): Encounter {
         identifiers: toEncounterIdentifiers(dto),
         codes: toEncounterCodes(dto),
         tags: toEncounterTags(dto),
+        encounterClass: toEncounterEncounterClass(dto),
         type: toEncounterType(dto),
         startTime: toEncounterStartTime(dto),
         endTime: toEncounterEndTime(dto),
