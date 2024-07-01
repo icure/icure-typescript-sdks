@@ -11,7 +11,7 @@ export class Annotation {
     author?: string
     created?: number
     modified?: number
-    markdown: Record<ISO639_1, string> = {} as Record<ISO639_1, string>
+    markdown: Partial<Record<ISO639_1, string>> = {}
     target?: string
     encryptedSelf?: string
 
@@ -60,7 +60,7 @@ export interface IAnnotation {
     author?: string
     created?: number
     modified?: number
-    markdown: Record<ISO639_1, string>
+    markdown: Partial<Record<ISO639_1, string>>
     target?: string
     encryptedSelf?: string
 }

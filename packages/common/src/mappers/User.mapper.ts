@@ -5,6 +5,8 @@ import { Property } from '../models/Property.model'
 import { AuthenticationToken } from '../models/AuthenticationToken.model'
 import { forceUuid } from '../utils/uuidUtils'
 import SystemMetadata = UserDto.SystemMetadata
+import { mapAuthenticationTokenDtoToAuthenticationToken, mapAuthenticationTokenToAuthenticationTokenDto } from './AuthenticationToken.mapper'
+import { AuthenticationTokenDto } from '../index'
 
 export function toUserDtoId(domain: User): string | undefined {
     return forceUuid(domain.id)
@@ -126,10 +128,10 @@ export function toUserDtoApplicationTokens(domain: User): { [key: string]: strin
 
 export function toUserDtoAuthenticationTokens(domain: User):
     | {
-          [key: string]: AuthenticationToken
+          [key: string]: AuthenticationTokenDto
       }
     | undefined {
-    return Object.fromEntries(Object.entries(domain.authenticationTokens))
+    return Object.fromEntries(Object.entries(domain.authenticationTokens).map(([k, at]) => [k, mapAuthenticationTokenToAuthenticationTokenDto(at)]))
 }
 
 export function toUserId(dto: UserDto): string {
@@ -192,8 +194,8 @@ export function toUserDeviceId(dto: UserDto): string | undefined {
     return dto.deviceId
 }
 
-export function toUserSharingDataWith(dto: UserDto): Record<SharedDataType, Array<string>> {
-    return Object.fromEntries(Object.entries(dto.autoDelegations ?? {}).map(([k, v]) => [k, v])) as Record<SharedDataType, Array<string>>
+export function toUserSharingDataWith(dto: UserDto): Partial<Record<SharedDataType, Array<string>>> {
+    return Object.fromEntries(Object.entries(dto.autoDelegations ?? {}).map(([k, v]) => [k, v]))
 }
 
 export function toUserEmail(dto: UserDto): string | undefined {
@@ -205,7 +207,7 @@ export function toUserMobilePhone(dto: UserDto): string | undefined {
 }
 
 export function toUserAuthenticationTokens(dto: UserDto): Record<string, AuthenticationToken> {
-    return (!!dto.authenticationTokens ? { ...dto.authenticationTokens } : {}) as Record<string, AuthenticationToken>
+    return !!dto.authenticationTokens ? Object.fromEntries(Object.entries(dto.authenticationTokens).map(([k, at]) => [k, mapAuthenticationTokenDtoToAuthenticationToken(at)])) : {}
 }
 
 function toUserDtoSystemMetadata(domain: User): SystemMetadata | undefined {

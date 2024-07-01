@@ -248,8 +248,8 @@ function toAnnotationModified(dto: AnnotationDto): number | undefined {
     return dto.modified
 }
 
-function toAnnotationMarkdown(dto: AnnotationDto): Record<ISO639_1, string> {
-    return Object.fromEntries(Object.entries(dto.markdown ?? {})) as Record<ISO639_1, string>
+function toAnnotationMarkdown(dto: AnnotationDto): Partial<Record<ISO639_1, string>> {
+    return Object.fromEntries(Object.entries(dto.markdown ?? {}))
 }
 
 function toAnnotationTarget(dto: AnnotationDto): string | undefined {

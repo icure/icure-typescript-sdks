@@ -26,7 +26,7 @@ export class Practitioner implements IPractitioner {
     languages: string[] = []
     picture?: base64string
     specialityCodes: CodingReference[] = []
-    description: Record<ISO639_1, string> = {} as Record<ISO639_1, string>
+    description: Partial<Record<ISO639_1, string>> = {}
     properties: Property[] = []
     systemMetaData?: SystemMetaDataOwner
 
@@ -155,7 +155,7 @@ export interface IPractitioner {
     languages: string[]
     picture?: base64string
     specialityCodes: ICodingReference[]
-    description: Record<ISO639_1, string>
+    description: Partial<Record<ISO639_1, string>>
     properties: IProperty[]
     systemMetaData?: ISystemMetaDataOwner
 }

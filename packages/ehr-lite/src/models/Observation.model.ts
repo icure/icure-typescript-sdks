@@ -19,7 +19,7 @@ export class Observation implements IObservation {
     endOfLife?: number
     author?: string
     performer?: string
-    localContent: Record<ISO639_1, LocalComponent> = {} as Record<ISO639_1, LocalComponent>
+    localContent: Partial<Record<ISO639_1, LocalComponent>> = {}
     qualifiedLinks: Record<string, Record<string, string>> = {}
     codes: CodingReference[] = []
     tags: CodingReference[] = []
@@ -133,7 +133,7 @@ export interface IObservation {
     endOfLife?: number
     author?: string
     performer?: string
-    localContent: Record<ISO639_1, ILocalComponent>
+    localContent: Partial<Record<ISO639_1, ILocalComponent>>
     qualifiedLinks: Record<string, Record<string, string>>
     codes: ICodingReference[]
     tags: ICodingReference[]

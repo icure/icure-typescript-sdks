@@ -17,7 +17,7 @@ export class Organisation implements IOrganisation {
     addresses: Location[] = []
     languages: string[] = []
     picture?: base64string
-    description: Record<ISO639_1, string> = {} as Record<ISO639_1, string>
+    description: Partial<Record<ISO639_1, string>> = {}
     properties: Property[] = []
     systemMetaData?: SystemMetaDataOwner
 
@@ -111,7 +111,7 @@ export interface IOrganisation {
     addresses: ILocation[]
     languages: string[]
     picture?: base64string
-    description: Record<ISO639_1, string>
+    description: Partial<Record<ISO639_1, string>>
     properties: IProperty[]
     systemMetaData?: ISystemMetaDataOwner
 }

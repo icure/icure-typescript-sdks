@@ -1,4 +1,5 @@
 export * from './Annotation.mapper'
+export * from './AuthenticationToken.mapper'
 export * from './Coding.mapper'
 export * from './CodingReference.mapper'
 export * from './Delegation.mapper'

@@ -13,7 +13,7 @@ export function generateAnnotation(): Annotation {
         markdown: Object.fromEntries([
             ['en', 'English Markdown'],
             ['fr', 'French Markdown'],
-        ]) as Record<ISO639_1, string>,
+        ]),
         target: 'sampleTarget',
         confidential: true,
         encryptedSelf: 'sampleEncryptedSelf',
