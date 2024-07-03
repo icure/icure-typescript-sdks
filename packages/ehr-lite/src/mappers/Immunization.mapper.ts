@@ -105,7 +105,7 @@ function toServiceDtoIndex({ index }: Immunization): number | undefined {
     return index
 }
 
-function toServiceDtoContent({ language, doseQuantity, vaccineCode, occurrenceDateTime }: Immunization):
+function toServiceDtoContent({ language, doseQuantity, vaccineCode, occurrenceDateTime, expirationDate, lotNumber }: Immunization):
     | {
           [key: string]: ContentDto
       }
@@ -115,7 +115,7 @@ function toServiceDtoContent({ language, doseQuantity, vaccineCode, occurrenceDa
             language ?? 'xx',
             new ContentDto({
                 medicationValue:
-                    doseQuantity || vaccineCode || occurrenceDateTime
+                    doseQuantity || vaccineCode || occurrenceDateTime || expirationDate || lotNumber
                         ? new MedicationDto({
                               medicinalProduct: vaccineCode
                                   ? new MedicinalproductDto({
@@ -124,11 +124,15 @@ function toServiceDtoContent({ language, doseQuantity, vaccineCode, occurrenceDa
                                   : undefined,
                               regimen:
                                   doseQuantity && occurrenceDateTime
-                                      ? new RegimenItemDto({
-                                            administratedQuantity: mapQuantityToAdministrationQuantityDto(doseQuantity),
-                                            date: occurrenceDateTime,
-                                        })
+                                      ? [
+                                            new RegimenItemDto({
+                                                administratedQuantity: mapQuantityToAdministrationQuantityDto(doseQuantity),
+                                                date: occurrenceDateTime,
+                                            }),
+                                        ]
                                       : undefined,
+                              expirationDate,
+                              batch: lotNumber,
                           })
                         : undefined,
             }),
@@ -387,6 +391,18 @@ function toImmunizationOccurrenceDateTime(dto: ServiceDto): number | undefined {
     return regimen !== undefined && regimen.length > 0 && regimen[0].date ? regimen[0].date : undefined
 }
 
+function toImmunizationExpirationDate({ content }: ServiceDto): number | undefined {
+    const contentDto = content ? Object.values(content)[0] : undefined
+    const medicationValue = contentDto?.medicationValue
+    return medicationValue?.expirationDate
+}
+
+function toImmunizationLotNumber({ content }: ServiceDto): string | undefined {
+    const contentDto = content ? Object.values(content)[0] : undefined
+    const medicationValue = contentDto?.medicationValue
+    return medicationValue?.batch
+}
+
 export function mapServiceDtoToImmunization(dto: ServiceDto): Immunization {
     return new Immunization({
         id: toImmunizationId(dto),
@@ -394,6 +410,8 @@ export function mapServiceDtoToImmunization(dto: ServiceDto): Immunization {
         identifiers: toImmunizationIdentifiers(dto),
         encounterId: toImmunizationEncounterId(dto),
         doseQuantity: toImmunizationDoseQuantity(dto),
+        expirationDate: toImmunizationExpirationDate(dto),
+        lotNumber: toImmunizationLotNumber(dto),
         occurrenceDateTime: toImmunizationOccurrenceDateTime(dto),
         recorder: toImmunizationRecorder(dto),
         status: toImmunizationStatus(dto),

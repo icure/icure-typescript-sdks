@@ -32,6 +32,8 @@ export class Immunization {
     identifiers: Identifier[] = []
     encounterId?: string
     doseQuantity?: Quantity
+    expirationDate?: number
+    lotNumber?: string
     occurrenceDateTime?: number
     recorder?: string
     status?: ImmunizationStatus
@@ -56,6 +58,8 @@ export class Immunization {
             identifiers: this.identifiers.map((item) => item.toJSON()),
             encounterId: this.encounterId,
             doseQuantity: !!this.doseQuantity ? this.doseQuantity.toJSON() : undefined,
+            expirationDate: this.expirationDate,
+            lotNumber: this.lotNumber,
             occurrenceDateTime: this.occurrenceDateTime,
             recorder: this.recorder,
             status: this.status,
@@ -88,6 +92,12 @@ export class Immunization {
         }
         if (json['doseQuantity'] !== undefined) {
             this.doseQuantity = new Quantity(json['doseQuantity']!)
+        }
+        if (json['expirationDate'] !== undefined) {
+            this.expirationDate = json['expirationDate']!
+        }
+        if (json['lotNumber'] !== undefined) {
+            this.lotNumber = json['lotNumber']!
         }
         if (json['occurrenceDateTime'] !== undefined) {
             this.occurrenceDateTime = json['occurrenceDateTime']!
@@ -146,6 +156,8 @@ export interface IImmunization {
     identifiers: IIdentifier[]
     encounterId?: string
     doseQuantity?: IQuantity
+    expirationDate?: number
+    lotNumber?: string
     occurrenceDateTime?: number
     recorder?: string
     status?: ImmunizationStatus
