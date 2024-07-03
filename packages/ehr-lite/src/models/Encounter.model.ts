@@ -37,7 +37,6 @@ export class Encounter {
     codes: CodingReference[] = []
     tags: CodingReference[] = []
     encounterClass: EncounterClass
-    type?: CodingReference
     startTime?: number
     endTime?: number
     reasonCodes: CodingReference[] = []
@@ -60,7 +59,6 @@ export class Encounter {
             codes: this.codes.map((item) => item.toJSON()),
             tags: this.tags.map((item) => item.toJSON()),
             encounterClass: this.encounterClass,
-            type: !!this.type ? this.type.toJSON() : undefined,
             startTime: this.startTime,
             endTime: this.endTime,
             reasonCodes: this.reasonCodes.map((item) => item.toJSON()),
@@ -92,9 +90,6 @@ export class Encounter {
             this.tags = json['tags']!.map((item: any) => new CodingReference(item))
         }
         this.encounterClass = json['encounterClass']!
-        if (json['type'] !== undefined) {
-            this.type = new CodingReference(json['type']!)
-        }
         if (json['startTime'] !== undefined) {
             this.startTime = json['startTime']!
         }
@@ -144,7 +139,6 @@ export interface IEncounter {
     codes: ICodingReference[]
     tags: ICodingReference[]
     encounterClass: EncounterClass
-    type?: ICodingReference
     startTime?: number
     endTime?: number
     reasonCodes: ICodingReference[]

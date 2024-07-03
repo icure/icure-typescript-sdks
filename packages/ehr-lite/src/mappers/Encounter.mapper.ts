@@ -71,16 +71,15 @@ function toContactDtoMedicalLocationId(domain: Encounter): string | undefined {
     return undefined
 }
 
-function toContactDtoTags({ tags, reasonCodes, systemMetaData }: Encounter): CodeStub[] | undefined {
+function toContactDtoTags({ tags, systemMetaData }: Encounter): CodeStub[] | undefined {
     return mergeTagsWithInternalTags(ENCOUNTER_FHIR_TYPE, tags, systemMetaData)
 }
 
-function toContactDtoCodes({ codes, reasonCodes, encounterClass }: Encounter): CodeStub[] | undefined {
+function toContactDtoCodes({ codes, reasonCodes }: Encounter): CodeStub[] | undefined {
     return codes
         ? addUniqueObjectsToArray(
               codes.map(mapCodingReferenceToCodeStub),
               ...reasonCodes?.map((tag) => new CodingReference({ id: tag.id, code: tag.code, version: tag.version, contextLabel: tag.contextLabel, context: `${ENCOUNTER_FHIR_TYPE}.${REASON_CONTEXT}` }))?.map(mapCodingReferenceToCodeStub),
-              EncounterClass.toCodeStub(encounterClass),
           )
         : undefined
 }
@@ -121,8 +120,8 @@ function toContactDtoExternalId(domain: Encounter): string | undefined {
     return undefined
 }
 
-function toContactDtoEncounterType({ type }: Encounter): CodeStub | undefined {
-    return type ? mapCodingReferenceToCodeStub(type) : undefined
+function toContactDtoEncounterType({ encounterClass }: Encounter): CodeStub | undefined {
+    return EncounterClass.toCodeStub(encounterClass)
 }
 
 function toContactDtoSubContacts(domain: Encounter): SubContactDto[] | undefined {
@@ -266,13 +265,8 @@ function toEncounterObservations({ services }: ContactDto): Observation[] | unde
     return services?.filter((service) => service.tags?.some((tag) => tag.code?.toUpperCase() === OBSERVATION_FHIR_TYPE.toUpperCase()))?.map(mapServiceDtoToObservation)
 }
 
-function toEncounterEncounterClass({ codes }: ContactDto): EncounterClass {
-    const encounterClass = codes?.find((tag) => tag.context === `${ENCOUNTER_FHIR_TYPE}.${CLASS_CONTEXT}`)
-    if (!encounterClass) {
-        throw new Error('Encounter class is missing')
-    }
-
-    return EncounterClass.fromCodeStub(encounterClass)
+function toEncounterEncounterClass({ encounterType }: ContactDto): EncounterClass {
+    return EncounterClass.fromCodeStub(encounterType)
 }
 
 export function mapContactDtoToEncounter(dto: ContactDto): Encounter {
@@ -283,7 +277,6 @@ export function mapContactDtoToEncounter(dto: ContactDto): Encounter {
         codes: toEncounterCodes(dto),
         tags: toEncounterTags(dto),
         encounterClass: toEncounterEncounterClass(dto),
-        type: toEncounterType(dto),
         startTime: toEncounterStartTime(dto),
         endTime: toEncounterEndTime(dto),
         reasonCodes: toEncounterReasonCodes(dto),
