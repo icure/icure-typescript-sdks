@@ -270,12 +270,12 @@ export function EncounterApiAware<TBase extends Constructor<any>>(Base: TBase): 
                     tags: [new CodingReference({ id: 'IC-TEST|TEST|1', type: 'IC-TEST', code: 'TEST', version: '1' })],
                     startTime: 202406111500,
                     endTime: 202406111600,
-                    performer: dataOwnerId,
+                    serviceProvider: dataOwnerId,
                     notes: [annotation1()],
                     immunizations: [
                         new Immunization({
                             id: forceUuid(),
-                            vaccineCode: new CodingReference({ id: 'ICD-11|A01|1', type: 'ICD-11', code: 'A01', version: '1' }),
+                            vaccineCodes: [new CodingReference({ id: 'ICD-11|A01|1', type: 'ICD-11', code: 'A01', version: '1' })],
                             doseQuantity: new Quantity({
                                 value: 15,
                                 code: new CodingReference({ id: 'UCUM|mg|1', type: 'UCUM', code: 'mg', version: '1' }),
@@ -425,7 +425,7 @@ export function ImmunizationApiAware<TBase extends Constructor<any>>(Base: TBase
                 patient.id!,
                 new Immunization({
                     id: forceUuid(),
-                    vaccineCode: new CodingReference({ id: 'ICD-11|A01|1', type: 'ICD-11', code: 'A01', version: '1' }),
+                    vaccineCodes: new CodingReference({ id: 'ICD-11|A01|1', type: 'ICD-11', code: 'A01', version: '1' }),
                     doseQuantity: new Quantity({
                         value: 15,
                         code: new CodingReference({ id: 'UCUM|mg|1', type: 'UCUM', code: 'mg', version: '1' }),
@@ -443,7 +443,7 @@ export function ImmunizationApiAware<TBase extends Constructor<any>>(Base: TBase
             return api.immunizationApi.createOrModifyManyFor(patient.id!, [
                 new Immunization({
                     id: forceUuid(),
-                    vaccineCode: new CodingReference({ id: 'ICD-11|A01|1', type: 'ICD-11', code: 'A01', version: '1' }),
+                    vaccineCodes: new CodingReference({ id: 'ICD-11|A01|1', type: 'ICD-11', code: 'A01', version: '1' }),
                     doseQuantity: new Quantity({
                         value: 15,
                         code: new CodingReference({ id: 'UCUM|mg|1', type: 'UCUM', code: 'mg', version: '1' }),
@@ -456,7 +456,7 @@ export function ImmunizationApiAware<TBase extends Constructor<any>>(Base: TBase
                 }),
                 new Immunization({
                     id: forceUuid(),
-                    vaccineCode: new CodingReference({ id: 'ICD-12|A02|1', type: 'ICD-12', code: 'A02', version: '1' }),
+                    vaccineCodes: new CodingReference({ id: 'ICD-12|A02|1', type: 'ICD-12', code: 'A02', version: '1' }),
                     doseQuantity: new Quantity({
                         value: 26,
                         code: new CodingReference({ id: 'UCUM|ml|1', type: 'UCUM', code: 'mg', version: '1' }),

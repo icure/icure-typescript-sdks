@@ -1,4 +1,5 @@
 import { Annotation, CodingReference, ContactDto, EntityId, forceUuid, IAnnotation, ICodingReference, Identifier, IIdentifier, ISystemMetaDataEncrypted, mapTo, SystemMetaDataEncrypted } from '@icure/typescript-common'
+import { EncounterClass } from './enums/EncounterClass.enum'
 import { IImmunization, Immunization } from './Immunization.model'
 import { IObservation, Observation } from './Observation.model'
 
@@ -12,6 +13,7 @@ import { IObservation, Observation } from './Observation.model'
  * @param identifiers The list of identifiers associated with the encounter.
  * @param codes The list of codes associated with the encounter.
  * @param tags The list of tags associated with the encounter.
+ * @param class The class of encounter. [Value set](https://hl7.org/fhir/R4/v3/ActEncounterCode/vs.html)
  * @param type Specific type of encounter. [Value set](https://hl7.org/fhir/R4/valueset-encounter-type.html)
  * @param startTime The start time of the encounter (Unix timestamp).
  * @param endTime The end time of the encounter (Unix timestamp).
@@ -34,12 +36,12 @@ export class Encounter {
     identifiers: Identifier[] = []
     codes: CodingReference[] = []
     tags: CodingReference[] = []
-    type?: CodingReference
+    encounterClass: EncounterClass
     startTime?: number
     endTime?: number
     reasonCodes: CodingReference[] = []
     diagnosis: string[] = []
-    performer?: string
+    serviceProvider?: string
     author?: string
     created?: number
     modified?: number
@@ -56,12 +58,12 @@ export class Encounter {
             identifiers: this.identifiers.map((item) => item.toJSON()),
             codes: this.codes.map((item) => item.toJSON()),
             tags: this.tags.map((item) => item.toJSON()),
-            type: !!this.type ? this.type.toJSON() : undefined,
+            encounterClass: this.encounterClass,
             startTime: this.startTime,
             endTime: this.endTime,
             reasonCodes: this.reasonCodes.map((item) => item.toJSON()),
             diagnosis: this.diagnosis.map((item) => item),
-            performer: this.performer,
+            serviceProvider: this.serviceProvider,
             author: this.author,
             created: this.created,
             modified: this.modified,
@@ -73,7 +75,7 @@ export class Encounter {
         }
     }
 
-    constructor(json: Partial<IEncounter>) {
+    constructor(json: Partial<IEncounter> & { encounterClass: EncounterClass }) {
         this.id = forceUuid(json['id']!)
         if (json['rev'] !== undefined) {
             this.rev = json['rev']!
@@ -87,9 +89,7 @@ export class Encounter {
         if (json['tags'] !== undefined) {
             this.tags = json['tags']!.map((item: any) => new CodingReference(item))
         }
-        if (json['type'] !== undefined) {
-            this.type = new CodingReference(json['type']!)
-        }
+        this.encounterClass = json['encounterClass']!
         if (json['startTime'] !== undefined) {
             this.startTime = json['startTime']!
         }
@@ -102,8 +102,8 @@ export class Encounter {
         if (json['diagnosis'] !== undefined) {
             this.diagnosis = json['diagnosis']!.map((item: any) => item)
         }
-        if (json['performer'] !== undefined) {
-            this.performer = json['performer']!
+        if (json['serviceProvider'] !== undefined) {
+            this.serviceProvider = json['serviceProvider']!
         }
         if (json['author'] !== undefined) {
             this.author = json['author']!
@@ -138,7 +138,7 @@ export interface IEncounter {
     identifiers: IIdentifier[]
     codes: ICodingReference[]
     tags: ICodingReference[]
-    type?: ICodingReference
+    encounterClass: EncounterClass
     startTime?: number
     endTime?: number
     reasonCodes: ICodingReference[]
@@ -147,7 +147,7 @@ export interface IEncounter {
     modified?: number
     endOfLife?: number
     author?: string
-    performer?: string
+    serviceProvider?: string
     immunizations: IImmunization[]
     observations: IObservation[]
     notes: IAnnotation[]

@@ -6,7 +6,6 @@ import {
     CodeStub,
     CodingReference,
     ContentDto,
-    Delegation,
     DelegationDto,
     filteringOutInternalTags,
     forceUuid,
@@ -106,7 +105,7 @@ function toServiceDtoIndex({ index }: Immunization): number | undefined {
     return index
 }
 
-function toServiceDtoContent({ language, doseQuantity, vaccineCode, occurrenceDateTime }: Immunization):
+function toServiceDtoContent({ language, doseQuantity, vaccineCodes, occurrenceDateTime, expirationDate, lotNumber }: Immunization):
     | {
           [key: string]: ContentDto
       }
@@ -116,20 +115,24 @@ function toServiceDtoContent({ language, doseQuantity, vaccineCode, occurrenceDa
             language ?? 'xx',
             new ContentDto({
                 medicationValue:
-                    doseQuantity || vaccineCode || occurrenceDateTime
+                    doseQuantity || vaccineCodes || occurrenceDateTime || expirationDate || lotNumber
                         ? new MedicationDto({
-                              medicinalProduct: vaccineCode
+                              medicinalProduct: vaccineCodes
                                   ? new MedicinalproductDto({
-                                        deliveredcds: vaccineCode ? mapCodingReferenceToCodeStub(vaccineCode) : undefined,
+                                        deliveredcds: vaccineCodes?.map(mapCodingReferenceToCodeStub),
                                     })
                                   : undefined,
                               regimen:
                                   doseQuantity && occurrenceDateTime
-                                      ? new RegimenItemDto({
-                                            administratedQuantity: mapQuantityToAdministrationQuantityDto(doseQuantity),
-                                            date: occurrenceDateTime,
-                                        })
+                                      ? [
+                                            new RegimenItemDto({
+                                                administratedQuantity: mapQuantityToAdministrationQuantityDto(doseQuantity),
+                                                date: occurrenceDateTime,
+                                            }),
+                                        ]
                                       : undefined,
+                              expirationDate,
+                              batch: lotNumber,
                           })
                         : undefined,
             }),
@@ -205,8 +208,10 @@ function toServiceDtoQualifiedLinks(domain: Immunization): { [key: string]: { [k
     return undefined
 }
 
-function toServiceDtoCodes({ codes }: Immunization): CodeStub[] | undefined {
-    return codes.map(mapCodingReferenceToCodeStub)
+function toServiceDtoCodes({ codes, status, statusReason, subPotentReason, site }: Immunization): CodeStub[] | undefined {
+    const additionalCodes: CodeStub[] = [immunizationStatusToCodeStub(status), immunizationStatusReasonToCodeStub(statusReason), immunizationSubPotentReasonToCodeStub(subPotentReason), immunizationSiteToCodeStub(site)].filter((code) => !!codes) as CodeStub[]
+
+    return addUniqueObjectsToArray(codes.map(mapCodingReferenceToCodeStub), ...additionalCodes)
 }
 
 function immunizationStatusToCodeStub(status: ImmunizationStatus | undefined): CodeStub | null {
@@ -227,9 +232,9 @@ function immunizationStatusToCodeStub(status: ImmunizationStatus | undefined): C
     })
 }
 
-function extractImmunizationStatusFromCodeStub(tags: CodeStub[]): ImmunizationStatus | undefined {
-    const statusTag = tags.find((tag) => tag.context === `${IMMUNIZATION_FHIR_TYPE}.${STATUS_CONTEXT}`)
-    return statusTag?.code as ImmunizationStatus
+function extractImmunizationStatusFromCodeStub(codes: CodeStub[]): ImmunizationStatus | undefined {
+    const statusCode = codes.find((code) => code.context === `${IMMUNIZATION_FHIR_TYPE}.${STATUS_CONTEXT}`)
+    return statusCode?.code as ImmunizationStatus
 }
 
 function immunizationStatusReasonToCodeStub(statusReason: CodingReference | undefined): CodeStub | null {
@@ -241,23 +246,14 @@ function immunizationStatusReasonToCodeStub(statusReason: CodingReference | unde
         : null
 }
 
-function extractImmunizationStatusReasonFromCodeStub(tags: CodeStub[]): CodingReference | undefined {
-    const statusReasonTag = tags.find((tag) => tag.context === `${IMMUNIZATION_FHIR_TYPE}.${STATUS_REASON_CONTEXT}`)
+function extractImmunizationStatusReasonFromCodeStub(codes: CodeStub[]): CodingReference | undefined {
+    const statusReasonTag = codes.find((code) => code.context === `${IMMUNIZATION_FHIR_TYPE}.${STATUS_REASON_CONTEXT}`)
     return statusReasonTag ? mapCodeStubToCodingReference(statusReasonTag) : undefined
 }
 
-function immunizationVaccineCodeToCodeStub(vaccineCode: CodingReference | undefined): CodeStub | null {
-    return vaccineCode
-        ? new CodeStub({
-              ...mapCodingReferenceToCodeStub(vaccineCode),
-              context: `${IMMUNIZATION_FHIR_TYPE}.${VACCINE_CODE_CONTEXT}`,
-          })
-        : null
-}
-
-function extractImmunizationVaccineCodeFromCodeStub(tags: CodeStub[]): CodingReference | undefined {
-    const vaccineCodeTag = tags.find((tag) => tag.context === `${IMMUNIZATION_FHIR_TYPE}.${VACCINE_CODE_CONTEXT}`)
-    return vaccineCodeTag ? mapCodeStubToCodingReference(vaccineCodeTag) : undefined
+function extractImmunizationVaccineCodesFromCodeStub(codes: CodeStub[]): Array<CodingReference> | undefined {
+    const vaccineCodesCodes = codes.filter((code) => code.context === `${IMMUNIZATION_FHIR_TYPE}.${VACCINE_CODE_CONTEXT}`)
+    return vaccineCodesCodes?.map(mapCodeStubToCodingReference)
 }
 
 function immunizationSubPotentReasonToCodeStub(subPotentReason: CodingReference | undefined): CodeStub | null {
@@ -270,8 +266,8 @@ function immunizationSubPotentReasonToCodeStub(subPotentReason: CodingReference 
 }
 
 function extractImmunizationSubPotentReasonFromCodeStub(tags: CodeStub[]): CodingReference | undefined {
-    const subPotentReasonTag = tags.find((tag) => tag.context === `${IMMUNIZATION_FHIR_TYPE}.${SUB_POTENT_REASON_CONTEXT}`)
-    return subPotentReasonTag ? mapCodeStubToCodingReference(subPotentReasonTag) : undefined
+    const subPotentReasonCode = tags.find((tag) => tag.context === `${IMMUNIZATION_FHIR_TYPE}.${SUB_POTENT_REASON_CONTEXT}`)
+    return subPotentReasonCode ? mapCodeStubToCodingReference(subPotentReasonCode) : undefined
 }
 
 function immunizationSiteToCodeStub(site: CodingReference | undefined): CodeStub | null {
@@ -288,12 +284,8 @@ function extractImmunizationSiteFromCodeStub(tags: CodeStub[]): CodingReference 
     return siteTag ? mapCodeStubToCodingReference(siteTag) : undefined
 }
 
-function toServiceDtoTags({ tags, status, statusReason, vaccineCode, subPotentReason, site, systemMetaData }: Immunization): CodeStub[] | undefined {
-    const additionalTags: CodeStub[] = [immunizationStatusToCodeStub(status), immunizationStatusReasonToCodeStub(statusReason), immunizationVaccineCodeToCodeStub(vaccineCode), immunizationSubPotentReasonToCodeStub(subPotentReason), immunizationSiteToCodeStub(site)].filter(
-        (tag) => !!tag,
-    ) as CodeStub[]
-
-    return addUniqueObjectsToArray(mergeTagsWithInternalTags(IMMUNIZATION_FHIR_TYPE, tags, systemMetaData), ...additionalTags)
+function toServiceDtoTags({ tags, systemMetaData }: Immunization): CodeStub[] | undefined {
+    return mergeTagsWithInternalTags(IMMUNIZATION_FHIR_TYPE, tags, systemMetaData)
 }
 
 function toServiceDtoEncryptedSelf({ systemMetaData }: Immunization): string | undefined {
@@ -316,24 +308,24 @@ function toImmunizationRecorder({ responsible }: ServiceDto): string | undefined
     return responsible
 }
 
-function toImmunizationStatus({ tags }: ServiceDto): ImmunizationStatus | undefined {
-    return tags !== undefined ? extractImmunizationStatusFromCodeStub(tags) : undefined
+function toImmunizationStatus({ codes }: ServiceDto): ImmunizationStatus | undefined {
+    return codes != undefined ? extractImmunizationStatusFromCodeStub(codes) : undefined
 }
 
-function toImmunizationStatusReason({ tags }: ServiceDto): CodingReference | undefined {
-    return tags != undefined ? extractImmunizationStatusReasonFromCodeStub(tags) : undefined
+function toImmunizationStatusReason({ codes }: ServiceDto): CodingReference | undefined {
+    return codes != undefined ? extractImmunizationStatusReasonFromCodeStub(codes) : undefined
 }
 
-function toImmunizationVaccineCode({ tags }: ServiceDto): CodingReference | undefined {
-    return tags != undefined ? extractImmunizationVaccineCodeFromCodeStub(tags) : undefined
+function toImmunizationVaccineCodes({ codes }: ServiceDto): Array<CodingReference> | undefined {
+    return codes != undefined ? extractImmunizationVaccineCodesFromCodeStub(codes) : undefined
 }
 
-function toImmunizationSubPotentReason({ tags }: ServiceDto): CodingReference | undefined {
-    return tags != undefined ? extractImmunizationSubPotentReasonFromCodeStub(tags) : undefined
+function toImmunizationSubPotentReason({ codes }: ServiceDto): CodingReference | undefined {
+    return codes != undefined ? extractImmunizationSubPotentReasonFromCodeStub(codes) : undefined
 }
 
-function toImmunizationSite({ tags }: ServiceDto): CodingReference | undefined {
-    return tags != undefined ? extractImmunizationSiteFromCodeStub(tags) : undefined
+function toImmunizationSite({ codes }: ServiceDto): CodingReference | undefined {
+    return codes != undefined ? extractImmunizationSiteFromCodeStub(codes) : undefined
 }
 
 function toImmunizationRecorded({ valueDate }: ServiceDto): number | undefined {
@@ -399,6 +391,18 @@ function toImmunizationOccurrenceDateTime(dto: ServiceDto): number | undefined {
     return regimen !== undefined && regimen.length > 0 && regimen[0].date ? regimen[0].date : undefined
 }
 
+function toImmunizationExpirationDate({ content }: ServiceDto): number | undefined {
+    const contentDto = content ? Object.values(content)[0] : undefined
+    const medicationValue = contentDto?.medicationValue
+    return medicationValue?.expirationDate
+}
+
+function toImmunizationLotNumber({ content }: ServiceDto): string | undefined {
+    const contentDto = content ? Object.values(content)[0] : undefined
+    const medicationValue = contentDto?.medicationValue
+    return medicationValue?.batch
+}
+
 export function mapServiceDtoToImmunization(dto: ServiceDto): Immunization {
     return new Immunization({
         id: toImmunizationId(dto),
@@ -406,11 +410,13 @@ export function mapServiceDtoToImmunization(dto: ServiceDto): Immunization {
         identifiers: toImmunizationIdentifiers(dto),
         encounterId: toImmunizationEncounterId(dto),
         doseQuantity: toImmunizationDoseQuantity(dto),
+        expirationDate: toImmunizationExpirationDate(dto),
+        lotNumber: toImmunizationLotNumber(dto),
         occurrenceDateTime: toImmunizationOccurrenceDateTime(dto),
         recorder: toImmunizationRecorder(dto),
         status: toImmunizationStatus(dto),
         statusReason: toImmunizationStatusReason(dto),
-        vaccineCode: toImmunizationVaccineCode(dto),
+        vaccineCodes: toImmunizationVaccineCodes(dto),
         subPotentReason: toImmunizationSubPotentReason(dto),
         site: toImmunizationSite(dto),
         recorded: toImmunizationRecorded(dto),

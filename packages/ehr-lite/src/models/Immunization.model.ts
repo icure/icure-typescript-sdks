@@ -32,11 +32,13 @@ export class Immunization {
     identifiers: Identifier[] = []
     encounterId?: string
     doseQuantity?: Quantity
+    expirationDate?: number
+    lotNumber?: string
     occurrenceDateTime?: number
     recorder?: string
     status?: ImmunizationStatus
     statusReason?: CodingReference
-    vaccineCode?: CodingReference
+    vaccineCodes?: Array<CodingReference>
     subPotentReason?: CodingReference
     site?: CodingReference
     recorded?: number
@@ -56,11 +58,13 @@ export class Immunization {
             identifiers: this.identifiers.map((item) => item.toJSON()),
             encounterId: this.encounterId,
             doseQuantity: !!this.doseQuantity ? this.doseQuantity.toJSON() : undefined,
+            expirationDate: this.expirationDate,
+            lotNumber: this.lotNumber,
             occurrenceDateTime: this.occurrenceDateTime,
             recorder: this.recorder,
             status: this.status,
             statusReason: !!this.statusReason ? this.statusReason.toJSON() : undefined,
-            vaccineCode: !!this.vaccineCode ? this.vaccineCode.toJSON() : undefined,
+            vaccineCodes: this.vaccineCodes?.map((item) => item.toJSON()),
             subPotentReason: !!this.subPotentReason ? this.subPotentReason.toJSON() : undefined,
             site: !!this.site ? this.site.toJSON() : undefined,
             recorded: this.recorded,
@@ -89,6 +93,12 @@ export class Immunization {
         if (json['doseQuantity'] !== undefined) {
             this.doseQuantity = new Quantity(json['doseQuantity']!)
         }
+        if (json['expirationDate'] !== undefined) {
+            this.expirationDate = json['expirationDate']!
+        }
+        if (json['lotNumber'] !== undefined) {
+            this.lotNumber = json['lotNumber']!
+        }
         if (json['occurrenceDateTime'] !== undefined) {
             this.occurrenceDateTime = json['occurrenceDateTime']!
         }
@@ -101,8 +111,8 @@ export class Immunization {
         if (json['statusReason'] !== undefined) {
             this.statusReason = new CodingReference(json['statusReason']!)
         }
-        if (json['vaccineCode'] !== undefined) {
-            this.vaccineCode = new CodingReference(json['vaccineCode']!)
+        if (json['vaccineCodes'] !== undefined) {
+            this.vaccineCodes = json['vaccineCodes']!.map((item: any) => new CodingReference(item))
         }
         if (json['subPotentReason'] !== undefined) {
             this.subPotentReason = new CodingReference(json['subPotentReason']!)
@@ -146,11 +156,13 @@ export interface IImmunization {
     identifiers: IIdentifier[]
     encounterId?: string
     doseQuantity?: IQuantity
+    expirationDate?: number
+    lotNumber?: string
     occurrenceDateTime?: number
     recorder?: string
     status?: ImmunizationStatus
     statusReason?: ICodingReference
-    vaccineCode?: ICodingReference
+    vaccineCodes?: Array<ICodingReference>
     subPotentReason?: ICodingReference
     site?: ICodingReference
     recorded?: number

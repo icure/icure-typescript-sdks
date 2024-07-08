@@ -1,5 +1,6 @@
 import { Encounter } from '../models/Encounter.model'
 import {
+    addUniqueObjectsToArray,
     Annotation,
     AnnotationDto,
     CodeStub,
@@ -34,11 +35,13 @@ import { IMMUNIZATION_FHIR_TYPE, mapImmunizationToServiceDto, mapServiceDtoToImm
 import { mapObservationToServiceDto, mapServiceDtoToObservation, OBSERVATION_FHIR_TYPE } from './Observation.mapper'
 import { Immunization } from '../models/Immunization.model'
 import { Observation } from '../models/Observation.model'
+import { EncounterClass } from '../models/enums/EncounterClass.enum'
 
 export const ENCOUNTER_FHIR_TYPE = 'Encounter'
 
 const REASON_CONTEXT = 'reason'
-const CONTEXTS = [REASON_CONTEXT].map((context) => `${ENCOUNTER_FHIR_TYPE}.${context}`)
+const CLASS_CONTEXT = 'class'
+const CONTEXTS = [REASON_CONTEXT, CLASS_CONTEXT].map((context) => `${ENCOUNTER_FHIR_TYPE}.${context}`)
 
 function toContactDtoId(domain: Encounter): string | undefined {
     return forceUuid(domain.id)
@@ -60,24 +63,25 @@ function toContactDtoAuthor({ author }: Encounter): string | undefined {
     return author
 }
 
-function toContactDtoResponsible({ performer }: Encounter): string | undefined {
-    return performer
+function toContactDtoResponsible({ serviceProvider }: Encounter): string | undefined {
+    return serviceProvider
 }
 
 function toContactDtoMedicalLocationId(domain: Encounter): string | undefined {
     return undefined
 }
 
-function toContactDtoTags({ tags, reasonCodes, systemMetaData }: Encounter): CodeStub[] | undefined {
-    return mergeTagsWithInternalTags(
-        ENCOUNTER_FHIR_TYPE,
-        [...tags, ...(reasonCodes?.map((tag) => new CodingReference({ id: tag.id, code: tag.code, version: tag.version, contextLabel: tag.contextLabel, context: `${ENCOUNTER_FHIR_TYPE}.${REASON_CONTEXT}` })) ?? [])],
-        systemMetaData,
-    )
+function toContactDtoTags({ tags, systemMetaData }: Encounter): CodeStub[] | undefined {
+    return mergeTagsWithInternalTags(ENCOUNTER_FHIR_TYPE, tags, systemMetaData)
 }
 
-function toContactDtoCodes({ codes }: Encounter): CodeStub[] | undefined {
-    return codes.map(mapCodingReferenceToCodeStub)
+function toContactDtoCodes({ codes, reasonCodes }: Encounter): CodeStub[] | undefined {
+    return codes
+        ? addUniqueObjectsToArray(
+              codes.map(mapCodingReferenceToCodeStub),
+              ...reasonCodes?.map((tag) => new CodingReference({ id: tag.id, code: tag.code, version: tag.version, contextLabel: tag.contextLabel, context: `${ENCOUNTER_FHIR_TYPE}.${REASON_CONTEXT}` }))?.map(mapCodingReferenceToCodeStub),
+          )
+        : undefined
 }
 
 function toContactDtoIdentifier({ identifiers }: Encounter): IdentifierDto[] | undefined {
@@ -116,8 +120,8 @@ function toContactDtoExternalId(domain: Encounter): string | undefined {
     return undefined
 }
 
-function toContactDtoEncounterType({ type }: Encounter): CodeStub | undefined {
-    return type ? mapCodingReferenceToCodeStub(type) : undefined
+function toContactDtoEncounterType({ encounterClass }: Encounter): CodeStub | undefined {
+    return EncounterClass.toCodeStub(encounterClass)
 }
 
 function toContactDtoSubContacts(domain: Encounter): SubContactDto[] | undefined {
@@ -149,8 +153,8 @@ function toContactDtoServices({ immunizations, observations }: Encounter): Servi
     })
 }
 
-function toContactDtoHealthcarePartyId({ performer }: Encounter): string | undefined {
-    return performer
+function toContactDtoHealthcarePartyId({ serviceProvider }: Encounter): string | undefined {
+    return serviceProvider
 }
 
 function toContactDtoModifiedContactId(domain: Encounter): string | undefined {
@@ -198,7 +202,7 @@ function toEncounterCodes({ codes }: ContactDto): CodingReference[] | undefined 
 }
 
 function toEncounterTags({ tags }: ContactDto): CodingReference[] | undefined {
-    return filteringOutInternalTags(ENCOUNTER_FHIR_TYPE, tags?.filter((tag) => (tag.context ? !CONTEXTS.includes(tag.context) : true)))
+    return filteringOutInternalTags(ENCOUNTER_FHIR_TYPE, tags)
 }
 
 function toEncounterType({ encounterType }: ContactDto): CodingReference | undefined {
@@ -213,8 +217,8 @@ function toEncounterEndTime({ closingDate }: ContactDto): number | undefined {
     return closingDate
 }
 
-function toEncounterReasonCodes({ tags }: ContactDto): CodingReference[] | undefined {
-    return tags?.filter((tag) => tag.context === `${ENCOUNTER_FHIR_TYPE}.${REASON_CONTEXT}`).map(mapCodeStubToCodingReference)
+function toEncounterReasonCodes({ codes }: ContactDto): CodingReference[] | undefined {
+    return codes?.filter((tag) => tag.context === `${ENCOUNTER_FHIR_TYPE}.${REASON_CONTEXT}`).map(mapCodeStubToCodingReference)
 }
 
 function toEncounterNotes({ notes }: ContactDto): Annotation[] | undefined {
@@ -249,7 +253,7 @@ function toEncounterAuthor({ author }: ContactDto): string | undefined {
     return author
 }
 
-function toEncounterPerformer({ responsible }: ContactDto): string | undefined {
+function toEncounterServiceProvider({ responsible }: ContactDto): string | undefined {
     return responsible
 }
 
@@ -261,6 +265,13 @@ function toEncounterObservations({ services }: ContactDto): Observation[] | unde
     return services?.filter((service) => service.tags?.some((tag) => tag.code?.toUpperCase() === OBSERVATION_FHIR_TYPE.toUpperCase()))?.map(mapServiceDtoToObservation)
 }
 
+function toEncounterEncounterClass({ encounterType }: ContactDto): EncounterClass {
+    if (!encounterType) {
+        throw new Error('Encounter type not found in Contact and is required for Encounter mapping')
+    }
+    return EncounterClass.fromCodeStub(encounterType)
+}
+
 export function mapContactDtoToEncounter(dto: ContactDto): Encounter {
     return new Encounter({
         id: toEncounterId(dto),
@@ -268,12 +279,12 @@ export function mapContactDtoToEncounter(dto: ContactDto): Encounter {
         identifiers: toEncounterIdentifiers(dto),
         codes: toEncounterCodes(dto),
         tags: toEncounterTags(dto),
-        type: toEncounterType(dto),
+        encounterClass: toEncounterEncounterClass(dto),
         startTime: toEncounterStartTime(dto),
         endTime: toEncounterEndTime(dto),
         reasonCodes: toEncounterReasonCodes(dto),
         diagnosis: toEncounterDiagnosis(dto),
-        performer: toEncounterPerformer(dto),
+        serviceProvider: toEncounterServiceProvider(dto),
         author: toEncounterAuthor(dto),
         created: toEncounterCreated(dto),
         modified: toEncounterModified(dto),
