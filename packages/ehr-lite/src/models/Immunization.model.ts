@@ -38,7 +38,7 @@ export class Immunization {
     recorder?: string
     status?: ImmunizationStatus
     statusReason?: CodingReference
-    vaccineCode?: CodingReference
+    vaccineCodes?: Array<CodingReference>
     subPotentReason?: CodingReference
     site?: CodingReference
     recorded?: number
@@ -64,7 +64,7 @@ export class Immunization {
             recorder: this.recorder,
             status: this.status,
             statusReason: !!this.statusReason ? this.statusReason.toJSON() : undefined,
-            vaccineCode: !!this.vaccineCode ? this.vaccineCode.toJSON() : undefined,
+            vaccineCodes: this.vaccineCodes?.map((item) => item.toJSON()),
             subPotentReason: !!this.subPotentReason ? this.subPotentReason.toJSON() : undefined,
             site: !!this.site ? this.site.toJSON() : undefined,
             recorded: this.recorded,
@@ -111,8 +111,8 @@ export class Immunization {
         if (json['statusReason'] !== undefined) {
             this.statusReason = new CodingReference(json['statusReason']!)
         }
-        if (json['vaccineCode'] !== undefined) {
-            this.vaccineCode = new CodingReference(json['vaccineCode']!)
+        if (json['vaccineCodes'] !== undefined) {
+            this.vaccineCodes = json['vaccineCodes']!.map((item: any) => new CodingReference(item))
         }
         if (json['subPotentReason'] !== undefined) {
             this.subPotentReason = new CodingReference(json['subPotentReason']!)
@@ -162,7 +162,7 @@ export interface IImmunization {
     recorder?: string
     status?: ImmunizationStatus
     statusReason?: ICodingReference
-    vaccineCode?: ICodingReference
+    vaccineCodes?: Array<ICodingReference>
     subPotentReason?: ICodingReference
     site?: ICodingReference
     recorded?: number

@@ -266,6 +266,9 @@ function toEncounterObservations({ services }: ContactDto): Observation[] | unde
 }
 
 function toEncounterEncounterClass({ encounterType }: ContactDto): EncounterClass {
+    if (!encounterType) {
+        throw new Error('Encounter type not found in Contact and is required for Encounter mapping')
+    }
     return EncounterClass.fromCodeStub(encounterType)
 }
 
