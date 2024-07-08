@@ -6,7 +6,7 @@
         "test": "yarn nx run-many -t build -t test --parallel=1 --verbose",
         "marshall": "yarn nx run-many -t marshall --verbose",
         "build": "yarn nx run-many -t build --parallel=5 --verbose",
-        "publish": "yarn nx run @icure/typescript-common:publish && yarn nx run @icure/ehr-lite-sdk:publish"
+        "publish": "yarn nx run @icure/typescript-common:publish && yarn nx run @icure/ehr-lite-sdk:publish && yarn nx run @icure/medical-device-sdk:publish"
     },
     "private": true,
     "devDependencies": {
