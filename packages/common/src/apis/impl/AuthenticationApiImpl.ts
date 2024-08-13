@@ -1,5 +1,5 @@
 import { AuthenticationApi } from '../AuthenticationApi'
-import { BasicApis, Device, HealthcareParty, IccAuthApi, JwtAuthenticationProvider, NoAuthenticationProvider, Patient, retry, StorageFacade, ua2hex, User } from '@icure/api'
+import { BasicApis, Device, HealthcareParty, IccAuthApi, IcureBasicApi, JwtAuthenticationProvider, NoAuthenticationProvider, Patient, retry, StorageFacade, ua2hex, User } from '@icure/api'
 import { Sanitizer } from '../../services/Sanitizer'
 import { ErrorHandler } from '../../services/ErrorHandler'
 import { MessageGatewayApi } from '../MessageGatewayApi'
@@ -219,7 +219,7 @@ export abstract class AuthenticationApiImpl<DSApi extends CommonApi> implements 
         initialTokens: { token: string; refreshToken: string } | undefined
     }> {
         const authProvider = new JwtAuthenticationProvider(new IccAuthApi(this.iCureBasePath, {}, new NoAuthenticationProvider(), this.fetchImpl), login, validationCode)
-        const userApi = (await BasicApis(this.iCureBasePath, authProvider)).userApi
+        const userApi = (await IcureBasicApi.initialise(this.iCureBasePath, authProvider)).userApi
         const user = await userApi.getCurrentUser()
         if (!user) {
             throw this.errorHandler.createErrorWithMessage(`Your validation code ${validationCode} expired. Start a new authentication process for your user`)

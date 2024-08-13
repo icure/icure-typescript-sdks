@@ -78,6 +78,8 @@ export type PartnershipTypeEnum =
     | 'stepmother'
     | 'stepson'
     | 'tutor'
+    | 'cohabiting'
+    | 'registered_partner'
     | 'next_of_kin'
     | 'federal_agency'
     | 'insurance_company'
