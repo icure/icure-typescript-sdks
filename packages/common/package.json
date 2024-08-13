@@ -1,13 +1,13 @@
 {
     "name": "@icure/typescript-common",
-    "version": "3.3.9",
+    "version": "3.3.10",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "author": "iCure",
     "description": "Common typescript code for iCure projects",
     "license": "MIT",
     "dependencies": {
-        "@icure/api": "^8.0.46",
+        "@icure/api": "^8.0.47",
         "reflect-metadata": "^0.2.2",
         "uuid": "^9.0.1"
     },
